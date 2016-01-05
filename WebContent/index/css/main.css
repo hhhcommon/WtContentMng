@@ -1,0 +1,165 @@
+@CHARSET "UTF-8";
+
+/*=主界面框架=BEGIN========*/
+body { background-color:#fff;}
+#mask {
+  position:absolute;
+  top:1px; left:1px;
+  border-radius:0px;
+  -moz-border-radius:0px;
+  filter:alpha(opacity=70);
+  opacity:0.7;
+  z-index:2000;
+  width:800px; height:500px;
+  background-color:#E7F1F5;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-image:url(../../resources/images/waiting_circle.gif);
+  display:none;
+}
+#maskTitle {
+  position:absolute;
+  font-weight:bold;
+}
+.main_logo {
+  position:absolute; top:5px; left:13px; width:130px; height:40px;
+  background: url('../../resources/images/logo/top_logo.png') repeat-x;
+  background-color:transparent;
+}
+.main_ifnavs {
+  position:absolute; top:0px; left:160px; width:300px; height:50px;
+  background-color:transparent;
+}
+.nav {
+  position:absolute;
+  display:block;
+  width:100px; 
+  line-height:48px; height:48px;
+  text-align:center;
+  padding-top:3px;
+  font-size:20px;
+  font-family:Microsoft YaHei,Microsoft JhengHei,黑体;
+  color:#D8D8D8;
+}
+.nav_mouseOver {
+  color:#fff;
+  cursor:pointer;
+  font-weight:bold;
+  text-shadow:0px 0px 1px #fff;
+}
+.nav_sel {
+  color:#fff;
+  background-color:#81FC6A;
+}
+.main_funbar {
+  position:absolute;
+  width:300px; height:50px;
+  left:460px; padding-top:9px;
+  padding-left:15px;
+}
+.upf_btn {
+  position:absolute; left:785px; top:9px; width:34px;
+  line-height:48px; height:34px;
+  border-radius:4px; border:1px solid #ccc;
+  background-color: #F2F2F2;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-image:url(../../resources/images/uploadIcon.gif);
+}
+.upf_mouseOver {
+  background-color: #DEDEDE;
+  border:1px solid #A1A1A1;
+}
+.main_userm {
+  float:right;
+  line-height:48px; height:48px;
+  z-index:30;
+  padding-top:10px;
+  padding-right:25px;
+}
+.main_userm div {float:left;}
+/**登录按钮*/
+.loginButton {
+  margin:4px;
+  font-size:14px;
+  width:40px; height:25px; line-height:25px;
+  text-align: center;
+}
+.lb_mouseOver {
+  color:#fff;
+  cursor:pointer;
+  font-weight:bold;
+  text-decoration:underline;
+  text-shadow:0px 0px 1px #fff;
+}
+#userShow {
+  color:#fff;
+  margin:4px;
+  font-size:14px;
+  height:25px; line-height:25px;
+  text-align: center;
+}
+#loginName {
+  overflow: hidden;
+  white-space:nowrap;
+  word-warp: break-word;
+  word-break: break-all;/*Only work in IE*/
+  text-overflow: ellipsis;/*Not working in FF*/
+  width:100px;
+  height:24px; text-height:24px;
+  font-size:12px;
+  align:right;
+  text-decoration:underline;
+}
+#userMenu {
+  padding-top:2px;
+  background-color:#F6F6F9;
+  width:80px;height:65px;
+  border-radius:4px;
+  border:1px solid #C2C1C2;
+  -moz-box-shadow: 2px 2px 2px #E5E5E5;
+  -webkit-box-shadow: 2px 2px 2px #E5E5E5;
+  box-shadow: 2px 2px 2px #E5E5E5;
+  z-index:1101;
+  margin:5px;
+  margin-left:20px;
+  margin-bottom:20px;
+}
+#userMenuShell {
+  position:absolute;
+  z-index:1100;
+  display:none;
+}
+.menuItem {
+  color:#929293;
+  padding-top:2px;
+  height:25px; text-height:25px;
+  text-align:center;
+  valign:middle;
+  font-size:14px;
+  margin-top:3px;
+}
+.menuItem_mouseOver {
+  color:#fff;
+  cursor:pointer;
+  text-decoration:underline;
+  text-shadow:0px 0px 1px #fff;
+  background-color:#81FC6A;
+}
+#newReportFlag {
+  position:absolute;
+  top:7px; left:168px;
+  width:20px; height:19px; text-height:19px;
+  padding-top:1px;
+  padding-left:-1px;
+  text-align:center;
+  border:1px solid red;
+  background-color:red;
+  border-radius:14px;
+  z-index:1005;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  display:none;
+}
+/*=主界面框架=END========*/
