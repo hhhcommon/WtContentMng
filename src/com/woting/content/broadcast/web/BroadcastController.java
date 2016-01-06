@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.woting.content.common.util.RequestUtils;
+import com.woting.dictionary.model.DictDetail;
+import com.woting.dictionary.model.DictModel;
+import com.woting.dictionary.model._CacheDictionary;
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.ui.tree.EasyUiTree;
+import com.woting.WtContentMngConstants;
 import com.woting.content.broadcast.service.BroadcastService;
 
 @Controller
@@ -71,13 +78,28 @@ public class BroadcastController {
         return map;
     }
 
-    @RequestMapping(value="getCata4View.do")
+    @RequestMapping(value="getCataTrees4View.do")
     @ResponseBody
-    public Map<String,Object> getCata4View(HttpServletRequest request) {
+    //这是一个临时方法
+    public Map<String,Object> getCataTrees4View(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
-        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
-        bcService.add(m);
-        map=m;
+        List<Map<String, Object>> l = new ArrayList<Map<String, Object>>();
+        _CacheDictionary _cd = ( (CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+        try {
+            DictModel dm=_cd.getDictModelById("1");
+            EasyUiTree<DictDetail> eu1=new EasyUiTree<DictDetail>(dm.dictTree);
+            l.add(eu1.toTreeMap());
+            dm=_cd.getDictModelById("2");
+            eu1=new EasyUiTree<DictDetail>(dm.dictTree);
+            
+            l.add(eu1.toTreeMap());
+            map.put("jsonType", "1");
+            map.put("data", l);
+        } catch (CloneNotSupportedException e) {
+            map.put("jsonType", "2");
+            map.put("err", e.getMessage());
+            e.printStackTrace();
+        }
         return map;
     }
 }

@@ -11,12 +11,11 @@
 <jsp:include page="/common/sysInclude.jsp" flush="true"/>
 <title></title>
 <style type="text/css">
-.lineinput {
+.inp-line {
   padding-top:0px;
   padding-bottom:25px;
-  font-size:18px;
 }
-.lineinput span {
+.inp-label {
   font-size:18px;
   font-weight:bolder;
   width:150px;
@@ -26,7 +25,7 @@
   text-valign:top;
   valign:top;
 }
-.lineinput input {
+.inp-text {
   font-size:14px;
   width:300px;
   text-line:300px;
@@ -35,24 +34,16 @@
   border: 1px solid #95B8E7;
   vertical-align: middle;
 }
-.lineinput textarea {
+.inp-txtarea  {
+  resize: none;
   font-size:14px;
+  height:180px;
   width:300px;
   text-line:300px;
   text-align:left;
-  height:22px;
   border: 1px solid #95B8E7;
-  vertical-align: middle;
 }
-.lineinput select {
-  font-size:14px;
-  width:300px;
-  text-line:300px;
-  text-align:left;
-  height:25px;
-  border: 1px solid #95B8E7;
-  vertical-align: middle;
-}
+
 .lf_title div {
   font-size:18px;
   font-weight:bolder;
@@ -83,16 +74,16 @@
 }
 </style>
 </head>
-<body class="easyui-layout" data-options="fit:true">
+<body id="body" class="easyui-layout" data-options="fit:true">
 <form id="ff" method="post">
-<div data-options="region:'east',split:false" style="width:320px;border:0px;border-left:1px solid #95B8E7;">
+<div data-options="region:'east',split:false" style="width:420px;border:0px;border-left:1px solid #95B8E7;">
   <div class="easyui-layout" data-options="fit:true" style="border:none;">
     <div data-options="region:'north',collapsible:false" title="直播流" style="height:300px;border:0px;padding:5px;">
-      <div class="lf_title" style="width:300px;height:30px;">
-        <div>来源</div><div style="padding-left:50px;">直播Url</div>
+      <div class="lf_title" style="width:400px;height:30px;">
+        <div>来源</div><div style="padding-left:60px;">直播Url</div>
       </div>
       <div class="lf_input">
-        <input style="width:80px" id="aSource" name="aSource"></input><input style="width:150px" id="aUrl" name="aUrl"></input>
+        <input style="width:100px" id="aSource" name="aSource"></input><input style="width:230px" id="aUrl" name="aUrl"></input>
         <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
       </div>
@@ -133,40 +124,30 @@
     <!-- 
     <div data-options="region:'center'" title="分类" style="border:0px">
     </div> -->
-    <div data-options="region:'center',collapsible:false" title="频段" style="height:150px;border:0px;">
+    <div data-options="region:'center',collapsible:false" title="频段" style="border:0px;">
     </div>
   </div>
 </div>
-<div data-options="region:'center',split:false" title="基本信息" style="border:0px; padding:30px;padding-left:30px;">
-  <div class="lineinput">
-    <span>电台名称:</span><input class="easyui-textbox" type="text" id="bcTitle" name="bcTitle" data-options="required:true"></input>
+<div data-options="region:'center',split:false" title="基本信息" id="baseInfo" style="border:0px; padding:30px;padding-left:30px;">
+  <div class="inp-line">
+    <span class="inp-label">电台名称:</span><input class="easyui-textbox" type="text" id="bcTitle" name="bcTitle" data-options="required:true"></input>
   </div>
-  <div class="lineinput">
-    <span>所属集团:</span><input class="easyui-textbox" type="text" id="bcPublisher" name="bcPublisher" data-options="required:true"></input>
+  <div class="inp-line">
+    <span class="inp-label">所属集团:</span><input class="easyui-textbox" type="text" id="bcPublisher" name="bcPublisher" data-options="required:true"></input>
   </div>
-  <div class="lineinput">
-    <span>电台网址:</span><input class="easyui-textbox" type="text" id="bcUrl" name="bcUrl" data-options="required:true"></input>
+  <div class="inp-line">
+    <span class="inp-label">电台网址:</span><input class="easyui-textbox" type="text" id="bcUrl" name="bcUrl" data-options="required:true"></input>
   </div>
-  <div class="lineinput">
-    <span>所属地区:</span><input class="easyui-textbox" type="text" id="bcArea" name="bcArea" data-options="required:true"></input>
+  <div class="inp-line">
+    <span class="inp-label">内容类别:</span><input class="easyui-textbox" type="text" id="cType" name="cType" data-options="required:true" readonly style="width:240px;text-line:240px;"></input>
+    <a href="#" class="easyui-linkbutton" onclick="parent.openSel('内容类别',1,1,null)" id="selArea" style="width:50px;">选择</a>
   </div>
-  <div class="lineinput">
-    <span>内容类别:</span><select name="cType" id="cType">
-    <option value="dtType1">新闻</option>
-<option value="dtType10">体育</option>
-<option value="dtType2">财经</option>
-<option value="dtType3">生活</option>
-<option value="dtType4">交通</option>
-<option value="dtType5">综艺</option>
-<option value="dtType6">音乐</option>
-<option value="dtType7">故事</option>
-<option value="dtType8">民族</option>
-<option value="dtType9">网络</option>
-<option value="dtType99">其他</option>
-    </select>
+  <div class="inp-line">
+    <span class="inp-label">所属地区:</span><input class="easyui-textbox" type="text" id="bcArea" name="bcArea" data-options="required:true" readonly style="width:240px;text-line:240px;"></input>
+    <a href="#" class="easyui-linkbutton" onclick="parent.openSel('所属地区',0,2,null)" id="selArea" style="width:50px;">选择</a>
   </div>
-  <div class="lineinput">
-    <span style="line-height:80px;">电台说明:</span><textarea class="easyui-textbox" type="textarea" id="descn" name="descn" style="height:80px"></textarea>
+  <div class="inp-line">
+    <div style="width:80px;float:left;" class="inp-label">电台说明:</div><textarea class="inp-txtarea" id="descn" name="descn"></textarea>
   </div>
 </div>
 <div data-options="region:'south',split:false" style="height:40px;border:0px;border-top:1px solid #95B8E7;">
@@ -178,13 +159,59 @@
 </form>
 </body>
 <script>
+var _ctype, _bcarea;
 var _type="";
 $(function(){
   _type=getUrlParam(window.location.href, "type");
   if (_type=="new") document.title="新增";
   if (_type=="update") document.title="修改";
+  $("#selArea").linkbutton({
+    width:"50px",
+    text:"选择"
+  });
+  initPage();
   $(body).resize();
+  $("#body").layout("resize");
 });
+
+function initPage() {
+  //边框设置
+  $(".panel-title").each(function(){
+    if ($(this).html()=="基本信息"||$(this).html()=="直播流") {
+      $(this).parent().css({
+        "border-bottom":"1px solid #95B8E7",
+        "border-top":"0px",
+        "border-left":"0px",
+        "border-right":"0px"
+      });
+    }
+    if ($(this).html()=="频段") {
+      $(this).parent().css({
+      	"margin-top":"1px",
+        "border-left":"0px",
+        "border-right":"0px"
+      });
+    }
+  });
+  //录入区域
+  $("#baseInfo").find("input").each(function(){
+    $(this).css({
+      "font-size":"14px",
+      "width":"300px",
+      "text-line":"300px",
+      "text-align":"left",
+      "height":"22px",
+      "border":"1px solid #95B8E7",
+      "vertical-align":"middle"
+    });
+    if ($(this).attr("name")=="bcArea"||$(this).attr("name")=="cType") {
+      $(this).css({
+        "width":"241px",
+        "text-line":"241px",
+      });
+    }
+  });
+}
 
 function commit() {
   formData={};
@@ -194,9 +221,9 @@ function commit() {
   formData.bcPublisher=bcPublisher.value;
   formData.bcUrl=bcUrl.value;
   if (!bcArea.value) {alert("请输入所属地区");return;}
-  formData.bcArea=bcArea.value;
+  formData.bcArea=_bcarea;
   if (!cType.value) {alert("请输入分类");return;}
-  formData.cType=cType.value;
+  formData.cType=_ctype;
   formData.descn=descn.value;
   if (!aUrl.value||!aSource.value) {alert("请输入直播流");return;}
   formData.bcLiveFlows=aUrl.value+"::"+aSource.value+";;";
@@ -210,6 +237,30 @@ function commit() {
 }
 function cancel() {
   parent.$("#w").window("close");
+}
+function setCType(nodes) {
+  var _cName="";
+  _ctype="";
+  if (nodes) {
+    for (var i=0; i<nodes.length; i++) {
+      _ctype+=","+nodes[i].id;
+      _cName+=","+nodes[i].nodeName;
+    }
+    _ctype=_ctype.substring(1);
+  }
+  $("#cType").val(_cName.substring(1));
+}
+function setBcArea(nodes) {
+  var _bcAreaName="";
+  _bcarea="";
+  if (nodes) {
+    for (var i=0; i<nodes.length; i++) {
+      _bcarea+=","+nodes[i].id;
+      _bcAreaName+=","+nodes[i].nodeName;
+    }
+    _bcarea=_bcarea.substring(1);
+  }
+  $("#bcArea").val(_bcAreaName.substring(1));
 }
 </script>
 </html>
