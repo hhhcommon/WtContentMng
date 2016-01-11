@@ -20,6 +20,8 @@ public class BroadcastService {
     private MybatisDAO<LiveFlowPo> bc_liveflowDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<FrequncePo> bc_frequnceDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<FrequncePo> ref_catalogDao;
 
     @PostConstruct
     public void initParam() {

@@ -1,5 +1,7 @@
 package com.woting.content.broadcast.persistence.pojo;
 
+import java.sql.Timestamp;
+
 import com.spiritdata.framework.core.model.BaseObject;
 
 public class RefCatalogPo extends BaseObject {
@@ -10,8 +12,9 @@ public class RefCatalogPo extends BaseObject {
     private String dictDid; //字典项Id
     private String bCode; //字典项业务编码
     private String cName; //字典项名称
-    private String cAllName; //字典项全名称
-    private String cAllIds; //字典项路径Id
+    private String cPathName; //字典项全名称
+    private String cPathIds; //字典项路径Id
+    private Timestamp CTime; //记录创建时间
 
     public String getId() {
         return id;
@@ -49,16 +52,22 @@ public class RefCatalogPo extends BaseObject {
     public void setcName(String cName) {
         this.cName = cName;
     }
-    public String getcAllName() {
-        return cAllName;
+    public String getcPathName() {
+        return cPathName;
     }
-    public void setcAllName(String cAllName) {
-        this.cAllName = cAllName;
+    public void setcPathName(String cPathName) {
+        this.cPathName = cPathName;
     }
-    public String getcAllIds() {
-        return cAllIds;
+    public String getcPathIds() {
+        return cPathIds;
     }
-    public void setcAllIds(String cAllIds) {
-        this.cAllIds = cAllIds;
+    public void setcPathIds(String cPathIds) {
+        this.cPathIds = cPathIds;
     }
+    public Timestamp getCTime() {
+        return CTime;
     }
+    public void setCTime(Timestamp cTime) {
+        CTime = cTime;
+    }
+}

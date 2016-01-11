@@ -7,21 +7,23 @@
 <mapper namespace="REF_CL">
   <!-- 对象定义:元数据模式 -->
   <resultMap id="BaseResultMap" type="ref_catalog">
-    <id     column="id"           property="id"           jdbcType="VARCHAR"/>
-    <result column="bcTitle"      property="bcTitle"      jdbcType="VARCHAR"/>
-    <result column="bcPublisher"  property="bcPublisher"  jdbcType="VARCHAR"/>
-    <result column="bcImg"        property="bcImg"        jdbcType="VARCHAR"/>
-    <result column="bcUrl"        property="bcUrl"        jdbcType="VARCHAR"/>
-    <result column="descn"        property="desc"         jdbcType="VARCHAR"/>
-    <result column="cTime"        property="CTime"        jdbcType="TIMESTAMP"/>
+    <id     column="id"         property="id"         jdbcType="VARCHAR"/>
+    <result column="bcId"       property="bcId"       jdbcType="VARCHAR"/>
+    <result column="dictMid"    property="dictMid"    jdbcType="VARCHAR"/>
+    <result column="dictDid"    property="dictDid"    jdbcType="VARCHAR"/>
+    <result column="cName"      property="cName"      jdbcType="VARCHAR"/>
+    <result column="bCode"      property="bCode"      jdbcType="VARCHAR"/>
+    <result column="cPathName"  property="cPathName"  jdbcType="VARCHAR"/>
+    <result column="cPathIds"   property="cPathIds"   jdbcType="VARCHAR"/>
+    <result column="cTime"      property="CTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
 
   <!-- 所有列 -->
   <sql id="Base_Column_List">
-    id, bcTitle, bcPublisher, bcImg, bcUrl, descn, cTime 
+    id, bcId, dictMid, dictDid, cName, bCode, cPathName, cPathIds, cTime 
   </sql>
   <sql id="Base_Column_List_A">
-    a.id, a.bcTitle, a.bcPublisher, a.bcImg, a.bcUrl, a.descn, a.cTime 
+    a.id, a.bcId, a.dictMid, a.dictDid, a.cName, a.bCode, a.cPathName, a.cPathIds, a.cTime 
   </sql>
 
   <!-- 条件子句 -->
@@ -29,11 +31,13 @@
     <where>
       <trim prefix="(" suffix=")" prefixOverrides="and">
         <if test="id!=null"> and id=#{id,jdbcType=VARCHAR}</if>
-        <if test="bcTitle!=null"> and bcTitle=#{bcTitle,jdbcType=VARCHAR}</if>
-        <if test="bcPublisher!=null"> and bcPublisher=#{bcPublisher,jdbcType=VARCHAR}</if>
-        <if test="bcImg!=null"> and bcImg=#{bcImg,jdbcType=VARCHAR}</if>
-        <if test="bcUrl!=null"> and bcUrl=#{bcUrl,jdbcType=VARCHAR}</if>
-        <if test="desc!=null"> and descn=#{desc,jdbcType=VARCHAR}</if>
+        <if test="bcId!=null"> and bcId=#{bcId,jdbcType=VARCHAR}</if>
+        <if test="dictMid!=null"> and dictMid=#{dictMid,jdbcType=VARCHAR}</if>
+        <if test="dictDid!=null"> and dictDid=#{dictDid,jdbcType=VARCHAR}</if>
+        <if test="cName!=null"> and cName=#{cName,jdbcType=VARCHAR}</if>
+        <if test="bCode!=null"> and bCode=#{bCode,jdbcType=VARCHAR}</if>
+        <if test="cPathName!=null"> and cPathName=#{cPathName,jdbcType=VARCHAR}</if>
+        <if test="cPathIds!=null"> and cPathIds=#{cPathIds,jdbcType=VARCHAR}</if>
         <if test="CTime!=null"> and cTime=#{CTime,jdbcType=TIMESTAMP}</if>
       </trim>
     </where>
@@ -41,11 +45,13 @@
   <sql id="WhereClauseByEntiey_A">
     <trim prefix="(" suffix=")" prefixOverrides="and">
       <if test="id!=null"> and a.id=#{id,jdbcType=VARCHAR}</if>
-      <if test="bcTitle!=null"> and a.bcTitle=#{bcTitle,jdbcType=VARCHAR}</if>
-      <if test="bcPublisher!=null"> and a.bcPublisher=#{bcPublisher,jdbcType=VARCHAR}</if>
-      <if test="bcImg!=null"> and a.bcImg=#{bcImg,jdbcType=VARCHAR}</if>
-      <if test="bcUrl!=null"> and a.bcUrl=#{bcUrl,jdbcType=VARCHAR}</if>
-      <if test="desc!=null"> and a.descn=#{desc,jdbcType=VARCHAR}</if>
+      <if test="bcId!=null"> and a.bcId=#{bcId,jdbcType=VARCHAR}</if>
+      <if test="dictMid!=null"> and a.dictMid=#{dictMid,jdbcType=VARCHAR}</if>
+      <if test="dictDid!=null"> and a.dictDid=#{dictDid,jdbcType=VARCHAR}</if>
+      <if test="cName!=null"> and a.cName=#{cName,jdbcType=VARCHAR}</if>
+      <if test="bCode!=null"> and a.bCode=#{bCode,jdbcType=VARCHAR}</if>
+      <if test="cPathName!=null"> and a.cPathName=#{cPathName,jdbcType=VARCHAR}</if>
+      <if test="cPathIds!=null"> and a.cPathIds=#{cPathIds,jdbcType=VARCHAR}</if>
       <if test="CTime!=null"> and a.cTime=#{CTime,jdbcType=TIMESTAMP}</if>
     </trim>
   </sql>
@@ -84,19 +90,23 @@
     insert into wt_Broadcast
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id!=null">id,</if>
-      <if test="bcTitle!=null">bcTitle,</if>
-      <if test="bcPublisher!=null">bcPublisher,</if>
-      <if test="bcImg!=null">bcImg,</if>
-      <if test="bcUrl!=null">bcUrl,</if>
-      <if test="desc!=null">descn,</if>
+      <if test="bcId!=null">bcId,</if>
+      <if test="dictMid!=null">dictMid,</if>
+      <if test="dictDid!=null">dictDid,</if>
+      <if test="cName!=null">cName,</if>
+      <if test="bCode!=null">bCode,</if>
+      <if test="cPathName!=null">cPathName,</if>
+      <if test="cPathIds!=null">cPathIds,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
-      <if test="bcTitle!=null">#{bcTitle,jdbcType=VARCHAR},</if>
-      <if test="bcPublisher!=null">#{bcPublisher,jdbcType=VARCHAR},</if>
-      <if test="bcImg!=null">#{bcImg,jdbcType=VARCHAR},</if>
-      <if test="bcUrl!=null">#{bcUrl,jdbcType=VARCHAR},</if>
-      <if test="desc!=null">#{desc,jdbcType=VARCHAR},</if>
+      <if test="bcId!=null">#{bcId,jdbcType=VARCHAR},</if>
+      <if test="dictMid!=null">#{dictMid,jdbcType=VARCHAR},</if>
+      <if test="dictDid!=null">#{dictDid,jdbcType=VARCHAR},</if>
+      <if test="cName!=null">#{cName,jdbcType=VARCHAR},</if>
+      <if test="bCode!=null">#{bCode,jdbcType=VARCHAR},</if>
+      <if test="cPathName!=null">#{cPathName,jdbcType=VARCHAR},</if>
+      <if test="cPathIds!=null">#{cPathIds,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
 
@@ -104,11 +114,13 @@
   <update id="update" parameterType="java.util.Map">
     update wt_Broadcast
     <set>
-      <if test="bcTitle!=null">bcTitle=#{bcTitle,jdbcType=VARCHAR},</if>
-      <if test="bcPublisher!=null">pId=#{bcPublisher,jdbcType=VARCHAR},</if>
-      <if test="bcImg!=null">bcImg=#{bcImg,jdbcType=VARCHAR},</if>
-      <if test="bcUrl!=null">bcUrl=#{bcUrl,jdbcType=VARCHAR},</if>
-      <if test="desc!=null">descn=#{desc,jdbcType=VARCHAR},</if>
+      <if test="bcId!=null">bcId=#{bcId,jdbcType=VARCHAR},</if>
+      <if test="dictMid!=null">pId=#{dictMid,jdbcType=VARCHAR},</if>
+      <if test="dictDid!=null">dictDid=#{dictDid,jdbcType=VARCHAR},</if>
+      <if test="cName!=null">cName=#{cName,jdbcType=VARCHAR},</if>
+      <if test="bCode!=null">bCode=#{bCode,jdbcType=VARCHAR},</if>
+      <if test="cPathName!=null">cPathName=#{cPathName,jdbcType=VARCHAR},</if>
+      <if test="cPathIds!=null">cPathIds=#{cPathIds,jdbcType=VARCHAR},</if>
       <if test="CTime=null">cTime=#{CTime,jdbcType=TIMESTAMP},</if>
     </set>
     where id=#{id,jdbcType=VARCHAR}

@@ -1,16 +1,10 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.util.*"%>
 <%@page import="com.spiritdata.framework.FConstants"%>
-<%@page import="com.spiritdata.dataanal.UGA.pojo.User"%>
-<%@page import="com.spiritdata.dataanal.SDConstants"%>
 <%
   String path = request.getContextPath(); //base Url
   String sid = request.getSession().getId(); //sessionId
   //得到用户信息
-  User user = ((User)session.getAttribute(FConstants.SESSION_USER));
-  String loginName = "";
-  if (user!=null) loginName = user.getLoginName();
-  String hadUpload = ""+session.getAttribute(SDConstants.SESSION_HAD_UPLOAD);
 %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -99,9 +93,6 @@
 
 <script>
 //把jsp中java取出的变量在javascript层进行转存
-var _sid="<%=sid%>"; //sessionId
-var _loginName="<%=loginName%>"; //用户登录名称
-var __STATUS=("<%=hadUpload%>"=="null")?"0":"1"; //状态，刚打开主页的状态
 var newReportJson = null; //未读报告列表
 var lastSearchStr = ""; //上一次查询的搜索串
 var searchTxt = "请输入查询内容..."; //查询提示信息
