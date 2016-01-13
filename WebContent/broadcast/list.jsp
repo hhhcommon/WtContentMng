@@ -42,17 +42,16 @@
     <div data-options="region:'center'" style="border:0px">
       <div id="lt_tab" class="easyui-tabs" data-options="fit:true" >
         <div title="电台列表">
-        <table id="bcList" class="easyui-datagrid" data-options="fit:true,singleSelect:false,method:'get',toolbar:'#tb'"
-          fitColumns="true" pagination="true" style="border:0px;">
+        <table id="bcList" class="easyui-datagrid" data-options="fit:true,singleSelect:false,method:'get',toolbar:'#tb'" fitColumns="true" pagination="true" style="border:0px;">
           <thead>
             <tr>
-                <th data-options="field:'id',hidden:'true'">Id</th>
-                <th data-options="field:'img',width:30,align:'center'">&nbsp;</th>
+              <th data-options="field:'id',hidden:'true'">Id</th>
+              <th data-options="field:'img',width:30,align:'center'">&nbsp;</th>
               <th data-options="field:'bcTitle',width:200,align:'center'">电台名称</th>
-                <th data-options="field:'bcPublisher',width:200,align:'center'">所属集团</th>
-                <th data-options="field:'bcUrl',width:180,align:'center'">电台网址</th>
-                <th data-options="field:'bcSource',width:180,align:'center'">主来源</th>
-                <th data-options="field:'flowURI',width:180,align:'center'">主直播流</th>
+              <th data-options="field:'bcPublisher',width:200,align:'center'">所属集团</th>
+              <th data-options="field:'bcUrl',width:180,align:'center'">电台网址</th>
+              <th data-options="field:'bcSource',width:180,align:'center'">主来源</th>
+              <th data-options="field:'flowURI',width:180,align:'center'">主直播流</th>
               <th data-options="field:'areaName',width:80,align:'center'">地区</th>
               <th data-options="field:'typeName',width:80,align:'center'">分类</th>
             </tr>
@@ -88,6 +87,7 @@
   style="width:900px;height:600px;padding:0px;">
   <iframe id="addAndUpdate"  name="addAndUpdate" src="" scrolling="no" frameborder="0" style="width:100%;height:100%;"></iframe>
 </div>
+
 <!-- 树型选择窗口 -->
 <div id="sw" class="easyui-window" title="选择" data-options="modal:true,closed:true,collapsible:false,minimizable:false, maximizable:false, resizable:false"
   style="width:320px;height:480px;padding:0px;">

@@ -7,21 +7,23 @@
 <mapper namespace="BROADCAST">
   <!-- 对象定义:元数据模式 -->
   <resultMap id="BaseResultMap" type="broadcast">
-    <id     column="id"           property="id"           jdbcType="VARCHAR"/>
-    <result column="bcTitle"      property="bcTitle"      jdbcType="VARCHAR"/>
-    <result column="bcPublisher"  property="bcPublisher"  jdbcType="VARCHAR"/>
-    <result column="bcImg"        property="bcImg"        jdbcType="VARCHAR"/>
-    <result column="bcUrl"        property="bcUrl"        jdbcType="VARCHAR"/>
-    <result column="descn"        property="desc"         jdbcType="VARCHAR"/>
-    <result column="cTime"        property="CTime"        jdbcType="TIMESTAMP"/>
+    <id     column="id"            property="id"            jdbcType="VARCHAR"/>
+    <result column="bcTitle"       property="bcTitle"       jdbcType="VARCHAR"/>
+    <result column="bcPubType"     property="bcPubType"     jdbcType="INTEGER"/>
+    <result column="bcPubId"       property="bcPubId"       jdbcType="VARCHAR"/>
+    <result column="bcPublisher"   property="bcPublisher"   jdbcType="VARCHAR"/>
+    <result column="bcImg"         property="bcImg"         jdbcType="VARCHAR"/>
+    <result column="bcUrl"         property="bcUrl"         jdbcType="VARCHAR"/>
+    <result column="descn"         property="desc"          jdbcType="VARCHAR"/>
+    <result column="cTime"         property="CTime"         jdbcType="TIMESTAMP"/>
   </resultMap>
 
   <!-- 所有列 -->
   <sql id="Base_Column_List">
-    id, bcTitle, bcPublisher, bcImg, bcUrl, descn, cTime 
+    id, bcTitle, bcPubType, bcPubId, bcPublisher, bcImg, bcUrl, descn, cTime 
   </sql>
   <sql id="Base_Column_List_A">
-    a.id, a.bcTitle, a.bcPublisher, a.bcImg, a.bcUrl, a.descn, a.cTime 
+    a.id, a.bcTitle, a.bcPubType, a.bcPubId, a.bcPublisher, a.bcImg, a.bcUrl, a.descn, a.cTime 
   </sql>
 
   <!-- 条件子句 -->
@@ -30,6 +32,8 @@
       <trim prefix="(" suffix=")" prefixOverrides="and">
         <if test="id!=null"> and id=#{id,jdbcType=VARCHAR}</if>
         <if test="bcTitle!=null"> and bcTitle=#{bcTitle,jdbcType=VARCHAR}</if>
+        <if test="bcPubType!=null and bcPubType!=0"> and bcPubType=#{bcPubType,jdbcType=INTEGER}</if>
+        <if test="bcPubId!=null"> and bcPubId=#{bcPubId,jdbcType=VARCHAR}</if>
         <if test="bcPublisher!=null"> and bcPublisher=#{bcPublisher,jdbcType=VARCHAR}</if>
         <if test="bcImg!=null"> and bcImg=#{bcImg,jdbcType=VARCHAR}</if>
         <if test="bcUrl!=null"> and bcUrl=#{bcUrl,jdbcType=VARCHAR}</if>
@@ -40,13 +44,15 @@
   </sql>
   <sql id="WhereClauseByEntiey_A">
     <trim prefix="(" suffix=")" prefixOverrides="and">
-      <if test="id!=null"> and a.id=#{id,jdbcType=VARCHAR}</if>
-      <if test="bcTitle!=null"> and a.bcTitle=#{bcTitle,jdbcType=VARCHAR}</if>
-      <if test="bcPublisher!=null"> and a.bcPublisher=#{bcPublisher,jdbcType=VARCHAR}</if>
-      <if test="bcImg!=null"> and a.bcImg=#{bcImg,jdbcType=VARCHAR}</if>
-      <if test="bcUrl!=null"> and a.bcUrl=#{bcUrl,jdbcType=VARCHAR}</if>
-      <if test="desc!=null"> and a.descn=#{desc,jdbcType=VARCHAR}</if>
-      <if test="CTime!=null"> and a.cTime=#{CTime,jdbcType=TIMESTAMP}</if>
+        <if test="id!=null"> and a.id=#{id,jdbcType=VARCHAR}</if>
+        <if test="bcTitle!=null"> and a.bcTitle=#{bcTitle,jdbcType=VARCHAR}</if>
+        <if test="bcPubType!=null and bcPubType!=0"> and a.bcPubType=#{bcPubType,jdbcType=INTEGER}</if>
+        <if test="bcPubId!=null"> and a.bcPubId=#{bcPubId,jdbcType=VARCHAR}</if>
+        <if test="bcPublisher!=null"> and a.bcPublisher=#{bcPublisher,jdbcType=VARCHAR}</if>
+        <if test="bcImg!=null"> and a.bcImg=#{bcImg,jdbcType=VARCHAR}</if>
+        <if test="bcUrl!=null"> and a.bcUrl=#{bcUrl,jdbcType=VARCHAR}</if>
+        <if test="desc!=null"> and a.descn=#{desc,jdbcType=VARCHAR}</if>
+        <if test="CTime!=null"> and a.cTime=#{CTime,jdbcType=TIMESTAMP}</if>
     </trim>
   </sql>
 
@@ -85,6 +91,8 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id!=null">id,</if>
       <if test="bcTitle!=null">bcTitle,</if>
+      <if test="bcPubType!=null">bcPubType,</if>
+      <if test="bcPubId!=null">bcPubId,</if>
       <if test="bcPublisher!=null">bcPublisher,</if>
       <if test="bcImg!=null">bcImg,</if>
       <if test="bcUrl!=null">bcUrl,</if>
@@ -93,6 +101,8 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
       <if test="bcTitle!=null">#{bcTitle,jdbcType=VARCHAR},</if>
+      <if test="bcPubType!=null and bcPubType!=0">#{bcPubType,jdbcType=INTEGER},</if>
+      <if test="bcPubId!=null">#{bcPubId,jdbcType=VARCHAR},</if>
       <if test="bcPublisher!=null">#{bcPublisher,jdbcType=VARCHAR},</if>
       <if test="bcImg!=null">#{bcImg,jdbcType=VARCHAR},</if>
       <if test="bcUrl!=null">#{bcUrl,jdbcType=VARCHAR},</if>
@@ -105,7 +115,9 @@
     update wt_Broadcast
     <set>
       <if test="bcTitle!=null">bcTitle=#{bcTitle,jdbcType=VARCHAR},</if>
-      <if test="bcPublisher!=null">pId=#{bcPublisher,jdbcType=VARCHAR},</if>
+      <if test="bcPubType!=null and bcPubType!=0">bcPubType=#{bcPubType,jdbcType=INTEGER},</if>
+      <if test="bcPubId!=null">bcPubId=#{bcPubId,jdbcType=VARCHAR},</if>
+      <if test="bcPublisher!=null">bcPublisher=#{bcPublisher,jdbcType=VARCHAR},</if>
       <if test="bcImg!=null">bcImg=#{bcImg,jdbcType=VARCHAR},</if>
       <if test="bcUrl!=null">bcUrl=#{bcUrl,jdbcType=VARCHAR},</if>
       <if test="desc!=null">descn=#{desc,jdbcType=VARCHAR},</if>

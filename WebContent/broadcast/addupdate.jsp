@@ -207,7 +207,7 @@ function initPage() {
     if ($(this).attr("name")=="bcArea"||$(this).attr("name")=="cType") {
       $(this).css({
         "width":"241px",
-        "text-line":"241px",
+        "text-line":"241px"
       });
     }
   });
@@ -222,11 +222,14 @@ function commit() {
   formData.bcUrl=bcUrl.value;
   if (!bcArea.value) {alert("请输入所属地区");return;}
   formData.bcArea=_bcarea;
+  formData.bcAreaName=bcArea.value;
   if (!cType.value) {alert("请输入分类");return;}
   formData.cType=_ctype;
+  formData.cName=cType.value;
   formData.descn=descn.value;
   if (!aUrl.value||!aSource.value) {alert("请输入直播流");return;}
   formData.bcLiveFlows=aUrl.value+"::"+aSource.value+";;";
+  alert(allFields(formData));
   $.ajax({type:"post", async:true, data:formData, url:'<%=path%>/bc/add.do', dataType:"json",
     success: function(data) {
       alert("新增成功!");
@@ -239,23 +242,23 @@ function cancel() {
   parent.$("#w").window("close");
 }
 function setCType(nodes) {
-  var _cName="";
+  var _cname="";
   _ctype="";
   if (nodes) {
     for (var i=0; i<nodes.length; i++) {
       _ctype+=","+nodes[i].id;
-      _cName+=","+nodes[i].nodeName;
+      _cname+=","+nodes[i].nodeName;
     }
     _ctype=_ctype.substring(1);
   }
-  $("#cType").val(_cName.substring(1));
+  $("#cType").val(_cname.substring(1));
 }
 function setBcArea(nodes) {
   var _bcAreaName="";
   _bcarea="";
   if (nodes) {
     for (var i=0; i<nodes.length; i++) {
-      _bcarea+=","+nodes[i].id;
+      _bcarea+=","+nodes[i].bCode;
       _bcAreaName+=","+nodes[i].nodeName;
     }
     _bcarea=_bcarea.substring(1);

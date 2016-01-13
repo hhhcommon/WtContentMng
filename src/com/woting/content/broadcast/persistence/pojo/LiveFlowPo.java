@@ -9,45 +9,66 @@ public class LiveFlowPo extends BaseObject {
 
     private String id;//直播流Id
     private String bcId;//对应电台Id
-    private String bcSource;//来源:蜻蜓，官网等
+    private int bcSrcType; //来源类型：1-组织表,2-文本
+    private String bcPubId; //来源Id，当bcSrcType=1
+    private String bcSource;//来源名称:蜻蜓，官网等
     private String flowURI;//来源:蜻蜓，官网等
     private Integer isMain;//是否是主直播流
+    private String desc; //直播流描述
     private Timestamp CTime; //记录创建时间
 
     public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getBcId() {
-        return bcId;
-    }
-    public void setBcId(String bcId) {
-        this.bcId = bcId;
-    }
-    public String getBcSource() {
-        return bcSource;
-    }
-    public void setBcSource(String bcSource) {
-        this.bcSource = bcSource;
-    }
-    public String getFlowURI() {
-        return flowURI;
-    }
-    public void setFlowURI(String flowURI) {
-        this.flowURI = flowURI;
-    }
-    public Integer getIsMain() {
-        return isMain;
-    }
-    public void setIsMain(Integer isMain) {
-        this.isMain = isMain;
-    }
-    public Timestamp getCTime() {
-        return CTime;
-    }
-    public void setCTime(Timestamp cTime) {
-        CTime = cTime;
-    }
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getBcId() {
+		return bcId;
+	}
+	public void setBcId(String bcId) {
+		this.bcId = bcId;
+	}
+	public int getBcSrcType() {
+		return bcSrcType;
+	}
+	public void setBcSrcType(int bcSrcType) {
+		this.bcSrcType = bcSrcType;
+	}
+	public String getBcPubId() {
+		return bcPubId;
+	}
+	public void setBcPubId(String bcPubId) {
+		this.bcPubId = bcPubId;
+	}
+	public String getBcSource() {
+		return bcSource;
+	}
+	public void setBcSource(String bcSource) {
+		this.bcSource = bcSource;
+	}
+	public String getFlowURI() {
+		return flowURI;
+	}
+	public void setFlowURI(String flowURI) {
+		this.flowURI = flowURI;
+	}
+	public Integer getIsMain() {
+		return isMain;
+	}
+	public void setIsMain(Integer isMain) {
+		this.isMain = isMain;
+	}
+	public String getDesc() {
+		return desc;
+	}
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+	public Timestamp getCTime() {
+		return CTime;
+	}
+	public void setCTime(Timestamp cTime) {
+		CTime = cTime;
+	}
 }

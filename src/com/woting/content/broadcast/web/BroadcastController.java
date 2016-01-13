@@ -33,7 +33,7 @@ public class BroadcastController {
         Map<String,Object> map=new HashMap<String, Object>();
         Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
         bcService.add(m);
-        map=m;
+        map.put("returnType","1001");
         return map;
     }
 
@@ -84,14 +84,13 @@ public class BroadcastController {
     public Map<String,Object> getCataTrees4View(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
         List<Map<String, Object>> l = new ArrayList<Map<String, Object>>();
-        _CacheDictionary _cd = ( (CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+        _CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
         try {
             DictModel dm=_cd.getDictModelById("1");
             EasyUiTree<DictDetail> eu1=new EasyUiTree<DictDetail>(dm.dictTree);
             l.add(eu1.toTreeMap());
             dm=_cd.getDictModelById("2");
             eu1=new EasyUiTree<DictDetail>(dm.dictTree);
-            
             l.add(eu1.toTreeMap());
             map.put("jsonType", "1");
             map.put("data", l);
