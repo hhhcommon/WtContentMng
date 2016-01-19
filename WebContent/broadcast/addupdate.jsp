@@ -53,10 +53,11 @@
 .lf_list {
   margin-top:5px;
   margin-left:3px;
-  width:300px;
-  height:100px;
+  width:398px;
+  height:140px;
   border:1px solid #95B8E7;
-  overflow:yes;
+  overflow-y:auto;
+  overflow-x:hidden;
 }
 .lf_input input {
   text-align:left;
@@ -65,65 +66,51 @@
   vertical-align: middle;
 }
 .icon-play{
-  background-imange:url('../resources/plugins/easyui-1.3.4/themes/default/images/pagination_icons.png') no-repeat center center;
+  background:url('../resources/plugins/easyui-1.3.4/themes/default/images/pagination_icons.png') no-repeat center center;
   background-position:-32px 50%;
 }
-.lf_one {
-  padding:3px;
+
+.cntTbs {
+  overflow-y:hidden;
+  width:396px;
+}
+.cntTbs tr {
   border-bottom:1px solid #efefef;
+}
+.cntTbs td{
+  padding:3px;
+}
+.trcn {
+  width:306px;
+}
+.text-overflow {
+  width:300px;
+  overflow:hidden;;/* 内容超出宽度时隐藏超出部分的内容 */
+  text-overflow:ellipsis;;/* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+  white-space:nowrap;/* 不换行 */
 }
 </style>
 </head>
-<body id="body" class="easyui-layout" data-options="fit:true">
-<form id="ff" method="post">
+<body id="body" class="easyui-layout" data-options="fit:true" style="overflow:hidden;">
 <div data-options="region:'east',split:false" style="width:420px;border:0px;border-left:1px solid #95B8E7;">
   <div class="easyui-layout" data-options="fit:true" style="border:none;">
     <div data-options="region:'north',collapsible:false" title="直播流" style="height:300px;border:0px;padding:5px;">
       <div class="lf_title" style="width:400px;height:30px;">
-        <div>来源</div><div style="padding-left:60px;">直播Url</div>
+        <div>来源</div><div style="padding-left:70px;">直播Url</div>
       </div>
       <div class="lf_input">
-        <input style="width:100px" id="aSource" name="aSource"></input><input style="width:230px" id="aUrl" name="aUrl"></input>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
+        <input style="width:100px" id="aSource" name="aSource"></input><input style="width:223px" id="aUrl" name="aUrl"></input>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="playBc()" title="播放"></a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="addBc()" title="添加"></a>
       </div>
       <div class="lf_list">
-      <!-- 
-        <div class="lf_one">
-          测试：是打发打发发的
-          <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-          <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
-        </div>
-        <div class="lf_one">
-          测试：是打发打发发的
-          <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-          <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
-        </div>
-        <div class="lf_one">
-          测试：是打发打发发的
-          <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-          <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
-        </div>
-        <div class="lf_one">
-          测试：是打发打发发的
-          <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-          <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
-        </div>
-        <div class="lf_one">
-          测试：是打发打发发的
-          <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-          <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
-        </div>
-        <div class="lf_one">
-          测试：是打发打发发的
-          <a href="#" class="easyui-linkbutton" iconCls="icon-play" onclick="newBc()" title="播放"></a>
-          <a href="#" class="easyui-linkbutton" iconCls="icon-add" onclick="newBc()" title="添加"></a>
-        </div>  -->
+      <table class="cntTbs" id="bcTbs">
+      </table>
       </div>
     </div>
     <!-- 
-    <div data-options="region:'center'" title="分类" style="border:0px">
-    </div> -->
+    <div data-options="region:'center'" title="分类" style="border:0px"></div>
+    -->
     <div data-options="region:'center',collapsible:false" title="频段" style="border:0px;">
     </div>
   </div>
@@ -152,13 +139,13 @@
 </div>
 <div data-options="region:'south',split:false" style="height:40px;border:0px;border-top:1px solid #95B8E7;">
   <div class="easyui-layout" data-options="fit:true" style="border:none;align:center;text-align:center;padding-top:4px;">
-    <a href="#" class="easyui-linkbutton" iconCls="icon-save" onclick="commit()">提交</a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="#" class="easyui-linkbutton" iconCls="icon-undo" onclick="cancel()">取消</a>
+    <a href="#" id="commit" class="easyui-linkbutton" iconCls="icon-save" onclick="commit()">提交</a>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" id="cancel" class="easyui-linkbutton" iconCls="icon-undo" onclick="cancel()">取消</a>
   </div>
 </div>
-</form>
 </body>
 <script>
+var 
 var _ctype, _bcarea;
 var _type="";
 $(function(){
@@ -215,21 +202,20 @@ function initPage() {
 
 function commit() {
   formData={};
-  if (!bcTitle.value) {alert("请输入名称");return;}
+  if (!bcTitle.value) {alert("请输入名称");bcTitle.focus();return;}
   formData.bcTitle=bcTitle.value;
-  if (!bcPublisher.value) {alert("请输入所属集团");return;}
+  if (!bcPublisher.value) {alert("请输入所属集团");bcPublisher.focus();return;}
   formData.bcPublisher=bcPublisher.value;
   formData.bcUrl=bcUrl.value;
-  if (!bcArea.value) {alert("请输入所属地区");return;}
+  if (!bcArea.value) {alert("请输入所属地区");bcArea.focus();return;}
   formData.bcArea=_bcarea;
   formData.bcAreaName=bcArea.value;
-  if (!cType.value) {alert("请输入分类");return;}
+  if (!cType.value) {alert("请输入分类");cType.focus();return;}
   formData.cType=_ctype;
   formData.cName=cType.value;
   formData.descn=descn.value;
-  if (!aUrl.value||!aSource.value) {alert("请输入直播流");return;}
   formData.bcLiveFlows=aUrl.value+"::"+aSource.value+";;";
-  alert(allFields(formData));
+  $("#commit").linkbutton("disable");
   $.ajax({type:"post", async:true, data:formData, url:'<%=path%>/bc/add.do', dataType:"json",
     success: function(data) {
       alert("新增成功!");
@@ -264,6 +250,32 @@ function setBcArea(nodes) {
     _bcarea=_bcarea.substring(1);
   }
   $("#bcArea").val(_bcAreaName.substring(1));
+}
+function addBc() {
+  if (!aSource.value) {
+    alert("请输入来源");
+    $("#aSource").focus();
+    return;
+  }
+  if (!aUrl.value) {
+    alert("请输入直播流Url");
+    $("#aUrl").focus();
+    return;
+  }
+  var tr=$("<tr></tr>");
+  var td=$("<td class='trcn'><div class='text-overflow'>"+aSource.value+":"+aUrl.value+"</div></td>");
+  td.appendTo(tr);
+  td=$("<td><input type='radio' name='bcIsMain' title='是否主直播流'/></td>");
+  var abtn=$("<a href='#' class='easyui-linkbutton' iconCls='icon-play' onclick='play()' title='播放' style='margin-left:3px;'></a>");
+  abtn.linkbutton({});
+  abtn.appendTo(td);
+  abtn=$("<a href='#' class='easyui-linkbutton' iconCls='icon-remove' onclick='dels()' title='删除' style='margin-left:3px;'></a>");
+  abtn.linkbutton({});
+  abtn.appendTo(td);
+  td.appendTo(tr);
+  tr.appendTo($("#bcTbs"));
+  $("#aSource").val("");
+  $("#aUrl").val("");
 }
 </script>
 </html>

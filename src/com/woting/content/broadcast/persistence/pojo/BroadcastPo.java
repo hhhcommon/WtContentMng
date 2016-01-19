@@ -14,10 +14,6 @@ public class BroadcastPo extends BaseObject {
     private String bcPublisher; //电台所属集团名称
     private String bcImg; //电台图标
     private String bcUrl; //电台官网网址
-    private String mainCataMid; //主分类Mid
-    private String mainCataDid; //主分类Did
-    private String mainCataCode; //主分类业务编码
-    private String mainCataName; //主分类名称
     private String desc; //电台描述
     private Timestamp CTime; //记录创建时间
 	public String getId() {
@@ -61,30 +57,6 @@ public class BroadcastPo extends BaseObject {
 	}
 	public void setBcUrl(String bcUrl) {
 		this.bcUrl = bcUrl;
-	}
-	public String getMainCataMid() {
-		return mainCataMid;
-	}
-	public void setMainCataMid(String mainCataMid) {
-		this.mainCataMid = mainCataMid;
-	}
-	public String getMainCataDid() {
-		return mainCataDid;
-	}
-	public void setMainCataDid(String mainCataDid) {
-		this.mainCataDid = mainCataDid;
-	}
-	public String getMainCataCode() {
-		return mainCataCode;
-	}
-	public void setMainCataCode(String mainCataCode) {
-		this.mainCataCode = mainCataCode;
-	}
-	public String getMainCataName() {
-		return mainCataName;
-	}
-	public void setMainCataName(String mainCataName) {
-		this.mainCataName = mainCataName;
 	}
 	public String getDesc() {
 		return desc;

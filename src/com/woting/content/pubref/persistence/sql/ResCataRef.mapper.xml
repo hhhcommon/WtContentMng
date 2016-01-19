@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!--
-  电台
+  通用分类关系存储
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="REF_CL">
+<mapper namespace="REF_RESCATA">
   <!-- 对象定义:元数据模式 -->
   <resultMap id="BaseResultMap" type="ref_catalog">
     <id     column="id"         property="id"         jdbcType="VARCHAR"/>
-    <result column="bcId"       property="bcId"       jdbcType="VARCHAR"/>
+    <result column="resType"    property="resType"    jdbcType="VARCHAR"/>
+    <result column="resId"      property="resId"      jdbcType="VARCHAR"/>
     <result column="dictMid"    property="dictMid"    jdbcType="VARCHAR"/>
     <result column="dictDid"    property="dictDid"    jdbcType="VARCHAR"/>
-    <result column="cName"      property="cName"      jdbcType="VARCHAR"/>
+    <result column="title"      property="title"      jdbcType="VARCHAR"/>
     <result column="bCode"      property="bCode"      jdbcType="VARCHAR"/>
-    <result column="cPathName"  property="cPathName"  jdbcType="VARCHAR"/>
-    <result column="cPathIds"   property="cPathIds"   jdbcType="VARCHAR"/>
+    <result column="pathNames"  property="pathNames"  jdbcType="VARCHAR"/>
+    <result column="pathIds"    property="pathIds"    jdbcType="VARCHAR"/>
     <result column="cTime"      property="CTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
 
   <!-- 所有列 -->
   <sql id="Base_Column_List">
-    id, bcId, dictMid, dictDid, cName, bCode, cPathName, cPathIds, cTime 
+    id, resType, resId, dictMid, dictDid, title, bCode, pathName, pathIds, cTime 
   </sql>
   <sql id="Base_Column_List_A">
-    a.id, a.bcId, a.dictMid, a.dictDid, a.cName, a.bCode, a.cPathName, a.cPathIds, a.cTime 
+    a.id, a.resType, a.resId, a.dictMid, a.dictDid, a.title, a.bCode, a.pathName, a.pathIds, a.cTime 
   </sql>
 
   <!-- 条件子句 -->
@@ -31,13 +32,14 @@
     <where>
       <trim prefix="(" suffix=")" prefixOverrides="and">
         <if test="id!=null"> and id=#{id,jdbcType=VARCHAR}</if>
-        <if test="bcId!=null"> and bcId=#{bcId,jdbcType=VARCHAR}</if>
+        <if test="resType!=null"> and resType=#{resType,jdbcType=VARCHAR}</if>
+        <if test="resId!=null"> and resId=#{resId,jdbcType=VARCHAR}</if>
         <if test="dictMid!=null"> and dictMid=#{dictMid,jdbcType=VARCHAR}</if>
         <if test="dictDid!=null"> and dictDid=#{dictDid,jdbcType=VARCHAR}</if>
-        <if test="cName!=null"> and cName=#{cName,jdbcType=VARCHAR}</if>
+        <if test="title!=null"> and title=#{title,jdbcType=VARCHAR}</if>
         <if test="bCode!=null"> and bCode=#{bCode,jdbcType=VARCHAR}</if>
-        <if test="cPathName!=null"> and cPathName=#{cPathName,jdbcType=VARCHAR}</if>
-        <if test="cPathIds!=null"> and cPathIds=#{cPathIds,jdbcType=VARCHAR}</if>
+        <if test="pathNames!=null"> and pathNames=#{pathNames,jdbcType=VARCHAR}</if>
+        <if test="pathIds!=null"> and pathIds=#{pathIds,jdbcType=VARCHAR}</if>
         <if test="CTime!=null"> and cTime=#{CTime,jdbcType=TIMESTAMP}</if>
       </trim>
     </where>
@@ -45,82 +47,86 @@
   <sql id="WhereClauseByEntiey_A">
     <trim prefix="(" suffix=")" prefixOverrides="and">
       <if test="id!=null"> and a.id=#{id,jdbcType=VARCHAR}</if>
-      <if test="bcId!=null"> and a.bcId=#{bcId,jdbcType=VARCHAR}</if>
+      <if test="resType!=null"> and a.resType=#{resId,jdbcType=VARCHAR}</if>
+      <if test="resId!=null"> and a.resId=#{resId,jdbcType=VARCHAR}</if>
       <if test="dictMid!=null"> and a.dictMid=#{dictMid,jdbcType=VARCHAR}</if>
       <if test="dictDid!=null"> and a.dictDid=#{dictDid,jdbcType=VARCHAR}</if>
-      <if test="cName!=null"> and a.cName=#{cName,jdbcType=VARCHAR}</if>
+      <if test="title!=null"> and a.title=#{title,jdbcType=VARCHAR}</if>
       <if test="bCode!=null"> and a.bCode=#{bCode,jdbcType=VARCHAR}</if>
-      <if test="cPathName!=null"> and a.cPathName=#{cPathName,jdbcType=VARCHAR}</if>
-      <if test="cPathIds!=null"> and a.cPathIds=#{cPathIds,jdbcType=VARCHAR}</if>
+      <if test="pathNames!=null"> and a.pathNames=#{pathNames,jdbcType=VARCHAR}</if>
+      <if test="pathIds!=null"> and a.pathIds=#{pathIds,jdbcType=VARCHAR}</if>
       <if test="CTime!=null"> and a.cTime=#{CTime,jdbcType=TIMESTAMP}</if>
     </trim>
   </sql>
 
   <!-- 获得记录条数-->
   <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
-    select count(*) from wt_Broadcast <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    select count(*) from wt_ResCata_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
 
   <!-- 获得列表 -->
   <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List"/> from wt_Broadcast
+    select <include refid="Base_Column_List"/> from wt_ResCata_Ref
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
     <if test="orderByClause!=null">order by ${orderByClause}</if>
     </if>
   </select>
-  <!-- 获得列表为显示:临时 -->
+  <!-- 获得列表为显示:临时
   <select id="query4ViewTemp" resultType="java.util.HashMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List_A"/>, b.bcSource, b.flowURI from wt_Broadcast a
+    select <include refid="Base_Column_List_A"/>, b.bcSource, b.flowURI from wt_ResCata_Ref a
     left join wt_BCLiveFlow b on a.id=b.bcId and b.isMain=1
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey_A"/>
     <if test="orderByClause!=null">order by ${orderByClause}</if>
     </if>
-  </select>
+  </select> -->
 
   <!-- 获得一条数据 -->
   <select id="getInfo" resultMap="BaseResultMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List"/> from wt_Broadcast <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    select <include refid="Base_Column_List"/> from wt_ResCata_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   <select id="getInfoById" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select <include refid="Base_Column_List"/> from wt_Broadcast where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_Column_List"/> from wt_ResCata_Ref where id=#{id,jdbcType=VARCHAR}
   </select>
 
   <!-- 新增数据 -->
   <insert id="insert" parameterType="java.util.Map">
-    insert into wt_Broadcast
+    insert into wt_ResCata_Ref
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id!=null">id,</if>
-      <if test="bcId!=null">bcId,</if>
+      <if test="resType!=null">resType,</if>
+      <if test="resId!=null">resId,</if>
       <if test="dictMid!=null">dictMid,</if>
       <if test="dictDid!=null">dictDid,</if>
-      <if test="cName!=null">cName,</if>
+      <if test="title!=null">title,</if>
       <if test="bCode!=null">bCode,</if>
-      <if test="cPathName!=null">cPathName,</if>
-      <if test="cPathIds!=null">cPathIds,</if>
+      <if test="pathNames!=null">pathNames,</if>
+      <if test="pathIds!=null">pathIds,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
-      <if test="bcId!=null">#{bcId,jdbcType=VARCHAR},</if>
+      <if test="resType!=null">#{resType,jdbcType=VARCHAR},</if>
+      <if test="resId!=null">#{resId,jdbcType=VARCHAR},</if>
       <if test="dictMid!=null">#{dictMid,jdbcType=VARCHAR},</if>
       <if test="dictDid!=null">#{dictDid,jdbcType=VARCHAR},</if>
-      <if test="cName!=null">#{cName,jdbcType=VARCHAR},</if>
+      <if test="title!=null">#{title,jdbcType=VARCHAR},</if>
       <if test="bCode!=null">#{bCode,jdbcType=VARCHAR},</if>
-      <if test="cPathName!=null">#{cPathName,jdbcType=VARCHAR},</if>
-      <if test="cPathIds!=null">#{cPathIds,jdbcType=VARCHAR},</if>
+      <if test="pathNames!=null">#{pathNames,jdbcType=VARCHAR},</if>
+      <if test="pathIds!=null">#{pathIds,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
 
   <!-- 修改 根据主键-->
   <update id="update" parameterType="java.util.Map">
-    update wt_Broadcast
+    update wt_ResCata_Ref
     <set>
-      <if test="bcId!=null">bcId=#{bcId,jdbcType=VARCHAR},</if>
+      <if test="resType!=null">resType=#{resType,jdbcType=VARCHAR},</if>
+      <if test="resId!=null">resId=#{resId,jdbcType=VARCHAR},</if>
       <if test="dictMid!=null">pId=#{dictMid,jdbcType=VARCHAR},</if>
       <if test="dictDid!=null">dictDid=#{dictDid,jdbcType=VARCHAR},</if>
-      <if test="cName!=null">cName=#{cName,jdbcType=VARCHAR},</if>
+      <if test="title!=null">title=#{title,jdbcType=VARCHAR},</if>
       <if test="bCode!=null">bCode=#{bCode,jdbcType=VARCHAR},</if>
-      <if test="cPathName!=null">cPathName=#{cPathName,jdbcType=VARCHAR},</if>
-      <if test="cPathIds!=null">cPathIds=#{cPathIds,jdbcType=VARCHAR},</if>
+      <if test="pathNames!=null">pathNames=#{pathNames,jdbcType=VARCHAR},</if>
+      <if test="pathIds!=null">pathIds=#{pathIds,jdbcType=VARCHAR},</if>
       <if test="CTime=null">cTime=#{CTime,jdbcType=TIMESTAMP},</if>
     </set>
     where id=#{id,jdbcType=VARCHAR}
@@ -128,12 +134,12 @@
 
   <!-- 删除数据 -->
   <delete id="delete" parameterType="java.lang.String">
-    delete from wt_Broadcast where id=#{id,jdbcType=VARCHAR}
+    delete from wt_ResCata_Ref where id=#{id,jdbcType=VARCHAR}
   </delete>
   <delete id="deleteByEntity" parameterType="java.util.Map">
-    delete from wt_Broadcast <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    delete from wt_ResCata_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </delete>
   <delete id="multiDelBc" parameterType="java.lang.String">
-    delete from wt_Broadcast where id in (${value})
+    delete from wt_ResCata_Ref where resId in (${value}) and resType=1
   </delete>
 </mapper>

@@ -84,7 +84,7 @@
 
 <!-- 新增或修改 -->
 <div id="w" class="easyui-window" title="新增" data-options="modal:true,closed:true,collapsible:false,minimizable:false, maximizable:false, resizable:false"
-  style="width:900px;height:600px;padding:0px;">
+  style="width:900px;height:600px;padding:0px; overflow:hidden;">
   <iframe id="addAndUpdate"  name="addAndUpdate" src="" scrolling="no" frameborder="0" style="width:100%;height:100%;"></iframe>
 </div>
 
@@ -192,9 +192,8 @@ function loadData() {
 function loadTree() {
   $.ajax({type:"post", async:true, url:'<%=path%>/bc/getCataTrees4View.do', dataType:"json",
     success: function(jsonData) {
-      if (jsonData.jsonType==1) {
-        $('#cataTree').tree("loadData", jsonData.data);
-      }
+      if (jsonData.jsonType==1) $('#cataTree').tree("loadData", jsonData.data);
+      else $('#cataTree').html("没有数据");
     }
   });
 }

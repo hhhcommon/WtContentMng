@@ -84,20 +84,26 @@ public class BroadcastController {
     public Map<String,Object> getCataTrees4View(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
         List<Map<String, Object>> l = new ArrayList<Map<String, Object>>();
-        _CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
-        try {
-            DictModel dm=_cd.getDictModelById("1");
-            EasyUiTree<DictDetail> eu1=new EasyUiTree<DictDetail>(dm.dictTree);
-            l.add(eu1.toTreeMap());
-            dm=_cd.getDictModelById("2");
-            eu1=new EasyUiTree<DictDetail>(dm.dictTree);
-            l.add(eu1.toTreeMap());
-            map.put("jsonType", "1");
-            map.put("data", l);
-        } catch (CloneNotSupportedException e) {
-            map.put("jsonType", "2");
-            map.put("err", e.getMessage());
-            e.printStackTrace();
+        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        if (cache==null) {
+            map.put("jsonType", "0");
+            map.put("data", "没有数据");
+        } else {
+            try {
+                _CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+                DictModel dm=_cd.getDictModelById("1");
+                EasyUiTree<DictDetail> eu1=new EasyUiTree<DictDetail>(dm.dictTree);
+                l.add(eu1.toTreeMap());
+                dm=_cd.getDictModelById("2");
+                eu1=new EasyUiTree<DictDetail>(dm.dictTree);
+                l.add(eu1.toTreeMap());
+                map.put("jsonType", "1");
+                map.put("data", l);
+            } catch (CloneNotSupportedException e) {
+                map.put("jsonType", "2");
+                map.put("err", e.getMessage());
+                e.printStackTrace();
+            }
         }
         return map;
     }

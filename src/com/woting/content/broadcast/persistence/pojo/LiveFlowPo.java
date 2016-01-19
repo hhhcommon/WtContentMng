@@ -10,7 +10,7 @@ public class LiveFlowPo extends BaseObject {
     private String id;//直播流Id
     private String bcId;//对应电台Id
     private int bcSrcType; //来源类型：1-组织表,2-文本
-    private String bcPubId; //来源Id，当bcSrcType=1
+    private String bcSrcId; //来源Id，当bcSrcType=1
     private String bcSource;//来源名称:蜻蜓，官网等
     private String flowURI;//来源:蜻蜓，官网等
     private Integer isMain;//是否是主直播流
@@ -35,11 +35,11 @@ public class LiveFlowPo extends BaseObject {
 	public void setBcSrcType(int bcSrcType) {
 		this.bcSrcType = bcSrcType;
 	}
-	public String getBcPubId() {
-		return bcPubId;
+	public String getBcSrcId() {
+		return bcSrcId;
 	}
-	public void setBcPubId(String bcPubId) {
-		this.bcPubId = bcPubId;
+	public void setBcSrcId(String bcSrcId) {
+		this.bcSrcId = bcSrcId;
 	}
 	public String getBcSource() {
 		return bcSource;
