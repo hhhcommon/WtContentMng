@@ -47,13 +47,13 @@
             <tr>
               <th data-options="field:'id',hidden:'true'">Id</th>
               <th data-options="field:'img',width:30,align:'center'">&nbsp;</th>
-              <th data-options="field:'bcTitle',width:200,align:'center'">电台名称</th>
-              <th data-options="field:'bcPublisher',width:200,align:'center'">所属集团</th>
-              <th data-options="field:'bcUrl',width:180,align:'center'">电台网址</th>
-              <th data-options="field:'bcSource',width:180,align:'center'">主来源</th>
-              <th data-options="field:'flowURI',width:180,align:'center'">主直播流</th>
-              <th data-options="field:'areaName',width:80,align:'center'">地区</th>
-              <th data-options="field:'typeName',width:80,align:'center'">分类</th>
+              <th data-options="field:'bcTitle',width:200,align:'left'">电台名称</th>
+              <th data-options="field:'bcPublisher',width:200,align:'left'">所属集团</th>
+              <th data-options="field:'bcUrl',width:180,align:'left'">电台网址</th>
+              <th data-options="field:'bcSource',width:180,align:'left'">主来源</th>
+              <th data-options="field:'flowURI',width:180,align:'left'">主直播流</th>
+              <th data-options="field:'areaName',width:80,align:'right'">地区</th>
+              <th data-options="field:'typeName',width:80,align:'left'">分类</th>
             </tr>
           </thead>
         </table>
@@ -113,13 +113,6 @@ var curSelId=null;
 var curBcDataList=null;//当前列表中的数据
 var selectsId=null;//当前选中的记录Id
 $(function(){
-  //调整表格样式和大小
-  $(".datagrid-wrap").css("border","0px");
-  $('#bcList').datagrid('resize');
-  //表头粗体
-  $($('.datagrid-header')[1]).find(".datagrid-header-row").find("div").each(function(i, ths){
-    $(ths).css("font-weight", "bolder");
-  });
   $("#w").window({
     onClose:function(){
       $("#addAndUpdate").attr("src", "");
@@ -174,6 +167,13 @@ $(function(){
       //刷新详细页签
     }
   });
+  //调整表格样式和大小
+  $(".datagrid-wrap").css("border","0px");
+  $('#bcList').datagrid('resize');
+  $($('.datagrid-header')[1]).find(".datagrid-header-row").find("div").each(function(i, ths) {
+    $(ths).css({"font-weight":"bold","text-align":"center"});
+  });
+
   $("#search").linkbutton("disable");
   $("#update").linkbutton("disable");
   $("#del").linkbutton("disable");
@@ -199,11 +199,17 @@ function loadTree() {
 }
 //读取列表数据
 function loadList() {
+  $("#search").linkbutton("disable");
+  $("#update").linkbutton("disable");
+  $("#del").linkbutton("disable");
+  $("#new").linkbutton("disable");
   $.ajax({type:"post", async:true, url:'<%=path%>/bc/loadBc.do', dataType:"json",
     success: function(data) {
       curBcDataList=data;
       $('#bcList').datagrid("loadData", curBcDataList);
+      $('#bcList').find('datagrid-header-row').find("datagrid-cell").css('text-align','center')
       selectsId="";
+      $("#new").linkbutton("enable");
     }
   });
 }
@@ -214,12 +220,15 @@ function newBc() {
 }
 
 function editBc() {
-  alert("功能还未完成");
-//  $("#addAndUpdate").attr("src", "addupdate.jsp?type=update&id=23123");
-  //$("#w").window({title:"修改"});
-  //$("#w").window("open");
+  $("#addAndUpdate").attr("src", "addupdate.jsp?type=update&bcId="+selectsId);
+  $("#w").window({title:"修改"});
+  $("#w").window("open");
 }
 function delBc() {
+  $("#search").linkbutton("disable");
+  $("#update").linkbutton("disable");
+  $("#del").linkbutton("disable");
+  $("#new").linkbutton("disable");
   delData={};
   delData.ids=selectsId;
   $.ajax({type:"post", async:true, data:delData, url:'<%=path%>/bc/delBc.do', dataType:"json",
@@ -245,13 +254,22 @@ function openSel(label, multiple, cataId, selIds) {
           view: { selectedMulti: false },
           check: { enable: true, chkStyle: "checkbox" }
         };
-      	if (multiple==0) {
+        if (multiple==0) {
           setting = {
             view: { selectedMulti: false },
             check: { enable: true, chkStyle: "radio", radioType: "all" }
           };
-      	}
+        }
         zTreeObj=$.fn.zTree.init($("#selTree"), setting, jsonData.data.children);
+        //设置选中
+        if (selIds) {
+          var ids=selIds.split(",");
+          var findNode=null;
+          for (var i=0; i<ids.length; i++) {
+            findNode=zTreeObj.getNodeByParam("id", ids[i]);
+            if (findNode) zTreeObj.checkNode(findNode, true, true, true);
+          }
+        }
       }
     }
   });

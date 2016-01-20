@@ -1,6 +1,7 @@
 package com.woting.content.broadcast.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.woting.content.common.util.RequestUtils;
+import com.woting.content.pubref.persistence.pojo.ResCataRefPo;
 import com.woting.dictionary.model.DictDetail;
 import com.woting.dictionary.model.DictModel;
 import com.woting.dictionary.model._CacheDictionary;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.woting.WtContentMngConstants;
 import com.woting.content.broadcast.service.BroadcastService;
@@ -36,37 +39,55 @@ public class BroadcastController {
         map.put("returnType","1001");
         return map;
     }
+    @RequestMapping(value="update.do")
+    @ResponseBody
+    public Map<String,Object> updateBroadcast(HttpServletRequest request) {
+        Map<String,Object> map=new HashMap<String, Object>();
+        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        bcService.update(m);
+        map.put("returnType","1001");
+        return map;
+    }
 
     @RequestMapping(value="loadBc.do")
     @ResponseBody
-    public List<Map<String,Object>> loadBc(HttpServletRequest request) {
-        List<Map<String,Object>> retL=new ArrayList<Map<String, Object>>();
+    public Collection<Map<String,Object>> loadBc(HttpServletRequest request) {
+        Page<Map<String,Object>> _p=new Page<Map<String, Object>>();
         Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
-        retL = bcService.getViewList(m);
-        if (retL!=null&&retL.size()>0) {
-            for (Map<String,Object> one: retL) {
-                String _temp=one.get("bcImg")+"";
-                String _s[]= _temp.split("::");
-                if (_s.length==1) one.put("typeName", toName(_s[0]));
-                else {
-                    one.put("typeName", toName(_s[0]));
-                    one.put("areaName", _s[1]);
+        _p = bcService.getViewList(m);
+        Collection<Map<String,Object>> retResult=_p.getResult();
+        if (retResult!=null&&retResult.size()>0) {
+            String ids="";
+            for (Map<String,Object> one: retResult) {//此次扫描，得到所有的Id
+                ids=","+one.get("id");
+            }
+            List<ResCataRefPo> rcrpL = bcService.getCataRefList("'"+ids.substring(1)+"'");
+            if (rcrpL!=null&&rcrpL.size()>0) {
+                for (Map<String,Object> one: retResult) {//此次扫描，填充数据
+                    ids=""+one.get("id");
+                    String areaName="", typeName="";
+                    boolean up=false, down=false;
+                    for (int i=0; i<rcrpL.size()-1; i++) {
+                        if (up&&down) break;
+                        ResCataRefPo rcrp=rcrpL.get(i);
+                        if (rcrp.getResId().equals(ids)) {
+                            if (!up) up=!up;
+                            if (rcrp.getDictMid().equals("1")) typeName+=","+rcrp.getTitle();
+                            else if (rcrp.getDictMid().equals("2")) areaName+=","+rcrp.getTitle();
+                        } else {
+                            if (up) down=!down;
+                            break;
+                        }
+                    }
+                    if (up&&down) {
+                        typeName=typeName.substring(1);
+                        areaName=areaName.substring(1);
+                    }
+                    
                 }
             }
         }
-        return retL;
-    }
-    private String toName(String code) {
-        if (code.equals("dtType1")) return "新闻";
-        else if (code.equals("dtType10")) return "体育";
-        else if (code.equals("dtType2")) return "财经";
-        else if (code.equals("dtType3")) return "生活";
-        else if (code.equals("dtType4")) return "交通";
-        else if (code.equals("dtType5")) return "综艺";
-        else if (code.equals("dtType6")) return "音乐";
-        else if (code.equals("dtType7")) return "故事";
-        else if (code.equals("dtType8")) return "民族";
-        else return "网络";
+        return retResult;
     }
 
     @RequestMapping(value="delBc.do")
@@ -104,6 +125,21 @@ public class BroadcastController {
                 map.put("err", e.getMessage());
                 e.printStackTrace();
             }
+        }
+        return map;
+    }
+
+    @RequestMapping(value="getInfo.do")
+    @ResponseBody
+    public Map<String,Object> getInfo(HttpServletRequest request) {
+        Map<String,Object> map=new HashMap<String, Object>();
+        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        m=bcService.getInfo(m.get("bcId")+"");
+        if (m==null) {
+            map.put("returnType","1002");
+        } else {
+            map.put("bcInfo", m);
+            map.put("returnType","1001");
         }
         return map;
     }

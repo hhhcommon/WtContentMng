@@ -21,10 +21,10 @@
 
   <!-- 所有列 -->
   <sql id="Base_Column_List">
-    id, resType, resId, dictMid, dictDid, title, bCode, pathName, pathIds, cTime 
+    id, resType, resId, dictMid, dictDid, title, bCode, pathNames, pathIds, cTime 
   </sql>
   <sql id="Base_Column_List_A">
-    a.id, a.resType, a.resId, a.dictMid, a.dictDid, a.title, a.bCode, a.pathName, a.pathIds, a.cTime 
+    a.id, a.resType, a.resId, a.dictMid, a.dictDid, a.title, a.bCode, a.pathNames, a.pathIds, a.cTime 
   </sql>
 
   <!-- 条件子句 -->
@@ -68,6 +68,12 @@
   <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResCata_Ref
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+    <if test="orderByClause!=null">order by ${orderByClause}</if>
+    </if>
+  </select>
+  <select id="getListByResIds" resultMap=java.util.Map parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_ResCata_Ref
+    where resType=#{resType,jdbcType=VARCHAR} and resId in (${ids})
     <if test="orderByClause!=null">order by ${orderByClause}</if>
     </if>
   </select>

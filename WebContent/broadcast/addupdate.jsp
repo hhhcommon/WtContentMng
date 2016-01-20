@@ -127,11 +127,11 @@
   </div>
   <div class="inp-line">
     <span class="inp-label">内容类别:</span><input class="easyui-textbox" type="text" id="cType" name="cType" data-options="required:true" readonly style="width:240px;text-line:240px;"></input>
-    <a href="#" class="easyui-linkbutton" onclick="parent.openSel('内容类别',1,1,null)" id="selArea" style="width:50px;">选择</a>
+    <a href="#" class="easyui-linkbutton" onclick="parent.openSel('内容类别',1,1,_cType)" id="selArea" style="width:50px;">选择</a>
   </div>
   <div class="inp-line">
     <span class="inp-label">所属地区:</span><input class="easyui-textbox" type="text" id="bcArea" name="bcArea" data-options="required:true" readonly style="width:240px;text-line:240px;"></input>
-    <a href="#" class="easyui-linkbutton" onclick="parent.openSel('所属地区',0,2,null)" id="selArea" style="width:50px;">选择</a>
+    <a href="#" class="easyui-linkbutton" onclick="parent.openSel('所属地区',0,2,_bcArea)" id="selArea" style="width:50px;">选择</a>
   </div>
   <div class="inp-line">
     <div style="width:80px;float:left;" class="inp-label">电台说明:</div><textarea class="inp-txtarea" id="descn" name="descn"></textarea>
@@ -145,9 +145,10 @@
 </div>
 </body>
 <script>
-var 
-var _ctype, _bcarea;
+var flowList=[];
+var _cType, _bcArea;
 var _type="";
+var bcId="";
 $(function(){
   _type=getUrlParam(window.location.href, "type");
   if (_type=="new") document.title="新增";
@@ -156,11 +157,66 @@ $(function(){
     width:"50px",
     text:"选择"
   });
-  initPage();
-  $(body).resize();
-  $("#body").layout("resize");
+  if (_type=="update") {
+    $("body").hide();
+    bcId=getUrlParam(window.location.href, "bcId");
+    if (!bcId) alert("未能获得电台Id");
+    $.ajax({type:"post", async:true, url:'<%=path%>/bc/getInfo.do?bcId='+bcId, dataType:"json",
+      success: function(jsonData) {
+        if (jsonData.returnType==1001) {
+          fillFields(jsonData.bcInfo);
+          $("body").show();
+          initPage();
+          $(body).resize();
+          $("#body").layout("resize");
+        } else {
+          alert("无法获得必要的电台信息");
+          parent.$("#w").window("close");
+        }
+      }
+    });
+  } else {
+    initPage();
+    $(body).resize();
+    $("#body").layout("resize");
+  }
 });
-
+//填充内容
+function fillFields(pd) {
+  //基础信息
+  var baseInfo=pd.bcBaseInfo;
+  bcTitle.value=baseInfo.bcTitle;
+  bcPublisher.value=baseInfo.bcPublisher;
+  bcUrl.value=baseInfo.bcUrl;
+  descn.value=baseInfo.desc;
+  //分类信息
+  var i=0
+  var cataList=pd.cataList;
+  if (cataList&&cataList.length>0) {
+    var cTypeName="", bcAreaName="";
+    _cType="", _bcArea="";
+    for (; i<cataList.length; i++) {
+      if (cataList[i].dictMid=="1") {//分类
+        _cType+=","+cataList[i].dictDid;
+        cTypeName+=","+cataList[i].title;
+      } else if (cataList[i].dictMid=="2") {//地区
+        _bcArea+=","+cataList[i].dictDid;
+        bcAreaName+=","+cataList[i].title;
+      }
+    }
+    cType.value=cTypeName.substring(1);
+    bcArea.value=bcAreaName.substring(1);
+    _cType=_cType.substring(1);
+    _bcArea=_bcArea.substring(1);
+  }
+  i=0;
+  var flList=pd.liveflows;
+  if (flList&&flList.length>0) {
+    for (; i<flList.length; i++) {
+      addFl(flList[i].bcSrcType, flList[i].bcSource, flList[i].flowURI, flList[i].isMain);
+    }
+  }
+}
 function initPage() {
   //边框设置
   $(".panel-title").each(function(){
@@ -208,17 +264,37 @@ function commit() {
   formData.bcPublisher=bcPublisher.value;
   formData.bcUrl=bcUrl.value;
   if (!bcArea.value) {alert("请输入所属地区");bcArea.focus();return;}
-  formData.bcArea=_bcarea;
+  formData.bcArea=_bcArea;
   formData.bcAreaName=bcArea.value;
   if (!cType.value) {alert("请输入分类");cType.focus();return;}
-  formData.cType=_ctype;
+  formData.cType=_cType;
   formData.cName=cType.value;
   formData.descn=descn.value;
-  formData.bcLiveFlows=aUrl.value+"::"+aSource.value+";;";
+  //多直播流
+  if ($("#bcTbs").find("tr").length==0) alert("请输入直播流");
+  if ($("#bcTbs").find("tr").length==1) $('input:radio[name="bcIsMain"]').attr("checked", "checked");
+  var tempStr=$('input:radio[name="bcIsMain"]:checked').val();
+  if (!tempStr) {
+    alert("请选择主直播流");
+    return;
+  } else {
+    for (var i=flowList.length-1; i>=0; i--) {
+      if (flowList[i].indexOf(tempStr)==0) flowList[i]=flowList[i].substr(0, flowList[i].length-1)+"1";
+    }
+  }
+  tempStr="";
+  for (var i=0; i<flowList.length; i++) tempStr+=";;"+flowList[i];
+  formData.bcLiveFlows=tempStr.substr(2);
+  //多频段
   $("#commit").linkbutton("disable");
-  $.ajax({type:"post", async:true, data:formData, url:'<%=path%>/bc/add.do', dataType:"json",
+  var _url='<%=path%>/bc/add.do';
+  if (_type=="update") {
+    _url='<%=path%>/bc/update.do'
+    formData.id=bcId;
+  }
+  $.ajax({type:"post", async:true, data:formData, url:_url, dataType:"json",
     success: function(data) {
-      alert("新增成功!");
+      alert((_type=="update"?"修改":"新增")+"成功!");
       parent.loadList();
       parent.$("#w").window("close");
     }
@@ -229,25 +305,25 @@ function cancel() {
 }
 function setCType(nodes) {
   var _cname="";
-  _ctype="";
+  _cType="";
   if (nodes) {
     for (var i=0; i<nodes.length; i++) {
-      _ctype+=","+nodes[i].id;
+      _cType+=","+nodes[i].id;
       _cname+=","+nodes[i].nodeName;
     }
-    _ctype=_ctype.substring(1);
+    _cType=_cType.substring(1);
   }
   $("#cType").val(_cname.substring(1));
 }
 function setBcArea(nodes) {
   var _bcAreaName="";
-  _bcarea="";
+  _bcArea="";
   if (nodes) {
     for (var i=0; i<nodes.length; i++) {
-      _bcarea+=","+nodes[i].bCode;
+      _bcArea+=","+nodes[i].bCode;
       _bcAreaName+=","+nodes[i].nodeName;
     }
-    _bcarea=_bcarea.substring(1);
+    _bcArea=_bcArea.substring(1);
   }
   $("#bcArea").val(_bcAreaName.substring(1));
 }
@@ -262,20 +338,42 @@ function addBc() {
     $("#aUrl").focus();
     return;
   }
-  var tr=$("<tr></tr>");
-  var td=$("<td class='trcn'><div class='text-overflow'>"+aSource.value+":"+aUrl.value+"</div></td>");
+  var onelf=aSource.value+"::"+aUrl.value;
+  for (var i=0; i<flowList.length; i++) {
+    if (flowList[i].indexOf(onelf)==0) {
+      alert("此直播流已加入了，不能再次加入");
+      $("#aSource").val("");
+      $("#aUrl").val("");
+      return;
+    }
+  }
+  addFl(2, aSource.value, aUrl.value, 0);
+  $("#aSource").val("");
+  $("#aUrl").val("");
+}
+function addFl(srcType, srcName, srcUrl, isMain) {
+  var tr=$("<tr srcType="+srcType+"></tr>");
+  var td=$("<td class='trcn'><div class='text-overflow'>"+srcName+"::"+srcUrl+"</div></td>");
   td.appendTo(tr);
-  td=$("<td><input type='radio' name='bcIsMain' title='是否主直播流'/></td>");
+  td=$("<td><input type='radio' name='bcIsMain' value='"+srcName+"::"+srcUrl+"' title='是否主直播流'"+(isMain==1?"checked":"")+"/></td>");
   var abtn=$("<a href='#' class='easyui-linkbutton' iconCls='icon-play' onclick='play()' title='播放' style='margin-left:3px;'></a>");
   abtn.linkbutton({});
   abtn.appendTo(td);
-  abtn=$("<a href='#' class='easyui-linkbutton' iconCls='icon-remove' onclick='dels()' title='删除' style='margin-left:3px;'></a>");
+  abtn=$("<a href='#' class='easyui-linkbutton' iconCls='icon-remove' onclick='dellf(\""+srcName+"::"+srcUrl+"\")' title='删除' style='margin-left:3px;'></a>");
   abtn.linkbutton({});
   abtn.appendTo(td);
   td.appendTo(tr);
   tr.appendTo($("#bcTbs"));
-  $("#aSource").val("");
-  $("#aUrl").val("");
+  flowList[flowList.length]=srcName+"::"+srcUrl+"::"+tr.attr("srcType")+"::"+isMain;
+}
+function dellf(id) {
+  $("#bcTbs").find("tr").each(function(i) {
+    var onelf=$(this).find('.text-overflow').html();
+    if (id==onelf) {$(this).remove(); return;};
+  });
+  for (var i=flowList.length-1; i>=0; i--) {
+    if (flowList[i].indexOf(id)==0) flowList.removeByIndex(i);
+  }
 }
 </script>
 </html>
