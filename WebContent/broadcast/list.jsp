@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div data-options="region:'south',split:true" style="height:260px;border:0px;">
+    <div data-options="region:'south',split:true" style="height:240px;border:0px;">
       <div id="lt_tab" class="easyui-tabs" data-options="fit:true,tabPosition:'bottom'" >
         <div title="属性" style="padding:10px"></div>
         <div title="统计" style="padding:10px"></div>
@@ -52,7 +52,7 @@
               <th data-options="field:'bcUrl',width:180,align:'left'">电台网址</th>
               <th data-options="field:'bcSource',width:180,align:'left'">主来源</th>
               <th data-options="field:'flowURI',width:180,align:'left'">主直播流</th>
-              <th data-options="field:'areaName',width:80,align:'right'">地区</th>
+              <th data-options="field:'areaName',width:80,align:'center'">地区</th>
               <th data-options="field:'typeName',width:80,align:'left'">分类</th>
             </tr>
           </thead>
@@ -60,8 +60,8 @@
         </div>
       </div>
     </div>
-    <div data-options="region:'south',split:true" style="height:260px;border:0px;">
-      <div id="lt_tab" class="easyui-tabs" data-options="fit:true,tabPosition:'bottom'" >
+    <div data-options="region:'south',split:true" style="height:240px;border:0px;">
+      <div id="lt_tab" class="easyui-tabs" data-options="fit:true,tabPosition:'bottom'">
         <div title="属性" style="padding:10px"></div>
         <div title="节目单" style="padding:10px"></div>
         <div title="各地频段" style="padding:10px"></div>
@@ -112,6 +112,10 @@ var curSelId=null;
 
 var curBcDataList=null;//当前列表中的数据
 var selectsId=null;//当前选中的记录Id
+
+var curPageSize=null;//当前页尺寸
+var curPageNum=null;//当前页码
+
 $(function(){
   $("#w").window({
     onClose:function(){
@@ -167,6 +171,14 @@ $(function(){
       //刷新详细页签
     }
   });
+  //分页
+  $('#bcList').datagrid('getPager').pagination({
+    pageSize: 15,
+    pageList: [15, 30, 50],
+    onSelectPage: function(pageNumber, pageSize) {
+      loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+    }
+  });
   //调整表格样式和大小
   $(".datagrid-wrap").css("border","0px");
   $('#bcList').datagrid('resize');
@@ -187,7 +199,7 @@ function loadData() {
   //读取树
   loadTree();
   //读取列表
-  loadList();
+  loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
 }
 function loadTree() {
   $.ajax({type:"post", async:true, url:'<%=path%>/bc/getCataTrees4View.do', dataType:"json",
@@ -198,18 +210,29 @@ function loadTree() {
   });
 }
 //读取列表数据
-function loadList() {
+function loadList(pageNum, pageSize) {
   $("#search").linkbutton("disable");
   $("#update").linkbutton("disable");
   $("#del").linkbutton("disable");
   $("#new").linkbutton("disable");
-  $.ajax({type:"post", async:true, url:'<%=path%>/bc/loadBc.do', dataType:"json",
+  var param={};
+  if (!pageNum&&!pageSize) {
+    param.pageNumber=curPageNum?curPageNum:1;
+    param.pageSize=curPageSize?curPageSize:$('#bcList').datagrid('getPager').pagination('options').pageSize;
+  } else {
+    param.pageNumber=pageNum?pageNum:1;
+    param.pageSize=pageSize?pageSize:$('#bcList').datagrid('getPager').pagination('options').pageSize;
+  }
+  curPageNum=param.pageNumber;
+  curPageSize=param.pageSize;
+
+  $.ajax({type:"post", async:true, data:param, url:'<%=path%>/bc/loadBc.do', dataType:"json",
     success: function(data) {
-      curBcDataList=data;
-      $('#bcList').datagrid("loadData", curBcDataList);
+      $('#bcList').datagrid("loadData", data.result);
       $('#bcList').find('datagrid-header-row').find("datagrid-cell").css('text-align','center')
       selectsId="";
       $("#new").linkbutton("enable");
+      $('#bcList').datagrid('getPager').pagination('refresh',{total:data.dataCount, pageNumber:param.pageNumber});
     }
   });
 }
@@ -244,7 +267,7 @@ function openSel(label, multiple, cataId, selIds) {
   $("#sw").window("open");
   selectedNodes=[];
   curSelId=cataId;
-  param={}
+  var param={}
   param.ids=selIds;
   param.cataId=cataId;
   $.ajax({type:"post", async:true, data:param, url:'<%=path%>/common/getCataTreeWithSel.do', dataType:"json",
@@ -280,10 +303,8 @@ function selCancel() {
 function selOk() {
   zTreeObj= $.fn.zTree.getZTreeObj("selTree");
   var nodes = zTreeObj.getCheckedNodes(true);
-  selectedNodes=[];
-  for (var i=0; i<nodes.length; i++) selectedNodes[i]=nodes[i].attributes;
-  if (curSelId==1) window.frames['addAndUpdate'].setCType(selectedNodes);
-  if (curSelId==2) window.frames['addAndUpdate'].setBcArea(selectedNodes);
+  if (curSelId==1) window.frames['addAndUpdate'].setCType(nodes);
+  if (curSelId==2) window.frames['addAndUpdate'].setBcArea(nodes);
   $("#sw").window("close");
 }
 </script>

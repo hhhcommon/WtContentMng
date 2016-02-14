@@ -10,6 +10,7 @@ public class ResCataRefPo extends BaseObject {
     private String resType;//资源类型Id：1电台；2单体媒体资源；3系列媒体资源
     private String resId;//电台Id
     private String dictMid; //字典组Id
+    private String dictMName; //字典组名称
     private String dictDid; //字典项Id
     private String bCode; //字典项业务编码
     private String title; //字典项名称
@@ -40,6 +41,12 @@ public class ResCataRefPo extends BaseObject {
     }
     public void setDictMid(String dictMid) {
         this.dictMid = dictMid;
+    }
+    public String getDictMName() {
+        return dictMName;
+    }
+    public void setDictMName(String dictMName) {
+        this.dictMName = dictMName;
     }
     public String getDictDid() {
         return dictDid;

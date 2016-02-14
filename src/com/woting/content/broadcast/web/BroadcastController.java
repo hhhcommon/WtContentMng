@@ -21,6 +21,7 @@ import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
+import com.spiritdata.framework.util.JsonUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.content.broadcast.service.BroadcastService;
 
@@ -51,7 +52,7 @@ public class BroadcastController {
 
     @RequestMapping(value="loadBc.do")
     @ResponseBody
-    public Collection<Map<String,Object>> loadBc(HttpServletRequest request) {
+    public Page<Map<String,Object>> loadBc(HttpServletRequest request) {
         Page<Map<String,Object>> _p=new Page<Map<String, Object>>();
         Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
         _p = bcService.getViewList(m);
@@ -59,35 +60,35 @@ public class BroadcastController {
         if (retResult!=null&&retResult.size()>0) {
             String ids="";
             for (Map<String,Object> one: retResult) {//此次扫描，得到所有的Id
-                ids=","+one.get("id");
+                ids+=",'"+one.get("id")+"'";
             }
-            List<ResCataRefPo> rcrpL = bcService.getCataRefList("'"+ids.substring(1)+"'");
+            List<ResCataRefPo> rcrpL = bcService.getCataRefList(ids.substring(1));
             if (rcrpL!=null&&rcrpL.size()>0) {
                 for (Map<String,Object> one: retResult) {//此次扫描，填充数据
                     ids=""+one.get("id");
                     String areaName="", typeName="";
                     boolean up=false, down=false;
-                    for (int i=0; i<rcrpL.size()-1; i++) {
+                    for (int i=0; i<rcrpL.size(); i++) {
                         if (up&&down) break;
                         ResCataRefPo rcrp=rcrpL.get(i);
                         if (rcrp.getResId().equals(ids)) {
-                            if (!up) up=!up;
+                            if (!up) up=true;
                             if (rcrp.getDictMid().equals("1")) typeName+=","+rcrp.getTitle();
-                            else if (rcrp.getDictMid().equals("2")) areaName+=","+rcrp.getTitle();
+                            else if (rcrp.getDictMid().equals("2")) areaName+=","+rcrp.getPathNames();
+                            if (i==rcrpL.size()-1) down=true;
                         } else {
-                            if (up) down=!down;
-                            break;
+                            if (up) down=true;
                         }
                     }
                     if (up&&down) {
-                        typeName=typeName.substring(1);
-                        areaName=areaName.substring(1);
+                        one.put("typeName", typeName.substring(1));
+                        one.put("areaName", areaName.substring(1));
                     }
-                    
                 }
             }
         }
-        return retResult;
+        System.out.println(JsonUtils.objToJson(_p));
+        return _p;
     }
 
     @RequestMapping(value="delBc.do")

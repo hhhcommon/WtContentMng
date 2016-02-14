@@ -11,6 +11,7 @@
     <result column="resType"    property="resType"    jdbcType="VARCHAR"/>
     <result column="resId"      property="resId"      jdbcType="VARCHAR"/>
     <result column="dictMid"    property="dictMid"    jdbcType="VARCHAR"/>
+    <result column="dictMName"  property="dictMName"  jdbcType="VARCHAR"/>
     <result column="dictDid"    property="dictDid"    jdbcType="VARCHAR"/>
     <result column="title"      property="title"      jdbcType="VARCHAR"/>
     <result column="bCode"      property="bCode"      jdbcType="VARCHAR"/>
@@ -21,10 +22,10 @@
 
   <!-- 所有列 -->
   <sql id="Base_Column_List">
-    id, resType, resId, dictMid, dictDid, title, bCode, pathNames, pathIds, cTime 
+    id, resType, resId, dictMid, dictMName, dictDid, title, bCode, pathNames, pathIds, cTime 
   </sql>
   <sql id="Base_Column_List_A">
-    a.id, a.resType, a.resId, a.dictMid, a.dictDid, a.title, a.bCode, a.pathNames, a.pathIds, a.cTime 
+    a.id, a.resType, a.resId, a.dictMid, a.dictMName, a.dictDid, a.title, a.bCode, a.pathNames, a.pathIds, a.cTime 
   </sql>
 
   <!-- 条件子句 -->
@@ -35,6 +36,7 @@
         <if test="resType!=null"> and resType=#{resType,jdbcType=VARCHAR}</if>
         <if test="resId!=null"> and resId=#{resId,jdbcType=VARCHAR}</if>
         <if test="dictMid!=null"> and dictMid=#{dictMid,jdbcType=VARCHAR}</if>
+        <if test="dictMName!=null"> and dictMName=#{dictMName,jdbcType=VARCHAR}</if>
         <if test="dictDid!=null"> and dictDid=#{dictDid,jdbcType=VARCHAR}</if>
         <if test="title!=null"> and title=#{title,jdbcType=VARCHAR}</if>
         <if test="bCode!=null"> and bCode=#{bCode,jdbcType=VARCHAR}</if>
@@ -50,6 +52,7 @@
       <if test="resType!=null"> and a.resType=#{resId,jdbcType=VARCHAR}</if>
       <if test="resId!=null"> and a.resId=#{resId,jdbcType=VARCHAR}</if>
       <if test="dictMid!=null"> and a.dictMid=#{dictMid,jdbcType=VARCHAR}</if>
+      <if test="dictMName!=null"> and a.dictMName=#{dictMName,jdbcType=VARCHAR}</if>
       <if test="dictDid!=null"> and a.dictDid=#{dictDid,jdbcType=VARCHAR}</if>
       <if test="title!=null"> and a.title=#{title,jdbcType=VARCHAR}</if>
       <if test="bCode!=null"> and a.bCode=#{bCode,jdbcType=VARCHAR}</if>
@@ -71,11 +74,10 @@
     <if test="orderByClause!=null">order by ${orderByClause}</if>
     </if>
   </select>
-  <select id="getListByResIds" resultMap=java.util.Map parameterType="java.util.Map">
+  <select id="getListByResIds" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResCata_Ref
-    where resType=#{resType,jdbcType=VARCHAR} and resId in (${ids})
+    where resType=#{resType,jdbcType=VARCHAR} and resId in (${resIds})
     <if test="orderByClause!=null">order by ${orderByClause}</if>
-    </if>
   </select>
   <!-- 获得列表为显示:临时
   <select id="query4ViewTemp" resultType="java.util.HashMap" parameterType="java.util.Map">
@@ -102,6 +104,7 @@
       <if test="resType!=null">resType,</if>
       <if test="resId!=null">resId,</if>
       <if test="dictMid!=null">dictMid,</if>
+      <if test="dictMName!=null">dictMName,</if>
       <if test="dictDid!=null">dictDid,</if>
       <if test="title!=null">title,</if>
       <if test="bCode!=null">bCode,</if>
@@ -113,6 +116,7 @@
       <if test="resType!=null">#{resType,jdbcType=VARCHAR},</if>
       <if test="resId!=null">#{resId,jdbcType=VARCHAR},</if>
       <if test="dictMid!=null">#{dictMid,jdbcType=VARCHAR},</if>
+      <if test="dictMName!=null">#{dictMName,jdbcType=VARCHAR},</if>
       <if test="dictDid!=null">#{dictDid,jdbcType=VARCHAR},</if>
       <if test="title!=null">#{title,jdbcType=VARCHAR},</if>
       <if test="bCode!=null">#{bCode,jdbcType=VARCHAR},</if>
@@ -128,6 +132,7 @@
       <if test="resType!=null">resType=#{resType,jdbcType=VARCHAR},</if>
       <if test="resId!=null">resId=#{resId,jdbcType=VARCHAR},</if>
       <if test="dictMid!=null">pId=#{dictMid,jdbcType=VARCHAR},</if>
+      <if test="dictMName!=null">dictMName=#{dictMName,jdbcType=VARCHAR},</if>
       <if test="dictDid!=null">dictDid=#{dictDid,jdbcType=VARCHAR},</if>
       <if test="title!=null">title=#{title,jdbcType=VARCHAR},</if>
       <if test="bCode!=null">bCode=#{bCode,jdbcType=VARCHAR},</if>

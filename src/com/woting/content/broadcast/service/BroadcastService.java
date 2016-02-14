@@ -66,6 +66,7 @@ public class BroadcastService {
             rcp.setResType("1");
             rcp.setResId(bPo.getId());
             rcp.setDictMid(tempDictM.getId());
+            rcp.setDictMName(tempDictM.getDmName());
             rcp.setDictDid(tempIds);
             rcp.setTitle(tempNode.getNodeName());
             rcp.setbCode(tempNode.getTnEntity().getBCode());
@@ -85,6 +86,7 @@ public class BroadcastService {
                 rcp.setResType("1");
                 rcp.setResId(bPo.getId());
                 rcp.setDictMid(tempDictM.getId());
+                rcp.setDictMName(tempDictM.getDmName());
                 rcp.setDictDid(ids[i]);
                 rcp.setTitle(tempNode.getNodeName());
                 rcp.setbCode(tempNode.getTnEntity().getBCode());
@@ -106,9 +108,11 @@ public class BroadcastService {
             lfp.setBcSrcType(Integer.parseInt(_s[2]));
             lfp.setBcSource(_s[0]);
             lfp.setFlowURI(_s[1]);
-            if (Integer.parseInt(_s[3])==1) hasMain=true;
-            if (hasMain) lfp.setIsMain(0);
-            else lfp.setIsMain(Integer.parseInt(_s[3]));
+            lfp.setIsMain(0);
+            if (Integer.parseInt(_s[3])==1&&!hasMain) {
+                hasMain=true;
+                lfp.setIsMain(1);
+            }
             bc_liveflowDao.insert(lfp);
         }
     }
@@ -140,6 +144,7 @@ public class BroadcastService {
             rcp.setResType("1");
             rcp.setResId(bPo.getId());
             rcp.setDictMid(tempDictM.getId());
+            rcp.setDictMName(tempDictM.getDmName());
             rcp.setDictDid(tempIds);
             rcp.setTitle(tempNode.getNodeName());
             rcp.setbCode(tempNode.getTnEntity().getBCode());
@@ -159,6 +164,7 @@ public class BroadcastService {
                 rcp.setResType("1");
                 rcp.setResId(bPo.getId());
                 rcp.setDictMid(tempDictM.getId());
+                rcp.setDictMName(tempDictM.getDmName());
                 rcp.setDictDid(ids[i]);
                 rcp.setTitle(tempNode.getNodeName());
                 rcp.setbCode(tempNode.getTnEntity().getBCode());
@@ -181,17 +187,21 @@ public class BroadcastService {
             lfp.setBcSrcType(Integer.parseInt(_s[2]));
             lfp.setBcSource(_s[0]);
             lfp.setFlowURI(_s[1]);
-            if (Integer.parseInt(_s[3])==1) hasMain=true;
-            if (hasMain) lfp.setIsMain(0);
-            else lfp.setIsMain(Integer.parseInt(_s[3]));
+            lfp.setIsMain(0);
+            if (Integer.parseInt(_s[3])==1&&!hasMain) {
+                hasMain=true;
+                lfp.setIsMain(1);
+            }
             bc_liveflowDao.insert(lfp);
         }
     }
 
     public Page<Map<String, Object>> getViewList(Map<String, Object> m) {
         Map<String, Object> param = new HashMap<String, Object>();
+        int pageIndex=Integer.parseInt(m.get("pageNumber")+"");
+        int pageSize=Integer.parseInt(m.get("pageSize")+"");
         param.put("orderByClause", "a.CTime desc");
-        Page<Map<String, Object>> retP=broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, 0, 10);
+        Page<Map<String, Object>> retP=broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, pageIndex, pageSize);
         //List<Map<String, Object>> retL = broadcastDao.queryForListAutoTranform("query4ViewTemp", null);
         return retP;
     }
@@ -208,25 +218,21 @@ public class BroadcastService {
         Map<String, Object> ret = new HashMap<String, Object>();
         //基本信息
         BroadcastPo bp = broadcastDao.getInfoObject("getInfoById", bcId);
-        if (bp!=null) {
-            ret.put("bcBaseInfo", bp);
-        } else return null;
+        if (bp!=null) ret.put("bcBaseInfo", bp);
+        else return null;
         //直播流
         Map<String, String> param=new HashMap<String, String>();
         param.put("bcId", bcId);
         List<LiveFlowPo> lfpL = bc_liveflowDao.queryForList(param);
-        if (lfpL!=null&&lfpL.size()>0) {
-            ret.put("liveflows", lfpL);
-        }
+        if (lfpL!=null&&lfpL.size()>0) ret.put("liveflows", lfpL);
         //分类
         param=new HashMap<String, String>();
         param.put("resType", "1");
         param.put("resId", bcId);
         param.put("orderByClause", "dictMid, bCode");
         List<ResCataRefPo> rcrpL = resCataRefDao.queryForList(param);
-        if (rcrpL!=null&&rcrpL.size()>0) {
-            ret.put("cataList", rcrpL);
-        }
+        if (rcrpL!=null&&rcrpL.size()>0) ret.put("cataList", rcrpL);
+
         return ret;
     }
 
@@ -235,7 +241,7 @@ public class BroadcastService {
         param.put("resType", "1");
         param.put("resIds", ids);
         param.put("orderByClause", "resId, dictMid, bCode");
-        List<ResCataRefPo> rcrpL = resCataRefDao.queryForList("getListByResIds",param);
+        List<ResCataRefPo> rcrpL = resCataRefDao.queryForList("getListByResIds", param);
         return rcrpL;
     }
 }

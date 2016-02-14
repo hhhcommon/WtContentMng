@@ -201,7 +201,7 @@ function fillFields(pd) {
         cTypeName+=","+cataList[i].title;
       } else if (cataList[i].dictMid=="2") {//地区
         _bcArea+=","+cataList[i].dictDid;
-        bcAreaName+=","+cataList[i].title;
+        bcAreaName+=","+cataList[i].pathNames;
       }
     }
     cType.value=cTypeName.substring(1);
@@ -230,7 +230,7 @@ function initPage() {
     }
     if ($(this).html()=="频段") {
       $(this).parent().css({
-      	"margin-top":"1px",
+        "margin-top":"1px",
         "border-left":"0px",
         "border-right":"0px"
       });
@@ -271,7 +271,7 @@ function commit() {
   formData.cName=cType.value;
   formData.descn=descn.value;
   //多直播流
-  if ($("#bcTbs").find("tr").length==0) alert("请输入直播流");
+  if ($("#bcTbs").find("tr").length==0) {alert("请输入直播流");return;};
   if ($("#bcTbs").find("tr").length==1) $('input:radio[name="bcIsMain"]').attr("checked", "checked");
   var tempStr=$('input:radio[name="bcIsMain"]:checked').val();
   if (!tempStr) {
@@ -280,6 +280,7 @@ function commit() {
   } else {
     for (var i=flowList.length-1; i>=0; i--) {
       if (flowList[i].indexOf(tempStr)==0) flowList[i]=flowList[i].substr(0, flowList[i].length-1)+"1";
+      else flowList[i]=flowList[i].substr(0, flowList[i].length-1)+"0";
     }
   }
   tempStr="";
@@ -308,8 +309,8 @@ function setCType(nodes) {
   _cType="";
   if (nodes) {
     for (var i=0; i<nodes.length; i++) {
-      _cType+=","+nodes[i].id;
-      _cname+=","+nodes[i].nodeName;
+      _cType+=","+nodes[i].attributes.id;
+      _cname+=","+nodes[i].attributes.nodeName;
     }
     _cType=_cType.substring(1);
   }
@@ -318,10 +319,19 @@ function setCType(nodes) {
 function setBcArea(nodes) {
   var _bcAreaName="";
   _bcArea="";
+  var pathName="";
+  var parentNode;
   if (nodes) {
     for (var i=0; i<nodes.length; i++) {
-      _bcArea+=","+nodes[i].bCode;
-      _bcAreaName+=","+nodes[i].nodeName;
+      _bcArea+=","+nodes[i].attributes.bCode;
+      pathName="";
+      pathName="-"+nodes[i].attributes.nodeName;
+      parentNode=nodes[i].getParentNode();
+      while (parentNode&&parentNode.attributes.nodeName) {
+        pathName="-"+parentNode.attributes.nodeName+pathName;
+        parentNode=parentNode.getParentNode();
+      }
+      _bcAreaName+=","+pathName.substring(1);
     }
     _bcArea=_bcArea.substring(1);
   }
