@@ -116,6 +116,7 @@ var selectsId=null;//当前选中的记录Id
 var curPageSize=null;//当前页尺寸
 var curPageNum=null;//当前页码
 
+
 $(function(){
   $("#w").window({
     onClose:function(){
