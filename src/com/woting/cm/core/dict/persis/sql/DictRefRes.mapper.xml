@@ -103,7 +103,7 @@
   </select>
   <select id="getListByResIds" resultMap="DictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref
-    where resTableName=#{resTableName,jdbcType=VARCHAR} and title=#{caTitle,jdbcType=VARCHAR} and resId in (${resIds})
+    where resTableName=#{resTableName,jdbcType=VARCHAR} and title in (${caTitle}) and resId in (${resIds})
     <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
 

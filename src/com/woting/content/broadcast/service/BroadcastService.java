@@ -204,7 +204,7 @@ public class BroadcastService {
         Map<String, Object> param = new HashMap<String, Object>();
         int pageIndex=Integer.parseInt(m.get("pageNumber")+"");
         int pageSize=Integer.parseInt(m.get("pageSize")+"");
-        param.put("orderByClause", "a.CTime asc");
+        param.put("orderByClause", "a.CTime desc");
         //String caTitle=m.get("caTitle")+"";
         //param.put("caTitle", caTitle);
         Page<Map<String, Object>> retP=broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, pageIndex, pageSize);
