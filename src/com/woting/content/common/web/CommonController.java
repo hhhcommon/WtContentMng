@@ -14,10 +14,10 @@ import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.ui.tree.ZTree;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.model.DictDetail;
+import com.woting.cm.core.dict.model.DictModel;
 import com.woting.content.common.util.RequestUtils;
-import com.woting.dictionary.model.DictDetail;
-import com.woting.dictionary.model.DictModel;
-import com.woting.dictionary.model._CacheDictionary;
 
 @Controller
 @RequestMapping(value="/common/")

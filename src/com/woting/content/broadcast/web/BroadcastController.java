@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.woting.content.common.util.RequestUtils;
-import com.woting.content.pubref.persistence.pojo.ResCataRefPo;
-import com.woting.dictionary.model.DictDetail;
-import com.woting.dictionary.model.DictModel;
-import com.woting.dictionary.model._CacheDictionary;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.JsonUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.model.DictDetail;
+import com.woting.cm.core.dict.model.DictModel;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.broadcast.service.BroadcastService;
 
 @Controller
@@ -62,7 +62,7 @@ public class BroadcastController {
             for (Map<String,Object> one: retResult) {//此次扫描，得到所有的Id
                 ids+=",'"+one.get("id")+"'";
             }
-            List<ResCataRefPo> rcrpL = bcService.getCataRefList(ids.substring(1));
+            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1));
             if (rcrpL!=null&&rcrpL.size()>0) {
                 for (Map<String,Object> one: retResult) {//此次扫描，填充数据
                     ids=""+one.get("id");
@@ -70,7 +70,7 @@ public class BroadcastController {
                     boolean up=false, down=false;
                     for (int i=0; i<rcrpL.size(); i++) {
                         if (up&&down) break;
-                        ResCataRefPo rcrp=rcrpL.get(i);
+                        DictRefResPo rcrp=rcrpL.get(i);
                         if (rcrp.getResId().equals(ids)) {
                             if (!up) up=true;
                             if (rcrp.getDictMid().equals("1")) typeName+=","+rcrp.getTitle();

@@ -7,8 +7,8 @@
     <typeAlias alias="broadcast" type="com.woting.content.broadcast.persistence.pojo.BroadcastPo"/>
     <typeAlias alias="bc_liveflow" type="com.woting.content.broadcast.persistence.pojo.LiveFlowPo"/>
     <typeAlias alias="bc_frequnce" type="com.woting.content.broadcast.persistence.pojo.FrequncePo"/>
-    <!-- 公共关系 -->
-    <typeAlias alias="ref_catalog" type="com.woting.content.pubref.persistence.pojo.ResCataRefPo"/>
+    <!-- 公共关系
+    <typeAlias alias="ref_catalog" type="com.woting.content.pubref.persistence.pojo.ResCataRefPo"/> -->
     <!-- 文件内容相关 -->
   </typeAliases>
   <mappers>
@@ -16,8 +16,8 @@
     <mapper resource="com/woting/content/broadcast/persistence/sql/Broadcast.mapper.xml"/>
     <mapper resource="com/woting/content/broadcast/persistence/sql/Frequnce.mapper.xml"/>
     <mapper resource="com/woting/content/broadcast/persistence/sql/LiveFlow.mapper.xml"/>
-    <!-- 公共关系 -->
-    <mapper resource="com/woting/content/pubref/persistence/sql/ResCataRef.mapper.xml"/>
+    <!-- 公共关系
+    <mapper resource="com/woting/content/pubref/persistence/sql/ResCataRef.mapper.xml"/> -->
     <!-- 文件内容相关 -->
   </mappers>
 </configuration>
