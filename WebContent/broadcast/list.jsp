@@ -88,7 +88,7 @@
   <iframe id="addAndUpdate"  name="addAndUpdate" src="" scrolling="no" frameborder="0" style="width:100%;height:100%;"></iframe>
 </div>
 
-<!-- 树型选择窗口 -->
+<!-- 新增或修改时 树型选择窗口 -->
 <div id="sw" class="easyui-window" title="选择" data-options="modal:true,closed:true,collapsible:false,minimizable:false, maximizable:false, resizable:false"
   style="width:320px;height:480px;padding:0px;">
   <div class="easyui-layout" data-options="fit:true" style="border:none;">
@@ -129,7 +129,7 @@ $(function(){
     }
   });
 
-  //表格控制
+  //表格控制     记录被选中时，可作的操作
   $("#bcList").datagrid({
     onSelect:function(index,row) {
       var rows = $('#bcList').datagrid('getSelections');
@@ -193,6 +193,10 @@ $(function(){
 
   $("#cataTree").tree({});
   loadData();//读取列表数据
+  
+   $(".tree-title").bind("click",function(){
+	   alert($(this).text());
+   });
 });
 
 //读取数据，并进行初始化
@@ -202,6 +206,7 @@ function loadData() {
   //读取列表
   loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
 }
+
 function loadTree() {
   $.ajax({type:"post", async:true, url:'<%=path%>/bc/getCataTrees4View.do', dataType:"json",
     success: function(jsonData) {
@@ -237,17 +242,22 @@ function loadList(pageNum, pageSize) {
     }
   });
 }
+
+//新增
 function newBc() {
   $("#addAndUpdate").attr("src", "addupdate.jsp?type=new");
   $("#w").window({title:"新增"});
   $("#w").window("open");
 }
 
+//修改
 function editBc() {
   $("#addAndUpdate").attr("src", "addupdate.jsp?type=update&bcId="+selectsId);
   $("#w").window({title:"修改"});
   $("#w").window("open");
 }
+
+//删除
 function delBc() {
   $("#search").linkbutton("disable");
   $("#update").linkbutton("disable");
