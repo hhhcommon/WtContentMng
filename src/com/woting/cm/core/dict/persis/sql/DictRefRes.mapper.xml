@@ -19,6 +19,11 @@
     <result  column="cTime"         property="CTime"         jdbcType="TIMESTAMP"/>
   </resultMap>
 
+  <!-- 所有列 -->
+  <sql id="Base_Column_List">
+    id, refName, resTableName, resId, dictMid, dictMName, dictDid, title, bCode, pathNames, pathIds, cTime
+  </sql>
+
   <!-- 条件子句 -->
   <sql id="WhereClauseByEntiey">
     <where>
@@ -106,7 +111,7 @@
   <select id="getInfo" resultMap="DictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
-  <select id="getInfoById" resultMap="BaseResultMap" parameterType="java.lang.String">
+  <select id="getInfoById" resultMap="DictRefResMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref where id=#{id,jdbcType=VARCHAR}
   </select>
 
