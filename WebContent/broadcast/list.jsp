@@ -232,8 +232,8 @@ function loadList(pageNum, pageSize) {
     param.pageNumber=pageNum?pageNum:1;
     param.pageSize=pageSize?pageSize:$('#bcList').datagrid('getPager').pagination('options').pageSize;
   }
-  param.catalogType="";
-  param.catalogId="";
+ // param.catalogType="";
+ // param.catalogId="";
   curPageNum=param.pageNumber;
   curPageSize=param.pageSize;
  // alert(allProps(param));
