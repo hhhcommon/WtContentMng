@@ -194,9 +194,11 @@ $(function(){
   $("#cataTree").tree({});
   loadData();//读取列表数据
   
-   $(".tree-title").bind("click",function(){
-	   alert($(this).text());
-   });
+  $('#cataTree').tree({
+		onClick: function(node){
+			alert(node.text);
+		}
+	});
 });
 
 //读取数据，并进行初始化
