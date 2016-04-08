@@ -17,7 +17,6 @@ import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
-import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
 import com.woting.content.broadcast.persistence.pojo.FrequncePo;
@@ -205,7 +204,7 @@ public class BroadcastService {
         Map<String, Object> param = new HashMap<String, Object>();
         int pageIndex=Integer.parseInt(m.get("pageNumber")+"");
         int pageSize=Integer.parseInt(m.get("pageSize")+"");
-        param.put("orderByClause", "a.CTime desc");
+        param.put("orderByClause", "a.CTime asc");
         Page<Map<String, Object>> retP=broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, pageIndex, pageSize);
         //List<Map<String, Object>> retL = broadcastDao.queryForListAutoTranform("query4ViewTemp", null);
         return retP;

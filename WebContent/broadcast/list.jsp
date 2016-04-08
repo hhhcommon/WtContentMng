@@ -197,6 +197,7 @@ $(function(){
   $('#cataTree').tree({
 		onClick: function(node){
 			alert(node.text);
+			loadList();
 		}
 	});
 });
@@ -231,9 +232,11 @@ function loadList(pageNum, pageSize) {
     param.pageNumber=pageNum?pageNum:1;
     param.pageSize=pageSize?pageSize:$('#bcList').datagrid('getPager').pagination('options').pageSize;
   }
+  param.catalogType="";
+  param.catalogId="";
   curPageNum=param.pageNumber;
   curPageSize=param.pageSize;
-
+ // alert(allProps(param));
   $.ajax({type:"post", async:true, data:param, url:'<%=path%>/bc/loadBc.do', dataType:"json",
     success: function(data) {
       $('#bcList').datagrid("loadData", data.result);
