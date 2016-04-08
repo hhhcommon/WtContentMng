@@ -14,7 +14,7 @@ public class DictRefRes implements Serializable, ModelSwapPo {
     private static final long serialVersionUID=5201517946401777207L;
 
     private String id; //uuid(主键)
-    private String refName; //关系名称：resType+dictMId=唯一关系名称，既相当于某类资源的一个字段
+    private String refName; //关系名称：resTableName+dictMId=唯一关系名称，既相当于某类资源的一个字段
     private String resTableName; //资源类型Id：1电台；2单体媒体资源；3专辑资源
     private String resId; //资源Id
     private DictModel dm;

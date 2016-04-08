@@ -232,7 +232,7 @@ public class BroadcastService {
         if (lfpL!=null&&lfpL.size()>0) ret.put("liveflows", lfpL);
         //分类
         param=new HashMap<String, String>();
-        param.put("resType", "1");
+        param.put("resTableName", "wt_Broadcast");
         param.put("resId", bcId);
         param.put("orderByClause", "dictMid, bCode");
         List<DictRefResPo> rcrpL = dictRefResDao.queryForList(param);
@@ -243,7 +243,7 @@ public class BroadcastService {
 
     public List<DictRefResPo> getCataRefList(String ids) {
         Map<String, String> param=new HashMap<String, String>();
-        param.put("resType", "1");
+        param.put("resTableName", "wt_Broadcast");
         param.put("resIds", ids);
         param.put("orderByClause", "resId, dictMid, bCode");
         List<DictRefResPo> rcrpL = dictRefResDao.queryForList("getListByResIds", param);

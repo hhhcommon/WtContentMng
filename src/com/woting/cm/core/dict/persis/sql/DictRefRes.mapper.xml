@@ -103,7 +103,7 @@
   </select>
   <select id="getListByResIds" resultMap="DictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref
-    where resType=#{resType,jdbcType=VARCHAR} and resId in (${resIds})
+    where resTableName=#{resTableName,jdbcType=VARCHAR} and resId in (${resIds})
     <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
 
@@ -117,6 +117,6 @@
 
   <!-- 删除数据 -->
   <delete id="multiDelBc" parameterType="java.lang.String">
-    delete from wt_ResDict_Ref where resId in (${value}) and resType='wt_Broadcast'
+    delete from wt_ResDict_Ref where resId in (${value}) and resTableName='wt_Broadcast'
   </delete>
 </mapper>
