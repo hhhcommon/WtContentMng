@@ -62,7 +62,8 @@ public class BroadcastController {
             for (Map<String,Object> one: retResult) {//此次扫描，得到所有的Id
                 ids+=",'"+one.get("id")+"'";
             }
-            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1));
+            String caTitle=m.get("caTitle")+"";
+            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1),caTitle);
             if (rcrpL!=null&&rcrpL.size()>0) {
                 for (Map<String,Object> one: retResult) {//此次扫描，填充数据
                     ids=""+one.get("id");

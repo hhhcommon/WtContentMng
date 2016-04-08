@@ -73,6 +73,7 @@
     select <include refid="Base_Column_List_A"/>, b.bcSource, b.flowURI from wt_Broadcast a
     left join wt_BCLiveFlow b on a.id=b.bcId and b.isMain=1
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey_A"/>
+    <!-- <if test="caTitle!=null">and </if> -->
     <if test="orderByClause!=null">order by ${orderByClause}</if>
     </if>
   </select>

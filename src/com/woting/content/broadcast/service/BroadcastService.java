@@ -205,6 +205,8 @@ public class BroadcastService {
         int pageIndex=Integer.parseInt(m.get("pageNumber")+"");
         int pageSize=Integer.parseInt(m.get("pageSize")+"");
         param.put("orderByClause", "a.CTime asc");
+        //String caTitle=m.get("caTitle")+"";
+        //param.put("caTitle", caTitle);
         Page<Map<String, Object>> retP=broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, pageIndex, pageSize);
         //List<Map<String, Object>> retL = broadcastDao.queryForListAutoTranform("query4ViewTemp", null);
         return retP;
@@ -240,10 +242,11 @@ public class BroadcastService {
         return ret;
     }
 
-    public List<DictRefResPo> getCataRefList(String ids) {
+    public List<DictRefResPo> getCataRefList(String ids,String caTitle) {
         Map<String, String> param=new HashMap<String, String>();
         param.put("resTableName", "wt_Broadcast");
         param.put("resIds", ids);
+        param.put("caTitle", caTitle);
         param.put("orderByClause", "resId, dictMid, bCode");
         List<DictRefResPo> rcrpL = dictRefResDao.queryForList("getListByResIds", param);
         return rcrpL;

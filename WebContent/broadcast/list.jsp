@@ -219,7 +219,7 @@ function loadTree() {
   });
 }
 //读取列表数据
-function loadList(pageNum, pageSize) {
+function loadList(pageNum, pageSize,caTitle) {
   $("#search").linkbutton("disable");
   $("#update").linkbutton("disable");
   $("#del").linkbutton("disable");
@@ -232,8 +232,12 @@ function loadList(pageNum, pageSize) {
     param.pageNumber=pageNum?pageNum:1;
     param.pageSize=pageSize?pageSize:$('#bcList').datagrid('getPager').pagination('options').pageSize;
   }
- // param.catalogType="";
- // param.catalogId="";
+  
+  //点击分类时增加分类名称参数
+  if(caTitle!=null){
+	  param.caTitle=caTitle;
+  }
+ 
   curPageNum=param.pageNumber;
   curPageSize=param.pageSize;
  // alert(allProps(param));
