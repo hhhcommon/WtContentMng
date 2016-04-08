@@ -8,15 +8,15 @@ import com.spiritdata.framework.core.cache.AbstractCacheLifecycleUnit;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.woting.WtContentMngConstants;
-import com.woting.dictionary.model._CacheDictionary;
-import com.woting.dictionary.service.DictCacheService;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.service.DictService;
 import com.woting.exceptionC.Wtcm1000CException;
 
 public class ContentCLU extends AbstractCacheLifecycleUnit {
     private Logger logger = Logger.getLogger(FrameworkUgaCLU.class);
 
     @Resource
-    private DictCacheService dictCacheService;
+    private DictService dictService;
     
     @Override
     public void init() {
@@ -35,7 +35,7 @@ public class ContentCLU extends AbstractCacheLifecycleUnit {
     private void loadDict() {
         try {
             System.out.println("开始装载[系统字典]缓存");
-            _CacheDictionary _cd = dictCacheService.loader();
+            _CacheDictionary _cd=dictService.loadCache();
             SystemCache.remove(WtContentMngConstants.CACHE_DICT);
             SystemCache.setCache(new CacheEle<_CacheDictionary>(WtContentMngConstants.CACHE_DICT, "系统字典", _cd));
         } catch(Exception e) {

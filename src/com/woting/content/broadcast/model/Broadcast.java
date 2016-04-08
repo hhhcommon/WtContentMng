@@ -7,14 +7,12 @@ import com.spiritdata.framework.core.model.ModelSwapPo;
 import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
 import com.woting.content.broadcast.persistence.pojo.FrequncePo;
 import com.woting.content.broadcast.persistence.pojo.LiveFlowPo;
-import com.woting.dictionary.model.RefDict;
 
 public class Broadcast extends BroadcastPo implements Serializable, ModelSwapPo {
     private static final long serialVersionUID = 5200888821223517280L;
 
     private List<FrequncePo> frequnces;
     private List<LiveFlowPo> liveflows;
-    private List<RefDict> catalogList;
 
     private String areaName; //所属地区名称
     private String areaAllName; //所属地区全名

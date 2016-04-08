@@ -14,13 +14,14 @@ import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.model.DictDetail;
+import com.woting.cm.core.dict.model.DictModel;
+import com.woting.cm.core.dict.model.DictRefRes;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
 import com.woting.content.broadcast.persistence.pojo.FrequncePo;
 import com.woting.content.broadcast.persistence.pojo.LiveFlowPo;
-import com.woting.content.pubref.persistence.pojo.ResCataRefPo;
-import com.woting.dictionary.model.DictDetail;
-import com.woting.dictionary.model.DictModel;
-import com.woting.dictionary.model._CacheDictionary;
 
 public class BroadcastService {
     @Resource(name="defaultDAO")
@@ -30,14 +31,14 @@ public class BroadcastService {
     @Resource(name="defaultDAO")
     private MybatisDAO<FrequncePo> bc_frequnceDao;
     @Resource(name="defaultDAO")
-    private MybatisDAO<ResCataRefPo> resCataRefDao;
+    private MybatisDAO<DictRefResPo> dictRefResDao;
 
     @PostConstruct
     public void initParam() {
         broadcastDao.setNamespace("BROADCAST");
         bc_liveflowDao.setNamespace("BC_LF");
         bc_frequnceDao.setNamespace("BC_F");
-        resCataRefDao.setNamespace("REF_RESCATA");
+        dictRefResDao.setNamespace("A_DREFRES");
     }
 
     /**
@@ -55,24 +56,25 @@ public class BroadcastService {
         broadcastDao.insert(bPo);
 
         //字典
-        _CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+        com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
         //字典--地区
         String tempIds=m.get("bcArea")+"";
         DictModel tempDictM=_cd.getDictModelById("2");
         TreeNode<DictDetail> tempNode=(TreeNode<DictDetail>)tempDictM.dictTree.findNode(tempIds);
         if (tempNode!=null) {
-            ResCataRefPo rcp = new ResCataRefPo();
-            rcp.setId(SequenceUUID.getUUIDSubSegment(4));
-            rcp.setResType("1");
-            rcp.setResId(bPo.getId());
-            rcp.setDictMid(tempDictM.getId());
-            rcp.setDictMName(tempDictM.getDmName());
-            rcp.setDictDid(tempIds);
-            rcp.setTitle(tempNode.getNodeName());
-            rcp.setbCode(tempNode.getTnEntity().getBCode());
-            rcp.setPathNames(tempNode.getTreePathName("-", 0));
-            rcp.setPathIds(tempNode.getTreePathId("-", 0));
-            resCataRefDao.insert(rcp);
+            DictRefResPo drrPo = new DictRefResPo();
+            drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+            drrPo.setRefName("电台所属地区");
+            drrPo.setResTableName("wt_Broadcast");
+            drrPo.setResId(bPo.getId());
+            drrPo.setDictMid(tempDictM.getId());
+            drrPo.setDictMName(tempDictM.getDmName());
+            drrPo.setDictDid(tempIds);
+            drrPo.setTitle(tempNode.getNodeName());
+            drrPo.setBCode(tempNode.getTnEntity().getBCode());
+            drrPo.setPathNames(tempNode.getTreePathName("-", 0));
+            drrPo.setPathIds(tempNode.getTreePathId("-", 0));
+            dictRefResDao.insert(drrPo);
         }
         //字典--分类
         tempIds=m.get("cType")+"";
@@ -81,18 +83,19 @@ public class BroadcastService {
         for (int i=0; i<ids.length; i++) {
             tempNode = (TreeNode<DictDetail>)tempDictM.dictTree.findNode(ids[i]);
             if (tempNode!=null) {
-                ResCataRefPo rcp = new ResCataRefPo();
-                rcp.setId(SequenceUUID.getUUIDSubSegment(4));
-                rcp.setResType("1");
-                rcp.setResId(bPo.getId());
-                rcp.setDictMid(tempDictM.getId());
-                rcp.setDictMName(tempDictM.getDmName());
-                rcp.setDictDid(ids[i]);
-                rcp.setTitle(tempNode.getNodeName());
-                rcp.setbCode(tempNode.getTnEntity().getBCode());
-                rcp.setPathNames(tempNode.getTreePathName("-", 0));
-                rcp.setPathIds(tempNode.getTreePathId("-", 0));
-                resCataRefDao.insert(rcp);
+                DictRefResPo drrPo = new DictRefResPo();
+                drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+                drrPo.setRefName("电台分类");
+                drrPo.setResTableName("wt_Broadcast");
+                drrPo.setResId(bPo.getId());
+                drrPo.setDictMid(tempDictM.getId());
+                drrPo.setDictMName(tempDictM.getDmName());
+                drrPo.setDictDid(ids[i]);
+                drrPo.setTitle(tempNode.getNodeName());
+                drrPo.setBCode(tempNode.getTnEntity().getBCode());
+                drrPo.setPathNames(tempNode.getTreePathName("-", 0));
+                drrPo.setPathIds(tempNode.getTreePathId("-", 0));
+                dictRefResDao.insert(drrPo);
             }
         }
 
@@ -132,25 +135,26 @@ public class BroadcastService {
         broadcastDao.update(bPo);
 
         //字典
-        resCataRefDao.delete("multiDelBc", "'"+id+"'");//先删除
-        _CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+        dictRefResDao.delete("multiDelBc", "'"+id+"'");//先删除
+        com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
         //字典--地区
         String tempIds=m.get("bcArea")+"";
         DictModel tempDictM=_cd.getDictModelById("2");
         TreeNode<DictDetail> tempNode=(TreeNode<DictDetail>)tempDictM.dictTree.findNode(tempIds);
         if (tempNode!=null) {
-            ResCataRefPo rcp = new ResCataRefPo();
-            rcp.setId(SequenceUUID.getUUIDSubSegment(4));
-            rcp.setResType("1");
-            rcp.setResId(bPo.getId());
-            rcp.setDictMid(tempDictM.getId());
-            rcp.setDictMName(tempDictM.getDmName());
-            rcp.setDictDid(tempIds);
-            rcp.setTitle(tempNode.getNodeName());
-            rcp.setbCode(tempNode.getTnEntity().getBCode());
-            rcp.setPathNames(tempNode.getTreePathName("-", 0));
-            rcp.setPathIds(tempNode.getTreePathId("-", 0));
-            resCataRefDao.insert(rcp);
+            DictRefResPo drrPo = new DictRefResPo();
+            drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+            drrPo.setRefName("电台所属地区");
+            drrPo.setResTableName("wt_Broadcast");
+            drrPo.setResId(bPo.getId());
+            drrPo.setDictMid(tempDictM.getId());
+            drrPo.setDictMName(tempDictM.getDmName());
+            drrPo.setDictDid(tempIds);
+            drrPo.setTitle(tempNode.getNodeName());
+            drrPo.setBCode(tempNode.getTnEntity().getBCode());
+            drrPo.setPathNames(tempNode.getTreePathName("-", 0));
+            drrPo.setPathIds(tempNode.getTreePathId("-", 0));
+            dictRefResDao.insert(drrPo);
         }
         //字典--分类
         tempIds=m.get("cType")+"";
@@ -159,18 +163,19 @@ public class BroadcastService {
         for (int i=0; i<ids.length; i++) {
             tempNode = (TreeNode<DictDetail>)tempDictM.dictTree.findNode(ids[i]);
             if (tempNode!=null) {
-                ResCataRefPo rcp = new ResCataRefPo();
-                rcp.setId(SequenceUUID.getUUIDSubSegment(4));
-                rcp.setResType("1");
-                rcp.setResId(bPo.getId());
-                rcp.setDictMid(tempDictM.getId());
-                rcp.setDictMName(tempDictM.getDmName());
-                rcp.setDictDid(ids[i]);
-                rcp.setTitle(tempNode.getNodeName());
-                rcp.setbCode(tempNode.getTnEntity().getBCode());
-                rcp.setPathNames(tempNode.getTreePathName("-", 0));
-                rcp.setPathIds(tempNode.getTreePathId("-", 0));
-                resCataRefDao.insert(rcp);
+                DictRefResPo drrPo = new DictRefResPo();
+                drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+                drrPo.setRefName("电台分类");
+                drrPo.setResTableName("wt_Broadcast");
+                drrPo.setResId(bPo.getId());
+                drrPo.setDictMid(tempDictM.getId());
+                drrPo.setDictMName(tempDictM.getDmName());
+                drrPo.setDictDid(ids[i]);
+                drrPo.setTitle(tempNode.getNodeName());
+                drrPo.setBCode(tempNode.getTnEntity().getBCode());
+                drrPo.setPathNames(tempNode.getTreePathName("-", 0));
+                drrPo.setPathIds(tempNode.getTreePathId("-", 0));
+                dictRefResDao.insert(drrPo);
             }
         }
 
@@ -211,7 +216,7 @@ public class BroadcastService {
         ids="'"+ids+"'";
         broadcastDao.delete("multiDelBc", ids);
         bc_liveflowDao.delete("multiDelBc", ids);
-        resCataRefDao.delete("multiDelBc", ids);
+        dictRefResDao.delete("multiDelBc", ids);
     }
 
     public Map<String, Object> getInfo(String bcId) {
@@ -230,18 +235,18 @@ public class BroadcastService {
         param.put("resType", "1");
         param.put("resId", bcId);
         param.put("orderByClause", "dictMid, bCode");
-        List<ResCataRefPo> rcrpL = resCataRefDao.queryForList(param);
+        List<DictRefResPo> rcrpL = dictRefResDao.queryForList(param);
         if (rcrpL!=null&&rcrpL.size()>0) ret.put("cataList", rcrpL);
 
         return ret;
     }
 
-    public List<ResCataRefPo> getCataRefList(String ids) {
+    public List<DictRefResPo> getCataRefList(String ids) {
         Map<String, String> param=new HashMap<String, String>();
         param.put("resType", "1");
         param.put("resIds", ids);
         param.put("orderByClause", "resId, dictMid, bCode");
-        List<ResCataRefPo> rcrpL = resCataRefDao.queryForList("getListByResIds", param);
+        List<DictRefResPo> rcrpL = dictRefResDao.queryForList("getListByResIds", param);
         return rcrpL;
     }
 }
