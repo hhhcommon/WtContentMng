@@ -196,8 +196,8 @@ $(function(){
   
   $('#cataTree').tree({
 		onClick: function(node){
-			alert(node.text);
-			loadList();
+			//alert(node.text);
+			loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.text);
 		}
 	});
 });
