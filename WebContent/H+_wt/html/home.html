@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title></title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <!-- Morris -->
+        <link href="../css/morris-0.4.3.min.css" rel="stylesheet">
+
+        <link href="../css/animate.min.css" rel="stylesheet">
+        <link href="../css/style.min.css" rel="stylesheet">
+
+        <style type="text/css">
+       .jqstooltip { position: absolute;left: 0px;top: 0px;visibility: hidden;background: rgb(0, 0, 0) transparent;background-color: rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000);-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)";color: white;font: 10px arial, san serif;text-align: left;white-space: nowrap;padding: 5px;border: 1px solid white;z-index: 10000;}.jqsfield { color: white;font: 10px arial, san serif;text-align: left;}
+        </style>
+    </head>
+    <body>
+            <div class="row" style="font-size:32px;padding-top:100px;">
+                <div class="col-sm-6 text-right animated fadeInDownBig">
+                   我<br />听
+                </div><br />
+                <div class="col-sm-6  animated fadeInUp">
+                   我<br />享<br />听
+                </div>
+        </div>
+
+
+    <!-- 全局js -->
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+
+    <!-- Flot -->
+    <script src="../js/jquery.flot.js"></script>
+    <script src="../js/jquery.flot.tooltip.min.js"></script>
+    <script src="../js/jquery.flot.spline.js"></script>
+    <script src="../js/jquery.flot.resize.js"></script>
+    <script src="../js/jquery.flot.pie.js"></script>
+    <script src="../js/jquery.flot.symbol.js"></script>
+    <script src="../js/curvedLines.js"></script>
+
+    <!-- Peity -->
+    <script src="../js/jquery.peity.min.js"></script>
+    <script src="../js/peity-demo.min.js"></script>
+
+    <!-- 自定义js -->
+    <script src="../js/content.min(1).js"></script>
+
+
+    <!-- jQuery UI -->
+    <script src="../js/jquery-ui.min.js"></script>
+
+    <!-- Jvectormap -->
+    <script src="../js/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="../js/jquery-jvectormap-world-mill-en.js"></script>
+
+    <!-- EayPIE -->
+    <script src="../js/jquery.easypiechart.js"></script>
+
+    <!-- Sparkline -->
+    <script src="../js/jquery.sparkline.min.js"></script>
+
+
+    <script>
+        $(document).ready(function(){$(".chart").easyPieChart({barColor:"#f8ac59",scaleLength:5,lineWidth:4,size:80});$(".chart2").easyPieChart({barColor:"#1c84c6",scaleLength:5,lineWidth:4,size:80});var b=[[1262304000000,1],[1264982400000,100],[1267401600000,1],[1270080000000,200],[1272672000000,1],[1275350400000,100],[1277942400000,1],[1280620800000,300]];var a=[[1262304000000,100],[1264982400000,1],[1267401600000,150],[1270080000000,1],[1272672000000,230],[1275350400000,1],[1277942400000,150],[1280620800000,10]];var d=[{label:"Data 1",data:b,color:"#23c6c8"},{label:"Data 2",data:a,color:"#1ab394"}];$.plot($("#flot-chart3"),d,{xaxis:{tickDecimals:0},series:{lines:{show:true,fill:true,fillColor:{colors:[{opacity:1},{opacity:1}]},},curvedLines:{active:true,fit:true,apply:true},points:{width:0.1,show:false},},grid:{show:false,borderWidth:0},legend:{show:false,}});var c={"US":298,"SA":200,"DE":220,"FR":540,"CN":120,"AU":760,"BR":550,"IN":200,"GB":120,};$("#world-map").vectorMap({map:"world_mill_en",backgroundColor:"transparent",regionStyle:{initial:{fill:"#e4e4e4","fill-opacity":0.9,stroke:"none","stroke-width":0,"stroke-opacity":0}},series:{regions:[{values:c,scale:["#1ab394","#22d6b1"],normalizeFunction:"polynomial"}]},})});
+    </script>
+    <div class="jvectormap-label"></div>
+    </body>
+</html>
