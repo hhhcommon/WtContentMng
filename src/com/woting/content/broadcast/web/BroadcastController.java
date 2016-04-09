@@ -16,8 +16,10 @@ import com.woting.content.common.util.RequestUtils;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.JsonUtils;
+import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -62,8 +64,7 @@ public class BroadcastController {
             for (Map<String,Object> one: retResult) {//此次扫描，得到所有的Id
                 ids+=",'"+one.get("id")+"'";
             }
-            String caTitle=m.get("caTitle")+"";
-            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1),caTitle);
+            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1),null);
             if (rcrpL!=null&&rcrpL.size()>0) {
                 for (Map<String,Object> one: retResult) {//此次扫描，填充数据
                     ids=""+one.get("id");
@@ -82,8 +83,8 @@ public class BroadcastController {
                         }
                     }
                     if (up&&down) {
-                        one.put("typeName", typeName.substring(1));
-                        one.put("areaName", areaName.substring(1));
+                        one.put("typeName", (StringUtils.isNullOrEmptyOrSpace(typeName)?"":typeName.substring(1)));
+                        one.put("areaName", (StringUtils.isNullOrEmptyOrSpace(areaName)?"":areaName.substring(1)));
                     }
                 }
             }
@@ -119,6 +120,9 @@ public class BroadcastController {
                 l.add(eu1.toTreeMap());
                 dm=_cd.getDictModelById("2");
                 eu1=new EasyUiTree<DictDetail>(dm.dictTree);
+               // TreeNode<DictDetail> node=(TreeNode<DictDetail>)dm.dictTree.findNode("tjid");
+               // TreeUtils.
+                
                 l.add(eu1.toTreeMap());
                 map.put("jsonType", "1");
                 map.put("data", l);
