@@ -188,17 +188,23 @@ $(function(){
   loadData();//读取列表数据
   
   
-  var rId,mId;  //将分类ID传递到分页方法中，以便和分页内容一致
+  var rId=null,mId=null;  //将分类ID传递到分页方法中，以便和分页内容一致
   $('#cataTree').tree({
 		onClick: function(node){
 			//alert(allFields(node));
 			//alert(allFields(node.attributes));
 			//alert(node.id);
 			//alert(node.attributes.mId);
-            loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
-      		rId=node.id;
-      		mId=node.attributes.mId;
-      		
+			//点击的如果是2大类根节点时，查询所有；如果点击的下面的分类则按分类查询
+			if(node.id=='1' || node.id=='2'){
+				loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+				rId=null;
+				mId=null;
+			}else{
+           		loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
+           		rId=node.id;
+      			mId=node.attributes.mId;
+			}
 		}
 	});
   //分页
