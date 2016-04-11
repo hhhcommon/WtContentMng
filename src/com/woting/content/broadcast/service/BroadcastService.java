@@ -12,6 +12,7 @@ import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.core.model.tree.TreeNode;
+import com.spiritdata.framework.core.model.tree.TreeNodeBean;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.mem._CacheDictionary;
@@ -205,8 +206,28 @@ public class BroadcastService {
         int pageIndex=Integer.parseInt(m.get("pageNumber")+"");
         int pageSize=Integer.parseInt(m.get("pageSize")+"");
         param.put("orderByClause", "a.CTime desc");
-        //String caTitle=m.get("caTitle")+"";
-        //param.put("caTitle", caTitle);
+        if(m.get("mId")!=null && m.get("rId")!=null){
+	        String mId=m.get("mId")+"";
+	        String rId=m.get("rId")+"";
+	        param.put("mId",mId);
+
+	        //可通过当前节点获得其和下所有字节点列表
+	        com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+	        DictModel tempDictM=_cd.getDictModelById(mId);
+	        TreeNode<DictDetail> root=(TreeNode<DictDetail>)tempDictM.dictTree.findNode(rId);
+	        //得到所有下级结点的Id
+	        List<TreeNode<? extends TreeNodeBean>> allTn=com.woting.common.TreeUtils.getDeepList(root);  
+	        //得到分类id的语句
+	        String orSql=root.getId();
+	        if (allTn!=null&&!allTn.isEmpty()) {
+	            for (TreeNode<? extends TreeNodeBean> tn: allTn) {
+	            	orSql+=",'"+tn.getId()+"'";
+	            }
+	        }
+	        param.put("rId", orSql);
+ 
+        }
+	        
         Page<Map<String, Object>> retP=broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, pageIndex, pageSize);
         //List<Map<String, Object>> retL = broadcastDao.queryForListAutoTranform("query4ViewTemp", null);
         return retP;
@@ -242,11 +263,10 @@ public class BroadcastService {
         return ret;
     }
 
-    public List<DictRefResPo> getCataRefList(String ids,String caTitle) {
+    public List<DictRefResPo> getCataRefList(String ids) {
         Map<String, String> param=new HashMap<String, String>();
         param.put("resTableName", "wt_Broadcast");
         param.put("resIds", ids);
-        param.put("caTitle", caTitle);
         param.put("orderByClause", "resId, dictMid, bCode");
         List<DictRefResPo> rcrpL = dictRefResDao.queryForList("getListByResIds", param);
         return rcrpL;

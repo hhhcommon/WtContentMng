@@ -58,13 +58,14 @@ public class BroadcastController {
         Page<Map<String,Object>> _p=new Page<Map<String, Object>>();
         Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
         _p = bcService.getViewList(m);
+        
         Collection<Map<String,Object>> retResult=_p.getResult();
         if (retResult!=null&&retResult.size()>0) {
             String ids="";
             for (Map<String,Object> one: retResult) {//此次扫描，得到所有的Id
                 ids+=",'"+one.get("id")+"'";
             }
-            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1),null);
+            List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1));
             if (rcrpL!=null&&rcrpL.size()>0) {
                 for (Map<String,Object> one: retResult) {//此次扫描，填充数据
                     ids=""+one.get("id");

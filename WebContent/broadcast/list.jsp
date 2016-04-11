@@ -172,14 +172,7 @@ $(function(){
       //刷新详细页签
     }
   });
-  //分页
-  $('#bcList').datagrid('getPager').pagination({
-    pageSize: 15,
-    pageList: [15, 30, 50],
-    onSelectPage: function(pageNumber, pageSize) {
-      loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
-    }
-  });
+  
   //调整表格样式和大小
   $(".datagrid-wrap").css("border","0px");
   $('#bcList').datagrid('resize');
@@ -194,14 +187,34 @@ $(function(){
   $("#cataTree").tree({});
   loadData();//读取列表数据
   
+  
+  var rId,mId;  //将分类ID传递到分页方法中，以便和分页内容一致
   $('#cataTree').tree({
 		onClick: function(node){
-			//alert(node.text);
-			loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.text);
+			//alert(allFields(node));
+			//alert(allFields(node.attributes));
+			//alert(node.id);
+			//alert(node.attributes.mId);
+            loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
+      		rId=node.id;
+      		mId=node.attributes.mId;
+      		
 		}
 	});
+  //分页
+  $('#bcList').datagrid('getPager').pagination({
+    pageSize: 15,
+    pageList: [15, 30, 50],
+    onSelectPage: function (pageNumber, pageSize){
+    	loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize,rId,mId);
+    }
+  });
 });
 
+//分页方法
+function fy(pageNumber, pageSize){
+	loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+}
 //读取数据，并进行初始化
 function loadData() {
   //读取树
@@ -219,7 +232,7 @@ function loadTree() {
   });
 }
 //读取列表数据
-function loadList(pageNum, pageSize,caTitle) {
+function loadList(pageNum, pageSize,rId,mId) {
   $("#search").linkbutton("disable");
   $("#update").linkbutton("disable");
   $("#del").linkbutton("disable");
@@ -234,13 +247,14 @@ function loadList(pageNum, pageSize,caTitle) {
   }
   
   //点击分类时增加分类名称参数
-  if(caTitle!=null){
-	  param.caTitle=caTitle;
+  if(rId!=null){
+	  param.rId=rId;
+	  param.mId=mId;
   }
  
   curPageNum=param.pageNumber;
   curPageSize=param.pageSize;
- // alert(allProps(param));
+
   $.ajax({type:"post", async:true, data:param, url:'<%=path%>/bc/loadBc.do', dataType:"json",
     success: function(data) {
       $('#bcList').datagrid("loadData", data.result);
