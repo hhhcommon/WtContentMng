@@ -23,7 +23,7 @@
 		<link rel="stylesheet" href="./css/layer.ext.css" id="layui_layer_skinlayerextcss">
 		<link rel="stylesheet" href="./css/style.css" id="layui_layer_skinmoonstylecss">
 	</head>
-	<body class="fixed-sidebar full-height-layout gray-bg pace-done">
+	<body class="fixed-sidebar full-height-layout gray-bg pace-done fixed-nav">
 		<div class="pace  pace-inactive">
 			<div class="pace-progress" data-progress-text="100%" data-progress="99" style="width: 100%;">
 	 	 	   <div class="pace-progress-inner"></div>
@@ -34,40 +34,19 @@
 	        <!--左侧导航开始-->
 	        <nav class="navbar-default navbar-static-side" role="navigation" style="display: block;">
 	            <div class="nav-close"><i class="fa fa-times-circle"></i></div>
-	            <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;">
+	            <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;border-right:1px solid #ccc;">
 		            <div class="sidebar-collapse" style="width: auto; height: 100%;">
 		                <ul class="nav" id="side-menu" style="display: block;">
-		                    <li class="nav-header">
-		                        <div class="dropdown profile-element">
-		                            <span><img alt="image" class="img-circle" src="./images/profile_small.jpg"></span>
-		                            <a data-toggle="dropdown" class="dropdown-toggle" href="./index_wt.html">
-		                                <span class="clear">
-		                               <span class="block m-t-xs"><strong class="font-bold">Beaut-zihan</strong></span>
-		                                <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
-		                                </span>
-		                            </a>
-		                            <!--用户个人信息修改-->
-		                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
-		                                <li><a class="J_menuItem" href="./html/form_avatar.html" data-index="0">修改头像</a>
-		                                </li>
-		                                <li><a class="J_menuItem" href="./html/profile.html" data-index="1">个人资料</a>
-		                                </li>
-		                                </li>
-		                                <li class="divider"></li>
-		                                <li><a href="./html/login.html">安全退出</a>
-		                                </li>
-		                            </ul>
-		                        </div>
-		                        <div class="logo-element">W T</div>
-		                    </li>
+		                    
 		                    <!--主菜单一 节目管理-->
-		                    <li class="active">
+		                    <li class="">
 		                        <a href="./index_wt.html">
 		                            <i class="fa fa-home"></i>
 		                            <span class="nav-label">节目管理</span>
 		                            <span class="fa arrow"></span>
 		                        </a>
-		                        <ul class="nav nav-second-level collapse in" aria-expanded="true">
+		                        <!--class="nav nav-second-level collapse in"in使菜单默认展开-->
+		                        <ul class="nav nav-second-level collapse" aria-expanded="true">
 		                            <li>
 		                                <a class="J_menuItem" href="./html/index_v1.html" data-index="0">资源上传</a>
 		                            </li>
@@ -80,19 +59,38 @@
 		                    <li class="">
 		                        <a href="./index_wt.html"><i class="fa fa-table"></i> <span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
-		                            <li><a class="J_menuItem" href="./html/table_basic.html" data-index="76">待审核</a>
+		                            <li>
+		                            	<a class="J_menuItem" href="./html/table_data_tables.html" data-index="76">
+											<span class="listDot" style="border-color:#da9b2a;background:#febd2d;"></span>
+											&nbsp;&nbsp;待审核
+		                           		</a>
 		                            </li>
-		                            <li><a class="J_menuItem" href="./html/table_data_tables.html" data-index="77">已审核</a>
+		                            <li>
+		                            	<a class="J_menuItem" href="./html/publish.html" data-index="77">
+		                            		<span class="listDot" style="border-color:#00a643;background:#00c940;"></span>
+		                            		&nbsp;&nbsp;已审核
+		                            	</a>
 		                            </li>
-		                            <li><a class="J_menuItem" href="./html/table_foo_table.html" data-index="79">未通过</a>
+		                            <li>
+		                            	<a class="J_menuItem" href="./html/table_basic.html" data-index="79">
+		                            		<span class="listDot" style="border-color:#a32634;background:#fe6255;"></span>
+		                            		&nbsp;&nbsp;未通过
+		                            	</a>
+		                            </li>
+		                            <li>
+		                            	<a class="J_menuItem" href="./html/table_basic.html" data-index="79">
+		                            		<span class="listDot" style="border-color:#7c7d7f;background:#959595;"></span>
+		                            		&nbsp;&nbsp;已撤回
+		                            	</a>
 		                            </li>
 		                        </ul>
 		                    </li>
 		                    <!--主菜单三 个人中心--> 
+		                   
 		                     <li>
 		                        <a href="./index_wt.html"><i class="fa fa-desktop"></i> <span class="nav-label">个人中心</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
-		                            <li><a class="J_menuItem" href="./html/contacts.html" data-index="32">联系人</a>
+		                            <li><a class="J_menuItem" href="./html/table_bootstrap.html" data-index="32">表格</a>
 		                            </li>
 		                            <li><a class="J_menuItem" href="./html/profile.html" data-index="33">个人资料</a>
 		                            </li>		                           
@@ -113,24 +111,49 @@
 		                    </li>
 		                </ul>
 		            </div>
+		            
 		            <div class="slimScrollBar" style="width: 7px; position: absolute; top: 27px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 491.616px; background: rgb(0, 0, 0);">
 		            </div>
 		            <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.9; z-index: 90; right: 1px; background: rgb(51, 51, 51);">            	
 		            </div>
+
 	            </div>
 	        </nav>
 	        <!--左侧导航结束-->
 	        <!--右侧部分开始-->
 	        <div id="page-wrapper" class="gray-bg dashbard-1">
 	            <div class="row border-bottom">
-	                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+	                <nav class="navbar navbar-fixed-top" role="navigation" style="margin-bottom:0;height:60px;line-height:60px;">
+	               		<div class="" style="float:left;width:15%">
+	               			<img alt="woting logo" style="width:180px;height:32px;padding-left:30px;" src="./images/logo.png">
+	               		</div>
 	                    <div class="navbar-header">
+	                    	
 	                    	<!--汉堡按钮，伸缩菜单栏-->
 	                    	<a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="javascript:void(0);">
 	                    		<i class="fa fa-bars"></i>
 	                    	</a> 
-	                    </div> 
+	                   	</div> 
+                        <div class="dropdown profile-element" style="position:relative;width:15%;float:right">
+                            <img alt="image" class="img-circle" style="width:48px;height:48px;" src="./images/profile_small.jpg">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="javascript:void(0)" style="color:#f3f3f4;">
+	                            <strong class="font-bold">Beaut-zihan</strong><b class="caret"></b>
+                            </a>
+                            <!--用户个人信息修改-->
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><a class="J_menuItem" href="./html/form_avatar.html" data-index="0">修改头像</a>
+                                </li>
+                                <li><a class="J_menuItem" href="./html/profile.html" data-index="1">个人资料</a>
+                                </li>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a href="./html/login.html">安全退出</a>
+                                </li>
+                            </ul>
+                        </div>
+                        
 	                </nav>
+
 	            </div>
 	            <!--右侧菜单TAB头-->
 	            <div class="row content-tabs">
@@ -138,7 +161,7 @@
 	                </button>
 	                <nav class="page-tabs J_menuTabs">
 	                    <div class="page-tabs-content" style="margin-left: 0px;">
-	                        <a href="javascript:;" class="J_menuTab" data-id="index_v1.html">首页</a>
+	                        <a href="javascript:;" class="J_menuTab" data-id="./html/home.html">首页</a>
 	                    </div>
 	                </nav>
 	                <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
@@ -163,12 +186,14 @@
 	           		 <iframe class="J_iframe" name="iframe7" width="100%" height="100%" src="./html/home.html" frameborder="0" data-id="home.html" seamless=""></iframe>
 	           		
 	           	</div>
+	           	<!--
 	            <div class="footer">
 	                <div class="pull-right">
 	                	京ICP备15064344号&nbsp;&nbsp;
 	                	<a href="http://www.zi-han.net/" target="_blank">www.wotingfm.com</a>
 	                </div>
 	            </div>
+	            -->
 	        </div>
 	        <!--右侧部分结束-->      
 	    </div>
@@ -182,185 +207,14 @@
 	    <script src="./js/hplus.min.js"></script>
 	    <script type="text/javascript" src="./js/contabs.min.js"></script>
 	    <!-- 第三方插件 -->
-	    <script src="./js/pace.min.js"></script>
-		<!--更换颜色主题,收起左侧菜单、固定导航，固定宽度设置等
-		<div class="theme-config">
-		    <div class="theme-config-box">
-		        <div class="spin-icon">
-		            <i class="fa fa-cog fa-spin"></i>
-		        </div>
-		        <div class="skin-setttings">
-		            <div class="title">主题设置</div>
-		            <div class="setings-item">
-		                <span>
-		                        收起左侧菜单
-		                    </span>
-
-		                <div class="switch">
-		                    <div class="onoffswitch">
-		                        <input name="collapsemenu" class="onoffswitch-checkbox" id="collapsemenu" type="checkbox">
-		                        <label class="onoffswitch-label" for="collapsemenu">
-		                            <span class="onoffswitch-inner"></span>
-		                            <span class="onoffswitch-switch"></span>
-		                        </label>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="setings-item">
-		                <span>
-		                        固定顶部
-		                    </span>
-
-		                <div class="switch">
-		                    <div class="onoffswitch">
-		                        <input name="fixednavbar" class="onoffswitch-checkbox" id="fixednavbar" type="checkbox">
-		                        <label class="onoffswitch-label" for="fixednavbar">
-		                            <span class="onoffswitch-inner"></span>
-		                            <span class="onoffswitch-switch"></span>
-		                        </label>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="setings-item">
-		                <span>
-		                        固定宽度
-		                    </span>
-
-		                <div class="switch">
-		                    <div class="onoffswitch">
-		                        <input name="boxedlayout" class="onoffswitch-checkbox" id="boxedlayout" type="checkbox">
-		                        <label class="onoffswitch-label" for="boxedlayout">
-		                            <span class="onoffswitch-inner"></span>
-		                            <span class="onoffswitch-switch"></span>
-		                        </label>
-		                    </div>
-		                </div>
-		            </div>
-		            <div class="title">皮肤选择</div>
-		            <div class="setings-item default-skin">
-		                <span class="skin-name ">
-		                         <a href="./index_wt.html" class="s-skin-0">
-		                             默认皮肤
-		                         </a>
-		                    </span>
-		            </div>
-		            <div class="setings-item blue-skin">
-		                <span class="skin-name ">
-		                        <a href="./index_wt.html" class="s-skin-1">
-		                            蓝色主题
-		                        </a>
-		                    </span>
-		            </div>
-		            <div class="setings-item yellow-skin">
-		                <span class="skin-name ">
-		                        <a href="./index_wt.html" class="s-skin-3">
-		                            黄色/紫色主题
-		                        </a>
-		                    </span>
-		            </div>
-		        </div>
-		    </div>
-		</div>
-		-->
-		
-		<!--更换颜色主题,收起左侧菜单、固定导航，固定宽度设置等-->
-		<script>
-			
-			/*
-			//收起左侧菜单设置
-		    $("#collapsemenu").click(function(){
-		    	if($("#collapsemenu").is(":checked")){
-		    		$("body").addClass("mini-navbar");SmoothlyMenu();
-		    		if(localStorageSupport){
-		    			localStorage.setItem("collapse_menu","on");
-		    		}
-		    	}else{
-		    		$("body").removeClass("mini-navbar");SmoothlyMenu();
-		    		if(localStorageSupport){
-		    			localStorage.setItem("collapse_menu","off");
-		    		}
-		   		}
-			});
-			//固定顶部设置
-		    $("#fixednavbar").click(function(){
-		    	if($("#fixednavbar").is(":checked")){
-		    		$(".navbar-static-top").removeClass("navbar-static-top").addClass("navbar-fixed-top");
-		   		    $("body").removeClass("boxed-layout");
-		  			$("body").addClass("fixed-nav");
-		    		$("#boxedlayout").prop("checked",false);
-		    		if(localStorageSupport){
-		    			localStorage.setItem("boxedlayout","off");
-		    		}
-		    		if(localStorageSupport){
-		    			localStorage.setItem("fixednavbar","on");
-		    		}
-		   		}else{
-		    		$(".navbar-fixed-top").removeClass("navbar-fixed-top").addClass("navbar-static-top");
-		    		$("body").removeClass("fixed-nav");
-		    		if(localStorageSupport){
-		    			localStorage.setItem("fixednavbar","off");
-		   			}
-		  		}
-		  	});
-		  	
-			//固定宽度设置
-		    $("#boxedlayout").click(function(){
-		    	if($("#boxedlayout").is(":checked")){
-		    		$("body").addClass("boxed-layout");
-		    		$("#fixednavbar").prop("checked",false);
-		    		$(".navbar-fixed-top").removeClass("navbar-fixed-top").addClass("navbar-static-top");
-		    		$("body").removeClass("fixed-nav");
-		    		if(localStorageSupport){
-		    			localStorage.setItem("fixednavbar","off");
-		    		}if(localStorageSupport){
-		    			localStorage.setItem("boxedlayout","on");
-		    		}
-		   		}else{
-		    		$("body").removeClass("boxed-layout");
-		    		if(localStorageSupport){
-		    			localStorage.setItem("boxedlayout","off")
-		    		}
-		   		}
-			});
-			//更换主题颜色(皮肤)设置
-		    $(".spin-icon").click(function(){
-		    	$(".theme-config-box").toggleClass("show");
-		    });
-	   		$(".s-skin-0").click(function(){
-	    		$("body").removeClass("skin-1");
-	    		$("body").removeClass("skin-2");
-	    		$("body").removeClass("skin-3")});
-	   			$(".s-skin-1").click(function(){
-	    			$("body").removeClass("skin-2");
-	    			$("body").removeClass("skin-3");
-	    			$("body").addClass("skin-1");
-	    		});
-	   			$(".s-skin-3").click(function(){
-	    			$("body").removeClass("skin-1");
-	    			$("body").removeClass("skin-2");
-	    			$("body").addClass("skin-3");
-	    		});
-	    		if(localStorageSupport){
-			    	var collapse=localStorage.getItem("collapse_menu");
-			    	var fixednavbar=localStorage.getItem("fixednavbar");
-			    	var boxedlayout=localStorage.getItem("boxedlayout");
-			    	if(collapse=="on"){
-			    		$("#collapsemenu").prop("checked","checked");
-			    	}
-		    	if(fixednavbar=="on"){
-		    		$("#fixednavbar").prop("checked","checked");
-		    	}
-		    	if(boxedlayout=="on"){
-		    		$("#boxedlayout").prop("checked","checked");
-		    	}
-	   		 };
-	   		 */
-		</script>
+	    <script src="./js/pace.min.js"></script>		
 		
 		<style>
+		
 		    .fixed-nav .slimScrollDiv #side-menu {
 		        padding-bottom: 60px;
 		    }
+		    
 		</style>
 	</body>
 </html>
