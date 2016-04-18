@@ -48,10 +48,11 @@ body.rtls .timeline-item .date{text-align:left}body.rtls .timeline-item .date i{
 /*发布管理菜单前的彩色圆点*/
 .listDot{
   display:inline-block;
-  width:12px;
-  height:12px;
+  width:10px;
+  height:10px;
   border-width:2px;
   border-style:solid;
-  border-radius:12px;
+  border-radius:10px;
+  margin-right:8px;
 }
 

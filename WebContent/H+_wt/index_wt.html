@@ -20,6 +20,15 @@
 		<link rel="stylesheet" href="./css/layer.css" id="layui_layer_skinlayercss">
 		<link rel="stylesheet" href="./css/layer.ext.css" id="layui_layer_skinlayerextcss">
 		<link rel="stylesheet" href="./css/style.css" id="layui_layer_skinmoonstylecss">
+	    <script src="./js/jquery-2.1.1.min.js"></script>
+	    <script src="./js/publish.js"></script>
+		<script>
+			$(function(){
+				alert("进入后台");
+				
+              	menuTreeLoad(data);
+			});
+		</script>
 	</head>
 	<body class="fixed-sidebar full-height-layout gray-bg pace-done fixed-nav">
 		<div class="pace  pace-inactive">
@@ -33,48 +42,55 @@
 	        <nav class="navbar-default navbar-static-side" role="navigation" style="display: block;">
 	            <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;border-right:1px solid #ccc;">
 		            <div class="sidebar-collapse" style="width: auto; height: 100%;">
-		                <ul class="nav" id="side-menu" style="display: block;">
-		                    <!--主菜单一 节目管理-->
-		                    <li>
-		                        <a href="javascript:;"><i class="fa fa-home"></i><span class="nav-label">节目管理</span><span class="fa arrow"></span></a>
-		                        <!--class="nav nav-second-level collapse in"in使菜单默认展开-->
-		                        <ul class="nav nav-second-level collapse" aria-expanded="true">
-		                            <li><a class="J_menuItem" href="./html/index_v1.html" data-index="0">资源上传</a></li>
-		                            <li><a class="J_menuItem" href="./html/form_advanced.html" data-index="5">节目添加</a></li>
-		                        </ul>
-		                    </li>
-		                    <!--主菜单二 发布管理--> 
-		                    <li>
-		                        <a href="javascript:;"><i class="fa fa-table"></i> <span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
-		                        <ul class="nav nav-second-level collapse" aria-expanded="false" style="height: 0px;">
+		            <ul class="nav" id="side-menu" style="display: block;">
+		                <!--主菜单一 节目管理
+		                	<li>
+		                        <a href="javascript:;">
+		                        	<i class="fa fa-home"></i>
+		                        	<span class="nav-label">节目管理</span>
+		                        	<span class="fa arrow"></span>
+		                        </a>
+		                        <ul class="nav nav-second-level collapse">
 		                            <li>
-		                            	<a class="J_menuItem" href="./html/table_data_tables.html" data-index="76">
-											<span class="listDot" style="border-color:#da9b2a;background:#febd2d;"></span>&nbsp;&nbsp;待审核
+		                            	<a class="J_menuItem" href="./html/index_v1.html">资源上传</a>
+		                            </li>
+		                            <li>
+		                            	<a class="J_menuItem" href="./html/form_advanced.html">节目添加</a>
+		                            </li>
+		                        </ul>
+		                    </li>-->
+		                    <!--主菜单二 发布管理
+		                    <li>
+		                        <a href="javascript:;"><i class="fa fa-table"></i><span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
+		                        <ul class="nav nav-second-level collapse">
+		                            <li>
+		                            	<a class="J_menuItem" href="./html/table_data_tables.html">
+											<span class="listDot" style="border-color:#da9b2a;background:#febd2d;"></span>待审核
 		                           		</a>
 		                            </li>
 		                            <li>
-		                            	<a class="J_menuItem" href="./html/publish.html" data-index="77">
-		                            		<span class="listDot" style="border-color:#00a643;background:#00c940;"></span>&nbsp;&nbsp;已审核
+		                            	<a class="J_menuItem" href="./html/publish.html">
+		                            		<span class="listDot" style="border-color:#00a643;background:#00c940;"></span>已审核
 		                            	</a>
 		                            </li>
 		                            <li>
-		                            	<a class="J_menuItem" href="./html/table_basic.html" data-index="79">
-		                            		<span class="listDot" style="border-color:#a32634;background:#fe6255;"></span>&nbsp;&nbsp;未通过
+		                            	<a class="J_menuItem" href="./html/table_basic.html">
+		                            		<span class="listDot" style="border-color:#a32634;background:#fe6255;"></span>未通过
 		                            	</a>
 		                            </li>
 		                            <li>
-		                            	<a class="J_menuItem" href="./html/table_basic.html" data-index="79">
-		                            		<span class="listDot" style="border-color:#7c7d7f;background:#959595;"></span>&nbsp;&nbsp;已撤回
+		                            	<a class="J_menuItem" href="./html/table_jqgrid.html">
+		                            		<span class="listDot" style="border-color:#7c7d7f;background:#959595;"></span>已撤回
 		                            	</a>
 		                            </li>
 		                        </ul>
-		                    </li>
-		                    <!--主菜单三 个人中心--> 
-		                     <li>
+		                    </li>--> 
+		                    <!--主菜单三 个人中心-->
+		                    <li>
 		                        <a href="javascript:;"><i class="fa fa-desktop"></i><span class="nav-label">个人中心</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
-		                            <li><a class="J_menuItem" href="./html/table_bootstrap.html" data-index="32">表格</a></li>
-		                            <li><a class="J_menuItem" href="./html/profile.html" data-index="33">个人资料</a></li>		                           
+		                            <li><a class="J_menuItem" href="./html/table_bootstrap.html">表格</a></li>
+		                            <li><a class="J_menuItem" href="./html/profile.html">个人资料</a></li>		                           
 		                        </ul>
 		                    </li>
 		                </ul>
@@ -142,7 +158,6 @@
 	        <!--右侧部分结束-->      
 	    </div>
 	    <!-- 全局js -->
-	    <script src="./js/jquery-2.1.1.min.js"></script>
 	    <script src="./js/bootstrap.min.js"></script>
 	    <script src="./js/jquery.metisMenu.js"></script>
 	    <script src="./js/jquery.slimscroll.min.js"></script>
