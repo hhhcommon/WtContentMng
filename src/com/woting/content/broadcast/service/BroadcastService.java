@@ -14,6 +14,7 @@ import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
 import com.spiritdata.framework.util.SequenceUUID;
+import com.spiritdata.framework.util.TreeUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -216,7 +217,7 @@ public class BroadcastService {
 	        DictModel tempDictM=_cd.getDictModelById(mId);
 	        TreeNode<DictDetail> root=(TreeNode<DictDetail>)tempDictM.dictTree.findNode(rId);
 	        //得到所有下级结点的Id
-	        List<TreeNode<? extends TreeNodeBean>> allTn=com.woting.common.TreeUtils.getDeepList(root);  
+	        List<TreeNode<? extends TreeNodeBean>> allTn=TreeUtils.getDeepList(root);  
 	        //得到分类id的语句
 	        String orSql=root.getId();
 	        if (allTn!=null&&!allTn.isEmpty()) {
