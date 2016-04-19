@@ -11,7 +11,7 @@
   </properties>
 
   <parent>
-  	<groupId>spiritdata.com</groupId>
+  	<groupId>team.gm</groupId>
   	<artifactId>framework</artifactId>
   	<version>0.1.0.0</version>
   	<relativePath>pom.framework.xml</relativePath>
