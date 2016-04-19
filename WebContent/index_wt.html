@@ -17,14 +17,14 @@
 	    <link href="./resources/plugins/css_others/font-awesome.min.css" rel="stylesheet">
 	    <link href="./resources/plugins/css_others/animate.min.css" rel="stylesheet">
 	    <link href="./resources/css/style.min.css" rel="stylesheet">
-		<link rel="stylesheet" href="./resources/plugins/css_others/layer.css" id="layui_layer_skinlayercss">
-		<link rel="stylesheet" href="./resources/plugins/css_others/layer.ext.css" id="layui_layer_skinlayerextcss">
-		<link rel="stylesheet" href="./resources/css/style.css" id="layui_layer_skinmoonstylecss">
+		<link href="./resources/plugins/css_others/layer.css" rel="stylesheet" id="layui_layer_skinlayercss">
+		<link href="./resources/plugins/css_others/layer.ext.css" rel="stylesheet" id="layui_layer_skinlayerextcss">
+		<link href="./resources/css/style.css" rel="stylesheet" id="layui_layer_skinmoonstylecss">
 	    <script src="./resources/plugins/jquery2.1.1/jquery-2.1.1.min.js"></script>
 	    <script src="./resources/js/index_wt.js"></script>
 		<script>
 			$(function(){
-				alert("进入后台");
+				//alert("进入后台");
 				 var menuTree={
                               "menuList": [
                                 {
@@ -51,7 +51,7 @@
                                       "menuListId": "3453221344",
                                       "menuListName": "已撤回",
                                       "menuListStatus": "3",
-                                      "menuListUrl":"./review/table_jqgrid.html"
+                                      "menuListUrl":"./review/index_v3.html"
                                     }
                                   ],
                                   "menuGroupId": "0023fasf2fasd",
@@ -195,13 +195,13 @@
                             </a>
                             <!--用户个人信息修改-->
                             <ul class="dropdown-menu m-t-xs">
-                                <li><a class="J_menuItem" href="./html/form_avatar.html" data-index="0">修改头像</a>
+                                <li><a class="J_menuItem" href="./review/form_avatar.html" data-index="0">修改头像</a>
                                 </li>
-                                <li><a class="J_menuItem" href="./html/profile.html" data-index="1">个人资料</a>
+                                <li><a class="J_menuItem" href="./review/profile.html" data-index="1">个人资料</a>
                                 </li>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="./html/login.html">安全退出</a>
+                                <li><a href="./login.html">安全退出</a>
                                 </li>
                             </ul>
                         </div>     
@@ -241,7 +241,8 @@
 	    <script src="./resources/plugins/js_others/layer.min.js"></script>
 	    <!-- 自定义js -->
 	    <script src="./resources/plugins/js_others/hplus.min.js"></script>
-	    <script src="./resources/plugins/js_others/contabs.min.js"></script>
+	    <!-- 自定义js:负责主框架内显示iFrame页面的-->
+	    <script src="./resources/js/contabs.min.js"></script>
 	    <!-- 第三方插件 -->
 	    <script src="./resources/plugins/js_others/pace.min.js"></script>		
 	</body>
