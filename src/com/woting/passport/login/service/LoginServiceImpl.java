@@ -4,9 +4,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Service;
+
 import com.spiritdata.framework.UGA.UgaUser;
 import com.spiritdata.framework.component.login.service.LoginService;
 
+@Service
 public class LoginServiceImpl implements LoginService {
 
     @Override

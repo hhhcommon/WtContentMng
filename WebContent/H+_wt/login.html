@@ -35,69 +35,10 @@
                         },
                         error: function(jqXHR){     
                            alert("发生错误：" + jqXHR.status);
-                           /*
-                            jqXHR.status状态码解析
-                            0 - (未初始化)还没有调用send()方法
-                            1 - (载入)已调用send()方法，正在发送请求
-                            2 - (载入完成)send()方法执行完成，
-                            3 - (交互)正在解析响应内容
-                            4 - (完成)响应内容解析完成，可以在客户端调用
-                           */
                         },     
                     });
                     //return false;
                 });
-
-                    /*
-                   var data={
-                              "menuList": [
-                                {
-                                  "itemList": [
-                                    {
-                                      "menuListId": "353434344",
-                                      "menuListName": "待审核",
-                                      "menuListStatus": "0",
-                                      "menuListUrl":"./html/table_data_tables.html"
-                                    },
-                                    {
-                                      "menuListId": "353242344",
-                                      "menuListName": "已审核",
-                                      "menuListStatus": "1",
-                                      "menuListUrl":"./html/publish.html"
-                                    },
-                                    {
-                                      "menuListId": "351111344",
-                                      "menuListName": "未通过",
-                                      "menuListStatus": "2",
-                                      "menuListUrl":"./html/table_basic.html"
-                                    }
-                                  ],
-                                  "menuGroupId": "0023fasf2fasd",
-                                  "menuGroupName": "发布管理"
-                                },
-                                {
-                                  "itemList": [
-                                    {
-                                      "menuListId": "453434344",
-                                      "menuListName": "资源上传",
-                                      "menuListStatus": "0",
-                                      "menuListUrl":"./html/index_v1.html"
-                                    },
-                                    {
-                                      "menuListId": "8956562344",
-                                      "menuListName": "节目添加",
-                                      "menuListStatus": "1",
-                                      "menuListUrl":"./html/form_advanced.html"
-                                    }
-                                  ],
-                                  "menuGroupId": "23451asf2fasd",
-                                  "menuGroupName": "节目管理"
-                                }
-                              ],
-                              "ReturnType": "1001"
-                            }
-                    */
-                    
             });
         </script>
     </head>
@@ -113,7 +54,22 @@
                         <input type="text" class="form-control" placeholder="用户名"value="zhangsan">
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" placeholder="密码" value="111111"
+                        <input type="password" class="form-control" placeholder="密码" value="111111">
+        </script>
+    </head>
+    <body class="gray-bg">
+        <div class="middle-box text-center loginscreen  animated fadeInDown">
+            <div>
+                <div>
+                    <h1 class="logo-name">W T</h1>
+                </div>
+                <h3>我听，我享听</h3>
+                <form class="m-t" role="form" action="javascript:;">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="用户名"value="zhangsan"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="密码" value="111111"/>
                     </div>
                     <button class="btn btn-primary block full-width m-b loginBtn">登 录</button>
                     <p class="text-muted text-center"><a href="#"><small>忘记密码了？</small></a> | <a href="./html/register.html">注册一个新账号</a></p>
