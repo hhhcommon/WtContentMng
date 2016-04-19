@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Service;
 
-public class LoginWebServiceImpl {
+@Service
+public class LoginWebService {
 	private String username = "zhangsan";
 	private String password = "111111";
 
