@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.http.HttpRequest;
-
 public class GetDataFromRequest {
 
 	public Map<String, Object> getDataFromRequest(HttpServletRequest request) {
