@@ -17,35 +17,35 @@
             $(function(){
                 //点击登录按钮
                 $(".loginBtn").bind("click",function(){
-                    /*
-                    if($("input:first").val()=="zhangsan" && $("input:last").val()=="111111"){
-                        window.location.href="./index_wt.html";
-                    }else{
-                        alert("用户名或密码有误！");
-                    }
-                   */
-                    $.ajax({ 
+                    $.ajax({
                         type: "POST",    
                         url: "http://192.168.1.19:8080/wt/passport/user/login.do",
+                        dataType: "json",
                         data: {
                             userName: $("input:first").val(), 
                             password: $("input:last").val()
                         },
-                        dataType: "json",
                         success: function(data) {
                             if (data.ReturnType=="1001") {
-                                alert("获取到数据了！");
-                                //window.location.href="./index_wt.html";
-                                //menuTreeLoad(data);
+                                alert("正确，即将进入后台！");
+                                window.location.href="./index_wt.html";
                             } else {
-                                alert("获取数据有误！");
+                                alert("账户或密码有误:"+data.message);
                             }  
                         },
                         error: function(jqXHR){     
-                           alert("发生错误：" + jqXHR.status);  
+                           alert("发生错误：" + jqXHR.status);
+                           /*
+                            jqXHR.status状态码解析
+                            0 - (未初始化)还没有调用send()方法
+                            1 - (载入)已调用send()方法，正在发送请求
+                            2 - (载入完成)send()方法执行完成，
+                            3 - (交互)正在解析响应内容
+                            4 - (完成)响应内容解析完成，可以在客户端调用
+                           */
                         },     
                     });
-                    return false;
+                    //return false;
                 });
 
                     /*
@@ -56,11 +56,42 @@
                                     {
                                       "menuListId": "353434344",
                                       "menuListName": "待审核",
-                                      "menuListStatus": "0"
+                                      "menuListStatus": "0",
+                                      "menuListUrl":"./html/table_data_tables.html"
+                                    },
+                                    {
+                                      "menuListId": "353242344",
+                                      "menuListName": "已审核",
+                                      "menuListStatus": "1",
+                                      "menuListUrl":"./html/publish.html"
+                                    },
+                                    {
+                                      "menuListId": "351111344",
+                                      "menuListName": "未通过",
+                                      "menuListStatus": "2",
+                                      "menuListUrl":"./html/table_basic.html"
                                     }
                                   ],
                                   "menuGroupId": "0023fasf2fasd",
                                   "menuGroupName": "发布管理"
+                                },
+                                {
+                                  "itemList": [
+                                    {
+                                      "menuListId": "453434344",
+                                      "menuListName": "资源上传",
+                                      "menuListStatus": "0",
+                                      "menuListUrl":"./html/index_v1.html"
+                                    },
+                                    {
+                                      "menuListId": "8956562344",
+                                      "menuListName": "节目添加",
+                                      "menuListStatus": "1",
+                                      "menuListUrl":"./html/form_advanced.html"
+                                    }
+                                  ],
+                                  "menuGroupId": "23451asf2fasd",
+                                  "menuGroupName": "节目管理"
                                 }
                               ],
                               "ReturnType": "1001"

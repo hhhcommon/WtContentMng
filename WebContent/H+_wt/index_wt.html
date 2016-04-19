@@ -21,12 +21,90 @@
 		<link rel="stylesheet" href="./css/layer.ext.css" id="layui_layer_skinlayerextcss">
 		<link rel="stylesheet" href="./css/style.css" id="layui_layer_skinmoonstylecss">
 	    <script src="./js/jquery-2.1.1.min.js"></script>
-	    <script src="./js/publish.js"></script>
+	    <script src="./js/index_wt.js"></script>
 		<script>
 			$(function(){
 				alert("进入后台");
 				
-              	menuTreeLoad(data);
+				 var data={
+                              "menuList": [
+                                {
+                                  "itemList": [
+                                    {
+                                      "menuListId": "353434344",
+                                      "menuListName": "待审核",
+                                      "menuListStatus": "0",
+                                      "menuListUrl":"./html/table_data_tables.html"
+                                    },
+                                    {
+                                      "menuListId": "353242344",
+                                      "menuListName": "已审核",
+                                      "menuListStatus": "1",
+                                      "menuListUrl":"./html/publish.html"
+                                    },
+                                    {
+                                      "menuListId": "351111344",
+                                      "menuListName": "未通过",
+                                      "menuListStatus": "2",
+                                      "menuListUrl":"./html/table_basic.html"
+                                    },
+                                    {
+                                      "menuListId": "3453221344",
+                                      "menuListName": "已撤回",
+                                      "menuListStatus": "3",
+                                      "menuListUrl":"./html/table_jqgrid.html"
+                                    }
+                                  ],
+                                  "menuGroupId": "0023fasf2fasd",
+                                  "menuGroupName": "发布管理"
+                                },
+                                {
+                                  "itemList": [
+                                    {
+                                      "menuListId": "453434344",
+                                      "menuListName": "资源上传",
+                                      "menuListStatus": "0",
+                                      "menuListUrl":"./html/index_v1.html"
+                                    },
+                                    {
+                                      "menuListId": "8956562344",
+                                      "menuListName": "节目添加",
+                                      "menuListStatus": "1",
+                                      "menuListUrl":"./html/form_advanced.html"
+                                    }
+                                  ],
+                                  "menuGroupId": "23451asf2fasd",
+                                  "menuGroupName": "节目管理"
+                                }
+                              ],
+                              "ReturnType": "1001"
+                            }
+                
+                menuTreeLoad(data);
+                /*$.ajax({
+                        type: "POST",    
+                        url: "http://192.168.1.19:8080/wt/passport/user/login.do",
+                        dataType: "json",
+                        data: {
+                            userName: $("input:first").val(), 
+                            password: $("input:last").val()
+                        },
+                        success: function(data) {
+                            if (data.ReturnType=="1001") {
+                                alert("获取到数据了！");
+                                //加载菜单树列表
+                                menuTreeLoad(data);
+                            } else {
+                                alert("获取数据出现问题了:"+data.message);
+                            }  
+                        },
+                        error: function(jqXHR){     
+                           alert("发生错误：" + jqXHR.status);
+                        },     
+                    });
+                    //return false;
+                });
+              	*/
 			});
 		</script>
 	</head>

@@ -20,6 +20,93 @@
 		<link rel="stylesheet" href="./css/layer.css" id="layui_layer_skinlayercss">
 		<link rel="stylesheet" href="./css/layer.ext.css" id="layui_layer_skinlayerextcss">
 		<link rel="stylesheet" href="./css/style.css" id="layui_layer_skinmoonstylecss">
+	    <script src="./js/jquery-2.1.1.min.js"></script>
+	    <script src="./js/index_wt.js"></script>
+		<script>
+			$(function(){
+				alert("进入后台");
+				
+				 var data={
+                              "menuList": [
+                                {
+                                  "itemList": [
+                                    {
+                                      "menuListId": "353434344",
+                                      "menuListName": "待审核",
+                                      "menuListStatus": "0",
+                                      "menuListUrl":"./html/table_data_tables.html"
+                                    },
+                                    {
+                                      "menuListId": "353242344",
+                                      "menuListName": "已审核",
+                                      "menuListStatus": "1",
+                                      "menuListUrl":"./html/publish.html"
+                                    },
+                                    {
+                                      "menuListId": "351111344",
+                                      "menuListName": "未通过",
+                                      "menuListStatus": "2",
+                                      "menuListUrl":"./html/table_basic.html"
+                                    },
+                                    {
+                                      "menuListId": "3453221344",
+                                      "menuListName": "已撤回",
+                                      "menuListStatus": "3",
+                                      "menuListUrl":"./html/table_jqgrid.html"
+                                    }
+                                  ],
+                                  "menuGroupId": "0023fasf2fasd",
+                                  "menuGroupName": "发布管理"
+                                },
+                                {
+                                  "itemList": [
+                                    {
+                                      "menuListId": "453434344",
+                                      "menuListName": "资源上传",
+                                      "menuListStatus": "0",
+                                      "menuListUrl":"./html/index_v1.html"
+                                    },
+                                    {
+                                      "menuListId": "8956562344",
+                                      "menuListName": "节目添加",
+                                      "menuListStatus": "1",
+                                      "menuListUrl":"./html/form_advanced.html"
+                                    }
+                                  ],
+                                  "menuGroupId": "23451asf2fasd",
+                                  "menuGroupName": "节目管理"
+                                }
+                              ],
+                              "ReturnType": "1001"
+                            }
+                
+                menuTreeLoad(data);
+                /*$.ajax({
+                        type: "POST",    
+                        url: "http://192.168.1.19:8080/wt/passport/user/login.do",
+                        dataType: "json",
+                        data: {
+                            userName: $("input:first").val(), 
+                            password: $("input:last").val()
+                        },
+                        success: function(data) {
+                            if (data.ReturnType=="1001") {
+                                alert("获取到数据了！");
+                                //加载菜单树列表
+                                menuTreeLoad(data);
+                            } else {
+                                alert("获取数据出现问题了:"+data.message);
+                            }  
+                        },
+                        error: function(jqXHR){     
+                           alert("发生错误：" + jqXHR.status);
+                        },     
+                    });
+                    //return false;
+                });
+              	*/
+			});
+		</script>
 	</head>
 	<body class="fixed-sidebar full-height-layout gray-bg pace-done fixed-nav">
 		<div class="pace  pace-inactive">
@@ -33,15 +120,14 @@
 	        <nav class="navbar-default navbar-static-side" role="navigation" style="display: block;">
 	            <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;border-right:1px solid #ccc;">
 		            <div class="sidebar-collapse" style="width: auto; height: 100%;">
-		                <ul class="nav" id="side-menu" style="display: block;">
-		                    <!--主菜单一 节目管理-->
-		                    <li>
+		            <ul class="nav" id="side-menu" style="display: block;">
+		                <!--主菜单一 节目管理
+		                	<li>
 		                        <a href="javascript:;">
 		                        	<i class="fa fa-home"></i>
 		                        	<span class="nav-label">节目管理</span>
 		                        	<span class="fa arrow"></span>
 		                        </a>
-		                        <!--class="nav nav-second-level collapse in"in使菜单默认展开-->
 		                        <ul class="nav nav-second-level collapse">
 		                            <li>
 		                            	<a class="J_menuItem" href="./html/index_v1.html">资源上传</a>
@@ -50,8 +136,8 @@
 		                            	<a class="J_menuItem" href="./html/form_advanced.html">节目添加</a>
 		                            </li>
 		                        </ul>
-		                    </li>
-		                    <!--主菜单二 发布管理--> 
+		                    </li>-->
+		                    <!--主菜单二 发布管理
 		                    <li>
 		                        <a href="javascript:;"><i class="fa fa-table"></i><span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
@@ -76,9 +162,9 @@
 		                            	</a>
 		                            </li>
 		                        </ul>
-		                    </li>
-		                    <!--主菜单三 个人中心--> 
-		                     <li>
+		                    </li>--> 
+		                    <!--主菜单三 个人中心-->
+		                    <li>
 		                        <a href="javascript:;"><i class="fa fa-desktop"></i><span class="nav-label">个人中心</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
 		                            <li><a class="J_menuItem" href="./html/table_bootstrap.html">表格</a></li>
@@ -150,7 +236,6 @@
 	        <!--右侧部分结束-->      
 	    </div>
 	    <!-- 全局js -->
-	    <script src="./js/jquery-2.1.1.min.js"></script>
 	    <script src="./js/bootstrap.min.js"></script>
 	    <script src="./js/jquery.metisMenu.js"></script>
 	    <script src="./js/jquery.slimscroll.min.js"></script>
