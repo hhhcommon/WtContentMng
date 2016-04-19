@@ -20,15 +20,6 @@
 		<link rel="stylesheet" href="./css/layer.css" id="layui_layer_skinlayercss">
 		<link rel="stylesheet" href="./css/layer.ext.css" id="layui_layer_skinlayerextcss">
 		<link rel="stylesheet" href="./css/style.css" id="layui_layer_skinmoonstylecss">
-	    <script src="./js/jquery-2.1.1.min.js"></script>
-	    <script src="./js/publish.js"></script>
-		<script>
-			$(function(){
-				alert("进入后台");
-				
-              	menuTreeLoad(data);
-			});
-		</script>
 	</head>
 	<body class="fixed-sidebar full-height-layout gray-bg pace-done fixed-nav">
 		<div class="pace  pace-inactive">
@@ -42,14 +33,15 @@
 	        <nav class="navbar-default navbar-static-side" role="navigation" style="display: block;">
 	            <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;border-right:1px solid #ccc;">
 		            <div class="sidebar-collapse" style="width: auto; height: 100%;">
-		            <ul class="nav" id="side-menu" style="display: block;">
-		                <!--主菜单一 节目管理
-		                	<li>
+		                <ul class="nav" id="side-menu" style="display: block;">
+		                    <!--主菜单一 节目管理-->
+		                    <li>
 		                        <a href="javascript:;">
 		                        	<i class="fa fa-home"></i>
 		                        	<span class="nav-label">节目管理</span>
 		                        	<span class="fa arrow"></span>
 		                        </a>
+		                        <!--class="nav nav-second-level collapse in"in使菜单默认展开-->
 		                        <ul class="nav nav-second-level collapse">
 		                            <li>
 		                            	<a class="J_menuItem" href="./html/index_v1.html">资源上传</a>
@@ -58,8 +50,8 @@
 		                            	<a class="J_menuItem" href="./html/form_advanced.html">节目添加</a>
 		                            </li>
 		                        </ul>
-		                    </li>-->
-		                    <!--主菜单二 发布管理
+		                    </li>
+		                    <!--主菜单二 发布管理--> 
 		                    <li>
 		                        <a href="javascript:;"><i class="fa fa-table"></i><span class="nav-label">发布管理</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
@@ -84,9 +76,9 @@
 		                            	</a>
 		                            </li>
 		                        </ul>
-		                    </li>--> 
-		                    <!--主菜单三 个人中心-->
-		                    <li>
+		                    </li>
+		                    <!--主菜单三 个人中心--> 
+		                     <li>
 		                        <a href="javascript:;"><i class="fa fa-desktop"></i><span class="nav-label">个人中心</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
 		                            <li><a class="J_menuItem" href="./html/table_bootstrap.html">表格</a></li>
@@ -158,6 +150,7 @@
 	        <!--右侧部分结束-->      
 	    </div>
 	    <!-- 全局js -->
+	    <script src="./js/jquery-2.1.1.min.js"></script>
 	    <script src="./js/bootstrap.min.js"></script>
 	    <script src="./js/jquery.metisMenu.js"></script>
 	    <script src="./js/jquery.slimscroll.min.js"></script>

@@ -3,8 +3,6 @@ package com.woting.content.common.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -12,28 +10,9 @@ import javax.servlet.ServletRequest;
 
 import com.spiritdata.framework.util.JsonUtils;
 
-public abstract class RequestUtils {
-    /**
-     * 从Request获得所有参数
-     * @param req 请求内容
-     * @return 返回参数
-     */
-    public static Map<String, Object> getDataFromRequestParam(ServletRequest req) {
-        Map<String, Object> retM = new HashMap<String, Object>();
-        Enumeration<String> enu=req.getParameterNames();
-        while(enu.hasMoreElements()) {
-            String name=(String)enu.nextElement();
-            retM.put(name, req.getParameter(name));
-        }
-        return retM;
-    }
+public class MobileUtils {
 
-    /**
-     * 从Request输入流获得参数
-     * @param req 请求内容
-     * @return 返回参数
-     */
-	public static Map<String, Object> getDataFromRequestStream(ServletRequest req) {
+	public static Map<String, Object> getDataFromRequest(ServletRequest req) {
         InputStreamReader isr=null;
         BufferedReader br=null;
         try {
