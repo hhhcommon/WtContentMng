@@ -3,14 +3,15 @@ package com.woting.passport.login.web;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.woting.passport.login.service.LoginWebServiceImpl;
-import com.woting.passport.login.utils.GetDataFromRequest;
+import com.woting.passport.login.service.LoginWebService;
+import com.woting.passport.login.utils.RequestDataUtils;
 
 /**
  * 
@@ -19,10 +20,9 @@ import com.woting.passport.login.utils.GetDataFromRequest;
  */
 @Controller
 public class LoginWebController {
-
-	GetDataFromRequest datautils = new GetDataFromRequest();
-	LoginWebServiceImpl loginWebService = new LoginWebServiceImpl();
-
+	@Resource
+	private LoginWebService loginWebService;
+	
 	@RequestMapping(value = "/passport/user/login.do")
 	@ResponseBody
 	public Map<String, Object> loginWeb(HttpServletRequest request) {
@@ -43,7 +43,7 @@ public class LoginWebController {
 		 * { if (userName == username) { map.put("Message", "用户登录");
 		 * map.put("ReturnType", "1001"); } }
 		 */
-		Map<String, Object> m = datautils.getDataFromRequest(request);
+		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		map = loginWebService.loginWebService(m);
 		System.out.println(map);
 		return map;
