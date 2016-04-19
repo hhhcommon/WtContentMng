@@ -5,18 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.http.HttpRequest;
+public abstract class RequestDataUtils {
 
-public class GetDataFromRequest {
-
-	public Map<String, Object> getDataFromRequest(HttpServletRequest request) {
+	public static Map<String, Object> getDataFromRequest(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		InputStream in= null;
+		BufferedInputStream buf = null;
 		try {
-			InputStream in = request.getInputStream();
-			BufferedInputStream buf = new BufferedInputStream(in);
+			in = request.getInputStream();
+			buf = new BufferedInputStream(in);
 			byte[] bytes = new byte[1024 * 1024];
 			int length = 0;
 			String instr = "";
@@ -32,6 +31,9 @@ public class GetDataFromRequest {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+			if(in!=null)try {in.close();} catch (IOException e) {}
+			if(buf!=null)try {buf.close();} catch (IOException e) {}
 		}
 		return map;
 	}
