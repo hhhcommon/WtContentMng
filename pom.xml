@@ -5,7 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <!-- 配置编码格式，与eclpse的IDE环境编码格式匹配 -->
-  <!-- D:\workIDE\projects || E:\work\gitworkspace  || D:\workIDE\work -->
+  <!-- D:\workIDE\projects\WtContentMng || D:\WBWorkDir\WtContentMng  || D:\workIDE\work -->
   <properties>
     <build.webProjectDir>D:\workIDE\projects\WtContentMng</build.webProjectDir>
   </properties>
