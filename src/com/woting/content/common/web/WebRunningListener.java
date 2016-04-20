@@ -2,10 +2,11 @@ package com.woting.content.common.web;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebRunningListener implements ServletContextListener {
-    private Logger logger = Logger.getLogger(this.getClass());
+    private Logger logger=LoggerFactory.getLogger(this.getClass());
 
     @Override
     //初始化

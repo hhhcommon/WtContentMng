@@ -84,8 +84,12 @@
 .pubList .page{
 	width:360px;
 	height:40px;
+<<<<<<< HEAD
 	margin:20px auto;
 
+=======
+	margin:0 auto;
+>>>>>>> refs/remotes/origin/master
 }
 
 /* 鎷栧姩杈规潯锛屽乏鍙虫媺澶э紝缂╁皬
@@ -194,7 +198,11 @@
 	top:0;
 	height:100%;
 	/*鍔ㄦ�佽幏寰楁湰鍖哄潡鐨勫搴︼紝娉ㄦ剰鎿嶄綔绗﹀墠鍚庨渶鏈夌┖鏍�*/
+<<<<<<< HEAD
 	width:calc(100% - 420px);
+=======
+	width:calc(100% - 400px);
+>>>>>>> refs/remotes/origin/master
 	background:white;
 	/*z-index:-2; z-index的取值会影响滚动条的使用，overflow:auto时，只显示滚动条，但滚不动*/
 }
@@ -264,10 +272,13 @@
 	height:400px;
 	overflow-y:auto;
 }
+<<<<<<< HEAD
 
 .conBox .conTable td span{
 	margin-right:8px;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 /*鍙戝竷绠＄悊鍐呭璇︽儏鍓嶇殑褰╄壊鍦嗙偣-宸插鏍�*/
 .conDot{
   display:inline-block;
