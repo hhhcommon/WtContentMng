@@ -1,65 +1,46 @@
-
-//动态创建二级菜单树，传入的参数为一个数组对象
-function menuTreeLoad(data){
-    alert(data.ReturnType);
-    alert(data.menuList[0].itemList[0].menuListName);
-    var menuTreeLen=data.menuList.length;
-
+function actListLoad(actList){
+     var actListLength=actList.resultList.length;
+     //alert(actListLength);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
-    var mainLi,firstA,firstI,labelSpan,iconSpan,secondUl,secondLi,secondA;
-    //外层循环加载一级菜单内容
-    for(var i=0;i<menuTreeLen;i++){
-        mainLi=$("<li></li");
+    var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
+    var outDiv=$("<div></div>");
+    //循环加载列表
+    for(var i=0;i<actListLength;i++){
+        firstA=$("<a href='javascript:void(0)'></a>");
+        listDiv=$("<div class='listBox'></div>");
+        checkDiv=$("<div class='listCheck'>");
+        checkInput=$("<input type='checkBox' name='' />");
+        imgDiv=$("<div class='listImg'>");
+        thumbImg=$("<img alt='mage'>");
+        thumbImg.attr({'src':actList.resultList[i].actThunb});
+        conDiv=$("<div class='listCon'>");
+        conH=$("<h3></h3>");
+        //conH.text(actList[i].title);
+        //conHspan=$("<span></span>");
+        //conHspan.text("专辑");
+        conP1=$("<p class='secTitle'></p>");
+        conP1.text(actList.resultList[i].actType);
+        conP2=$("<p class='other'></p>");
+        conSpan1=$("<span></span>");
+        conSpan1.text("来源："+actList.resultList[i].id);
+        conSpan2=$("<span></span>");
+        conSpan2.text(actList.resultList[i].cTime);
 
-        firstA=$("<a href='javascript:;'></a>");
-        firstI=$("<i class='fa fa-home'></i>");
-        labelSpan=$("<span class='nav-label'></span>");
-        labelSpan.text(data.menuList[i].menuGroupName);
-        iconSpan=("<span class='fa arrow'></span>");
-
-        firstA.append(firstI);
-        firstA.append(labelSpan);
-        firstA.append(iconSpan);
-        mainLi.append(firstA);
-
-        secondUl=$("<ul class='nav nav-second-level collapse'></ul>");
-        var menuItemLen=data.menuList[i].itemList.length;
-        //内层菜单加载一级菜单对应的二级菜单列表
-        for(var j=0;j<menuItemLen;j++){
-            var conItem=data.menuList[i].itemList[j].menuListName;
-            //var conUrl=data[i].itemList[j].url;
-
-            secondLi=$("<li></li");
-            secondA=$("<a class='J_menuItem' href='#'></a>");
-           // secondA.attr({"href":"二级菜单链接获取处"});
-            secondA.text(conItem);
-
-            secondUl.append(secondLi.append(secondA));
-        }
-        mainLi.append(secondUl);
-    //整个for循环结束
+        checkDiv.append(checkInput);
+        imgDiv.append(thumbImg);
+        conDiv.append(conH);
+        conH.html(actList.resultList[i].actTitle+"<span>专辑</span>");
+        conDiv.append(conP1);
+        conP2.append(conSpan1);
+        conP2.append(conSpan2);
+        conDiv.append(conP2);
+        listDiv.append(checkDiv);
+        listDiv.append(imgDiv);
+        listDiv.append(conDiv);
+        outDiv.append(firstA.append(listDiv));   
     }
-    //将创建好的节点添加到对应位置
-    $("#side-menu").append(mainLi);
-
-
-    /*添加class类
-    $("p").addClass("selected1 selected2");  多个用空格隔开
-    $('ul li:last').addClass(function() {
-      return 'item-' + $(this).index();
-    });
-    */
+    $(".pubList").prepend(outDiv);
 }
-
-
-
-
-
-
-
-
-
-
 
 
  /*                
