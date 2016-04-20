@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 function actListLoad(actList){
      var actListLength=actList.resultList.length;
      //alert(actListLength);
@@ -44,8 +45,30 @@ function actListLoad(actList){
     </div>
 </a>
 */
+=======
+/*
+<a href="javascript:void(0)">
+    <div class="listBox">
+        <div class="listCheck">
+            <input type="checkBox" name="" />
+        </div>
+        <div class="listImg">
+            <img alt="image" src="../resources/images/a2.jpg">
+        </div>
+        <div class="listCon">
+            <h3>滚石乐队为何古巴开唱</h3>
+            <p class="secTitle">秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
+            <p class="other"><span>from 新闻最前沿</span><span>来源:蜻蜓</span><span>2016年4月13</span></p>
+        </div>
+    </div>
+</a>
+*/
 
 
+>>>>>>> refs/remotes/origin/master
+
+
+<<<<<<< HEAD
 >>>>>>> refs/remotes/origin/master
 
 <<<<<<< HEAD
@@ -66,6 +89,8 @@ function actListLoad(actList){
 }
 =======
 
+=======
+>>>>>>> refs/remotes/origin/master
 
 
     /*添加class类
@@ -74,6 +99,9 @@ function actListLoad(actList){
       return 'item-' + $(this).index();
     });
     */
+<<<<<<< HEAD
+>>>>>>> refs/remotes/origin/master
+=======
 >>>>>>> refs/remotes/origin/master
 
 

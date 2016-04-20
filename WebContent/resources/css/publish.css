@@ -85,8 +85,12 @@
 	width:360px;
 	height:40px;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	margin:20px auto;
 
+=======
+	margin:0 auto;
+>>>>>>> refs/remotes/origin/master
 =======
 	margin:0 auto;
 >>>>>>> refs/remotes/origin/master
@@ -199,8 +203,11 @@
 	height:100%;
 	/*鍔ㄦ�佽幏寰楁湰鍖哄潡鐨勫搴︼紝娉ㄦ剰鎿嶄綔绗﹀墠鍚庨渶鏈夌┖鏍�*/
 <<<<<<< HEAD
+<<<<<<< HEAD
 	width:calc(100% - 420px);
 =======
+=======
+>>>>>>> refs/remotes/origin/master
 	width:calc(100% - 400px);
 >>>>>>> refs/remotes/origin/master
 	background:white;
@@ -273,10 +280,13 @@
 	overflow-y:auto;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 .conBox .conTable td span{
 	margin-right:8px;
 }
+=======
+>>>>>>> refs/remotes/origin/master
 =======
 >>>>>>> refs/remotes/origin/master
 /*鍙戝竷绠＄悊鍐呭璇︽儏鍓嶇殑褰╄壊鍦嗙偣-宸插鏍�*/
