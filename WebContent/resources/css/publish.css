@@ -1,18 +1,27 @@
-/*本页头查询区筛选区*/
+@charset "utf-8";
+/*鏈〉澶存煡璇㈠尯绛涢�夊尯*/
 .operate{
 	height:30px;
 	width:100%;
 	background:#eff3f6;
 	border-top:1px solid #ccc;
+	overflow:hidden;
 }
 .operate .allCheck{
 	height:30px;
 	line-height: 30px;
-	margin:0 14px;
+	margin:0 12px;
 	display:inline-block;
 }
 .operate button{
-
+ width:52px;
+ height:24px;
+ margin-top:-4px;
+ background:#0077c7;
+ color:white;
+ text-align:center;
+ padding:2px;
+ font-size:12px;
 }
 .operate select,
 .operate .btn-group button{
@@ -24,12 +33,10 @@
 	margin-bottom:4px;
 	margin-right:10px;
 	font-size: 12px;
-	/*解决chrome浏览器最小字号只能为12的问题
+	/*瑙ｅ喅chrome娴忚鍣ㄦ渶灏忓瓧鍙峰彧鑳戒负12鐨勯棶棰�
     -webkit-transform: scale(0.9);*/
 }
-.operate .btn-group button:focus{
-	border-color:#0077c7;
-}
+
 .operate .searchMore{
 	color:#a0a1a3;
 
@@ -56,11 +63,13 @@
 }
 
 .mainShow{
+	height:calc(100% - 30px);
+	width:100%;
 	position:relative;
 	overflow:hidden;
 }
 
-/*左侧列表样式*/
+/*宸︿晶鍒楄〃鏍峰紡*/
 .pubList{
 	position:absolute;
 	left:0;
@@ -70,9 +79,15 @@
 	/*min-width:360px;*/
 	border-right:1px solid #ccc;
 	overflow-y:auto;
+	padding-bottom:30px;
+}
+.pubList .page{
+	width:360px;
+	height:40px;
+	margin:0 auto;
 }
 
-/* 拖动边条，左右拉大，缩小
+/* 鎷栧姩杈规潯锛屽乏鍙虫媺澶э紝缂╁皬
 .pubList .drag{
 	 position:absolute;
 	 top:0;
@@ -151,19 +166,19 @@
 }
 
 
-/*右侧内容详情样式*/
+/*鍙充晶鍐呭璇︽儏鏍峰紡*/
 .pubDetail{
 	position:absolute;
 	right:0;
 	top:0;
 	height:100%;
-	/*动态获得本区块的宽度，注意操作符前后需有空格*/
+	/*鍔ㄦ�佽幏寰楁湰鍖哄潡鐨勫搴︼紝娉ㄦ剰鎿嶄綔绗﹀墠鍚庨渶鏈夌┖鏍�*/
 	width:calc(100% - 400px);
 	background:white;
-	z-index:-2;
+	/*z-index:-2; z-index的取值会影响滚动条的使用，overflow:auto时，只显示滚动条，但滚不动*/
 }
 .pubDetail .conBox{
-	padding:0 40px;
+	padding:0 30px 0 40px;
 }
 .pubDetail .conBox .conTitle{
 	padding:25px 0;
@@ -197,10 +212,12 @@
 }
 
 	
-.pubDetail .conBox .conTable td{
-	width:15%;
+.pubDetail .conBox .conTable{
+	width:100%;
+	height:400px;
+	overflow-y:auto;
 }
-/*发布管理内容详情前的彩色圆点-已审核*/
+/*鍙戝竷绠＄悊鍐呭璇︽儏鍓嶇殑褰╄壊鍦嗙偣-宸插鏍�*/
 .conDot{
   display:inline-block;
   width:15px;
