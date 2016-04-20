@@ -74,7 +74,7 @@
 	position:absolute;
 	left:0;
 	top:0;
-	width:400px;
+	width:420px;
 	height:100%;
 	/*min-width:360px;*/
 	border-right:1px solid #ccc;
@@ -84,7 +84,8 @@
 .pubList .page{
 	width:360px;
 	height:40px;
-	margin:0 auto;
+	margin:20px auto;
+
 }
 
 /* 鎷栧姩杈规潯锛屽乏鍙虫媺澶э紝缂╁皬
@@ -110,6 +111,7 @@
 	right:-10px;
 }
 */
+
 .listBox{
 	width:100%;
 	height:60px;
@@ -117,6 +119,7 @@
 	margin-bottom:6px;
 	background:white;
 }
+
 .listBox .listImg{
 	height:100%;
 	width:15%;
@@ -152,14 +155,33 @@
 	margin-top:0;
 	margin-bottom:2px;
 	color:#636363;
+	position:relative;
+	display:inline-block;
+}
+.listBox h3 span{
+	width:30px;
+	height:16px;
+	font-size:10px;
+	font-weight: normal;
+	line-height:20px;
+	text-align: center;
+	border-radius: 5px;
+	position:absolute;
+	right:-40px;
+	bottom:0;
+	color:white;
+	-webkit-transform: scale(0.9);
 }
 .listBox .secTitle{
 	color:#ccc;
 	font-size:10px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 .listBox .other{
 	font-size:8px;
-	color:#9fbfd8;
+	color:#3871a6;
 }
 .listBox .other span{
 	padding-right:12px;
@@ -173,7 +195,7 @@
 	top:0;
 	height:100%;
 	/*鍔ㄦ�佽幏寰楁湰鍖哄潡鐨勫搴︼紝娉ㄦ剰鎿嶄綔绗﹀墠鍚庨渶鏈夌┖鏍�*/
-	width:calc(100% - 400px);
+	width:calc(100% - 420px);
 	background:white;
 	/*z-index:-2; z-index的取值会影响滚动条的使用，overflow:auto时，只显示滚动条，但滚不动*/
 }
@@ -186,11 +208,37 @@
 }
 .pubDetail .conBox .conTitle h2{
 	font-weight:600;
+	margin-right:24px;
+	position:relative;
 }
-.pubDetail .conBox .conTitle span{
-	padding-left:15px;
+.pubDetail .conBox .conTitle h2 span{
+	width:30px;
+	height:16px;
+	font-size:10px;
+	font-weight: normal;
+	line-height:16px;
+	text-align: center;
+	background:#f9be36;
+	border-radius: 5px;
+	position:absolute;
+	right:-24px;
+	top:-10px;
+	color:white;
+	-webkit-transform: scale(0.9);
+	padding-left:0;
+}
+.conBox .conTitle span{
+	padding-left:24px;
 	color:#ccc;
 	font-size:12px;
+}
+
+.pubDetail .conBox .conTitle dl{
+	font-size:10px;
+	color:#343434;
+}
+.pubDetail .conBox .conTitle dl dt{
+	color:#767676;
 }
 
 .pubDetail .conBox .conPlay{
@@ -216,6 +264,10 @@
 	width:100%;
 	height:400px;
 	overflow-y:auto;
+}
+
+.conBox .conTable td span{
+	margin-right:8px;
 }
 /*鍙戝竷绠＄悊鍐呭璇︽儏鍓嶇殑褰╄壊鍦嗙偣-宸插鏍�*/
 .conDot{
