@@ -82,19 +82,23 @@ function itemListLoad(conList){
      $(".table").append(tbody);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
+<a href="javascript:void(0)">
+    <div class="listBox">
+        <div class="listCheck">
+            <input type="checkBox" name="" />
+        </div>
+        <div class="listImg">
+            <img alt="image" src="../resources/images/a2.jpg">
+        </div>
+        <div class="listCon">
+            <h3>滚石乐队为何古巴开唱</h3>
+            <p class="secTitle">秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
+            <p class="other"><span>from 新闻最前沿</span><span>来源:蜻蜓</span><span>2016年4月13</span></p>
+        </div>
+    </div>
+</a>
+*/
 
  /*                
     //发布管理页面列表区和详情区左右拖拽效果
