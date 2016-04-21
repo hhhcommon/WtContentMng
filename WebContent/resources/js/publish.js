@@ -51,37 +51,59 @@ function actListLoad(actList){
 
 //根据专辑或单体Id获取其详细信息及其下列表
 function itemListLoad(conList){
-     var conListLength=conList.ItemList.length;
-     alert(conListLength);
-     //下面是获取专辑详情
+     //下面是获取节目详情
      $(".actThumb").attr({'src':conList.ActDetail.ActThumb});
-     $(".actTitle").text(conList.ActDetail.ActTitle);
-     $(".typeTag").text(conList.ActDetail.ActType);
+   //根据类型显示不同的标记
+     switch(conList.ActDetail.ActType){
+     case 'wt_SeqMediaAsset':
+    	 $(".itemCount").text("专辑里的声音("+conList.ItemCount+")");
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
+     	break;
+     case '单体':
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
+     	break;
+     case '电台':
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#ccc'>电台</span>");
+     	break;
+     default:
+     
+     }
      $(".actSource").text("来源："+conList.ActDetail.ActSource);
      $(".actPubTime").text(conList.ActDetail.ActPubTime);
      $(".vjName").text(conList.ActDetail.ActVjName);
      $(".actDesn").text(conList.ActDetail.ActDesn);
      //$(".cloumn").text(itemList.ResultList.Cloumn);  栏目？标签？数组类型
+     
+     getItemList(conList.ItemList);
+}
 
-	//声明下面需要创建的节点，以便获取专辑内的单体列表
-	 var tr,tdFirst,tdSpan,tdA,tdSecond;
-     var tbody=$("<tbody></tbody>");
-    //循环加载列表
-     for(var i=0;i<conListLength;i++){
+//把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
+function getItemList(itemList,sort){
+    var conListLength=itemList.length;
+	//声明下面需要创建的节点，以便获取节目内的单体列表
+	var tr,tdFirst,tdSpan,tdA,tdSecond;
+    var tbody=$("<tbody></tbody>");
+   //循环创建table行
+    for(var i=0;i<conListLength;i++){
 	  tr=$("<tr></tr>");
 	  tdFirst=$("<td></td>");
 	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
 	  tdA=$("<a href='#'></a>");
-	  tdA.text(conList.ItemList[i].ItemName);
+	  tdA.text(itemList[i].ItemName);
 	  tdSecond=$("<td class='text-right'></td>");
-	  tdSecond.text(conList.ItemList[i].ItemPubName);
+	  tdSecond.text(itemList[i].ItemPubTime);
 	  
 	  tdFirst.append(tdSpan).append(tdA);
-	  tbody.append(tr.append(tdFirst).append(tdSecond))
-     }
-     $(".table").append(tbody);
+	  tr.append(tdFirst).append(tdSecond);
+	  //根据是否有误sort参数判断插入行的方式，以实现正反序效果
+	  if(sort!=null){
+		  tbody.prepend(tr);  //前置插入行
+	  }else{
+		  tbody.append(tr);   //后置追加行
+	  }
+    }
+    $(".table").append(tbody);
 }
-
  /*                
     //发布管理页面列表区和详情区左右拖拽效果
     var xDown=0,xMove=0,xUp=0;

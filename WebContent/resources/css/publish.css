@@ -257,6 +257,25 @@
     left:28px;
     color:#0077c7;
 }
+.pubDetail .conBox .itemSortBox{
+	clear:both;
+	padding:10px 0;
+	font-size:14px;
+	color:#343434;
+	font-weight: bold
+}
+.pubDetail .conBox .itemSortBox .itemSort{
+	display:inline-block;
+	float:right;
+	border:1px solid #aaa;
+	border-radius: 8px;
+	width:36px;
+	height:20px;
+	line-height:20px;
+	text-align:center;
+	font-size:12px;
+	color:#343434
+}
 
 	
 .pubDetail .conBox .conTable{

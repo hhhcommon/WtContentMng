@@ -58,7 +58,7 @@
 								},
 								{
 									"Id":"234523423",
-										"ActTitle":"逻辑思维",
+										"ActTitle":"逻辑思维好长的标题啊好长的标题啊好长的标题啊好长的标题啊",
 										"ActThumb":"../resources/images/a2.jpg",
 										"CTime":"2015-10-30",
 										"Source":"蜻蜓",
@@ -85,31 +85,80 @@
 								"ItemList":[
 									{
 					             		"Id":"24334",
-					             		"ItemName":"day day up",
+					             		"ItemName":"day day up4",
 					             		"ItemPubTime":"2016-04-20"
 					             	},
 					             	{
 					             		"Id":"24334",
-					             		"ItemName":"day day up",
+					             		"ItemName":"day day up3",
 					             		"ItemPubTime":"2016-04-20"
 					             	},
 					             	{
 					             		"Id":"24334",
-					             		"ItemName":"day day up",
+					             		"ItemName":"day day up2",
 					             		"ItemPubTime":"2016-04-20"
 					             	},
 					             	{
 					             		"Id":"24334",
-					             		"ItemName":"day day up",
+					             		"ItemName":"day day up1",
 					             		"ItemPubTime":"2016-04-20"
 					             	}
-				             	]
+				             	],
+				             	"ItemCount":"156"          	
 				}
-				itemListLoad(itemList);
+				//点击节目，获取详情及列表
+				var itemList='';
+				$(".listBox").bind("click",function(){
+					$.ajax({
+                        type: "POST",    
+                        url: "http://192.168.1.19:8080/wt/content/listquery/detailquery.do",
+                        dataType: "json",
+                        data: {
+                            UserId: "zhangsan", 
+                            FlowFlag:"1",
+                            Page:"1",
+                            PageSize:"10",
+                            Id:"3b9f7e8b524143d7b6691a9ac4fbe9b5",
+                            ActType:"wt_SeqMediaAsset"
+                        },
+                        beforeSend:function(){$(".conBox").html("数据加载中...")},
+                        success: function(itemList) {
+                        	$(".conBox").html("");
+                            if (itemList.ReturnType=="1001") {
+                                alert("获取到数据了！");
+                                //加载列表
+                                itemListLoad(itemList);;
+                                itemList=itemList;
+                            } else {
+                                alert("获取数据出现问题了:"+itemList.message);
+                            }  
+                        },
+                        error: function(jqXHR){     
+                           alert("发生错误：" + jqXHR.status);
+                        },     
+                    });              	
+				});
+
+				//itemListLoad(itemList);
+				
+
+				//单体列表正反排序
+				var flag=0;
+				$(".itemSort").bind("click",function(){
+					$(".table").html("");
+					if(flag==0){
+						flag=getItemList(itemList.ItemList,1);
+						flag=1;
+					}else{
+						flag=getItemList(itemList.ItemList);
+						flag=0;
+					}
+					
+				});
 				/*
 				$.ajax({
                         type: "POST",    
-                        url: "http://localhost:8080/wt/content/listquery/query.do",
+                        url: "http://192.168.1.19:8080/wt/content/listquery/query.do",
                         dataType: "json",
                         data: {
                             UserId: "zhangsan", 
@@ -136,7 +185,7 @@
                 });
               	
 				*/
-
+				
 			});
 		</script>
     </head>
@@ -147,10 +196,10 @@
                 <div class="allCheck">
                     <input type="checkBox" name="" />
                 </div>
-                <button type="button" class="btn" style="margin-right:260px">撤回</button>
+                <button type="button" class="btn" style="margin-right:300px">撤回</button>
                 
                 <label>栏目:</label>
-                    <select class="" name="category">
+                    <select class="column" name="column">
                         <option>不 限</option>
                         <option>新闻</option>
                         <option>音乐</option>
@@ -158,7 +207,7 @@
                         <option>其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
-                    <select class="" name="resource">
+                    <select class="source" name="source">
                         <option>不 限</option>
                         <option>喜马拉雅</option>
                         <option>蜻蜓</option>
@@ -169,9 +218,9 @@
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>
                     <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="start" value="" placeholder="2016-03-21" />
+                        <input type="text" class="input-sm form-control" name="StartPubTime" value="" placeholder="2016-03-21" />
                         <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="end" value="" placeholder="2016-04-22" />
+                        <input type="text" class="input-sm form-control" name="EndPubTime" value="" placeholder="2016-04-22" />
                     </div>
                 </div>
                 <button type="button" class="btn">查 询</button>
@@ -182,7 +231,7 @@
             
                 <!--左侧列表-->
                 <div class="pubList" onselectstart="return false;">
-                	<!--
+                	
                 	<div>
                   	<a href="javascript:void(0)">
                         <div class="listBox">
@@ -193,12 +242,14 @@
                                 <img alt="image" src="../resources/images/a2.jpg">
                             </div>
                             <div class="listCon">
-                                <h3>滚石乐队为何古巴开唱<span>专辑</span></h3>
+                                <h3>测试排序号可编辑<span>专辑</span></h3>
                                 <p class="secTitle">专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
                                 <p class="other"><span>来源:蜻蜓</span><span>2016年4月13</span></p>
                             </div>
                         </div>
                     </a>
+                    </div>
+                    <!--
                     <a href="javascript:void(0)">
                         <div class="listBox">
                             <div class="listCheck">
@@ -214,7 +265,7 @@
                             </div>
                         </div>
                     </a>
-                    </div>
+                    
                     -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
@@ -235,20 +286,20 @@
                 	<div class="conBox">
                         <div class="conTitle" >
                         	<div class="titleImg" style="float:left;width:15%;">
-                        		<img alt="image" class="actThumb" style="width:100%;height:100%;" src="../resources/images/profile_small.jpg">
+                        		<img alt="image" class="actThumb" style="width:100%;height:100%;" src="">
                         	</div>
                         	<div class="detail" style="float:left;padding-left:20px;width:80%">
                         		<div class="title">
-                        			<h2 style="display:inline" class="actTitle">南明死局<span class="typeTag">专辑</span></h2>
-                            		<span class="actSource">来源:蜻蜓</span><span class="actPubTime">2016年4月13</span>
+                        			<h2 style="display:inline" class="actTitle"></h2>
+                            		<span class="actSource"></span><span class="actPubTime"></span>
                         		</div>
                         		<dl style="padding-top:10px">
                         			<dt style="float:left;padding-right:8px;">主播 :</dt>
-                        			<dd class="vjName">主播名字</dd>
+                        			<dd class="vjName"></dd>
                         			<dt style="float:left;padding-right:8px;">简介 :</dt>
-                        			<dd class="actDesn">简介描述简介描述简介描述简介描述简介描述简介描述简介描述</dd>
+                        			<dd class="actDesn"></dd>
                         			<dt style="float:left;padding-right:8px;">标签 :</dt>
-                        			<dd class="cloumn">脱口秀</dd>
+                        			<dd class="cloumn"></dd>
                         		</dl>
                         	</div>
                             
@@ -267,24 +318,14 @@
                             <i>08:35/25:16</i>
                         </div>
                         --> 
-						<div style="clear:both;padding:10px 0;font-size:14px;color:#343434;font-weight: bold">
-							<span>专辑里的声音 (156)</span>
-							<a href="#" style="display:inline-block;float:right;border:1px solid #aaa;border-radius: 8px;width:36px;height:20px;line-height:20px;text-align:center;font-size:12px;color:#343434">排序</a>
+						<div class="itemSortBox">
+							<!-- 如果是专辑，此处显示专辑内列表总数，否则不显示 -->
+							<span class="itemCount"></span>
+							<a href="javascript:;" class="itemSort">排序</a>
 						</div>
                     	<!-- 专辑内对应单体列表 -->
                     	<div class="conTable">
-							<table class="table">
-								<!--  
-								<tbody>
-									<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td style="border-bottom:1px solid #e7eaec;"><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right" style="border-bottom:1px solid #e7eaec;">2015-11-12</td>
-                                	</tr>
-								</tbody>
-								-->
-							</table>
+							<table class="table"></table>
                     	</div>
                 	</div>
             	</div>
