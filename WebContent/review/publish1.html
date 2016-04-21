@@ -27,89 +27,100 @@
 					}
 				});
 				
-				var actList={"returnType":"1001", "resultList":
+				var actList={"ReturnType":"1001", "ResultList":
 								[
 								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
+									"Id":"234523423",
+										"ActTitle":"逻辑思维",
+										"ActThumb":"../resources/images/a2.jpg",
+										"CTime":"2015-10-30",
+										"Source":"蜻蜓",
+										"ActType":"专辑",
+										"ActDesc":"节目简介"
 								},
 								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
+									"Id":"234523423",
+										"ActTitle":"逻辑思维",
+										"ActThumb":"../resources/images/a2.jpg",
+										"CTime":"2015-10-30",
+										"Source":"蜻蜓",
+										"ActType":"专辑",
+										"ActDesc":"节目简介"
 								},
 								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
+									"Id":"234523423",
+										"ActTitle":"逻辑思维",
+										"ActThumb":"../resources/images/a2.jpg",
+										"CTime":"2015-10-30",
+										"Source":"蜻蜓",
+										"ActType":"专辑",
+										"ActDesc":"节目简介"
 								},
 								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"单体",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"电台",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
+									"Id":"234523423",
+										"ActTitle":"逻辑思维",
+										"ActThumb":"../resources/images/a2.jpg",
+										"CTime":"2015-10-30",
+										"Source":"蜻蜓",
+										"ActType":"专辑",
+										"ActDesc":"节目简介"
 								}
 								]
 							};
 				actListLoad(actList);
+				
+				var itemList={"ReturnType":"1001",
+						      "ActDetail":{
+				                            	"ID":"24334",
+				                             	"ActTitle":"逻辑思维",
+				                             	"ActType":"专辑",
+				                             	"ActThumb":"../resources/images/profile_small.jpg",
+				                             	"ActAllCount":"109集",
+				                             	"ActVjName":"老罗",
+				                             	"KeyWords":"脱口秀",
+				                             	"ActDesn":"死磕自己，娱乐大家",
+				                             	"ActSource":"喜马拉雅",
+				                             	"ActColumn":["脱口秀","科技"]
+				                            },
+								"ItemList":[
+									{
+					             		"Id":"24334",
+					             		"ItemName":"day day up",
+					             		"ItemPubTime":"2016-04-20"
+					             	},
+					             	{
+					             		"Id":"24334",
+					             		"ItemName":"day day up",
+					             		"ItemPubTime":"2016-04-20"
+					             	},
+					             	{
+					             		"Id":"24334",
+					             		"ItemName":"day day up",
+					             		"ItemPubTime":"2016-04-20"
+					             	},
+					             	{
+					             		"Id":"24334",
+					             		"ItemName":"day day up",
+					             		"ItemPubTime":"2016-04-20"
+					             	}
+				             	]
+				}
+				itemListLoad(itemList);
 				/*
 				$.ajax({
                         type: "POST",    
                         url: "http://localhost:8080/wt/content/listquery/query.do",
                         dataType: "json",
                         data: {
-                            userId: "zhangsan", 
-                            flowFlag:"1",
-                            page:"1",
-                            pageSize:"10"
+                            UserId: "zhangsan", 
+                            FlowFlag:"1",
+                            Page:"1",
+                            PageSize:"10"
                         },
                         beforeSend:function(){$(".pubList").html("数据加载中...")},
                         success: function(actList) {
                         	$(".pubList").html("");
-                            if (data.ReturnType=="1001") {
+                            if (actList.ReturnType=="1001") {
                                 alert("获取到数据了！");
                                 //加载列表
                                 actListLoad(actList);
@@ -263,50 +274,16 @@
                     	<!-- 专辑内对应单体列表 -->
                     	<div class="conTable">
 							<table class="table">
+								<!--  
 								<tbody>
 									<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
                                   		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
                                 	</tr>
                                 	<tr>
                                   		<td style="border-bottom:1px solid #e7eaec;"><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right" style="border-bottom:1px solid #e7eaec;">2015-11-12</td>
                                 	</tr>
 								</tbody>
+								-->
 							</table>
                     	</div>
                 	</div>
