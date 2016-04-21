@@ -53,7 +53,7 @@
 				*/
 				$.ajax({
                     type: "POST",    
-                    url: "http://localhost:8080/wt/content/listquery/query.do",
+                    url: "http://localhost:908/wt/content/listquery/query.do",
                     dataType: "json",
                     data: {
                         UserId: "zhangsan", 
@@ -68,6 +68,7 @@
                             alert("获取到数据了！");
                             //加载列表
                             actListLoad(actList);
+                            console.log(actList);
                         } else {
                             alert("获取数据出现问题了:"+actList.message);
                         }  
@@ -76,16 +77,16 @@
                        alert("发生错误：" + jqXHR.status);
                     },     
                 });
-                //return false;
-            });
+      
 				
 			
 
 				//点击节目，获取详情及列表
-				$(".listBox").bind("click",function(){
+				$(".listBox").live("click",function(){
+					alert("aa");
 					$.ajax({
                         type: "POST",    
-                        url: "http://localhost:8080/wt/content/listquery/detailquery.do",
+                        url: "http://localhost:908/wt/content/listquery/detailquery.do",
                         dataType: "json",
                         data: {
                             UserId: "zhangsan", 
@@ -206,7 +207,7 @@
             
                 <!--左侧列表-->
                 <div class="pubList" onselectstart="return false;">
-                	
+                	<!--
                 	<div>
                   	<a href="javascript:void(0)">
                         <div class="listBox">
@@ -224,7 +225,7 @@
                         </div>
                     </a>
                     </div>
-                    <!--
+                    
                     <a href="javascript:void(0)">
                         <div class="listBox">
                             <div class="listCheck">
