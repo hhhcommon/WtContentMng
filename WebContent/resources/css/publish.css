@@ -150,12 +150,16 @@
 	margin:0 0 2px;
 }
 .listBox h3{
-	font-size:14px;
+	font-size:12px;
 	margin-top:0;
 	margin-bottom:2px;
 	color:#636363;
 	position:relative;
 	display:inline-block;
+	/*max-width:120px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;*/
 }
 .listBox h3 span{
 	width:30px;

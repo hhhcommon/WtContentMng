@@ -31,21 +31,21 @@
 								[
 								{
 									"Id":"234523423",
-										"ActTitle":"逻辑思维",
-										"ActThumb":"../resources/images/a2.jpg",
-										"CTime":"2015-10-30",
-										"Source":"蜻蜓",
-										"ActType":"wt_Broadcast",
-										"ActDesc":"节目简介"
+									"ActTitle":"逻辑思维",
+									"ActThumb":"../resources/images/a2.jpg",
+									"CTime":"2015-10-30",
+									"Source":"蜻蜓",
+									"ActType":"wt_Broadcast",
+									"ActDesc":"节目简介"
 								},
 								{
 									"Id":"234523423",
-										"ActTitle":"逻辑思维",
-										"ActThumb":"../resources/images/a2.jpg",
-										"CTime":"2015-10-30",
-										"Source":"蜻蜓",
-										"ActType":"wt_MediaAsset",
-										"ActDesc":"节目简介"
+									"ActTitle":"逻辑思维逻辑思",
+									"ActThumb":"../resources/images/a2.jpg",
+									"CTime":"2015-10-30",
+									"Source":"蜻蜓",
+									"ActType":"wt_MediaAsset",
+									"ActDesc":"节目简介"
 								}
 								]
 							};
@@ -53,7 +53,7 @@
 				*/
 				$.ajax({
                     type: "POST",    
-                    url: "http://192.168.1.19:8080/wt/content/listquery/query.do",
+                    url: "http://localhost:8080/wt/content/listquery/query.do",
                     dataType: "json",
                     data: {
                         UserId: "zhangsan", 
@@ -78,14 +78,14 @@
                 });
                 //return false;
             });
-          	
+				
 			
 
 				//点击节目，获取详情及列表
 				$(".listBox").bind("click",function(){
 					$.ajax({
                         type: "POST",    
-                        url: "http://192.168.1.19:8080/wt/content/listquery/detailquery.do",
+                        url: "http://localhost:8080/wt/content/listquery/detailquery.do",
                         dataType: "json",
                         data: {
                             UserId: "zhangsan", 

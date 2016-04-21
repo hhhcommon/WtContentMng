@@ -29,7 +29,7 @@ function actListLoad(actList){
         //根据类型显示不同的标记
         switch(actList.ResultList[i].ActType){
 	        case 'wt_SeqMediaAsset':
-	        	//alert(actList.ResultList[i].ActType);
+	        	alert(actList.ResultList[i].ActType);
 	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
 	        	break;
 	        case 'wt_MediaAsset':
