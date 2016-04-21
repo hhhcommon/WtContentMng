@@ -25,11 +25,13 @@ public class QueryService {
 	public List<Map<String, Object>> queryList(int flowFlag, int currentpage, int pagesize) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int count = 0;
-		String sql = "select id,channelId,assetType,assetId,pubImg,cTime from wt_ChannelAsset where flowFlag=? order by sort desc";
+		String sql = "select a.id,a.channelId,a.assetType,a.assetId,a.pubImg,a.cTime from (select id,channelId,assetType,assetId,pubImg,cTime from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, flowFlag);
+			ps.setInt(2, (currentpage-1)*pagesize);
+			ps.setInt(3, pagesize*currentpage);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
@@ -37,7 +39,7 @@ public class QueryService {
 				oneData.put("ChannelId", rs.getString("channelId"));
 				oneData.put("ActType", rs.getString("assetType"));
 				oneData.put("AssetId", rs.getString("assetId"));
-				oneData.put("ActThunb", rs.getString("pubImg"));
+				oneData.put("ActThumb", rs.getString("pubImg"));
 				oneData.put("CTime", rs.getTimestamp("cTime"));
 				oneData.put("ActDesn", "");
 				list2seq.add(oneData);
@@ -47,37 +49,10 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-					rs = null;
-				} catch (Exception e) {
-					rs = null;
-				} finally {
-					rs = null;
-				}
-			;
-			if (ps != null)
-				try {
-					ps.close();
-					ps = null;
-				} catch (Exception e) {
-					ps = null;
-				} finally {
-					ps = null;
-				}
-			;
-			if (conn != null)
-				try {
-					conn.close();
-					conn = null;
-				} catch (Exception e) {
-					conn = null;
-				} finally {
-					conn = null;
-				}
-			;
-		}
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
 
 		// 栏目表查询
 		sql = "select channelName from wt_Channel where id=?";
@@ -85,45 +60,18 @@ public class QueryService {
 			try {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) map.get("assetId"));
+				ps.setString(1, (String) map.get("AssetId"));
 				rs = ps.executeQuery();
 				while (rs != null && rs.next()) {
-					map.put("actTitle", rs.getString("channelName"));
+					map.put("ActTitle", rs.getString("channelName"));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-				if (rs != null)
-					try {
-						rs.close();
-						rs = null;
-					} catch (Exception e) {
-						rs = null;
-					} finally {
-						rs = null;
-					}
-				;
-				if (ps != null)
-					try {
-						ps.close();
-						ps = null;
-					} catch (Exception e) {
-						ps = null;
-					} finally {
-						ps = null;
-					}
-				;
-				if (conn != null)
-					try {
-						conn.close();
-						conn = null;
-					} catch (Exception e) {
-						conn = null;
-					} finally {
-						conn = null;
-					}
-				;
-			}
+	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+	        }
 		}
 		return list2seq;
 	}
