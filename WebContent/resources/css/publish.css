@@ -117,6 +117,7 @@
 	padding:6px;
 	margin-bottom:6px;
 	background:white;
+	position:relative;
 }
 
 .listBox .listImg{
@@ -213,6 +214,7 @@
 	font-weight:600;
 	margin-right:24px;
 	position:relative;
+	font-size:20px;
 }
 .pubDetail .conBox .conTitle h2 span{
 	width:30px;

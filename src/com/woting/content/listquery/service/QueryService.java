@@ -85,10 +85,10 @@ public class QueryService {
 			try {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) map.get("assetId"));
+				ps.setString(1, (String) map.get("AssetId"));
 				rs = ps.executeQuery();
 				while (rs != null && rs.next()) {
-					map.put("actTitle", rs.getString("channelName"));
+					map.put("ActTitle", rs.getString("channelName"));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();

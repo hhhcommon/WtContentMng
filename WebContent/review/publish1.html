@@ -50,7 +50,7 @@
 								]
 							};
 				actListLoad(actList);
-				*/
+				
 				$.ajax({
                     type: "POST",    
                     url: "http://localhost:908/wt/content/listquery/query.do",
@@ -65,7 +65,7 @@
                     success: function(actList) {
                     	//$(".pubList").html("");
                         if (actList.ReturnType=="1001") {
-                            alert("获取到数据了！");
+                            console.log("获取到数据了！");
                             //加载列表
                             actListLoad(actList);
                             console.log(actList);
@@ -75,15 +75,14 @@
                     },
                     error: function(jqXHR){     
                        alert("发生错误：" + jqXHR.status);
-                    },     
+                    }     
                 });
       
-				
-			
-
+				*/
 				//点击节目，获取详情及列表
-				$(".listBox").live("click",function(){
-					alert("aa");
+				var itemList=[];
+				$(".pubList").on("click",function(){
+					//alert("aaa");
 					$.ajax({
                         type: "POST",    
                         url: "http://localhost:908/wt/content/listquery/detailquery.do",
@@ -100,18 +99,21 @@
                         success: function(itemList) {
                         	//$(".conBox").html("");
                             if (itemList.ReturnType=="1001") {
-                                alert("获取到数据了！");
+                                console.log("获取到数据了！");
                                 //加载列表
-                                itemListLoad(itemList);;
+                                $(".table").html("");
+                                itemListLoad(itemList);
+                                console.log(itemList);
                             } else {
                                 alert("获取数据出现问题了:"+itemList.message);
                             }  
                         },
                         error: function(jqXHR){     
                            alert("发生错误：" + jqXHR.status);
-                        },     
+                        }    
                     });              	
 				});
+				
 				/*
 				var itemList={"ReturnType":"1001",
 						      "ActDetail":{
@@ -143,25 +145,21 @@
 				
 				
 				//itemListLoad(itemList);
-				
-
 				//单体列表正反排序
 				var flag=0;
 				$(".itemSort").bind("click",function(){
 					$(".table").html("");
+					console.log(itemList);
 					if(flag==0){
-						flag=getItemList(itemList.ItemList,1);
+						flag=getItemList(itemList,1);
 						flag=1;
 					}else{
-						flag=getItemList(itemList.ItemList);
+						flag=getItemList(itemList);
 						flag=0;
 					}
 					
 				});
 				*/
-				
-				
-				
 			});
 		</script>
     </head>
@@ -207,7 +205,7 @@
             
                 <!--左侧列表-->
                 <div class="pubList" onselectstart="return false;">
-                	<!--
+                	
                 	<div>
                   	<a href="javascript:void(0)">
                         <div class="listBox">
@@ -218,14 +216,18 @@
                                 <img alt="image" src="../resources/images/a2.jpg">
                             </div>
                             <div class="listCon">
-                                <h3>测试排序号可编辑<span>专辑</span></h3>
+                                <h3>测试排序号可编辑<span style="background-color:green;">专辑</span></h3>
                                 <p class="secTitle">专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
                                 <p class="other"><span>来源:蜻蜓</span><span>2016年4月13</span></p>
+                            </div>
+                            <div class="sortUpdate" style="position:absolute;top:5px;right:5px;width:100px,height:20px;">
+                            	<input class="sortNum" style="width:60px;height:20px;background-color:#ccc;color:black;text-align:center;border:none;outline:0;" value="22225"></input>
+                            	<button class="sortUpdateBtn" style="height:20px;line-heihgt:20px;width:24px;margin:0;padding:0;border-radius:20px;border:none;">OK</button>
                             </div>
                         </div>
                     </a>
                     </div>
-                    
+                    <!--
                     <a href="javascript:void(0)">
                         <div class="listBox">
                             <div class="listCheck">
