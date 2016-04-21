@@ -28,17 +28,18 @@ function actListLoad(actList){
         imgDiv.append(thumbImg);
         //根据类型显示不同的标记
         switch(actList.ResultList[i].ActType){
-        case '专辑':
-        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
-        	break;
-        case '单体':
-        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
-        	break;
-        case '电台':
-        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#ccc'>电台</span>");
-        	break;
-        default:
-        
+	        case 'wt_SeqMediaAsset':
+	        	//alert(actList.ResultList[i].ActType);
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
+	        	break;
+	        case 'wt_MediaAsset':
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
+	        	break;
+	        case 'wt_Broadcast':
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#ccc'>电台</span>");
+	        	break;
+	        default:
+	        
         }
         conP2.append(conSpan1);
         conP2.append(conSpan2);
@@ -59,10 +60,10 @@ function itemListLoad(conList){
     	 $(".itemCount").text("专辑里的声音("+conList.ItemCount+")");
     	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
      	break;
-     case '单体':
+     case 'wt_MediaAsset':
     	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
      	break;
-     case '电台':
+     case 'wt_Broadcast':
     	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#ccc'>电台</span>");
      	break;
      default:

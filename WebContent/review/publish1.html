@@ -26,7 +26,7 @@
 						alert(page);
 					}
 				});
-				
+				/*
 				var actList={"ReturnType":"1001", "ResultList":
 								[
 								{
@@ -35,7 +35,7 @@
 										"ActThumb":"../resources/images/a2.jpg",
 										"CTime":"2015-10-30",
 										"Source":"蜻蜓",
-										"ActType":"专辑",
+										"ActType":"wt_Broadcast",
 										"ActDesc":"节目简介"
 								},
 								{
@@ -44,36 +44,79 @@
 										"ActThumb":"../resources/images/a2.jpg",
 										"CTime":"2015-10-30",
 										"Source":"蜻蜓",
-										"ActType":"专辑",
-										"ActDesc":"节目简介"
-								},
-								{
-									"Id":"234523423",
-										"ActTitle":"逻辑思维",
-										"ActThumb":"../resources/images/a2.jpg",
-										"CTime":"2015-10-30",
-										"Source":"蜻蜓",
-										"ActType":"专辑",
-										"ActDesc":"节目简介"
-								},
-								{
-									"Id":"234523423",
-										"ActTitle":"逻辑思维好长的标题啊好长的标题啊好长的标题啊好长的标题啊",
-										"ActThumb":"../resources/images/a2.jpg",
-										"CTime":"2015-10-30",
-										"Source":"蜻蜓",
-										"ActType":"专辑",
+										"ActType":"wt_MediaAsset",
 										"ActDesc":"节目简介"
 								}
 								]
 							};
 				actListLoad(actList);
-				
+				*/
+				$.ajax({
+                    type: "POST",    
+                    url: "http://192.168.1.19:8080/wt/content/listquery/query.do",
+                    dataType: "json",
+                    data: {
+                        UserId: "zhangsan", 
+                        FlowFlag:"1",
+                        Page:"1",
+                        PageSize:"10"
+                    },
+                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
+                    success: function(actList) {
+                    	//$(".pubList").html("");
+                        if (actList.ReturnType=="1001") {
+                            alert("获取到数据了！");
+                            //加载列表
+                            actListLoad(actList);
+                        } else {
+                            alert("获取数据出现问题了:"+actList.message);
+                        }  
+                    },
+                    error: function(jqXHR){     
+                       alert("发生错误：" + jqXHR.status);
+                    },     
+                });
+                //return false;
+            });
+          	
+			
+
+				//点击节目，获取详情及列表
+				$(".listBox").bind("click",function(){
+					$.ajax({
+                        type: "POST",    
+                        url: "http://192.168.1.19:8080/wt/content/listquery/detailquery.do",
+                        dataType: "json",
+                        data: {
+                            UserId: "zhangsan", 
+                            FlowFlag:"1",
+                            Page:"1",
+                            PageSize:"10",
+                            Id:"3b9f7e8b524143d7b6691a9ac4fbe9b5",
+                            ActType:"wt_SeqMediaAsset"
+                        },
+                        //beforeSend:function(){$(".conBox").html("数据加载中...")},
+                        success: function(itemList) {
+                        	//$(".conBox").html("");
+                            if (itemList.ReturnType=="1001") {
+                                alert("获取到数据了！");
+                                //加载列表
+                                itemListLoad(itemList);;
+                            } else {
+                                alert("获取数据出现问题了:"+itemList.message);
+                            }  
+                        },
+                        error: function(jqXHR){     
+                           alert("发生错误：" + jqXHR.status);
+                        },     
+                    });              	
+				});
+				/*
 				var itemList={"ReturnType":"1001",
 						      "ActDetail":{
 				                            	"ID":"24334",
 				                             	"ActTitle":"逻辑思维",
-				                             	"ActType":"专辑",
+				                             	"ActType":"wt_SeqMediaAsset",
 				                             	"ActThumb":"../resources/images/profile_small.jpg",
 				                             	"ActAllCount":"109集",
 				                             	"ActVjName":"老罗",
@@ -92,53 +135,12 @@
 					             		"Id":"24334",
 					             		"ItemName":"day day up3",
 					             		"ItemPubTime":"2016-04-20"
-					             	},
-					             	{
-					             		"Id":"24334",
-					             		"ItemName":"day day up2",
-					             		"ItemPubTime":"2016-04-20"
-					             	},
-					             	{
-					             		"Id":"24334",
-					             		"ItemName":"day day up1",
-					             		"ItemPubTime":"2016-04-20"
 					             	}
 				             	],
-				             	"ItemCount":"156"          	
+				             	"ItemCount":"2"          	
 				}
-				//点击节目，获取详情及列表
-				var itemList='';
-				$(".listBox").bind("click",function(){
-					$.ajax({
-                        type: "POST",    
-                        url: "http://192.168.1.19:8080/wt/content/listquery/detailquery.do",
-                        dataType: "json",
-                        data: {
-                            UserId: "zhangsan", 
-                            FlowFlag:"1",
-                            Page:"1",
-                            PageSize:"10",
-                            Id:"3b9f7e8b524143d7b6691a9ac4fbe9b5",
-                            ActType:"wt_SeqMediaAsset"
-                        },
-                        beforeSend:function(){$(".conBox").html("数据加载中...")},
-                        success: function(itemList) {
-                        	$(".conBox").html("");
-                            if (itemList.ReturnType=="1001") {
-                                alert("获取到数据了！");
-                                //加载列表
-                                itemListLoad(itemList);;
-                                itemList=itemList;
-                            } else {
-                                alert("获取数据出现问题了:"+itemList.message);
-                            }  
-                        },
-                        error: function(jqXHR){     
-                           alert("发生错误：" + jqXHR.status);
-                        },     
-                    });              	
-				});
-
+				
+				
 				//itemListLoad(itemList);
 				
 
@@ -155,36 +157,9 @@
 					}
 					
 				});
-				/*
-				$.ajax({
-                        type: "POST",    
-                        url: "http://192.168.1.19:8080/wt/content/listquery/query.do",
-                        dataType: "json",
-                        data: {
-                            UserId: "zhangsan", 
-                            FlowFlag:"1",
-                            Page:"1",
-                            PageSize:"10"
-                        },
-                        beforeSend:function(){$(".pubList").html("数据加载中...")},
-                        success: function(actList) {
-                        	$(".pubList").html("");
-                            if (actList.ReturnType=="1001") {
-                                alert("获取到数据了！");
-                                //加载列表
-                                actListLoad(actList);
-                            } else {
-                                alert("获取数据出现问题了:"+actList.message);
-                            }  
-                        },
-                        error: function(jqXHR){     
-                           alert("发生错误：" + jqXHR.status);
-                        },     
-                    });
-                    //return false;
-                });
-              	
 				*/
+				
+				
 				
 			});
 		</script>
