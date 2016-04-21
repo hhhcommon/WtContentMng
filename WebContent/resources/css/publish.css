@@ -84,16 +84,7 @@
 .pubList .page{
 	width:360px;
 	height:40px;
-<<<<<<< HEAD
-<<<<<<< HEAD
 	margin:20px auto;
-
-=======
-	margin:0 auto;
->>>>>>> refs/remotes/origin/master
-=======
-	margin:0 auto;
->>>>>>> refs/remotes/origin/master
 }
 
 /* 鎷栧姩杈规潯锛屽乏鍙虫媺澶э紝缂╁皬
@@ -119,6 +110,7 @@
 	right:-10px;
 }
 */
+
 .listBox{
 	width:100%;
 	height:60px;
@@ -126,6 +118,7 @@
 	margin-bottom:6px;
 	background:white;
 }
+
 .listBox .listImg{
 	height:100%;
 	width:15%;
@@ -171,7 +164,6 @@
 	font-weight: normal;
 	line-height:20px;
 	text-align: center;
-	background:#f9be36;
 	border-radius: 5px;
 	position:absolute;
 	right:-40px;
@@ -188,7 +180,7 @@
 }
 .listBox .other{
 	font-size:8px;
-	color:#9fbfd8;
+	color:#3871a6;
 }
 .listBox .other span{
 	padding-right:12px;
@@ -202,14 +194,7 @@
 	top:0;
 	height:100%;
 	/*鍔ㄦ�佽幏寰楁湰鍖哄潡鐨勫搴︼紝娉ㄦ剰鎿嶄綔绗﹀墠鍚庨渶鏈夌┖鏍�*/
-<<<<<<< HEAD
-<<<<<<< HEAD
 	width:calc(100% - 420px);
-=======
-=======
->>>>>>> refs/remotes/origin/master
-	width:calc(100% - 400px);
->>>>>>> refs/remotes/origin/master
 	background:white;
 	/*z-index:-2; z-index的取值会影响滚动条的使用，overflow:auto时，只显示滚动条，但滚不动*/
 }
@@ -272,6 +257,25 @@
     left:28px;
     color:#0077c7;
 }
+.pubDetail .conBox .itemSortBox{
+	clear:both;
+	padding:10px 0;
+	font-size:14px;
+	color:#343434;
+	font-weight: bold
+}
+.pubDetail .conBox .itemSortBox .itemSort{
+	display:inline-block;
+	float:right;
+	border:1px solid #aaa;
+	border-radius: 8px;
+	width:36px;
+	height:20px;
+	line-height:20px;
+	text-align:center;
+	font-size:12px;
+	color:#343434
+}
 
 	
 .pubDetail .conBox .conTable{
@@ -279,16 +283,10 @@
 	height:400px;
 	overflow-y:auto;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 .conBox .conTable td span{
 	margin-right:8px;
 }
-=======
->>>>>>> refs/remotes/origin/master
-=======
->>>>>>> refs/remotes/origin/master
 /*鍙戝竷绠＄悊鍐呭璇︽儏鍓嶇殑褰╄壊鍦嗙偣-宸插鏍�*/
 .conDot{
   display:inline-block;

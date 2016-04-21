@@ -1,7 +1,6 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+//根据审核状态加载专辑或单体列表
 function actListLoad(actList){
-     var actListLength=actList.resultList.length;
+     var actListLength=actList.ResultList.length;
      //alert(actListLength);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
@@ -14,97 +13,98 @@ function actListLoad(actList){
         checkInput=$("<input type='checkBox' name='' />");
         imgDiv=$("<div class='listImg'>");
         thumbImg=$("<img alt='mage'>");
-        thumbImg.attr({'src':actList.resultList[i].actThunb});
+        thumbImg.attr({'src':actList.ResultList[i].ActThumb});
         conDiv=$("<div class='listCon'>");
         conH=$("<h3></h3>");
-        //conH.text(actList[i].title);
-        //conHspan=$("<span></span>");
-        //conHspan.text("专辑");
         conP1=$("<p class='secTitle'></p>");
-        conP1.text(actList.resultList[i].actType);
+        conP1.text(actList.ResultList[i].ActDesc);
         conP2=$("<p class='other'></p>");
         conSpan1=$("<span></span>");
-        conSpan1.text("来源："+actList.resultList[i].id);
+        conSpan1.text("来源："+actList.ResultList[i].Source);
         conSpan2=$("<span></span>");
-        conSpan2.text(actList.resultList[i].cTime);
-=======
-/*
-<a href="javascript:void(0)">
-    <div class="listBox">
-        <div class="listCheck">
-            <input type="checkBox" name="" />
-        </div>
-        <div class="listImg">
-            <img alt="image" src="../resources/images/a2.jpg">
-        </div>
-        <div class="listCon">
-            <h3>滚石乐队为何古巴开唱</h3>
-            <p class="secTitle">秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
-            <p class="other"><span>from 新闻最前沿</span><span>来源:蜻蜓</span><span>2016年4月13</span></p>
-        </div>
-    </div>
-</a>
-*/
-=======
-/*
-<a href="javascript:void(0)">
-    <div class="listBox">
-        <div class="listCheck">
-            <input type="checkBox" name="" />
-        </div>
-        <div class="listImg">
-            <img alt="image" src="../resources/images/a2.jpg">
-        </div>
-        <div class="listCon">
-            <h3>滚石乐队为何古巴开唱</h3>
-            <p class="secTitle">秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
-            <p class="other"><span>from 新闻最前沿</span><span>来源:蜻蜓</span><span>2016年4月13</span></p>
-        </div>
-    </div>
-</a>
-*/
+        conSpan2.text(actList.ResultList[i].CTime);
 
-
->>>>>>> refs/remotes/origin/master
-
-
-<<<<<<< HEAD
->>>>>>> refs/remotes/origin/master
-
-<<<<<<< HEAD
         checkDiv.append(checkInput);
         imgDiv.append(thumbImg);
-        conDiv.append(conH);
-        conH.html(actList.resultList[i].actTitle+"<span>专辑</span>");
-        conDiv.append(conP1);
+        //根据类型显示不同的标记
+        switch(actList.ResultList[i].ActType){
+	        case 'wt_SeqMediaAsset':
+	        	//alert(actList.ResultList[i].ActType);
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
+	        	break;
+	        case 'wt_MediaAsset':
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
+	        	break;
+	        case 'wt_Broadcast':
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#ccc'>电台</span>");
+	        	break;
+	        default:
+	        
+        }
         conP2.append(conSpan1);
         conP2.append(conSpan2);
-        conDiv.append(conP2);
-        listDiv.append(checkDiv);
-        listDiv.append(imgDiv);
-        listDiv.append(conDiv);
+        conDiv.append(conH).append(conP1).append(conP2);
+        listDiv.append(checkDiv).append(imgDiv).append(conDiv);
         outDiv.append(firstA.append(listDiv));   
     }
     $(".pubList").prepend(outDiv);
 }
-=======
 
-=======
->>>>>>> refs/remotes/origin/master
+//根据专辑或单体Id获取其详细信息及其下列表
+function itemListLoad(conList){
+     //下面是获取节目详情
+     $(".actThumb").attr({'src':conList.ActDetail.ActThumb});
+   //根据类型显示不同的标记
+     switch(conList.ActDetail.ActType){
+     case 'wt_SeqMediaAsset':
+    	 $(".itemCount").text("专辑里的声音("+conList.ItemCount+")");
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
+     	break;
+     case 'wt_MediaAsset':
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
+     	break;
+     case 'wt_Broadcast':
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#ccc'>电台</span>");
+     	break;
+     default:
+     
+     }
+     $(".actSource").text("来源："+conList.ActDetail.ActSource);
+     $(".actPubTime").text(conList.ActDetail.ActPubTime);
+     $(".vjName").text(conList.ActDetail.ActVjName);
+     $(".actDesn").text(conList.ActDetail.ActDesn);
+     //$(".cloumn").text(itemList.ResultList.Cloumn);  栏目？标签？数组类型
+     
+     getItemList(conList.ItemList);
+}
 
-
-    /*添加class类
-    $("p").addClass("selected1 selected2");  多个用空格隔开
-    $('ul li:last').addClass(function() {
-      return 'item-' + $(this).index();
-    });
-    */
-<<<<<<< HEAD
->>>>>>> refs/remotes/origin/master
-=======
->>>>>>> refs/remotes/origin/master
-
-
+//把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
+function getItemList(itemList,sort){
+    var conListLength=itemList.length;
+	//声明下面需要创建的节点，以便获取节目内的单体列表
+	var tr,tdFirst,tdSpan,tdA,tdSecond;
+    var tbody=$("<tbody></tbody>");
+   //循环创建table行
+    for(var i=0;i<conListLength;i++){
+	  tr=$("<tr></tr>");
+	  tdFirst=$("<td></td>");
+	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
+	  tdA=$("<a href='#'></a>");
+	  tdA.text(itemList[i].ItemName);
+	  tdSecond=$("<td class='text-right'></td>");
+	  tdSecond.text(itemList[i].ItemPubTime);
+	  
+	  tdFirst.append(tdSpan).append(tdA);
+	  tr.append(tdFirst).append(tdSecond);
+	  //根据是否有误sort参数判断插入行的方式，以实现正反序效果
+	  if(sort!=null){
+		  tbody.prepend(tr);  //前置插入行
+	  }else{
+		  tbody.append(tr);   //后置追加行
+	  }
+    }
+    $(".table").append(tbody);
+}
  /*                
     //发布管理页面列表区和详情区左右拖拽效果
     var xDown=0,xMove=0,xUp=0;
