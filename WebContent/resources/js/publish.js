@@ -4,6 +4,7 @@ function actListLoad(actList){
      //alert(actListLength);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
+    var sortDiv,sortInput,sortBtn;
     var outDiv=$("<div></div>");
     //循环加载列表
     for(var i=0;i<actListLength;i++){
@@ -24,6 +25,12 @@ function actListLoad(actList){
         conSpan1.text("来源："+actList.ResultList[i].Source);
         conSpan2=$("<span></span>");
         conSpan2.text(actList.ResultList[i].CTime);
+        sortDiv=$("<div class='sortUpdate'></div>");
+        sortInput=$("<input class='sortNum'></input>");
+        sortInput.attr({"value":actList.ResultList[i].ActSort});
+        sortBtn=$("<button class='sortUpdateBtn'></button>");
+        sortBtn.text("OK");
+        sortDiv.append(sortInput).append(sortBtn);
 
         checkDiv.append(checkInput);
         imgDiv.append(thumbImg);
@@ -45,7 +52,7 @@ function actListLoad(actList){
         conP2.append(conSpan1);
         conP2.append(conSpan2);
         conDiv.append(conH).append(conP1).append(conP2);
-        listDiv.append(checkDiv).append(imgDiv).append(conDiv);
+        listDiv.append(checkDiv).append(imgDiv).append(conDiv).append(sortDiv);
         outDiv.append(firstA.append(listDiv));   
     }
     $(".pubList").prepend(outDiv);

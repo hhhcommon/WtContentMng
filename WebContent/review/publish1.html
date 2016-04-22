@@ -44,6 +44,7 @@
                         if (actList.ReturnType=="1001") {
                             console.log("获取到数据了！");
                             //加载列表
+                            $(".pubList").html(""); //再重新创建新的数据集时，先清空之前的
                             actListLoad(actList);
                             console.log(actList);
                         } else {
@@ -54,12 +55,45 @@
                        alert("发生错误：" + jqXHR.status);
                     }     
                 });
-      
 				
 				//点击节目，获取详情及列表
 				//var itemList=[];
 				$(document).on("click",".pubList .listBox",getItemListAjax);
 				
+				//修改排序号确定
+				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
+					$.ajax({
+	                    type: "POST",    
+	                    url: "http://localhost:908/wt/content/listquery/query.do",
+	                    dataType: "json",
+	                    data: {
+	                        UserId: "zhangsan", 
+	                        FlowFlag:"1",
+	                        Page:"1",
+	                        PageSize:"10"
+	                        ActSort:$(this).prev()[0].getAttribute("value")//js的获取属性值方法
+	                    },
+	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
+	                    success: function(actList) {
+	                    	//$(".pubList").html("");
+	                        if (actList.ReturnType=="1001") {
+	                            console.log("修改成功，获取到数据了！");
+	                            $(".pubList").html(""); //再重新创建新的数据集时，先清空之前的
+	                            //加载列表
+	                            actListLoad(actList);
+	                            //console.log(actList);
+	                        } else {
+	                            alert("获取数据出现问题了:"+actList.message);
+	                        }  
+	                    },
+	                    error: function(jqXHR){     
+	                       alert("发生错误：" + jqXHR.status);
+	                    }     
+	                });
+					
+					//阻止事件向上级冒泡
+					ev.stopPropagation();
+				});
 				/*
 				//单体列表正反排序
 				var flag=0;
