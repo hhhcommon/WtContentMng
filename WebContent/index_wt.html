@@ -88,13 +88,13 @@
                             userName: $("input:first").val(), 
                             password: $("input:last").val()
                         },
-                        success: function(data) {
-                            if (data.ReturnType=="1001") {
+                        success: function(menuTree) {
+                            if (menuTree.ReturnType=="1001") {
                                 alert("获取到数据了！");
                                 //加载菜单树列表
-                                menuTreeLoad(data);
+                                menuTreeLoad(menuTree);
                             } else {
-                                alert("获取数据出现问题了:"+data.message);
+                                alert("获取数据出现问题了:"+menuTree.Message);
                             }  
                         },
                         error: function(jqXHR){     

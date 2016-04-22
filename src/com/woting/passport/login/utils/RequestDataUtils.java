@@ -22,6 +22,7 @@ public abstract class RequestDataUtils {
 			while ((length = buf.read(bytes)) != -1) {
 				instr += new String(bytes, 0, length);
 			}
+			System.out.println(instr);
 			String[] strs = instr.split("&");
 			for (String string : strs) {
 				String[] strings = string.split("=");

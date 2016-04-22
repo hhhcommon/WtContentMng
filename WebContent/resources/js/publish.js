@@ -6,7 +6,7 @@ function getActListAjax(page){
         dataType: "json",
         data: {
             UserId: "zhangsan", 
-            QueryCondition:{FlowFlag:"1"},
+            FlowFlag:"1",
             Page:page,
             PageSize:"10"
         },

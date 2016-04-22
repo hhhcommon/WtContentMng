@@ -47,7 +47,6 @@ function menuTreeLoad(menuTree){
             /*
             if(menuGroupName=="发布管理"){
                 publishSpan=$("<span class='listDot'></span>");
-                //alert(j+itemName);
                 switch(itemName){
                     case '待审核':
                         publishSpan.css({"border-color":"#da9b2a","background":"#febd2d"});
