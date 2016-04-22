@@ -41,7 +41,7 @@ public class QueryService {
 				oneData.put("ActSource", rs.getString("publisherId"));
 				oneData.put("ActCTime", rs.getTimestamp("cTime"));
 				oneData.put("ActPubTime", rs.getTimestamp("pubTime"));
-				oneData.put("Sort", rs.getString("sort"));
+				oneData.put("ActSort", rs.getString("sort"));
 				oneData.put("FlowFlag", rs.getString("flowFlag"));
 				list2seq.add(oneData);
 				count++;
@@ -99,7 +99,7 @@ public class QueryService {
 	 * 
 	 * @param pagesize
 	 * @param page
-	 * @param id
+	 * @param id	内容id
 	 * @param acttype
 	 * @return
 	 */
@@ -242,6 +242,11 @@ public class QueryService {
 	}
 
 	public Map<String, Object> getAudio(String id, String acttype) {
+		return null;
+	}
+	
+	public Map<String, Object> modifSort(String channleid,int sort,int flowFlag, int page, int pagesize){
+		String sql = "update ";
 		return null;
 	}
 }
