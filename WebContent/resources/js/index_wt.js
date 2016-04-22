@@ -24,7 +24,6 @@ function menuTreeLoad(menuTree){
                 break;
             default:
         }
-
         labelSpan=$("<span class='nav-label'></span>");
         labelSpan.text(menuGroupName);
 

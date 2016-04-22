@@ -7,15 +7,8 @@
   <!-- 配置编码格式，与eclpse的IDE环境编码格式匹配 -->
   <!-- D:\workIDE\projects\WtContentMng || D:\WBWorkDir\WtContentMng  || D:\workIDE\work\WtContentMng -->
   <properties>
-    <projectDir>D:\WBWorkDir\WtContentMng</projectDir>
+    <projectDir>D:\workIDE\work\WtContentMng\WebContent</projectDir>
   </properties>
-
-  <parent>
-  	<groupId>team.gm</groupId>
-  	<artifactId>framework</artifactId>
-  	<version>0.1.0.0</version>
-  	<relativePath>pom.framework.xml</relativePath>
-  </parent>
 
   <dependencies>
     <!-- dbcp连接池 -->
@@ -40,14 +33,6 @@
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
       <version>2.8.0</version>
-    </dependency>
-    <!-- 引入平台包 -->
-    <dependency>
-      <groupId>com.spiritdata</groupId>
-      <artifactId>BasicPlat</artifactId>
-      <version>0.1.0.8</version>
-      <scope>system</scope>
-      <systemPath>${projectDir}/lib/BasicPlat-0.1.0.8.jar</systemPath>
     </dependency>
   </dependencies>
   <build>

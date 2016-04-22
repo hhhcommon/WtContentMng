@@ -190,7 +190,31 @@
 .listBox .other span{
 	padding-right:12px;
 }
-
+.pubList .listBox .sortUpdate{
+	width:100px;
+	height:20px;
+	position:absolute;
+	top:5px;
+	right:5px;
+}
+.pubList .listBox .sortUpdate .sortNum{
+	width:60px;
+	height:20px;
+	background-color:#ccc;
+	color:black;
+	text-align:center;
+	border:none;
+	outline:0;
+}
+.pubList .listBox .sortUpdate .sortUpdateBtn{
+	height:20px;
+	line-heihgt:20px;
+	width:24px;
+	margin:0;
+	padding:0;
+	border-radius:20px;
+	border:none;
+}
 
 /*鍙充晶鍐呭璇︽儏鏍峰紡*/
 .pubDetail{

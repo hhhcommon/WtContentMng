@@ -1,4 +1,4 @@
-//根据审核状态加载专辑或单体列表
+//根据审核状态加载节目列表
 function actListLoad(actList){
      var actListLength=actList.ResultList.length;
      //alert(actListLength);
@@ -9,6 +9,7 @@ function actListLoad(actList){
     for(var i=0;i<actListLength;i++){
         firstA=$("<a href='javascript:void(0)'></a>");
         listDiv=$("<div class='listBox'></div>");
+        listDiv.attr({actId:actList.ResultList[i].Id,actType:actList.ResultList[i].ActType});
         checkDiv=$("<div class='listCheck'>");
         checkInput=$("<input type='checkBox' name='' />");
         imgDiv=$("<div class='listImg'>");
@@ -36,7 +37,7 @@ function actListLoad(actList){
 	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
 	        	break;
 	        case 'wt_Broadcast':
-	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#ccc'>电台</span>");
+	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:green'>电台</span>");
 	        	break;
 	        default:
 	        
@@ -48,6 +49,37 @@ function actListLoad(actList){
         outDiv.append(firstA.append(listDiv));   
     }
     $(".pubList").prepend(outDiv);
+}
+function getItemListAjax(ev){
+	$.ajax({
+        type: "POST",    
+        url: "http://localhost:908/wt/content/listquery/detailquery.do",
+        dataType: "json",
+        data: {
+            UserId: "zhangsan", 
+            FlowFlag:"1",
+            Page:"1",
+            PageSize:"10",
+            Id:ev.currentTarget.getAttribute("actId"),
+            ActType:ev.currentTarget.getAttribute("actType")
+        },
+        //beforeSend:function(){$(".conBox").html("数据加载中...")},
+        success: function(itemList) {
+        	//$(".conBox").html("");
+            if (itemList.ReturnType=="1001") {
+                console.log("获取到数据了！");
+                //加载列表
+                $(".table").html("");
+                itemListLoad(itemList);
+                console.log(itemList);
+            } else {
+                alert("获取数据出现问题了:"+itemList.Message);
+            }  
+        },
+        error: function(jqXHR){     
+           alert("发生错误：" + jqXHR.status);
+        }    
+    });
 }
 
 //根据专辑或单体Id获取其详细信息及其下列表
@@ -64,7 +96,7 @@ function itemListLoad(conList){
     	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
      	break;
      case 'wt_Broadcast':
-    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#ccc'>电台</span>");
+    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:green'>电台</span>");
      	break;
      default:
      
@@ -104,37 +136,4 @@ function getItemList(itemList,sort){
 	  }
     }
     $(".table").append(tbody);
-}
- /*                
-    //发布管理页面列表区和详情区左右拖拽效果
-    var xDown=0,xMove=0,xUp=0;
-    $(".drag").css("left",$(".pubList").width()+"px");
-    var l=$(".pubList").width();
-    var d=$(".pubDetail").width();
-    $(".drag").bind("mousedown",function(ev){
-        var myEvent=ev || event;
-        xDown=myEvent.clientX;
-        
-        $(document).bind("mousemove",function(ev){
-            var myEvent=ev || event;
-            xMove=myEvent.clientX;
-            var x=xMove-xDown;
-            //控制到列表的最小宽度后不能再缩小
-            if(l+x<=360){
-                x=360-l;
-            }
-            $(".pubList").width(l+x);
-            $(".drag").css("left",$(".pubList").width()+"px");
-            $(".pubDetail").width(d-x);
-            
-            
-            //鼠标抬起时，将鼠标移动事件清空；
-            $(document).bind("mouseup",function(){
-                $(document).unbind("mouseup");
-                $(document).unbind("mousemove");   
-            });
-            
-        });
-    });
-*/
-               
+}      

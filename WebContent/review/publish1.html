@@ -19,37 +19,14 @@
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
+				var pages=1;
 				$('.pagination').jqPagination({
 					link_string	: '/?page={page_number}',
 					max_page	: 30,
 					paged		: function(page) {
-						alert(page);
+						pages=page;
 					}
 				});
-				/*
-				var actList={"ReturnType":"1001", "ResultList":
-								[
-								{
-									"Id":"234523423",
-									"ActTitle":"逻辑思维",
-									"ActThumb":"../resources/images/a2.jpg",
-									"CTime":"2015-10-30",
-									"Source":"蜻蜓",
-									"ActType":"wt_Broadcast",
-									"ActDesc":"节目简介"
-								},
-								{
-									"Id":"234523423",
-									"ActTitle":"逻辑思维逻辑思",
-									"ActThumb":"../resources/images/a2.jpg",
-									"CTime":"2015-10-30",
-									"Source":"蜻蜓",
-									"ActType":"wt_MediaAsset",
-									"ActDesc":"节目简介"
-								}
-								]
-							};
-				actListLoad(actList);
 				
 				$.ajax({
                     type: "POST",    
@@ -78,73 +55,12 @@
                     }     
                 });
       
-				*/
+				
 				//点击节目，获取详情及列表
-				var itemList=[];
-				$(".pubList").on("click",function(){
-					//alert("aaa");
-					$.ajax({
-                        type: "POST",    
-                        url: "http://localhost:908/wt/content/listquery/detailquery.do",
-                        dataType: "json",
-                        data: {
-                            UserId: "zhangsan", 
-                            FlowFlag:"1",
-                            Page:"1",
-                            PageSize:"10",
-                            Id:"3b9f7e8b524143d7b6691a9ac4fbe9b5",
-                            ActType:"wt_SeqMediaAsset"
-                        },
-                        //beforeSend:function(){$(".conBox").html("数据加载中...")},
-                        success: function(itemList) {
-                        	//$(".conBox").html("");
-                            if (itemList.ReturnType=="1001") {
-                                console.log("获取到数据了！");
-                                //加载列表
-                                $(".table").html("");
-                                itemListLoad(itemList);
-                                console.log(itemList);
-                            } else {
-                                alert("获取数据出现问题了:"+itemList.message);
-                            }  
-                        },
-                        error: function(jqXHR){     
-                           alert("发生错误：" + jqXHR.status);
-                        }    
-                    });              	
-				});
+				//var itemList=[];
+				$(document).on("click",".pubList .listBox",getItemListAjax);
 				
 				/*
-				var itemList={"ReturnType":"1001",
-						      "ActDetail":{
-				                            	"ID":"24334",
-				                             	"ActTitle":"逻辑思维",
-				                             	"ActType":"wt_SeqMediaAsset",
-				                             	"ActThumb":"../resources/images/profile_small.jpg",
-				                             	"ActAllCount":"109集",
-				                             	"ActVjName":"老罗",
-				                             	"KeyWords":"脱口秀",
-				                             	"ActDesn":"死磕自己，娱乐大家",
-				                             	"ActSource":"喜马拉雅",
-				                             	"ActColumn":["脱口秀","科技"]
-				                            },
-								"ItemList":[
-									{
-					             		"Id":"24334",
-					             		"ItemName":"day day up4",
-					             		"ItemPubTime":"2016-04-20"
-					             	},
-					             	{
-					             		"Id":"24334",
-					             		"ItemName":"day day up3",
-					             		"ItemPubTime":"2016-04-20"
-					             	}
-				             	],
-				             	"ItemCount":"2"          	
-				}
-				
-				
-				//itemListLoad(itemList);
 				//单体列表正反排序
 				var flag=0;
 				$(".itemSort").bind("click",function(){
@@ -220,31 +136,13 @@
                                 <p class="secTitle">专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
                                 <p class="other"><span>来源:蜻蜓</span><span>2016年4月13</span></p>
                             </div>
-                            <div class="sortUpdate" style="position:absolute;top:5px;right:5px;width:100px,height:20px;">
-                            	<input class="sortNum" style="width:60px;height:20px;background-color:#ccc;color:black;text-align:center;border:none;outline:0;" value="22225"></input>
-                            	<button class="sortUpdateBtn" style="height:20px;line-heihgt:20px;width:24px;margin:0;padding:0;border-radius:20px;border:none;">OK</button>
+                            <div class="sortUpdate" style="">
+                            	<input class="sortNum" style="" value="22225"></input>
+                            	<button class="sortUpdateBtn" style="">OK</button>
                             </div>
                         </div>
                     </a>
                     </div>
-                    <!--
-                    <a href="javascript:void(0)">
-                        <div class="listBox">
-                            <div class="listCheck">
-                                <input type="checkBox" name="" />
-                            </div>
-                            <div class="listImg">
-                                <img alt="image" class="" src="../resources/images/a2.jpg">
-                            </div>
-                            <div class="listCon">
-                                <h3>滚石乐队为何古巴开唱</h3>
-                                <p class="secTitle">秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
-                                <p class="other"><span>主播： 某某某</span><span>来源:蜻蜓</span><span>2016年4月13</span></p>
-                            </div>
-                        </div>
-                    </a>
-                    
-                    -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
