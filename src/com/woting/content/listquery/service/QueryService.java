@@ -24,6 +24,7 @@ public class QueryService {
 	public List<Map<String, Object>> queryList(int flowFlag, int page, int pagesize) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int count = 0;
+		System.out.println("执行service");
 		String sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
 		try {
 			conn = DataSource.getConnection();
@@ -226,10 +227,10 @@ public class QueryService {
 		return null;
 	}
 	
-	public Map<String, Object> modifSort(String id,int sort,int flowFlag, int page, int pagesize){
-		Map<String, Object> map = new HashMap<String,Object>();
+	public List<Map<String, Object>> modifSort(String id,int sort,int flowFlag, int page, int pagesize){
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		int num = 0;
-		String sql = "update wt_ChannelAsset set sort = ? where channelid = ?";
+		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -245,8 +246,8 @@ public class QueryService {
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
 		if(num==1){
-				map = (Map<String, Object>) queryList(flowFlag, page, pagesize);
+				list =  queryList(flowFlag, page, pagesize);
 			}
-		return map;
+		return list;
 	}
 }

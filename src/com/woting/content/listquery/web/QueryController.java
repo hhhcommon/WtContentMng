@@ -54,6 +54,7 @@ public class QueryController {
 		return map;
 	}
 
+	//详细信息查询
 	@RequestMapping(value = "/content/listquery/detailquery.do")
 	@ResponseBody
 	public Map<String, Object> detailQuery(HttpServletRequest request) {
@@ -87,23 +88,17 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		System.out.println(m);
-		int flowFlag = m.get("FlowFlag") == null? -1 : (int) m.get("FlowFlag");
+		int flowFlag = m.get("FlowFlag") == null? -1 : Integer.valueOf((String) m.get("FlowFlag"));
 		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		String id = m.get("Id") == null ? null : (String) m.get("Id");
-		int sort = m.get("ActSort") == null ? -1 : (int) m.get("ActSort");
+		int sort = m.get("ActSort") == null ? -1 : Integer.valueOf((String) m.get("ActSort"));
 		System.out.println(page + "#" + pagesize + "#" + id + "#" + sort);
-		Map<String, Object> mapdetail = queryService.modifSort(id, sort, flowFlag, page, pagesize);
-		if (mapdetail.get("audio") != null) {
-			map.put("ActDetail", mapdetail.get("sequ"));
-			map.put("ItemList", mapdetail.get("audio"));
-			map.put("ReturnType", "1001");
-			map.put("ItemCount", mapdetail.get("count"));
-		}else{
-			map.put("ReturnType", "1011");
-			map.put("Message", "没有相关内容 ");
-		}
+		List<Map<String, Object>> list = queryService.modifSort(id, sort, flowFlag, page, pagesize);
+		map.put("ResultList", list);
+		map.put("ReturnType", "1001");
+		map.put("Count", list.size());
 		return map;
 	}
 }
