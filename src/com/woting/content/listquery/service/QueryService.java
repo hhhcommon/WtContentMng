@@ -24,7 +24,7 @@ public class QueryService {
 	public List<Map<String, Object>> queryList(int flowFlag, int page, int pagesize) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int count = 0;
-		String sql = "select a.id,a.channelId,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime from (select id,channelId,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
+		String sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -34,7 +34,7 @@ public class QueryService {
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
-				oneData.put("Id", rs.getString("channelId"));//栏目ID修改排序功能时使用
+				oneData.put("Id", rs.getString("id"));//栏目ID修改排序功能时使用
 				oneData.put("ActType", rs.getString("assetType"));
 				oneData.put("AssetId", rs.getString("assetId"));//内容ID获得详细信息时使用
 				oneData.put("ActThumb", rs.getString("pubImg"));
@@ -42,6 +42,7 @@ public class QueryService {
 				oneData.put("ActCTime", rs.getTimestamp("cTime"));
 				oneData.put("ActPubTime", rs.getTimestamp("pubTime"));
 				oneData.put("ActSort", rs.getString("sort"));
+				oneData.put("ActTitle", rs.getString("pubName"));
 				oneData.put("FlowFlag", rs.getString("flowFlag"));
 				list2seq.add(oneData);
 				count++;
@@ -54,30 +55,10 @@ public class QueryService {
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
-
-		// 栏目表查询
-		sql = "select channelName,descn from wt_Channel where id=?";
-		for (Map<String, Object> map : list2seq) {
-			try {
-				conn = DataSource.getConnection();
-				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) map.get("Id"));
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
-					map.put("ActTitle", rs.getString("channelName"));
-					map.put("ActDescn", rs.getString("descn"));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
-		}
 		return list2seq;
 	}
 
+	//列表展示
 	public Map<String, Object> queryDetail(int pagesize, int page, String id, String acttype) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		switch (acttype) {
@@ -245,8 +226,27 @@ public class QueryService {
 		return null;
 	}
 	
-	public Map<String, Object> modifSort(String channleid,int sort,int flowFlag, int page, int pagesize){
-		String sql = "update ";
-		return null;
+	public Map<String, Object> modifSort(String id,int sort,int flowFlag, int page, int pagesize){
+		Map<String, Object> map = new HashMap<String,Object>();
+		int num = 0;
+		String sql = "update wt_ChannelAsset set sort = ? where channelid = ?";
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, sort);
+			ps.setString(2, id);
+			num = ps.executeUpdate();
+			System.out.println(num);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
+		if(num==1){
+				map = (Map<String, Object>) queryList(flowFlag, page, pagesize);
+			}
+		return map;
 	}
 }
