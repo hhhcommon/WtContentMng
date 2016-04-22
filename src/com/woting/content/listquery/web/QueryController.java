@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spiritdata.framework.util.JsonUtils;
 import com.woting.content.listquery.service.QueryService;
 import com.woting.passport.login.utils.RequestDataUtils;
 
@@ -32,12 +31,7 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		System.out.println(m);
-		String querycondition = (String) m.get("QueryCondition");
-		System.out.println(querycondition);
-		Map<String, Object> flowflagstr =  (Map<String, Object>) JsonUtils.jsonToObj(querycondition, Map.class);
-		System.out.println(flowflagstr);
-		int flowFlag = Integer.valueOf((String) flowflagstr.get("FlowFlag"));
-		System.out.println(flowFlag);
+		int flowFlag = m.get("FlowFlag") == null? -1 : Integer.valueOf((String) m.get("FlowFlag"));
 		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
 		int currentpage = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
@@ -86,19 +80,21 @@ public class QueryController {
 	}
 	
 	
+	//修改排序号
 	@RequestMapping(value = "/content/listquery/checkquery.do")
 	@ResponseBody
 	public Map<String, Object> checkQuery(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		System.out.println(m);
+		int flowFlag = m.get("FlowFlag") == null? -1 : (int) m.get("FlowFlag");
 		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		String id = m.get("Id") == null ? null : (String) m.get("Id");
-		String acttype = m.get("ActType") == null ? null : (String) m.get("ActType");
-		System.out.println(page + "#" + pagesize + "#" + id + "#" + acttype);
-		Map<String, Object> mapdetail = queryService.queryDetail(pagesize, page, id, acttype);
+		int sort = m.get("ActSort") == null ? -1 : (int) m.get("ActSort");
+		System.out.println(page + "#" + pagesize + "#" + id + "#" + sort);
+		Map<String, Object> mapdetail = queryService.modifSort(id, sort, flowFlag, page, pagesize);
 		if (mapdetail.get("audio") != null) {
 			map.put("ActDetail", mapdetail.get("sequ"));
 			map.put("ItemList", mapdetail.get("audio"));
