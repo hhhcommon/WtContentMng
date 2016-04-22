@@ -21,27 +21,28 @@ public class QueryService {
 	private Connection conn = null;
 	private PreparedStatement ps = null;
 	private ResultSet rs = null;
-
-	public List<Map<String, Object>> queryList(int flowFlag, int currentpage, int pagesize) {
+	public List<Map<String, Object>> queryList(int flowFlag, int page, int pagesize) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int count = 0;
-		String sql = "select a.id,a.channelId,a.assetType,a.assetId,a.pubImg,a.cTime from (select id,channelId,assetType,assetId,pubImg,cTime from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
+		String sql = "select a.id,a.channelId,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime from (select id,channelId,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, flowFlag);
-			ps.setInt(2, (currentpage-1)*pagesize);
-			ps.setInt(3, pagesize*currentpage);
+			ps.setInt(2, (page-1)*pagesize);//(page-1)*pagesize
+			ps.setInt(3, page*pagesize);//pagesize*page
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
-				oneData.put("Id", rs.getString("id"));
-				oneData.put("ChannelId", rs.getString("channelId"));
+				oneData.put("Id", rs.getString("channelId"));//栏目ID修改排序功能时使用
 				oneData.put("ActType", rs.getString("assetType"));
-				oneData.put("AssetId", rs.getString("assetId"));
+				oneData.put("AssetId", rs.getString("assetId"));//内容ID获得详细信息时使用
 				oneData.put("ActThumb", rs.getString("pubImg"));
-				oneData.put("CTime", rs.getTimestamp("cTime"));
-				oneData.put("ActDesn", "");
+				oneData.put("ActSource", rs.getString("publisherId"));
+				oneData.put("ActCTime", rs.getTimestamp("cTime"));
+				oneData.put("ActPubTime", rs.getTimestamp("pubTime"));
+				oneData.put("Sort", rs.getString("sort"));
+				oneData.put("FlowFlag", rs.getString("flowFlag"));
 				list2seq.add(oneData);
 				count++;
 				System.out.println(oneData + "####" + count);
@@ -55,15 +56,16 @@ public class QueryService {
         }
 
 		// 栏目表查询
-		sql = "select channelName from wt_Channel where id=?";
+		sql = "select channelName,descn from wt_Channel where id=?";
 		for (Map<String, Object> map : list2seq) {
 			try {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) map.get("AssetId"));
+				ps.setString(1, (String) map.get("Id"));
 				rs = ps.executeQuery();
 				while (rs != null && rs.next()) {
 					map.put("ActTitle", rs.getString("channelName"));
+					map.put("ActDescn", rs.getString("descn"));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
