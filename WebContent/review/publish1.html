@@ -34,10 +34,16 @@
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",getItemListAjax);
 				
+				/*$("input[class='sortNum']").on('select click focus',function(){
+					alert("ddd");
+					//阻止事件向上级冒泡
+					ev.stopPropagation();
+				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					alert($(this).prev()[0].getAttribute("value"));
-					alert($(this).parents(".pubList")[0].getAttribute("id"));
+					alert("abdefef");
+					alert($(this).prev().val());
+					alert($(this).parents(".listBox")[0].getAttribute("id"));
 					$.ajax({
 	                    type: "POST",    
 	                    url: "http://localhost:908/wt/content/listquery/checkquery.do",
