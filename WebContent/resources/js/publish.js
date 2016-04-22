@@ -1,16 +1,50 @@
-//根据审核状态加载节目列表
+//从后台请求节目列表数据
+function getActListAjax(page){
+	$.ajax({
+        type: "POST",    
+        url: "http://localhost:908/wt/content/listquery/query.do",
+        dataType: "json",
+        data: {
+            UserId: "zhangsan", 
+            QueryCondition:{FlowFlag:"1"},
+            Page:page,
+            PageSize:"10"
+        },
+        //beforeSend:function(){$(".pubList").html("数据加载中...")},
+        success: function(actList) {
+            if (actList.ReturnType=="1001") {
+                //console.log("获取到数据了！");
+                //加载列表
+                $(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
+                actListLoad(actList);
+            } else {
+                alert("获取数据出现问题了:"+actList.message);
+            }  
+        },
+        error: function(jqXHR){     
+           alert("发生错误：" + jqXHR.status);
+        }     
+    });
+}
+				
+
+//根据审核状态创建节目列表DOM树
 function actListLoad(actList){
      var actListLength=actList.ResultList.length;
      //alert(actListLength);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
     var sortDiv,sortInput,sortBtn;
-    var outDiv=$("<div></div>");
+    var outDiv=$("<div class='actList'></div>");
     //循环加载列表
     for(var i=0;i<actListLength;i++){
         firstA=$("<a href='javascript:void(0)'></a>");
         listDiv=$("<div class='listBox'></div>");
-        listDiv.attr({actId:actList.ResultList[i].Id,actType:actList.ResultList[i].ActType});
+        listDiv.attr(
+        		{actId:actList.ResultList[i].ActId,
+        		 actType:actList.ResultList[i].ActType,
+        		 id:actList.ResultList[i].Id
+        		 } );
         checkDiv=$("<div class='listCheck'>");
         checkInput=$("<input type='checkBox' name='' />");
         imgDiv=$("<div class='listImg'>");
@@ -57,6 +91,7 @@ function actListLoad(actList){
     }
     $(".pubList").prepend(outDiv);
 }
+//根据节目ID从后台获取节目详情及其下单体列表数据
 function getItemListAjax(ev){
 	$.ajax({
         type: "POST",    
@@ -89,7 +124,7 @@ function getItemListAjax(ev){
     });
 }
 
-//根据专辑或单体Id获取其详细信息及其下列表
+//根据节目ID创建页面DOM结构，展示节目详情及其下单体列表
 function itemListLoad(conList){
      //下面是获取节目详情
      $(".actThumb").attr({'src':conList.ActDetail.ActThumb});
@@ -113,7 +148,7 @@ function itemListLoad(conList){
      $(".vjName").text(conList.ActDetail.ActVjName);
      $(".actDesn").text(conList.ActDetail.ActDesn);
      //$(".cloumn").text(itemList.ResultList.Cloumn);  栏目？标签？数组类型
-     
+     //创建节目下列表DOM结构
      getItemList(conList.ItemList);
 }
 

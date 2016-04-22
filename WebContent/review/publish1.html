@@ -24,64 +24,81 @@
 					link_string	: '/?page={page_number}',
 					max_page	: 30,
 					paged		: function(page) {
-						pages=page;
+						//翻页时的请求
+						getActListAjax(page);
 					}
 				});
-				
-				$.ajax({
-                    type: "POST",    
-                    url: "http://localhost:908/wt/content/listquery/query.do",
-                    dataType: "json",
-                    data: {
-                        UserId: "zhangsan", 
-                        FlowFlag:"1",
-                        Page:"1",
-                        PageSize:"10"
-                    },
-                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
-                    success: function(actList) {
-                    	//$(".pubList").html("");
-                        if (actList.ReturnType=="1001") {
-                            console.log("获取到数据了！");
-                            //加载列表
-                            $(".pubList").html(""); //再重新创建新的数据集时，先清空之前的
-                            actListLoad(actList);
-                            console.log(actList);
-                        } else {
-                            alert("获取数据出现问题了:"+actList.message);
-                        }  
-                    },
-                    error: function(jqXHR){     
-                       alert("发生错误：" + jqXHR.status);
-                    }     
-                });
+				//首次请求加载节目列表
+				getActListAjax(1);
 				
 				//点击节目，获取详情及列表
-				//var itemList=[];
 				$(document).on("click",".pubList .listBox",getItemListAjax);
 				
-				//修改排序号确定
+				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
+					//alert($(this).prev()[0].getAttribute("value"));
+					//alert($(this).parents(".pubList")[0].getAttribute("id"));
 					$.ajax({
 	                    type: "POST",    
 	                    url: "http://localhost:908/wt/content/listquery/query.do",
 	                    dataType: "json",
 	                    data: {
 	                        UserId: "zhangsan", 
-	                        FlowFlag:"1",
+	                        QueryCondition:{FlowFlag:"1"},
+	                        Id:$(this).parents(".pubList")[0].getAttribute("id"),
 	                        Page:"1",
-	                        PageSize:"10"
-	                        ActSort:$(this).prev()[0].getAttribute("value")//js的获取属性值方法
+	                        PageSize:"10",
+	                        //ActSort:$(this).prev()[0].getAttribute("value")//js的获取属性值方法
 	                    },
 	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
 	                    success: function(actList) {
-	                    	//$(".pubList").html("");
 	                        if (actList.ReturnType=="1001") {
 	                            console.log("修改成功，获取到数据了！");
-	                            $(".pubList").html(""); //再重新创建新的数据集时，先清空之前的
+	                            $(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
 	                            //加载列表
 	                            actListLoad(actList);
-	                            //console.log(actList);
+	                            console.log(actList);
+	                        } else {
+	                            alert("获取数据出现问题了:"+actList.message);
+	                        }  
+	                    },
+	                    error: function(jqXHR){     
+	                       alert("发生错误：" + jqXHR.status);
+	                    }     
+	                });					
+					//阻止事件向上级冒泡
+					ev.stopPropagation();
+				});
+				//查询  请求后台数据
+				$(".selectBtn").on("click",function(){
+					alert($(".column option:selected").text());
+					alert($(".source option:selected").text());
+					alert($("input:[name='StartPubTime']").val());
+					alert($("input:[name='EedPubTime']").val());
+					$.ajax({
+	                    type: "POST",    
+	                    url: "http://localhost:908/wt/content/listquery/query.do",
+	                    dataType: "json",
+	                    data: {
+	                        UserId: "zhangsan", 
+	                        QueryCondition:{
+	                        	FlowFlag:"1",
+	                        	Column:$(".column option:selected").text(),//栏目分类
+	                        	Source:$(".source option:selected").text(),//来源
+	                        	PubTimeBeginTime:$("input:[name='StartPubTime']").val(),
+	                        	PubTimeEndTime:$("input:[name='EedPubTime']").val()
+	                        	},
+	                        Page:"1",
+	                        PageSize:"10"
+	                    },
+	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
+	                    success: function(actList) {
+	                        if (actList.ReturnType=="1001") {
+	                            console.log("修改成功，获取到数据了！");
+	                            $(".pubList>.actList").empty();//再重新创建新的数据集时，先清空之前的
+	                            //加载列表
+	                            actListLoad(actList);
+	                            console.log(actList);
 	                        } else {
 	                            alert("获取数据出现问题了:"+actList.message);
 	                        }  
@@ -91,8 +108,6 @@
 	                    }     
 	                });
 					
-					//阻止事件向上级冒泡
-					ev.stopPropagation();
 				});
 				/*
 				//单体列表正反排序
@@ -124,20 +139,20 @@
                 
                 <label>栏目:</label>
                     <select class="column" name="column">
-                        <option>不 限</option>
-                        <option>新闻</option>
-                        <option>音乐</option>
-                        <option>娱乐</option>
-                        <option>其他</option>
+                        <option value="">不 限</option>
+                        <option value="">新闻</option>
+                        <option value="">音乐</option>
+                        <option value="">娱乐</option>
+                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
-                        <option>不 限</option>
-                        <option>喜马拉雅</option>
-                        <option>蜻蜓</option>
-                        <option>考拉</option>
-                        <option>自制</option>
-                        <option>其他</option>
+                        <option value="">不 限</option>
+                        <option value="">喜马拉雅</option>
+                        <option value="">蜻蜓</option>
+                        <option value="">考拉</option>
+                        <option value="">自制</option>
+                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>
@@ -147,7 +162,7 @@
                         <input type="text" class="input-sm form-control" name="EndPubTime" value="" placeholder="2016-04-22" />
                     </div>
                 </div>
-                <button type="button" class="btn">查 询</button>
+                <button type="button" class="btn selectBtn">查 询</button>
                 <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>  
             </div> 
             <!--显示主区域-->
@@ -155,7 +170,7 @@
             
                 <!--左侧列表-->
                 <div class="pubList" onselectstart="return false;">
-                	
+                	<!-- 
                 	<div>
                   	<a href="javascript:void(0)">
                         <div class="listBox">
@@ -177,6 +192,7 @@
                         </div>
                     </a>
                     </div>
+                     -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
