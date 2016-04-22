@@ -36,19 +36,19 @@
 				
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					//alert($(this).prev()[0].getAttribute("value"));
-					//alert($(this).parents(".pubList")[0].getAttribute("id"));
+					alert($(this).prev()[0].getAttribute("value"));
+					alert($(this).parents(".pubList")[0].getAttribute("id"));
 					$.ajax({
 	                    type: "POST",    
-	                    url: "http://localhost:908/wt/content/listquery/query.do",
+	                    url: "http://localhost:908/wt/content/listquery/checkquery.do",
 	                    dataType: "json",
 	                    data: {
 	                        UserId: "zhangsan", 
 	                        FlowFlag:"1",
-	                        //Id:$(this).parents(".pubList")[0].getAttribute("id"),
+	                        Id:$(this).parents(".pubList")[0].getAttribute("id"),
 	                        Page:"1",
 	                        PageSize:"10",
-	                        //ActSort:$(this).prev()[0].getAttribute("value")//js的获取属性值方法
+	                        ActSort:$(this).prev()[0].getAttribute("value")//js的获取属性值方法
 	                    },
 	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
 	                    success: function(actList) {
