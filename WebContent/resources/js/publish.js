@@ -6,7 +6,7 @@ function getActListAjax(page){
         dataType: "json",
         data: {
             UserId: "zhangsan", 
-            FlowFlag:"1",
+            ContentFlowFlag:"1",
             Page:page,
             PageSize:"10"
         },
@@ -20,7 +20,7 @@ function getActListAjax(page){
             	//}
                 actListLoad(actList);
             } else {
-                alert("获取数据出现问题lou:"+actList.message);
+                alert("获取数据出现问题lou:"+actList.Message);
             }  
         },
         error: function(jqXHR){     
@@ -40,30 +40,29 @@ function actListLoad(actList){
     var outDiv=$("<div class='actList'></div>");
     //循环加载列表
     for(var i=0;i<actListLength;i++){
-        firstA=$("<a href='javascript:void(0)'></a>");
         listDiv=$("<div class='listBox'></div>");
         listDiv.attr(
-        		{actId:actList.ResultList[i].ActId,
-        		 actType:actList.ResultList[i].ActType,
+        		{actId:actList.ResultList[i].ContentId,
+        		 actType:actList.ResultList[i].MediaType,
         		 id:actList.ResultList[i].Id
         		 } );
         checkDiv=$("<div class='listCheck'>");
         checkInput=$("<input type='checkBox' name='' />");
         imgDiv=$("<div class='listImg'>");
         thumbImg=$("<img alt='mage'>");
-        thumbImg.attr({'src':actList.ResultList[i].ActThumb});
+        thumbImg.attr({'src':actList.ResultList[i].ContentImg});
         conDiv=$("<div class='listCon'>");
         conH=$("<h3></h3>");
         conP1=$("<p class='secTitle'></p>");
-        conP1.text(actList.ResultList[i].ActDesc);
+        conP1.text(actList.ResultList[i].ContentDesc);
         conP2=$("<p class='other'></p>");
         conSpan1=$("<span></span>");
-        conSpan1.text("来源："+actList.ResultList[i].Source);
+        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
         conSpan2=$("<span></span>");
-        conSpan2.text(actList.ResultList[i].CTime);
+        conSpan2.text(actList.ResultList[i].ContentCTime);
         sortDiv=$("<div class='sortUpdate'></div>");
         sortInput=$("<input type='text' class='sortNum'></input>");
-        sortInput.attr({"value":actList.ResultList[i].ActSort});
+        sortInput.attr({"value":actList.ResultList[i].ContentSort});
         sortBtn=$("<button class='sortUpdateBtn'></button>");
         sortBtn.text("OK");
         sortDiv.append(sortInput).append(sortBtn);
@@ -74,13 +73,13 @@ function actListLoad(actList){
         switch(actList.ResultList[i].ActType){
 	        case 'wt_SeqMediaAsset':
 	        	//alert(actList.ResultList[i].ActType);
-	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
+	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
 	        	break;
 	        case 'wt_MediaAsset':
-	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
+	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#61b0e8'>单体</span>");
 	        	break;
 	        case 'wt_Broadcast':
-	        	conH.html(actList.ResultList[i].ActTitle+"<span style='background-color:green'>电台</span>");
+	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:green'>电台</span>");
 	        	break;
 	        default:
 	        
@@ -89,7 +88,7 @@ function actListLoad(actList){
         conP2.append(conSpan2);
         conDiv.append(conH).append(conP1).append(conP2);
         listDiv.append(checkDiv).append(imgDiv).append(conDiv).append(sortDiv);
-        outDiv.append(firstA.append(listDiv));   
+        outDiv.append(listDiv);
     }
     $(".pubList").prepend(outDiv);
 }
@@ -104,8 +103,8 @@ function getItemListAjax(ev){
             FlowFlag:"1",
             Page:"1",
             PageSize:"10",
-            Id:ev.currentTarget.getAttribute("actId"),
-            ActType:ev.currentTarget.getAttribute("actType")
+            Id:ev.currentTarget.getAttribute("ContentId"),
+            ActType:ev.currentTarget.getAttribute("MediaType")
         },
         //beforeSend:function(){$(".conBox").html("数据加载中...")},
         success: function(itemList) {
@@ -129,29 +128,29 @@ function getItemListAjax(ev){
 //根据节目ID创建页面DOM结构，展示节目详情及其下单体列表
 function itemListLoad(conList){
      //下面是获取节目详情
-     $(".actThumb").attr({'src':conList.ActDetail.ActThumb});
+     $(".actThumb").attr({'src':conList.ContentDetail.ContentImg});
    //根据类型显示不同的标记
-     switch(conList.ActDetail.ActType){
+     switch(conList.ContentDetail.MediaType){
      case 'wt_SeqMediaAsset':
-    	 $(".itemCount").text("专辑里的声音("+conList.ItemCount+")");
-    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#f9be36'>专辑</span>");
+    	 $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
+    	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:#f9be36'>专辑</span>");
      	break;
      case 'wt_MediaAsset':
-    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:#61b0e8'>单体</span>");
+    	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:#61b0e8'>单体</span>");
      	break;
      case 'wt_Broadcast':
-    	 $(".actTitle").html(conList.ActDetail.ActTitle+"<span style='background-color:green'>电台</span>");
+    	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:green'>电台</span>");
      	break;
      default:
      
      }
-     $(".actSource").text("来源："+conList.ActDetail.ActSource);
-     $(".actPubTime").text(conList.ActDetail.ActPubTime);
-     $(".vjName").text(conList.ActDetail.ActVjName);
-     $(".actDesn").text(conList.ActDetail.ActDesn);
-     //$(".cloumn").text(itemList.ResultList.Cloumn);  栏目？标签？数组类型
+     $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
+     $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
+     $(".vjName").text(conList.ContentDetail.ContentPersons);
+     $(".actDesn").text(conList.ContentDetail.ContentDesc);
+     //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);  栏目？标签？数组类型
      //创建节目下列表DOM结构
-     getItemList(conList.ItemList);
+     getItemList(conList.SubList);
 }
 
 //把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
@@ -166,9 +165,9 @@ function getItemList(itemList,sort){
 	  tdFirst=$("<td></td>");
 	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
 	  tdA=$("<a href='#'></a>");
-	  tdA.text(itemList[i].ItemName);
+	  tdA.text(itemList[i].ContentName);
 	  tdSecond=$("<td class='text-right'></td>");
-	  tdSecond.text(itemList[i].ItemPubTime);
+	  tdSecond.text(itemList[i].ContentPubTime);
 	  
 	  tdFirst.append(tdSpan).append(tdA);
 	  tr.append(tdFirst).append(tdSecond);

@@ -49,11 +49,11 @@
 	                    dataType: "json",
 	                    data: {
 	                        UserId: "zhangsan", 
-	                        FlowFlag:"1",
+	                        ContentFlowFlag:"1",
 	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
 	                        Page:"1",
 	                        PageSize:"10",
-	                        ActSort:$(this).prev().val()//js的获取属性值方法
+	                        ContentSort:$(this).prev().val()//js的获取属性值方法
 	                    },
 	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
 	                    success: function(actList) {
@@ -64,7 +64,7 @@
 	                            actListLoad(actList);
 	                            //console.log(actList);
 	                        } else {
-	                            alert("获取数据出现ddd:"+actList.message);
+	                            alert("获取数据出现ddd:"+actList.Message);
 	                        }  
 	                    },
 	                    error: function(jqXHR){     
@@ -86,11 +86,11 @@
 	                    dataType: "json",
 	                    data: {
 	                        UserId: "zhangsan", 
-                        	FlowFlag:"1",
-                        	Column:$(".column option:selected").text(),//栏目分类
-                        	Source:$(".source option:selected").text(),//来源
-                        	PubTimeBeginTime:$("input:[name='StartPubTime']").val(),
-                        	PubTimeEndTime:$("input:[name='EedPubTime']").val(),
+                        	ContentFlowFlag:"1",
+                        	ContentColumn:$(".column option:selected").text(),//栏目分类
+                        	ContentSource:$(".source option:selected").text(),//来源
+                        	BeginContentPubTime:$("input:[name='StartPubTime']").val(),
+                        	EndContentPubTime:$("input:[name='EedPubTime']").val(),
 	                        Page:"1",
 	                        PageSize:"10"
 	                    },
@@ -103,7 +103,7 @@
 	                            actListLoad(actList);
 	                            //console.log(actList);
 	                        } else {
-	                            alert("获取数据出现问题eee:"+actList.message);
+	                            alert("获取数据出现问题eee:"+actList.Message);
 	                        }  
 	                    },
 	                    error: function(jqXHR){     
