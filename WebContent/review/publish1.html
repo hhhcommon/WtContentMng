@@ -26,11 +26,41 @@
 					max_page	: 30,
 					paged		: function(page) {
 						//翻页时的请求
-						getActListAjax(page);
+						//getActListAjax(page);
 					}
 				});
+				
+
+					$.ajax({
+				        type: "POST",    
+				        url: "http://localhost:908/wt/content/listquery/query.do",
+				        dataType: "json",
+				        data: {
+				            UserId: "zhangsan", 
+				            ContentFlowFlag:"1",
+				            Page:"1",
+				            PageSize:"10"
+				        },
+				        //beforeSend:function(){$(".pubList").html("数据加载中...")},
+				        success: function(actList) {
+				            if (actList.ReturnType=="1001") {
+				                //console.log("获取到数据了！");
+				                //加载列表
+				            	if($(".actList")!=undefined){
+				            		$(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
+				            	}
+				                actListLoad(actList);
+				            } else {
+				                alert("获取数据出现问题lou:"+actList.Message);
+				            }  
+				        },
+				        error: function(jqXHR){     
+				           alert("发生错误：" + jqXHR.status);
+				        }     
+				    });
 				//首次请求加载节目列表
-				getActListAjax(1);
+				//getActListAjax(1);
+				
 				
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",getItemListAjax);

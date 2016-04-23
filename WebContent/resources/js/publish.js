@@ -1,4 +1,5 @@
 //从后台请求节目列表数据
+/*
 function getActListAjax(page){
 	$.ajax({
         type: "POST",    
@@ -28,7 +29,7 @@ function getActListAjax(page){
         }     
     });
 }
-				
+	*/			
 
 //根据审核状态创建节目列表DOM树
 function actListLoad(actList){
@@ -45,7 +46,7 @@ function actListLoad(actList){
         		{actId:actList.ResultList[i].ContentId,
         		 actType:actList.ResultList[i].MediaType,
         		 id:actList.ResultList[i].Id
-        		 } );
+        		 });
         checkDiv=$("<div class='listCheck'>");
         checkInput=$("<input type='checkBox' name='' />");
         imgDiv=$("<div class='listImg'>");
@@ -70,7 +71,7 @@ function actListLoad(actList){
         checkDiv.append(checkInput);
         imgDiv.append(thumbImg);
         //根据类型显示不同的标记
-        switch(actList.ResultList[i].ActType){
+        switch(actList.ResultList[i].MediaType){
 	        case 'wt_SeqMediaAsset':
 	        	//alert(actList.ResultList[i].ActType);
 	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
@@ -103,8 +104,8 @@ function getItemListAjax(ev){
             ContentFlowFlag:"1",
             Page:"1",
             PageSize:"10",
-            Id:ev.currentTarget.getAttribute("ContentId"),
-            MediaType:ev.currentTarget.getAttribute("MediaType")
+            Id:ev.currentTarget.getAttribute("actId"),
+            MediaType:ev.currentTarget.getAttribute("actType")
         },
         //beforeSend:function(){$(".conBox").html("数据加载中...")},
         success: function(itemList) {
