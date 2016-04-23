@@ -19,113 +19,104 @@
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
+				var flowFlag="1";//节目审核状态
+				var pages=1;
+				//翻页
 				$('.pagination').jqPagination({
 					link_string	: '/?page={page_number}',
 					max_page	: 30,
 					paged		: function(page) {
-						alert(page);
+						//翻页时的请求
+						getContentList(page,flowFlag);
 					}
 				});
 				
-				var actList={"returnType":"1001", "resultList":
-								[
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"单体",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"电台",
-										"actDesc":"节目简介"
-								},
-								{
-									"id":"234523423",
-										"actTitle":"逻辑思维",
-										"thumbImg":"../resources/images/a2.jpg",
-										"cTime":"2015-10-30",
-										"source":"蜻蜓",
-										"actType":"专辑",
-										"actDesc":"节目简介"
-								}
-								]
-							};
-				actListLoad(actList);
+				//首次请求加载节目列表
+				getContentList(1,flowFlag);
+				
+				//点击节目，获取详情及列表
+				$(document).on("click",".pubList .listBox",function(ev){
+					var url="http://localhost:908/wt/content/listquery/detailquery.do";
+					var data={
+				            UserId: "zhangsan", 
+				            ContentFlowFlag:flowFlag,
+				            Page:"1",
+				            PageSize:"10",
+				            Id:ev.currentTarget.getAttribute("actId"),
+				            MediaType:ev.currentTarget.getAttribute("actType")
+				        };
+					commonAjax(url,data,$("tbody"),ContentInfoLoad);
+				});
+				
+				/*//修改排序号时，阻止事件冒泡
+				$(".sortNum").on("click",function(ev){
+					alert("ddd");
+					//阻止事件向上级冒泡
+					ev.stopPropagation();
+				});*/
+				//修改排序号确定，然后再加载节目列表
+				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
+					var url="http://localhost:908/wt/content/listquery/checkquery.do";
+					var data={
+	                        UserId: "zhangsan", 
+	                        ContentFlowFlag:"1",
+	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
+	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
+	                        opeType:"sort"
+	                    };
+					commonAjax(url,data,$(".pubList>.actList"),getContentList);
+					//阻止事件向上级冒泡
+					ev.stopPropagation();
+				});
+				//查询  请求后台数据
+				$(".selectBtn").on("click",function(){
+					alert($(".column option:selected").text());
+					alert($(".source option:selected").text());
+					alert($("input[name='StartPubTime']").val());
+					alert($("input[name='EndPubTime']").val());
+					var url="http://localhost:908/wt/content/listquery/findallquery.do";
+					var data={
+	                        UserId: "zhangsan", 
+                        	ContentFlowFlag:"1",
+                        	ContentColumn:$(".column option:selected").text(),
+                        	ContentSource:$(".source option:selected").text(),
+                        	BeginContentPubTime:$("input[name='StartPubTime']").val(),
+                        	EndContentPubTime:$("input[name='EndPubTime']").val(),
+	                        Page:"1",
+	                        PageSize:"10"
+	                    };
+					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
+				});
+				//节目列表全选全不选
+				$("input[name='all']").on('click',function(){
+					if($(this).prop("checked")){
+						$(":checkbox").prop({"checked":"checked"});
+					}else{
+						
+						$(":checkbox").prop({"checked":null});
+					}
+				});
+				//撤回处理
+				$(".actRevoke").on('click',function(){
+					alert("bdd");
+				});
+				
 				/*
-				$.ajax({
-                        type: "POST",    
-                        url: "http://localhost:8080/wt/content/listquery/query.do",
-                        dataType: "json",
-                        data: {
-                            userId: "zhangsan", 
-                            flowFlag:"1",
-                            page:"1",
-                            pageSize:"10"
-                        },
-                        beforeSend:function(){$(".pubList").html("数据加载中...")},
-                        success: function(actList) {
-                        	$(".pubList").html("");
-                            if (data.ReturnType=="1001") {
-                                alert("获取到数据了！");
-                                //加载列表
-                                actListLoad(actList);
-                            } else {
-                                alert("获取数据出现问题了:"+actList.message);
-                            }  
-                        },
-                        error: function(jqXHR){     
-                           alert("发生错误：" + jqXHR.status);
-                        },     
-                    });
-                    //return false;
-                });
-              	
+				//单体列表正反排序
+				var flag=0;
+				$(".itemSort").bind("click",function(){
+					$(".table").html("");
+					console.log(itemList);
+					if(flag==0){
+						flag=getItemList(itemList,1);
+						flag=1;
+					}else{
+						flag=getItemList(itemList);
+						flag=0;
+					}
+					
+				});
 				*/
-
 			});
 		</script>
     </head>
@@ -134,78 +125,43 @@
         	<!--菜单栏-->
             <div class="operate">
                 <div class="allCheck">
-                    <input type="checkBox" name="" />
+                    <input type="checkBox" name="all"/>
                 </div>
-                <button type="button" class="btn">通过</button>
-                <button type="button" class="btn" style="margin-right:260px">不通过</button>
+                <button type="button" class="btn actRevoke" style="margin-right:300px">撤回</button>
                 
                 <label>栏目:</label>
-                    <select class="" name="category">
-                        <option>不 限</option>
-                        <option>新闻</option>
-                        <option>音乐</option>
-                        <option>娱乐</option>
-                        <option>其他</option>
+                    <select class="column" name="column">
+                        <option value="">不 限</option>
+                        <option value="">新闻</option>
+                        <option value="">音乐</option>
+                        <option value="">娱乐</option>
+                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
-                    <select class="" name="resource">
-                        <option>不 限</option>
-                        <option>喜马拉雅</option>
-                        <option>蜻蜓</option>
-                        <option>考拉</option>
-                        <option>自制</option>
-                        <option>其他</option>
+                    <select class="source" name="source">
+                        <option value="">不 限</option>
+                        <option value="">喜马拉雅</option>
+                        <option value="">蜻蜓</option>
+                        <option value="">考拉</option>
+                        <option value="">自制</option>
+                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>
                     <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="start" value="" placeholder="2016-03-21" />
+                        <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
                         <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="end" value="" placeholder="2016-04-22" />
+                        <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
                     </div>
                 </div>
-                <button type="button" class="btn">查 询</button>
+                <button type="button" class="btn selectBtn">查 询</button>
                 <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>  
             </div> 
             <!--显示主区域-->
             <div class="mainShow">
-            
-                <!--左侧列表-->
-                <div class="pubList" onselectstart="return false;">
-                	<!--
-                	<div>
-                  	<a href="javascript:void(0)">
-                        <div class="listBox">
-                            <div class="listCheck">
-                                <input type="checkBox" name="" />
-                            </div>
-                            <div class="listImg">
-                                <img alt="image" src="../resources/images/a2.jpg">
-                            </div>
-                            <div class="listCon">
-                                <h3>滚石乐队为何古巴开唱<span>专辑</span></h3>
-                                <p class="secTitle">专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴专辑简介：秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
-                                <p class="other"><span>来源:蜻蜓</span><span>2016年4月13</span></p>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="javascript:void(0)">
-                        <div class="listBox">
-                            <div class="listCheck">
-                                <input type="checkBox" name="" />
-                            </div>
-                            <div class="listImg">
-                                <img alt="image" class="" src="../resources/images/a2.jpg">
-                            </div>
-                            <div class="listCon">
-                                <h3>滚石乐队为何古巴开唱</h3>
-                                <p class="secTitle">秒！上海迪士尼门票瞬间售罄/滚石乐队古巴</p>
-                                <p class="other"><span>主播： 某某某</span><span>来源:蜻蜓</span><span>2016年4月13</span></p>
-                            </div>
-                        </div>
-                    </a>
-                    </div>
-                    -->
+                <!--左侧列表 onselectstart="return false;"-->
+                <div class="pubList">
+                	<!-- 动态节目列表actList -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
@@ -222,25 +178,24 @@
                 </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">
-                	<div class="conBox">
+                	<div class="conBox" style="display:block;">
                         <div class="conTitle" >
                         	<div class="titleImg" style="float:left;width:15%;">
-                        		<img alt="image" style="width:100%;height:100%;" src="../resources/images/profile_small.jpg">
+                        		<img alt="image" class="actThumb" style="width:100%;height:100%;" src="">
                         	</div>
                         	<div class="detail" style="float:left;padding-left:20px;width:80%">
                         		<div class="title">
-                        			<h2 style="display:inline">南明死局<span class="typeTag">专辑</span></h2>
-                            		<span>主播： 某某某</span><span>来源:蜻蜓</span><span>2016年4月13</span>
+                        			<h2 style="display:inline" class="actTitle"></h2>
+                            		<span class="actSource"></span><span class="actPubTime"></span>
                         		</div>
                         		<dl style="padding-top:10px">
                         			<dt style="float:left;padding-right:8px;">主播 :</dt>
-                        			<dd>主播名字</dd>
+                        			<dd class="vjName"></dd>
                         			<dt style="float:left;padding-right:8px;">简介 :</dt>
-                        			<dd>简介描述简介描述简介描述简介描述简介描述简介描述简介描述</dd>
+                        			<dd class="actDesn"></dd>
                         			<dt style="float:left;padding-right:8px;">标签 :</dt>
-                        			<dd>脱口秀</dd>
+                        			<dd class="cloumn"></dd>
                         		</dl>
-                        		
                         	</div>
                             
                             <!--标志状态的圆点 <span class="conDot"></span> -->
@@ -258,58 +213,14 @@
                             <i>08:35/25:16</i>
                         </div>
                         --> 
-						<div style="clear:both;padding:10px 0;font-size:14px;color:#343434;font-weight: bold">
-							<span>专辑里的声音 (156)</span>
-							<a href="#" style="display:inline-block;float:right;border:1px solid #aaa;border-radius: 8px;width:36px;height:20px;line-height:20px;text-align:center;font-size:12px;color:#343434">排序</a>
+						<div class="itemSortBox">
+							<!-- 如果是专辑，此处显示专辑内列表总数，否则不显示 -->
+							<span class="itemCount"></span>
+							<a href="javascript:;" class="itemSort">排序</a>
 						</div>
                     	<!-- 专辑内对应单体列表 -->
                     	<div class="conTable">
-							<table class="table">
-								<tbody>
-									<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right">2015-11-12</td>
-                                	</tr>
-                                	<tr>
-                                  		<td style="border-bottom:1px solid #e7eaec;"><span class="fa fa-youtube-play fa-lg" style=""></span><a href="#">单体资源名称</a></td><td class="text-right" style="border-bottom:1px solid #e7eaec;">2015-11-12</td>
-                                	</tr>
-								</tbody>
-							</table>
+							<table class="table"></table>
                     	</div>
                 	</div>
             	</div>

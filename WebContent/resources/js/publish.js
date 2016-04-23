@@ -1,38 +1,44 @@
-//从后台请求节目列表数据
-/*
-function getActListAjax(page){
+//公共ajax请求
+function commonAjax(url,data,obj,callback){
 	$.ajax({
         type: "POST",    
-        url: "http://localhost:908/wt/content/listquery/query.do",
+        url:url,
         dataType: "json",
-        data: {
-            UserId: "zhangsan", 
-            ContentFlowFlag:"1",
-            Page:page,
-            PageSize:"10"
-        },
-        //beforeSend:function(){$(".pubList").html("数据加载中...")},
-        success: function(actList) {
-            if (actList.ReturnType=="1001") {
+        data:data,
+        success: function(ContentList) {
+            if (ContentList.ReturnType=="1001") {
                 //console.log("获取到数据了！");
-                //加载列表
-            	if($(".actList")!=undefined){
-            		$(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
+            	obj.empty(); //再重新创建新的数据集时，先清空之前的
+            	//判断是查询还是修改操作，调用不同的方法
+            	if(data.opeType){
+            		//alert("修改操作");
+            		callback(1,data.ContentFlowFlag);
+            	}else{
+            		callback(ContentList);
             	}
-                actListLoad(actList);
             } else {
-                alert("获取数据出现问题lou:"+actList.Message);
+                alert("获取数据出现问题lou:"+ContentList.Message);
             }  
         },
         error: function(jqXHR){     
            alert("发生错误：" + jqXHR.status);
         }     
     });
+}	
+//从后台请求节目列表数据
+function getContentList(page,flowFlag){
+	var url="http://localhost:908/wt/content/listquery/query.do";
+	var data={
+            UserId: "zhangsan", 
+            ContentFlowFlag:flowFlag,
+            Page:page,
+            PageSize:"10"
+        };
+	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 }
-	*/			
 
-//根据审核状态创建节目列表DOM树
-function actListLoad(actList){
+//创建节目列表DOM树
+function ContentListLoad(actList){
      var actListLength=actList.ResultList.length;
      //alert(actListLength);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
@@ -94,40 +100,10 @@ function actListLoad(actList){
     $(".pubList").prepend(outDiv);
 }
 //根据节目ID从后台获取节目详情及其下单体列表数据
-function getItemListAjax(ev){
-	$.ajax({
-        type: "POST",    
-        url: "http://localhost:908/wt/content/listquery/detailquery.do",
-        dataType: "json",
-        data: {
-            UserId: "zhangsan", 
-            ContentFlowFlag:"1",
-            Page:"1",
-            PageSize:"10",
-            Id:ev.currentTarget.getAttribute("actId"),
-            MediaType:ev.currentTarget.getAttribute("actType")
-        },
-        //beforeSend:function(){$(".conBox").html("数据加载中...")},
-        success: function(itemList) {
-        	//$(".conBox").html("");
-            if (itemList.ReturnType=="1001") {
-                console.log("获取到数据了！");
-                //加载列表
-                $(".table").html("");
-                itemListLoad(itemList);
-                console.log(itemList);
-            } else {
-                console.log("获取数据出现问题la:"+itemList.Message);
-            }  
-        },
-        error: function(jqXHR){     
-           alert("发生错误：" + jqXHR.status);
-        }    
-    });
-}
 
-//根据节目ID创建页面DOM结构，展示节目详情及其下单体列表
-function itemListLoad(conList){
+
+//根据节目ID展示节目详情及其下单体列表
+function ContentInfoLoad(conList){
      //下面是获取节目详情
      $(".actThumb").attr({'src':conList.ContentDetail.ContentImg});
    //根据类型显示不同的标记
@@ -143,19 +119,18 @@ function itemListLoad(conList){
     	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:green'>电台</span>");
      	break;
      default:
-     
      }
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
      $(".vjName").text(conList.ContentDetail.ContentPersons);
      $(".actDesn").text(conList.ContentDetail.ContentDesc);
      //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);  栏目？标签？数组类型
-     //创建节目下列表DOM结构
-     getItemList(conList.SubList);
+     //创建单体列表DOM结构
+     AudioListLoad(conList.SubList);
 }
-
+//创建单体资源列表DOM结构
 //把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
-function getItemList(itemList,sort){
+function AudioListLoad(itemList,sort){
     var conListLength=itemList.length;
 	//声明下面需要创建的节点，以便获取节目内的单体列表
 	var tr,tdFirst,tdSpan,tdA,tdSecond;

@@ -19,6 +19,7 @@
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
+				var flowFlag="3";//节目审核状态
 				var pages=1;
 				//翻页
 				$('.pagination').jqPagination({
@@ -26,51 +27,44 @@
 					max_page	: 30,
 					paged		: function(page) {
 						//翻页时的请求
-						getActListAjax(page);
+						getContentList(page,flowFlag);
 					}
 				});
+				
 				//首次请求加载节目列表
-				getActListAjax(1);
+				getContentList(1,flowFlag);
 				
 				//点击节目，获取详情及列表
-				$(document).on("click",".pubList .listBox",getItemListAjax);
+				$(document).on("click",".pubList .listBox",function(ev){
+					var url="http://localhost:908/wt/content/listquery/detailquery.do";
+					var data={
+				            UserId: "zhangsan", 
+				            ContentFlowFlag:flowFlag,
+				            Page:"1",
+				            PageSize:"10",
+				            Id:ev.currentTarget.getAttribute("actId"),
+				            MediaType:ev.currentTarget.getAttribute("actType")
+				        };
+					commonAjax(url,data,$("tbody"),ContentInfoLoad);
+				});
 				
-				//修改排序号时，阻止事件冒泡
+				/*//修改排序号时，阻止事件冒泡
 				$(".sortNum").on("click",function(ev){
 					alert("ddd");
 					//阻止事件向上级冒泡
 					ev.stopPropagation();
-				});
+				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					$.ajax({
-	                    type: "POST",    
-	                    url: "http://localhost:908/wt/content/listquery/checkquery.do",
-	                    dataType: "json",
-	                    data: {
+					var url="http://localhost:908/wt/content/listquery/checkquery.do";
+					var data={
 	                        UserId: "zhangsan", 
-	                        ContentFlowFlag:"2",
+	                        ContentFlowFlag:"1",
 	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
-	                        Page:"1",
-	                        PageSize:"10",
-	                        ContentSort:$(this).prev().val()//js的获取属性值方法
-	                    },
-	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
-	                    success: function(actList) {
-	                        if (actList.ReturnType=="1001") {
-	                            console.log("修改成功，获取到数据了！");
-	                            $(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
-	                            //加载列表
-	                            actListLoad(actList);
-	                            //console.log(actList);
-	                        } else {
-	                            alert("获取数据出现ddd:"+actList.Message);
-	                        }  
-	                    },
-	                    error: function(jqXHR){     
-	                       alert("发生错误：" + jqXHR.status);
-	                    }     
-	                });					
+	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
+	                        opeType:"sort"
+	                    };
+					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					//阻止事件向上级冒泡
 					ev.stopPropagation();
 				});
@@ -78,39 +72,20 @@
 				$(".selectBtn").on("click",function(){
 					alert($(".column option:selected").text());
 					alert($(".source option:selected").text());
-					alert($("input:[name='StartPubTime']").val());
-					alert($("input:[name='EedPubTime']").val());
-					$.ajax({
-	                    type: "POST",    
-	                    url: "http://localhost:908/wt/content/listquery/findallquery.do",
-	                    dataType: "json",
-	                    data: {
+					alert($("input[name='StartPubTime']").val());
+					alert($("input[name='EndPubTime']").val());
+					var url="http://localhost:908/wt/content/listquery/findallquery.do";
+					var data={
 	                        UserId: "zhangsan", 
-                        	ContentFlowFlag:"2",
-                        	ContentColumn:$(".column option:selected").text(),//栏目分类
-                        	ContentSource:$(".source option:selected").text(),//来源
-                        	BeginContentPubTime:$("input:[name='StartPubTime']").val(),
-                        	EndContentPubTime:$("input:[name='EedPubTime']").val(),
+                        	ContentFlowFlag:"1",
+                        	ContentColumn:$(".column option:selected").text(),
+                        	ContentSource:$(".source option:selected").text(),
+                        	BeginContentPubTime:$("input[name='StartPubTime']").val(),
+                        	EndContentPubTime:$("input[name='EndPubTime']").val(),
 	                        Page:"1",
 	                        PageSize:"10"
-	                    },
-	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
-	                    success: function(actList) {
-	                        if (actList.ReturnType=="1001") {
-	                            console.log("修改成功，获取到数据了！");
-	                            $(".pubList>.actList").empty();//再重新创建新的数据集时，先清空之前的
-	                            //加载列表
-	                            actListLoad(actList);
-	                            //console.log(actList);
-	                        } else {
-	                            alert("获取数据出现问题eee:"+actList.Message);
-	                        }  
-	                    },
-	                    error: function(jqXHR){     
-	                       alert("发生错误：" + jqXHR.status);
-	                    }     
-	                });
-					
+	                    };
+					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//节目列表全选全不选
 				$("input[name='all']").on('click',function(){
@@ -174,9 +149,9 @@
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>
                     <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="StartPubTime" value="" placeholder="2016-03-21" />
+                        <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
                         <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="EndPubTime" value="" placeholder="2016-04-22" />
+                        <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
                     </div>
                 </div>
                 <button type="button" class="btn selectBtn">查 询</button>
