@@ -67,13 +67,7 @@ function ContentListLoad(actList){
         conSpan1.text("来源："+actList.ResultList[i].ContentSource);
         conSpan2=$("<span></span>");
         conSpan2.text(actList.ResultList[i].ContentCTime);
-        sortDiv=$("<div class='sortUpdate'></div>");
-        sortInput=$("<input type='text' class='sortNum'></input>");
-        sortInput.attr({"value":actList.ResultList[i].ContentSort});
-        sortBtn=$("<button class='sortUpdateBtn'></button>");
-        sortBtn.text("OK");
-        sortDiv.append(sortInput).append(sortBtn);
-
+        
         checkDiv.append(checkInput);
         imgDiv.append(thumbImg);
         //根据类型显示不同的标记
@@ -94,7 +88,18 @@ function ContentListLoad(actList){
         conP2.append(conSpan1);
         conP2.append(conSpan2);
         conDiv.append(conH).append(conP1).append(conP2);
-        listDiv.append(checkDiv).append(imgDiv).append(conDiv).append(sortDiv);
+        listDiv.append(checkDiv).append(imgDiv).append(conDiv);
+        //只在已审核界面创建排序号DOM
+        if(actList.ResultList[i].ContentFlowFlag=="2"){
+        	sortDiv=$("<div class='sortUpdate'></div>");
+            sortInput=$("<input type='text' class='sortNum'></input>");
+            sortInput.attr({"value":actList.ResultList[i].ContentSort});
+            sortBtn=$("<button class='sortUpdateBtn'></button>");
+            sortBtn.text("OK");
+            sortDiv.append(sortInput).append(sortBtn);
+            listDiv.append(sortDiv);
+        }
+        
         outDiv.append(listDiv);
     }
     $(".pubList").prepend(outDiv);

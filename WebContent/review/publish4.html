@@ -42,7 +42,7 @@
 				            ContentFlowFlag:flowFlag,
 				            Page:"1",
 				            PageSize:"10",
-				            Id:ev.currentTarget.getAttribute("actId"),
+				            ContentId:ev.currentTarget.getAttribute("actId"),
 				            MediaType:ev.currentTarget.getAttribute("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
@@ -59,7 +59,7 @@
 					var url="http://localhost:908/wt/content/listquery/checkquery.do";
 					var data={
 	                        UserId: "zhangsan", 
-	                        ContentFlowFlag:"1",
+	                        ContentFlowFlag:flowFlag,
 	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
 	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
 	                        opeType:"sort"
@@ -77,7 +77,7 @@
 					var url="http://localhost:908/wt/content/listquery/findallquery.do";
 					var data={
 	                        UserId: "zhangsan", 
-                        	ContentFlowFlag:"1",
+                        	ContentFlowFlag:flowFlag,
                         	ContentColumn:$(".column option:selected").text(),
                         	ContentSource:$(".source option:selected").text(),
                         	BeginContentPubTime:$("input[name='StartPubTime']").val(),
@@ -127,7 +127,7 @@
                 <div class="allCheck">
                     <input type="checkBox" name="all"/>
                 </div>
-                <button type="button" class="btn actRevoke" style="margin-right:300px">撤回</button>
+                <button type="button" opeType="pass" class="btn" style="margin-right:300px">通过</button>
                 
                 <label>栏目:</label>
                     <select class="column" name="column">

@@ -19,7 +19,7 @@
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
-				var flowFlag="1";//节目审核状态
+				var flowFlag="3";//节目审核状态
 				var pages=1;
 				//翻页
 				$('.pagination').jqPagination({
@@ -42,7 +42,7 @@
 				            ContentFlowFlag:flowFlag,
 				            Page:"1",
 				            PageSize:"10",
-				            Id:ev.currentTarget.getAttribute("actId"),
+				            ContentId:ev.currentTarget.getAttribute("actId"),
 				            MediaType:ev.currentTarget.getAttribute("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
@@ -127,7 +127,7 @@
                 <div class="allCheck">
                     <input type="checkBox" name="all"/>
                 </div>
-                <button type="button" class="btn actRevoke" style="margin-right:300px">撤回</button>
+                <button type="button" opeType="pass" class="btn" style="margin-right:300px">通过</button>
                 
                 <label>栏目:</label>
                     <select class="column" name="column">
