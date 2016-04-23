@@ -78,19 +78,19 @@
 				$(".selectBtn").on("click",function(){
 					alert($(".column option:selected").text());
 					alert($(".source option:selected").text());
-					alert($("input:[name='StartPubTime']").val());
-					alert($("input:[name='EedPubTime']").val());
+					alert($("input[name='StartPubTime']").val());
+					alert($("input[name='EndPubTime']").val());
 					$.ajax({
 	                    type: "POST",    
-	                    url: "http://localhost:908/wt/content/listquery/query.do",
+	                    url: "http://localhost:908/wt/content/listquery/findallquery.do",
 	                    dataType: "json",
 	                    data: {
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:"1",
                         	ContentColumn:$(".column option:selected").text(),//栏目分类
                         	ContentSource:$(".source option:selected").text(),//来源
-                        	BeginContentPubTime:$("input:[name='StartPubTime']").val(),
-                        	EndContentPubTime:$("input:[name='EedPubTime']").val(),
+                        	BeginContentPubTime:$("input[name='StartPubTime']").val(),
+                        	EndContentPubTime:$("input[name='EndPubTime']").val(),
 	                        Page:"1",
 	                        PageSize:"10"
 	                    },
@@ -174,9 +174,9 @@
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>
                     <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="StartPubTime" value="" placeholder="2016-03-21" />
+                        <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
                         <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="EndPubTime" value="" placeholder="2016-04-22" />
+                        <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
                     </div>
                 </div>
                 <button type="button" class="btn selectBtn">查 询</button>

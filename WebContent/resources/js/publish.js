@@ -100,11 +100,11 @@ function getItemListAjax(ev){
         dataType: "json",
         data: {
             UserId: "zhangsan", 
-            FlowFlag:"1",
+            ContentFlowFlag:"1",
             Page:"1",
             PageSize:"10",
             Id:ev.currentTarget.getAttribute("ContentId"),
-            ActType:ev.currentTarget.getAttribute("MediaType")
+            MediaType:ev.currentTarget.getAttribute("MediaType")
         },
         //beforeSend:function(){$(".conBox").html("数据加载中...")},
         success: function(itemList) {
