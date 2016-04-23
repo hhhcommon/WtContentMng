@@ -20,7 +20,7 @@ function getActListAjax(page){
             	//}
                 actListLoad(actList);
             } else {
-                alert("获取数据出现问题了:"+actList.message);
+                alert("获取数据出现问题lou:"+actList.message);
             }  
         },
         error: function(jqXHR){     
@@ -62,7 +62,7 @@ function actListLoad(actList){
         conSpan2=$("<span></span>");
         conSpan2.text(actList.ResultList[i].CTime);
         sortDiv=$("<div class='sortUpdate'></div>");
-        sortInput=$("<input class='sortNum'></input>");
+        sortInput=$("<input type='text' class='sortNum'></input>");
         sortInput.attr({"value":actList.ResultList[i].ActSort});
         sortBtn=$("<button class='sortUpdateBtn'></button>");
         sortBtn.text("OK");
@@ -117,7 +117,7 @@ function getItemListAjax(ev){
                 itemListLoad(itemList);
                 console.log(itemList);
             } else {
-                alert("获取数据出现问题了:"+itemList.Message);
+                console.log("获取数据出现问题la:"+itemList.Message);
             }  
         },
         error: function(jqXHR){     
