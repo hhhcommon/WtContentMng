@@ -21,6 +21,7 @@ public class QueryService {
 	private Connection conn = null;
 	private PreparedStatement ps = null;
 	private ResultSet rs = null;
+
 	public List<Map<String, Object>> queryList(int flowFlag, int page, int pagesize) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int count = 0;
@@ -30,36 +31,65 @@ public class QueryService {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, flowFlag);
-			ps.setInt(2, (page-1)*pagesize);//(page-1)*pagesize
-			ps.setInt(3, page*pagesize);//pagesize*page
+			ps.setInt(2, (page - 1) * pagesize);// (page-1)*pagesize
+			ps.setInt(3, page * pagesize);// pagesize*page
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
-				oneData.put("Id", rs.getString("id"));//栏目ID修改排序功能时使用
-				oneData.put("ActType", rs.getString("assetType"));
-				oneData.put("AssetId", rs.getString("assetId"));//内容ID获得详细信息时使用
-				oneData.put("ActThumb", rs.getString("pubImg"));
-				oneData.put("ActSource", rs.getString("publisherId"));
-				oneData.put("ActCTime", rs.getTimestamp("cTime"));
-				oneData.put("ActPubTime", rs.getTimestamp("pubTime"));
-				oneData.put("ActSort", rs.getString("sort"));
-				oneData.put("ActTitle", rs.getString("pubName"));
-				oneData.put("FlowFlag", rs.getString("flowFlag"));
+				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
+				oneData.put("MediaType", rs.getString("assetType"));
+				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
+				oneData.put("ContentImg", rs.getString("pubImg"));
+				oneData.put("ContentSource", rs.getString("publisherId"));
+				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
+				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
+				oneData.put("ContentSort", rs.getString("sort"));
+				oneData.put("ContentName", rs.getString("pubName"));
+				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
+				oneData.put("ContentDesc", "节目简介暂未获取");
 				list2seq.add(oneData);
 				count++;
 				System.out.println(oneData + "####" + count);
+				if(count==pagesize)break;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 		return list2seq;
 	}
 
-	//列表展示
+	// 列表展示
 	public Map<String, Object> queryDetail(int pagesize, int page, String id, String acttype) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		switch (acttype) {
@@ -81,12 +111,13 @@ public class QueryService {
 	 * 
 	 * @param pagesize
 	 * @param page
-	 * @param id	内容id
+	 * @param id
+	 *            内容id
 	 * @param acttype
 	 * @return
 	 */
 	public Map<String, Object> getSeq(int pagesize, int page, String id, String acttype) {
-		String sql = "select id,smaTitle,smaImg,smaAllCount,smaPublisher,keyWords,descn,CTime,smaPublishTime,smaPubId from wt_SeqMediaAsset where id = ?";
+		String sql = "select id,smaTitle,smaImg,smaAllCount,smaPublisher,keyWords,descn,CTime,smaPublishTime,smaPubId,langDid from wt_SeqMediaAsset where id = ?";
 		List<Map<String, Object>> listaudio = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
@@ -97,17 +128,18 @@ public class QueryService {
 			rs = ps.executeQuery();
 			int count = 0;
 			while (rs != null && rs.next()) {
-				seqData.put("Id", rs.getString("id"));
-				seqData.put("ActTitle", rs.getString("smaTitle"));
-				seqData.put("ActType", acttype);
-				seqData.put("ActThumb", rs.getString("smaImg"));
-				seqData.put("ActAllCount", rs.getString("smaAllCount"));
-				seqData.put("ActPubTime", rs.getTimestamp("smaPublishTime"));
-				seqData.put("ActSource", rs.getString("smaPubId"));
-				seqData.put("ActCTime", rs.getTimestamp("CTime"));
-				seqData.put("ActVjName", rs.getString("smaPublisher"));
-				seqData.put("KeyWords", rs.getString("keyWords"));
-				seqData.put("ActDesn", rs.getString("descn"));
+				seqData.put("ContentId", rs.getString("id"));
+				seqData.put("ContentName", rs.getString("smaTitle"));
+				seqData.put("MediaType", acttype);
+				seqData.put("ContentImg", rs.getString("smaImg"));
+				seqData.put("ContentSubCount", rs.getString("smaAllCount"));
+				seqData.put("ContentPubTime", rs.getTimestamp("smaPublishTime"));
+				seqData.put("ContentSource", rs.getString("smaPubId"));
+				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
+				seqData.put("ContentPersons", rs.getString("smaPublisher"));
+				seqData.put("ContentKeyWord", rs.getString("keyWords"));
+				seqData.put("ContentCatalogs", rs.getString("langDid"));
+				seqData.put("ContentDesc", rs.getString("descn"));
 				count++;
 				System.out.println(seqData);
 			}
@@ -115,10 +147,37 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 
 		// 专辑和单体的联系
 		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
@@ -126,7 +185,7 @@ public class QueryService {
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, (String) seqData.get("Id"));
+			ps.setString(1, (String) seqData.get("ContentId"));
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				listaudioid.add(rs.getString("mId"));
@@ -135,10 +194,37 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 
 		// 获取单体信息
 		sql = "select id,maTitle,maPubId,maPublishTime,maImg,timeLong,maPublisher,descn,cTime from wt_MediaAsset  where id = ?";
@@ -150,46 +236,98 @@ public class QueryService {
 				rs = ps.executeQuery();
 				Map<String, Object> audioData = new HashMap<String, Object>();// 单体信息
 				while (rs != null && rs.next()) {
-					audioData.put("Id", rs.getString("id"));
-					audioData.put("ItemName", rs.getString("maTitle"));
-					audioData.put("ItemType", acttype);
-					audioData.put("ItemThumb", rs.getString("maImg"));
-					audioData.put("ItemCTime", rs.getTimestamp("cTime"));
-					audioData.put("ItemPubTime", rs.getTimestamp("maPublishTime"));
-					audioData.put("ItemDesc", rs.getString("descn"));
-					audioData.put("ItemLong", rs.getLong("timeLong"));
-					audioData.put("ItemSource", rs.getString("maPubId"));
-					audioData.put("ItemVjName", rs.getString("maPublisher"));
+					audioData.put("ContentId", rs.getString("id"));
+					audioData.put("ContentName", rs.getString("maTitle"));
+					audioData.put("MediaType", acttype);
+					audioData.put("ContentImg", rs.getString("maImg"));
+					audioData.put("ContentCTime", rs.getTimestamp("cTime"));
+					audioData.put("ContentPubTime", rs.getTimestamp("maPublishTime"));
+					audioData.put("ContentDesc", rs.getString("descn"));
+					audioData.put("ContentTimes", rs.getLong("timeLong"));
+					audioData.put("ContentSource", rs.getString("maPubId"));
+					audioData.put("ContentPersons", rs.getString("maPublisher"));
 					System.out.println(audioData);
+					listaudio.add(audioData);
 				}
-				listaudio.add(audioData);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
+				if (rs != null)
+					try {
+						rs.close();
+						rs = null;
+					} catch (Exception e) {
+						rs = null;
+					} finally {
+						rs = null;
+					}
+				;
+				if (ps != null)
+					try {
+						ps.close();
+						ps = null;
+					} catch (Exception e) {
+						ps = null;
+					} finally {
+						ps = null;
+					}
+				;
+				if (conn != null)
+					try {
+						conn.close();
+						conn = null;
+					} catch (Exception e) {
+						conn = null;
+					} finally {
+						conn = null;
+					}
+				;
+			}
 		}
-		
-		//获得专辑字典信息
+
+		// 获得专辑字典信息
 		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
-		for (Map<String, Object> audmap : listaudio) {
-			try {
-				conn = DataSource.getConnection();
-				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) seqData.get("Id"));
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
-					seqData.put("ActColumn", rs.getString("dictMName"));
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, (String) seqData.get("Id"));
+			rs = ps.executeQuery();
+			while (rs != null && rs.next()) {
+				seqData.put("ContentCatalogs", rs.getString("dictMName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
 				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
 		}
 
 		// 获得单体字典名
@@ -198,21 +336,47 @@ public class QueryService {
 			try {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) audmap.get("Id"));
+				ps.setString(1, (String) audmap.get("ContentId"));
 				rs = ps.executeQuery();
 				while (rs != null && rs.next()) {
-					audmap.put("ItemColumn", rs.getString("dictMName"));
+					audmap.put("ContentCatalogs", rs.getString("dictMName"));
 				}
-				System.out.println(listaudioid.size());
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
+				if (rs != null)
+					try {
+						rs.close();
+						rs = null;
+					} catch (Exception e) {
+						rs = null;
+					} finally {
+						rs = null;
+					}
+				;
+				if (ps != null)
+					try {
+						ps.close();
+						ps = null;
+					} catch (Exception e) {
+						ps = null;
+					} finally {
+						ps = null;
+					}
+				;
+				if (conn != null)
+					try {
+						conn.close();
+						conn = null;
+					} catch (Exception e) {
+						conn = null;
+					} finally {
+						conn = null;
+					}
+				;
+			}
 		}
-		if(listaudio.size()==0){
+		if (listaudio.size() == 0) {
 			map.put("audio", null);
 			map.put("count", 0);
 		} else {
@@ -226,9 +390,9 @@ public class QueryService {
 	public Map<String, Object> getAudio(String id, String acttype) {
 		return null;
 	}
-	
-	public List<Map<String, Object>> modifSort(String id,int sort,int flowFlag, int page, int pagesize){
-		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+
+	public Map<String, Object> modifSort(String id, int sort, int flowFlag) {
+		Map<String, Object> map = new HashMap<String,Object>();
 		int num = 0;
 		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
 		try {
@@ -240,14 +404,44 @@ public class QueryService {
 			System.out.println(num);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
-		if(num==1){
-				list =  queryList(flowFlag, page, pagesize);
-			}
-		return list;
+		} finally {
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
+		if (num == 1) {
+			map.put("ReturnType", "1001");
+		}else{
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
+		}
+		return map;
 	}
 }

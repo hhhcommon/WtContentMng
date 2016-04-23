@@ -15,9 +15,9 @@ function getActListAjax(page){
             if (actList.ReturnType=="1001") {
                 //console.log("获取到数据了！");
                 //加载列表
-            	//if($(".actList")!=undefined){
+            	if($(".actList")!=undefined){
             		$(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
-            	//}
+            	}
                 actListLoad(actList);
             } else {
                 alert("获取数据出现问题了:"+actList.message);
