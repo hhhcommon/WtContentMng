@@ -20,6 +20,7 @@
         <script>
 			$(function(){
 				var pages=1;
+				//翻页
 				$('.pagination').jqPagination({
 					link_string	: '/?page={page_number}',
 					max_page	: 30,
@@ -34,16 +35,14 @@
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",getItemListAjax);
 				
-				/*$("input[class='sortNum']").on('select click focus',function(){
+				//修改排序号时，阻止事件冒泡
+				$(".sortNum").on("click",function(ev){
 					alert("ddd");
 					//阻止事件向上级冒泡
 					ev.stopPropagation();
-				});*/
+				});
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					alert("abdefef");
-					alert($(this).prev().val());
-					alert($(this).parents(".listBox")[0].getAttribute("id"));
 					$.ajax({
 	                    type: "POST",    
 	                    url: "http://localhost:908/wt/content/listquery/checkquery.do",
@@ -51,10 +50,10 @@
 	                    data: {
 	                        UserId: "zhangsan", 
 	                        FlowFlag:"1",
-	                        Id:$(this).parents(".pubList")[0].getAttribute("id"),
+	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
 	                        Page:"1",
 	                        PageSize:"10",
-	                        ActSort:$(this).prev()[0].getAttribute("value")//js的获取属性值方法
+	                        ActSort:$(this).prev().val()//js的获取属性值方法
 	                    },
 	                    //beforeSend:function(){$(".pubList").html("数据加载中...")},
 	                    success: function(actList) {
@@ -63,9 +62,9 @@
 	                            $(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
 	                            //加载列表
 	                            actListLoad(actList);
-	                            console.log(actList);
+	                            //console.log(actList);
 	                        } else {
-	                            alert("获取数据出现问题了:"+actList.message);
+	                            alert("获取数据出现ddd:"+actList.message);
 	                        }  
 	                    },
 	                    error: function(jqXHR){     
@@ -104,7 +103,7 @@
 	                            actListLoad(actList);
 	                            //console.log(actList);
 	                        } else {
-	                            alert("获取数据出现问题了:"+actList.message);
+	                            alert("获取数据出现问题eee:"+actList.message);
 	                        }  
 	                    },
 	                    error: function(jqXHR){     
@@ -113,12 +112,13 @@
 	                });
 					
 				});
-				//列表全选全不选
+				//节目列表全选全不选
 				$("input[name='all']").on('click',function(){
-					if($(this).attr("checked")=="checked"){
-						$("input[type='checkbox']").prop({"checked":"true"});
+					if($(this).prop("checked")){
+						$(":checkbox").prop({"checked":"checked"});
 					}else{
-						$("input[type='checkbox']").prop({"checked":"false"});
+						
+						$(":checkbox").prop({"checked":null});
 					}
 				});
 				//撤回处理
@@ -150,7 +150,7 @@
         	<!--菜单栏-->
             <div class="operate">
                 <div class="allCheck">
-                    <input type="checkBox" name="all" />
+                    <input type="checkBox" name="all"/>
                 </div>
                 <button type="button" class="btn actRevoke" style="margin-right:300px">撤回</button>
                 
@@ -184,8 +184,8 @@
             </div> 
             <!--显示主区域-->
             <div class="mainShow">
-                <!--左侧列表-->
-                <div class="pubList" onselectstart="return false;">
+                <!--左侧列表 onselectstart="return false;"-->
+                <div class="pubList">
                 	<!-- 动态节目列表actList -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
@@ -203,7 +203,7 @@
                 </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">
-                	<div class="conBox" style="display:none;">
+                	<div class="conBox" style="display:block;">
                         <div class="conTitle" >
                         	<div class="titleImg" style="float:left;width:15%;">
                         		<img alt="image" class="actThumb" style="width:100%;height:100%;" src="">
