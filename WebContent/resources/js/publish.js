@@ -130,6 +130,8 @@ function ContentInfoLoad(conList){
      $(".vjName").text(conList.ContentDetail.ContentPersons);
      $(".actDesn").text(conList.ContentDetail.ContentDesc);
      //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);  栏目？标签？数组类型
+     
+     $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
      AudioListLoad(conList.SubList);
 }
@@ -145,7 +147,7 @@ function AudioListLoad(itemList,sort){
 	  tr=$("<tr></tr>");
 	  tdFirst=$("<td></td>");
 	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
-	  tdA=$("<a href='#'></a>");
+	  tdA=$("<a href='javascript:;'></a>");
 	  tdA.text(itemList[i].ContentName);
 	  tdSecond=$("<td class='text-right'></td>");
 	  tdSecond.text(itemList[i].ContentPubTime);
