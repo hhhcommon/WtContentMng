@@ -69,7 +69,7 @@
 	                        ContentFlowFlag:flowFlag,
 	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
 	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
-	                        opeType:"sort"
+	                        OpeType:"sort"
 	                    };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					//阻止事件向上级冒泡
@@ -79,19 +79,19 @@
 				$(".selectBtn").on("click",function(){
 					alert($(".catalogs option:selected").text());
 					alert($(".source option:selected").text());
-					alert($("input[name='StartPubTime']").val());
-					alert($("input[name='EndPubTime']").val());
-					var url="http://localhost:908/wt/content/listinfo/findallbyrequest.do";
+					var url="http://localhost:908/wt/content/listinfo/getlist.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
-                        	ContentCatalogs:$(".catalogs option:selected").attr("catalogsId"),
-                        	ContentSource:$(".source option:selected").attr("sourceId"),
-                        	BeginContentPubTime:$("input[name='StartPubTime']").val(),
-                        	EndContentPubTime:$("input[name='EndPubTime']").val(),
+                        	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
+                        	SourceId:$(".source option:selected").attr("sourceId"),
 	                        Page:"1",
 	                        PageSize:"10"
 	                    };
+					/*
+					BeginContentPubTime:$("input[name='StartPubTime']").val(),
+                    EndContentPubTime:$("input[name='EndPubTime']").val(),
+					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//节目列表全选全不选
