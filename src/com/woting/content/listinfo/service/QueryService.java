@@ -22,20 +22,22 @@ public class QueryService {
 	private DataSource DataSource;
 
 
-	public List<Map<String, Object>> getList(int flowFlag, int page, int pagesize, String catalogsid, String source,
+	public Map<String, Object> getList(int flowFlag, int page, int pagesize, String catalogsid, String source,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
+		Map<String, Object> mapall = new HashMap<String,Object>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		System.out.println("执行service");
 		int count = 0;
-		String sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName from wt_ChannelAsset where flowFlag=?";
+		String sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.channelId,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName,channelId from wt_ChannelAsset where flowFlag=?";
 		if (catalogsid != null)sql += " and channelId='"+catalogsid+"'";
 		if (source != null)sql += " and publisherId='"+source+"'";
 		if (beginpubtime != null && endpubtime != null)sql += " and pubTime>'"+beginpubtime+"' and pubTime<'"+endpubtime+"'";
 		if (beginctime != null && endctime != null)sql += " and cTime>'"+beginctime+"' and cTime<'"+endctime+"'";
 		sql += " order by sort desc) a limit ?,?";
+		System.out.println(sql);
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -54,11 +56,11 @@ public class QueryService {
 				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
 				oneData.put("ContentSort", rs.getString("sort"));
 				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
-				list2seq.add(oneData);
 				count++;
+				System.out.println(rs.getString("publisherId")+"####"+rs.getString("channelId"));
 				System.out.println(oneData + "####" + count);
-				if (count == pagesize)
-					break;
+				if (count <= pagesize)
+					list2seq.add(oneData);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -88,7 +90,9 @@ public class QueryService {
 	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
 	        }
 		}
-		return list2seq;
+		mapall.put("List", list2seq);
+		mapall.put("Count", count);
+		return mapall;
 	}
 
 	// 列表展示
