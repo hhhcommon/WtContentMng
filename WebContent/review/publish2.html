@@ -34,7 +34,26 @@
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
 				//加载完列表后，页面右侧默认显示第一条节目详情内容
-				$(".pubList .listBox:eq(0)").trigger("click");
+				//$(".pubList .listBox:eq(0)").trigger("click");
+				
+				//获取查询条件列表，节目分类和来源
+				$.ajax({
+			        type: "POST",    
+			        url:"http://localhost:908/wt/content/listinfo/getcriteriainfo.do",
+			        dataType: "json",
+			        data:{UserId: "zhangsan"},
+			        success: function(ConditionsList) {
+			            if (ConditionsList.ReturnType=="1001") {
+			                alert("查询条件列表了！");
+			                ConditionsListLoad(ConditionsList);
+			            } else {
+			                alert("获取数据出现问题lou:"+ConditionsList.Message);
+			            }  
+			        },
+			        error: function(jqXHR){     
+			           alert("发生错误：" + jqXHR.status);
+			        }     
+			    });
 				
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(){
@@ -132,21 +151,25 @@
                 <button type="button" opeType="revoke" class="btn" style="margin-right:300px">撤回</button>
                 
                 <label>栏目:</label>
-                    <select class="column" name="column">
+                    <select class="catalogs" name="column">
                         <option value="">不 限</option>
+                        <!-- 
                         <option value="">新闻</option>
                         <option value="">音乐</option>
                         <option value="">娱乐</option>
                         <option value="">其他</option>
+                         -->                        
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
                         <option value="">不 限</option>
+                        <!-- 
                         <option value="">喜马拉雅</option>
                         <option value="">蜻蜓</option>
                         <option value="">考拉</option>
                         <option value="">自制</option>
                         <option value="">其他</option>
+                         -->                        
                     </select>&nbsp;&nbsp;&nbsp;
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>

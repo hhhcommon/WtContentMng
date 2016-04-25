@@ -36,6 +36,24 @@ function getContentList(page,flowFlag){
         };
 	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 }
+//创建查询条件DOM元素
+function ConditionsListLoad(ConditionsList){
+	alert(ConditionsList.Catalogs.length);
+	alert(ConditionsList.Source.length);
+	var calalogsLen=ConditionsList.Catalogs.length;
+	var sourceLen=ConditionsList.Source.length;
+	var catalogsOption,sourceOption;
+	for(var i=0;i<calalogsLen;i++){
+		catalogsOption=$("<option></option>");
+		catalogsOption.text(ConditionsList.Catalogs[i]);
+		$(".operate .catalogs").append(catalogsOption);
+	}
+	for(var j=0;j<sourceLen;j++){
+		sourceOption=$("<option></option>");
+		sourceOption.text(ConditionsList.Source[j]);
+		$(".operate .source").append(sourceOption);
+	}
+}
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
