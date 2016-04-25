@@ -41,6 +41,7 @@ public class QueryService {
 			ps.setInt(1, flowFlag);
 			ps.setInt(2, (page - 1) * pagesize);
 			ps.setInt(3, page * pagesize);
+			ps.setQueryTimeout(10000);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
@@ -572,8 +573,8 @@ public class QueryService {
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneDate = new HashMap<String, Object>();
-				oneDate.put("ContentId", rs.getString("id"));
-				oneDate.put("ContentName", rs.getString("channelName"));
+				oneDate.put("CatalogsId", rs.getString("id"));
+				oneDate.put("CatalogsName", rs.getString("channelName"));
 				listcatalogs.add(oneDate);
 			}
 		} catch (SQLException e) {
@@ -618,8 +619,8 @@ public class QueryService {
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneDate = new HashMap<>();
-				oneDate.put("ContentId", rs.getString("id"));
-				oneDate.put("ContentName", rs.getString("oName"));
+				oneDate.put("SourceId", rs.getString("id"));
+				oneDate.put("SourceName", rs.getString("oName"));
 				listorganize.add(oneDate);
 			}
 		} catch (SQLException e) {
