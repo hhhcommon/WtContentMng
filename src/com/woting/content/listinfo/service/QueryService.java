@@ -287,24 +287,25 @@ public class QueryService {
 	}
 
 	public Map<String, Object> modifInfo(String id, String number, int flowFlag, String OpeType) {
+		Map<String, Object> map = new HashMap<String,Object>();
 		switch (OpeType) {
 		case "sort":
-			modifSort(id, number, flowFlag);
+			map = modifSort(id, number, flowFlag);
 			break;
 		case "pass":
 			if (number.equals("2"))
-				modifStatus(id, number);
+				map = modifStatus(id, number);
 			break;
 		case "nopass":
 			if (number.equals("3"))
-				modifStatus(id, number);
+				map = modifStatus(id, number);
 			break;
 		case "revoke":
 			break;
 		default:
 			break;
 		}
-		return null;
+		return map;
 	}
 
 	public Map<String, Object> modifStatus(String id, String number) {
