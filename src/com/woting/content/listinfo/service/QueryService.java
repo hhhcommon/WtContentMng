@@ -312,7 +312,7 @@ public class QueryService {
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
 		map.put("Catalogs", listcatalogs);
-		map.put("Organize", listorganize);
+		map.put("Source", listorganize);
 		return map;
 	}
 
