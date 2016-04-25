@@ -1,4 +1,4 @@
-package com.woting.content.listquery.service;
+package com.woting.content.listinfo.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +22,7 @@ public class QueryService {
 	private PreparedStatement ps = null;
 	private ResultSet rs = null;
 
-	public List<Map<String, Object>> queryList(int flowFlag, int page, int pagesize) {
+	public List<Map<String, Object>> getList(int flowFlag, int page, int pagesize) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int count = 0;
 		System.out.println("执行service");
@@ -31,8 +31,8 @@ public class QueryService {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, flowFlag);
-			ps.setInt(2, (page - 1) * pagesize);// (page-1)*pagesize
-			ps.setInt(3, page * pagesize);// pagesize*page
+			ps.setInt(2, (page - 1) * pagesize);
+			ps.setInt(3, page * pagesize);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
@@ -40,57 +40,44 @@ public class QueryService {
 				oneData.put("MediaType", rs.getString("assetType"));
 				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
 				oneData.put("ContentImg", rs.getString("pubImg"));
-				oneData.put("ContentSource", rs.getString("publisherId"));
 				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
 				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
 				oneData.put("ContentSort", rs.getString("sort"));
-				oneData.put("ContentName", rs.getString("pubName"));
 				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
-				oneData.put("ContentDesc", "节目简介暂未获取");
 				list2seq.add(oneData);
 				count++;
 				System.out.println(oneData + "####" + count);
-				if(count==pagesize)break;
+				if (count == pagesize)
+					break;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-					rs = null;
-				} catch (Exception e) {
-					rs = null;
-				} finally {
-					rs = null;
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
+		for (Map<String, Object> map : list2seq) {
+			sql = "select smaTitle,smaPublisher,descn from wt_SeqMediaAsset where id = ?";
+			try {
+				conn = DataSource.getConnection();
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, (String) map.get("ContentId"));
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					map.put("ContentName",rs.getString("smaTitle"));
+					map.put("ContentSource", rs.getString("smaPublisher"));
+					map.put("ContentDesc", rs.getString("descn"));
 				}
-			;
-			if (ps != null)
-				try {
-					ps.close();
-					ps = null;
-				} catch (Exception e) {
-					ps = null;
-				} finally {
-					ps = null;
-				}
-			;
-			if (conn != null)
-				try {
-					conn.close();
-					conn = null;
-				} catch (Exception e) {
-					conn = null;
-				} finally {
-					conn = null;
-				}
-			;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return list2seq;
 	}
 
 	// 列表展示
-	public Map<String, Object> queryDetail(int pagesize, int page, String id, String acttype) {
+	public Map<String, Object> getListInfo(int pagesize, int page, String id, String acttype) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		switch (acttype) {
 		case "wt_SeqMediaAsset":
@@ -126,7 +113,6 @@ public class QueryService {
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, id);
 			rs = ps.executeQuery();
-			int count = 0;
 			while (rs != null && rs.next()) {
 				seqData.put("ContentId", rs.getString("id"));
 				seqData.put("ContentName", rs.getString("smaTitle"));
@@ -136,48 +122,19 @@ public class QueryService {
 				seqData.put("ContentPubTime", rs.getTimestamp("smaPublishTime"));
 				seqData.put("ContentSource", rs.getString("smaPubId"));
 				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
-				seqData.put("ContentPersons", rs.getString("smaPublisher"));
+				seqData.put("ContentPersons", null);
 				seqData.put("ContentKeyWord", rs.getString("keyWords"));
 				seqData.put("ContentCatalogs", rs.getString("langDid"));
 				seqData.put("ContentDesc", rs.getString("descn"));
-				count++;
 				System.out.println(seqData);
 			}
-			System.out.println(count);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-					rs = null;
-				} catch (Exception e) {
-					rs = null;
-				} finally {
-					rs = null;
-				}
-			;
-			if (ps != null)
-				try {
-					ps.close();
-					ps = null;
-				} catch (Exception e) {
-					ps = null;
-				} finally {
-					ps = null;
-				}
-			;
-			if (conn != null)
-				try {
-					conn.close();
-					conn = null;
-				} catch (Exception e) {
-					conn = null;
-				} finally {
-					conn = null;
-				}
-			;
-		}
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
 
 		// 专辑和单体的联系
 		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
@@ -194,37 +151,10 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-					rs = null;
-				} catch (Exception e) {
-					rs = null;
-				} finally {
-					rs = null;
-				}
-			;
-			if (ps != null)
-				try {
-					ps.close();
-					ps = null;
-				} catch (Exception e) {
-					ps = null;
-				} finally {
-					ps = null;
-				}
-			;
-			if (conn != null)
-				try {
-					conn.close();
-					conn = null;
-				} catch (Exception e) {
-					conn = null;
-				} finally {
-					conn = null;
-				}
-			;
-		}
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
 
 		// 获取单体信息
 		sql = "select id,maTitle,maPubId,maPublishTime,maImg,timeLong,maPublisher,descn,cTime from wt_MediaAsset  where id = ?";
@@ -252,37 +182,10 @@ public class QueryService {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-				if (rs != null)
-					try {
-						rs.close();
-						rs = null;
-					} catch (Exception e) {
-						rs = null;
-					} finally {
-						rs = null;
-					}
-				;
-				if (ps != null)
-					try {
-						ps.close();
-						ps = null;
-					} catch (Exception e) {
-						ps = null;
-					} finally {
-						ps = null;
-					}
-				;
-				if (conn != null)
-					try {
-						conn.close();
-						conn = null;
-					} catch (Exception e) {
-						conn = null;
-					} finally {
-						conn = null;
-					}
-				;
-			}
+	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+	        }
 		}
 
 		// 获得专辑字典信息
@@ -298,37 +201,10 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-					rs = null;
-				} catch (Exception e) {
-					rs = null;
-				} finally {
-					rs = null;
-				}
-			;
-			if (ps != null)
-				try {
-					ps.close();
-					ps = null;
-				} catch (Exception e) {
-					ps = null;
-				} finally {
-					ps = null;
-				}
-			;
-			if (conn != null)
-				try {
-					conn.close();
-					conn = null;
-				} catch (Exception e) {
-					conn = null;
-				} finally {
-					conn = null;
-				}
-			;
-		}
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
 
 		// 获得单体字典名
 		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
@@ -344,37 +220,10 @@ public class QueryService {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-				if (rs != null)
-					try {
-						rs.close();
-						rs = null;
-					} catch (Exception e) {
-						rs = null;
-					} finally {
-						rs = null;
-					}
-				;
-				if (ps != null)
-					try {
-						ps.close();
-						ps = null;
-					} catch (Exception e) {
-						ps = null;
-					} finally {
-						ps = null;
-					}
-				;
-				if (conn != null)
-					try {
-						conn.close();
-						conn = null;
-					} catch (Exception e) {
-						conn = null;
-					} finally {
-						conn = null;
-					}
-				;
-			}
+	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+	        }
 		}
 		if (listaudio.size() == 0) {
 			map.put("audio", null);
@@ -392,7 +241,7 @@ public class QueryService {
 	}
 
 	public Map<String, Object> modifSort(String id, int sort, int flowFlag) {
-		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int num = 0;
 		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
 		try {
@@ -405,43 +254,66 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (rs != null)
-				try {
-					rs.close();
-					rs = null;
-				} catch (Exception e) {
-					rs = null;
-				} finally {
-					rs = null;
-				}
-			;
-			if (ps != null)
-				try {
-					ps.close();
-					ps = null;
-				} catch (Exception e) {
-					ps = null;
-				} finally {
-					ps = null;
-				}
-			;
-			if (conn != null)
-				try {
-					conn.close();
-					conn = null;
-				} catch (Exception e) {
-					conn = null;
-				} finally {
-					conn = null;
-				}
-			;
-		}
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
 		if (num == 1) {
 			map.put("ReturnType", "1001");
-		}else{
+		} else {
 			map.put("ReturnType", "1011");
 			map.put("Message", "修改失败");
 		}
 		return map;
 	}
+
+	// 按请求查询所有
+	public List<Map<String, Object>> getAllByReq() {
+		return null;
+	}
+
+	/**
+	 * 获得分类和组织信息
+	 * @return
+	 */
+	public Map<String, Object> getCriteriaInfo() {
+		Map<String, Object> map = new HashMap<String,Object>();
+		List<String> listcatalogs = new ArrayList<String>();
+		List<String> listorganize = new ArrayList<String>();
+		String sql = "select channelName from wt_Channel";
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs != null && rs.next()) {
+				listcatalogs.add(rs.getString("channelName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
+		
+		sql = "select oName from wt_Organize";
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs != null && rs.next()) {
+				listorganize.add(rs.getString("oName"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
+		map.put("Catalogs", listcatalogs);
+		map.put("Organize", listorganize);
+		return map;
+	}
+
 }
