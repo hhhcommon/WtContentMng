@@ -27,7 +27,7 @@ function commonAjax(url,data,obj,callback){
 }	
 //从后台请求节目列表数据
 function getContentList(page,flowFlag){
-	var url="http://localhost:908/wt/content/listquery/query.do";
+	var url="http://localhost:908/wt/content/listinfo/getlist.do";
 	var data={
             UserId: "zhangsan", 
             ContentFlowFlag:flowFlag,

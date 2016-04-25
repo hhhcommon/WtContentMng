@@ -57,7 +57,7 @@
 				
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(){
-					var url="http://localhost:908/wt/content/listquery/detailquery.do";
+					var url="http://localhost:908/wt/content/listinfo/getlistinfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -77,7 +77,7 @@
 				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://localhost:908/wt/content/listquery/checkquery.do";
+					var url="http://localhost:908/wt/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -95,7 +95,7 @@
 					alert($(".source option:selected").text());
 					alert($("input[name='StartPubTime']").val());
 					alert($("input[name='EndPubTime']").val());
-					var url="http://localhost:908/wt/content/listquery/findallquery.do";
+					var url="http://localhost:908/wt/content/listinfo/findallbyrequest.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
