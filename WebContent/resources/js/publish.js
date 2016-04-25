@@ -27,22 +27,21 @@ function commonAjax(url,data,obj,callback){
         dataType: "json",
         data:data,
         beforeSend:function(){obj.html("<div style='text-align:center;height:300px;line-height:300px;'>数据加载中...</div>")},
+        
         success: function(ContentList) {
             if (ContentList.ReturnType=="1001") {
             	obj.html(""); //再重新创建新的数据集时，先清空之前的
             	//判断是查询还是修改操作，调用不同的方法
             	if(data.OpeType){
-            		alert("e234");
             		callback(1,data.ContentFlowFlag);
             	}else{
-            		alert("b234");
             		callback(ContentList);
             	}
             } else {
             	obj.html(ContentList.Message);
             }  
         },
-        error: function(jqXHR){     
+        error: function(jqXHR){  
            alert("发生错误：" + jqXHR.status);
         }     
     });

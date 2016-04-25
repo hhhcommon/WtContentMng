@@ -52,7 +52,8 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
-					$(this).css({"color":"#0077c7"});
+					$(".pubList .listBox").css({"background":"white"});
+					$(this).css({"background":"#f3f3f4"});
 				});
 				
 				/*//修改排序号时，阻止事件冒泡
