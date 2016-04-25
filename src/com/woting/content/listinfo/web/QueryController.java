@@ -1,5 +1,6 @@
 package com.woting.content.listinfo.web;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,22 +25,46 @@ public class QueryController {
 	@Resource
 	private QueryService queryService;
 
-	// 查询列表信息
+	/**
+	 * 查询列表信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/listinfo/getlist.do")
 	@ResponseBody
 	public Map<String, Object> getList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		System.out.println(m);
-		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
-		int currentpage = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
+		String catalogsid = null;
+		int flowFlag = 0;
+		String source = null;
+		Timestamp begincontentpubtime = null;
+		Timestamp endcontentpubtime = null;
+		Timestamp begincontentctime = null;
+		Timestamp endcontentctime = null;
+		String userId = (String) m.get("UserId");
+		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		System.out.println(userId + "#" + flowFlag + "#" + currentpage + "#" + pagesize);
+		if(m.containsKey("ContentCatalogsId")){
+			catalogsid = (String) m.get("ContentCatalogsId");}
+		if(m.containsKey("ContentFlowFlag")){
+			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));}
+		if(m.containsKey("ContentSource")){
+			source = (String) m.get("ContentSource");}
+		if(m.containsKey("BeginContentPubTime")){
+			begincontentpubtime = (Timestamp) m.get("BeginContentPubTime");}
+		if(m.containsKey("EndContentPubTime")){
+			endcontentpubtime = (Timestamp) m.get("EndContentPubTime");}
+		if(m.containsKey("BeginContentCTime")){
+			begincontentctime = (Timestamp) m.get("BeginContentCTime");}
+		if(m.containsKey("EndContentCTime")){
+			endcontentctime = (Timestamp) m.get("EndContentCTime");}
+		System.out.println(userId + "#" + flowFlag + "#" + page + "#" + pagesize);
 		if (userId != null) {
-			if (flowFlag > 0 && currentpage > 0 && pagesize > 0) {
+			if (flowFlag > 0 && page > 0 && pagesize > 0) {
 				List<Map<String, Object>> list = (List<Map<String, Object>>) queryService.getList(flowFlag,
-						currentpage, pagesize);
+						page, pagesize,catalogsid,source,begincontentpubtime,endcontentpubtime,begincontentctime,endcontentctime);
 				map.put("ResultList", list);
 				map.put("ReturnType", "1001");
 				map.put("ContentCount", list.size());
@@ -54,7 +79,11 @@ public class QueryController {
 		return map;
 	}
 
-	// 详细信息查询
+	/**
+	 * 查询详细信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/listinfo/getlistinfo.do")
 	@ResponseBody
 	public Map<String, Object> getListInfo(HttpServletRequest request) {
@@ -80,7 +109,11 @@ public class QueryController {
 		return map;
 	}
 
-	// 修改排序号
+	/**
+	 * 修改序号
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/listinfo/modifsort.do")
 	@ResponseBody
 	public Map<String, Object> modifSort(HttpServletRequest request) {
@@ -88,36 +121,12 @@ public class QueryController {
 		System.out.println(m);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		String userId = (String) m.get("UserId");
-		String id = (String) m.get("Id");
+		String ids = (String) m.get("Id");
 		String numbers = (String) m.get("ContentSort");
 		String opeType = (String) m.get("OpeType");
-		System.out.println(flowFlag + "#" + id + "#" + numbers);
-		Map<String, Object> map = queryService.modifInfo(id, numbers, flowFlag,opeType);
+		System.out.println(flowFlag + "#" + ids + "#" + numbers +"#"+ opeType);
+		Map<String, Object> map = queryService.modifInfo(ids, numbers, flowFlag,opeType);
 		return map;
-	}
-
-	/**
-	 * 按条件查询所有
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/content/listinfo/findallbyrequest.do")
-	@ResponseBody
-	public Map<String, Object> findAllByRequest(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
-		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
-		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
-		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		String contentcatalogs = m.get("ContentCatalogs") == null ? null : (String) m.get("ContentCatalogs");
-		String contentsource = m.get("ContentSource") == null ? null : (String) m.get("ContentSource");
-		String begincontentpubtime = m.get("BeginContentPubTime") == null ? null
-				: (String) m.get("BeginContentPubTime");
-		String endcontentpubtime = m.get("EndContentPubTime") == null ? null : (String) m.get("EndContentPubTime");
-		System.out.println(page + "#" + pagesize + "#" + flowFlag + "#" + contentcatalogs + "#" + contentsource + "#"
-				+ begincontentpubtime + "#" + endcontentpubtime);
-		return null;
 	}
 
 	/**
@@ -133,6 +142,7 @@ public class QueryController {
 		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getCriteriaInfo();
+		map.put("ReturnType", "1001");
 		return map;
 	}
 

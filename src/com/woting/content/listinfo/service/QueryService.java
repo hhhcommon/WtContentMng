@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import org.apache.ibatis.annotations.Case;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +24,24 @@ public class QueryService {
 	private PreparedStatement ps = null;
 	private ResultSet rs = null;
 
-	public List<Map<String, Object>> getList(int flowFlag, int page, int pagesize) {
+	public List<Map<String, Object>> getList(int flowFlag, int page, int pagesize, String catalogsid, String source,
+			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
-		int count = 0;
 		System.out.println("执行service");
-		String sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName from wt_ChannelAsset where flowFlag=? order by sort desc) a limit ?,? ";
+		int count = 0;
+		String sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName from wt_ChannelAsset where flowFlag=? ";
+		if (catalogsid != null)sql += " and channelId='"+catalogsid+"'";
+		if (source != null)sql += " and publisherId='"+source+"'";
+		if (beginpubtime != null && endpubtime != null)sql += " and pubTime>'"+beginpubtime+"' and pubTime<'"+endpubtime+"'";
+		if (beginctime != null && endctime != null)sql += " and cTime>'"+beginctime+"' and cTime<'"+endctime+"'";
+		sql += " order by sort desc) a limit ?,?";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, flowFlag);
 			ps.setInt(2, (page - 1) * pagesize);
 			ps.setInt(3, page * pagesize);
+			ps.setQueryTimeout(10000);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
@@ -55,10 +62,37 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 		for (Map<String, Object> map : list2seq) {
 			sql = "select smaTitle,smaPublisher,descn from wt_SeqMediaAsset where id = ?";
 			try {
@@ -67,7 +101,7 @@ public class QueryService {
 				ps.setString(1, (String) map.get("ContentId"));
 				rs = ps.executeQuery();
 				while (rs != null && rs.next()) {
-					map.put("ContentName",rs.getString("smaTitle"));
+					map.put("ContentName", rs.getString("smaTitle"));
 					map.put("ContentSource", rs.getString("smaPublisher"));
 					map.put("ContentDesc", rs.getString("descn"));
 				}
@@ -133,10 +167,37 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 
 		// 专辑和单体的联系
 		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
@@ -153,10 +214,37 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 
 		// 获取单体信息
 		sql = "select id,maTitle,maPubId,maPublishTime,maImg,timeLong,maPublisher,descn,cTime from wt_MediaAsset  where id = ?";
@@ -184,10 +272,37 @@ public class QueryService {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
+				if (rs != null)
+					try {
+						rs.close();
+						rs = null;
+					} catch (Exception e) {
+						rs = null;
+					} finally {
+						rs = null;
+					}
+				;
+				if (ps != null)
+					try {
+						ps.close();
+						ps = null;
+					} catch (Exception e) {
+						ps = null;
+					} finally {
+						ps = null;
+					}
+				;
+				if (conn != null)
+					try {
+						conn.close();
+						conn = null;
+					} catch (Exception e) {
+						conn = null;
+					} finally {
+						conn = null;
+					}
+				;
+			}
 		}
 
 		// 获得专辑字典信息
@@ -203,10 +318,37 @@ public class QueryService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 
 		// 获得单体字典名
 		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
@@ -222,10 +364,37 @@ public class QueryService {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
+				if (rs != null)
+					try {
+						rs.close();
+						rs = null;
+					} catch (Exception e) {
+						rs = null;
+					} finally {
+						rs = null;
+					}
+				;
+				if (ps != null)
+					try {
+						ps.close();
+						ps = null;
+					} catch (Exception e) {
+						ps = null;
+					} finally {
+						ps = null;
+					}
+				;
+				if (conn != null)
+					try {
+						conn.close();
+						conn = null;
+					} catch (Exception e) {
+						conn = null;
+					} finally {
+						conn = null;
+					}
+				;
+			}
 		}
 		if (listaudio.size() == 0) {
 			map.put("audio", null);
@@ -241,15 +410,19 @@ public class QueryService {
 	public Map<String, Object> getAudio(String id, String acttype) {
 		return null;
 	}
-	
-	public Map<String, Object> modifInfo(String id, String number, int flowFlag,String OpeType){
-		String[] numbers = number.split(",");
+
+	public Map<String, Object> modifInfo(String id, String number, int flowFlag, String OpeType) {
 		switch (OpeType) {
-		case "sort":modifSort(id, number, flowFlag);
+		case "sort":
+			modifSort(id, number, flowFlag);
 			break;
 		case "pass":
+			if (number.equals("2"))
+				modifStatus(id, number);
 			break;
 		case "nopass":
+			if (number.equals("3"))
+				modifStatus(id, number);
 			break;
 		case "revoke":
 			break;
@@ -258,25 +431,56 @@ public class QueryService {
 		}
 		return null;
 	}
-	
+
 	public Map<String, Object> modifStatus(String id, String number) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String sql = "update wt_ChannelAsset set flowFlag = ? where id = ?";
-		String[] numbers = number.split(",");
+		System.out.println(number);
+		String[] ids = id.split(",");
 		int num = 0;
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, Integer.valueOf(number));
-			ps.setString(2, id);
-			num = ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-	        if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	        if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	        if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	    }
+		for (int i = 0; i < ids.length; i++) {
+			System.out.println(ids[i]);
+			try {
+				conn = DataSource.getConnection();
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, Integer.valueOf(number));
+				ps.setString(2, ids[i]);
+				num = ps.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				if (rs != null)
+					try {
+						rs.close();
+						rs = null;
+					} catch (Exception e) {
+						rs = null;
+					} finally {
+						rs = null;
+					}
+				;
+				if (ps != null)
+					try {
+						ps.close();
+						ps = null;
+					} catch (Exception e) {
+						ps = null;
+					} finally {
+						ps = null;
+					}
+				;
+				if (conn != null)
+					try {
+						conn.close();
+						conn = null;
+					} catch (Exception e) {
+						conn = null;
+					} finally {
+						conn = null;
+					}
+				;
+			}
+		}
 		if (num == 1) {
 			map.put("ReturnType", "1001");
 		} else {
@@ -288,6 +492,7 @@ public class QueryService {
 
 	/**
 	 * 修改排序号
+	 * 
 	 * @param id
 	 * @param sort
 	 * @param flowFlag
@@ -297,21 +502,46 @@ public class QueryService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int num = 0;
 		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
-		if(!sort.contains(",")){
-			try {
-				conn = DataSource.getConnection();
-				ps = conn.prepareStatement(sql);
-				ps.setInt(1, Integer.valueOf(sort));
-				ps.setString(2, id);
-				num = ps.executeUpdate();
-				System.out.println(num);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-	        }
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, Integer.valueOf(sort));
+			ps.setString(2, id);
+			num = ps.executeUpdate();
+			System.out.println(num);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
 		}
 		if (num == 1) {
 			map.put("ReturnType", "1001");
@@ -329,43 +559,104 @@ public class QueryService {
 
 	/**
 	 * 获得分类和组织信息
+	 * 
 	 * @return
 	 */
 	public Map<String, Object> getCriteriaInfo() {
-		Map<String, Object> map = new HashMap<String,Object>();
-		List<String> listcatalogs = new ArrayList<String>();
-		List<String> listorganize = new ArrayList<String>();
-		String sql = "select channelName from wt_Channel";
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<Map<String, Object>> listcatalogs = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> listorganize = new ArrayList<Map<String, Object>>();
+		String sql = "select id,channelName from wt_Channel";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
-				listcatalogs.add(rs.getString("channelName"));
+				Map<String, Object> oneDate = new HashMap<String, Object>();
+				oneDate.put("CatalogsId", rs.getString("id"));
+				oneDate.put("CatalogsName", rs.getString("channelName"));
+				listcatalogs.add(oneDate);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
-		
-		sql = "select oName from wt_Organize";
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
+
+		sql = "select id,oName from wt_Organize";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {
-				listorganize.add(rs.getString("oName"));
+				Map<String, Object> oneDate = new HashMap<>();
+				oneDate.put("SourceId", rs.getString("id"));
+				oneDate.put("SourceName", rs.getString("oName"));
+				listorganize.add(oneDate);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+			if (rs != null)
+				try {
+					rs.close();
+					rs = null;
+				} catch (Exception e) {
+					rs = null;
+				} finally {
+					rs = null;
+				}
+			;
+			if (ps != null)
+				try {
+					ps.close();
+					ps = null;
+				} catch (Exception e) {
+					ps = null;
+				} finally {
+					ps = null;
+				}
+			;
+			if (conn != null)
+				try {
+					conn.close();
+					conn = null;
+				} catch (Exception e) {
+					conn = null;
+				} finally {
+					conn = null;
+				}
+			;
+		}
 		map.put("Catalogs", listcatalogs);
 		map.put("Source", listorganize);
 		return map;
