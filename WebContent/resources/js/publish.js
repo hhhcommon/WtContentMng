@@ -38,8 +38,6 @@ function getContentList(page,flowFlag){
 }
 //创建查询条件DOM元素
 function ConditionsListLoad(ConditionsList){
-	alert(ConditionsList.Catalogs.length);
-	alert(ConditionsList.Source.length);
 	var calalogsLen=ConditionsList.Catalogs.length;
 	var sourceLen=ConditionsList.Source.length;
 	var catalogsOption,sourceOption;

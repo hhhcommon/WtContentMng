@@ -37,29 +37,27 @@
 				//$(".pubList .listBox:eq(0)").trigger("click");
 				
 				//获取查询条件列表，节目分类和来源
-				setTimeout(function(){
-					alert("ggg");
-					$.ajax({
-				        type: "POST",    
-				        url:"http://localhost:908/wt/content/listinfo/getcriteriainfo.do",
-				        dataType: "json",
-				        data:{UserId: "zhangsan"},
-				        success: function(ConditionsList) {
-				            if (ConditionsList.ReturnType=="1001") {
-				                alert("查询条件列表！");
-				                ConditionsListLoad(ConditionsList);
-				            } else {
-				                alert("获取数据出现问题la:"+ConditionsList.Message);
-				            }  
-				        },
-				        error: function(jqXHR){   
-				           alert("发生错误：" + jqXHR.status);
-				        }     
-				    });
-				},"3000");
-					
-			
-				
+					$(".catalogs,.source").on("click",function(){
+						alert("wer");
+						$.ajax({
+					        type: "POST",    
+					        url:"http://localhost:908/wt/content/listinfo/getcriteriainfo.do",
+					        dataType: "json",
+					        data:{UserId: "zhangsan"},
+					        success: function(ConditionsList) {
+					            //if (ConditionsList.ReturnType=="1001") {
+					                //alert("查询条件列表！");
+					                ConditionsListLoad(ConditionsList);
+					            //} else {
+					                //alert("获取数据出现问题la:"+ConditionsList.Message);
+					            //}  
+					        },
+					        error: function(jqXHR){   
+					           alert("发生错误：" + jqXHR.status);
+					        }     
+					    });
+					});
+						
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(){
 					var url="http://localhost:908/wt/content/listinfo/getlistinfo.do";
@@ -72,7 +70,6 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
-					//getConditions();
 					$(this).children(".listCon h3").css({"color":"#0077c7"});
 				});
 				
