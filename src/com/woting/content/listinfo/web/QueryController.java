@@ -87,11 +87,12 @@ public class QueryController {
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		System.out.println(m);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
-		String id = m.get("Id") == null ? null : (String) m.get("Id");
-		int sort = m.get("ContentSort") == null ? -1 : Integer.valueOf((String) m.get("ContentSort"));
-		System.out.println(flowFlag + "#" + id + "#" + sort);
-		Map<String, Object> map = queryService.modifSort(id, sort, flowFlag);
+		String userId = (String) m.get("UserId");
+		String id = (String) m.get("Id");
+		String numbers = (String) m.get("ContentSort");
+		String opeType = (String) m.get("OpeType");
+		System.out.println(flowFlag + "#" + id + "#" + numbers);
+		Map<String, Object> map = queryService.modifInfo(id, numbers, flowFlag,opeType);
 		return map;
 	}
 
@@ -127,6 +128,9 @@ public class QueryController {
 	@RequestMapping(value = "/content/listinfo/getcriteriainfo.do")
 	@ResponseBody
 	public Map<String, Object> getCatalogs(HttpServletRequest request) {
+		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		System.out.println(m);
+		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getCriteriaInfo();
 		return map;
