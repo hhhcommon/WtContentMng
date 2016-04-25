@@ -1,4 +1,5 @@
-var allCount="";
+var contentCount=0;
+//alert(contentCount);
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
@@ -8,7 +9,6 @@ function getConditions(){
         data:{UserId: "zhangsan"},
         success: function(ConditionsList) {
             if (ConditionsList.ReturnType=="1001") {
-                //alert("查询条件列表！");
                 ConditionsListLoad(ConditionsList);
             } else {
                 alert("获取数据出现问题la:"+ConditionsList.Message);
@@ -81,11 +81,10 @@ function ConditionsListLoad(ConditionsList){
 //创建节目列表DOM树
 function ContentListLoad(actList){
      var actListLength=actList.ResultList.length;
-     //alert(actListLength);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
     var sortDiv,sortInput,sortBtn;
-    //var outDiv=$("<div class='actList'></div>");
+    contentCount=actList.ContentCount;
     //循环加载列表
     for(var i=0;i<actListLength;i++){
         listDiv=$("<div class='listBox'></div>");
@@ -114,7 +113,6 @@ function ContentListLoad(actList){
         //根据类型显示不同的标记
         switch(actList.ResultList[i].MediaType){
 	        case 'wt_SeqMediaAsset':
-	        	//alert(actList.ResultList[i].ActType);
 	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
 	        	break;
 	        case 'wt_MediaAsset':
@@ -143,7 +141,6 @@ function ContentListLoad(actList){
         
         $(".actList").append(listDiv);
     }
-    //$(".pubList").prepend(outDiv);
 }
 //根据节目ID从后台获取节目详情及其下单体列表数据
 
@@ -170,7 +167,7 @@ function ContentInfoLoad(conList){
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
      $(".vjName").text(conList.ContentDetail.ContentPersons);
      $(".actDesn").text(conList.ContentDetail.ContentDesc);
-     //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);  栏目？标签？数组类型
+     //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构

@@ -24,7 +24,7 @@
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
-					max_page	: 1,
+					max_page	: 2,
 					paged		: function(page) {
 						//翻页时的请求
 						getContentList(page,flowFlag);
@@ -72,8 +72,6 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					//alert($(".catalogs option:selected").text());
-					//alert($(".source option:selected").text());
 					var url="http://localhost:908/wt/content/listinfo/getlist.do";
 					var data={
 	                        UserId: "zhangsan", 
@@ -88,6 +86,24 @@
                     EndContentPubTime:$("input[name='EndPubTime']").val(),
 					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
+				});
+				//审核通过不通过处理
+				$("button[opeType='revoke']").on('click',function(){
+					var checkedList="";
+					console.log($("input[type='checkBox'][checked='checked']"));
+					$.each($("input[type='checkBox'][name!='all'][checked='checked']"),function(){
+						checkedList+=$(this).parent(".listBox").attr("id")+",";
+					});
+					alert(checkedList);
+					var url="http://localhost:908/wt/content/listinfo/modifsort.do";
+					var data={
+	                        UserId: "zhangsan", 
+	                        ContentFlowFlag:flowFlag,
+	                        Id:checkedList,
+	                        opeType:"revoke"
+	                    };
+					//commonAjax(url,data,$(".pubList>.actList"),getContentList);
+					
 				});
 				//节目列表全选全不选
 				$("input[name='all']").on('click',function(){
@@ -115,21 +131,12 @@
                 <button type="button" opeType="pass" class="btn" style="margin-right:10px">通过</button>
                 <button type="button" opeType="nopass" class="btn" style="margin-right:260px">不通过</button>
                 <label>栏目:</label>
-                    <select class="column" name="column">
+                    <select class="catalogs" name="column">
                         <option value="">不 限</option>
-                        <option value="">新闻</option>
-                        <option value="">音乐</option>
-                        <option value="">娱乐</option>
-                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
                         <option value="">不 限</option>
-                        <option value="">喜马拉雅</option>
-                        <option value="">蜻蜓</option>
-                        <option value="">考拉</option>
-                        <option value="">自制</option>
-                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                     <div class="form-group cDate" id="data_5">
                     <span>发布日期：</span>
