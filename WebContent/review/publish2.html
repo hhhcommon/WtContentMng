@@ -33,30 +33,12 @@
 				
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
+				//获得查询条件
+				//getConditions();
 				//加载完列表后，页面右侧默认显示第一条节目详情内容
 				//$(".pubList .listBox:eq(0)").trigger("click");
 				
-				//获取查询条件列表，节目分类和来源
-					$(".catalogs,.source").on("click",function(){
-						alert("wer");
-						$.ajax({
-					        type: "POST",    
-					        url:"http://localhost:908/wt/content/listinfo/getcriteriainfo.do",
-					        dataType: "json",
-					        data:{UserId: "zhangsan"},
-					        success: function(ConditionsList) {
-					            //if (ConditionsList.ReturnType=="1001") {
-					                //alert("查询条件列表！");
-					                ConditionsListLoad(ConditionsList);
-					            //} else {
-					                //alert("获取数据出现问题la:"+ConditionsList.Message);
-					            //}  
-					        },
-					        error: function(jqXHR){   
-					           alert("发生错误：" + jqXHR.status);
-					        }     
-					    });
-					});
+				
 						
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(){
@@ -95,7 +77,7 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					alert($(".column option:selected").text());
+					alert($(".catalogs option:selected").text());
 					alert($(".source option:selected").text());
 					alert($("input[name='StartPubTime']").val());
 					alert($("input[name='EndPubTime']").val());
@@ -103,8 +85,8 @@
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
-                        	ContentColumn:$(".column option:selected").text(),
-                        	ContentSource:$(".source option:selected").text(),
+                        	ContentCatalogs:$(".catalogs option:selected").attr("catalogsId"),
+                        	ContentSource:$(".source option:selected").attr("sourceId"),
                         	BeginContentPubTime:$("input[name='StartPubTime']").val(),
                         	EndContentPubTime:$("input[name='EndPubTime']").val(),
 	                        Page:"1",
@@ -117,13 +99,26 @@
 					if($(this).prop("checked")){
 						$(":checkbox").prop({"checked":"checked"});
 					}else{
-						
 						$(":checkbox").prop({"checked":null});
 					}
 				});
 				//撤回处理
-				$(".actRevoke").on('click',function(){
-					alert("bdd");
+				$("button[opeType='revoke']").on('click',function(){
+					var checkedList="";
+					console.log($("input[type='checkBox'][name!='all'][checked='checked']"));
+					$.each($("input[type='checkBox'][name!='all'][checked='checked']"),function(){
+						checkedList+=$(this).parent(".listBox").attr("id")+",";
+					});
+					alert(checkedList);
+					var url="http://localhost:908/wt/content/listinfo/modifsort.do";
+					var data={
+	                        UserId: "zhangsan", 
+	                        ContentFlowFlag:flowFlag,
+	                        Id:checkedList,
+	                        opeType:"revoke"
+	                    };
+					commonAjax(url,data,$(".pubList>.actList"),getContentList);
+					
 				});
 				
 				/*
@@ -191,6 +186,8 @@
                 <!--左侧列表 onselectstart="return false;"-->
                 <div class="pubList">
                 	<!-- 动态节目列表actList -->
+                	<div class="actList">
+                	</div>
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块

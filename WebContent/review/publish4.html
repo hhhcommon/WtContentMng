@@ -45,7 +45,7 @@
 				            ContentId:$(this).attr("actId"),
 				            MediaType:$(this).attr("actType")
 				        };
-					commonAjax(url,data,$("tbody"),ContentInfoLoad);
+					commonAjax(url,data,$(".table"),ContentInfoLoad);
 				});
 				
 				/*//修改排序号时，阻止事件冒泡

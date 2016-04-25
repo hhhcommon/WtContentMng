@@ -1,4 +1,3 @@
-
 //动态创建二级菜单树，传入的参数为一个数组对象
 function menuTreeLoad(menuTree){
     //alert(data.ReturnType);

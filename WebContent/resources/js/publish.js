@@ -1,3 +1,25 @@
+ //获取查询条件列表，节目分类和来源
+function getConditions(){
+	alert("ccc");
+	$.ajax({
+        type: "POST",    
+        url:"http://localhost:908/wt/content/listinfo/getcriteriainfo.do",
+        dataType: "json",
+        data:{UserId: "zhangsan"},
+        success: function(ConditionsList) {
+            if (ConditionsList.ReturnType=="1001") {
+                alert("查询条件列表！");
+                ConditionsListLoad(ConditionsList);
+            } else {
+                alert("获取数据出现问题la:"+ConditionsList.Message);
+            }  
+        },
+        error: function(jqXHR){   
+           alert("发生错误：" + jqXHR.status);
+        }     
+    });
+}
+getConditions();
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
 	$.ajax({
@@ -5,19 +27,18 @@ function commonAjax(url,data,obj,callback){
         url:url,
         dataType: "json",
         data:data,
+        beforeSend:function(){obj.html("<div style='text-align:center;height:300px;line-height:300px;'>数据加载中...</div>")},
         success: function(ContentList) {
             if (ContentList.ReturnType=="1001") {
-                //console.log("获取到数据了！");
-            	obj.empty(); //再重新创建新的数据集时，先清空之前的
+            	obj.html(""); //再重新创建新的数据集时，先清空之前的
             	//判断是查询还是修改操作，调用不同的方法
             	if(data.opeType){
-            		//alert("修改操作");
             		callback(1,data.ContentFlowFlag);
             	}else{
             		callback(ContentList);
             	}
             } else {
-                alert("获取数据出现问题lou:"+ContentList.Message);
+            	obj.html(ContentList.Message);
             }  
         },
         error: function(jqXHR){     
@@ -43,12 +64,14 @@ function ConditionsListLoad(ConditionsList){
 	var catalogsOption,sourceOption;
 	for(var i=0;i<calalogsLen;i++){
 		catalogsOption=$("<option></option>");
-		catalogsOption.text(ConditionsList.Catalogs[i]);
+		catalogsOption.attr({"catalogsId":ConditionsList.Catalogs[i]}.CatalogsId);
+		catalogsOption.text(ConditionsList.Catalogs[i].CatalogsName);
 		$(".operate .catalogs").append(catalogsOption);
 	}
 	for(var j=0;j<sourceLen;j++){
 		sourceOption=$("<option></option>");
-		sourceOption.text(ConditionsList.Source[j]);
+		sourceOption.attr({"sourceId":ConditionsList.Source[j].SourceId});
+		sourceOption.text(ConditionsList.Source[j].SourceName);
 		$(".operate .source").append(sourceOption);
 	}
 }
@@ -60,7 +83,7 @@ function ContentListLoad(actList){
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
     var sortDiv,sortInput,sortBtn;
-    var outDiv=$("<div class='actList'></div>");
+    //var outDiv=$("<div class='actList'></div>");
     //循环加载列表
     for(var i=0;i<actListLength;i++){
         listDiv=$("<div class='listBox'></div>");
@@ -116,9 +139,9 @@ function ContentListLoad(actList){
             listDiv.append(sortDiv);
         }
         
-        outDiv.append(listDiv);
+        $(".actList").append(listDiv);
     }
-    $(".pubList").prepend(outDiv);
+    //$(".pubList").prepend(outDiv);
 }
 //根据节目ID从后台获取节目详情及其下单体列表数据
 
