@@ -1,6 +1,6 @@
- //获取查询条件列表，节目分类和来源
+var allCount="" 
+//获取查询条件列表，节目分类和来源
 function getConditions(){
-	alert("ccc");
 	$.ajax({
         type: "POST",    
         url:"http://localhost:908/wt/content/listinfo/getcriteriainfo.do",
@@ -19,11 +19,11 @@ function getConditions(){
         }     
     });
 }
-getConditions();
+//getConditions();
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
 	$.ajax({
-        type: "POST",    
+        type: "POST",
         url:url,
         dataType: "json",
         data:data,
@@ -59,15 +59,20 @@ function getContentList(page,flowFlag){
 }
 //创建查询条件DOM元素
 function ConditionsListLoad(ConditionsList){
+	alert(ConditionsList.Catalogs.length);
+	alert(ConditionsList.Source.length);
 	var calalogsLen=ConditionsList.Catalogs.length;
 	var sourceLen=ConditionsList.Source.length;
 	var catalogsOption,sourceOption;
+	
 	for(var i=0;i<calalogsLen;i++){
 		catalogsOption=$("<option></option>");
-		catalogsOption.attr({"catalogsId":ConditionsList.Catalogs[i]}.CatalogsId);
+		catalogsOption.attr({"catalogsId":ConditionsList.Catalogs[i].CatalogsId});
 		catalogsOption.text(ConditionsList.Catalogs[i].CatalogsName);
 		$(".operate .catalogs").append(catalogsOption);
 	}
+	console.log(ConditionsList.Catalogs[0].CatalogsName);
+	console.log(ConditionsList.Catalogs[0].CatalogsId);
 	for(var j=0;j<sourceLen;j++){
 		sourceOption=$("<option></option>");
 		sourceOption.attr({"sourceId":ConditionsList.Source[j].SourceId});
