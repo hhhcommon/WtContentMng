@@ -31,9 +31,11 @@ function commonAjax(url,data,obj,callback){
             if (ContentList.ReturnType=="1001") {
             	obj.html(""); //再重新创建新的数据集时，先清空之前的
             	//判断是查询还是修改操作，调用不同的方法
-            	if(data.opeType){
+            	if(data.OpeType){
+            		alert("e234");
             		callback(1,data.ContentFlowFlag);
             	}else{
+            		alert("b234");
             		callback(ContentList);
             	}
             } else {

@@ -64,7 +64,7 @@
 	                        ContentFlowFlag:flowFlag,
 	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
 	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
-	                        opeType:"sort"
+	                        OpeType:"sort"
 	                    };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					//阻止事件向上级冒泡
@@ -100,7 +100,7 @@
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
 	                        Id:checkedList,
-	                        opeType:"revoke"
+	                        OpeType:"revoke"
 	                    };
 					//commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
@@ -113,10 +113,6 @@
 						
 						$(":checkbox").prop({"checked":null});
 					}
-				});
-				//撤回处理
-				$(".actRevoke").on('click',function(){
-					alert("bdd");
 				});
 			});
 		</script>
