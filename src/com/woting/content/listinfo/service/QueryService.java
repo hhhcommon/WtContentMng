@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+
+import org.apache.ibatis.annotations.Case;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -239,25 +241,78 @@ public class QueryService {
 	public Map<String, Object> getAudio(String id, String acttype) {
 		return null;
 	}
-
-	public Map<String, Object> modifSort(String id, int sort, int flowFlag) {
+	
+	public Map<String, Object> modifInfo(String id, String number, int flowFlag,String OpeType){
+		String[] numbers = number.split(",");
+		switch (OpeType) {
+		case "sort":modifSort(id, number, flowFlag);
+			break;
+		case "pass":
+			break;
+		case "nopass":
+			break;
+		case "revoke":
+			break;
+		default:
+			break;
+		}
+		return null;
+	}
+	
+	public Map<String, Object> modifStatus(String id, String number) {
 		Map<String, Object> map = new HashMap<String, Object>();
+		String sql = "update wt_ChannelAsset set flowFlag = ? where id = ?";
+		String[] numbers = number.split(",");
 		int num = 0;
-		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, sort);
+			ps.setInt(1, Integer.valueOf(number));
 			ps.setString(2, id);
 			num = ps.executeUpdate();
-			System.out.println(num);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
-        }
+	        if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	        if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	        if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+	    }
+		if (num == 1) {
+			map.put("ReturnType", "1001");
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
+		}
+		return map;
+	}
+
+	/**
+	 * 修改排序号
+	 * @param id
+	 * @param sort
+	 * @param flowFlag
+	 * @return
+	 */
+	public Map<String, Object> modifSort(String id, String sort, int flowFlag) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		int num = 0;
+		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
+		if(!sort.contains(",")){
+			try {
+				conn = DataSource.getConnection();
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, Integer.valueOf(sort));
+				ps.setString(2, id);
+				num = ps.executeUpdate();
+				System.out.println(num);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+	            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+	        }
+		}
 		if (num == 1) {
 			map.put("ReturnType", "1001");
 		} else {
