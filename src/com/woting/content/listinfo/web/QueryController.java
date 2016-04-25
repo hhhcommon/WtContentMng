@@ -46,12 +46,12 @@ public class QueryController {
 		String userId = (String) m.get("UserId");
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		if(m.containsKey("ContentCatalogsId")){
-			catalogsid = (String) m.get("ContentCatalogsId");}
+		if(m.containsKey("CatalogsId")){
+			catalogsid = (String) m.get("CatalogsId");}
 		if(m.containsKey("ContentFlowFlag")){
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));}
-		if(m.containsKey("ContentSource")){
-			source = (String) m.get("ContentSource");}
+		if(m.containsKey("SourceId")){
+			source = (String) m.get("SourceId");}
 		if(m.containsKey("BeginContentPubTime")){
 			begincontentpubtime = (Timestamp) m.get("BeginContentPubTime");}
 		if(m.containsKey("EndContentPubTime")){
@@ -63,11 +63,11 @@ public class QueryController {
 		System.out.println(userId + "#" + flowFlag + "#" + page + "#" + pagesize);
 		if (userId != null) {
 			if (flowFlag > 0 && page > 0 && pagesize > 0) {
-				List<Map<String, Object>> list = (List<Map<String, Object>>) queryService.getList(flowFlag,
+				Map<String, Object> maplist = queryService.getList(flowFlag,
 						page, pagesize,catalogsid,source,begincontentpubtime,endcontentpubtime,begincontentctime,endcontentctime);
-				map.put("ResultList", list);
+				map.put("ResultList", maplist.get("List"));
 				map.put("ReturnType", "1001");
-				map.put("ContentCount", list.size());
+				map.put("ContentCount", maplist.get("Count"));
 			} else {
 				map.put("ReturnType", "1002");
 				map.put("Message", "请求信息有误");
