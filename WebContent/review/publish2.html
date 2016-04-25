@@ -52,7 +52,7 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
-					$(this).children(".listCon h3").css({"color":"#0077c7"});
+					$(this).css({"color":"#0077c7"});
 				});
 				
 				/*//修改排序号时，阻止事件冒泡
@@ -77,8 +77,8 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					alert($(".catalogs option:selected").text());
-					alert($(".source option:selected").text());
+					//alert($(".catalogs option:selected").text());
+					//alert($(".source option:selected").text());
 					var url="http://localhost:908/wt/content/listinfo/getlist.do";
 					var data={
 	                        UserId: "zhangsan", 
@@ -117,7 +117,7 @@
 	                        Id:checkedList,
 	                        opeType:"revoke"
 	                    };
-					commonAjax(url,data,$(".pubList>.actList"),getContentList);
+					//commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
 				});
 				

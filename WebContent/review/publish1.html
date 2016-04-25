@@ -33,10 +33,12 @@
 				
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
+				//获得查询条件
+				getConditions();
 				
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(ev){
-					var url="http://localhost:908/wt/content/listquery/detailquery.do";
+					var url="http://localhost:908/wt/content/listinfo/getlistinfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -56,7 +58,7 @@
 				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://localhost:908/wt/content/listquery/checkquery.do";
+					var url="http://localhost:908/wt/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -70,21 +72,21 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					alert($(".column option:selected").text());
-					alert($(".source option:selected").text());
-					alert($("input[name='StartPubTime']").val());
-					alert($("input[name='EndPubTime']").val());
-					var url="http://localhost:908/wt/content/listquery/findallquery.do";
+					//alert($(".catalogs option:selected").text());
+					//alert($(".source option:selected").text());
+					var url="http://localhost:908/wt/content/listinfo/getlist.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
-                        	ContentColumn:$(".column option:selected").text(),
-                        	ContentSource:$(".source option:selected").text(),
-                        	BeginContentPubTime:$("input[name='StartPubTime']").val(),
-                        	EndContentPubTime:$("input[name='EndPubTime']").val(),
+                        	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
+                        	SourceId:$(".source option:selected").attr("sourceId"),
 	                        Page:"1",
 	                        PageSize:"10"
 	                    };
+					/*
+					BeginContentPubTime:$("input[name='StartPubTime']").val(),
+                    EndContentPubTime:$("input[name='EndPubTime']").val(),
+					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//节目列表全选全不选
@@ -144,6 +146,8 @@
             <div class="mainShow">
                 <!--左侧列表 onselectstart="return false;"-->
                 <div class="pubList">
+                	<div class="actList">
+                	</div>
                 	<!-- 动态节目列表actList -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
