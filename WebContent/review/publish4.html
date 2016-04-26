@@ -21,22 +21,15 @@
 			$(function(){
 				var flowFlag="4";//节目审核状态
 				var pages=1;
-				//翻页
-				$('.pagination').jqPagination({
-					link_string	: '/?page={page_number}',
-					max_page	: 30,
-					paged		: function(page) {
-						//翻页时的请求
-						getContentList(page,flowFlag);
-					}
-				});
-				
+								
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
+				//获得查询条件
+				getConditions();
 				
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(ev){
-					var url="http://localhost:908/wt/content/listquery/detailquery.do";
+					var url="http://localhost:908/CM/content/listinfo/getlistinfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -45,9 +38,10 @@
 				            ContentId:$(this).attr("actId"),
 				            MediaType:$(this).attr("actType")
 				        };
-					commonAjax(url,data,$(".table"),ContentInfoLoad);
+					commonAjax(url,data,$("tbody"),ContentInfoLoad);
+					$(".pubList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
+					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
 				});
-				
 				/*//修改排序号时，阻止事件冒泡
 				$(".sortNum").on("click",function(ev){
 					alert("ddd");
@@ -56,13 +50,13 @@
 				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://localhost:908/wt/content/listquery/checkquery.do";
+					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
 	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
 	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
-	                        opeType:"sort"
+	                        OpeType:"sort"
 	                    };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					//阻止事件向上级冒泡
@@ -70,22 +64,37 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					alert($(".column option:selected").text());
-					alert($(".source option:selected").text());
-					alert($("input[name='StartPubTime']").val());
-					alert($("input[name='EndPubTime']").val());
-					var url="http://localhost:908/wt/content/listquery/findallquery.do";
+					var url="http://localhost:908/CM/content/listinfo/getlist.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
-                        	ContentColumn:$(".column option:selected").text(),
-                        	ContentSource:$(".source option:selected").text(),
-                        	BeginContentPubTime:$("input[name='StartPubTime']").val(),
-                        	EndContentPubTime:$("input[name='EndPubTime']").val(),
+                        	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
+                        	SourceId:$(".source option:selected").attr("sourceId"),
 	                        Page:"1",
 	                        PageSize:"10"
 	                    };
+					/*
+					BeginContentPubTime:$("input[name='StartPubTime']").val(),
+                    EndContentPubTime:$("input[name='EndPubTime']").val(),
+					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
+				});
+				//审核通过不通过处理
+				$("button[opeType]").on('click',function(){
+					var opeType=($(this).attr("opeType")=="pass")?"pass":"nopass";
+					var checkedList="";
+					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
+						checkedList+=this.parentNode.parentNode.id+",";
+					});
+					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
+					var data={
+	                        UserId: "zhangsan", 
+	                        ContentFlowFlag:flowFlag,
+	                        Id:checkedList,
+	                        OpeType:opeType
+	                    };
+					commonAjax(url,data,$(".pubList>.actList"),getContentList);
+					
 				});
 				//节目列表全选全不选
 				$("input[name='all']").on('click',function(){
@@ -96,9 +105,15 @@
 						$(":checkbox").prop({"checked":null});
 					}
 				});
-				//撤回处理
-				$(".actRevoke").on('click',function(){
-					alert("bdd");
+				
+				//翻页
+				$('.pagination').jqPagination({
+					//link_string	: '/?page={page_number}',
+					max_page	: 2,
+					paged		: function(page) {
+						//翻页时的请求
+						getContentList(page,flowFlag);
+					}
 				});
 			});
 		</script>
@@ -111,26 +126,16 @@
                     <input type="checkBox" name="all"/>
                 </div>
                 <button type="button" opeType="pass" class="btn" style="margin-right:300px">通过</button>
-                
                 <label>栏目:</label>
-                    <select class="column" name="column">
+                    <select class="catalogs" name="column">
                         <option value="">不 限</option>
-                        <option value="">新闻</option>
-                        <option value="">音乐</option>
-                        <option value="">娱乐</option>
-                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
                         <option value="">不 限</option>
-                        <option value="">喜马拉雅</option>
-                        <option value="">蜻蜓</option>
-                        <option value="">考拉</option>
-                        <option value="">自制</option>
-                        <option value="">其他</option>
                     </select>&nbsp;&nbsp;&nbsp;
                     <div class="form-group cDate" id="data_5">
-                    <span>创建日期：</span>
+                    <span>发布日期：</span>
                     <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
                         <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
                         <!--<span class="input-group-addon">-</span>-->
@@ -144,20 +149,25 @@
             <div class="mainShow">
                 <!--左侧列表 onselectstart="return false;"-->
                 <div class="pubList">
+                	<div class="actList">
+                	</div>
                 	<!-- 动态节目列表actList -->
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
                     <div class="toHid"></div>-->
+                    
                     <div class="page">
 	                    <div class="gigantic pagination">
-						    <a href="#" class="first" data-action="first">&laquo;</a>
-						    <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+						    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
+						    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
 						    <input type="text" readonly="readonly" value=""/>
-						    <a href="#" class="next" data-action="next">&rsaquo;</a>
-						    <a href="#" class="last" data-action="last">&raquo;</a>
+						    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
+						    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
 						</div>
 					</div>
+                    <!--  -->
+                    
                 </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">

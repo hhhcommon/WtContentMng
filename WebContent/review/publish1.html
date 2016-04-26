@@ -80,7 +80,8 @@
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//审核通过不通过处理
-				$("button[opeType='pass']").on('click',function(){
+				$("button[opeType]").on('click',function(){
+					var opeType=($(this).attr("opeType")=="pass")?"pass":"nopass";
 					var checkedList="";
 					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
 						checkedList+=this.parentNode.parentNode.id+",";
@@ -90,7 +91,7 @@
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
 	                        Id:checkedList,
-	                        OpeType:"pass"
+	                        OpeType:opeType
 	                    };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
