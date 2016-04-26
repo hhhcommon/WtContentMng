@@ -107,8 +107,7 @@
 				//审核通过不通过处理
 				$("button[opeType='revoke']").on('click',function(){
 					var checkedList="";
-					console.log($("input[type='checkBox'][name!='all']:checked"));
-					$.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
+					$.each($("input[type='checkBox'][name!='all']:checked"),function(){
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
 					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
