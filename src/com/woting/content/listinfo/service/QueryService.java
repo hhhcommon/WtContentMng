@@ -319,6 +319,8 @@ public class QueryService {
 			map = modifStatus(id, number); // 修改审核状态为未通过
 			break;
 		case "revoke":
+			number = "4";
+			map = modifStatus(id, number); // 修改审核状态为撤回
 			break;
 		default:
 			break;
