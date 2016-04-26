@@ -34,7 +34,6 @@ public class QueryController {
 	public Map<String, Object> getList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
 		String catalogsid = null;
 		int flowFlag = 0;
 		String source = null;
@@ -79,7 +78,7 @@ public class QueryController {
 	}
 
 	/**
-	 * 查询详细信息
+	 * 查询节目详细信息
 	 * @param request
 	 * @return
 	 */
@@ -88,12 +87,11 @@ public class QueryController {
 	public Map<String, Object> getListInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
-		String userId = m.get("UserId") == null ? null : (String) m.get("UserId");
+		String userId = (String) m.get("UserId");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
-		String id = m.get("ContentId") == null ? null : (String) m.get("ContentId");
-		String mediatype = m.get("MediaType") == null ? null : (String) m.get("MediaType");
+		String id = (String) m.get("ContentId");
+		String mediatype = (String) m.get("MediaType");
 		System.out.println(page + "#" + pagesize + "#" + id + "#" + mediatype);
 		Map<String, Object> mapdetail = queryService.getListInfo(pagesize, page, id, mediatype);
 		if (mapdetail.get("audio") != null) {
@@ -109,7 +107,7 @@ public class QueryController {
 	}
 
 	/**
-	 * 修改序号
+	 * 修改序号和审核状态
 	 * @param request
 	 * @return
 	 */
@@ -117,7 +115,6 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> modifSort(HttpServletRequest request) {
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
@@ -129,7 +126,7 @@ public class QueryController {
 	}
 
 	/**
-	 * 获得分类信息
+	 * 获得分类和发布组织信息
 	 * @param request
 	 * @return
 	 */

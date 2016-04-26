@@ -21,7 +21,19 @@ public class QueryService {
 	@Resource
 	private DataSource DataSource;
 
-
+	/**
+	 * 查询列表
+	 * @param flowFlag
+	 * @param page
+	 * @param pagesize
+	 * @param catalogsid
+	 * @param source
+	 * @param beginpubtime
+	 * @param endpubtime
+	 * @param beginctime
+	 * @param endctime
+	 * @return
+	 */
 	public Map<String, Object> getList(int flowFlag, int page, int pagesize, String catalogsid, String source,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		Map<String, Object> mapall = new HashMap<String,Object>();
@@ -29,10 +41,9 @@ public class QueryService {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
-		System.out.println("执行service");
 		int count = 0;
 		String numall = null;
-		
+		//查询需要显示的节目数目
 		String sql = "select count(id) num from wt_ChannelAsset where flowFlag=?";
 		if (catalogsid != null)sql += " and channelId='"+catalogsid+"'";
 		if (source != null)sql += " and publisherId='"+source+"'";
@@ -54,7 +65,7 @@ public class QueryService {
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
-		
+		//按条件查询需要显示的节目
 		sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.channelId,a.sort,a.publisherId,a.flowFlag,a.pubTime,a.pubName from (select id,assetType,assetId,pubImg,cTime,sort,publisherId,flowFlag,pubTime,pubName,channelId from wt_ChannelAsset where flowFlag=?";
 		if (catalogsid != null)sql += " and channelId='"+catalogsid+"'";
 		if (source != null)sql += " and publisherId='"+source+"'";
@@ -81,8 +92,6 @@ public class QueryService {
 				oneData.put("ContentSort", rs.getString("sort"));
 				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
 				count++;
-				System.out.println(rs.getString("publisherId")+"####"+rs.getString("channelId"));
-				System.out.println(oneData + "####" + count);
 				if (count <= pagesize)
 					list2seq.add(oneData);
 			}
@@ -93,7 +102,7 @@ public class QueryService {
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
-		
+		//查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
 			sql = "select smaTitle,smaPublisher,descn from wt_SeqMediaAsset where id = ?";
 			try {
@@ -119,7 +128,14 @@ public class QueryService {
 		return mapall;
 	}
 
-	// 列表展示
+	/**
+	 * 查询已显示的节目信息
+	 * @param pagesize
+	 * @param page
+	 * @param id
+	 * @param acttype
+	 * @return
+	 */
 	public Map<String, Object> getListInfo(int pagesize, int page, String id, String acttype) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		switch (acttype) {
@@ -182,7 +198,7 @@ public class QueryService {
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
 
-		// 专辑和单体的联系
+		// 查询专辑和单体的联系
 		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
 		List<String> listaudioid = new ArrayList<String>();
 		try {
@@ -202,7 +218,7 @@ public class QueryService {
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
 
-		// 获取单体信息
+		// 查询单体信息
 		sql = "select id,maTitle,maPubId,maPublishTime,maImg,timeLong,maPublisher,descn,cTime from wt_MediaAsset  where id = ?";
 		for (String audid : listaudioid) {
 			try {
@@ -222,7 +238,6 @@ public class QueryService {
 					audioData.put("ContentTimes", rs.getLong("timeLong"));
 					audioData.put("ContentSource", rs.getString("maPubId"));
 					audioData.put("ContentPersons", rs.getString("maPublisher"));
-					System.out.println(audioData);
 					listaudio.add(audioData);
 				}
 			} catch (SQLException e) {
@@ -234,7 +249,7 @@ public class QueryService {
 	        }
 		}
 
-		// 获得专辑字典信息
+		// 查询专辑字典信息
 		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
 		try {
 			conn = DataSource.getConnection();
@@ -252,7 +267,7 @@ public class QueryService {
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
 
-		// 获得单体字典名
+		// 查询单体字典名
 		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
 		for (Map<String, Object> audmap : listaudio) {
 			try {
@@ -281,24 +296,27 @@ public class QueryService {
 		map.put("sequ", seqData);
 		return map;
 	}
-
-	public Map<String, Object> getAudio(String id, String acttype) {
-		return null;
-	}
-
+	/**
+	 * 修改显示节目排序号和审核状态
+	 * @param id
+	 * @param number
+	 * @param flowFlag
+	 * @param OpeType
+	 * @return
+	 */
 	public Map<String, Object> modifInfo(String id, String number, int flowFlag, String OpeType) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		switch (OpeType) {
 		case "sort":
-			map = modifSort(id, number, flowFlag);
+			map = modifSort(id, number, flowFlag); // 修改排序号
 			break;
 		case "pass":
 			if (number.equals("2"))
-				map = modifStatus(id, number);
+				map = modifStatus(id, number); // 修改审核状态为通过
 			break;
 		case "nopass":
 			if (number.equals("3"))
-				map = modifStatus(id, number);
+				map = modifStatus(id, number); // 修改审核状态为未通过
 			break;
 		case "revoke":
 			break;
@@ -308,6 +326,12 @@ public class QueryService {
 		return map;
 	}
 
+	/**
+	 * 修改审核状态
+	 * @param id
+	 * @param number
+	 * @return
+	 */
 	public Map<String, Object> modifStatus(String id, String number) {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -344,7 +368,6 @@ public class QueryService {
 
 	/**
 	 * 修改排序号
-	 * 
 	 * @param id
 	 * @param sort
 	 * @param flowFlag
@@ -380,13 +403,8 @@ public class QueryService {
 		return map;
 	}
 
-	// 按请求查询所有
-	public List<Map<String, Object>> getAllByReq() {
-		return null;
-	}
-
 	/**
-	 * 获得分类和组织信息
+	 * 获得分类和发布组织信息
 	 * 
 	 * @return
 	 */
@@ -397,7 +415,7 @@ public class QueryService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> listcatalogs = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> listorganize = new ArrayList<Map<String, Object>>();
-		String sql = "select id,channelName from wt_Channel";
+		String sql = "select id,channelName from wt_Channel"; // 获得栏目分类信息
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -416,7 +434,7 @@ public class QueryService {
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
 
-		sql = "select id,oName from wt_Organize";
+		sql = "select id,oName from wt_Organize"; // 获得发布组织信息
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -438,5 +456,4 @@ public class QueryService {
 		map.put("Source", listorganize);
 		return map;
 	}
-
 }
