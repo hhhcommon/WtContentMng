@@ -93,10 +93,8 @@
 					var checkedList="";
 					console.log($("input[type='checkBox'][name!='all']:checked"));
 					$.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
-						console.log(this.parentNode.parentNode.id);
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
-					alert(checkedList);
 					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 

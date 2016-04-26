@@ -104,21 +104,21 @@
 					}
 				});
 				//撤回处理
+				//审核通过不通过处理
 				$("button[opeType='revoke']").on('click',function(){
 					var checkedList="";
-					console.log($("input[type='checkBox'][name!='all'][checked='checked']"));
-					$.each($("input[type='checkBox'][name!='all'][checked='checked']"),function(){
-						checkedList+=$(this).parent(".listBox").attr("id")+",";
+					console.log($("input[type='checkBox'][name!='all']:checked"));
+					$.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
+						checkedList+=this.parentNode.parentNode.id+",";
 					});
-					alert(checkedList);
-					var url="http://182.92.175.134:908/wt/content/listinfo/modifsort.do";
+					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
 	                        Id:checkedList,
 	                        OpeType:"revoke"
 	                    };
-					//commonAjax(url,data,$(".pubList>.actList"),getContentList);
+					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
 				});
 				
