@@ -1,9 +1,8 @@
 //动态创建二级菜单树，传入的参数为一个数组对象
 function menuTreeLoad(menuTree){
-    //alert(data.ReturnType);
-    //alert(data.menuList.length);
+    
     var menuTreeLen=menuTree.MenuList.length;
-
+    alert(menuTreeLen);
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var mainLi,firstA,firstI,labelSpan,iconSpan,secondUl,secondLi,secondA,publishSpan;
     //外层循环加载一级菜单内容
