@@ -34,6 +34,7 @@ public class QueryController {
 	public Map<String, Object> getList(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		System.out.println(m);
 		String catalogsid = null;
 		int flowFlag = 0;
 		String source = null;
@@ -115,6 +116,7 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> modifSort(HttpServletRequest request) {
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		System.out.println(m);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
@@ -126,7 +128,7 @@ public class QueryController {
 	}
 
 	/**
-	 * 获得分类和发布组织信息
+	 * 查询栏目分类和发布组织信息
 	 * @param request
 	 * @return
 	 */
