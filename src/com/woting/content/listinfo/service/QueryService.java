@@ -311,12 +311,12 @@ public class QueryService {
 			map = modifSort(id, number, flowFlag); // 修改排序号
 			break;
 		case "pass":
-			if (number.equals("2"))
-				map = modifStatus(id, number); // 修改审核状态为通过
+			number = "2";
+			map = modifStatus(id, number); // 修改审核状态为通过
 			break;
 		case "nopass":
-			if (number.equals("3"))
-				map = modifStatus(id, number); // 修改审核状态为未通过
+			number = "3";
+			map = modifStatus(id, number); // 修改审核状态为未通过
 			break;
 		case "revoke":
 			break;
@@ -338,15 +338,15 @@ public class QueryService {
 		ResultSet rs = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		String sql = "update wt_ChannelAsset set flowFlag = ? where id = ?";
-		System.out.println(number);
+		id = id.replaceAll("%2C", ",");
+		id = id.substring(0,id.length()-1);
 		String[] ids = id.split(",");
 		int num = 0;
 		for (int i = 0; i < ids.length; i++) {
-			System.out.println(ids[i]);
 			try {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, Integer.valueOf(number));
+				ps.setInt(1, 2);
 				ps.setString(2, ids[i]);
 				num = ps.executeUpdate();
 			} catch (SQLException e) {
