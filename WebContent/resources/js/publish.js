@@ -19,6 +19,7 @@ function getConditions(){
         }     
     });
 }
+
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
 	$.ajax({
