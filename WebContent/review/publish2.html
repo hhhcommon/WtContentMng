@@ -41,8 +41,8 @@
 				
 						
 				//点击节目，获取详情及列表
-				$(document).on("click",".pubList .listBox",function(){
-					var url="http://182.92.175.134:908/CM/content/listinfo/getlistinfo.do";
+				$(document).on("click",".pubList .listBox",function(ev){
+					var url="http://localhost:908/CM/content/listinfo/getlistinfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -52,8 +52,8 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
-					$(".pubList .listBox").css({"background":"white"});
-					$(this).css({"background":"#f3f3f4"});
+					$(".pubList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
+					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
 				});
 				
 				/*//修改排序号时，阻止事件冒泡
@@ -64,7 +64,7 @@
 				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://182.92.175.134:908/CM/content/listinfo/modifsort.do";
+					var url="http://182.92.175.134:908/wt/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -80,7 +80,7 @@
 				$(".selectBtn").on("click",function(){
 					//alert($(".catalogs option:selected").text());
 					//alert($(".source option:selected").text());
-					var url="http://182.92.175.134:908/CM/content/listinfo/getlist.do";
+					var url="http://182.92.175.134:908/wt/content/listinfo/getlist.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -111,7 +111,7 @@
 						checkedList+=$(this).parent(".listBox").attr("id")+",";
 					});
 					alert(checkedList);
-					var url="http://182.92.175.134:908/CM/content/listinfo/modifsort.do";
+					var url="http://182.92.175.134:908/wt/content/listinfo/modifsort.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
