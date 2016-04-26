@@ -17,15 +17,15 @@ public class LoginWebService {
 			map.put("Message", "无登陆用户信息 ");
 			map.put("ReturnType", "1002");
 		} else {
-			if (m.get("userName") == null || m.get("password") == null) {
+			if (m.get("UserName") == null || m.get("Password") == null) {
 				map.put("Message", "登陆信息不全");
 				map.put("ReturnType", "1002");
 			} else {
-				if (!m.get("userName").equals(username) || !m.get("password").equals(password)) {
+				if (!m.get("UserName").equals(username) || !m.get("Password").equals(password)) {
 					map.put("Message", "密码不匹配");
 					map.put("ReturnType", "1002");
 				} else {
-					if (m.get("userName").equals(username) || m.get("password").equals(password)) {
+					if (m.get("UserName").equals(username) || m.get("Password").equals(password)) {
 						List<Map<String, Object>> list1 = new ArrayList<Map<String, Object>>();
 						List<Map<String, Object>> list2 = new ArrayList<Map<String, Object>>();
 						Map<String, Object> m1 = new HashMap<String, Object>();
@@ -56,7 +56,8 @@ public class LoginWebService {
 						m5.put("ItemList", list1);
 						m5.put("MenuGroupId", "0023fasf2fasd");
 						m5.put("MenuGroupName", "发布管理");
-						map.put("MenuList", m5);
+						list2.add(m5);
+						map.put("MenuList", list2);
 						map.put("ReturnType", "1001");
 					}
 				}
