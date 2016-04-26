@@ -348,7 +348,7 @@ public class QueryService {
 			try {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, 2);
+				ps.setInt(1, Integer.valueOf(number));
 				ps.setString(2, ids[i]);
 				num = ps.executeUpdate();
 			} catch (SQLException e) {
