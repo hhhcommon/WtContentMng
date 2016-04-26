@@ -22,8 +22,8 @@
                         url: "http://localhost:908/CM/passport/user/login.do",
                         dataType: "json",
                         data: {
-                            userName: $("input:first").val(), 
-                            password: $("input:last").val()
+                            UserName: $("input:first").val(), 
+                            Password: $("input:last").val()
                         },
                         success: function(resultStatus) {
                             if (resultStatus.ReturnType=="1001") {
