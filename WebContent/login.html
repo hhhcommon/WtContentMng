@@ -19,18 +19,18 @@
                 $(".loginBtn").bind("click",function(){
                     $.ajax({
                         type: "POST",    
-                        url: "http://192.168.1.19:8080/wt/passport/user/login.do",
+                        url: "http://localhost:908/CM/passport/user/login.do",
                         dataType: "json",
                         data: {
                             userName: $("input:first").val(), 
                             password: $("input:last").val()
                         },
-                        success: function(data) {
-                            if (data.ReturnType=="1001") {
+                        success: function(resultStatus) {
+                            if (resultStatus.ReturnType=="1001") {
                                 alert("正确，即将进入后台！");
                                 window.location.href="./index_wt.html";
                             } else {
-                                alert("账户或密码有误:"+data.message);
+                                alert("账户或密码有误:"+resultStatus.Message);
                             }  
                         },
                         error: function(jqXHR){     

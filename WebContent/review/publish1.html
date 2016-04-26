@@ -21,16 +21,7 @@
 			$(function(){
 				var flowFlag="1";//节目审核状态
 				var pages=1;
-				//翻页
-				$('.pagination').jqPagination({
-					//link_string	: '/?page={page_number}',
-					max_page	: 2,
-					paged		: function(page) {
-						//翻页时的请求
-						getContentList(page,flowFlag);
-					}
-				});
-				
+								
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
 				//获得查询条件
@@ -113,6 +104,16 @@
 						$(":checkbox").prop({"checked":null});
 					}
 				});
+				
+				//翻页
+				$('.pagination').jqPagination({
+					//link_string	: '/?page={page_number}',
+					max_page	: 2,
+					paged		: function(page) {
+						//翻页时的请求
+						getContentList(page,flowFlag);
+					}
+				});
 			});
 		</script>
     </head>
@@ -155,6 +156,7 @@
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
                     <div class="toHid"></div>-->
+                    
                     <div class="page">
 	                    <div class="gigantic pagination">
 						    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
@@ -164,6 +166,8 @@
 						    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
 						</div>
 					</div>
+                    <!--  -->
+                    
                 </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">

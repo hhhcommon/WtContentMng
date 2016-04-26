@@ -1,5 +1,4 @@
 var contentCount=0;
-//alert(contentCount);
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
@@ -82,6 +81,8 @@ function ConditionsListLoad(ConditionsList){
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
+	contentCount=actList.ContentCount;
+	//alert(contentCount);
      var actListLength=actList.ResultList.length;
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
@@ -143,6 +144,30 @@ function ContentListLoad(actList){
         
         $(".actList").append(listDiv);
     }
+    //创建分页节点
+    /*
+     * <div class="page">
+	    <div class="gigantic pagination">
+		    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
+		    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
+		    <input type="text" readonly="readonly" value=""/>
+		    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
+		    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
+		</div>
+	   </div>
+    
+    var pageDiv,gipa,firstPage,prePage,inputPage,nextPage,lastPage;
+    pageDiv=$("<div class='page'></div>");
+    gipa=$("<div class='gigantic pagination'></div>");
+    firstPage=$("<a href='javascript:;' class='first' data-action='first'>&laquo;</a>");
+    prePage=$("<a href='javascript:;' class='previous' data-action='previous'>&lsaquo;</a>");
+    inputPage=$("<input type='text' readonly='readonly' value=''/>");
+    nextPage=$("<a href='javascript:;' class='next' data-action='next'>&rsaquo;</a>");
+    lastPage=$("<a href='javascript:;' class='last' data-action='last'>&raquo;</a>");
+    gipa.append(firstPage).append(prePage).append(inputPage).append(nextPage).append(lastPage);
+    pageDiv.append(gipa);
+    $(".pubList").append(pageDiv);
+     * */
 }
 //根据节目ID从后台获取节目详情及其下单体列表数据
 

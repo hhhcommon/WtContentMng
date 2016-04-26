@@ -36,7 +36,7 @@
 				//获得查询条件
 				getConditions();
 				//加载完列表后，页面右侧默认显示第一条节目详情内容
-				//$(".pubList .listBox:eq(0)").trigger("click");
+				//console.log($(".pubList .listBox"));
 				
 				
 						
@@ -104,7 +104,6 @@
 					}
 				});
 				//撤回处理
-				//审核通过不通过处理
 				$("button[opeType='revoke']").on('click',function(){
 					var checkedList="";
 					$.each($("input[type='checkBox'][name!='all']:checked"),function(){
