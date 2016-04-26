@@ -29,7 +29,7 @@
 				
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(ev){
-					var url="http://localhost:908/CM/content/listinfo/getlistinfo.do";
+					var url="http://localhost:908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -42,29 +42,10 @@
 					$(".pubList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
 					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
 				});
-				/*//修改排序号时，阻止事件冒泡
-				$(".sortNum").on("click",function(ev){
-					alert("ddd");
-					//阻止事件向上级冒泡
-					ev.stopPropagation();
-				});*/
-				//修改排序号确定，然后再加载节目列表
-				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
-					var data={
-	                        UserId: "zhangsan", 
-	                        ContentFlowFlag:flowFlag,
-	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
-	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
-	                        OpeType:"sort"
-	                    };
-					commonAjax(url,data,$(".pubList>.actList"),getContentList);
-					//阻止事件向上级冒泡
-					ev.stopPropagation();
-				});
+				
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					var url="http://localhost:908/CM/content/listinfo/getlist.do";
+					var url="http://localhost:908/CM/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -79,20 +60,20 @@
 					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
-				//审核通过不通过处理
+				//审核处理
 				$("button[opeType]").on('click',function(){
-					var opeType=($(this).attr("opeType")=="pass")?"pass":"nopass";
 					var checkedList="";
 					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
-					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
+					if(checkedList=="") return;
+					var url="http://localhost:908/CM/content/updateContentStatus";
 					var data={
-	                        UserId: "zhangsan", 
-	                        ContentFlowFlag:flowFlag,
-	                        Id:checkedList,
-	                        OpeType:opeType
-	                    };
+				            UserId: "zhangsan", 
+				            ContentFlowFlag:flowFlag,
+				            Id:checkedList,
+				            OpeType:$(this).attr("opeType")
+				        };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
 				});
@@ -109,7 +90,7 @@
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
-					max_page	: 2,
+					max_page	: 1,
 					paged		: function(page) {
 						//翻页时的请求
 						getContentList(page,flowFlag);

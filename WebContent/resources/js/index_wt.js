@@ -2,14 +2,14 @@
 function menuTreeLoad(menuTree){
     //alert(data.ReturnType);
     //alert(data.menuList.length);
-    var menuTreeLen=menuTree.menuList.length;
+    var menuTreeLen=menuTree.MenuList.length;
 
     //声明下面需要创建的节点，以便添加内容和添加到文档中
     var mainLi,firstA,firstI,labelSpan,iconSpan,secondUl,secondLi,secondA,publishSpan;
     //外层循环加载一级菜单内容
     for(var i=0;i<menuTreeLen;i++){
         mainLi=$("<li></li");
-        var menuGroupName=menuTree.menuList[i].menuGroupName;
+        var menuGroupName=menuTree.MenuList[i].MenuGroupName;
         //alert(menuGroupName);
         firstA=$("<a href='javascript:;'></a>");
         firstI=$("<i></i>");
@@ -34,11 +34,11 @@ function menuTreeLoad(menuTree){
         mainLi.append(firstA);
 
         secondUl=$("<ul class='nav nav-second-level collapse'></ul>");
-        var menuItemLen=menuTree.menuList[i].itemList.length;
+        var menuItemLen=menuTree.MenuList[i].ItemList.length;
         //内层菜单加载一级菜单对应的二级菜单列表
         for(var j=0;j<menuItemLen;j++){
-            var itemName=menuTree.menuList[i].itemList[j].menuListName;
-            var itemUrl=menuTree.menuList[i].itemList[j].menuListUrl;
+            var itemName=menuTree.MenuList[i].ItemList[j].MenuListName;
+            var itemUrl=menuTree.MenuList[i].ItemList[j].MenuListUrl;
 
             secondLi=$("<li></li");
             secondA=$("<a class='J_menuItem' href='#'></a>");

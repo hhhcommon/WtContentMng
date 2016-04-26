@@ -25,51 +25,13 @@
 	    <script src="./resources/js/index_wt.js"></script>
 		<script>
 			$(function(){
-				//alert("进入后台");
-				 var menuTree={
-                              "menuList": [
-                                {
-                                  "itemList": [
-                                    {
-                                      "menuListId": "353434344",
-                                      "menuListName": "待审核",
-                                      "menuListStatus": "1",
-                                      "menuListUrl":"./review/publish1.html"
-                                    },
-                                    {
-                                      "menuListId": "353242344",
-                                      "menuListName": "已审核",
-                                      "menuListStatus": "2",
-                                      "menuListUrl":"./review/publish2.html"
-                                    },
-                                    {
-                                      "menuListId": "351111344",
-                                      "menuListName": "未通过",
-                                      "menuListStatus": "3",
-                                      "menuListUrl":"./review/publish3.html"
-                                    },
-                                    {
-                                      "menuListId": "3453221344",
-                                      "menuListName": "已撤回",
-                                      "menuListStatus": "4",
-                                      "menuListUrl":"./review/publish4.html"
-                                    }
-                                  ],
-                                  "menuGroupId": "0023fasf2fasd",
-                                  "menuGroupName": "发布管理"
-                                }
-                              ],
-                              "ReturnType": "1001"
-                            }
-                
-                menuTreeLoad(menuTree);
-                /*$.ajax({
+                $.ajax({
                         type: "POST",    
                         url: "http://localhost:908/CM/passport/user/login.do",
                         dataType: "json",
                         data: {
-                            userName: $("input:first").val(), 
-                            password: $("input:last").val()
+                            userName:"woting", 
+                            password: "111111"
                         },
                         success: function(returnStatus) {
                             if (returnStatus.ReturnType=="1001") {
@@ -82,11 +44,8 @@
                         },
                         error: function(jqXHR){     
                            alert("发生错误：" + jqXHR.status);
-                        },     
-                    });
-                    //return false;
+                        }    
                 });
-              	*/
               });
 		</script>
 	</head>

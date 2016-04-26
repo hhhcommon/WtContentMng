@@ -21,15 +21,6 @@
 			$(function(){
 				var flowFlag="2";//节目审核状态
 				var pages=1;
-				//翻页
-				$('.pagination').jqPagination({
-					//link_string	: '/?page={page_number}',
-					max_page	: 3,
-					paged		: function(page) {
-						//翻页时的请求
-						getContentList(page,flowFlag);
-					}
-				});
 				
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
@@ -38,11 +29,19 @@
 				//加载完列表后，页面右侧默认显示第一条节目详情内容
 				//console.log($(".pubList .listBox"));
 				
-				
+				//翻页
+				$('.pagination').jqPagination({
+					//link_string	: '/?page={page_number}',
+					max_page	: 600,
+					paged		: function(page) {
+						//翻页时的请求
+						getContentList(page,flowFlag);
+					}
+				});
 						
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(ev){
-					var url="http://localhost:908/CM/content/listinfo/getlistinfo.do";
+					var url="http://localhost:908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -51,7 +50,7 @@
 				            ContentId:$(this).attr("actId"),
 				            MediaType:$(this).attr("actType")
 				        };
-					commonAjax(url,data,$("tbody"),ContentInfoLoad);
+					commonAjax(url,data,$(".table"),ContentInfoLoad);
 					$(".pubList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
 					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
 				});
@@ -64,7 +63,7 @@
 				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://182.92.175.134:908/wt/content/listinfo/modifsort.do";
+					var url="http://182.92.175.134:908/wt/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -80,7 +79,7 @@
 				$(".selectBtn").on("click",function(){
 					//alert($(".catalogs option:selected").text());
 					//alert($(".source option:selected").text());
-					var url="http://182.92.175.134:908/wt/content/listinfo/getlist.do";
+					var url="http://182.92.175.134:908/wt/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -103,23 +102,26 @@
 						$(":checkbox").prop({"checked":null});
 					}
 				});
-				//撤回处理
-				$("button[opeType='revoke']").on('click',function(){
+				//审核处理
+				$("button[opeType]").on('click',function(){
 					var checkedList="";
-					$.each($("input[type='checkBox'][name!='all']:checked"),function(){
+					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
-					var url="http://localhost:908/CM/content/listinfo/modifsort.do";
+					if(checkedList=="") return;
+					var url="http://localhost:908/CM/content/updateContentStatus";
 					var data={
-	                        UserId: "zhangsan", 
-	                        ContentFlowFlag:flowFlag,
-	                        Id:checkedList,
-	                        OpeType:"revoke"
-	                    };
+				            UserId: "zhangsan", 
+				            ContentFlowFlag:flowFlag,
+				            Id:checkedList,
+				            OpeType:$(this).attr("opeType")
+				        };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
 				});
-				
+				$(":checkbox").click(function(){
+					alert($(this));
+				});
 				/*
 				//单体列表正反排序
 				var flag=0;
@@ -149,25 +151,11 @@
                 <button type="button" opeType="revoke" class="btn" style="margin-right:300px">撤回</button>
                 
                 <label>栏目:</label>
-                    <select class="catalogs" name="column">
-                        <option value="">不 限</option>
-                        <!-- 
-                        <option value="">新闻</option>
-                        <option value="">音乐</option>
-                        <option value="">娱乐</option>
-                        <option value="">其他</option>
-                         -->                        
+                    <select class="catalogs" name="column">                       
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
-                        <option value="">不 限</option>
-                        <!-- 
-                        <option value="">喜马拉雅</option>
-                        <option value="">蜻蜓</option>
-                        <option value="">考拉</option>
-                        <option value="">自制</option>
-                        <option value="">其他</option>
-                         -->                        
+                        <option value="">不 限</option>                   
                     </select>&nbsp;&nbsp;&nbsp;
                     <div class="form-group cDate" id="data_5">
                     <span>创建日期：</span>
@@ -191,11 +179,12 @@
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
                     <div class="toHid"></div>-->
+                     
                     <div class="page">
 	                    <div class="gigantic pagination">
 						    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
 						    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
-						    <input type="text" readonly="readonly" value=""/>
+						    <input type="text" readonly="readonly" />
 						    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
 						    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
 						</div>

@@ -296,7 +296,8 @@
 	padding:10px 0;
 	font-size:14px;
 	color:#343434;
-	font-weight: bold
+	font-weight: bold;
+	border-bottom:2px solid #ccc;
 }
 .pubDetail .conBox .itemSortBox .itemSort{
 	display:inline-block;
