@@ -41,7 +41,7 @@
 						
 				//点击节目，获取详情及列表
 				$(document).on("click",".pubList .listBox",function(ev){
-					var url="http://182.92.175.134:908/CM/content/getContentInfo.do";
+					var url="http://localhost:908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -63,7 +63,7 @@
 				});*/
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://182.92.175.134:908/wt/content/getContents.do";
+					var url="http://localhost:908/wt/content/updateContentStatus.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -79,7 +79,7 @@
 				$(".selectBtn").on("click",function(){
 					//alert($(".catalogs option:selected").text());
 					//alert($(".source option:selected").text());
-					var url="http://182.92.175.134:908/wt/content/getContents.do";
+					var url="http://localhost:908/wt/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -109,7 +109,7 @@
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
 					if(checkedList=="") return;
-					var url="http://182.92.175.134:908/CM/content/updateContentStatus";
+					var url="http://localhost:908/CM/content/updateContentStatus";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,

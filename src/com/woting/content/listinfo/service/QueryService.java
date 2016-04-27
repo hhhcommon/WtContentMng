@@ -42,7 +42,7 @@ public class QueryService {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
-		int count = 0;
+		int count = 0,counts = 0;
 		String numall = null;
 		// 查询需要显示的节目数目
 		String sql = "select count(id) num from wt_ChannelAsset where flowFlag=?";
@@ -78,15 +78,20 @@ public class QueryService {
 			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
 		if (beginctime != null && endctime != null)
 			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-		sql += " order by sort desc) a limit ?,?";
+		sql += " ) a order by a.sort desc limit ?,?";//order by sort desc
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, flowFlag);
 			ps.setInt(2, (page - 1) * pagesize);
-			ps.setInt(3, page * pagesize);
+			ps.setInt(3, pagesize);
 			ps.setQueryTimeout(10000);
 			rs = ps.executeQuery();
+			if(rs != null){
+				rs.last();
+				counts = rs.getRow();
+				rs.first();
+			}
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneData = new HashMap<String, Object>();
 				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
@@ -98,8 +103,7 @@ public class QueryService {
 				oneData.put("ContentSort", rs.getString("sort"));
 				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
 				count++;
-			//	if (count <= pagesize)
-					list2seq.add(oneData);
+				list2seq.add(oneData);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -166,7 +170,7 @@ public class QueryService {
 			}
 		}
 		mapall.put("List", list2seq);
-		mapall.put("Count", numall);
+		mapall.put("Count", numall+"#"+counts);
 		return mapall;
 	}
 
@@ -209,7 +213,7 @@ public class QueryService {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select id,smaTitle,smaImg,smaAllCount,smaPublisher,keyWords,descn,CTime,smaPublishTime,smaPubId,langDid from wt_SeqMediaAsset where id = ?";
+		String sql = "select a.id,a.smaTitle,a.smaImg,a.smaAllCount,a.smaPublisher,a.keyWords,a.descn,a.CTime,a.smaPublishTime,a.smaPubId,b.title from wt_SeqMediaAsset a,wt_ResDict_Ref b where a.id = ? and a.id = b.resId";
 		List<Map<String, Object>> listaudio = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
@@ -225,11 +229,11 @@ public class QueryService {
 				seqData.put("ContentImg", rs.getString("smaImg"));
 				seqData.put("ContentSubCount", rs.getString("smaAllCount"));
 				seqData.put("ContentPubTime", rs.getTimestamp("smaPublishTime"));
-				seqData.put("ContentSource", rs.getString("smaPubId"));
+				seqData.put("ContentSource", rs.getString("smaPublisher"));
 				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
 				seqData.put("ContentPersons", null);
 				seqData.put("ContentKeyWord", rs.getString("keyWords"));
-				seqData.put("ContentCatalogs", rs.getString("langDid"));
+				seqData.put("ContentCatalogs", rs.getString("title"));
 				seqData.put("ContentDesc", rs.getString("descn"));
 			}
 		} catch (SQLException e) {
@@ -260,39 +264,6 @@ public class QueryService {
 			listaudio.add(getAudioInfo(audid, acttype));
 		}
 
-		// 查询专辑字典信息
-		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, (String) seqData.get("Id"));
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				seqData.put("ContentCatalogs", rs.getString("dictMName"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
-		}
-
-		// 查询单体字典名
-		sql = "select dictMName from wt_ResDict_Ref where resId = ?";
-		for (Map<String, Object> audmap : listaudio) {
-			try {
-				conn = DataSource.getConnection();
-				ps = conn.prepareStatement(sql);
-				ps.setString(1, (String) audmap.get("ContentId"));
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
-					audmap.put("ContentCatalogs", rs.getString("dictMName"));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				closeConnection(conn, ps, rs);
-			}
-		}
 		if (listaudio.size() == 0) {
 			map.put("audio", null);
 			map.put("count", 0);
@@ -316,7 +287,7 @@ public class QueryService {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Map<String, Object> audioData = new HashMap<String, Object>();// 单体信息
-		String sql = "select id,maTitle,maPubId,maPublishTime,maImg,timeLong,maPublisher,descn,cTime from wt_MediaAsset  where id = ?";
+		String sql = "select a.id,a.maTitle,a.maPubId,a.maPublishTime,a.maImg,a.timeLong,a.maPublisher,a.descn,a.cTime,b.title from wt_MediaAsset a,wt_ResDict_Ref b where a.id = ? and a.id = b.resId";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -333,6 +304,7 @@ public class QueryService {
 				audioData.put("ContentTimes", rs.getLong("timeLong"));
 				audioData.put("ContentSource", rs.getString("maPubId"));
 				audioData.put("ContentPersons", rs.getString("maPublisher"));
+				audioData.put("ContentCatalogs", rs.getString("title"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -490,7 +462,7 @@ public class QueryService {
 	 * 
 	 * @return
 	 */
-	public Map<String, Object> getCriteriaInfo() {
+	public Map<String, Object> getConditionsInfo() {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;

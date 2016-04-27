@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.woting.content.listinfo.service.InsertSqlService;
 import com.woting.content.listinfo.service.QueryService;
 import com.woting.passport.login.utils.RequestDataUtils;
 
@@ -24,8 +22,6 @@ import com.woting.passport.login.utils.RequestDataUtils;
 public class QueryController {
 	@Resource
 	private QueryService queryService;
-	@Resource
-	private InsertSqlService insertSqlService;
 
 	/**
 	 * 查询列表信息
@@ -120,7 +116,7 @@ public class QueryController {
 		} else {
 			if (mediatype.equals("wt_MediaAsset")) {
 				if (map.isEmpty()) {
-					map.put("SubList", mapdetail);
+					map.put("ContentDetail", mapdetail);
 					map.put("ReturnType", "1001");
 				} else {
 					map.put("ReturnType", "1011");
@@ -166,22 +162,15 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/getConditations.do")
+	@RequestMapping(value = "/content/getConditions.do")
 	@ResponseBody
 	public Map<String, Object> getCatalogs(HttpServletRequest request) {
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		System.out.println(m);
 		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
-		map = queryService.getCriteriaInfo();
+		map = queryService.getConditionsInfo();
 		map.put("ReturnType", "1001");
 		return map;
-	}
-
-	@RequestMapping(value = "/content/getccccccc.do")
-	@ResponseBody
-	public Map<String, Object> getCatalog(HttpServletRequest request) {
-		insertSqlService.insertSql();
-		return null;
 	}
 }
