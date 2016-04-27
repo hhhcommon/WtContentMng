@@ -194,7 +194,7 @@ function ContentInfoLoad(conList){
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
      $(".vjName").text(conList.ContentDetail.ContentPersons);
      $(".actDesn").text(conList.ContentDetail.ContentDesc);
-     //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);
+     $(".cloumn").text(conList.ContentDetail.ContentCatalogs);
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
