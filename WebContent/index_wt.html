@@ -13,6 +13,7 @@
 	        alert('本系统已不支持IE6-8，请使用谷歌、火狐等浏览器\n或360、QQ等国产浏览器的极速模式浏览本页面！');
 	    </script>
 	    <![endif]-->
+	    <link rel="shortcut icon" href="./resources/images/favicon.ico" />
 	    <link href="./resources/plugins/bootstrap3.3.4/bootstrap.min.css" rel="stylesheet">
 	    <link href="./resources/plugins/css_others/font-awesome.min.css" rel="stylesheet">
 	    <link href="./resources/plugins/css_others/animate.min.css" rel="stylesheet">
@@ -24,86 +25,66 @@
 	    <script src="./resources/js/index_wt.js"></script>
 		<script>
 			$(function(){
-				//alert("进入后台");
 				 var menuTree={
-                              "menuList": [
-                                {
-                                  "itemList": [
-                                    {
-                                      "menuListId": "353434344",
-                                      "menuListName": "待审核",
-                                      "menuListStatus": "1",
-                                      "menuListUrl":"./review/publish1.html"
-                                    },
-                                    {
-                                      "menuListId": "353242344",
-                                      "menuListName": "已审核",
-                                      "menuListStatus": "2",
-                                      "menuListUrl":"./review/publish2.html"
-                                    },
-                                    {
-                                      "menuListId": "351111344",
-                                      "menuListName": "未通过",
-                                      "menuListStatus": "3",
-                                      "menuListUrl":"./review/publish3.html"
-                                    },
-                                    {
-                                      "menuListId": "3453221344",
-                                      "menuListName": "已撤回",
-                                      "menuListStatus": "4",
-                                      "menuListUrl":"./review/publish4.html"
-                                    }
-                                  ],
-                                  "menuGroupId": "0023fasf2fasd",
-                                  "menuGroupName": "发布管理"
-                                },
-                                {
-                                  "itemList": [
-                                    {
-                                      "menuListId": "453434344",
-                                      "menuListName": "资源上传",
-                                      "menuListStatus": "0",
-                                      "menuListUrl":"./review/index_v1.html"
-                                    },
-                                    {
-                                      "menuListId": "8956562344",
-                                      "menuListName": "节目添加",
-                                      "menuListStatus": "1",
-                                      "menuListUrl":"./review/form_advanced.html"
-                                    }
-                                  ],
-                                  "menuGroupId": "23451asf2fasd",
-                                  "menuGroupName": "节目管理"
-                                }
-                              ],
-                              "ReturnType": "1001"
-                            }
-                
-                menuTreeLoad(menuTree);
-                /*$.ajax({
+                         "menuList": [
+                           {
+                             "itemList": [
+                               {
+                                 "menuListId": "353434344",
+                                 "menuListName": "待审核",
+                                 "menuListStatus": "0",
+                                 "menuListUrl":"./review/publish1.html"
+                               },
+                               {
+                                 "menuListId": "353242344",
+                                 "menuListName": "已审核",
+                                 "menuListStatus": "1",
+                                 "menuListUrl":"./review/publish2.html"
+                               },
+                               {
+                                 "menuListId": "351111344",
+                                 "menuListName": "未通过",
+                                 "menuListStatus": "2",
+                                 "menuListUrl":"./review/publish3.html"
+                               },
+                               {
+                                 "menuListId": "3453221344",
+                                 "menuListName": "已撤回",
+                                 "menuListStatus": "3",
+                                 "menuListUrl":"./review/publish4.html"
+                               }
+                             ],
+                             "menuGroupId": "0023fasf2fasd",
+                             "menuGroupName": "发布管理"
+                           }
+                         ],
+                         "ReturnType": "1001"
+                       }
+           
+           menuTreeLoad(menuTree);
+				/*
+                $.ajax({
                         type: "POST",    
-                        url: "http://192.168.1.19:8080/wt/passport/user/login.do",
+                        url: "http://localhost:908/CM/passport/user/login.do",
                         dataType: "json",
                         data: {
-                            userName: $("input:first").val(), 
-                            password: $("input:last").val()
+                            UserName:"woting", 
+                            Password: "111111"
                         },
-                        success: function(data) {
-                            if (data.ReturnType=="1001") {
-                                alert("获取到数据了！");
+                        success: function(returnStatus) {
+                            if (returnStatus.ReturnType=="1001") {
+                                alert("验证通过！");
                                 //加载菜单树列表
-                                menuTreeLoad(data);
+                                menuTreeLoad(returnStatus);
                             } else {
-                                alert("获取数据出现问题了:"+data.message);
+                                alert("获取数据出现问题了:"+returnStatus.Message);
                             }  
                         },
                         error: function(jqXHR){     
                            alert("发生错误：" + jqXHR.status);
-                        },     
-                    });
-                    //return false;
+                        }    
                 });
-              	*/
+				*/
               });
 		</script>
 	</head>

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.woting.content.listquery.service.QueryService;
+import com.woting.content.listinfo.service.QueryService;
 import com.woting.passport.login.utils.RequestDataUtils;
 
 /**

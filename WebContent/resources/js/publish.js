@@ -1,43 +1,91 @@
-//从后台请求节目列表数据
-function getActListAjax(page){
+var contentCount=50;
+//获取查询条件列表，节目分类和来源
+function getConditions(){
 	$.ajax({
         type: "POST",    
-        url: "http://localhost:908/wt/content/listquery/query.do",
+        url:"http://localhost:908/CM/content/getConditions.do",
         dataType: "json",
-        data: {
-            UserId: "zhangsan", 
-            ContentFlowFlag:"1",
-            Page:page,
-            PageSize:"10"
-        },
-        //beforeSend:function(){$(".pubList").html("数据加载中...")},
-        success: function(actList) {
-            if (actList.ReturnType=="1001") {
-                //console.log("获取到数据了！");
-                //加载列表
-            	if($(".actList")!=undefined){
-            		$(".pubList>.actList").empty(); //再重新创建新的数据集时，先清空之前的
-            	}
-                actListLoad(actList);
+        data:{UserId: "zhangsan"},
+        success: function(ConditionsList) {
+            if (ConditionsList.ReturnType=="1001") {
+                ConditionsListLoad(ConditionsList);
             } else {
-                alert("获取数据出现问题lou:"+actList.Message);
+                alert("获取数据出现问题la:"+ConditionsList.Message);
             }  
         },
-        error: function(jqXHR){     
+        error: function(jqXHR){   
            alert("发生错误：" + jqXHR.status);
         }     
     });
 }
-				
 
-//根据审核状态创建节目列表DOM树
-function actListLoad(actList){
-     var actListLength=actList.ResultList.length;
-     //alert(actListLength);
+//公共ajax请求
+function commonAjax(url,data,obj,callback){
+	$.ajax({
+        type: "POST",
+        url:url,
+        dataType: "json",
+        data:data,
+        beforeSend:function(){obj.html("<div style='text-align:center;height:500px;line-height:300px;'>数据加载中...</div>")},
+        
+        success: function(ContentList) {
+            if (ContentList.ReturnType=="1001") {
+            	obj.html(""); //再重新创建新的数据集时，先清空之前的
+            	//判断是查询还是修改操作，调用不同的方法
+            	if(data.OpeType){
+            		callback(1,data.ContentFlowFlag);
+            	}else{
+            		callback(ContentList);
+            	}
+            } else {
+            	obj.html("<div style='text-align:center;height:300px;line-height:300px;'>"+ContentList.Message+"</div>");
+            }  
+        },
+        error: function(jqXHR){  
+           alert("发生错误：" + jqXHR.status);
+        }     
+    });
+}	
+//从后台请求节目列表数据
+function getContentList(page,flowFlag){
+	var url="http://localhost:908/CM/content/getContents.do";
+	var data={
+            UserId: "zhangsan", 
+            ContentFlowFlag:flowFlag,
+            Page:page,
+            PageSize:"10"
+        };
+	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
+}
+//创建查询条件DOM元素
+function ConditionsListLoad(ConditionsList){
+	var calalogsLen=ConditionsList.Catalogs.length;
+	var sourceLen=ConditionsList.Source.length;
+	var catalogsOption,sourceOption;
+	
+	for(var i=0;i<calalogsLen;i++){
+		catalogsOption=$("<option></option>");
+		catalogsOption.attr({"catalogsId":ConditionsList.Catalogs[i].CatalogsId});
+		catalogsOption.text(ConditionsList.Catalogs[i].CatalogsName);
+		$(".operate .catalogs").append(catalogsOption);
+	}
+	for(var j=0;j<sourceLen;j++){
+		sourceOption=$("<option></option>");
+		sourceOption.attr({"sourceId":ConditionsList.Source[j].SourceId});
+		sourceOption.text(ConditionsList.Source[j].SourceName);
+		$(".operate .source").append(sourceOption);
+	}
+}
+
+//创建节目列表DOM树
+function ContentListLoad(actList){
+	//alert(actList.ContentCount);
+    var actListLength=actList.ResultList.length;
     //声明下面需要创建的节点，以便添加内容和添加到文档中
-    var firstA,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
+    var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
     var sortDiv,sortInput,sortBtn;
-    var outDiv=$("<div class='actList'></div>");
+    contentCount=actList.ContentCount;
+    //actListDiv=$("<div class='actList'></div>");
     //循环加载列表
     for(var i=0;i<actListLength;i++){
         listDiv=$("<div class='listBox'></div>");
@@ -45,7 +93,7 @@ function actListLoad(actList){
         		{actId:actList.ResultList[i].ContentId,
         		 actType:actList.ResultList[i].MediaType,
         		 id:actList.ResultList[i].Id
-        		 } );
+        		 });
         checkDiv=$("<div class='listCheck'>");
         checkInput=$("<input type='checkBox' name='' />");
         imgDiv=$("<div class='listImg'>");
@@ -60,19 +108,14 @@ function actListLoad(actList){
         conSpan1.text("来源："+actList.ResultList[i].ContentSource);
         conSpan2=$("<span></span>");
         conSpan2.text(actList.ResultList[i].ContentCTime);
-        sortDiv=$("<div class='sortUpdate'></div>");
-        sortInput=$("<input type='text' class='sortNum'></input>");
-        sortInput.attr({"value":actList.ResultList[i].ContentSort});
-        sortBtn=$("<button class='sortUpdateBtn'></button>");
-        sortBtn.text("OK");
-        sortDiv.append(sortInput).append(sortBtn);
-
+        
         checkDiv.append(checkInput);
         imgDiv.append(thumbImg);
         //根据类型显示不同的标记
-        switch(actList.ResultList[i].ActType){
+        conH.html(actList.ResultList[i].ContentName);
+        /*
+        switch(actList.ResultList[i].MediaType){
 	        case 'wt_SeqMediaAsset':
-	        	//alert(actList.ResultList[i].ActType);
 	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
 	        	break;
 	        case 'wt_MediaAsset':
@@ -82,51 +125,55 @@ function actListLoad(actList){
 	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:green'>电台</span>");
 	        	break;
 	        default:
-	        
         }
+        */
         conP2.append(conSpan1);
         conP2.append(conSpan2);
         conDiv.append(conH).append(conP1).append(conP2);
-        listDiv.append(checkDiv).append(imgDiv).append(conDiv).append(sortDiv);
-        outDiv.append(listDiv);
+        listDiv.append(checkDiv).append(imgDiv).append(conDiv);
+        //只在已审核界面创建排序号DOM
+        if(actList.ResultList[i].ContentFlowFlag=="2"){
+        	sortDiv=$("<div class='sortUpdate'></div>");
+            sortInput=$("<input type='text' class='sortNum'></input>");
+            sortInput.attr({"value":actList.ResultList[i].ContentSort});
+            sortBtn=$("<button class='sortUpdateBtn'></button>");
+            sortBtn.text("OK");
+            sortDiv.append(sortInput).append(sortBtn);
+            listDiv.append(sortDiv);
+        }
+        
+        $(".actList").append(listDiv);
     }
-    $(".pubList").prepend(outDiv);
-}
-//根据节目ID从后台获取节目详情及其下单体列表数据
-function getItemListAjax(ev){
-	$.ajax({
-        type: "POST",    
-        url: "http://localhost:908/wt/content/listquery/detailquery.do",
-        dataType: "json",
-        data: {
-            UserId: "zhangsan", 
-            ContentFlowFlag:"1",
-            Page:"1",
-            PageSize:"10",
-            Id:ev.currentTarget.getAttribute("ContentId"),
-            MediaType:ev.currentTarget.getAttribute("MediaType")
-        },
-        //beforeSend:function(){$(".conBox").html("数据加载中...")},
-        success: function(itemList) {
-        	//$(".conBox").html("");
-            if (itemList.ReturnType=="1001") {
-                console.log("获取到数据了！");
-                //加载列表
-                $(".table").html("");
-                itemListLoad(itemList);
-                console.log(itemList);
-            } else {
-                console.log("获取数据出现问题la:"+itemList.Message);
-            }  
-        },
-        error: function(jqXHR){     
-           alert("发生错误：" + jqXHR.status);
-        }    
-    });
+    //$(".pubList").append(actListDiv);
+    //创建分页节点
+    /*
+     * <div class="page">
+	    <div class="gigantic pagination">
+		    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
+		    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
+		    <input type="text" readonly="readonly" value=""/>
+		    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
+		    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
+		</div>
+	   </div>
+    
+    var pageDiv,gipa,firstPage,prePage,inputPage,nextPage,lastPage;
+    pageDiv=$("<div class='page'></div>");
+    gipa=$("<div class='gigantic pagination'></div>");
+    firstPage=$("<a href='javascript:;' class='first' data-action='first'>&laquo;</a>");
+    prePage=$("<a href='javascript:;' class='previous' data-action='previous'>&lsaquo;</a>");
+    inputPage=$("<input type='text' readonly='readonly' />");
+    inputPage.attr({"data-max-page":actList.ContentCount});
+    nextPage=$("<a href='javascript:;' class='next' data-action='next'>&rsaquo;</a>");
+    lastPage=$("<a href='javascript:;' class='last' data-action='last'>&raquo;</a>");
+    gipa.append(firstPage).append(prePage).append(inputPage).append(nextPage).append(lastPage);
+    pageDiv.append(gipa);
+    $(".pubList").append(pageDiv);
+    */
 }
 
-//根据节目ID创建页面DOM结构，展示节目详情及其下单体列表
-function itemListLoad(conList){
+//根据节目ID展示节目详情及其下单体列表
+function ContentInfoLoad(conList){
      //下面是获取节目详情
      $(".actThumb").attr({'src':conList.ContentDetail.ContentImg});
    //根据类型显示不同的标记
@@ -142,19 +189,20 @@ function itemListLoad(conList){
     	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:green'>电台</span>");
      	break;
      default:
-     
      }
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
      $(".vjName").text(conList.ContentDetail.ContentPersons);
      $(".actDesn").text(conList.ContentDetail.ContentDesc);
-     //$(".cloumn").text(conList.ContentDetail.ContentCatalogs);  栏目？标签？数组类型
-     //创建节目下列表DOM结构
-     getItemList(conList.SubList);
+     $(".cloumn").text(conList.ContentDetail.ContentCatalogs);
+     
+     $(".pubDetail .conBox").css({"display":"block"});
+     //创建单体列表DOM结构
+     AudioListLoad(conList.SubList);
 }
-
+//创建单体资源列表DOM结构
 //把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
-function getItemList(itemList,sort){
+function AudioListLoad(itemList,sort){
     var conListLength=itemList.length;
 	//声明下面需要创建的节点，以便获取节目内的单体列表
 	var tr,tdFirst,tdSpan,tdA,tdSecond;
@@ -164,7 +212,7 @@ function getItemList(itemList,sort){
 	  tr=$("<tr></tr>");
 	  tdFirst=$("<td></td>");
 	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
-	  tdA=$("<a href='#'></a>");
+	  tdA=$("<a href='javascript:;'></a>");
 	  tdA.text(itemList[i].ContentName);
 	  tdSecond=$("<td class='text-right'></td>");
 	  tdSecond.text(itemList[i].ContentPubTime);
@@ -179,4 +227,5 @@ function getItemList(itemList,sort){
 	  }
     }
     $(".table").append(tbody);
-}      
+}
+
