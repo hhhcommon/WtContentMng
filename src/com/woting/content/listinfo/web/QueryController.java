@@ -34,7 +34,6 @@ public class QueryController {
 	public Map<String, Object> getContents(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
 		String catalogsid = null;
 		int flowFlag = 0;
 		String source = null;
@@ -66,7 +65,6 @@ public class QueryController {
 		if (m.containsKey("EndContentCTime")) {
 			endcontentctime = (Timestamp) m.get("EndContentCTime");
 		}
-		System.out.println(userId + "#" + flowFlag + "#" + page + "#" + pagesize);
 		if (userId != null) {
 			if (flowFlag > 0 && page > 0 && pagesize > 0) {
 				Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
@@ -101,7 +99,6 @@ public class QueryController {
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		String id = (String) m.get("ContentId");
 		String mediatype = (String) m.get("MediaType");
-		System.out.println(page + "#" + pagesize + "#" + id + "#" + mediatype);
 		Map<String, Object> mapdetail = queryService.getContentInfo(pagesize, page, id, mediatype);
 		if (mediatype.equals("wt_SeqMediaAsset")) {
 			if (mapdetail.get("audio") != null) {
@@ -145,7 +142,6 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
@@ -166,7 +162,6 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getCatalogs(HttpServletRequest request) {
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		System.out.println(m);
 		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getConditionsInfo();

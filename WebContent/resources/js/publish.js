@@ -3,7 +3,7 @@ var contentCount=50;
 function getConditions(){
 	$.ajax({
         type: "POST",    
-        url:"http://182.92.175.134:908/CM/content/getConditions.do",
+        url:"http://localhost:908/CM/content/getConditions.do",
         dataType: "json",
         data:{UserId: "zhangsan"},
         success: function(ConditionsList) {
@@ -48,7 +48,7 @@ function commonAjax(url,data,obj,callback){
 }	
 //从后台请求节目列表数据
 function getContentList(page,flowFlag){
-	var url="http://182.92.175.134:908/CM/content/getContents.do";
+	var url="http://localhost:908/CM/content/getContents.do";
 	var data={
             UserId: "zhangsan", 
             ContentFlowFlag:flowFlag,

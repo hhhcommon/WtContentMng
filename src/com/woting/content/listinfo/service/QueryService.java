@@ -70,7 +70,7 @@ public class QueryService {
 		}
 		
 		// 按条件查询需要显示的节目
-		sql = "select a.id,a.assetType,a.assetId,a.pubImg,a.cTime,a.sort,a.flowFlag,a.pubTime from (select id,assetType,assetId,pubImg,cTime,sort,flowFlag,pubTime from wt_ChannelAsset where flowFlag=?";
+		sql = "select id,assetType,assetId,pubImg,cTime,sort,flowFlag,pubTime from wt_ChannelAsset where flowFlag=?";
 		if (catalogsid != null)
 			sql += " and channelId='" + catalogsid + "'";
 		if (source != null)
@@ -79,7 +79,7 @@ public class QueryService {
 			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
 		if (beginctime != null && endctime != null)
 			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-		sql += ") a order by a.sort desc limit ?,?";
+		sql += " order by sort desc limit ?,?";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
