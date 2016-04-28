@@ -14,7 +14,7 @@ import com.woting.passport.login.utils.RequestDataUtils;
 
 /**
  * 列表查询接口
- * 
+ *
  * @author wbq
  *
  */
