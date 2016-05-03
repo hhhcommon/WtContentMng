@@ -1,4 +1,4 @@
-package com.woting.content.listinfo.service;
+package com.woting.content.publish.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,7 +54,6 @@ public class QueryService {
 			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
 		if (beginctime != null && endctime != null)
 			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-		sql += " order by sort desc";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -79,7 +78,7 @@ public class QueryService {
 			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
 		if (beginctime != null && endctime != null)
 			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-		sql += " order by sort desc limit ?,?";
+		sql += " order by sort desc,pubTime desc limit ?,?";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -93,6 +92,7 @@ public class QueryService {
 				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
 				oneData.put("MediaType", rs.getString("assetType"));
 				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
+				System.out.println(rs.getString("assetId"));
 				oneData.put("ContentImg", rs.getString("pubImg"));
 				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
 				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
@@ -507,7 +507,7 @@ public class QueryService {
 	 * @param ps
 	 * @param rs
 	 */
-	public void closeConnection(Connection conn, PreparedStatement ps, ResultSet rs) {
+	private void closeConnection(Connection conn, PreparedStatement ps, ResultSet rs) {
 		if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
         if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
         if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};

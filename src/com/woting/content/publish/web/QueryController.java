@@ -1,4 +1,4 @@
-package com.woting.content.listinfo.web;
+package com.woting.content.publish.web;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.woting.content.listinfo.service.QueryService;
+
+import com.woting.content.publish.service.QueryService;
 import com.woting.passport.login.utils.RequestDataUtils;
 
 /**
@@ -25,7 +26,6 @@ public class QueryController {
 
 	/**
 	 * 查询列表信息
-	 * 
 	 * @param request
 	 * @return
 	 */
@@ -44,27 +44,13 @@ public class QueryController {
 		String userId = (String) m.get("UserId");
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		if (m.containsKey("CatalogsId")) {
-			catalogsid = (String) m.get("CatalogsId");
-		}
-		if (m.containsKey("ContentFlowFlag")) {
-			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		}
-		if (m.containsKey("SourceId")) {
-			source = (String) m.get("SourceId");
-		}
-		if (m.containsKey("BeginContentPubTime")) {
-			begincontentpubtime = (Timestamp) m.get("BeginContentPubTime");
-		}
-		if (m.containsKey("EndContentPubTime")) {
-			endcontentpubtime = (Timestamp) m.get("EndContentPubTime");
-		}
-		if (m.containsKey("BeginContentCTime")) {
-			begincontentctime = (Timestamp) m.get("BeginContentCTime");
-		}
-		if (m.containsKey("EndContentCTime")) {
-			endcontentctime = (Timestamp) m.get("EndContentCTime");
-		}
+		if (m.containsKey("CatalogsId")) catalogsid = (String) m.get("CatalogsId");
+		if (m.containsKey("ContentFlowFlag")) flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
+		if (m.containsKey("SourceId")) source = (String) m.get("SourceId");
+		if (m.containsKey("BeginContentPubTime")) begincontentpubtime = (Timestamp) m.get("BeginContentPubTime");
+		if (m.containsKey("EndContentPubTime")) endcontentpubtime = (Timestamp) m.get("EndContentPubTime");
+		if (m.containsKey("BeginContentCTime")) begincontentctime = (Timestamp) m.get("BeginContentCTime");
+		if (m.containsKey("EndContentCTime")) endcontentctime = (Timestamp) m.get("EndContentCTime");
 		if (userId != null) {
 			if (flowFlag > 0 && page > 0 && pagesize > 0) {
 				Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
