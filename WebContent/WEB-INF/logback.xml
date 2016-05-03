@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
   <property name="APP_NAME" value="BasicPlat"/>
-  <property name="LOG_HOME" value="D:/workIDE/projects/BasicPlat/logs"/>
+  <property name="LOG_HOME" value="D:/workIDE/projects/WtContentMng/logs"/>
   <property name="ENCODER_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS}|a [%thread] %logger{80}%n%d{yyyy-MM-dd HH:mm:ss.SSS}|b [%thread] -- %msg%n"/>
   <contextName>${APP_NAME}</contextName>
 
@@ -17,7 +17,7 @@
   <appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
     <Encoding>UTF-8</Encoding>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${LOG_HOME}/BasicPlat.%d{yyyy-MM-dd}.log</FileNamePattern>
+      <FileNamePattern>${LOG_HOME}/WtContentMng.%d{yyyy-MM-dd}.log</FileNamePattern>
       <MaxHistory>30</MaxHistory>
     </rollingPolicy>
     <layout class="ch.qos.logback.classic.PatternLayout">
@@ -28,7 +28,7 @@
     </triggeringPolicy>
   </appender>
 
-  <logger name="com.ibatis" level="DEBUG"/>    
+  <logger name="com.ibatis" level="DEBUG"/>
   <logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG"/>    
   <logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG"/>    
   <logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG"/>    
