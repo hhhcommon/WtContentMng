@@ -420,7 +420,6 @@ public class QueryService {
 
 	/**
 	 * 修改排序号
-	 *
 	 * @param id
 	 * @param sort
 	 * @return

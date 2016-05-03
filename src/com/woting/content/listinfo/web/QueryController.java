@@ -85,7 +85,6 @@ public class QueryController {
 
 	/**
 	 * 查询节目详细信息
-	 * 
 	 * @param request
 	 * @return
 	 */
