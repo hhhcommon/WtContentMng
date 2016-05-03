@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.woting.content.listinfo.service.InsertSqlService;
 import com.woting.content.listinfo.service.QueryService;
 import com.woting.passport.login.utils.RequestDataUtils;
 
@@ -24,8 +23,7 @@ import com.woting.passport.login.utils.RequestDataUtils;
 public class QueryController {
 	@Resource
 	private QueryService queryService;
-	@Resource
-	private InsertSqlService insertSqlService;
+
 
 	/**
 	 * 查询列表信息
@@ -176,12 +174,5 @@ public class QueryController {
 		map = queryService.getCriteriaInfo();
 		map.put("ReturnType", "1001");
 		return map;
-	}
-
-	@RequestMapping(value = "/content/getccccccc.do")
-	@ResponseBody
-	public Map<String, Object> getCatalog(HttpServletRequest request) {
-		insertSqlService.insertSql();
-		return null;
 	}
 }
