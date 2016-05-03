@@ -297,7 +297,7 @@
 	font-size:14px;
 	color:#343434;
 	font-weight: bold;
-	border-bottom:2px solid #ccc;
+	border-bottom:1px solid #ccc;
 }
 .pubDetail .conBox .itemSortBox .itemSort{
 	display:inline-block;

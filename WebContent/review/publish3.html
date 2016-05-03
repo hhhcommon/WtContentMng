@@ -28,7 +28,7 @@
 				getConditions();
 				
 				//点击节目，获取详情及列表
-				$(document).on("click",".pubList .listBox",function(ev){
+				$(".actList").on("click",".listBox",function(ev){
 					var url="http://localhost:908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
@@ -39,7 +39,7 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
-					$(".pubList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
+					$(".actList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
 					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
 				});
 				
@@ -66,7 +66,12 @@
 					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
-					if(checkedList=="") return;
+					if(checkedList==""){
+						alert("您还没有选择任何节目！");
+						$("input[type='checkBox'][name='all']").prop({"checked":null});
+						return;
+					}
+					$("input[type='checkBox'][name='all']").prop({"checked":null});
 					var url="http://localhost:908/CM/content/updateContentStatus.do";
 					var data={
 				            UserId: "zhangsan", 
@@ -90,7 +95,7 @@
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
-					max_page	: 1,
+					max_page	: Math.ceil(contentCount/10),
 					paged		: function(page) {
 						//翻页时的请求
 						getContentList(page,flowFlag);

@@ -1,4 +1,4 @@
-var contentCount=50;
+var contentCount=0;
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
@@ -22,12 +22,12 @@ function getConditions(){
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
 	$.ajax({
+		//async:false,
         type: "POST",
         url:url,
         dataType: "json",
         data:data,
-        beforeSend:function(){obj.html("<div style='text-align:center;height:500px;line-height:300px;'>数据加载中...</div>")},
-        
+        beforeSend:function(){obj.html("<div style='text-align:center;height:500px;line-height:300px;'>数据加载中...</div>")}, 
         success: function(ContentList) {
             if (ContentList.ReturnType=="1001") {
             	obj.html(""); //再重新创建新的数据集时，先清空之前的
@@ -79,70 +79,77 @@ function ConditionsListLoad(ConditionsList){
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
-	//alert(actList.ContentCount);
+	
+	contentCount=actList.ContentCount;
+	//alert(contentCount);
     var actListLength=actList.ResultList.length;
-    //声明下面需要创建的节点，以便添加内容和添加到文档中
-    var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
-    var sortDiv,sortInput,sortBtn;
-    contentCount=actList.ContentCount;
-    //actListDiv=$("<div class='actList'></div>");
-    //循环加载列表
-    for(var i=0;i<actListLength;i++){
-        listDiv=$("<div class='listBox'></div>");
-        listDiv.attr(
-        		{actId:actList.ResultList[i].ContentId,
-        		 actType:actList.ResultList[i].MediaType,
-        		 id:actList.ResultList[i].Id
-        		 });
-        checkDiv=$("<div class='listCheck'>");
-        checkInput=$("<input type='checkBox' name='' />");
-        imgDiv=$("<div class='listImg'>");
-        thumbImg=$("<img alt='mage'>");
-        thumbImg.attr({'src':actList.ResultList[i].ContentImg});
-        conDiv=$("<div class='listCon'>");
-        conH=$("<h3></h3>");
-        conP1=$("<p class='secTitle'></p>");
-        conP1.text(actList.ResultList[i].ContentDesc);
-        conP2=$("<p class='other'></p>");
-        conSpan1=$("<span></span>");
-        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
-        conSpan2=$("<span></span>");
-        conSpan2.text(actList.ResultList[i].ContentCTime);
-        
-        checkDiv.append(checkInput);
-        imgDiv.append(thumbImg);
-        //根据类型显示不同的标记
-        conH.html(actList.ResultList[i].ContentName);
-        /*
-        switch(actList.ResultList[i].MediaType){
-	        case 'wt_SeqMediaAsset':
-	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
-	        	break;
-	        case 'wt_MediaAsset':
-	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#61b0e8'>单体</span>");
-	        	break;
-	        case 'wt_Broadcast':
-	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:green'>电台</span>");
-	        	break;
-	        default:
-        }
-        */
-        conP2.append(conSpan1);
-        conP2.append(conSpan2);
-        conDiv.append(conH).append(conP1).append(conP2);
-        listDiv.append(checkDiv).append(imgDiv).append(conDiv);
-        //只在已审核界面创建排序号DOM
-        if(actList.ResultList[i].ContentFlowFlag=="2"){
-        	sortDiv=$("<div class='sortUpdate'></div>");
-            sortInput=$("<input type='text' class='sortNum'></input>");
-            sortInput.attr({"value":actList.ResultList[i].ContentSort});
-            sortBtn=$("<button class='sortUpdateBtn'></button>");
-            sortBtn.text("OK");
-            sortDiv.append(sortInput).append(sortBtn);
-            listDiv.append(sortDiv);
-        }
-        
-        $(".actList").append(listDiv);
+    if(actListLength==0){
+    	$(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
+    }else{
+	    //声明下面需要创建的节点，以便添加内容和添加到文档中
+	    var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
+	    var sortDiv,sortInput,sortBtn;
+	    contentCount=actList.ContentCount;
+	    //actListDiv=$("<div class='actList'></div>");
+	    //循环加载列表
+	    for(var i=0;i<actListLength;i++){
+	        listDiv=$("<div class='listBox'></div>");
+	        listDiv.attr(
+	        		{actId:actList.ResultList[i].ContentId,
+	        		 actType:actList.ResultList[i].MediaType,
+	        		 columnId:actList.ResultList[i].Id
+	        		 });
+	        checkDiv=$("<div class='listCheck'>");
+	        checkInput=$("<input type='checkBox' name='' />");
+	        imgDiv=$("<div class='listImg'>");
+	        thumbImg=$("<img alt='mage'>");
+	        thumbImg.attr({'src':actList.ResultList[i].ContentImg});
+	        conDiv=$("<div class='listCon'>");
+	        conH=$("<h3></h3>");
+	        conP1=$("<p class='secTitle'></p>");
+	        conP1.text(actList.ResultList[i].ContentDesc);
+	        conP2=$("<p class='other'></p>");
+	        conSpan1=$("<span></span>");
+	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
+	        conSpan2=$("<span></span>");
+	        conSpan2.text(actList.ResultList[i].ContentCTime);
+	        
+	        checkDiv.append(checkInput);
+	        imgDiv.append(thumbImg);
+	        //根据类型显示不同的标记
+	        conH.html(actList.ResultList[i].ContentName);
+	        /*
+	        switch(actList.ResultList[i].MediaType){
+		        case 'wt_SeqMediaAsset':
+		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
+		        	break;
+		        case 'wt_MediaAsset':
+		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#61b0e8'>单体</span>");
+		        	break;
+		        case 'wt_Broadcast':
+		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:green'>电台</span>");
+		        	break;
+		        default:
+	        }
+	        */
+	        conP2.append(conSpan1);
+	        conP2.append(conSpan2);
+	        conDiv.append(conH).append(conP1).append(conP2);
+	        listDiv.append(checkDiv).append(imgDiv).append(conDiv);
+	        //只在已审核界面创建排序号DOM
+	        if(actList.ResultList[i].ContentFlowFlag=="2"){
+	        	sortDiv=$("<div class='sortUpdate'></div>");
+	            sortInput=$("<input type='text' class='sortNum'></input>");
+	            sortInput.attr({"value":actList.ResultList[i].ContentSort});
+	            sortBtn=$("<button class='sortUpdateBtn'></button>");
+	            sortBtn.text("OK");
+	            sortDiv.append(sortInput).append(sortBtn);
+	            listDiv.append(sortDiv);
+	        }
+	        	$(".actList").append(listDiv);
+	    }
+	    //默认节目列表的第一条显示详情
+	    $(".listBox").first().trigger("click");
     }
     //$(".pubList").append(actListDiv);
     //创建分页节点

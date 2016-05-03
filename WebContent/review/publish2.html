@@ -27,12 +27,12 @@
 				//获得查询条件
 				getConditions();
 				//加载完列表后，页面右侧默认显示第一条节目详情内容
-				//console.log($(".pubList .listBox"));
+				//console.log($(".actList .listBox"));
 				
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
-					max_page	: 600,
+					max_page	: Math.ceil(contentCount/10),
 					paged		: function(page) {
 						//翻页时的请求
 						getContentList(page,flowFlag);
@@ -40,7 +40,7 @@
 				});
 						
 				//点击节目，获取详情及列表
-				$(document).on("click",".pubList .listBox",function(ev){
+				$(".actList").on("click",".listBox",function(ev){
 					var url="http://localhost:908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
@@ -51,7 +51,7 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$(".table"),ContentInfoLoad);
-					$(".pubList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
+					$(".actList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
 					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
 				});
 				
@@ -67,7 +67,7 @@
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
-	                        Id:$(this).parents(".listBox")[0].getAttribute("id"),
+	                        Id:$(this).parents(".listBox")[0].getAttribute("columnId"),
 	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
 	                        OpeType:"sort"
 	                    };
@@ -108,7 +108,12 @@
 					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
 						checkedList+=this.parentNode.parentNode.id+",";
 					});
-					if(checkedList=="") return;
+					if(checkedList==""){
+						alert("您还没有选择任何节目！");
+						$("input[type='checkBox'][name='all']").prop({"checked":null});
+						return;
+					}
+					$("input[type='checkBox'][name='all']").prop({"checked":null});
 					var url="http://localhost:908/CM/content/updateContentStatus.do";
 					var data={
 				            UserId: "zhangsan", 
