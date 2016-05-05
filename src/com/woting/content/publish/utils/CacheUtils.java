@@ -91,15 +91,15 @@ public abstract class CacheUtils {
 	private static boolean createZJHtml(String str, String path, Map<String, Object> mapsequ,
 			List<Map<String, Object>> listaudio) {
 		String htmlstr = "";
-		String ulString = "<li><div class='audio_intro'><a href='#'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='play_btn'><audio src='' loop='loop' ></audio></a></li>";
+		String ulString = "<li><div class='audio_intro'><a href='#####audiohtml#####'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='play_btn'><audio src='#####audiourl#####' loop='loop' ></audio></a></li>";
 		String lis = "";
 		if (mapsequ != null) {
 			htmlstr = readFile(str + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
 			htmlstr = htmlstr.replaceAll("#####sequname#####", mapsequ.get("ContentName").toString())
-					.replaceAll("#####sequdesc#####", mapsequ.get("ContentDesc").toString())
-					.replaceAll("#####sequimgs#####", mapsequ.get("ContentImg").toString());
+					.replaceAll("#####sequdesc#####", mapsequ.get("ContentDesc").toString()==null?"imgs/default.png":mapsequ.get("ContentDesc").toString())
+					.replaceAll("#####sequimgs#####", "../../templet/zj_templet/imgs/default.png");//mapsequ.get("ContentImg").toString());
 			for (Map<String, Object> map : listaudio) {
-				lis += ulString.replaceAll("#####audioname#####", map.get("ContentName").toString());
+				lis += ulString.replaceAll("#####audioname#####", map.get("ContentName").toString()).replaceAll("#####audiourl#####", map.get("ContentURI").toString());
 			}
 			htmlstr = htmlstr.replaceAll("#####audiolist#####", lis);
 			File file = createFile(str + path + "/P1.html"); // P1.html
@@ -108,7 +108,7 @@ public abstract class CacheUtils {
 			writeFile(htmlstr, file);
 		} else {
 			for (Map<String, Object> map : listaudio) { // 其他分页的html数据
-				lis += ulString.replaceAll("#####audioname#####", map.get("ContentName").toString());
+				lis += ulString.replaceAll("#####audioname#####", map.get("ContentName").toString()).replaceAll("#####audiourl#####", map.get("ContentURI").toString());
 			}
 			File file = createFile(str + path);
 			writeFile(lis, file);
