@@ -1,0 +1,163 @@
+﻿body{
+	min-width:320px;
+	max-width:736px;
+	margin:0 auto;
+}
+*{
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	font-family: Helvetica,Tahoma,"\5FAE\8F6F\96C5\9ED1";
+}
+*{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+a{
+	text-decoration:none;
+	color:white;
+	font-weight:bold;
+}
+/*头部样式*/
+#container{
+	width:100%;
+}
+header{
+	background:white;
+	width:100%;
+	height:72px;
+	padding:15px 20px;
+}
+header #logo img{
+	width:150px;
+	height:48px;
+}
+header #logo{
+	width:50%;
+	float:left;
+}
+header .downLoad{
+	width:50%;
+	float:right;
+	text-align:right;
+	line-height:42px;
+	padding:5px 0;
+}
+header .downLoad a{
+	display:inline-block;
+	width:80px;
+	height:38px;
+	text-align:center;
+	line-height:28px;
+	color:#ffa733;
+	border:1px solid #ffa733;
+	border-radius: 4px;
+	font-size:14px;
+	padding:5px;
+	float:right;
+}
+/*专辑介绍*/
+.zj_intro{
+	background-color:#ffa733;
+	width:100%;
+	padding:10px 0;
+	color:white;
+}
+.zj_intro h2{
+	margin:0 auto;
+	width:50%;
+	text-align:center;
+	padding:5px 0 10px;
+	font-size:26px;
+	font-weight:400;
+}
+.box{
+    width: 100px;
+    height: 100px;
+    margin:0 auto;
+}
+    /*宽高比保持4:5*/
+.boxF, .boxS, .boxT{
+    width: 80px;
+    height: 100px;
+    overflow: hidden;
+    /*border:2px solid white;*/
+    border-radius: 20px;
+}
+.boxF, .boxS{
+    visibility: hidden;
+}
+.boxF{
+    transform: rotate(120deg);
+    margin-left: 10px;
+    -ms-transform: rotate(120deg);
+    -moz-transform: rotate(120deg);
+    -webkit-transform: rotate(120deg);
+}
+.boxS{
+    transform: rotate(-60deg);
+    -ms-transform: rotate(-60deg);
+    -moz-transform: rotate(-60deg);
+    -webkit-transform: rotate(-60deg);
+}
+.boxT{
+    transform: rotate(-60deg);
+    background: no-repeat 50% center;
+    background-size: 125% auto;
+    -ms-transform: rotate(-60deg);
+    -moz-transform: rotate(-60deg);
+    -webkit-transform: rotate(-60deg);
+    visibility: visible;
+}
+.zj_intro p{
+	font-size:14px;
+	line-height:1.3em;
+	letter-spacing: 2px;
+	padding:0 38px;
+}
+/*内容*/
+.audio_list{
+	width:100%;
+	letter-spacing: 2px;
+}
+.audio_list ul{
+	width:100%;
+}
+.audio_list ul li{
+	width:100%;
+	height:68px;
+	border-bottom:1px solid #e0e0e0;
+	padding:10px 12px;
+}
+.audio_list .audio_intro{
+	width:90%;
+	float:left;
+	line-height:1.8em;
+}
+.audio_list .audio_intro a h3{
+	color:#333;
+	font-weight:400;
+	font-size:18px;
+}
+.audio_list .audio_intro p{
+	color:#9a9a9a;
+	font-size:12px;
+}
+.audio_list .play_btn{
+	display:inline-block;
+	width:32px;
+	height:32px;
+	line-height:68px;
+	float:right;
+	margin:8px 0;
+	background:url(../imgs/zj_play.png) no-repeat;
+}
+.audio_list .play{
+	background:url(../imgs/zj_play.png) no-repeat 0 -35px;
+}
+
+@media screen and (max-width:600px){
+	
+}
+

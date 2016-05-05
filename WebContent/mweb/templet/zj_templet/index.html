@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>我听FM</title>
+		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+		<link href="../../templet/zj_templet/css/main.css" text="text/css" rel="stylesheet" />
+		<script src="../../templet/zj_templet/js/jquery-2.1.1.min.js"></script>
+		<script>
+			$(function(){
+				//控制播放按钮的播与停
+				$(".play_btn").on("click",function(){
+					var audio=$(this).children("audio")[0];
+					if($(this).hasClass("play")){
+						$(this).removeClass("play");
+						audio.pause();
+					}else{
+						//停止其他播放资源，并改变其他按钮状态
+						$("audio").hasClass("play")[0].stop();
+						$(".play_btn").removeClass("play");
+						//播放当前资源，并改变当前按钮状态
+						$(this).addClass("play");
+						audio.play();
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<!--头部开始-->
+			<header>
+				<div id="logo">
+					<img src="../../templet/zj_templet/imgs/logo2.png" />
+				</div>
+			    <div class="downLoad">
+					<a href="#">下载APP</a>
+			    </div>
+			</header>
+			<div class="zj_intro">
+				<h2>#####sequname#####</h2>
+				<div class="box">
+			        <div class="boxF">
+			            <div class="boxS">
+			                <div class="boxT" style="background-image: url(#####sequimgs#####);"></div>
+			            </div>
+			        </div>
+			    </div>  
+				<p>介绍:#####sequdesc#####</p>
+			</div>
+			<!--美图展示区-->
+			<section class="audio_list">
+				<ul>#####audiolist#####</ul>
+			</section>
+		</div>
+	</body>
+</html>
