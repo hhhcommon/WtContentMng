@@ -24,9 +24,9 @@ public abstract class CacheUtils {
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
 	// D:/WBWorkDir/WtContentMng/WebContent/       /opt/tomcat8_CM/webapps/CM/
-	public static final String rootpath = "/opt/tomcat8_CM/webapps/CM/";
+	public static final String rootpath = "D:/WBWorkDir/WtContentMng/WebContent/";
 
-	public static void updateFile(Map<String, Object> map) {
+	public static void publishZJ(Map<String, Object> map) {
 		Map<String, Object> mapsequ = (Map<String, Object>) map.get("ContentDetail");
 		List<Map<String, Object>> listaudio = (List<Map<String, Object>>) map.get("SubList");
 		int audiosize = listaudio.size();
@@ -39,16 +39,13 @@ public abstract class CacheUtils {
 				Map<String, Object> map2 = listaudio.get((i - 1) * 15 + num);
 				String audiojson = JsonUtils.objToJson(map2);
 				writeFile(audiojson, rootpath + jmpath + map2.get("ContentId").toString() + "/info.json");
+				createJMHtml(rootpath + jmpath + map2.get("ContentId").toString() + "/content.html", map2);
 			}
 			String audios = JsonUtils.objToJson(list);
 			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
 			if (i == 1)
 				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list,(audiosize / 15)>0);// 生成content.html
 		}
-	}
-
-	public static boolean publishZJ(Map<String, Object> map) {
-		return false;
 	}
 
 	private static File createFile(String path) {
@@ -83,7 +80,7 @@ public abstract class CacheUtils {
 	private static boolean createZJHtml(String path, Map<String, Object> mapsequ,
 			List<Map<String, Object>> listaudio,boolean hasnextpage) {
 		String htmlstr = "";
-		String ulString = "<li><div class='audioIntro'><a href='#'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='playBtn'><audio src='#####audiourl#####' loop='loop' ></audio></a></li>";
+		String ulString = "<li><div class='audioIntro'><a href='#####audiourl#####'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='playBtn'><audio src='#####audioplay#####' loop='loop' ></audio></a></li>";
 		String jsstr = "<script>nextPage='#####nextpage#####';if(nextPage=='false'){$('.loadMore').text('全部加载完毕！').off('click');}</script>";
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
@@ -92,16 +89,40 @@ public abstract class CacheUtils {
 		htmlstr = htmlstr.replace("#####sequid#####", mapsequ.get("ContentId").toString()); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-					.replace("#####audiourl#####", map.get("ContentURI").toString());
+					.replace("#####audioplay#####", map.get("ContentURI").toString())
+					.replace("#####audiourl#####", "http://localhost:908/CM/" + jmpath + map.get("ContentId").toString() + "/content.html");
 		}
 
 		String p2exists = "false";
 		if (hasnextpage) p2exists = "true";
-		System.out.println(path+"/P2.json"+p2exists);
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
 		jsstr = jsstr.replace("#####nextpage#####", p2exists);
 		htmlstr = htmlstr.replace("#####js#####", jsstr);
 		writeFile(htmlstr, path + "/content.html");
+		return false;
+	}
+	
+	/**
+	 * 创建JM文件夹下的html静态页面
+	 * @param path
+	 * @param map
+	 * @return
+	 */
+	private static boolean createJMHtml(String path,Map<String, Object> map){
+		String htmlstr = readFile(rootpath + templetpath + "/jm_templet/index.html");
+		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName").toString());
+		htmlstr = htmlstr.replace("#####audioimgs#####", map.get("ContentImg").toString());
+		long ctime = (long) map.get("ContentTimes")/1000;
+		String hous = String.valueOf(ctime/360);
+		String minute = String.valueOf(ctime%360/60).length()==1?("0"+String.valueOf(ctime%360/60)):String.valueOf(ctime%360/60);
+		String second = String.valueOf(ctime%60).length()==1?("0"+String.valueOf(ctime%60)):String.valueOf(ctime%60);
+		String playtime = "";
+		if (!hous.equals("0")) playtime += hous + ":";
+		if (minute.equals("0")) playtime += "00:";
+		else playtime += minute + ":";
+		playtime += second; 
+		htmlstr = htmlstr.replace("#####audiotime#####", playtime);
+		writeFile(htmlstr, path);
 		return false;
 	}
 

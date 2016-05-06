@@ -176,12 +176,13 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		int flowFlag = 0;
-		String userId = (String) m.get("UserId");
+	//	String userId = (String) m.get("UserId");
 		int page = 0;
 		int pagesize = 0;
 		if (m.containsKey("ContentFlowFlag"))
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		int num = 0;
+		flowFlag = 2;
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < 675; i++) { 
 			page = i;
@@ -200,7 +201,7 @@ public class QueryController {
 					sb.append(sequid);
 					num++;
 					System.out.println(num);
-					CacheUtils.updateFile(map);
+					CacheUtils.publishZJ(map);
 				}
 			}
 		}
