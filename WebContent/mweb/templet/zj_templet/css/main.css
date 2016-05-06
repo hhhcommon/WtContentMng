@@ -2,26 +2,30 @@
 	min-width:320px;
 	max-width:736px;
 	margin:0 auto;
-}
-*{
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-	font-family: Helvetica,Tahoma,"\5FAE\8F6F\96C5\9ED1";
+	letter-spacing: 1px;
+	background-color:#f1f2f2;
 }
 *{
 	margin:0;
 	padding:0;
 	list-style:none;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	font-family: Helvetica,Tahoma,"\5FAE\8F6F\96C5\9ED1";
 }
 a{
 	text-decoration:none;
 	color:white;
 	font-weight:bold;
 }
+a:focus{
+	outline: none;
+}
 /*头部样式*/
 #container{
 	width:100%;
+	background-color:white;
 }
 header{
 	background:white;
@@ -58,18 +62,18 @@ header .downLoad a{
 	float:right;
 }
 /*专辑介绍*/
-.zj_intro{
+.zjIntro{
 	background-color:#ffa733;
 	width:100%;
 	padding:10px 0;
 	color:white;
 }
-.zj_intro h2{
+.zjIntro h2{
 	margin:0 auto;
 	width:50%;
 	text-align:center;
-	padding:5px 0 10px;
-	font-size:26px;
+	padding:5px 0;
+	font-size:18px;
 	font-weight:400;
 }
 .box{
@@ -82,8 +86,6 @@ header .downLoad a{
     width: 80px;
     height: 100px;
     overflow: hidden;
-    /*border:2px solid white;*/
-    border-radius: 20px;
 }
 .boxF, .boxS{
     visibility: hidden;
@@ -110,41 +112,42 @@ header .downLoad a{
     -webkit-transform: rotate(-60deg);
     visibility: visible;
 }
-.zj_intro p{
+.zjIntro p{
 	font-size:14px;
 	line-height:1.3em;
-	letter-spacing: 2px;
-	padding:0 38px;
+	padding:0 12px;
 }
 /*内容*/
-.audio_list{
-	width:100%;
-	letter-spacing: 2px;
-}
-.audio_list ul{
+.audioList{
 	width:100%;
 }
-.audio_list ul li{
+.audioList ul{
+	width:100%;
+}
+.audioList ul li{
 	width:100%;
 	height:68px;
 	border-bottom:1px solid #e0e0e0;
 	padding:10px 12px;
 }
-.audio_list .audio_intro{
-	width:90%;
+.audioList .audioIntro{
+	width:80%;
 	float:left;
 	line-height:1.8em;
 }
-.audio_list .audio_intro a h3{
+.audioList .audioIntro a h3{
 	color:#333;
-	font-weight:400;
-	font-size:18px;
+	font-weight:200;
+	font-size:16px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
-.audio_list .audio_intro p{
+.audioList .audioIntro p{
 	color:#9a9a9a;
 	font-size:12px;
 }
-.audio_list .play_btn{
+.audioList .playBtn{
 	display:inline-block;
 	width:32px;
 	height:32px;
@@ -153,11 +156,20 @@ header .downLoad a{
 	margin:8px 0;
 	background:url(../imgs/zj_play.png) no-repeat;
 }
-.audio_list .play{
+.audioList .play{
 	background:url(../imgs/zj_play.png) no-repeat 0 -35px;
+}
+
+.audioList .loadMore{
+	display:block;
+	width:160px;
+	height:40px;
+	margin:12px auto;
+	border:1px solid #ccc;
+	border-radius: 8px;
+	outline: none;
 }
 
 @media screen and (max-width:600px){
 	
 }
-

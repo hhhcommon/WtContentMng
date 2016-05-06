@@ -20,38 +20,30 @@ import com.spiritdata.framework.util.JsonUtils;
  *
  */
 public abstract class CacheUtils {
-
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
+	// D:/WBWorkDir/WtContentMng/WebContent/       /opt/tomcat8_CM/webapps/CM/
+	public static final String rootpath = "/opt/tomcat8_CM/webapps/CM/";
 
 	public static void updateFile(Map<String, Object> map) {
-		String str = CacheUtils.class.getClassLoader().getResource("").toString();
-		str = str.replaceAll("file:/", "").replaceAll("WEB-INF/classes/", "");
 		Map<String, Object> mapsequ = (Map<String, Object>) map.get("ContentDetail");
 		List<Map<String, Object>> listaudio = (List<Map<String, Object>>) map.get("SubList");
-		String path = str;
 		int audiosize = listaudio.size();
 		String jsonstr = JsonUtils.objToJson(mapsequ);
-		File filesequ = createFile(path + zjpath + mapsequ.get("ContentId").toString() + "/info.json");
-		writeFile(jsonstr, filesequ);
-		File fileaudioinfo = null;
+		writeFile(jsonstr, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/info.json");
 		for (int i = 1; i < audiosize / 15 + 2; i++) {
 			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 			for (int num = 0; num < ((i + 1) < (audiosize / 15 + 2) ? 15 : audiosize % 15); num++) {
-				list.add(listaudio.get(i - 1 + num));
+				list.add(listaudio.get((i - 1) * 15 + num));
 				Map<String, Object> map2 = listaudio.get((i - 1) * 15 + num);
 				String audiojson = JsonUtils.objToJson(map2);
-				fileaudioinfo = createFile(path + jmpath + map2.get("ContentId").toString() + "/info.json");
-				writeFile(audiojson, fileaudioinfo);
+				writeFile(audiojson, rootpath + jmpath + map2.get("ContentId").toString() + "/info.json");
 			}
-			if (i == 1) // 生成content.html和P1.html文件
-				createZJHtml(str, zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);
-			else // 生成静态的分页html文件
-				createZJHtml(str, zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".html", null, list);
 			String audios = JsonUtils.objToJson(list);
-			File fileP = createFile(path + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
-			writeFile(audios, fileP);
+			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
+			if (i == 1)
+				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list,(audiosize / 15)>0);// 生成content.html
 		}
 	}
 
@@ -80,7 +72,7 @@ public abstract class CacheUtils {
 	 * 
 	 * @param str
 	 *            WebContent路径
-	 * @param path
+	 * @param rootpath
 	 *            要编写文件的文件夹路径
 	 * @param mapsequ
 	 *            专辑信息
@@ -88,31 +80,28 @@ public abstract class CacheUtils {
 	 *            单体组信息
 	 * @return
 	 */
-	private static boolean createZJHtml(String str, String path, Map<String, Object> mapsequ,
-			List<Map<String, Object>> listaudio) {
+	private static boolean createZJHtml(String path, Map<String, Object> mapsequ,
+			List<Map<String, Object>> listaudio,boolean hasnextpage) {
 		String htmlstr = "";
-		String ulString = "<li><div class='audio_intro'><a href='#####audiohtml#####'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='play_btn'><audio src='#####audiourl#####' loop='loop' ></audio></a></li>";
+		String ulString = "<li><div class='audioIntro'><a href='#'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='playBtn'><audio src='#####audiourl#####' loop='loop' ></audio></a></li>";
+		String jsstr = "<script>nextPage='#####nextpage#####';if(nextPage=='false'){$('.loadMore').text('全部加载完毕！').off('click');}</script>";
 		String lis = "";
-		if (mapsequ != null) {
-			htmlstr = readFile(str + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
-			htmlstr = htmlstr.replaceAll("#####sequname#####", mapsequ.get("ContentName").toString())
-					.replaceAll("#####sequdesc#####", mapsequ.get("ContentDesc").toString()==null?"imgs/default.png":mapsequ.get("ContentDesc").toString())
-					.replaceAll("#####sequimgs#####", "../../templet/zj_templet/imgs/default.png");//mapsequ.get("ContentImg").toString());
-			for (Map<String, Object> map : listaudio) {
-				lis += ulString.replaceAll("#####audioname#####", map.get("ContentName").toString()).replaceAll("#####audiourl#####", map.get("ContentURI").toString());
-			}
-			htmlstr = htmlstr.replaceAll("#####audiolist#####", lis);
-			File file = createFile(str + path + "/P1.html"); // P1.html
-			writeFile(lis, file);
-			file = createFile(str + path + "/content.html");
-			writeFile(htmlstr, file);
-		} else {
-			for (Map<String, Object> map : listaudio) { // 其他分页的html数据
-				lis += ulString.replaceAll("#####audioname#####", map.get("ContentName").toString()).replaceAll("#####audiourl#####", map.get("ContentURI").toString());
-			}
-			File file = createFile(str + path);
-			writeFile(lis, file);
+		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
+		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString()).replace("#####sequdesc#####",mapsequ.get("ContentDesc").toString() == null ? "暂无描述" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString());
+		htmlstr = htmlstr.replace("#####sequid#####", mapsequ.get("ContentId").toString()); // 替换指定的信息
+		for (Map<String, Object> map : listaudio) {
+			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
+					.replace("#####audiourl#####", map.get("ContentURI").toString());
 		}
+
+		String p2exists = "false";
+		if (hasnextpage) p2exists = "true";
+		System.out.println(path+"/P2.json"+p2exists);
+		htmlstr = htmlstr.replace("#####audiolist#####", lis);
+		jsstr = jsstr.replace("#####nextpage#####", p2exists);
+		htmlstr = htmlstr.replace("#####js#####", jsstr);
+		writeFile(htmlstr, path + "/content.html");
 		return false;
 	}
 
@@ -123,7 +112,8 @@ public abstract class CacheUtils {
 	 * @param file
 	 * @return
 	 */
-	private static boolean writeFile(String jsonstr, File file) {
+	public static boolean writeFile(String jsonstr, String path) {
+		File file = createFile(path);
 		FileWriter fileWriter = null;
 		try {
 			fileWriter = new FileWriter(file);
@@ -139,7 +129,12 @@ public abstract class CacheUtils {
 			return false;
 	}
 
-	private static String readFile(String path) {
+	/**
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public static String readFile(String path) {
 		StringBuilder sb = new StringBuilder();
 		InputStreamReader in = null;
 		BufferedReader br = null;

@@ -1,5 +1,6 @@
 package com.woting.content.publish.service;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +15,9 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.util.JsonUtils;
+import com.woting.content.publish.utils.CacheUtils;
 
 @Lazy(true)
 @Service
@@ -317,7 +321,6 @@ public class QueryService {
 				audioData.put("ContentSource", rs.getString("maPublisher"));
 				audioData.put("ContentURI",rs.getString("maURL"));
 				audioData.put("ContentPersons", null);
-		//		audioData.put("ContentCatalogs", rs.getString("title"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -487,7 +490,6 @@ public class QueryService {
 
 	/**
 	 * 获得分类和发布组织信息
-	 * 
 	 * @return
 	 */
 	public Map<String, Object> getConditionsInfo() {
@@ -534,9 +536,38 @@ public class QueryService {
 		map.put("Source", listorganize);
 		return map;
 	}
-	
-	public boolean updateMweb(){
-		return false;
+
+	/**
+	 * 加载专辑id为zjId的专辑的下属的节目列表，注意是某一页page的列表
+	 * @param zjId 专辑Id
+	 * @param page 第几页
+	 * @return 返回该页的数据，以json串的方式，若该页无数据返回null
+	 */
+	public Map<String, Object> getZJSubPage(String zjId, String page) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		//1-根据zjId，计算出文件存放目录
+		String path=CacheUtils.rootpath + "mweb/zj/"+zjId+"/";
+		//2-判断是否有page所对应的数据
+		File thisPage, nextPage;
+		thisPage = new File(path+"P"+page+".json");//func()
+		int nextpage = Integer.valueOf(page)+1;
+		nextPage=new File(path+"P"+nextpage+".json");
+		if(!thisPage.exists()){
+			map.put("ReturnType", "1011");
+			map.put("Message", "没有相关内容 ");
+		}else {//组织本页数据
+			String jsonstr = CacheUtils.readFile(path+"P"+page+".json");
+			List<Map<String, Object>> listaudios = (List<Map<String, Object>>) JsonUtils.jsonToObj(jsonstr, List.class);
+			if(listaudios!=null){
+				map.put("ResultList", listaudios);
+				map.put("ReturnType", "1001");
+				map.put("NextPage", String.valueOf(nextPage.exists()));//判断是否有下一页，并组织到返回数据中
+			}else{
+				map.put("ReturnType", "1011");
+				map.put("Message", "没有相关内容 ");
+			}
+		}
+		return map;
 	}
 
 	/**

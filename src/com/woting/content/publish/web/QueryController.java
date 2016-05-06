@@ -1,6 +1,5 @@
 package com.woting.content.publish.web;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +125,6 @@ public class QueryController {
 				}
 			}
 		}
-		CacheUtils.updateFile(map);
 		return map;
 	}
 
@@ -167,42 +165,29 @@ public class QueryController {
 		return map;
 	}
 
+	/**
+	 * 发布所有已审核的节目       只用于测试用
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/getAll.do")
 	@ResponseBody
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		String catalogsid = null;
 		int flowFlag = 0;
-		String source = null;
-		Timestamp begincontentpubtime = null;
-		Timestamp endcontentpubtime = null;
-		Timestamp begincontentctime = null;
-		Timestamp endcontentctime = null;
 		String userId = (String) m.get("UserId");
-		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
-		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		if (m.containsKey("CatalogsId"))
-			catalogsid = (String) m.get("CatalogsId");
+		int page = 0;
+		int pagesize = 0;
 		if (m.containsKey("ContentFlowFlag"))
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		if (m.containsKey("SourceId"))
-			source = (String) m.get("SourceId");
-		if (m.containsKey("BeginContentPubTime"))
-			begincontentpubtime = (Timestamp) m.get("BeginContentPubTime");
-		if (m.containsKey("EndContentPubTime"))
-			endcontentpubtime = (Timestamp) m.get("EndContentPubTime");
-		if (m.containsKey("BeginContentCTime"))
-			begincontentctime = (Timestamp) m.get("BeginContentCTime");
-		if (m.containsKey("EndContentCTime"))
-			endcontentctime = (Timestamp) m.get("EndContentCTime");
 		int num = 0;
 		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i < 675; i++) {
+		for (int i = 1; i < 675; i++) { 
 			page = i;
 			pagesize = 10;
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
-					begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, null, null,
+					null, null, null, null);
 			List<Map<String, Object>> listsequs = (List<Map<String, Object>>) maplist.get("List");
 			for (Map<String, Object> map2 : listsequs) {
 				String sequid = (String) map2.get("ContentId");
@@ -220,5 +205,24 @@ public class QueryController {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * 分享页的分页加载请求
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/content/getZJSubPage.do")
+	@ResponseBody
+	public Map<String, Object> getZJSubPage(HttpServletRequest request) {
+		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		System.out.println(m);
+		String urlpath = (String) m.get("Url");
+		String zjid = (String) m.get("ContentId");
+		String page = (String) m.get("Page");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map = queryService.getZJSubPage(zjid, page);
+		System.out.println(map);
+		return map;
 	}
 }
