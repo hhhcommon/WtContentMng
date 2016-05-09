@@ -133,19 +133,19 @@ public abstract class CacheUtils {
 		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName").toString());
 		htmlstr = htmlstr.replace("#####audioimgs#####", map.get("ContentImg").toString());
 		htmlstr = htmlstr.replace("#####audioplay#####", map.get("ContentURI").toString());
-		//处理节目时长
-		long ctime = (long) map.get("ContentTimes") / 1000;
-		String hous = String.valueOf(ctime / 360);
-		String minute = String.valueOf(ctime % 360 / 60).length() == 1 ? ("0" + String.valueOf(ctime % 360 / 60))
-				: String.valueOf(ctime % 360 / 60);
-		String second = String.valueOf(ctime % 60).length() == 1 ? ("0" + String.valueOf(ctime % 60))
-				: String.valueOf(ctime % 60);
-		String playtime = "";
-		if (!hous.equals("0")) playtime += hous + ":";
-		if (minute.equals("0")) playtime += "00:";
-		else playtime += minute + ":";
-		playtime += second;
-		htmlstr = htmlstr.replace("#####audiotime#####", playtime);
+//		//处理节目时长
+//		long ctime = (long) map.get("ContentTimes") / 1000;
+//		String hous = String.valueOf(ctime / 360);
+//		String minute = String.valueOf(ctime % 360 / 60).length() == 1 ? ("0" + String.valueOf(ctime % 360 / 60))
+//				: String.valueOf(ctime % 360 / 60);
+//		String second = String.valueOf(ctime % 60).length() == 1 ? ("0" + String.valueOf(ctime % 60))
+//				: String.valueOf(ctime % 60);
+//		String playtime = "";
+//		if (!hous.equals("0")) playtime += hous + ":";
+//		if (minute.equals("0")) playtime += "00:";
+//		else playtime += minute + ":";
+//		playtime += second;
+//		htmlstr = htmlstr.replace("#####audiotime#####", playtime);
 		writeFile(htmlstr, path);
 		return false;
 	}
