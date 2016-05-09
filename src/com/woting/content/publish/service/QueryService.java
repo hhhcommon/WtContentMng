@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.util.JsonUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.content.publish.utils.CacheUtils;
 
 @Lazy(true)
@@ -546,7 +547,7 @@ public class QueryService {
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		//1-根据zjId，计算出文件存放目录
-		String path=CacheUtils.rootpath + "mweb/zj/"+zjId+"/";
+		String path=WtContentMngConstants.ROOT_PATH + "mweb/zj/"+zjId+"/";
 		//2-判断是否有page所对应的数据
 		File thisPage, nextPage;
 		thisPage = new File(path+"P"+page+".json");//func()
