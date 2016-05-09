@@ -1,71 +1,55 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>我听FM</title>
-		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
-		
-			<link href="../../templet/jm_templet/css/main.css" text="text/css" rel="stylesheet" />
-			<script src="../../templet/jm_templet/js/jquery-2.1.1.min.js"></script>
-			<script src="../../templet/jm_templet/js/main.js"></script>
-		
-	<!--  	<link href="./css/main.css" text="text/css" rel="stylesheet" />
-		<script src="./js/jquery-2.1.1.min.js"></script>
-		<script src="./js/main.js"></script> -->
-	</head>
-	<body>
-		<div id="container">
-			<!--头部开始-->
-			<header>
-				<div id="logo"><img src="../../templet/jm_templet/imgs/logo2.png" /></div>
-			    <div class="downLoad"><a href="http://182.92.175.134/download/WoTing.apk">下载APP</a></div>
-			</header>
-			<!--播放控制界面-->
-			<div class="palyCtrlBox">
-				<h4>#####audioname#####</h4>
-				<div class="box">
-			        <div class="boxF">
-			            <div class="boxS">
-			                <div class="boxT" style="background-image: url(#####audioimgs#####);"></div>
-			            </div>
-			        </div>
-			        <a href="javascript:;" class="playControl"></a>
-			        <a href="javascript:void(0);" class="previous"></a>
-			        <a href="javascript:void(0);" class="next"></a>
-			    </div>  
-				<div class="conPlay">
-                    <span class="playTime">00:00</span>
-                	<div class="currentMusicBar">
-						<div class="currentMusicBarPro"></div>
-						<div class="currentMusicBarRound"></div>
-						<!--<div class="currentMusicBarRange"></div>-->
+<head>
+<meta charset="utf-8" />
+<title>我听FM</title>
+<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+<link href="../../templet/jm_templet/css/main.css" text="text/css" rel="stylesheet" />
+<script src="../../templet/jm_templet/js/jquery-2.1.1.min.js"></script>
+<script src="../../templet/jm_templet/js/main.js"></script>
+</head>
+<body>
+	<div id="container">
+		<!--头部开始-->
+		<header>
+			<div id="logo">
+				<img src="../../templet/jm_templet/imgs/logo2.png" />
+			</div>
+			<div class="downLoad">
+				<a href="http://182.92.175.134/download/WoTing.apk">下载APP</a>
+			</div>
+		</header>
+		<!--播放控制界面-->
+		<div class="palyCtrlBox">
+			<h4>#####audioname#####</h4>
+			<div class="box">
+				<div class="boxF">
+					<div class="boxS">
+						<div class="boxT" style="background-image: url(#####audioimgs#####);"></div>
 					</div>
-                    <span class="fullTime">#####audiotime#####</span>
-                </div>
+				</div>
+				<a href="javascript:;" class="playControl"></a> <a
+					href="javascript:void(0);" class="previous"></a> <a
+					href="javascript:void(0);" class="next"></a>
 			</div>
-			<!--相关推荐列表-->
-			<div class="tj">
-				<h4>相关推荐</h4>
+			<div class="conPlay">
+				<span class="playTime"></span>
+				<div class="currentMusicBar">
+					<div class="currentMusicBarRound"></div>
+				</div>
+				<span class="fullTime"></span>
 			</div>
-			<section class="audioList">
-				<ul class="ulBox">
-					<li class="audioLi">
-						<audio src="http://audio.xmcdn.com/group10/M02/8D/AE/wKgDaVYvBk7jPTcRAGqmTj4a9yw636.m4a"></audio>
-						<div class="audioImg">
-					        <div class="boxF">
-					            <div class="boxS">
-					                <div class="boxT" style="background-image: url(../../templet/jm_templet/imgs/1.jpg);"></div>
-					            </div>
-					        </div>
-					    </div> 
-						<div class="audioIntro">
-							<h3>专辑名称专辑名称</h3>
-							<p>声音描述声音描述声音描述声音描述声音描述</p>
-						</div>
-						<span class="play_state"></span>
-					</li>
-				</ul>
-			</section>
+			<audio
+				src="#####audioplay#####" id="jmAudio"></audio>
 		</div>
-	</body>
+		<!--相关推荐列表-->
+		<div class="tj">
+			<h4>相关推荐</h4>
+		</div>
+		<section class="audioList">
+			<ul class="ulBox">
+			</ul>
+		</section>
+	</div>
+</body>
 </html>

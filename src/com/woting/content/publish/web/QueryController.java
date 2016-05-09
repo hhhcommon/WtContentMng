@@ -166,7 +166,8 @@ public class QueryController {
 	}
 
 	/**
-	 * 发布所有已审核的节目       只用于测试用
+	 * 发布所有已审核的节目 只用于测试用
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -176,19 +177,17 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
 		int flowFlag = 0;
-	//	String userId = (String) m.get("UserId");
+		// String userId = (String) m.get("UserId");
 		int page = 0;
 		int pagesize = 0;
 		if (m.containsKey("ContentFlowFlag"))
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		int num = 0;
-		flowFlag = 2;
 		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i < 675; i++) { 
+		for (int i = 1; i < 675; i++) { //目前测试i循环参数固定
 			page = i;
 			pagesize = 10;
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, null, null,
-					null, null, null, null);
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, null, null, null, null, null, null);
 			List<Map<String, Object>> listsequs = (List<Map<String, Object>>) maplist.get("List");
 			for (Map<String, Object> map2 : listsequs) {
 				String sequid = (String) map2.get("ContentId");
@@ -207,9 +206,10 @@ public class QueryController {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 分享页的分页加载请求
+	 * 
 	 * @param request
 	 * @return
 	 */
@@ -223,7 +223,6 @@ public class QueryController {
 		String page = (String) m.get("Page");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getZJSubPage(zjid, page);
-		System.out.println(map);
 		return map;
 	}
 }
