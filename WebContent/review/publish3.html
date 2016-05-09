@@ -63,8 +63,8 @@
 				//审核处理
 				$("button[opeType]").on('click',function(){
 					var checkedList="";
-					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
-						checkedList+=this.parentNode.parentNode.id+",";
+					$.each($("input[type='checkBox'][name!='all']:checked"),function(){
+						checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
 					});
 					if(checkedList==""){
 						alert("您还没有选择任何节目！");
@@ -101,7 +101,7 @@
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
-					max_page	: Math.ceil(contentCount/10),
+					max_page	: 3,
 					paged		: function(page) {
 						//翻页时的请求
 						getContentList(page,flowFlag);
