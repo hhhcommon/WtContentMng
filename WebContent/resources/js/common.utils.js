@@ -75,7 +75,7 @@ function getBrowserVersion() {
   (s = userAgent.match(/firefox\/([\d.]+)/)) ? browser.firefox = s[1] :
   (s = userAgent.match(/chrome\/([\d.]+)/)) ? browser.chrome = s[1] :
   (s = userAgent.match(/opera.([\d.]+)/)) ? browser.opera = s[1] :
-  (s = userAgent.match(/version\/([\d.]+).*safari/)) ? browser.safari = s[1] : 0;
+  (s = userAgent.match(/version\/([\d.]+).*safari/)) ? browser.safari = s[1]:0;
 
   var version = browser.ie? 'msie '+browser.ie:
     browser.firefox?'firefox ' + browser.firefox:
@@ -185,27 +185,54 @@ function isURL(str) {
  * @returns 时间的字符串类型
  * @author: meizz
  */
-Date.prototype.Format = function(fmt) {
+Date.prototype.format = function(fmt) {
   var o = {
-   "M+" : this.getMonth()+1,                 //月份
-   "d+" : this.getDate(),                    //日
-   "h+" : this.getHours(),                   //小时
-   "m+" : this.getMinutes(),                 //分
-   "s+" : this.getSeconds(),                 //秒
-   "q+" : Math.floor((this.getMonth()+3)/3), //季度
-   "S"  : this.getMilliseconds()             //毫秒
+   "M+":this.getMonth()+1,                 //月份
+   "d+":this.getDate(),                    //日
+   "h+":this.getHours()%12==0?12:this.getHours()%12,//12小时
+   "H+":this.getHours(), //24小时		   
+   "m+":this.getMinutes(),                 //分
+   "s+":this.getSeconds(),                 //秒
+   "q+":Math.floor((this.getMonth()+3)/3), //季度
+   "S" :this.getMilliseconds()             //毫秒
   };
-  if (/(y+)/.test(fmt)) fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-  for(var k in o) {
-    if(new RegExp("("+ k +")").test(fmt)) {
+  var fmt;
+  if (/(y+)/.test(fmt)) fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4-RegExp.$1.length));
+  for (var k in o) {
+    if (new RegExp("("+ k +")").test(fmt)) {
       if (k=="S") {
       	fmt = fmt.replace("S", ("00"+o["S"]).substr(("00"+o["S"]).length-3));
       } else {
-        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length))); 
+        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]):(("00"+ o[k]).substr((""+ o[k]).length))); 
       }
     }
   }
   return fmt;
+}
+
+/** 
+ * 取当前月的第一天，用fmt进行格式化后返回
+ */
+function getCurMonthFirstDay_format(fmt) {
+  return getDateMonthFirstDay_format(new Date(), fmt);
+}
+/** 
+ * 取当前月的最后一天，用fmt进行格式化后返回
+ */
+function getCurMonthLastDay_format(fmt) {
+  return getDateMonthLastDay_format(new Date(), fmt);
+}
+/** 
+ * 取某时间所在月的第一天，用fmt进行格式化后返回
+ */
+function getDateMonthFirstDay_format(date, fmt) {
+  return (new Date(date.getFullYear(), date.getMonth(), 1)).format(fmt);
+}
+/** 
+ * 取当前月的最后一天，用fmt进行格式化后返回
+ */
+function getDateMonthLastDay_format(date, fmt) {
+  return (new Date((new Date(date.getFullYear(), date.getMonth()+1, 1)).getTime()-(1000*60*60*24))).format(fmt);
 }
 
 //扩展方法
