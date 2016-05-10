@@ -51,13 +51,11 @@
                         	ContentFlowFlag:flowFlag,
                         	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
                         	SourceId:$(".source option:selected").attr("sourceId"),
+                        	BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
+                            EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
 	                        Page:"1",
 	                        PageSize:"10"
 	                    };
-					/*
-					BeginContentPubTime:$("input[name='StartPubTime']").val(),
-                    EndContentPubTime:$("input[name='EndPubTime']").val(),
-					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//审核处理
@@ -67,7 +65,7 @@
 						checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
 					});
 					if(checkedList==""){
-						alert("您还没有选择任何节目！");
+						alert("您还没有选择任何节目");
 						$("input[type='checkBox'][name='all']").prop({"checked":null});
 						return;
 					}

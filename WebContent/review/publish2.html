@@ -12,6 +12,7 @@
         <link href="../resources/plugins/css_others/custom.css" rel="stylesheet">
         <link href="../resources/plugins/css_others/animate.min.css" rel="stylesheet">
         <link href="../resources/plugins/css_others/datepicker3.css" rel="stylesheet">
+        <link href="../resources/css/reset.css" rel="stylesheet">
         <link href="../resources/css/style.min.css" rel="stylesheet">
         <link href="../resources/plugins/jquery2.1.1/jqpagination.css" rel="stylesheet"/>
         <link href="../resources/css/publish.css" rel="stylesheet">
@@ -77,21 +78,19 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					//alert($(".catalogs option:selected").text());
-					//alert($(".source option:selected").text());
+					alert($(".catalogs option:selected").text());
+					alert($(".source option:selected").text());
 					var url="http://"+serverIp+":908/CM/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
                         	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
                         	SourceId:$(".source option:selected").attr("sourceId"),
+                        	BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
+                            EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
 	                        Page:"1",
 	                        PageSize:"10"
 	                    };
-					/*
-					BeginContentPubTime:$("input[name='StartPubTime']").val(),
-                    EndContentPubTime:$("input[name='EndPubTime']").val(),
-					*/
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//节目列表全选全不选

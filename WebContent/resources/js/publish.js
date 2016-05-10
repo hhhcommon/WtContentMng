@@ -176,7 +176,7 @@ function ContentListLoad(actList){
     $(".pubList").append(pageDiv);
     */
 }
-
+var subList=[];
 //根据节目ID展示节目详情及其下单体列表
 function ContentInfoLoad(conList){
      //下面是获取节目详情
@@ -204,6 +204,25 @@ function ContentInfoLoad(conList){
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
      AudioListLoad(conList.SubList);
+     
+     //将专辑单体列表存储起来，以便排序使用
+     for(var j=0;j<conList.SubList.length;j++){
+    	 subList[j].ContentId=conList.SubList[j].ContentId;
+    	 subList[j].ContentName=conList.SubList[j].ContentName;
+    	 subList[j].ContenteDesc=conList.SubList[j].ContenteDesc;
+    	 subList[j].ContentImg=conList.SubList[j].ContentImg;
+    	 subList[j].ContentCTime=conList.SubList[j].ContentCTime;
+    	 subList[j].ContentPubTime=conList.SubList[j].ContentPubTime;
+    	 subList[j].ContentSource=conList.SubList[j].ContentSource;
+    	 subList[j].MediaType=conList.SubList[j].MediaType;
+    	 subList[j].ContentTimes=conList.SubList[j].ContentTimes;
+    	 subList[j].ContentURI=conList.SubList[j].ContentURI;
+    	 subList[j].ContentPersons=conList.SubList[j].ContentPersons;
+    	 subList[j].ContentCatalogs=conList.SubList[j].ContentCatalogs;
+    	 console.log(subList[j].ContentName);
+     }
+     
+     
 }
 //创建单体资源列表DOM结构
 //把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
