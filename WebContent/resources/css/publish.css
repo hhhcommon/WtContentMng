@@ -346,6 +346,9 @@
 .conBox .conTable td span{
 	margin-right:8px;
 }
+.conBox .conTable td span:hover{
+	cursor:pointer;
+}
 /*鍙戝竷绠＄悊鍐呭璇︽儏鍓嶇殑褰╄壊鍦嗙偣-宸插鏍�*/
 .conDot{
   display:inline-block;

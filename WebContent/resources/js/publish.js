@@ -79,9 +79,7 @@ function ConditionsListLoad(ConditionsList){
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
-	
 	contentCount=actList.ContentCount;
-	//alert(contentCount);
     var actListLength=actList.ResultList.length;
     if(actListLength==0){
     	$(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
@@ -216,6 +214,7 @@ function AudioListLoad(itemList,sort){
    //循环创建table行
     for(var i=0;i<conListLength;i++){
 	  tr=$("<tr></tr>");
+	  tr.attr({"contentId":itemList[i].ContentId,"contentURI":itemList[i].ContentURI});
 	  tdFirst=$("<td></td>");
 	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
 	  tdA=$("<a href='javascript:;'></a>");

@@ -97,6 +97,24 @@
           ev.stopPropagation();
         });
 				
+      //专辑对应的单体列表播放控制
+        var audio=$("<audio></audio>")[0];
+        $(".table").on("click","span",function(){
+          if($(this).hasClass("fa-youtube-play")){
+            $.each($(".table span"), function(i,val){
+               if($(val).hasClass("fa-pause")){
+                $(val).removeClass("fa-pause").addClass("fa-youtube-play");
+               }
+            });
+            $(this).removeClass("fa-youtube-play").addClass("fa-pause");
+            audio.src=$(this).parent().parent("tr").attr("contentURI");
+            audio.play();
+          }else if($(this).hasClass("fa-pause")){
+            $(this).removeClass("fa-pause").addClass("fa-youtube-play");
+            audio.pause();
+          } 
+        });
+				
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
