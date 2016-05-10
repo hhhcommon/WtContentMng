@@ -1,4 +1,7 @@
 @charset "utf-8";
+li,a,input{
+	outline:none;
+}
 /*鏈〉澶存煡璇㈠尯绛涢�夊尯*/
 .operate{
 	height:30px;
@@ -178,14 +181,14 @@
 	-webkit-transform: scale(0.9);
 }
 .listBox .secTitle{
+	font-size:12px;
 	color:#ccc;
-	font-size:10px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 .listBox .other{
-	font-size:8px;
+	font-size:12px;
 	color:#3871a6;
 }
 .listBox .other span{
@@ -205,7 +208,7 @@
 	color:black;
 	text-align:center;
 	border:none;
-	outline:0;
+	outline:0px;
 }
 .pubList .listBox .sortUpdate .sortUpdateBtn{
 	height:20px;
@@ -282,7 +285,7 @@
 }
 
 .pubDetail .conBox .conTitle dl{
-	font-size:10px;
+	font-size:12px;
 	color:#343434;
   line-height:1.6em;
   padding-top:10px;
