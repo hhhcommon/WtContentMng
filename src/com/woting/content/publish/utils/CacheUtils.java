@@ -24,8 +24,8 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	// http://localhost:908/CM/ http://182.92.175.134:908/CM/
-	private static String jmurlrootpath = "http://localhost:908/CM/"; // 静态节目content.html路径头信息
+	// http://localhost:908/CM/ http://www.wotingfm.com:908/CM/
+	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = WtContentMngConstants.ROOT_PATH; // 静态文件根路径
 
 	/**
