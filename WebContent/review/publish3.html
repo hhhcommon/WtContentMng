@@ -63,8 +63,8 @@
 				//审核处理
 				$("button[opeType]").on('click',function(){
 					var checkedList="";
-					$.each($("input[type='checkBox'][name!='all']:checked"),function(l){
-						checkedList+=this.parentNode.parentNode.id+",";
+					$.each($("input[type='checkBox'][name!='all']:checked"),function(){
+						checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
 					});
 					if(checkedList==""){
 						alert("您还没有选择任何节目！");
@@ -92,10 +92,16 @@
 					}
 				});
 				
+				//选取复选框时，阻止向上冒泡触发li标签的click事件
+        $(".actList").on("click","input",function(ev){
+          //阻止事件向上级冒泡
+          ev.stopPropagation();
+        });
+				
 				//翻页
 				$('.pagination').jqPagination({
 					//link_string	: '/?page={page_number}',
-					max_page	: Math.ceil(contentCount/10),
+					max_page	: 3,
 					paged		: function(page) {
 						//翻页时的请求
 						getContentList(page,flowFlag);
@@ -145,39 +151,37 @@
                     
                     <div class="page">
 	                    <div class="gigantic pagination">
-						    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
-						    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
-						    <input type="text" readonly="readonly" value=""/>
-						    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
-						    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
-						</div>
-					</div>
-                    <!--  -->
-                    
+									    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
+									    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
+									    <input type="text" readonly="readonly" value=""/>
+									    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
+									    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
+									</div>
+								</div>
                 </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">
                 	<div class="conBox" style="display:none;">
                         <div class="conTitle" >
-                        	<div class="titleImg" style="float:left;width:15%;">
-                        		<img alt="image" class="actThumb" style="width:100%;height:100%;" src="">
+                        	<div class="titleImg">
+                        		<img alt="image" class="actThumb">
                         	</div>
-                        	<div class="detail" style="float:left;padding-left:20px;width:80%">
+                        	<div class="detail">
                         		<div class="title">
                         			<h2 style="display:inline" class="actTitle"></h2>
                             		<span class="actSource"></span><span class="actPubTime"></span>
                         		</div>
                         		<dl style="padding-top:10px">
-                        			<dt style="float:left;padding-right:8px;">主播 :</dt>
-                        			<dd class="vjName"></dd>
-                        			<dt style="float:left;padding-right:8px;">简介 :</dt>
-                        			<dd class="actDesn"></dd>
-                        			<dt style="float:left;padding-right:8px;">标签 :</dt>
-                        			<dd class="cloumn"></dd>
-                        		</dl>
+                            <dl>
+                              <dt>主播 :</dt>
+                              <dd class="vjName"></dd>
+                              <dt>简介 :</dt>
+                              <dd class="actDesn"></dd>
+                              <dt>标签 :</dt>
+                              <dd class="cloumn"></dd>
+                            </dl>
                         	</div>
-                            
-                            <!--标志状态的圆点 <span class="conDot"></span> -->
+                          <!--标志状态的圆点 <span class="conDot"></span> -->
                         </div>
                         <!--  
                         <div class="conPlay">
@@ -192,20 +196,19 @@
                             <i>08:35/25:16</i>
                         </div>
                         --> 
-						<div class="itemSortBox">
-							<!-- 如果是专辑，此处显示专辑内列表总数，否则不显示 -->
-							<span class="itemCount"></span>
-							<a href="javascript:;" class="itemSort">排序</a>
-						</div>
-                    	<!-- 专辑内对应单体列表 -->
-                    	<div class="conTable">
-							<table class="table"></table>
-                    	</div>
-                	</div>
-            	</div>
-        	  </div>
-        </div>
-        	
+												<div class="itemSortBox">
+													<!-- 如果是专辑，此处显示专辑内列表总数，否则不显示 -->
+													<span class="itemCount"></span>
+													<a href="javascript:;" class="itemSort">排序</a>
+												</div>
+	                    	<!-- 专辑内对应单体列表 -->
+	                    	<div class="conTable">
+													<table class="table"></table>
+	                    	</div>
+	                	</div>
+	            	</div>
+	        	  </div>
+	        </div>
         <!-- 全局js -->
         <script src="../resources/plugins/bootstrap3.3.4/bootstrap.min.js"></script>
         <!--以下3个Js支撑日期控件-->
