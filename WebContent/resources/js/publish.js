@@ -1,9 +1,10 @@
 var contentCount=0;
+var serverIp="localhost";
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
         type: "POST",    
-        url:"http://localhost:908/CM/content/getConditions.do",
+        url:"http://"+serverIp+":908/CM/content/getConditions.do",
         dataType: "json",
         data:{UserId: "zhangsan"},
         success: function(ConditionsList) {
@@ -14,7 +15,7 @@ function getConditions(){
             }  
         },
         error: function(jqXHR){   
-           alert("发生错误：" + jqXHR.status);
+           alert("发生错误" + jqXHR.status);
         }     
     });
 }
@@ -42,13 +43,13 @@ function commonAjax(url,data,obj,callback){
             }  
         },
         error: function(jqXHR){  
-           alert("发生错误：" + jqXHR.status);
+           alert("发生错误" + jqXHR.status);
         }     
     });
 }	
 //从后台请求节目列表数据
 function getContentList(page,flowFlag){
-	var url="http://localhost:908/CM/content/getContents.do";
+	var url="http://"+serverIp+":908/CM/content/getContents.do";
 	var data={
             UserId: "zhangsan", 
             ContentFlowFlag:flowFlag,

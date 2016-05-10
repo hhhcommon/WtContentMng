@@ -41,7 +41,7 @@
 						
 				//点击节目，获取详情及列表
 				$(".actList").on("click",".listBox",function(ev){
-					var url="http://localhost:908/CM/content/getContentInfo.do";
+					var url="http://"+serverIp+":908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -63,7 +63,7 @@
 		        
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://localhost:908/CM/content/updateContentStatus.do";
+					var url="http://"+serverIp+":908/CM/content/updateContentStatus.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -79,7 +79,7 @@
 				$(".selectBtn").on("click",function(){
 					//alert($(".catalogs option:selected").text());
 					//alert($(".source option:selected").text());
-					var url="http://localhost:908/CM/content/getContents.do";
+					var url="http://"+serverIp+":908/CM/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -114,7 +114,7 @@
 						return;
 					}
 					$("input[type='checkBox'][name='all']").prop({"checked":null});
-					var url="http://localhost:908/CM/content/updateContentStatus.do";
+					var url="http://"+serverIp+":908/CM/content/updateContentStatus.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -169,10 +169,11 @@
                 <div class="allCheck">
                     <input type="checkBox" name="all"/>
                 </div>
-                <button type="button" opeType="revoke" class="btn" style="margin-right:300px">撤回</button>
+                <button type="button" opeType="revoke" class="btn" style="margin-right:325px">撤回</button>
                 
                 <label>栏目:</label>
-                    <select class="catalogs" name="column">                       
+                    <select class="catalogs" name="column">
+                    <option value="">不 限</option>                     
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
@@ -186,9 +187,10 @@
                         <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
                     </div>
                 </div>
-                <button type="button" class="btn selectBtn">查 询</button>
-                <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>  
-            </div> 
+                <button type="button" class="btn selectBtn">查 询</button><!-- 
+                <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>
+                 -->
+              </div> 
             <!--显示主区域-->
             <div class="mainShow">
                 <!--左侧列表 onselectstart="return false;"-->

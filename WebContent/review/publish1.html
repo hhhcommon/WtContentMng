@@ -19,6 +19,7 @@
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
+				
 				var flowFlag="1";//节目审核状态
 				var pages=1;
 								
@@ -28,7 +29,7 @@
 				getConditions();
 				//点击节目，获取详情及列表
 				$(".actList").on("click",".listBox",function(ev){
-					var url="http://localhost:908/CM/content/getContentInfo.do";
+					var url="http://"+serverIp+":908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -44,7 +45,7 @@
 
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					var url="http://localhost:908/CM/content/getContents.do";
+					var url="http://"+serverIp+":908/CM/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -71,7 +72,7 @@
 						return;
 					}
 					$("input[type='checkBox'][name='all']").prop({"checked":null});
-					var url="http://localhost:908/CM/content/updateContentStatus.do";
+					var url="http://"+serverIp+":908/CM/content/updateContentStatus.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -154,7 +155,9 @@
                     </div>
                 </div>
                 <button type="button" class="btn selectBtn">查 询</button>
-                <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>  
+                <!-- 
+                <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>
+                 -->
             </div> 
             <!--显示主区域-->
             <div class="mainShow">
