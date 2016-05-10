@@ -54,13 +54,13 @@ public class QueryController {
 		if (m.containsKey("SourceId"))
 			source = (String) m.get("SourceId");
 		if (m.containsKey("BeginContentPubTime"))
-			begincontentpubtime = (Timestamp) m.get("BeginContentPubTime");
+			begincontentpubtime = Timestamp.valueOf((String) m.get("BeginContentPubTime"));
 		if (m.containsKey("EndContentPubTime"))
-			endcontentpubtime = (Timestamp) m.get("EndContentPubTime");
+			endcontentpubtime = Timestamp.valueOf((String) m.get("EndContentPubTime"));
 		if (m.containsKey("BeginContentCTime"))
-			begincontentctime = (Timestamp) m.get("BeginContentCTime");
+			begincontentctime = Timestamp.valueOf((String) m.get("BeginContentCTime"));
 		if (m.containsKey("EndContentCTime"))
-			endcontentctime = (Timestamp) m.get("EndContentCTime");
+			endcontentctime = Timestamp.valueOf((String) m.get("EndContentCTime"));
 		if (userId != null) {
 			if (flowFlag > 0 && page > 0 && pagesize > 0) {
 				Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
