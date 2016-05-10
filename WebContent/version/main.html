@@ -14,15 +14,15 @@
   <link href="../resources/plugins/css_others/datepicker3.css" rel="stylesheet">
   <link href="../resources/plugins/jquery2.1.1/jqpagination.css" rel="stylesheet"/>
   <link href="../resources/css/style.min(1).css" rel="stylesheet">
-  <link href="../resources/wtcm_layout/css/CM_toolbar.css" rel="stylesheet">
-  <link href="../resources/wtcm_layout/css/CM_mainarea.css" rel="stylesheet">
+  <link href="../resources/wtcm/layout/CM_toolbar.css" rel="stylesheet">
+  <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
 
-  <!-- 全局js -->
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/plugins/jquery2.1.1/jquery-2.1.1.min.js"></script>
   <script src="../resources/plugins/bootstrap3.3.4/bootstrap.min.js"></script>
   <script src="../resources/plugins/jquery2.1.1/jquery.jqpagination.js"></script><!-- 分页 -->
   <script src="../resources/plugins/bootstrap3.3.4/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="../resources/wtcm/pagination/CM_title.init.js"></script>
 
   <!-- 以下配置都是为支持form-advanced-demo.js的，但由于../resources/plugins/jquery2.1.1/jquery.nouislider.min.js有问题，失败了，以后再说
   <script src="../resources/plugins/jquery2.1.1/jquery.knob.js"></script>
@@ -44,10 +44,10 @@
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="pass" class="btn" style="margin-right:10px">添加</button>
-  <button type="button" opeType="nopass" class="btn" style="margin-right:50px" disabled>删除</button>
-  <div class="splite" style="left:180px"></div>
-  <button type="button" opeType="nopass" class="btn" style="margin-right:50px">配置信息</button>
-  <div class="splite" style="left:340px"></div>
+  <button type="button" opeType="nopass" class="btn" style="margin-right:175px" disabled>删除</button>
+  <div class="splite" style="left:300px"></div>
+  <button type="button" opeType="nopass" class="btn" style="margin-right:60px">配置信息</button>
+  <div class="splite" style="left:418px"></div>
   <div class="form-group cDate" id="data_5">
     <span>发布日期：</span>
     <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:2px;">
@@ -63,14 +63,14 @@
   <!--左侧列表 -->
   <div class="leftlistArea">
     <!-- 动态节目列表cttList -->
-    <div class="cntList">AABBCCDD</div>
+    <div class="cntList"></div>
     <div class="page">
       <div class="gigantic pagination">
-        <a href="javascript:;" class="first" data-action="first">&laquo;</a>
-        <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
-        <input type="text" readonly="readonly"/>
-        <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
-        <a href="javascript:;" class="last" data-action="last">&raquo;</a>
+        <a href="javascript:void(0);" class="first" data-action="first">&laquo;</a>
+        <a href="javascript:void(0);" class="previous" data-action="previous">&lsaquo;</a>
+        <input type="text" readonly="readonly" style="width:257px;" value="0"/>
+        <a href="javascript:void(0);" class="next" data-action="next">&rsaquo;</a>
+        <a href="javascript:void(0);" class="last" data-action="last">&raquo;</a>
       </div>
     </div>
   </div>
@@ -92,9 +92,8 @@ $(function() {
   //--设置当前月份
   $("input[name='StartPubTime']").val(getCurMonthFirstDay_format("yyyy-MM-dd"));
   $("input[name='EndPubTime']").val(getCurMonthLastDay_format("yyyy-MM-dd"));
-  /*调整左侧栏的进度条和上部分的结构*/
-  alert("DDD");
-  $(".mainArea").css("height","calc(100% - 40px)");
+  /*调整左侧栏的进度条和上部分的结构？？？未实现*/
+
 });
 </script>
 </html>

@@ -89,7 +89,6 @@ function ContentListLoad(actList){
 	    //声明下面需要创建的节点，以便添加内容和添加到文档中
 	    var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
 	    var sortDiv,sortInput,sortBtn;
-	    contentCount=actList.ContentCount;
 	    //actListDiv=$("<div class='actList'></div>");
 	    //循环加载列表
 	    for(var i=0;i<actListLength;i++){

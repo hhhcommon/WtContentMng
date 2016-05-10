@@ -1,5 +1,6 @@
 package com.woting.content.publish.service;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +15,10 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.util.JsonUtils;
+import com.woting.WtContentMngConstants;
+import com.woting.content.publish.utils.CacheUtils;
 
 @Lazy(true)
 @Service
@@ -92,7 +97,6 @@ public class QueryService {
 				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
 				oneData.put("MediaType", rs.getString("assetType"));
 				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
-				System.out.println(rs.getString("assetId"));
 				oneData.put("ContentImg", rs.getString("pubImg"));
 				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
 				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
@@ -209,7 +213,7 @@ public class QueryService {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select a.id,a.smaTitle,a.smaImg,a.smaAllCount,a.smaPublisher,a.keyWords,a.descn,a.CTime,a.smaPublishTime,b.title from wt_SeqMediaAsset a,wt_ResDict_Ref b where a.id = ? and a.id = b.resId limit 1";
+		String sql = "select id,smaTitle,smaImg,smaAllCount,smaPublisher,keyWords,descn,CTime,smaPublishTime from wt_SeqMediaAsset where id = ? limit 1";
 		List<Map<String, Object>> listaudio = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
@@ -229,7 +233,7 @@ public class QueryService {
 				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
 				seqData.put("ContentPersons", null);
 				seqData.put("ContentKeyWord", rs.getString("keyWords"));
-				seqData.put("ContentCatalogs", rs.getString("title"));
+	//			seqData.put("ContentCatalogs", rs.getString("title"));
 				seqData.put("ContentDesc", rs.getString("descn"));
 			}
 		} catch (SQLException e) {
@@ -237,9 +241,26 @@ public class QueryService {
 		} finally {
 			closeConnection(conn, ps, rs);
 		}
+		
+		sql = "select title from wt_ResDict_Ref where resId=?";
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, (String) seqData.get("ContentId"));
+			rs = ps.executeQuery();
+			String catalogs = "";
+			while (rs != null && rs.next()) {
+				catalogs += ","+rs.getString("title");
+			}
+			seqData.put("ContentCatalogs", catalogs.substring(1));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection(conn, ps, rs);
+		}
 
 		// 查询专辑和单体的联系
-		sql = "select sId,mId from wt_SeqMA_Ref where sid = ? limit 1";
+		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
 		List<String> listaudioid = new ArrayList<String>();
 		try {
 			conn = DataSource.getConnection();
@@ -257,7 +278,7 @@ public class QueryService {
 
 		// 查询单体信息
 		for (String audid : listaudioid) {
-			listaudio.add(getAudioInfo(audid, acttype));
+			listaudio.add(getAudioInfo(audid, "wt_MediaAsset"));
 		}
 
 		if (listaudio.size() == 0) {
@@ -283,7 +304,7 @@ public class QueryService {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Map<String, Object> audioData = new HashMap<String, Object>();// 单体信息
-		String sql = "select a.id,a.maTitle,a.maPublishTime,a.maImg,a.timeLong,a.maPublisher,a.descn,a.cTime,b.title from wt_MediaAsset a,wt_ResDict_Ref b where a.id = ? and a.id = b.resId limit 1";
+		String sql = "select id,maTitle,maPublishTime,maImg,timeLong,maPublisher,descn,cTime,maURL from wt_MediaAsset where id = ? limit 1";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -299,9 +320,26 @@ public class QueryService {
 				audioData.put("ContentDesc", rs.getString("descn"));
 				audioData.put("ContentTimes", rs.getLong("timeLong"));
 				audioData.put("ContentSource", rs.getString("maPublisher"));
+				audioData.put("ContentURI",rs.getString("maURL"));
 				audioData.put("ContentPersons", null);
-				audioData.put("ContentCatalogs", rs.getString("title"));
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection(conn, ps, rs);
+		}
+		
+		sql = "select title from wt_ResDict_Ref where resId=?";
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, (String) audioData.get("ContentId"));
+			rs = ps.executeQuery();
+			String catalogs = "";
+			while (rs != null && rs.next()) {
+				catalogs += ","+rs.getString("title");
+			}
+			audioData.put("ContentCatalogs", catalogs.substring(1));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -453,7 +491,6 @@ public class QueryService {
 
 	/**
 	 * 获得分类和发布组织信息
-	 * 
 	 * @return
 	 */
 	public Map<String, Object> getConditionsInfo() {
@@ -498,6 +535,39 @@ public class QueryService {
 		}
 		map.put("Catalogs", listcatalogs);
 		map.put("Source", listorganize);
+		return map;
+	}
+
+	/**
+	 * 加载专辑id为zjId的专辑的下属的节目列表，注意是某一页page的列表
+	 * @param zjId 专辑Id
+	 * @param page 第几页
+	 * @return 返回该页的数据，以json串的方式，若该页无数据返回null
+	 */
+	public Map<String, Object> getZJSubPage(String zjId, String page) {
+		Map<String, Object> map = new HashMap<String,Object>();
+		//1-根据zjId，计算出文件存放目录
+		String path=WtContentMngConstants.ROOT_PATH + "mweb/zj/"+zjId+"/";
+		//2-判断是否有page所对应的数据
+		File thisPage, nextPage;
+		thisPage = new File(path+"P"+page+".json");//func()
+		int nextpage = Integer.valueOf(page)+1;
+		nextPage=new File(path+"P"+nextpage+".json");
+		if(!thisPage.exists()){
+			map.put("ReturnType", "1011");
+			map.put("Message", "没有相关内容 ");
+		}else {//组织本页数据
+			String jsonstr = CacheUtils.readFile(path+"P"+page+".json");
+			List<Map<String, Object>> listaudios = (List<Map<String, Object>>) JsonUtils.jsonToObj(jsonstr, List.class);
+			if(listaudios!=null){
+				map.put("ResultList", listaudios);
+				map.put("ReturnType", "1001");
+				map.put("NextPage", String.valueOf(nextPage.exists()));//判断是否有下一页，并组织到返回数据中
+			}else{
+				map.put("ReturnType", "1011");
+				map.put("Message", "没有相关内容 ");
+			}
+		}
 		return map;
 	}
 
