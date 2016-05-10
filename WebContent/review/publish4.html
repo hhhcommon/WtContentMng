@@ -51,11 +51,13 @@
                           ContentFlowFlag:flowFlag,
                           CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
                           SourceId:$(".source option:selected").attr("sourceId"),
-                          BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
-                          EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
                           Page:"1",
                           PageSize:"10"
                       };
+          /*
+          BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
+          EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
+          */
           commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
         });
         //审核处理
@@ -113,7 +115,17 @@
             audio.pause();
           } 
         });
-        
+      //专辑下单体资源排序
+        var sort=true;
+        $(".itemSort").on("click",function(){
+          if(sort){
+            AudioListLoad(subList,sort);
+            sort=false;
+          }else{
+            AudioListLoad(subList,sort);
+            sort=true;
+          }
+        });
         //翻页
         $('.pagination').jqPagination({
           //link_string : '/?page={page_number}',
@@ -142,14 +154,15 @@
                     <select class="source" name="source">
                         <option value="">不 限</option>
                     </select>&nbsp;&nbsp;&nbsp;
-                    <div class="form-group cDate" id="data_5">
-                    <span>发布日期：</span>
-                    <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
-                        <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
-                    </div>
+                    <!-- 
+                <div class="form-group cDate" id="data_5">
+                  <span>发布日期：</span>
+                  <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
+                      <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
+                      <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
+                  </div>
                 </div>
+                 -->
                 <button type="button" class="btn selectBtn">查 询</button>
                 <!-- 
                 <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>

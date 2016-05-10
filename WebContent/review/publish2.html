@@ -12,7 +12,6 @@
         <link href="../resources/plugins/css_others/custom.css" rel="stylesheet">
         <link href="../resources/plugins/css_others/animate.min.css" rel="stylesheet">
         <link href="../resources/plugins/css_others/datepicker3.css" rel="stylesheet">
-        <link href="../resources/css/reset.css" rel="stylesheet">
         <link href="../resources/css/style.min.css" rel="stylesheet">
         <link href="../resources/plugins/jquery2.1.1/jqpagination.css" rel="stylesheet"/>
         <link href="../resources/css/publish.css" rel="stylesheet">
@@ -27,8 +26,6 @@
 				getContentList(1,flowFlag);
 				//获得查询条件
 				getConditions();
-				//加载完列表后，页面右侧默认显示第一条节目详情内容
-				//console.log($(".actList .listBox"));
 				
 				//翻页
 				$('.pagination').jqPagination({
@@ -86,11 +83,13 @@
                         	ContentFlowFlag:flowFlag,
                         	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
                         	SourceId:$(".source option:selected").attr("sourceId"),
-                        	BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
-                            EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
 	                        Page:"1",
 	                        PageSize:"10"
 	                    };
+					/*
+	          BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
+	          EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
+	          */
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//节目列表全选全不选
@@ -142,6 +141,17 @@
 			    } 
 				});
 				
+				//专辑下单体资源排序
+				var sort=true;
+				$(".itemSort").on("click",function(){
+					if(sort){
+						AudioListLoad(subList,sort);
+						sort=false;
+					}else{
+						AudioListLoad(subList,sort);
+						sort=true;
+					}
+				});
 				/*
 				//单体列表正反排序
 				var flag=0;
@@ -178,14 +188,15 @@
                     <select class="source" name="source">
                         <option value="">不 限</option>                   
                     </select>&nbsp;&nbsp;&nbsp;
-                    <div class="form-group cDate" id="data_5">
-                    <span>创建日期：</span>
-                    <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
-                        <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
-                    </div>
+                <!-- 
+                <div class="form-group cDate" id="data_5">
+                  <span>发布日期：</span>
+                  <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
+                      <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
+                      <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
+                  </div>
                 </div>
+                 -->
                 <button type="button" class="btn selectBtn">查 询</button><!-- 
                 <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>
                  -->
