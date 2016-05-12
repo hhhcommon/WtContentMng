@@ -1,9 +1,10 @@
 var contentCount=0;
+var serverIp="localhost";
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
         type: "POST",    
-        url:"http://localhost:908/CM/content/getConditions.do",
+        url:"http://"+serverIp+":908/CM/content/getConditions.do",
         dataType: "json",
         data:{UserId: "zhangsan"},
         success: function(ConditionsList) {
@@ -14,7 +15,7 @@ function getConditions(){
             }  
         },
         error: function(jqXHR){   
-           alert("发生错误：" + jqXHR.status);
+           alert("发生错误" + jqXHR.status);
         }     
     });
 }
@@ -42,13 +43,13 @@ function commonAjax(url,data,obj,callback){
             }  
         },
         error: function(jqXHR){  
-           alert("发生错误：" + jqXHR.status);
+           alert("发生错误" + jqXHR.status);
         }     
     });
 }	
 //从后台请求节目列表数据
 function getContentList(page,flowFlag){
-	var url="http://localhost:908/CM/content/getContents.do";
+	var url="http://"+serverIp+":908/CM/content/getContents.do";
 	var data={
             UserId: "zhangsan", 
             ContentFlowFlag:flowFlag,
@@ -79,9 +80,7 @@ function ConditionsListLoad(ConditionsList){
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
-	
 	contentCount=actList.ContentCount;
-	//alert(contentCount);
     var actListLength=actList.ResultList.length;
     if(actListLength==0){
     	$(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
@@ -147,6 +146,8 @@ function ContentListLoad(actList){
 	        }
 	        	$(".actList").append(listDiv);
 	    }
+	    var hoverBar=$("<span class='hoverBar'></span>");
+	    $(".actList").append(hoverBar);
 	    //默认节目列表的第一条显示详情
 	    $(".listBox").first().trigger("click");
     }
@@ -177,7 +178,7 @@ function ContentListLoad(actList){
     $(".pubList").append(pageDiv);
     */
 }
-
+var subList=[];
 //根据节目ID展示节目详情及其下单体列表
 function ContentInfoLoad(conList){
      //下面是获取节目详情
@@ -204,11 +205,14 @@ function ContentInfoLoad(conList){
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
-     AudioListLoad(conList.SubList);
+     AudioListLoad(conList.SubList,false);
+     //将专辑单体列表存储起来，以便排序使用 --对象深度复制
+     subList = jQuery.extend(true, [], conList.SubList);
 }
 //创建单体资源列表DOM结构
 //把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
 function AudioListLoad(itemList,sort){
+	$(".table").html("");
     var conListLength=itemList.length;
 	//声明下面需要创建的节点，以便获取节目内的单体列表
 	var tr,tdFirst,tdSpan,tdA,tdSecond;
@@ -216,6 +220,7 @@ function AudioListLoad(itemList,sort){
    //循环创建table行
     for(var i=0;i<conListLength;i++){
 	  tr=$("<tr></tr>");
+	  tr.attr({"contentId":itemList[i].ContentId,"contentURI":itemList[i].ContentURI});
 	  tdFirst=$("<td></td>");
 	  tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
 	  tdA=$("<a href='javascript:;'></a>");
@@ -226,7 +231,7 @@ function AudioListLoad(itemList,sort){
 	  tdFirst.append(tdSpan).append(tdA);
 	  tr.append(tdFirst).append(tdSecond);
 	  //根据是否有误sort参数判断插入行的方式，以实现正反序效果
-	  if(sort!=null){
+	  if(sort){
 		  tbody.prepend(tr);  //前置插入行
 	  }else{
 		  tbody.append(tr);   //后置追加行

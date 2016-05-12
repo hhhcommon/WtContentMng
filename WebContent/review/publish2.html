@@ -7,15 +7,15 @@
         <title></title>
         <meta name="keywords" content="">
         <meta name="description" content="">
-        <link href="../resources/plugins/bootstrap3.3.4/bootstrap.min.css" rel="stylesheet">
-        <link href="../resources/plugins/css_others/font-awesome.min.css" rel="stylesheet">
-        <link href="../resources/plugins/css_others/custom.css" rel="stylesheet">
-        <link href="../resources/plugins/css_others/animate.min.css" rel="stylesheet">
-        <link href="../resources/plugins/css_others/datepicker3.css" rel="stylesheet">
-        <link href="../resources/css/style.min.css" rel="stylesheet">
-        <link href="../resources/plugins/jquery2.1.1/jqpagination.css" rel="stylesheet"/>
+        <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+        <!-- <link href="../resources/plugins/css_others/custom.css" rel="stylesheet"> -->
+        <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+        <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+        <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+        <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
         <link href="../resources/css/publish.css" rel="stylesheet">
-        <script src="../resources/plugins/jquery2.1.1/jquery-2.1.1.min.js"></script>
+        <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
@@ -26,8 +26,6 @@
 				getContentList(1,flowFlag);
 				//获得查询条件
 				getConditions();
-				//加载完列表后，页面右侧默认显示第一条节目详情内容
-				//console.log($(".actList .listBox"));
 				
 				//翻页
 				$('.pagination').jqPagination({
@@ -41,7 +39,7 @@
 						
 				//点击节目，获取详情及列表
 				$(".actList").on("click",".listBox",function(ev){
-					var url="http://localhost:908/CM/content/getContentInfo.do";
+					var url="http://"+serverIp+":908/CM/content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -51,10 +49,18 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$(".table"),ContentInfoLoad);
-					$(".actList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
-					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
+					$(".actList .listBox").children(".listCon").children("h3").css({"color":"#636363"});
+					$("div").remove(".clickBar");
+					$(this).children(".listCon").children("h3").css({"color":"#0077c7"}).end().end().append("<div class='clickBar'></div>");
 				});
-				  
+				
+				$(".actList").on("mouseenter",".listBox",function(ev){
+					$(".hoverBar").css({"top":($(".pubList").scrollTop()+$(this).offset().top-30)});
+				});
+				$(".actList").on("mouseleave",".listBox",function(ev){
+          $(".hoverBar").css({"top":"-70px"});
+        });
+				
         //复选框和排序号输入框获取焦点时，阻止向上冒泡触发li标签的click事件
         $(".actList").on("click","input",function(ev){
         	//阻止事件向上级冒泡
@@ -63,7 +69,7 @@
 		        
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://localhost:908/CM/content/updateContentStatus.do";
+					var url="http://"+serverIp+":908/CM/content/updateContentStatus.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -77,9 +83,9 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					//alert($(".catalogs option:selected").text());
-					//alert($(".source option:selected").text());
-					var url="http://localhost:908/CM/content/getContents.do";
+					alert($(".catalogs option:selected").text());
+					alert($(".source option:selected").text());
+					var url="http://"+serverIp+":908/CM/content/getContents.do";
 					var data={
 	                        UserId: "zhangsan", 
                         	ContentFlowFlag:flowFlag,
@@ -89,9 +95,9 @@
 	                        PageSize:"10"
 	                    };
 					/*
-					BeginContentPubTime:$("input[name='StartPubTime']").val(),
-                    EndContentPubTime:$("input[name='EndPubTime']").val(),
-					*/
+	          BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
+	          EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
+	          */
 					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 				});
 				//节目列表全选全不选
@@ -114,7 +120,7 @@
 						return;
 					}
 					$("input[type='checkBox'][name='all']").prop({"checked":null});
-					var url="http://localhost:908/CM/content/updateContentStatus.do";
+					var url="http://"+serverIp+":908/CM/content/updateContentStatus.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -124,22 +130,37 @@
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
 				});
-				/*
-				//单体列表正反排序
-				var flag=0;
-				$(".itemSort").bind("click",function(){
-					$(".table").html("");
-					console.log(itemList);
-					if(flag==0){
-						flag=getItemList(itemList,1);
-						flag=1;
-					}else{
-						flag=getItemList(itemList);
-						flag=0;
-					}
-					
+				
+				//专辑对应的单体列表播放控制
+				var audio=$("<audio></audio>")[0];
+				$(".table").on("click","span",function(){
+					if($(this).hasClass("fa-youtube-play")){
+						$.each($(".table span"), function(i,val){
+		          if($(val).hasClass("fa-pause")){
+		           $(val).removeClass("fa-pause").addClass("fa-youtube-play");
+		          }
+			      });
+			      $(this).removeClass("fa-youtube-play").addClass("fa-pause");
+			      audio.src=$(this).parent().parent("tr").attr("contentURI");
+		        audio.play();
+			    }else if($(this).hasClass("fa-pause")){
+			    	$(this).removeClass("fa-pause").addClass("fa-youtube-play");
+			    	audio.pause();
+			    } 
 				});
-				*/
+				
+				//专辑下单体资源排序
+				var sort=true;
+				$(".itemSort").on("click",function(){
+					if(sort){
+						AudioListLoad(subList,sort);
+						sort=false;
+					}else{
+						AudioListLoad(subList,sort);
+						sort=true;
+					}
+				});
+				
 			});
 		</script>
     </head>
@@ -150,48 +171,50 @@
                 <div class="allCheck">
                     <input type="checkBox" name="all"/>
                 </div>
-                <button type="button" opeType="revoke" class="btn" style="margin-right:300px">撤回</button>
+                <button type="button" opeType="revoke" class="btn" style="margin-right:325px">撤回</button>
                 
                 <label>栏目:</label>
-                    <select class="catalogs" name="column">                       
+                    <select class="catalogs" name="column">
+                    <option value="">不 限</option>                     
                     </select>&nbsp;&nbsp;&nbsp;
                 <label>来源:</label>
                     <select class="source" name="source">
                         <option value="">不 限</option>                   
                     </select>&nbsp;&nbsp;&nbsp;
-                    <div class="form-group cDate" id="data_5">
-                    <span>创建日期：</span>
-                    <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
-                        <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
-                        <!--<span class="input-group-addon">-</span>-->
-                        <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
-                    </div>
+                <!-- 
+                <div class="form-group cDate" id="data_5">
+                  <span>发布日期：</span>
+                  <div class="input-daterange input-group" id="datepicker" style="display:inline-block;vertical-align:top;margin-top:-2px;">
+                      <input type="text" class="input-sm form-control" name="StartPubTime" value="2016-03-21" />
+                      <input type="text" class="input-sm form-control" name="EndPubTime" value="2016-04-22" />
+                  </div>
                 </div>
-                <button type="button" class="btn selectBtn">查 询</button>
-                <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>  
-            </div> 
+                 -->
+                <button type="button" class="btn selectBtn">查 询</button><!-- 
+                <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>
+                 -->
+              </div> 
             <!--显示主区域-->
             <div class="mainShow">
                 <!--左侧列表 onselectstart="return false;"-->
                 <div class="pubList">
                 	<!-- 动态节目列表actList -->
-                	<div class="actList">
-                	</div>
+                	<div class="actList"></div>
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
                     <div class="toHid"></div>-->
-                     
-                    <div class="page">
-	                    <div class="gigantic pagination">
-									    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
-									    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
-									    <input type="text" readonly="readonly" />
-									    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
-									    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
-									</div>
-								</div>
+	                
                 </div>
+                <div class="page">
+                    <div class="gigantic pagination">
+                    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
+                    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
+                    <input type="text" readonly="readonly" />
+                    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
+                    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
+                    </div>
+                  </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">
                 	<div class="conBox" style="display:none;">
@@ -242,15 +265,17 @@
 				  	  </div>
 				  </div>	
         <!-- 全局js -->
-        <script src="../resources/plugins/bootstrap3.3.4/bootstrap.min.js"></script>
+        <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
         <!--以下3个Js支撑日期控件-->
-        <script src="../resources/plugins/bootstrap3.3.4/bootstrap-datepicker.js"></script>
+        <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+        <!-- 
         <script src="../resources/plugins/js_others/cropper.min.js"></script>
         <script src="../resources/plugins/js_others/form-advanced-demo.min.js"></script>
+         -->
         <!-- 自定义js -->
-        <script src="../resources/js/content.min(1).js"></script>
+        <script src="../resources/plugins/hplus/js/content.min(1).js"></script>
         <!-- 分页 -->
-        <script src="../resources/plugins/jquery2.1.1/jquery.jqpagination.js"></script>
+        <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script>
         <!--更多查询选项弹出框-->
         <div class="modal inmodal" id="searchMore" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-lg">

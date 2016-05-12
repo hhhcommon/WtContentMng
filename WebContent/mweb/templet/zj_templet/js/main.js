@@ -18,6 +18,43 @@ $(function(){
 			audio.play();
 		}
 	});
+	/*
+	var resultData={
+	  "ResultList": [
+	    {
+	      "ContentName": "杭州公交纵火案监控曝光 嫌犯瞬间变火球",
+	      "ContentPubTime": null,
+	      "ContentCTime": 1459456342000,
+	      "ContentSource": "喜马拉雅",
+	      "ContentURI": "http://audio.xmcdn.com/group14/M06/2D/FD/wKgDZFWKtc3CkdYjAAkkVrStxqE953.m4a",
+	      "ContentPersons": null,
+	      "ContentCatalogs": "时事要闻,资讯,社会新闻,民生话题,社会热点",
+	      "MediaType": "wt_MediaAsset",
+	      "ContentId": "6972f1f6f6ad49118144cb64d08cf3aa",
+	      "ContentDesc": "",
+	      "ContentImg": "http://fdfs.xmcdn.com/group4/M00/08/D5/wKgDtFMis6jBzfP4AAELuXQHSVw558_web_large.jpg",
+	      "ContentTimes": 74000
+	    },
+	    {
+	      "ContentName": "国务院印发促进市场公平竞争维护市场正常秩序若干意见",
+	      "ContentPubTime": null,
+	      "ContentCTime": 1459459971000,
+	      "ContentSource": "喜马拉雅",
+	      "ContentURI": "http://audio.xmcdn.com/group10/M04/4E/28/wKgDZ1WyWqOiIux6AAjPtoUA0w0001.m4a",
+	      "ContentPersons": null,
+	      "ContentCatalogs": "时事要闻,社会新闻,资讯,社会热点,民生话题",
+	      "MediaType": "wt_MediaAsset",
+	      "ContentId": "2a9b873577be4d07b21706a4fa1be9b6",
+	      "ContentDesc": "",
+	      "ContentImg": "http://fdfs.xmcdn.com/group4/M00/08/D5/wKgDtFMis6jBzfP4AAELuXQHSVw558_web_large.jpg",
+	      "ContentTimes": 71000
+	    }
+	  ],
+	  "ReturnType": "1001",
+	  "NextPage": true
+	}
+*/
+	
 	
 	function loadMore(resultData){
 		var actListLength=resultData.ResultList.length;
@@ -41,26 +78,30 @@ $(function(){
 	        $(".audioBox").append(liEle);
 	    }
 	}
-	//加载更多
-	$("button").on("click",function(){
-		$.ajax({
-	        type: "POST",
-	        url:"http://localhost:908/CM/content/getZJSubPage.do",
-	        dataType: "json",
-	        data:{Page:page,ContentId:$(".zjIntro").attr("contentId")},
-	        success: function(resultData) {
-	            if (resultData.ReturnType=="1001"){
-	            	loadMore(resultData);
-	            	if(resultData.NextPage=="true"){
-	            		page++;
-	            	}else{
-	            		$(".loadMore").text("全部加载完毕").off("click");
-	            	}
-	            }
-	        },
-	        error: function(jqXHR){  
-	           alert("发生错误" + jqXHR.status);
-	        }     
-	    });
-	});
+	
+	//添加滚动条事件
+	window.onscroll=function(){
+		//当滚动到最底部以上60像素时， 加载新内容  
+		if($(document).height() - $(this).scrollTop() - $(this).height()<60){
+			//加载新的页面
+			$.ajax({
+		        type: "POST",
+		        url:"http://www.wotingfm.com:908/CM/content/getZJSubPage.do",
+		        dataType: "json",
+		        data:{Page:page,ContentId:$(".zjIntro").attr("contentId")},
+		        success: function(resultData) {
+		            if (resultData.ReturnType=="1001"){
+		            	loadMore(resultData);
+		            	if(resultData.NextPage=="true"){
+		            		page++;
+		            	}
+		            }
+		        },
+		        error: function(jqXHR){  
+		           alert("发生错误" + jqXHR.status);
+		        }     
+		    });
+		}
+	}
+
 });
