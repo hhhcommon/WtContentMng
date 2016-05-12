@@ -22,6 +22,8 @@
   <script src="../resources/plugins/bootstrap3.3.4/bootstrap.min.js"></script>
   <script src="../resources/plugins/jquery2.1.1/jquery.jqpagination.js"></script><!-- 分页 -->
   <script src="../resources/plugins/bootstrap3.3.4/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/wtcm/pagination/CM_title.init.js"></script>
 
   <!-- 以下配置都是为支持form-advanced-demo.js的，但由于../resources/plugins/jquery2.1.1/jquery.nouislider.min.js有问题，失败了，以后再说
@@ -39,14 +41,60 @@
   <script src="../resources/plugins/bootstrap3.3.4/bootstrap-datepicker.js"></script>
   -->
 </head>
+<style>
+<!--
+/*模态窗口样式设置*/
+.my-mbody {
+  background-color: #F8FAFB;
+}
+.my-mdialog {
+  margin:80px auto;
+}
+/*表单区域*/
+.modal-body tr {
+  width:100%;
+}
+.modal-body tr .th {
+  margin-left:30px;
+  height:60px;
+  line-height:36px;
+  width:180px;
+  text-width:170;
+  padding-right:10px;
+  font-weight:nomal;
+  text-align:right;
+}
+.modal-body tr td input {
+  width:380px;
+}
+.splittr {
+  border-top:1px dashed #e5e5e5;
+  height:10px;
+}
+.my-mbody input {
+}
 
+/*操作按钮*/
+.my-btnOper {
+  margin-top:10px;
+  margin-left:450px;
+}
+.my-btnOper button {
+  height:28px;
+  line-height:28px;
+  padding:0px 12px;
+}
+
+
+-->
+</style>
 <body style="overflow:hidden;"><div style="height:100%">
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="pass" class="btn" style="margin-right:10px">添加</button>
   <button type="button" opeType="nopass" class="btn" style="margin-right:175px" disabled>删除</button>
   <div class="splite" style="left:300px"></div>
-  <button type="button" opeType="nopass" class="btn" style="margin-right:60px">配置信息</button>
+  <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
   <div class="splite" style="left:418px"></div>
   <div class="form-group cDate" id="data_5">
     <span>发布日期：</span>
@@ -80,20 +128,101 @@
 </div>
 
 <!--弹出内容：设置配置-->
-<div class="modal inmodal" id="searchMore" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+<div id="verCfg" class="modal inmodal" data-backdrop="static">
+  <div class="modal-dialog my-mdialog">
+    <div class="modal-content">
+      <div class="modal-header" style="padding-bottom:5px;">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" style="font-weight:bold;">版本配置信息</h4>
+        <div class="btn-group my-btnOper">
+          <button id="browserB" class="btn btn-primary" type="button">浏览</button>
+          <button id="updateB" class="btn btn-white" type="button">修改</button>
+        </div>
+      </div>
+      <div class="modal-body my-mbody">
+        <table>
+          <tr>
+            <td class="th">当前发布版本Apk名称</td>
+            <td><input type="text" class="form-control" id="pubFileName" placeholder="当前发布版本的名称" readonly></td>
+          </tr>
+          <tr>
+            <td class="th">当前发布版本的地址Url</td>
+            <td><input type="text" class="form-control" id="pubUrl" placeholder="当前发布版本的Url，下载地址就从此获得" readonly></td>
+          </tr>
+          <tr>
+            <td class="th">当前发布版本存储目录</td>
+            <td><input type="text" class="form-control" id="pubStorePath" placeholder="服务器端目录设置，默认为/opt/version/cur" readonly></td>
+          </tr>
+          <tr class="splittr"></tr>
+          <tr>
+            <td class="th">历史版本发布存储目录</td>
+            <td><input type="text" class="form-control" id="verGoodsStorePath" placeholder="服务器端目录设置，默认为/opt/version/his/+{版本序号}" readonly></td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary">保存</button>
+      </div>
+      <a href="/">测试</a>
+    </div>
+  </div>
 </div>
 
 </div></body>
 
 <script>
+var canBrowse=true;//是否允许浏览
+var oldVerCfgData=null;//从后台取到的配置数据
+
+//初始化页面
 $(function() {
   /*一、日期处理*/
   $("#data_5 .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
   //--设置当前月份
   $("input[name='StartPubTime']").val(getCurMonthFirstDay_format("yyyy-MM-dd"));
   $("input[name='EndPubTime']").val(getCurMonthLastDay_format("yyyy-MM-dd"));
-  /*调整左侧栏的进度条和上部分的结构？？？未实现*/
 
+  /*二、工具条按钮控制*/
+  $("button[opeType='verconfig']").on("click", function() {
+     loadVerCfgAndFill();//
+  });
+
+  //三、配置窗口处理
+  $("#browserB").on("click", function() {//浏览
+    alert(canBrowse);
+    if (!canBrowse) return;
+    $(".my-mbody").find("input").each(function() {
+      $(this).attr("readonly","true");
+    });
+  });
+  $("#updateB").on("click", function() {
+    $(".my-mbody").find("input").each(function() {
+      $(this).removeAttr("readonly");
+    });
+  });
 });
+
+//方法
+//装载配置数据，并进行填充显示
+function loadVerCfgAndFill() {
+  var rootPath=getRootPath();
+  $.ajax({type:"post", async:true, url:rootPath+'version/getVerCfg.do', dataType:"json",
+    success: function(retData) {
+      if (retData) {
+        $("#pubFileName").val(retData.pubFileName?retData.pubFileName:"");
+        $("#pubUrl").val(retData.pubUrl?retData.pubUrl:"");
+        $("#pubStorePath").val(retData.pubStorePath?retData.pubStorePath:"");
+        $("#verGoodsStorePath").val(retData.verGoodsStorePath?retData.verGoodsStorePath:"");
+        oldVerCfgData=retData;
+      }
+      canBrowse=true;
+      $("#browserB").onClick();
+    },
+    error: function(jqXHR){     
+      alert("发生错误：" + jqXHR.status);
+    }    
+  });
+}
 </script>
 </html>
