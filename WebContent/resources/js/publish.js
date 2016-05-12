@@ -146,6 +146,8 @@ function ContentListLoad(actList){
 	        }
 	        	$(".actList").append(listDiv);
 	    }
+	    var hoverBar=$("<span class='hoverBar'></span>");
+	    $(".actList").append(hoverBar);
 	    //默认节目列表的第一条显示详情
 	    $(".listBox").first().trigger("click");
     }

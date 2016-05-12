@@ -39,8 +39,9 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$("tbody"),ContentInfoLoad);
-					$(".actList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
-					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
+					$(".actList .listBox").children(".listCon").children("h3").css({"color":"#636363"});
+			          $("div").remove(".clickBar");
+			          $(this).children(".listCon").children("h3").css({"color":"#0077c7"}).end().end().append("<div class='clickBar'></div>");
 				});
 				
 				//查询  请求后台数据

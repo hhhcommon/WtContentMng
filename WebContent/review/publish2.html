@@ -49,15 +49,18 @@
 				            MediaType:$(this).attr("actType")
 				        };
 					commonAjax(url,data,$(".table"),ContentInfoLoad);
-					$(".actList .listBox").css({"border-left":"none"}).children(".listCon").children("h3").css({"color":"#636363"});
-					$(this).css({"border-left":"4px solid #0077c7"}).children(".listCon").children("h3").css({"color":"#0077c7"});
+					$(".actList .listBox").children(".listCon").children("h3").css({"color":"#636363"});
+					$("div").remove(".clickBar");
+					$(this).children(".listCon").children("h3").css({"color":"#0077c7"}).end().end().append("<div class='clickBar'></div>");
 				});
-				//鼠标经过列表时的效果
-				$(".actList").on("hover",".listBox",function(ev){
-					$(this).children(".listCon").children("h3").css({"color":"#0077c7"});
-					alert($(this).offset().top);
-					$(".actList .hoverBar").css({"display":"block","top":$(this).offset().top});
-				}
+				
+				$(".actList").on("mouseenter",".listBox",function(ev){
+					$(".hoverBar").css({"top":($(".pubList").scrollTop()+$(this).offset().top-30)});
+				});
+				$(".actList").on("mouseleave",".listBox",function(ev){
+          $(".hoverBar").css({"top":"-70px"});
+        });
+				
         //复选框和排序号输入框获取焦点时，阻止向上冒泡触发li标签的click事件
         $(".actList").on("click","input",function(ev){
         	//阻止事件向上级冒泡
@@ -196,23 +199,22 @@
                 <!--左侧列表 onselectstart="return false;"-->
                 <div class="pubList">
                 	<!-- 动态节目列表actList -->
-                	<div class="actList">
-                	  <span class="hoverBar"></span>
-                	</div>
+                	<div class="actList"></div>
                     <!--左右区块拖动条
                     <div class="drag" onselectstart="return false;"></div>-->
                     <!--使右区块隐藏块
                     <div class="toHid"></div>-->
-	                <div class="page">
-	                  <div class="gigantic pagination">
-								    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
-								    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
-								    <input type="text" readonly="readonly" />
-								    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
-								    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
-										</div>
-									</div>
+	                
                 </div>
+                <div class="page">
+                    <div class="gigantic pagination">
+                    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
+                    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
+                    <input type="text" readonly="readonly" />
+                    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
+                    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
+                    </div>
+                  </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">
                 	<div class="conBox" style="display:none;">

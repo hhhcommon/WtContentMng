@@ -66,7 +66,7 @@ li,a,input{
 }
 
 .mainShow{
-	height:calc(100% - 30px);
+	height:calc(100% - 63px);
 	width:100%;
 	position:relative;
 	overflow:hidden;
@@ -79,14 +79,19 @@ li,a,input{
 	top:0;
 	width:420px;
 	height:100%;
+	padding-bottom:40px;
 	border-right:1px solid #ccc;
 	overflow-y:auto;
-	padding-bottom:30px;
 }
-.pubList .page{
-	width:360px;
+.mainShow .page{
+	width:419px;
 	height:40px;
-	margin:10px auto;
+	position:fixed;
+	bottom:34px;
+	left:0;
+	padding:0 20px 0 28px;
+	background-color:#f3f3f4;
+	border-top:1px solid #ccc;
 }
 
 /* 鎷栧姩杈规潯锛屽乏鍙虫媺澶э紝缂╁皬
@@ -115,14 +120,23 @@ li,a,input{
 .pubList .actList{
 	position:relative;
 }
-.pubList .actList .hoverBar{
-	width:2px;
-	height:70px;
-	color:#0077c7;
+.clickBar{
 	position:absolute;
-	top:0;
-	left:0;
-	display:none;
+  top:0;
+  left:0;
+	width:5px;
+	height:70px;
+	background-color:#0077c7;
+	border-radius:2px;
+}
+.hoverBar{
+  position:absolute;
+  top:0;
+  left:0;
+  width:5px;
+  height:70px;
+  background-color:#0077c7;
+  border-radius:2px;
 }
 .listBox{
 	width:100%;
@@ -134,6 +148,9 @@ li,a,input{
 	cursor:pointer;
 }
 
+.listBox:hover{
+	background-color:#eff3f6;
+}
 .listBox .listImg{
 	height:100%;
 	width:15%;
@@ -214,10 +231,11 @@ li,a,input{
 .pubList .listBox .sortUpdate .sortNum{
 	width:60px;
 	height:20px;
-	background-color:#a0a1a3;
+	background-color:#f3f3f4;
 	color:black;
 	text-align:center;
 	border:none;
+	border-radius:4px;
 	outline:0px;
 }
 .pubList .listBox .sortUpdate .sortUpdateBtn{
