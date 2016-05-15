@@ -7,24 +7,26 @@
   <meta name="description" content="实现我听Android平台的Apk文档发布和简单的版本说明功能">
 
   <title>Apk版本管理</title>
-  <link href="../resources/plugins/bootstrap3.3.4/bootstrap.min.css" rel="stylesheet">
-  <link href="../resources/plugins/css_others/font-awesome.min.css" rel="stylesheet">
-  <link href="../resources/plugins/css_others/custom.css" rel="stylesheet">
-  <link href="../resources/plugins/css_others/animate.min.css" rel="stylesheet">
-  <link href="../resources/plugins/css_others/datepicker3.css" rel="stylesheet">
-  <link href="../resources/plugins/jquery2.1.1/jqpagination.css" rel="stylesheet"/>
-  <link href="../resources/css/style.min(1).css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
   <link href="../resources/wtcm/layout/CM_toolbar.css" rel="stylesheet">
   <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
 
   <script src="../resources/js/common.utils.js"></script>
-  <script src="../resources/plugins/jquery2.1.1/jquery-2.1.1.min.js"></script>
-  <script src="../resources/plugins/bootstrap3.3.4/bootstrap.min.js"></script>
-  <script src="../resources/plugins/jquery2.1.1/jquery.jqpagination.js"></script><!-- 分页 -->
-  <script src="../resources/plugins/bootstrap3.3.4/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="http://www.baidu.com/js/jquery-2.1.1.min.js"></script>
+
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script><!-- 分页 -->
+  <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/wtcm/pagination/CM_title.init.js"></script>
+  <script src="../resources/wtcm/pagination/CM_title.init.do"></script>
 
   <!-- 以下配置都是为支持form-advanced-demo.js的，但由于../resources/plugins/jquery2.1.1/jquery.nouislider.min.js有问题，失败了，以后再说
   <script src="../resources/plugins/jquery2.1.1/jquery.knob.js"></script>
@@ -50,7 +52,13 @@
 .my-mdialog {
   margin:80px auto;
 }
-/*表单区域*/
+h4 {
+  font-weight:bold;
+  padding-left:10px;
+  text-align:left;
+}
+
+/* 配置：表单区域 */
 .modal-body tr {
   width:100%;
 }
@@ -58,6 +66,9 @@
   margin-left:30px;
   height:60px;
   line-height:36px;
+  font-size:14px;
+  font-weight:bold;
+  font-family:"open sans","Helvetica Neue",Helvetica,Arial,sans-serif;
   width:180px;
   text-width:170;
   padding-right:10px;
@@ -84,8 +95,6 @@
   line-height:28px;
   padding:0px 12px;
 }
-
-
 -->
 </style>
 <body style="overflow:hidden;"><div style="height:100%">
@@ -132,8 +141,8 @@
   <div class="modal-dialog my-mdialog">
     <div class="modal-content">
       <div class="modal-header" style="padding-bottom:5px;">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" style="font-weight:bold;">版本配置信息</h4>
+        <button type="button" class="close" id="closeB" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">版本配置信息</h4>
         <div class="btn-group my-btnOper">
           <button id="browserB" class="btn btn-primary" type="button">浏览</button>
           <button id="updateB" class="btn btn-white" type="button">修改</button>
@@ -162,9 +171,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-        <button type="button" class="btn btn-primary">保存</button>
+        <button id="saveCfgB" type="button" class="btn btn-primary">保存</button>
       </div>
-      <a href="/">测试</a>
     </div>
   </div>
 </div>
@@ -174,6 +182,7 @@
 <script>
 var canBrowse=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
+var rootPath=getRootPath();
 
 //初始化页面
 $(function() {
@@ -185,12 +194,11 @@ $(function() {
 
   /*二、工具条按钮控制*/
   $("button[opeType='verconfig']").on("click", function() {
-     loadVerCfgAndFill();//
+     loadVerCfgAndFill();
   });
 
   //三、配置窗口处理
   $("#browserB").on("click", function() {//浏览
-    alert(canBrowse);
     if (!canBrowse) return;
     $(".my-mbody").find("input").each(function() {
       $(this).attr("readonly","true");
@@ -201,28 +209,48 @@ $(function() {
       $(this).removeAttr("readonly");
     });
   });
+  $("#saveCfgB").on("click", function() {
+    saveCfg();
+  });
 });
 
-//方法
+//===================方法
+//一、有关版本配置的方法
 //装载配置数据，并进行填充显示
 function loadVerCfgAndFill() {
-  var rootPath=getRootPath();
-  $.ajax({type:"post", async:true, url:rootPath+'version/getVerCfg.do', dataType:"json",
-    success: function(retData) {
-      if (retData) {
-        $("#pubFileName").val(retData.pubFileName?retData.pubFileName:"");
-        $("#pubUrl").val(retData.pubUrl?retData.pubUrl:"");
-        $("#pubStorePath").val(retData.pubStorePath?retData.pubStorePath:"");
-        $("#verGoodsStorePath").val(retData.verGoodsStorePath?retData.verGoodsStorePath:"");
-        oldVerCfgData=retData;
-      }
+  $.ajax({type:"post", async:true, url:rootPath+'/version/getVerCfg.do', dataType:"json",
+    success: function(jsonData) {
+      if (jsonData) {
+        if (jsonData.ReturnType=='1001') {
+          var retData=jsonData.VerCfgInfo;
+          $("#pubFileName").val(retData.pubFileName?retData.pubFileName:"");
+          $("#pubUrl").val(retData.pubUrl?retData.pubUrl:"");
+          $("#pubStorePath").val(retData.pubStorePath?retData.pubStorePath:"");
+          $("#verGoodsStorePath").val(retData.verGoodsStorePath?retData.verGoodsStorePath:"");
+          oldVerCfgData=retData;
+        } else {
+          alert("发生错误：" + jsonData.Message);
+        }
+      } 
       canBrowse=true;
-      $("#browserB").onClick();
+      $("#browserB").click();
     },
-    error: function(jqXHR){     
+    error: function(jqXHR){
       alert("发生错误：" + jqXHR.status);
-    }    
+      $("#closeB").click();
+    }
   });
+}
+//保存
+function saveCfg() {
+  //检查数据合法性：目前不进行检查
+  //获得新的数据
+  var 
+}
+
+//二、有关版本的方法
+function dealFun(data) {
+	successData=data;
 }
 </script>
 </html>
