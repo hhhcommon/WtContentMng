@@ -7,7 +7,7 @@
   <!-- 配置编码格式，与eclpse的IDE环境编码格式匹配 -->
   <!-- D:\workIDE\projects\WtContentMng || D:\WBWorkDir\WtContentMng  || D:\workIDE\work\WtContentMng -->
   <properties>
-    <projectDir>D:\workIDE\work\WtContentMng</projectDir>
+    <projectDir>D:\workIDE\projects\WtContentMng</projectDir>
   </properties>
 
   <parent>
@@ -48,6 +48,12 @@
       <version>0.1.0.8</version>
       <scope>system</scope>
       <systemPath>${projectDir}/lib/BasicPlat-0.1.0.8.jar</systemPath>
+    </dependency>
+    <!-- HTML解析包 -->
+    <dependency>
+      <groupId>org.jsoup</groupId>
+      <artifactId>jsoup</artifactId>
+      <version>1.7.3</version>
     </dependency>
   </dependencies>
   <build>

@@ -16,7 +16,6 @@ import com.woting.content.common.util.RequestUtils;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
-import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
@@ -37,7 +36,7 @@ public class BroadcastController {
     @ResponseBody
     public Map<String,Object> addBroadcast(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
-        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         bcService.add(m);
         map.put("returnType","1001");
         return map;
@@ -46,7 +45,7 @@ public class BroadcastController {
     @ResponseBody
     public Map<String,Object> updateBroadcast(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
-        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         bcService.update(m);
         map.put("returnType","1001");
         return map;
@@ -56,7 +55,7 @@ public class BroadcastController {
     @ResponseBody
     public Page<Map<String,Object>> loadBc(HttpServletRequest request) {
         Page<Map<String,Object>> _p=new Page<Map<String, Object>>();
-        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         _p = bcService.getViewList(m);
         
         Collection<Map<String,Object>> retResult=_p.getResult();
@@ -98,7 +97,7 @@ public class BroadcastController {
     @ResponseBody
     public Map<String,Object> delBc(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
-        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         bcService.del(m.get("ids")+"");
         return map;
     }
@@ -140,7 +139,7 @@ public class BroadcastController {
     @ResponseBody
     public Map<String,Object> getInfo(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
-        Map<String, Object> m=RequestUtils.getDataFromRequestParam(request);
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         m=bcService.getInfo(m.get("bcId")+"");
         if (m==null) {
             map.put("returnType","1002");

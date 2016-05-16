@@ -9,7 +9,6 @@
   width:100%;
   position:absolute;
   overflow:auto;
-  border:1px solid red;
 }
 
 /*二、左侧列表*/
@@ -19,8 +18,8 @@
   top:0;
   width:420px;
   height:100%;
-  border-right:10px solid blue;
-  overflow:auto;
+  border-right:1px solid #ccc;
+  overflow:hidden;
   padding-bottom:30px;
 }
 .leftlistArea .cntList {/*列表内容样式*/
@@ -28,7 +27,14 @@
   left:0;
   top:0;
   width:100%;
-  height:calc(100% - 40px);
-  border:2px solid blue;
+  height:calc(100% - 43px);
+  border:1px solid blue;
   overflow:auto;
+}
+.page {/*翻页控制*/
+  position:absolute;
+  left:0;
+  bottom:0;
+  height:43px;
+  width:100%;
 }
