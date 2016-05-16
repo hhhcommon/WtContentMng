@@ -1,10 +1,10 @@
 var contentCount=0;
-var serverIp="localhost";
+var rootPath=getRootPath();
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
         type: "POST",    
-        url:"http://"+serverIp+":908/CM/content/getConditions.do",
+        url:rootPath+"content/getConditions.do",
         dataType: "json",
         data:{UserId: "zhangsan"},
         success: function(ConditionsList) {
@@ -28,7 +28,7 @@ function commonAjax(url,data,obj,callback){
         url:url,
         dataType: "json",
         data:data,
-        beforeSend:function(){obj.html("<div style='text-align:center;height:500px;line-height:300px;'>数据加载中...</div>")}, 
+        beforeSend:function(){obj.html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
         success: function(ContentList) {
             if (ContentList.ReturnType=="1001") {
             	obj.html(""); //再重新创建新的数据集时，先清空之前的
@@ -39,7 +39,7 @@ function commonAjax(url,data,obj,callback){
             		callback(ContentList);
             	}
             } else {
-            	obj.html("<div style='text-align:center;height:300px;line-height:300px;'>"+ContentList.Message+"</div>");
+            	obj.html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.Message+"</div>");
             }  
         },
         error: function(jqXHR){  
@@ -48,14 +48,28 @@ function commonAjax(url,data,obj,callback){
     });
 }	
 //从后台请求节目列表数据
-function getContentList(page,flowFlag){
-	var url="http://"+serverIp+":908/CM/content/getContents.do";
-	var data={
-            UserId: "zhangsan", 
-            ContentFlowFlag:flowFlag,
-            Page:page,
-            PageSize:"10"
-        };
+function getContentList(current_page,flowFlag,isSelect){
+	var url=rootPath+"content/getContents.do";
+	var data={};
+	//带专门查询条件的查询
+	if(isSelect){
+		data={
+                UserId: "zhangsan", 
+            	ContentFlowFlag:flowFlag,
+            	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
+            	SourceId:$(".source option:selected").attr("sourceId"),
+                Page:current_page,
+                PageSize:"10"
+            };
+	}else{
+		//基础的按状态查询
+		data={
+	            UserId: "zhangsan", 
+	            ContentFlowFlag:flowFlag,
+	            Page:current_page,
+	            PageSize:"10"
+	        };
+	}
 	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 }
 //创建查询条件DOM元素
@@ -81,6 +95,10 @@ function ConditionsListLoad(ConditionsList){
 //创建节目列表DOM树
 function ContentListLoad(actList){
 	contentCount=actList.ContentCount;
+	contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
+	$(".totalPage").text(contentCount);
+	//翻页
+    //$('.pagination').jqPagination({max_page  : contentCount});
     var actListLength=actList.ResultList.length;
     if(actListLength==0){
     	$(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
@@ -150,6 +168,7 @@ function ContentListLoad(actList){
 	    $(".actList").append(hoverBar);
 	    //默认节目列表的第一条显示详情
 	    $(".listBox").first().trigger("click");
+	    
     }
     //$(".pubList").append(actListDiv);
     //创建分页节点

@@ -16,6 +16,7 @@
         <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
         <link href="../resources/css/publish.css" rel="stylesheet">
         <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+        <script src="../resources/js/context.utils.js"></script>
         <script src="../resources/js/publish.js"></script>
         <script>
       $(function(){
@@ -29,7 +30,7 @@
         
         //点击节目，获取详情及列表
         $(".actList").on("click",".listBox",function(ev){
-          var url="http://"+serverIp+":908/CM/content/getContentInfo.do";
+        	var url=rootPath+"content/getContentInfo.do";
           var data={
                     UserId: "zhangsan", 
                     ContentFlowFlag:flowFlag,
@@ -46,7 +47,7 @@
         
         //查询  请求后台数据
         $(".selectBtn").on("click",function(){
-          var url="http://"+serverIp+":908/CM/content/getContents.do";
+          var url=rootPath+"content/getContents.do";
           var data={
                           UserId: "zhangsan", 
                           ContentFlowFlag:flowFlag,
@@ -127,6 +128,7 @@
             sort=true;
           }
         });
+        
         //翻页
         $('.pagination').jqPagination({
           //link_string : '/?page={page_number}',

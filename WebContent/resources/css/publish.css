@@ -274,6 +274,7 @@ li,a,input{
 	float:left;
 	width:98px;
 	height:98px;
+	border:1px solid #f3f3f4;
 }
 .pubDetail .conBox .conTitle .titleImg img{
 	width:100%;
@@ -370,7 +371,7 @@ li,a,input{
 	
 .pubDetail .conBox .conTable{
 	width:100%;
-	height:400px;
+	height:320px;
 	overflow-y:auto;
 }
 

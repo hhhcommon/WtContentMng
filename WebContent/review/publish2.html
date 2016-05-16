@@ -13,33 +13,48 @@
         <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
         <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
         <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-        <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
+        <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
         <link href="../resources/css/publish.css" rel="stylesheet">
         <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+        <script src="../resources/js/context.utils.js"></script>
         <script src="../resources/js/publish.js"></script>
         <script>
 			$(function(){
 				var flowFlag="2";//节目审核状态
-				var pages=1;
+				var current_page=1;
+				isSelect=false;
 				
 				//首次请求加载节目列表
 				getContentList(1,flowFlag);
 				//获得查询条件
 				getConditions();
-				
-				//翻页
-				$('.pagination').jqPagination({
-					//link_string	: '/?page={page_number}',
-					max_page	: 600,
-					paged		: function(page) {
-						//翻页时的请求
-						getContentList(page,flowFlag);
+			  //翻页
+				$(".pagination").on("click","span",function(){
+					switch ($(this).attr("data-action")) {
+			          case 'previous':
+			        	  current_page--;
+			        	  $(".toPage").val("");
+			            break;
+			          case 'next':
+			        	  current_page++;
+			        	  $(".toPage").val("");
+			            break;
+			          case 'toPage':
+			        	  current_page = $(".toPage").val();
+			            break;
+			          default:
+			        }
+					$(".currentPage").text(current_page);
+					if(isSelect){
+						getContentList(current_page,flowFlag,isSelect);
+					}else{
+						getContentList(current_page,flowFlag);
 					}
+	        
 				});
-						
 				//点击节目，获取详情及列表
 				$(".actList").on("click",".listBox",function(ev){
-					var url="http://"+serverIp+":908/CM/content/getContentInfo.do";
+					var url=rootPath+"content/getContentInfo.do";
 					var data={
 				            UserId: "zhangsan", 
 				            ContentFlowFlag:flowFlag,
@@ -69,7 +84,7 @@
 		        
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
-					var url="http://"+serverIp+":908/CM/content/updateContentStatus.do";
+					var url=rootPath+"content/updateContentStatus.do";
 					var data={
 	                        UserId: "zhangsan", 
 	                        ContentFlowFlag:flowFlag,
@@ -83,22 +98,11 @@
 				});
 				//查询  请求后台数据
 				$(".selectBtn").on("click",function(){
-					alert($(".catalogs option:selected").text());
-					alert($(".source option:selected").text());
-					var url="http://"+serverIp+":908/CM/content/getContents.do";
-					var data={
-	                        UserId: "zhangsan", 
-                        	ContentFlowFlag:flowFlag,
-                        	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
-                        	SourceId:$(".source option:selected").attr("sourceId"),
-	                        Page:"1",
-	                        PageSize:"10"
-	                    };
-					/*
-	          BeginContentPubTime:$("input[name='StartPubTime']").val()+" 00:00:00",
-	          EndContentPubTime:$("input[name='EndPubTime']").val()+" 23:59:59",
-	          */
-					commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
+					isSelect=true;
+					current_page=1;
+					$(".toPage").val("");
+					$(".currentPage").text(current_page);
+					getContentList(current_page,flowFlag,isSelect);
 				});
 				//节目列表全选全不选
 				$("input[name='all']").on('click',function(){
@@ -208,13 +212,12 @@
                 </div>
                 <div class="page">
                     <div class="gigantic pagination">
-                    <a href="javascript:;" class="first" data-action="first">&laquo;</a>
-                    <a href="javascript:;" class="previous" data-action="previous">&lsaquo;</a>
-                    <input type="text" readonly="readonly" />
-                    <a href="javascript:;" class="next" data-action="next">&rsaquo;</a>
-                    <a href="javascript:;" class="last" data-action="last">&raquo;</a>
-                    </div>
+                    <span class="currentPage">1</span><span style="width:5px;color:black">/</span><span class="totalPage">500</span>
+                    <span class="previous" data-action="previous">上一页</span>
+                    <span class="next" data-action="next">下一页</span>
+                    <span class="jump" data-action="toPage">跳至</span><input type="text" class="toPage" value="" />
                   </div>
+                </div>
                 <!--右侧详情-->
                 <div class="pubDetail" onselectstart="return false;">
                 	<div class="conBox" style="display:none;">
@@ -275,7 +278,7 @@
         <!-- 自定义js -->
         <script src="../resources/plugins/hplus/js/content.min(1).js"></script>
         <!-- 分页 -->
-        <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script>
+        <!-- <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script> -->
         <!--更多查询选项弹出框-->
         <div class="modal inmodal" id="searchMore" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-lg">
