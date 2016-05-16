@@ -136,7 +136,7 @@ $(function(){
 	//请求推荐资源列表
 	var searchStr=$(".palyCtrlBox").children("h4").text();
 	$.jsonp({
-        url: "http://192.168.1.13:808/wt/searchByText.do",
+        url: "http://www.wotingfm.com:808/wt/searchByText.do",
         data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0"},
         success: function(resultData) {
         	alert("成功");
