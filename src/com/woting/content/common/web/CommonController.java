@@ -70,7 +70,7 @@ public class CommonController {
         m.remove("RemoteUrl");
         Connection conn=Jsoup.connect(remoteUrl);
         for (String key: m.keySet()) {
-            conn.data(key, m.get(key)+"");
+            if (m.get(key)!=null) conn.data(key, m.get(key)+"");
         }
         Document doc=conn.timeout(5000).ignoreContentType(true).get();
 
