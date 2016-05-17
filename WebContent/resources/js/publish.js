@@ -1,5 +1,7 @@
 var contentCount=0;
 var rootPath=getRootPath();
+var current_page=1;
+var isSelect=false;
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
@@ -257,5 +259,47 @@ function AudioListLoad(itemList,sort){
 	  }
     }
     $(".table").append(tbody);
+}
+function fy(event){
+	var flowFlag=event.data.flowFlag;
+	switch (event.target.getAttribute("data-action")) {
+      case 'previous':
+    	  current_page--;
+    	  $(".toPage").val("");
+        break;
+      case 'next':
+    	  current_page++;
+    	  $(".toPage").val("");
+    	  
+        break;
+      case 'toPage':
+    	  current_page = $(".toPage").val();
+        break;
+      default:
+    }
+	//第一页或最后一页，置灰样式并使链接无效
+	if (current_page < 1 || current_page > contentCount) {
+		current_page=1;
+		return false;
+	}
+	if (current_page > contentCount) {
+		current_page=contentCount;
+		return false;
+	}
+	$(".page").find("span").removeClass("disabled");
+	if (current_page == 1) {
+		$(".previous").addClass('disabled');
+	}
+	if (current_page == contentCount) {
+		$(".next").addClass('disabled');
+	}
+	
+	//当前页
+	$(".currentPage").text(current_page);
+	if(isSelect){
+		getContentList(current_page,flowFlag,isSelect);
+	}else{
+		getContentList(current_page,flowFlag);
+	}
 }
 
