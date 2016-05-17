@@ -125,12 +125,14 @@ function ContentListLoad(actList){
 	        conDiv=$("<div class='listCon'>");
 	        conH=$("<h3></h3>");
 	        conP1=$("<p class='secTitle'></p>");
-	        conP1.text(actList.ResultList[i].ContentDesc);
+	        conP1.html((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""));
 	        conP2=$("<p class='other'></p>");
 	        conSpan1=$("<span></span>");
 	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
 	        conSpan2=$("<span></span>");
-	        conSpan2.text(actList.ResultList[i].ContentCTime);
+	        //alert(formatDate(new Date(actList.ResultList[i].ContentCTime)));
+	        
+	        conSpan2.text(formatDate(new Date(actList.ResultList[i].ContentCTime)));
 	        
 	        checkDiv.append(checkInput);
 	        imgDiv.append(thumbImg);
@@ -220,9 +222,9 @@ function ContentInfoLoad(conList){
      }
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
-     $(".vjName").text(conList.ContentDetail.ContentPersons);
-     $(".actDesn").text(conList.ContentDetail.ContentDesc);
-     $(".cloumn").text(conList.ContentDetail.ContentCatalogs);
+     $(".vjName").html((conList.ContentDetail.ContentPersons==null)?"猜猜我是谁":conList.ContentDetail.ContentPersons);
+     $(".actDesn").html((conList.ContentDetail.ContentDesc).replace(/\<br \/\>/g, ""));
+     $(".cloumn").html(conList.ContentDetail.ContentCatalogs);
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
@@ -273,7 +275,14 @@ function fy(event){
     	  
         break;
       case 'toPage':
+    	//跳至进行输入合理数字范围检测
+    	  var reg = new RegExp("^[0-9]*$");
+    	  if(!reg.test($(".toPage").val()) || $(".toPage").val()<1 || $(".toPage").val() > contentCount){  
+    		  alert("请输入有效页码！");
+    	        return;
+    	    }
     	  current_page = $(".toPage").val();
+    	  
         break;
       default:
     }
@@ -301,5 +310,16 @@ function fy(event){
 	}else{
 		getContentList(current_page,flowFlag);
 	}
+}
+
+//时间戳转日期
+function   formatDate(now)   {     
+    var   year=now.getYear();     
+    var   month=now.getMonth()+1;     
+    var   date=now.getDate();     
+    var   hour=now.getHours();     
+    var   minute=now.getMinutes();     
+    var   second=now.getSeconds();     
+    return   year+"年"+month+"月"+date+"日 ";     
 }
 
