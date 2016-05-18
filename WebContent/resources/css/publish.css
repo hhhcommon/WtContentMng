@@ -1,4 +1,7 @@
 @charset "utf-8";
+li,a,input{
+	outline:0;
+}
 /*鏈〉澶存煡璇㈠尯绛涢�夊尯*/
 .operate{
 	height:30px;
@@ -63,7 +66,7 @@
 }
 
 .mainShow{
-	height:calc(100% - 30px);
+	height:calc(100% - 63px);
 	width:100%;
 	position:relative;
 	overflow:hidden;
@@ -76,15 +79,19 @@
 	top:0;
 	width:420px;
 	height:100%;
-	/*min-width:360px;*/
+	padding-bottom:40px;
 	border-right:1px solid #ccc;
 	overflow-y:auto;
-	padding-bottom:30px;
 }
-.pubList .page{
-	width:360px;
+.mainShow .page{
+	width:419px;
 	height:40px;
-	margin:10px auto;
+	position:fixed;
+	bottom:34px;
+	left:0;
+	padding:0 80px 0 28px;
+	background-color:#f3f3f4;
+	border-top:1px solid #ccc;
 }
 
 /* 鎷栧姩杈规潯锛屽乏鍙虫媺澶э紝缂╁皬
@@ -110,7 +117,27 @@
 	right:-10px;
 }
 */
-
+.pubList .actList{
+	position:relative;
+}
+.clickBar{
+	position:absolute;
+  top:0;
+  left:0;
+	width:4px;
+	height:70px;
+	background-color:#0077c7;
+	border-radius:2px;
+}
+.hoverBar{
+  position:absolute;
+  top:0;
+  left:0;
+  width:4px;
+  height:70px;
+  background-color:#0077c7;
+  border-radius:2px;
+}
 .listBox{
 	width:100%;
 	height:70px;
@@ -121,6 +148,9 @@
 	cursor:pointer;
 }
 
+.listBox:hover{
+	background-color:#eff3f6;
+}
 .listBox .listImg{
 	height:100%;
 	width:15%;
@@ -178,14 +208,14 @@
 	-webkit-transform: scale(0.9);
 }
 .listBox .secTitle{
+	font-size:12px;
 	color:#ccc;
-	font-size:10px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 .listBox .other{
-	font-size:8px;
+	font-size:12px;
 	color:#3871a6;
 }
 .listBox .other span{
@@ -201,11 +231,12 @@
 .pubList .listBox .sortUpdate .sortNum{
 	width:60px;
 	height:20px;
-	background-color:#a0a1a3;
+	background-color:#f3f3f4;
 	color:black;
 	text-align:center;
 	border:none;
-	outline:0;
+	border-radius:4px;
+	outline:0px;
 }
 .pubList .listBox .sortUpdate .sortUpdateBtn{
 	height:20px;
@@ -232,17 +263,19 @@
 	/*z-index:-2; z-index的取值会影响滚动条的使用，overflow:auto时，只显示滚动条，但滚不动*/
 }
 .pubDetail .conBox{
-	padding:0 30px 0 40px;
+	padding:25px 30px 10px 40px;
+	height:100%;
 }
 .pubDetail .conBox .conTitle{
-	padding:25px 0;
 	position:relative;
+	overflow:hidden;
 }
 
 .pubDetail .conBox .conTitle .titleImg{
 	float:left;
 	width:98px;
 	height:98px;
+	border:1px solid #f3f3f4;
 }
 .pubDetail .conBox .conTitle .titleImg img{
 	width:100%;
@@ -282,7 +315,7 @@
 }
 
 .pubDetail .conBox .conTitle dl{
-	font-size:10px;
+	font-size:12px;
 	color:#343434;
   line-height:1.6em;
   padding-top:10px;
@@ -292,6 +325,7 @@
 	padding-right:8px;
 	clear:left;
 	color:#767676;
+	clear:both;
 }
 .pubDetail .conBox .conTitle dl dt dd{
 	float:left;
@@ -302,7 +336,7 @@
 	position:relative;
 }
 .pubDetail .conBox .conPlay span{
-	display: inline-block;
+	  display: inline-block;
     width: 0;
     height: 0;
     vertical-align: middle;
@@ -316,12 +350,11 @@
 }
 .pubDetail .conBox .itemSortBox{
 	clear:both;
-	padding:10px 0;
+	padding:25px 0 10px;
 	font-size:14px;
 	color:#343434;
 	font-weight: bold;
 	border-bottom:1px solid #ccc;
-	padding-top:30px;
 }
 .pubDetail .conBox .itemSortBox .itemSort{
 	display:inline-block;
@@ -339,7 +372,8 @@
 	
 .pubDetail .conBox .conTable{
 	width:100%;
-	height:400px;
+	height:auto;
+  padding-bottom:30px;
 	overflow-y:auto;
 }
 
