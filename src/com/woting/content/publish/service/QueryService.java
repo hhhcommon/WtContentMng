@@ -429,7 +429,7 @@ public class QueryService {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Map<String, Object> map = new HashMap<String, Object>();
-		String sql = "update wt_ChannelAsset set flowFlag = ? where id = ?";
+		String sql = "update wt_ChannelAsset set flowFlag = ?,pubTime= ? where id = ?";
 		id = id.replaceAll("%2C", ",");
 		id = id.substring(0, id.length() - 1);
 		String[] ids = id.split(",");
@@ -439,7 +439,9 @@ public class QueryService {
 				conn = DataSource.getConnection();
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, Integer.valueOf(number));
-				ps.setString(2, ids[i]);
+				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+				ps.setTimestamp(2, timestamp);
+				ps.setString(3, ids[i]);
 				num = ps.executeUpdate();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -468,12 +470,14 @@ public class QueryService {
 		ResultSet rs = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		int num = 0;
-		String sql = "update wt_ChannelAsset set sort = ? where id = ?";
+		String sql = "update wt_ChannelAsset set sort = ?,pubTime= ? where id = ?";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, Integer.valueOf(sort));
-			ps.setString(2, id);
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			ps.setTimestamp(2, timestamp);
+			ps.setString(3, id);
 			num = ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -581,5 +585,9 @@ public class QueryService {
 		if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
         if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
         if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+	}
+	
+	private void modifyContentPubTime(){
+		
 	}
 }

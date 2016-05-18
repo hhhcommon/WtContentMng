@@ -128,26 +128,69 @@ $(function(){
 			    	audioPlay($(".audioLi").eq(listNum),audio,true);
 			    	$(".playControl").addClass("play");
 			    	return false;
-			    }
-			});
+			    
+			}});
 	});
 // callback:"callbackAction",
-/*
+
 	//请求推荐资源列表
-	$.jsonp({
+	var searchStr=$(".palyCtrlBox").children("h4").text();
+	alert(searchStr);
+	$.ajax({
+	        url: "http://182.92.175.134:808/wt/searchByText.do",
+	        type:"POST",
+	        dataType:"jsonp",
+	        jsonp: "jsonpCallback",
+	        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0",Page:"0",PageSize:"5"},
+	        //返回Json类型    
+            contentType: "application/json;utf-8", 
+	        success: function(resultData) {
+	        	alert("成功");
+	            if (resultData.ReturnType=="1001"){
+	            	loadRecomList(resultData);
+	            }
+	        },
+	        error: function(jqXHR){
+	            alert(jqXHR.readyState);
+	            alert(jqXHR.textStatus);
+	           alert("发生错误" + jqXHR.status);
+	        }    
+	    });
+/*
+$.ajax({
         url: "http://192.168.1.13:808/wt/searchByText.do",
-        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:"逻辑思维",ResultType:"0",PageType:"0"},
+        dataType:"jsonp",
+        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0",Page:"0",PageSize:"5"},
+        jsonp: "jsonpCallback",
         success: function(resultData) {
         	alert("成功");
             if (resultData.ReturnType=="1001"){
             	loadRecomList(resultData);
             }
         },
-        error: function(jqXHR){  
+        error: function(jqXHR){
+            alert(jqXHR.readyState);
+            alert(jqXHR.textStatus);
            alert("发生错误" + jqXHR.status);
         }    
     });
-*/
+
+    $.jsonp({
+        url: "http://182.92.175.134:808/wt/searchByText.do",
+        dataType:"html",
+        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0",Page:"0",PageSize:"5"},
+        success: function(resultData) {
+        	alert("成功");
+            if (resultData.ReturnType=="1001"){
+            	loadRecomList(resultData);
+            }
+        },
+        error: function(jqXHR){
+            alert(jqXHR.readyState);
+            alert(jqXHR.textStatus);
+           alert("发生错误" + jqXHR.status);
+        }
+    });
 	var resultData={"ResultList":{"AllCount":4,
 		                              "List":[
 												{"ContentURI":"content\/getContentInfo.do?MediaType=AUDIO&ContentId=4924063","ContentPersons":"资讯早班车","ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentTimes":"81000","ContentName":"75亿元资金离场：昨日近14亿元大单抢筹10股","ContentPubTime":null,"ContentPub":"喜马拉雅FM","ContentPlay":"http:\/\/audio.xmcdn.com\/group8\/M03\/29\/E3\/wKgDYFWGIpORmvcoAAoCHbieq9k694.m4a","MediaType":"AUDIO","ContentId":"4924063","ContentDesc":"时事","ContentImg":"http:\/\/fdfs.xmcdn.com\/group4\/M03\/C5\/37\/wKgDs1PzCQ6QbbJvAAKFQf2Cz5Y834_web_large.jpg"},
@@ -156,12 +199,13 @@ $(function(){
 												{"ContentURI":"content\/getContentInfo.do?MediaType=AUDIO&ContentId=6463705","ContentPersons":null,"ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentTimes":"151000","ContentName":"01.娘子军连歌","ContentPubTime":"2015-04-21","ContentPub":"喜马拉雅FM","SeqInfo":{"ContentSubCount":"2","ContentURI":"content\/getContentInfo.do?MediaType=SEQU&ContentId=390411","ContentPersons":null,"ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentName":"《天音老唱片5 银屏笙歌》","ContentPub":"喜马拉雅FM","MediaType":"SEQU","ContentId":"390411","ContentDesc":null,"ContentImg":"http:\/\/s1.xmcdn.com\/css\/img\/common\/album_180.jpg?todo"},"ContentPlay":"http:\/\/audio.xmcdn.com\/group9\/M0A\/29\/2E\/wKgDZlWFTUrT1xxcABK_ZPR-vzc940.m4a","MediaType":"AUDIO","ContentId":"6463705","ContentDesc":null,"ContentImg":"http:\/\/s1.xmcdn.com\/css\/img\/common\/track_180.jpg?v=20160428142650"}
 											]
 									 },
-						"TestDuration":3126,
-						"ResultType":0,
-						"ReturnType":"1001",
-						"SessionId":"d8c3ccf8116b"
-						}
+					"TestDuration":3126,
+					"ResultType":0,
+					"ReturnType":"1001",
+					"SessionId":"d8c3ccf8116b"
+					}
 	loadRecomList(resultData);
+	*/
 });
 
     function audioPause(obj,audio){
