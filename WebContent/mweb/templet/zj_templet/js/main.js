@@ -83,7 +83,6 @@ $(function(){
 	window.onscroll=function(){
 		//当滚动到最底部以上60像素时， 加载新内容  
 		if($(document).height() - $(this).scrollTop() - $(this).height()<60){
-			//加载新的页面
 			$.ajax({
 		        type: "POST",
 		        url:"http://www.wotingfm.com:908/CM/content/getZJSubPage.do",
@@ -95,6 +94,8 @@ $(function(){
 		            	if(resultData.NextPage=="true"){
 		            		page++;
 		            	}
+		            }else{
+		            	return;
 		            }
 		        },
 		        error: function(jqXHR){  

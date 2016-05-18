@@ -125,7 +125,7 @@ function ContentListLoad(actList){
 	        conDiv=$("<div class='listCon'>");
 	        conH=$("<h3></h3>");
 	        conP1=$("<p class='secTitle'></p>");
-	        conP1.html((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""));
+	        conP1.html((actList.ResultList[i].ContentDesc=="null"?"暂无":(actList.ResultList[i].ContentDesc.replace(/\<br \/\>/g, ""))));
 	        conP2=$("<p class='other'></p>");
 	        conSpan1=$("<span></span>");
 	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
@@ -222,7 +222,7 @@ function ContentInfoLoad(conList){
      }
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
-     $(".vjName").html((conList.ContentDetail.ContentPersons==null)?"猜猜我是谁":conList.ContentDetail.ContentPersons);
+     $(".vjName").html((conList.ContentDetail.ContentPersons==null)?"暂无":conList.ContentDetail.ContentPersons);
      $(".actDesn").html((conList.ContentDetail.ContentDesc).replace(/\<br \/\>/g, ""));
      $(".cloumn").html(conList.ContentDetail.ContentCatalogs);
      
@@ -314,7 +314,7 @@ function fy(event){
 
 //时间戳转日期
 function   formatDate(now)   {     
-    var   year=now.getYear();     
+    var   year=now.getFullYear();     
     var   month=now.getMonth()+1;     
     var   date=now.getDate();     
     var   hour=now.getHours();     
