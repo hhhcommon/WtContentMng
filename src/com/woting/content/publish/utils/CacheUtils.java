@@ -25,7 +25,7 @@ public abstract class CacheUtils {
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
 	// http://localhost:908/CM/ http://www.wotingfm.com:908/CM/
-	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://localhost:908/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = WtContentMngConstants.ROOT_PATH; // 静态文件根路径
 
 	/**
@@ -99,18 +99,15 @@ public abstract class CacheUtils {
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequdesc#####",
-						mapsequ.get("ContentDesc").toString() == null ? "暂无描述" : mapsequ.get("ContentDesc").toString())
-				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null
-						? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString());
+				.replace("#####sequdesc#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString());
 		htmlstr = htmlstr.replace("#####sequid#####", mapsequ.get("ContentId").toString()); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",
-							jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html");
+					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html");
 		}
 
-		String p2exists = "false"; // 下一页是否存在
+		String p2exists = "false"; // 第二页是否存在
 		if (hasnextpage) p2exists = "true";
 		
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
@@ -130,22 +127,11 @@ public abstract class CacheUtils {
 	private static boolean createJMHtml(String path, Map<String, Object> map) {
 		//读取节目html模版
 		String htmlstr = readFile(rootpath + templetpath + "/jm_templet/index.html");
-		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName").toString());
-		htmlstr = htmlstr.replace("#####audioimgs#####", map.get("ContentImg").toString());
-		htmlstr = htmlstr.replace("#####audioplay#####", map.get("ContentURI").toString());
-//		//处理节目时长
-//		long ctime = (long) map.get("ContentTimes") / 1000;
-//		String hous = String.valueOf(ctime / 360);
-//		String minute = String.valueOf(ctime % 360 / 60).length() == 1 ? ("0" + String.valueOf(ctime % 360 / 60))
-//				: String.valueOf(ctime % 360 / 60);
-//		String second = String.valueOf(ctime % 60).length() == 1 ? ("0" + String.valueOf(ctime % 60))
-//				: String.valueOf(ctime % 60);
-//		String playtime = "";
-//		if (!hous.equals("0")) playtime += hous + ":";
-//		if (minute.equals("0")) playtime += "00:";
-//		else playtime += minute + ":";
-//		playtime += second;
-//		htmlstr = htmlstr.replace("#####audiotime#####", playtime);
+		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName")+"");
+		htmlstr = htmlstr.replace("#####audioimgs#####", map.get("ContentImg")+"");
+		htmlstr = htmlstr.replace("#####audioplay#####", map.get("ContentURI")+"")
+				.replace("#####audioid#####", map.get("ContentId")+"")
+				.replace("#####audiotime#####", map.get("ContentTimes")+"");
 		writeFile(htmlstr, path);
 		return false;
 	}

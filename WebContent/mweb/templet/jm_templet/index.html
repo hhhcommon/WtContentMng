@@ -13,25 +13,17 @@
 	<div id="container">
 		<!--头部开始-->
 		<header>
-			<div id="logo">
-				<img src="../../templet/jm_templet/imgs/logo2.png" />
-			</div>
-			<div class="downLoad">
-				<a href="http://182.92.175.134/download/WoTing.apk">下载APP</a>
-			</div>
+			<div id="logo"><img src="../../templet/jm_templet/imgs/logo2.png" /></div>
+			<div class="downLoad">打开收听</div>
 		</header>
 		<!--播放控制界面-->
 		<div class="palyCtrlBox">
 			<h4>#####audioname#####</h4>
-			<div class="box">
-				<div class="boxF">
-					<div class="boxS">
-						<div class="boxT" style="background-image: url(#####audioimgs#####);"></div>
-					</div>
-				</div>
-				<a href="javascript:;" class="playControl"></a> <a
-					href="javascript:void(0);" class="previous"></a> <a
-					href="javascript:void(0);" class="next"></a>
+			<div class="boxT" style="background-image: url(#####audioimgs#####);">
+			    <img src="../../templet/jm_templet/imgs/jm.png"/>
+				<a href="javascript:;" class="playControl"></a>
+				<a	href="javascript:void(0);" class="previous"></a>
+				<a	href="javascript:void(0);" class="next"></a>
 			</div>
 			<div class="conPlay">
 				<span class="playTime"></span>
@@ -40,7 +32,7 @@
 				</div>
 				<span class="fullTime"></span>
 			</div>
-			<audio src="#####audioplay#####" id="jmAudio"></audio>
+			<audio src="#####audioplay#####" id="jmAudio" jmOpenApp="com.woting.htmlcallback://mediaType值?jsonStr={contentname=#####audioname#####,contentid=#####audioid#####,contentimg=#####audioimgs#####,contentdesc=#####audiodesc#####,contenturl=#####audioplay#####,contenttimes=#####audiotime#####}"></audio>
 		</div>
 		<!--相关推荐列表-->
 		<div class="tj">

@@ -42,24 +42,19 @@ header #logo{
 	float:left;
 }
 header .downLoad{
-	width:50%;
+  width:80px;
+  height:38px;
 	float:right;
-	text-align:right;
-	line-height:42px;
-	padding:5px 0;
-}
-header .downLoad a{
-	display:inline-block;
-	width:80px;
-	height:38px;
 	text-align:center;
-	line-height:28px;
+	line-height:38px;
+	display:inline-block;
 	color:#ffa733;
 	border:1px solid #ffa733;
 	border-radius: 4px;
 	font-size:14px;
-	padding:5px;
-	float:right;
+  font-weight:bold;
+	padding:0 5px;
+  cursor:pointer;
 }
 /*专辑介绍*/
 .zjIntro{
@@ -81,36 +76,9 @@ header .downLoad a{
     height: 100px;
     margin:0 auto;
 }
-    /*宽高比保持4:5*/
-.boxF, .boxS, .boxT{
-    width: 80px;
-    height: 100px;
-    overflow: hidden;
-}
-.boxF, .boxS{
-    visibility: hidden;
-}
-.boxF{
-    transform: rotate(120deg);
-    margin-left: 10px;
-    -ms-transform: rotate(120deg);
-    -moz-transform: rotate(120deg);
-    -webkit-transform: rotate(120deg);
-}
-.boxS{
-    transform: rotate(-60deg);
-    -ms-transform: rotate(-60deg);
-    -moz-transform: rotate(-60deg);
-    -webkit-transform: rotate(-60deg);
-}
-.boxT{
-    transform: rotate(-60deg);
-    background: no-repeat 50% center;
-    background-size: 125% auto;
-    -ms-transform: rotate(-60deg);
-    -moz-transform: rotate(-60deg);
-    -webkit-transform: rotate(-60deg);
-    visibility: visible;
+.box img{
+	 width:100px;
+	 height:100px;
 }
 .zjIntro p{
 	font-size:14px;
