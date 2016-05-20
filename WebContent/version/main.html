@@ -223,10 +223,10 @@ function loadVerCfgAndFill() {
       if (jsonData) {
         if (jsonData.ReturnType=='1001') {
           var retData=jsonData.VerCfgInfo;
-          $("#pubFileName").val(retData.pubFileName?retData.pubFileName:"");
-          $("#pubUrl").val(retData.pubUrl?retData.pubUrl:"");
-          $("#pubStorePath").val(retData.pubStorePath?retData.pubStorePath:"");
-          $("#verGoodsStorePath").val(retData.verGoodsStorePath?retData.verGoodsStorePath:"");
+          $("#pubFileName").val(retData.PubFileName?retData.PubFileName:"");
+          $("#pubUrl").val(retData.PubUrl?retData.PubUrl:"");
+          $("#pubStorePath").val(retData.PubStorePath?retData.PubStorePath:"");
+          $("#verGoodsStorePath").val(retData.VerGoodsStorePath?retData.VerGoodsStorePath:"");
           oldVerCfgData=retData;
         } else {
           alert("发生错误：" + jsonData.Message);
