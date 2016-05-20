@@ -1,10 +1,12 @@
 var contentCount=0;
-var serverIp="localhost";
+var rootPath=getRootPath();
+var current_page=1;
+var isSelect=false;
 //获取查询条件列表，节目分类和来源
 function getConditions(){
 	$.ajax({
         type: "POST",    
-        url:"http://"+serverIp+":908/CM/content/getConditions.do",
+        url:rootPath+"content/getConditions.do",
         dataType: "json",
         data:{UserId: "zhangsan"},
         success: function(ConditionsList) {
@@ -28,7 +30,7 @@ function commonAjax(url,data,obj,callback){
         url:url,
         dataType: "json",
         data:data,
-        beforeSend:function(){obj.html("<div style='text-align:center;height:500px;line-height:300px;'>数据加载中...</div>")}, 
+        beforeSend:function(){obj.html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
         success: function(ContentList) {
             if (ContentList.ReturnType=="1001") {
             	obj.html(""); //再重新创建新的数据集时，先清空之前的
@@ -39,7 +41,7 @@ function commonAjax(url,data,obj,callback){
             		callback(ContentList);
             	}
             } else {
-            	obj.html("<div style='text-align:center;height:300px;line-height:300px;'>"+ContentList.Message+"</div>");
+            	obj.html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.Message+"</div>");
             }  
         },
         error: function(jqXHR){  
@@ -48,14 +50,28 @@ function commonAjax(url,data,obj,callback){
     });
 }	
 //从后台请求节目列表数据
-function getContentList(page,flowFlag){
-	var url="http://"+serverIp+":908/CM/content/getContents.do";
-	var data={
-            UserId: "zhangsan", 
-            ContentFlowFlag:flowFlag,
-            Page:page,
-            PageSize:"10"
-        };
+function getContentList(current_page,flowFlag,isSelect){
+	var url=rootPath+"content/getContents.do";
+	var data={};
+	//带专门查询条件的查询
+	if(isSelect){
+		data={
+                UserId: "zhangsan", 
+            	ContentFlowFlag:flowFlag,
+            	CatalogsId:$(".catalogs option:selected").attr("catalogsId"),
+            	SourceId:$(".source option:selected").attr("sourceId"),
+                Page:current_page,
+                PageSize:"10"
+            };
+	}else{
+		//基础的按状态查询
+		data={
+	            UserId: "zhangsan", 
+	            ContentFlowFlag:flowFlag,
+	            Page:current_page,
+	            PageSize:"10"
+	        };
+	}
 	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 }
 //创建查询条件DOM元素
@@ -81,6 +97,10 @@ function ConditionsListLoad(ConditionsList){
 //创建节目列表DOM树
 function ContentListLoad(actList){
 	contentCount=actList.ContentCount;
+	contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
+	$(".totalPage").text(contentCount);
+	//翻页
+    //$('.pagination').jqPagination({max_page  : contentCount});
     var actListLength=actList.ResultList.length;
     if(actListLength==0){
     	$(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
@@ -105,12 +125,14 @@ function ContentListLoad(actList){
 	        conDiv=$("<div class='listCon'>");
 	        conH=$("<h3></h3>");
 	        conP1=$("<p class='secTitle'></p>");
-	        conP1.text(actList.ResultList[i].ContentDesc);
+	        conP1.html((actList.ResultList[i].ContentDesc=="null"?"暂无":(actList.ResultList[i].ContentDesc.replace(/\<br \/\>/g, ""))));
 	        conP2=$("<p class='other'></p>");
 	        conSpan1=$("<span></span>");
 	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
 	        conSpan2=$("<span></span>");
-	        conSpan2.text(actList.ResultList[i].ContentCTime);
+	        //alert(formatDate(new Date(actList.ResultList[i].ContentCTime)));
+	        
+	        conSpan2.text(formatDate(new Date(actList.ResultList[i].ContentCTime)));
 	        
 	        checkDiv.append(checkInput);
 	        imgDiv.append(thumbImg);
@@ -150,6 +172,7 @@ function ContentListLoad(actList){
 	    $(".actList").append(hoverBar);
 	    //默认节目列表的第一条显示详情
 	    $(".listBox").first().trigger("click");
+	    
     }
     //$(".pubList").append(actListDiv);
     //创建分页节点
@@ -199,9 +222,9 @@ function ContentInfoLoad(conList){
      }
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
-     $(".vjName").text(conList.ContentDetail.ContentPersons);
-     $(".actDesn").text(conList.ContentDetail.ContentDesc);
-     $(".cloumn").text(conList.ContentDetail.ContentCatalogs);
+     $(".vjName").html((conList.ContentDetail.ContentPersons==null)?"暂无":conList.ContentDetail.ContentPersons);
+     $(".actDesn").html((conList.ContentDetail.ContentDesc).replace(/\<br \/\>/g, ""));
+     $(".cloumn").html(conList.ContentDetail.ContentCatalogs);
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
@@ -238,5 +261,65 @@ function AudioListLoad(itemList,sort){
 	  }
     }
     $(".table").append(tbody);
+}
+function fy(event){
+	var flowFlag=event.data.flowFlag;
+	switch (event.target.getAttribute("data-action")) {
+      case 'previous':
+    	  current_page--;
+    	  $(".toPage").val("");
+        break;
+      case 'next':
+    	  current_page++;
+    	  $(".toPage").val("");
+    	  
+        break;
+      case 'toPage':
+    	//跳至进行输入合理数字范围检测
+    	  var reg = new RegExp("^[0-9]*$");
+    	  if(!reg.test($(".toPage").val()) || $(".toPage").val()<1 || $(".toPage").val() > contentCount){  
+    		  alert("请输入有效页码！");
+    	        return;
+    	    }
+    	  current_page = $(".toPage").val();
+    	  
+        break;
+      default:
+    }
+	//第一页或最后一页，置灰样式并使链接无效
+	if (current_page < 1 || current_page > contentCount) {
+		current_page=1;
+		return false;
+	}
+	if (current_page > contentCount) {
+		current_page=contentCount;
+		return false;
+	}
+	$(".page").find("span").removeClass("disabled");
+	if (current_page == 1) {
+		$(".previous").addClass('disabled');
+	}
+	if (current_page == contentCount) {
+		$(".next").addClass('disabled');
+	}
+	
+	//当前页
+	$(".currentPage").text(current_page);
+	if(isSelect){
+		getContentList(current_page,flowFlag,isSelect);
+	}else{
+		getContentList(current_page,flowFlag);
+	}
+}
+
+//时间戳转日期
+function   formatDate(now)   {     
+    var   year=now.getFullYear();     
+    var   month=now.getMonth()+1;     
+    var   date=now.getDate();     
+    var   hour=now.getHours();     
+    var   minute=now.getMinutes();     
+    var   second=now.getSeconds();     
+    return   year+"年"+month+"月"+date+"日 ";     
 }
 
