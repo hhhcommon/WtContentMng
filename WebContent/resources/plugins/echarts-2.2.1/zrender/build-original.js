@@ -1,6 +1,6 @@
 {
     // appDir: './',
-    baseUrl: '../src',
+	baseUrl: '../src',
     optimize: 'none',
     name: 'zrender',
     packages: [
