@@ -39,24 +39,19 @@ header #logo{
 	float:left;
 }
 header .downLoad{
-	width:50%;
+  width:80px;
+  height:38px;
 	float:right;
-	text-align:right;
-	line-height:42px;
-	padding:5px 0;
-}
-header .downLoad a{
-	display:inline-block;
-	width:80px;
-	height:38px;
 	text-align:center;
-	line-height:28px;
+	line-height:38px;
+	display:inline-block;
 	color:#ffa733;
 	border:1px solid #ffa733;
 	border-radius: 4px;
 	font-size:14px;
-	padding:5px;
-	float:right;
+  font-weight:bold;
+	padding:0 5px;
+  cursor:pointer;
 }
 /*专辑介绍*/
 .palyCtrlBox{
@@ -69,15 +64,19 @@ header .downLoad a{
 	margin:0 auto;
 	width:50%;
 	text-align:center;
-	padding:5px 0;
+	padding:12px 0;
 	font-size:16px;
 	font-weight:200;
 }
 .box{
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     margin:0 auto;
     position:relative;
+}
+.box img{
+   width:120px;
+   height:120px;
 }
 .playControl,.previous,.next{
 	position:absolute;
@@ -89,7 +88,7 @@ header .downLoad a{
 	width:42px;
 	height:42px;
   top:42px;
-	left:38px;
+	left:48px;
   background:url(../imgs/audio_play.png) no-repeat;
   background-position:0 0;
 }
@@ -101,7 +100,8 @@ header .downLoad a{
   height:32px;
   top:47px;
   left:-60px;
-  background:url(../imgs/audio_play.png) no-repeat 0 -84px;
+  background:url(../imgs/audio_play.png) no-repeat 0 -162px;
+  /*-84*/
 }
 .next{
   width:32px;
@@ -109,37 +109,6 @@ header .downLoad a{
   top:47px;
   left:160px;
   background:url(../imgs/audio_play.png) no-repeat 0 -116px;
-}
-
-    /*宽高比保持4:5*/
-.boxF, .boxS, .boxT{
-    width: 100px;
-    height: 125px;
-    overflow: hidden;
-}
-.boxF, .boxS{
-    visibility: hidden;
-}
-.boxF{
-    transform: rotate(120deg);
-    -ms-transform: rotate(120deg);
-    -moz-transform: rotate(120deg);
-    -webkit-transform: rotate(120deg);
-}
-.boxS{
-    transform: rotate(-60deg);
-    -ms-transform: rotate(-60deg);
-    -moz-transform: rotate(-60deg);
-    -webkit-transform: rotate(-60deg);
-}
-.boxT{
-    transform: rotate(-60deg);
-    background: no-repeat 50% center;
-    background-size: 125% auto;
-    -ms-transform: rotate(-60deg);
-    -moz-transform: rotate(-60deg);
-    -webkit-transform: rotate(-60deg);
-    visibility: visible;
 }
 .conPlay{
   width:96%;
@@ -197,40 +166,14 @@ header .downLoad a{
   cursor:pointer;
 }
 .audioImg{
-    width: 60px;
-    height: 75px;
+    width: 68px;
+    height: 72px;
     position:relative;
     float:left;
 }
-/*宽高比保持4:5*/
-.audioImg .boxF,.audioImg .boxS,.audioImg .boxT{
-    width: 60px;
-    height: 75px;
-    overflow: hidden;
-}
-.audioImg .boxF,.audioImg .boxS{
-    visibility: hidden;
-}
-.audioImg .boxF{
-    transform: rotate(120deg);
-    -ms-transform: rotate(120deg);
-    -moz-transform: rotate(120deg);
-    -webkit-transform: rotate(120deg);
-}
-.audioImg .boxS{
-    transform: rotate(-60deg);
-    -ms-transform: rotate(-60deg);
-    -moz-transform: rotate(-60deg);
-    -webkit-transform: rotate(-60deg);
-}
-.audioImg .boxT{
-    transform: rotate(-60deg);
-    background: no-repeat 50% center;
-    background-size: 125% auto;
-    -ms-transform: rotate(-60deg);
-    -moz-transform: rotate(-60deg);
-    -webkit-transform: rotate(-60deg);
-    visibility: visible;
+.audioImg img{
+   width: 68px;
+    height: 72px;
 }
 
 .audioList .audioIntro{
