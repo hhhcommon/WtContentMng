@@ -2,6 +2,9 @@
 li,a,input{
 	outline:0;
 }
+body{
+	font-family:'Microsoft Yahei','Arial';
+}
 /*鏈〉澶存煡璇㈠尯绛涢�夊尯*/
 .operate{
 	height:30px;
@@ -79,7 +82,6 @@ li,a,input{
 	top:0;
 	width:420px;
 	height:100%;
-	padding-bottom:40px;
 	border-right:1px solid #ccc;
 	overflow-y:auto;
 }
@@ -87,7 +89,7 @@ li,a,input{
 	width:419px;
 	height:40px;
 	position:fixed;
-	bottom:34px;
+	bottom:32px;
 	left:0;
 	padding:0 80px 0 28px;
 	background-color:#f3f3f4;
@@ -119,6 +121,7 @@ li,a,input{
 */
 .pubList .actList{
 	position:relative;
+	padding-bottom:50px;
 }
 .clickBar{
 	position:absolute;

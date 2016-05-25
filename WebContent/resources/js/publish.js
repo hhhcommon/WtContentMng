@@ -13,11 +13,11 @@ function getConditions(){
             if (ConditionsList.ReturnType=="1001") {
                 ConditionsListLoad(ConditionsList);
             } else {
-                alert("获取数据出现问题la:"+ConditionsList.Message);
+                //alert("获取数据出现问题:"+ConditionsList.Message);
             }  
         },
-        error: function(jqXHR){   
-           alert("发生错误" + jqXHR.status);
+        error: function(jqXHR){
+           //alert("发生错误" + jqXHR.status);
         }     
     });
 }
@@ -44,8 +44,8 @@ function commonAjax(url,data,obj,callback){
             	obj.html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.Message+"</div>");
             }  
         },
-        error: function(jqXHR){  
-           alert("发生错误" + jqXHR.status);
+        error: function(jqXHR){
+        	obj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
         }     
     });
 }	
@@ -99,8 +99,6 @@ function ContentListLoad(actList){
 	contentCount=actList.ContentCount;
 	contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
 	$(".totalPage").text(contentCount);
-	//翻页
-    //$('.pagination').jqPagination({max_page  : contentCount});
     var actListLength=actList.ResultList.length;
     if(actListLength==0){
     	$(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
@@ -125,12 +123,11 @@ function ContentListLoad(actList){
 	        conDiv=$("<div class='listCon'>");
 	        conH=$("<h3></h3>");
 	        conP1=$("<p class='secTitle'></p>");
-	        conP1.html((actList.ResultList[i].ContentDesc=="null"?"暂无":(actList.ResultList[i].ContentDesc.replace(/\<br \/\>/g, ""))));
+	        conP1.html((actList.ResultList[i].ContentDesc=="null"?"暂无":((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""))));
 	        conP2=$("<p class='other'></p>");
 	        conSpan1=$("<span></span>");
 	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
 	        conSpan2=$("<span></span>");
-	        //alert(formatDate(new Date(actList.ResultList[i].ContentCTime)));
 	        
 	        conSpan2.text(formatDate(new Date(actList.ResultList[i].ContentCTime)));
 	        
