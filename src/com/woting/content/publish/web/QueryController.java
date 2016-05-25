@@ -176,6 +176,7 @@ public class QueryController {
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		System.out.println(m);
 		int flowFlag = 0;
 		// String userId = (String) m.get("UserId");
 		int page = 0;
