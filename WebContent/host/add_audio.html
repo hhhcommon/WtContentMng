@@ -43,31 +43,32 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
+                        <form class="form-horizontal m-t" id="signupForm" novalidate="novalidate" action="http://localhost:908/CM/content/addMediaContents.do" method="post">
+                                    <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">声音名称：</label>
                                 <div class="col-sm-8">
-                                    <input id="contentName" name="contentName" class="form-control" type="text">
+                                    <input id="ContentName" name="ContentName" class="form-control" type="text">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">声音封面：</label>
                                 <div class="col-sm-8">
-                                    <input id="imgFile" name="imgFile" class="form-control" type="file" aria-required="true" aria-invalid="false">
+                                    <input id="ContentImg" name="thefile" class="form-control" type="file" aria-required="true" aria-invalid="false">
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、GIF、PNG格式</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">选择文件：</label>
                                 <div class="col-sm-8">
-                                    <input id="contentUrl" name="contentUrl" class="form-control" type="file" aria-required="true" aria-invalid="true">
+                                    <input id="ContentFile" name="thefile" class="form-control" type="file" aria-required="true" aria-invalid="true">
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大5M，支持mp3、m4a格式</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">选择专辑：</label>
                                 <div class="col-sm-8">
-		                                <select class="form-control" name="zjSelect">
+		                                <select class="form-control" name="ContentSequTitle">
 								                        <option value="">默认</option>
 								                        <option value="">后来</option>
 								                        <option value="">Bingo</option>
@@ -77,13 +78,13 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">声音标签：</label>
                                 <div class="col-sm-8">
-                                    <input id="contentTags" name="contentTags" class="form-control" type="text">
+                                    <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">声音描述：</label>
                                 <div class="col-sm-8">
-                                    <textarea id="contentDesc" name="contentDesc" class="form-control"></textarea>
+                                    <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
