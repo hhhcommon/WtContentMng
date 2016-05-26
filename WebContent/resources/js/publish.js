@@ -123,7 +123,9 @@ function ContentListLoad(actList){
 	        conDiv=$("<div class='listCon'>");
 	        conH=$("<h3></h3>");
 	        conP1=$("<p class='secTitle'></p>");
-	        conP1.html((actList.ResultList[i].ContentDesc=="null"?"暂无":((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""))));
+	        //alert(actList.ResultList[i].ContentDesc);
+	        //alert((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""));
+	        conP1.html(actList.ResultList[i].ContentDesc=="null"?"暂无":((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, "")));
 	        conP2=$("<p class='other'></p>");
 	        conSpan1=$("<span></span>");
 	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);
@@ -135,7 +137,7 @@ function ContentListLoad(actList){
 	        imgDiv.append(thumbImg);
 	        //根据类型显示不同的标记
 	        conH.html(actList.ResultList[i].ContentName);
-	        /*
+	        
 	        switch(actList.ResultList[i].MediaType){
 		        case 'wt_SeqMediaAsset':
 		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
@@ -148,7 +150,7 @@ function ContentListLoad(actList){
 		        	break;
 		        default:
 	        }
-	        */
+	        
 	        conP2.append(conSpan1);
 	        conP2.append(conSpan2);
 	        conDiv.append(conH).append(conP1).append(conP2);
@@ -225,9 +227,12 @@ function ContentInfoLoad(conList){
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
-     AudioListLoad(conList.SubList,false);
-     //将专辑单体列表存储起来，以便排序使用 --对象深度复制
-     subList = jQuery.extend(true, [], conList.SubList);
+     if(conList.ContentDetail.MediaType=="wt_SeqMediaAsset"){
+    	 AudioListLoad(conList.SubList,false);
+         //将专辑单体列表存储起来，以便排序使用 --对象深度复制
+         subList = jQuery.extend(true, [], conList.SubList);
+     }
+    
 }
 //创建单体资源列表DOM结构
 //把内容列表单提出来一个方法，是为了正反排序时再调用此方法对DOM节点进行前置插入
