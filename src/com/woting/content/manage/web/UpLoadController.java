@@ -2,10 +2,8 @@ package com.woting.content.manage.web;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,9 +42,9 @@ public class UpLoadController {
 			map.put("Message", "无节目分类信息");
 			return map;
 		}
-		String sequname = (String) m.get("ContentSequName");
-		System.out.println(sequname);
-		System.out.println(userid+"#"+contentname+"#"+CatalogsId+"#"+sequname);
+		String sequid = m.get("ContentSequId")+"";
+		
+		System.out.println(userid+"#"+contentname+"#"+CatalogsId);
 	    uploadService.saveFileInfo(myfiles,m);
 		return map;
 	}

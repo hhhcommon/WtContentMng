@@ -32,7 +32,7 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/getContents.do")
+	@RequestMapping(value = "/content/getPublishContents.do")
 	@ResponseBody
 	public Map<String, Object> getContents(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
