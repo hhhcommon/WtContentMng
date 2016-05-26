@@ -22,6 +22,11 @@
     <result  column="pubCount"       property="pubCount"       jdbcType="INTEGER"/>
     <result  column="cTime"          property="CTime"          jdbcType="TIMESTAMP"/>
   </resultMap>
+  
+   <!-- 所有列 -->
+  <sql id="Base_Media_List">
+    id, maTitle, maPubType, maPubId, maPublisher, maPublishTime, maImg, maURL, subjectWords, keyWords, langDid, language, timeLong, descn, pubCount, cTime
+  </sql>
 
   <!-- 单体节目播放源 -->
   <resultMap id="maSourceMap" type="maSource">
@@ -183,4 +188,10 @@
       <if test="descn!=null">#{descn,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
+  
+  <!-- 根据主播id获取 -->
+  <select id="getInfoByMaPubId" resultMap="mediaAssetMap" parameterType="java.lang.String">
+    select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR}
+  </select>
+  
 </mapper>

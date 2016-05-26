@@ -1,5 +1,8 @@
 package com.woting.cm.core.media.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
@@ -31,6 +34,20 @@ public class MediaService {
         maSourceDao.setNamespace("A_MEDIA");
         seqMaRefDao.setNamespace("A_MEDIA");
         seqMediaAssetDao.setNamespace("A_MEDIA");
+    }
+    
+    //根据主播id查询其所有单体资源
+    public List<MediaAsset> getMaInfoByMaPubId(String id) {
+        List<MediaAsset> list = new ArrayList<MediaAsset>();
+        List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
+        listpo = mediaAssetDao.queryForList("getInfoByMaPubId", id);
+        System.out.println(listpo.size());
+        for (MediaAssetPo mediaAssetPo : listpo) {
+        	MediaAsset ma=new MediaAsset();
+			ma.buildFromPo(mediaAssetPo);
+			list.add(ma);
+		}
+        return list;
     }
 
     public MediaAsset getMaInfoById(String id) {
