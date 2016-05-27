@@ -114,4 +114,18 @@ public class ContentController {
 		return map;
 	}
 	
+	@RequestMapping(value = "/content/updateZBContentStatus.do")
+	@ResponseBody
+	public Map<String, Object> updateStatus(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		return null;
+	}
+	
 }

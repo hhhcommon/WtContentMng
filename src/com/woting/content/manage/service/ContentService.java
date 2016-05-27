@@ -199,7 +199,7 @@ public class ContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifyStatus(String userid, String mediatype, String statusnum){
+	public Map<String, Object> modifyStatus(String userid, String mediatype, String mediaid, String statusnum){
 		
 		return null;
 	}
