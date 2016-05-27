@@ -200,7 +200,7 @@
   </select>
   
   <select id="getSmaInfoById" resultMap="seqMediaAssetMap" parameterType="java.lang.String">
-    select <include refid="Base_SequMedia_List"/>from wt_SequMediaAsset where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
   </select>
   
 </mapper>
