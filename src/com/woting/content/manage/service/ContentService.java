@@ -144,7 +144,7 @@ public class ContentService {
 		sma.setSmaImg(StringUtils.isNullOrEmptyOrSpace(imgpath)?"默认图片":imgpath);
 		sma.setDescn(StringUtils.isNullOrEmptyOrSpace(m.get("ContentDesc")+"")?"这家伙真懒，什么都没留下":(m.get("ContentDesc")+""));
 		Map<String, Object> addmediamap = (Map<String, Object>) m.get("AddMediaInfo");
-		if (addmediamap!=null||addmediamap.size()>0) {
+		if (addmediamap!=null) {
 			List<Map<String, Object>> list = (List<Map<String, Object>>) addmediamap.get("List");
 			for (Map<String, Object> m2 : list) {
 				MediaAsset ma = new MediaAsset();
@@ -162,7 +162,8 @@ public class ContentService {
 		detail.setId("zho");
 		detail.setNodeName("中文");
 		sma.setLang(detail);
-		sma.setSmaAllCount(addmediamap.size());
+		if (addmediamap!=null) sma.setSmaAllCount(addmediamap.size());
+		else sma.setSmaAllCount(0);
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
 		
