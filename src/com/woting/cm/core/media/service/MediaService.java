@@ -44,9 +44,8 @@ public class MediaService {
     public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
         List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
-        listpo = mediaAssetDao.queryForList("getInfoByMaPubId", id);
+        listpo = mediaAssetDao.queryForList("getMaListByMaPubId", id);
         Map<String, Object> m = new HashMap<String,Object>();
-        System.out.println(listpo.size());
         for (MediaAssetPo mediaAssetPo : listpo) {
         	MediaAsset ma=new MediaAsset();
 			ma.buildFromPo(mediaAssetPo);
@@ -54,6 +53,12 @@ public class MediaService {
 		}
         return list;
     }
+    
+    //根据专辑id得到专辑
+    public int getSmaInfoById(String id) {
+    	int num = seqMediaAssetDao.getCount("getSmaInfoById", id);
+		return num;
+	}
 
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();

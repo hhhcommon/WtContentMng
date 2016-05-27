@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ import com.spiritdata.framework.util.DateUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -34,7 +36,7 @@ public class ContentService {
 		filepath =filepath+DateUtils.convert2DateStr(new Date(System.currentTimeMillis()))+"/";
 	}
 
-	public Map<String, Object> saveFileInfo(MultipartFile[] upfiles, Map<String, Object> uploadmap) {
+	public Map<String, Object> addMediaInfo(MultipartFile[] upfiles, Map<String, Object> uploadmap) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		String[] filepaths = new String[2];
 		String filename = "";
@@ -114,19 +116,86 @@ public class ContentService {
 		return map;
 	}
 	
-	public Map<String, Object> getContents(String userid, String mediatype){
+
+	public Map<String, Object> addSequInfo(MultipartFile upfile,Map<String, Object> m){
 		Map<String, Object> map = new HashMap<String,Object>();
-		List<Map<String, Object>> listma = new ArrayList<Map<String,Object>>();
-		if (mediatype.equals("wt_MediaAsset")) listma = mediaService.getMaInfoByMaPubId(userid);
-		if(listma!=null&&listma.size()>0) {
-			map.put("List", listma);
-			map.put("AllCount", listma.size());
+		String imgpath = "";
+		try {
+			if(!upfile.isEmpty()) {
+			    if (upfile.getContentType().contains("image")) { // 上传的图片资源
+			    	String imgname = upfile.getOriginalFilename();
+				    imgpath = (filepath+imgname).trim();
+				    File file = CacheUtils.createFile(imgpath);
+				    upfile.transferTo(file);
+			    }
+		    }
+		} catch (Exception e) {
+		}
+		
+		String smaid = SequenceUUID.getPureUUID();
+		SeqMediaAsset sma = new SeqMediaAsset();
+		sma.setId(smaid);
+		String smatitle = m.get("ContentName")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(smatitle)||smatitle.toLowerCase().equals("null")) {
+			map.put("ResultType", "1011");
+			map.put("Message", "无专辑名称");
+			return map;
+		}
+		sma.setSmaTitle(smatitle);
+		sma.setSmaImg(StringUtils.isNullOrEmptyOrSpace(imgpath)?"默认图片":imgpath);
+		sma.setDescn(StringUtils.isNullOrEmptyOrSpace(m.get("ContentDesc")+"")?"这家伙真懒，什么都没留下":(m.get("ContentDesc")+""));
+		Map<String, Object> addmediamap = (Map<String, Object>) m.get("AddMediaInfo");
+		if (addmediamap!=null||addmediamap.size()>0) {
+			List<Map<String, Object>> list = (List<Map<String, Object>>) addmediamap.get("List");
+			for (Map<String, Object> m2 : list) {
+				MediaAsset ma = new MediaAsset();
+				ma.setId(m2.get("ContentId")+"");
+				ma.setMaTitle(m2.get("ContentName")+"");
+				mediaService.bindMa2Sma(ma, sma);
+			}
+		}
+		sma.setCTime(new Timestamp(System.currentTimeMillis()));
+		sma.setSmaPubType(3);
+		sma.setSmaPubId(m.get("UserId")+"");
+		sma.setSmaPublisher(m.get("UserName")+"");
+		sma.setDescn(StringUtils.isNullOrEmptyOrSpace(m.get("ContentDesc")+"")?"这家伙真懒，什么都没留下":(m.get("ContentDesc")+""));
+		DictDetail detail = new DictDetail();
+		detail.setId("zho");
+		detail.setNodeName("中文");
+		sma.setLang(detail);
+		sma.setSmaAllCount(addmediamap.size());
+		sma.setPubCount(0);
+		mediaService.saveSma(sma);
+		
+		if(mediaService.getSmaInfoById(smaid)>0) {
 			map.put("ResultType", "1001");
-		}else{
-			return null;
+			map.put("Message", "添加专辑成功");
+		} else {
+			map.put("ResultType", "1011");
+			map.put("Message", "添加专辑失败");
 		}
 		return map;
 	}
+	
+	public Map<String, Object> getContents(String userid, String mediatype){
+		Map<String, Object> map = new HashMap<String,Object>();
+		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+		if(mediatype.equals("wt_MediaAsset")) list = mediaService.getMaInfoByMaPubId(userid);
+//		if(mediatype.equals("wt_SeqMediaAsset"))
+		System.out.println(list);
+		if(list!=null&&list.size()>0) {
+			map.put("List", list);
+			map.put("AllCount", list.size());
+			map.put("ResultType", "1001");
+		}else{
+			map.put("ResultType", "1011");
+			map.put("Message", "处理专辑失败");
+			return map;
+		}
+		return map;
+	}
+	
+	
 	
 	/** 计算分享地址的功能 */
     public static final String preAddr="http://www.wotingfm.com:908/CM/mweb";//分享地址前缀

@@ -18,6 +18,11 @@ public class ContentController {
 	@Resource
 	private ContentService contentService;
 	
+	/**
+	 * 查询主播id下的单体列表
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/getListContents.do")
 	@ResponseBody
 	public Map<String, Object> getListContents(HttpServletRequest request){
@@ -47,6 +52,12 @@ public class ContentController {
 		return map;
 	}
 	
+	/**
+	 * 新增单体和编辑单体
+	 * @param request
+	 * @param myfiles
+	 * @return
+	 */
 	@RequestMapping(value = "/content/addMediaContents.do")
 	@ResponseBody
 	public Map<String, Object> addMediaContent(HttpServletRequest request,@RequestParam(value = "thefile", required = false) MultipartFile[] myfiles){
@@ -71,7 +82,7 @@ public class ContentController {
 			return map;
 		}
 		System.out.println(userid+"#"+contentname);
-		map = contentService.saveFileInfo(myfiles,m);
+		map = contentService.addMediaInfo(myfiles,m);
 		return map;
 	}
 	
