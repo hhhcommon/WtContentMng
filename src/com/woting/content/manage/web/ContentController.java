@@ -18,6 +18,11 @@ public class ContentController {
 	@Resource
 	private ContentService contentService;
 	
+	/**
+	 * 查询主播id下的单体列表
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/getListContents.do")
 	@ResponseBody
 	public Map<String, Object> getListContents(HttpServletRequest request){
@@ -30,13 +35,12 @@ public class ContentController {
 			return map;
 		}
 		String mediatype = m.get("MediaType")+"";
-		String flowflag = m.get("ContentFlowFlag")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(mediatype)||mediatype.toLowerCase().equals("null")||StringUtils.isNullOrEmptyOrSpace(flowflag)||flowflag.toLowerCase().equals("null")) {
+		if (StringUtils.isNullOrEmptyOrSpace(mediatype)||mediatype.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "查询信息不全");
 			return map;
 		}
-		Map<String, Object> c = contentService.getContents(userid, mediatype, flowflag);
+		Map<String, Object> c = contentService.getContents(userid, mediatype);
 		if(c!=null&&c.size()>0){
 			map.put("ResultType", c.get("ResultType"));
 			c.remove("ResultType");
@@ -48,6 +52,12 @@ public class ContentController {
 		return map;
 	}
 	
+	/**
+	 * 新增单体和编辑单体
+	 * @param request
+	 * @param myfiles
+	 * @return
+	 */
 	@RequestMapping(value = "/content/addMediaContents.do")
 	@ResponseBody
 	public Map<String, Object> addMediaContent(HttpServletRequest request,@RequestParam(value = "thefile", required = false) MultipartFile[] myfiles){
@@ -72,7 +82,7 @@ public class ContentController {
 			return map;
 		}
 		System.out.println(userid+"#"+contentname);
-		map = contentService.saveFileInfo(myfiles,m);
+		map = contentService.addMediaInfo(myfiles,m);
 		return map;
 	}
 	

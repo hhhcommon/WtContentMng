@@ -27,6 +27,7 @@
   <sql id="Base_Media_List">
     id, maTitle, maPubType, maPubId, maPublisher, maPublishTime, maImg, maURL, subjectWords, keyWords, langDid, language, timeLong, descn, pubCount, cTime
   </sql>
+  
 
   <!-- 单体节目播放源 -->
   <resultMap id="maSourceMap" type="maSource">
@@ -60,6 +61,10 @@
     <result  column="pubCount"        property="pubCount"        jdbcType="INTEGER"/>
     <result  column="cTime"           property="CTime"           jdbcType="TIMESTAMP"/>
   </resultMap>
+  
+  <sql id="Base_SequMedia_List">
+    id, smaTitle, smaPubType, smaPubId, smaPublisher, smaPublishTime, smaImg, smaAllCount, subjectWords, keyWords, langDid, language, descn, pubCount, cTime
+  </sql>
 
   <!-- 专辑和单体节目关系 -->
   <resultMap id="seqMaRefMap" type="seqMaRef">
@@ -190,8 +195,12 @@
   </insert>
   
   <!-- 根据主播id获取 -->
-  <select id="getInfoByMaPubId" resultMap="mediaAssetMap" parameterType="java.lang.String">
+  <select id="getMaListByMaPubId" resultMap="mediaAssetMap" parameterType="java.lang.String">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getSmaInfoById" resultMap="seqMediaAssetMap" parameterType="java.lang.String">
+    select <include refid="Base_SequMedia_List"/>from wt_SequMediaAsset where id=#{id,jdbcType=VARCHAR}
   </select>
   
 </mapper>
