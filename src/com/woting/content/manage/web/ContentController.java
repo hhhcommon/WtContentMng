@@ -30,13 +30,12 @@ public class ContentController {
 			return map;
 		}
 		String mediatype = m.get("MediaType")+"";
-		String flowflag = m.get("ContentFlowFlag")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(mediatype)||mediatype.toLowerCase().equals("null")||StringUtils.isNullOrEmptyOrSpace(flowflag)||flowflag.toLowerCase().equals("null")) {
+		if (StringUtils.isNullOrEmptyOrSpace(mediatype)||mediatype.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "查询信息不全");
 			return map;
 		}
-		Map<String, Object> c = contentService.getContents(userid, mediatype, flowflag);
+		Map<String, Object> c = contentService.getContents(userid, mediatype);
 		if(c!=null&&c.size()>0){
 			map.put("ResultType", c.get("ResultType"));
 			c.remove("ResultType");

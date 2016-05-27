@@ -1,7 +1,6 @@
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
 	$.ajax({
-		//async:false,
         type: "POST",
         url:url,
         dataType: "json",
@@ -25,3 +24,4 @@ function commonAjax(url,data,obj,callback){
         }     
     });
 }	
+

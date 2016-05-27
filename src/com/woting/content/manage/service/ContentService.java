@@ -114,7 +114,7 @@ public class ContentService {
 		return map;
 	}
 	
-	public Map<String, Object> getContents(String userid, String mediatype, String flowflag){
+	public Map<String, Object> getContents(String userid, String mediatype){
 		Map<String, Object> map = new HashMap<String,Object>();
 		List<Map<String, Object>> listma = new ArrayList<Map<String,Object>>();
 		if (mediatype.equals("wt_MediaAsset")) listma = mediaService.getMaInfoByMaPubId(userid);
