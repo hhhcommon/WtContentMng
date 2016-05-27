@@ -116,6 +116,7 @@ public class ContentService {
 		return map;
 	}
 	
+
 	public Map<String, Object> addSequInfo(MultipartFile upfile,Map<String, Object> m){
 		Map<String, Object> map = new HashMap<String,Object>();
 		String imgpath = "";
