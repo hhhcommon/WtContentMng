@@ -86,4 +86,32 @@ public class ContentController {
 		return map;
 	}
 	
+	@RequestMapping(value = "/content/addSequContents.do")
+	@ResponseBody
+	public Map<String, Object> addSequContent(HttpServletRequest request,@RequestParam(value = "thefile", required = false) MultipartFile myfiles){
+		System.out.println("上传文件");
+		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String contentname = m.get("ContentName")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(contentname)||contentname.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无节目名称");
+			return map;
+		}
+		if(myfiles==null){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无上传文件");
+			return map;
+		}
+		System.out.println(userid+"#"+contentname);
+		map = contentService.addSequInfo(myfiles,m);
+		return map;
+	}
+	
 }
