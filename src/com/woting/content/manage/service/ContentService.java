@@ -2,9 +2,6 @@ package com.woting.content.manage.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +35,7 @@ public class ContentService {
 	}
 
 	public Map<String, Object> saveFileInfo(MultipartFile[] upfiles, Map<String, Object> uploadmap) {
+		Map<String, Object> map = new HashMap<String,Object>();
 		String[] filepaths = new String[2];
 		String filename = "";
 		String imgname = "";
@@ -63,12 +61,13 @@ public class ContentService {
 			}
 		}
 		
+		String maid = SequenceUUID.getPureUUID();
 		String sequid = uploadmap.get("ContentSequId")+"";
 		String sequtitle = uploadmap.get("ContentSequTitle")+"";
 		Timestamp ctime = new Timestamp(System.currentTimeMillis()); // 节目创建时间
 		
 		MediaAsset ma = new MediaAsset();
-		ma.setId(SequenceUUID.getPureUUID());
+		ma.setId(maid);
 		ma.setMaTitle(uploadmap.get("ContentName")+"");
 		ma.setMaImg(StringUtils.isNullOrEmptyOrSpace(filepaths[0])?"默认图片":filepaths[0]);
 		ma.setMaURL(filepaths[1]);
@@ -103,7 +102,16 @@ public class ContentService {
 		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ctime);
 		mediaService.saveMas(maSource);
-		return null;
+		
+		if(mediaService.getMaInfoById(maid) != null) {
+			map.put("ResultType", "1001");
+			map.put("Message", "上传文件成功");
+		}
+		else {
+			map.put("ResultType", "1011");
+			map.put("Message", "上传失败");
+		}
+		return map;
 	}
 	
 	public Map<String, Object> getContents(String userid, String mediatype, String flowflag){
