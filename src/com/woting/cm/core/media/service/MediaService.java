@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MaSource;
@@ -54,10 +53,19 @@ public class MediaService {
         return list;
     }
     
+    //根据主播id查询其所有专辑
+    public List<Map<String, Object>> getSmaInfoBySmaPubId(String id){
+    	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+    	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
+    	listpo = seqMediaAssetDao.queryForList("getSmaaListBySmaPubId", id);
+		return null;
+    }
+    
     //根据专辑id得到专辑
-    public int getSmaInfoById(String id) {
-    	int num = seqMediaAssetDao.getCount("getSmaInfoById", id);
-		return num;
+    public boolean getSmaInfoById(String id) {
+    	SeqMediaAssetPo smapo = seqMediaAssetDao.getInfoObject("getSmaInfoById", id);
+    	if(smapo!=null) return true;
+    	else return false;
 	}
 
     public MediaAsset getMaInfoById(String id) {

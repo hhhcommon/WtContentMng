@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spiritdata.framework.util.DateUtils;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
@@ -158,17 +159,19 @@ public class ContentService {
 		sma.setSmaPubType(3);
 		sma.setSmaPubId(m.get("UserId")+"");
 		sma.setSmaPublisher(m.get("UserName")+"");
-		sma.setDescn(StringUtils.isNullOrEmptyOrSpace(m.get("ContentDesc")+"")?"这家伙真懒，什么都没留下":(m.get("ContentDesc")+""));
 		DictDetail detail = new DictDetail();
 		detail.setId("zho");
 		detail.setNodeName("中文");
 		sma.setLang(detail);
 		if (addmediamap!=null) sma.setSmaAllCount(addmediamap.size());
-		else sma.setSmaAllCount(0);
+		else sma.setSmaAllCount(1);
 		sma.setPubCount(0);
+		
+		System.out.println(JsonUtils.objToJson(sma));
+		System.out.println(JsonUtils.objToJson(sma.convert2Po()));
 		mediaService.saveSma(sma);
 		
-		if(mediaService.getSmaInfoById(smaid)>0) {
+		if(mediaService.getSmaInfoById(smaid)) {
 			map.put("ResultType", "1001");
 			map.put("Message", "添加专辑成功");
 		} else {
@@ -182,7 +185,7 @@ public class ContentService {
 		Map<String, Object> map = new HashMap<String,Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
 		if(mediatype.equals("wt_MediaAsset")) list = mediaService.getMaInfoByMaPubId(userid);
-//		if(mediatype.equals("wt_SeqMediaAsset"))
+		if(mediatype.equals("wt_SeqMediaAsset")) list = mediaService.getSmaInfoBySmaPubId(userid);
 		System.out.println(list);
 		if(list!=null&&list.size()>0) {
 			map.put("List", list);
@@ -194,6 +197,11 @@ public class ContentService {
 			return map;
 		}
 		return map;
+	}
+	
+	public Map<String, Object> modifyStatus(String userid, String mediatype, String statusnum){
+		
+		return null;
 	}
 	
 	
