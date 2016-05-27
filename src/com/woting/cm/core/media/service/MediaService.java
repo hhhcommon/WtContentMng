@@ -1,12 +1,15 @@
 package com.woting.cm.core.media.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MaSource;
@@ -16,6 +19,7 @@ import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
+import com.woting.cm.core.utils.ContentUtils;
 import com.woting.exceptionC.Wtcm0101CException;
 
 public class MediaService {
@@ -37,15 +41,16 @@ public class MediaService {
     }
     
     //根据主播id查询其所有单体资源
-    public List<MediaAsset> getMaInfoByMaPubId(String id) {
-        List<MediaAsset> list = new ArrayList<MediaAsset>();
+    public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
+        List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
         List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
         listpo = mediaAssetDao.queryForList("getInfoByMaPubId", id);
+        Map<String, Object> m = new HashMap<String,Object>();
         System.out.println(listpo.size());
         for (MediaAssetPo mediaAssetPo : listpo) {
         	MediaAsset ma=new MediaAsset();
 			ma.buildFromPo(mediaAssetPo);
-			list.add(ma);
+			list.add(ContentUtils.convert2MediaMap_2(ma.toHashMap(), null, null));
 		}
         return list;
     }

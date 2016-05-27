@@ -66,14 +66,13 @@ public class ContentController {
 			map.put("Message", "无节目名称");
 			return map;
 		}
-		String CatalogsId = m.get("CatalogsId")+"";
-		if(StringUtils.isNullOrEmptyOrSpace(CatalogsId)||CatalogsId.toLowerCase().equals("null")){
+		if(myfiles==null&&!(myfiles.length>0)){
 			map.put("ReturnType", "1011");
-			map.put("Message", "无节目分类信息");
+			map.put("Message", "无上传文件");
 			return map;
 		}
-		System.out.println(userid+"#"+contentname+"#"+CatalogsId);
-		contentService.saveFileInfo(myfiles,m);
+		System.out.println(userid+"#"+contentname);
+		map = contentService.saveFileInfo(myfiles,m);
 		return map;
 	}
 	
