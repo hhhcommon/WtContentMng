@@ -43,8 +43,9 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="signupForm" novalidate="novalidate" action="http://localhost:908/CM/content/addMediaContents.do" method="post">
-                                    <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+                        <form class="form-horizontal m-t" id="signupForm" action="http://localhost:908/CM/content/addMediaContents.do" method="post">
+                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_MediaAsset" />
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">声音名称：</label>
                                 <div class="col-sm-8">
@@ -114,7 +115,7 @@
     <!-- jQuery Validation plugin javascript-->
     <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
     <!-- http://localhost:908/CM/index_wt.html -->
-        <script>
+    <script>
         $.validator.setDefaults({
           highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
           success:function(a){a.closest(".form-group").removeClass("has-error").addClass("has-success")},
@@ -128,12 +129,12 @@
           var a="<i class='fa fa-times-circle'></i> ";
           $("#signupForm").validate({
             rules:{
-              contentName:{required:true,minlength:2},
-              contentUrl:"required"
+              ContentName:{required:true,minlength:2},
+              thefile:"required"
           },
           messages:{
-            contentName:{required:a+"请输入您的声音名称",minlength:a+"声音名称必须两个字符以上"},
-            contentUrl:a+"您还没有选择声音文件哦"
+            ContentName:{required:a+"请输入您的声音名称",minlength:a+"声音名称必须两个字符以上"},
+            thefile:a+"您还没有选择声音文件哦"
           }
          });
        });
