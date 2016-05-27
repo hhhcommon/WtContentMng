@@ -19,10 +19,7 @@
                 <div class="tabs-container">
                     <ul class="nav nav-tabs">
                         <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">我的专辑</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">已发布</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-3" aria-expanded="false">审核中</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-4" aria-expanded="false">未通过</a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-5" aria-expanded="false">未发布</a></li>
+                        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">创建专辑</a></li>
                     </ul>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane active">
@@ -33,26 +30,79 @@
                         </div>
                         <div id="tab-2" class="tab-pane">
                             <div class="panel-body">
-                                <strong>移动设备优先2</strong>
-                                <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
-                            </div>
-                        </div>
-                        <div id="tab-3" class="tab-pane">
-                            <div class="panel-body">
-                                <strong>移动设备优先3</strong>
-                                <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
-                            </div>
-                        </div>
-                        <div id="tab-4" class="tab-pane">
-                            <div class="panel-body">
-                                <strong>移动设备优先4</strong>
-                                <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
-                            </div>
-                        </div>
-                        <div id="tab-5" class="tab-pane">
-                            <div class="panel-body">
-                                <strong>移动设备优先5</strong>
-                                <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
+                                <div class="row">
+											            <div class="col-sm-6  col-sm-offset-3">
+											                <div class="ibox float-e-margins">
+											                    <div class="ibox-title">
+											                        <h5>创建专辑</h5>
+											                        <div class="ibox-tools">
+											                            <a class="close-link"><i class="fa fa-times"></i></a>
+											                        </div>
+											                    </div>
+											                    <div class="ibox-content">
+											                        <form class="form-horizontal m-t" id="signupForm" action="http://localhost:908/CM/content/addSequMediaContents.do" enctype="multipart/form-data" method="post">
+											                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+											                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
+											                            <div class="form-group">
+											                                <label class="col-sm-3 control-label">专辑名称：</label>
+											                                <div class="col-sm-8">
+											                                    <input id="ContentName" name="ContentName" class="form-control" type="text" aria-required="true">
+											                                </div>
+											                            </div>
+											                            <div class="form-group">
+											                                <label class="col-sm-3 control-label">专辑封面：</label>
+											                                <div class="col-sm-8">
+											                                    <input id="contentImg" name="thefile" class="form-control" type="file">
+											                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、GIF、PNG格式</span>
+											                                </div>
+											                            </div>
+											                            <div class="form-group">
+											                                <label class="col-sm-3 control-label">专辑分类：</label>
+											                                <div class="col-sm-8">
+											                                    <select class="form-control" name="ContentCatalogs">
+											                                        <option value="">不 限</option>
+											                                        <option value="">新闻</option>
+											                                        <option value="">相声</option>
+											                                    </select>
+											                                </div>
+											                            </div>
+											                            <div class="form-group">
+											                                <label class="col-sm-3 control-label">专辑标签：</label>
+											                                <div class="col-sm-8">
+											                                    <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
+											                                </div>
+											                            </div>
+											                            <div class="form-group">
+											                                <label class="col-sm-3 control-label">专辑简介：</label>
+											                                <div class="col-sm-8">
+											                                    <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
+											                                </div>
+											                            </div>
+											                            <!-- 
+											                            <div class="form-group">
+											                                <label class="col-sm-3 control-label">添加声音：</label>
+											                                <div class="col-sm-8">
+											                                    <input id="contentUrl" name="contentUrl" class="form-control" type="file">
+											                                </div>
+											                            </div>
+											                             -->
+											                            <br /><br />
+											                            <div class="form-group">
+											                                <div class="col-sm-4 text-right">
+											                                    <button class="btn btn-primary" type="submit">提交</button>
+											                                </div>
+											                                <div class="col-sm-4 text-center">
+											                                    <button class="btn btn-primary" type="publish">发布</button>
+											                                </div>
+											                                <div class="col-sm-4 text-left">
+											                                    <a class="close-link btn btn-primary">取消</a>
+											                                </div>
+											                            </div>
+											                        </form>
+											                    </div>
+											                </div>
+											            </div>
+											        </div>
                             </div>
                         </div>
                     </div>
@@ -65,5 +115,30 @@
     <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
     <!-- 自定义js -->
     <script src="../resources/plugins/hplus/js/content.min(1).js"></script>
+    <!-- jQuery Validation plugin javascript-->
+    <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
+    <script>
+    $.validator.setDefaults({
+        highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
+        success:function(a){a.closest(".form-group").removeClass("has-error").addClass("has-success")},
+        errorElement:"span",
+        errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
+        errorClass:"help-block m-b-none",
+        validClass:"help-block m-b-none"
+    });
+    $().ready(function(){
+        $("#commentForm").validate();
+        var a="<i class='fa fa-times-circle'></i> ";
+        //制定表单验证规则与提示
+        $("#signupForm").validate({
+            rules:{
+              ContentName:{required:true,minlength:2},
+            },
+            messages:{
+              ContentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
+            }
+        });
+    });
+    </script>
 </body>
 </html>

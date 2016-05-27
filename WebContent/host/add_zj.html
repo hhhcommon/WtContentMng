@@ -31,24 +31,26 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="signupForm" novalidate="novalidate">
+                        <form class="form-horizontal m-t" id="signupForm" action="http://localhost:908/CM/content/addSequMediaContents.do" method="post">
+                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">专辑名称：</label>
                                 <div class="col-sm-8">
-                                    <input id="contentName" name="contentName" class="form-control" type="text" aria-required="true">
+                                    <input id="ContentName" name="ContentName" class="form-control" type="text" aria-required="true">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">专辑封面：</label>
                                 <div class="col-sm-8">
-                                    <input id="contentImg" name="contentImg" class="form-control" type="file">
+                                    <input id="contentImg" name="thefile" class="form-control" type="file">
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、GIF、PNG格式</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">专辑分类：</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" name="contentCatalogs">
+                                    <select class="form-control" name="ContentCatalogs">
                                         <option value="">不 限</option>
                                         <option value="">新闻</option>
                                         <option value="">相声</option>
@@ -58,21 +60,24 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">专辑标签：</label>
                                 <div class="col-sm-8">
-                                    <input id="contentTags" name="contentTags" class="form-control" type="text">
+                                    <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">专辑简介：</label>
                                 <div class="col-sm-8">
-                                    <textarea id="contentDesc" name="contentDesc" class="form-control"></textarea>
+                                    <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
                                 </div>
                             </div>
+                            <!-- 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">添加声音：</label>
                                 <div class="col-sm-8">
                                     <input id="contentUrl" name="contentUrl" class="form-control" type="file">
                                 </div>
                             </div>
+                             -->
+                            
                             <div class="form-group">
                                 <div class="col-sm-4 text-right">
                                     <button class="btn btn-primary" type="submit">提交</button>
@@ -106,19 +111,20 @@
         errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
         errorClass:"help-block m-b-none",
         validClass:"help-block m-b-none"
-      });
-      $().ready(function(){
-        $("#commentForm").validate();
-        var a="<i class='fa fa-times-circle'></i> ";
-        $("#signupForm").validate({
-          rules:{
-            contentName:{required:true,minlength:2},
-          },
-          messages:{
-            contentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
-          }
-        });
-      });
+    });
+    $().ready(function(){
+	      $("#commentForm").validate();
+	      var a="<i class='fa fa-times-circle'></i> ";
+	      //制定表单验证规则与提示
+	      $("#signupForm").validate({
+		        rules:{
+		          ContentName:{required:true,minlength:2},
+		        },
+		        messages:{
+		          ContentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
+		        }
+	      });
+    });
     </script>
 </body>
 </html>
