@@ -1,6 +1,7 @@
 package com.woting.content.manage.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +61,7 @@ public class ContentController {
 	 */
 	@RequestMapping(value = "/content/addMediaContents.do")
 	@ResponseBody
-	public Map<String, Object> addMediaContent(HttpServletRequest request,@RequestParam(value = "thefile", required = false) MultipartFile[] myfiles){
+	public Map<String, Object> addMediaContent(HttpServletRequest request,@RequestParam(value = "thefile", required = true) MultipartFile[] myfiles){
 		System.out.println("上传文件");
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
@@ -81,7 +82,6 @@ public class ContentController {
 			map.put("Message", "无上传文件");
 			return map;
 		}
-		System.out.println(userid+"#"+contentname);
 		map = contentService.addMediaInfo(myfiles,m);
 		return map;
 	}
@@ -125,6 +125,13 @@ public class ContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
+		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
+		if (list==null||!(list.size()>0)) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "数据参数不全");
+			return map;
+		}
+		contentService.modifyStatus(userid, list);
 		return null;
 	}
 	
