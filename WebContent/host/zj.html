@@ -106,7 +106,7 @@
 											                            <br /><br />
 											                            <div class="form-group">
 											                                <div class="col-sm-4 text-right">
-											                                    <button class="btn btn-primary" type="submit" id="submitBtn">提交</button>
+											                                    <button class="btn btn-primary" id="submitBtn">提交</button>
 											                                </div>
 											                                <div class="col-sm-4 text-center">
 											                                    <button class="btn btn-primary" type="publish">发布</button>
@@ -153,26 +153,36 @@
 	            var options = {
 	            		type:"POST",
 	            		dataType:"json",
+	            		//表单提交前进行验证
 	            		beforeSubmit:function(){
+	            			/*
 	                        var a="<i class='fa fa-times-circle'></i> ";
-	                        //制定表单验证规则与提示
-	                        $("#createZjForm").validate({
-	                            rules:{
-	                              ContentName:{required:true,minlength:2},
-	                            },
-	                            messages:{
-	                              ContentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
-	                            }
-	                        });
+                        	//制定表单验证规则与提示
+                            $("#createZjForm").validate({
+                                rules:{
+                                  ContentName:{required:true,minlength:2},
+                                },
+                                messages:{
+                                  ContentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
+                                }
+                            });
+	                        //验证不通过，则阻止提交
+	                        if($("#ContentName").val()=="" || $("#ContentName").val().length<1){
+	                        	return false;
+	                        }
+	                   */
 	                  },
 	                success: function (editResult) {
-	                	 if (editResult.ResultType=="1001") {
+	                	 if (editResult.ReturnType=="1001") {
+	                		 alert(editResult.Message);
+	                	 }else{
 	                		 alert(editResult.Message);
 	                	 }
 	                },
 	                resetForm: true
 	            };
-	            $("#createZjForm").ajaxSubmit(options);
+	            $("#createZjForm").ajaxForm(options);
+	            
 	        });
 	        
 	        //获取列表
