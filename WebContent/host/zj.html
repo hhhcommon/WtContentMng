@@ -150,9 +150,9 @@
 	    $().ready(function(){
 	        //form表单提交
 	        $("#submitBtn").click(function () {
-	        	  
 	            var options = {
-	            	
+	            		type:"POST",
+	            		dataType:"json",
 	            		beforeSubmit:function(){
 	                        var a="<i class='fa fa-times-circle'></i> ";
 	                        //制定表单验证规则与提示
@@ -216,7 +216,6 @@
 	                  
 	                  var defaultImg="../resources/images/a9.jpg";
 	                  var img=actList.ResultList.List[i].ContentImg;
-	                  alert(img);
 	                  thumbImg.attr({'src':img=="默认图片"?defaultImg:img});
 	                  conDiv=$("<div class='listCon'>");
 	                  conH=$("<h3></h3>");

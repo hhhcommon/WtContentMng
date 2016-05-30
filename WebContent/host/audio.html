@@ -167,16 +167,16 @@
           function getAudioList(UserId,MediaType){
         	  $.ajax({
         		        type: "POST",
-        		        url:rootPath+"content/getListContents.do",
+        		        url:"http://localhost:908/CM/content/getListContents.do",
         		        dataType: "json",
         		        data:JSON.stringify({"UserId":UserId,"MediaType":MediaType}),
         		        beforeSend:function(){$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
         		        success: function(ContentList) {
-        		            if (ContentList.ResultType=="1001") {
+        		            if (ContentList.ReturnType=="1001") {
         		            	  $(".actList").html(""); //再重新创建新的数据集时，先清空之前的
         		                ContentListLoad(ContentList);
         		            } else {
-        		            	$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.ResultList.Message)+")";
+        		            	$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.Message)+")";
                             }
                         },
                         error: function(jqXHR){
@@ -198,7 +198,9 @@
                     listDiv=$("<div class='listBox'></div>");
                     imgDiv=$("<div class='listImg'>");
                     thumbImg=$("<img alt='image'>");
-                    thumbImg.attr({'src':"../resources/images/a9.jpg"});
+                    var defaultImg="../resources/images/a9.jpg";
+                    var img=actList.ResultList.List[i].ContentImg;
+                    thumbImg.attr({'src':img=="默认图片"?defaultImg:img});
                     conDiv=$("<div class='listCon'>");
                     conH=$("<h3></h3>");
                     conP1=$("<p class='secTitle'></p>");
