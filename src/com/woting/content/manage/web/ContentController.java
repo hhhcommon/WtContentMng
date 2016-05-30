@@ -131,8 +131,8 @@ public class ContentController {
 			map.put("Message", "数据参数不全");
 			return map;
 		}
-		contentService.modifyStatus(userid, list);
-		return null;
+		map = contentService.modifyStatus(userid, list);
+		return map;
 	}
 	
 }
