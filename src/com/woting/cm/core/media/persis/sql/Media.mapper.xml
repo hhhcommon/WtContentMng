@@ -210,5 +210,4 @@
     select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
   </select>
   
-  
 </mapper>

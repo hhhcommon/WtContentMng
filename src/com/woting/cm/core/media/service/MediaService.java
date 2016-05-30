@@ -81,6 +81,7 @@ public class MediaService {
     	sma.buildFromPo(smapo);
     	return sma;
 	}
+    
     //根据栏目id得到栏目
     public Channel getChInfoById(String id){
     	Channel ch = new Channel();
@@ -89,12 +90,16 @@ public class MediaService {
     	return ch;
     }
     
-    //
+    //根据栏目发布表id得到栏目发布信息
     public ChannelAsset getCAInfoById(String id){
-    	ChannelAsset ca = new ChannelAsset();
+    	ChannelAsset cha = new ChannelAsset();
     	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
-    	ca.buildFromPo(chapo);
-		return ca;
+    	cha.buildFromPo(chapo);
+		return cha;
+    }
+    
+    public void updateCHA(ChannelAsset cha){
+    	channelAssetDao.update("", cha);
     }
 
     public MediaAsset getMaInfoById(String id) {

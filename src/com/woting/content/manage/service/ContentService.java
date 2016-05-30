@@ -38,6 +38,12 @@ public class ContentService {
 		filepath = filepath + DateUtils.convert2DateStr(new Date(System.currentTimeMillis())) + "/";
 	}
 
+	/**
+	 * 上传单体节目
+	 * @param upfiles
+	 * @param uploadmap
+	 * @return
+	 */
 	public Map<String, Object> addMediaInfo(MultipartFile[] upfiles, Map<String, Object> uploadmap) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String[] filepaths = new String[2];
@@ -118,6 +124,12 @@ public class ContentService {
 		return map;
 	}
 
+	/**
+	 * 创建专辑
+	 * @param upfile
+	 * @param m
+	 * @return
+	 */
 	public Map<String, Object> addSequInfo(MultipartFile upfile, Map<String, Object> m) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String imgpath = "";
@@ -181,6 +193,12 @@ public class ContentService {
 		return map;
 	}
 
+	/**
+	 * 查询主播的资源列表
+	 * @param userid
+	 * @param mediatype
+	 * @return
+	 */
 	public Map<String, Object> getContents(String userid, String mediatype) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -200,6 +218,12 @@ public class ContentService {
 		return map;
 	}
 
+	/**
+	 * 修改专辑，单体的发布状态
+	 * @param userid
+	 * @param list
+	 * @return
+	 */
 	public Map<String, Object> modifyStatus(String userid, List<Map<String, Object>> list) {
 		for (Map<String, Object> m : list) {
 			String mediatype = m.get("MediaType") + "";
@@ -217,7 +241,10 @@ public class ContentService {
 
 	private Map<String, Object> modifySeqStatus(String userid, Map<String, Object> m) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String caid = SequenceUUID.getPureUUID();
+		String caid = m.get("ChannelAssetId")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(caid)||caid.toLowerCase().equals("null")) {
+			caid = SequenceUUID.getPureUUID();
+		}
 		String contentid = m.get("ContentId") + "";
 		String contenttitle = m.get("ContentTitle") + "";
 		String contentimg = m.get("ContentImg") + "";
@@ -233,23 +260,23 @@ public class ContentService {
 		}
 		if (flowflag.equals("1")) {
 			SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
-			ChannelAsset ca = new ChannelAsset();
-			ca.setId(caid);
+			ChannelAsset cha = new ChannelAsset();
+			cha.setId(caid);
 			Channel ch = mediaService.getChInfoById(channelid);
-			ca.setCh(ch);
-			ca.setPubObj(new SeqMediaAsset());
-			ca.setPublisherId(userid);
+			cha.setCh(ch);
+			cha.setPubObj(new SeqMediaAsset());
+			cha.setPublisherId(userid);
 			if (!StringUtils.isNullOrEmptyOrSpace(contenttitle) && !contenttitle.toLowerCase().equals("null"))
-				ca.setPubName(contenttitle);
+				cha.setPubName(contenttitle);
 			if (!StringUtils.isNullOrEmptyOrSpace(contentimg) && !contentimg.toLowerCase().equals("null"))
-				ca.setPubImg(contentimg);
-			ca.setPubObj(sma);
-			ca.setCheckerId("1");
-			ca.setFlowFlag(1);
-			ca.setSort(0);
-			ca.setCheckRuleIds("0");
-			ca.setCTime(new Timestamp(System.currentTimeMillis()));
-			ca.setIsValidate(1);
+				cha.setPubImg(contentimg);
+			cha.setPubObj(sma);
+			cha.setCheckerId("1");
+			cha.setFlowFlag(1);
+			cha.setSort(0);
+			cha.setCheckRuleIds("0");
+			cha.setCTime(new Timestamp(System.currentTimeMillis()));
+			cha.setIsValidate(1);
 			if(mediaService.getCAInfoById(caid)!=null){
 				map.put("ReturnType", "1001");
 				map.put("Message", "专辑处于待审核状态");
@@ -258,7 +285,12 @@ public class ContentService {
 				map.put("Message", "专辑提交审核失败");
 			}
 		}else {
-			
+			if(flowflag.equals("2")) {
+				SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
+				ChannelAsset cha = mediaService.getCAInfoById(caid);
+				cha.setFlowFlag(2);
+//				mediaService.up
+			}
 		}
 		return map;
 	}
