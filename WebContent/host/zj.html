@@ -57,7 +57,7 @@
 											            <div class="col-sm-6  col-sm-offset-3">
 											                <div class="ibox float-e-margins">
 											                    <div class="ibox-content">
-											                        <form class="form-horizontal m-t" id="createZjForm" action="http://localhost:908/CM/content/addSequContents.do" method="post">
+											                        <form class="form-horizontal m-t" id="createZjForm" action="http://localhost:908/CM/content/addSequContents.do" method="post" enctype="multipart/form-data">
 											                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
 											                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
 											                            <div class="form-group">
@@ -132,6 +132,8 @@
     <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
     <!-- 自定义js -->
     <script src="../resources/plugins/hplus/js/content.min(1).js"></script>
+    
+    <script src="../resources/js/context.utils.js"></script>
     <script src="../resources/js/host.js"></script>
     <!-- jQuery Validation plugin javascript-->
     <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
@@ -146,27 +148,30 @@
 	        validClass:"help-block m-b-none"
 	    });
 	    $().ready(function(){
-	        $("#commentForm").validate();
-	        var a="<i class='fa fa-times-circle'></i> ";
-	        //制定表单验证规则与提示
-	        $("#createZjForm").validate({
-	            rules:{
-	              ContentName:{required:true,minlength:2},
-	            },
-	            messages:{
-	              ContentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
-	            }
-	        });
 	        //form表单提交
 	        $("#submitBtn").click(function () {
-	        	  alert("aaa");
+	        	  
 	            var options = {
-	                success: function (ContentList) {
-	                	 if (ContentList.ResultType=="1001") {
-	                		 alert("yes");
-	                        alert(ContentList);;
+	            	
+	            		beforeSubmit:function(){
+	                        alert("提交前的验证");
+	                        var a="<i class='fa fa-times-circle'></i> ";
+	                        //制定表单验证规则与提示
+	                        $("#createZjForm").validate({
+	                            rules:{
+	                              ContentName:{required:true,minlength:2},
+	                            },
+	                            messages:{
+	                              ContentName:{required:a+"请输入专辑名称",minlength:a+"专辑名称必须两个字符以上"}
+	                            }
+	                        });
+	                  },
+	                success: function (editResult) {
+	                	 if (editResult.ResultType=="1001") {
+	                		 alert(editResult.Message);
 	                	 }
-	                }
+	                },
+	                resetForm: true
 	            };
 	            $("#createZjForm").ajaxSubmit(options);
 	        });
@@ -174,11 +179,13 @@
 	        //获取列表
 	        getAudioList($("#UserId").val(),"wt_SeqMediaAsset");
 	        function getAudioList(UserId,MediaType){
+	        	var url="http://localhost:908/CM/content/getListContents.do";
+	        	var data=JSON.stringify({"UserId":UserId,"MediaType":MediaType});
 	          $.ajax({
 	                  type: "POST",
-	                  url:"http://localhost:908/CM/content/getListContents.do",
+	                  url:url,
 	                  dataType: "json",
-	                  data:JSON.stringify({"UserId":UserId,"MediaType":MediaType}),
+	                  data:data,
 	                  beforeSend:function(){$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
 	                  success: function(ContentList) {
 	                      if (ContentList.ResultType=="1001") {
@@ -197,6 +204,7 @@
 	      //创建节目列表DOM树
 	        function ContentListLoad(actList){
 	            var actListLength=actList.ResultList.AllCount;
+	            alert(actListLength);
 	            if(actListLength==0){
 	              $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
 	            }else{
