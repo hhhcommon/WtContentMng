@@ -1,7 +1,6 @@
 package com.woting.cm.core.media.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +10,10 @@ import javax.annotation.Resource;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.channel.model.Channel;
+import com.woting.cm.core.channel.model.ChannelAsset;
+import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelPo;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -30,6 +33,10 @@ public class MediaService {
     private MybatisDAO<SeqMediaAssetPo> seqMediaAssetDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<SeqMaRefPo> seqMaRefDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<ChannelAssetPo> channelAssetDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<ChannelPo> channelDao;
 
     @PostConstruct
     public void initParam() {
@@ -37,6 +44,8 @@ public class MediaService {
         maSourceDao.setNamespace("A_MEDIA");
         seqMaRefDao.setNamespace("A_MEDIA");
         seqMediaAssetDao.setNamespace("A_MEDIA");
+        channelAssetDao.setNamespace("A_CHANNELASSET");
+        channelDao.setNamespace("A_CHANNEL");
     }
     
     //根据主播id查询其所有单体资源
@@ -66,15 +75,31 @@ public class MediaService {
     }
     
     //根据专辑id得到专辑
-    public boolean getSmaInfoById(String id) {
+    public SeqMediaAsset getSmaInfoById(String id) {
+    	SeqMediaAsset sma = new SeqMediaAsset();
     	SeqMediaAssetPo smapo = seqMediaAssetDao.getInfoObject("getSmaInfoById", id);
-    	if(smapo!=null) return true;
-    	else return false;
+    	sma.buildFromPo(smapo);
+    	return sma;
 	}
+    //根据栏目id得到栏目
+    public Channel getChInfoById(String id){
+    	Channel ch = new Channel();
+    	ChannelPo chpo = channelDao.getInfoObject("getInfo", id);
+    	ch.buildFromPo(chpo);
+    	return ch;
+    }
+    
+    //
+    public ChannelAsset getCAInfoById(String id){
+    	ChannelAsset ca = new ChannelAsset();
+    	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
+    	ca.buildFromPo(chapo);
+		return ca;
+    }
 
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();
-        ma.buildFromPo(mediaAssetDao.getInfoObject("getInfoById", id));
+        ma.buildFromPo(mediaAssetDao.getInfoObject("getMaInfoById", id));
         return ma;
     }
 
