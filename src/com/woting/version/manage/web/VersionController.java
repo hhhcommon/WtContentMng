@@ -63,10 +63,10 @@ public class VersionController {
             //1-获得参数
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
             VersionConfig vfg=new VersionConfig();
-            if (m!=null&&m.get("PubUrl")!=null&&StringUtils.isNullOrEmptyOrSpace(m.get("PubUrl")+"")) vfg.setPubUrl(m.get("PubUrl")+"");
-            if (m!=null&&m.get("PubFileName")!=null&&StringUtils.isNullOrEmptyOrSpace(m.get("PubFileName")+"")) vfg.setPubFileName(m.get("PubFileName")+"");
-            if (m!=null&&m.get("PubStorePath")!=null&&StringUtils.isNullOrEmptyOrSpace(m.get("PubStorePath")+"")) vfg.setPubStorePath(m.get("PubStorePath")+"");
-            if (m!=null&&m.get("VerGoodsStorePath")!=null&&StringUtils.isNullOrEmptyOrSpace(m.get("VerGoodsStorePath")+"")) vfg.setVerGoodsStorePath(m.get("VerGoodsStorePath")+"");
+            if (m!=null&&m.get("PubUrl")!=null&&!StringUtils.isNullOrEmptyOrSpace(m.get("PubUrl")+"")) vfg.setPubUrl(m.get("PubUrl")+"");
+            if (m!=null&&m.get("PubFileName")!=null&&!StringUtils.isNullOrEmptyOrSpace(m.get("PubFileName")+"")) vfg.setPubFileName(m.get("PubFileName")+"");
+            if (m!=null&&m.get("PubStorePath")!=null&&!StringUtils.isNullOrEmptyOrSpace(m.get("PubStorePath")+"")) vfg.setPubStorePath(m.get("PubStorePath")+"");
+            if (m!=null&&m.get("VerGoodsStorePath")!=null&&!StringUtils.isNullOrEmptyOrSpace(m.get("VerGoodsStorePath")+"")) vfg.setVerGoodsStorePath(m.get("VerGoodsStorePath")+"");
             if (m==null
                || (StringUtils.isNullOrEmptyOrSpace(vfg.getPubUrl())
                  &&StringUtils.isNullOrEmptyOrSpace(vfg.getPubFileName())
@@ -75,6 +75,7 @@ public class VersionController {
                ) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获得有用参数");
+                return map;
             }
             int result=verService.saveVerConfig(vfg);
             if (result!=1&&result!=2) throw new Exception("未知问题，无法保存");

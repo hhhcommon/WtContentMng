@@ -1,5 +1,8 @@
 package com.woting.version.core.service;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +48,7 @@ public class VersionService {
     }
     /**
      * 保存版本配置信息
-     * @return 若保存成功返回1，否则返回0
+     * @return 若保存成功返回1，否则返回2
      */
     public int saveVerConfig(VersionConfig vfg) {
         VersionConfig oldCfg=getVerConfig();
@@ -56,7 +59,11 @@ public class VersionService {
           ||(!StringUtils.isNullOrEmptyOrSpace(vfg.getVerGoodsStorePath())&&!vfg.getVerGoodsStorePath().equals(oldCfg.getVerGoodsStorePath()))
             ;
         if (!changed) return 2;
-        return verCfgDao.update(vfg);
+
+        Connection conn=null;
+        Statement st=null;
+        ResultSet rs=null;
+        return verCfgDao.update("updateCfg", vfg);
     }
     //版本配置End======================================================================================================
 
