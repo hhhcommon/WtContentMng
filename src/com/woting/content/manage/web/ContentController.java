@@ -43,8 +43,8 @@ public class ContentController {
 		}
 		Map<String, Object> c = contentService.getContents(userid, mediatype);
 		if(c!=null&&c.size()>0){
-			map.put("ResultType", c.get("ResultType"));
-			c.remove("ResultType");
+			map.put("ReturnType", c.get("ReturnType"));
+			c.remove("ReturnType");
 			map.put("ResultList", c);
 		}else{
 			map.put("ReturnType", "1011");
