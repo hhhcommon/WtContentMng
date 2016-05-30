@@ -99,7 +99,7 @@ public class MediaService {
     }
     
     public void updateCHA(ChannelAsset cha){
-    	channelAssetDao.update("", cha);
+    	channelAssetDao.update("update", cha);
     }
 
     public MediaAsset getMaInfoById(String id) {

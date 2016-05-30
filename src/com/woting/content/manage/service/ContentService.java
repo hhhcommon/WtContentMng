@@ -289,7 +289,23 @@ public class ContentService {
 				SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
 				ChannelAsset cha = mediaService.getCAInfoById(caid);
 				cha.setFlowFlag(2);
-//				mediaService.up
+				mediaService.updateCHA(cha);
+			}
+			else {
+				if(flowflag.equals("3")) {
+					SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
+					ChannelAsset cha = mediaService.getCAInfoById(caid);
+					cha.setFlowFlag(3);
+					mediaService.updateCHA(cha);
+				}
+				else {
+					if(flowflag.equals("4")) {
+						SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
+						ChannelAsset cha = mediaService.getCAInfoById(caid);
+						cha.setFlowFlag(4);
+						mediaService.updateCHA(cha);
+					}
+				}
 			}
 		}
 		return map;

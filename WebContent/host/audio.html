@@ -57,7 +57,7 @@
 												            <div class="col-sm-6  col-sm-offset-3">
 												                <div class="ibox float-e-margins">
 												                    <div class="ibox-content">
-												                        <form class="form-horizontal m-t" id="signupForm" action="http://localhost:908/CM/content/addMediaContents.do" enctype="multipart/form-data" method="post">
+												                        <form class="form-horizontal m-t" id="addAudioForm" action="http://localhost:908/CM/content/addMediaContents.do" enctype="multipart/form-data" method="post">
 												                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
 												                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_MediaAsset" />
 												                            <div class="form-group">
@@ -133,6 +133,8 @@
     <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
     <!-- 自定义js -->
     <script src="../resources/plugins/hplus/js/content.min(1).js"></script>
+    
+    <script src="../resources/js/context.utils.js"></script>
     <script src="../resources/js/host.js"></script>
     <!-- jQuery Validation plugin javascript-->
     <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
@@ -148,9 +150,8 @@
         });
         $().ready(function(){
         	//表单验证
-          $("#commentForm").validate();
           var a="<i class='fa fa-times-circle'></i> ";
-          $("#signupForm").validate({
+          $("#addAudioForm").validate({
             rules:{
               ContentName:{required:true,minlength:2},
               thefile:"required"
@@ -166,7 +167,7 @@
           function getAudioList(UserId,MediaType){
         	  $.ajax({
         		        type: "POST",
-        		        url:"http://localhost:908/CM/content/getListContents.do",
+        		        url:rootPath+"content/getListContents.do",
         		        dataType: "json",
         		        data:JSON.stringify({"UserId":UserId,"MediaType":MediaType}),
         		        beforeSend:function(){$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
