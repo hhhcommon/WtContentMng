@@ -18,9 +18,9 @@
 	    <link href="./resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
 	    <link href="./resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
 	    <link href="./resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-		<link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.css" rel="stylesheet" id="layui_layer_skinlayercss">
-		<link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.ext.css" rel="stylesheet" id="layui_layer_skinlayerextcss">
-		<link href="./resources/plugins/hplus/js/plugins/layer/skin/moon/style.css" rel="stylesheet" id="layui_layer_skinmoonstylecss">
+		  <link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.css" rel="stylesheet" id="layui_layer_skinlayercss">
+		  <link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.ext.css" rel="stylesheet" id="layui_layer_skinlayerextcss">
+		  <link href="./resources/plugins/hplus/js/plugins/layer/skin/moon/style.css" rel="stylesheet" id="layui_layer_skinmoonstylecss">
 	    <script src="./resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
 	    <script src="./resources/js/mainPage.js"></script>
 
@@ -87,7 +87,7 @@
                         }    
                 });
 				*/
-              });
+        });
 		</script>
 	</head>
 	<body class="fixed-sidebar full-height-layout gray-bg pace-done fixed-nav">
@@ -99,17 +99,17 @@
 		</div>
 	    <div id="wrapper">
 	        <!--左侧导航开始-->
-	        <nav class="navbar-default navbar-static-side" role="navigation" style="display: block;height:calc(100% - 60px);">
+	        <nav class="navbar-default navbar-static-side" role="navigation" style="height:calc(100% - 60px);">
 	            <div class="slimScrollDiv" style="position: relative; width: auto; height: 100%;border-right:1px solid #ccc;">
 		            <div class="sidebar-collapse" style="width: auto; height: 100%;">
 		            	<ul class="nav" id="side-menu" style="display: block;">
 		                	<!--主菜单-->
-		                    <!--主菜单三 个人中心-->
+		                    <!--主菜单主播平台-->
 		                    <li>
-		                        <a href="javascript:;"><i class="fa fa-desktop"></i><span class="nav-label">个人中心</span><span class="fa arrow"></span></a>
+		                        <a href="javascript:;"><i class="fa fa-microphone"></i><span class="nav-label">主播平台</span><span class="fa arrow"></span></a>
 		                        <ul class="nav nav-second-level collapse">
-		                            <li><a class="J_menuItem" href="./review/table_bootstrap.html">表格</a></li>
-		                            <li><a class="J_menuItem" href="./review/layer.html">个人资料</a></li>		                           
+		                            <li><a class="J_menuItem" href="./host/audio.html">声音管理</a></li>
+                                <li><a class="J_menuItem" href="./host/zj.html">专辑管理</a></li>                           
 		                        </ul>
 		                    </li>
 		                    <li>
@@ -124,7 +124,7 @@
 	        </nav>
 	        <!--左侧导航结束-->
 	        <!--右侧部分开始-->
-	        <div id="page-wrapper" class="gray-bg dashbard-1">
+	        <div id="page-wrapper" class="gray-bg dashbard-1" style="height:calc(100%);">
 	            <div class="row border-bottom">
 	                <nav class="navbar navbar-fixed-top" role="navigation" style="margin-bottom:0;height:60px;line-height:60px;">
 	               		<div class="" style="float:left;width:15%;">
@@ -160,7 +160,7 @@
 	                <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i></button>
 	                <nav class="page-tabs J_menuTabs">
 	                    <div class="page-tabs-content" style="margin-left: 0px;">
-	                        <a href="javascript:;" class="J_menuTab active" data-id="home.html">首页</a>
+	                        <a href="javascript:;" class="J_menuTab active" data-id="review/home.html">首页</a>
 	                    </div>
 	                </nav>
 	                <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i></button>
@@ -175,7 +175,7 @@
 	                </div>                
 	            </div>
 	            <!--右侧主操作区-->
-	            <div class="row J_mainContent" id="content-main" style="min-width:1000px;overflow-x:auto;">
+	            <div class="row J_mainContent" id="content-main">
 	            	<!--登录进来，默认显示Home欢迎首页-->
 	           		<iframe class="J_iframe" width="100%" height="100%" src="./review/home.html" frameborder="0" data-id="home.html" seamless=""></iframe>
 	           	</div>

@@ -1,0 +1,82 @@
+@charset "utf-8";
+li,a,input{
+  outline:0;
+}
+body{
+  font-family:'Microsoft Yahei','Arial';
+}
+
+.listBox{
+  width:100%;
+  height:120px;
+  padding:15px;
+  border-bottom:1px solid #f3f3f4;
+  position:relative;
+  cursor:pointer;
+}
+
+.listBox:hover{
+  background-color:#eff3f6;
+}
+.listBox .listImg{
+  height:100%;
+  width:15%;
+  margin-right:15px;
+  margin-left:6px;
+}
+.listBox .listImg img{
+  height:100%;
+  width:100%;
+}
+.listBox .listImg,
+.listBox .listCon{
+  float:left;
+}
+.listBox .listCon{
+  width:70%;
+  height:100%;
+}
+
+.listBox p{
+  margin:0 0 2px;
+}
+.listBox .listCon h3{
+  font-size:12px;
+  margin-top:0;
+  margin-bottom:2px;
+  color:#636363;
+  position:relative;
+  display:inline-block;
+  max-width:180px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listBox h3 span{
+  width:30px;
+  height:16px;
+  font-size:10px;
+  font-weight: normal;
+  line-height:20px;
+  text-align: center;
+  border-radius: 5px;
+  position:absolute;
+  right:0;
+  bottom:0;
+  color:white;
+  -webkit-transform: scale(0.9);
+}
+.listBox .secTitle{
+  font-size:12px;
+  color:#ccc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listBox .other{
+  font-size:12px;
+  color:#3871a6;
+}
+.listBox .other span{
+  padding-right:12px;
+}

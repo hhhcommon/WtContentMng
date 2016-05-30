@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>声音管理</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+    <link href="../resources/css/host.css" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="tabs-container">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#tab-1">我的声音</a></li>
+                        <li class=""><a data-toggle="tab" href="#tab-2">上传声音</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-8 actList"></div>
+                                    <div class="col-sm-4 text-center" style="border-left:2px solid #f3f3f4">
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />
+                                                                                                                    今日热点<br /><br />                                                                
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="panel-body">
+                                <div class="row">
+												            <div class="col-sm-6  col-sm-offset-3">
+												                <div class="ibox float-e-margins">
+												                    <div class="ibox-content">
+												                        <form class="form-horizontal m-t" id="signupForm" action="http://localhost:908/CM/content/addMediaContents.do" enctype="multipart/form-data" method="post">
+												                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+												                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_MediaAsset" />
+												                            <div class="form-group">
+												                                <label class="col-sm-3 control-label">声音名称：</label>
+												                                <div class="col-sm-8">
+												                                    <input id="ContentName" name="ContentName" class="form-control" type="text">
+												                                </div>
+												                            </div>
+												                            <div class="form-group">
+												                                <label class="col-sm-3 control-label">声音封面：</label>
+												                                <div class="col-sm-8">
+												                                    <input id="ContentImg" name="thefile" class="form-control" type="file" aria-required="true">
+												                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、GIF、PNG格式</span>
+												                                </div>
+												                            </div>
+												                            <div class="form-group">
+												                                <label class="col-sm-3 control-label">选择文件：</label>
+												                                <div class="col-sm-8">
+												                                    <input id="ContentFile" name="thefile" class="form-control" type="file">
+												                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大5M，支持mp3、m4a格式</span>
+												                                </div>
+												                            </div>
+												                            <div class="form-group">
+												                                <label class="col-sm-3 control-label">选择专辑：</label>
+												                                <div class="col-sm-8">
+												                                    <select class="form-control" name="ContentSequTitle">
+												                                        <option value="">默认</option>
+												                                        <option value="">后来</option>
+												                                        <option value="">Bingo</option>
+												                                    </select>
+												                                </div>
+												                            </div>
+												                            <div class="form-group">
+												                                <label class="col-sm-3 control-label">声音标签：</label>
+												                                <div class="col-sm-8">
+												                                    <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
+												                                </div>
+												                            </div>
+												                            <div class="form-group">
+												                                <label class="col-sm-3 control-label">声音描述：</label>
+												                                <div class="col-sm-8">
+												                                    <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
+												                                </div>
+												                            </div>
+												                            <br /><br />
+												                            <div class="form-group">
+												                                <div class="col-sm-4 text-right">
+												                                    <button class="btn btn-primary" type="submit">提交</button>
+												                                </div>
+												                                <div class="col-sm-4 text-center">
+												                                    <button class="btn btn-primary" type="publish">发布</button>
+												                                </div>
+												                                <div class="col-sm-4 text-left">
+												                                    <a class="close-link btn btn-primary">
+												                                                                                                    取消
+												                                    </a>
+												                                </div>
+												                            </div>
+												                        </form>
+												                    </div>
+												                </div>
+												            </div>
+												        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 全局js -->
+    <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+    <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+    <!-- 自定义js -->
+    <script src="../resources/plugins/hplus/js/content.min(1).js"></script>
+    <script src="../resources/js/host.js"></script>
+    <!-- jQuery Validation plugin javascript-->
+    <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
+    
+    <script>
+        $.validator.setDefaults({
+          highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
+          success:function(a){a.closest(".form-group").removeClass("has-error").addClass("has-success")},
+          errorElement:"span",
+          errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
+          errorClass:"help-block m-b-none",
+          validClass:"help-block m-b-none"
+        });
+        $().ready(function(){
+        	//表单验证
+          $("#commentForm").validate();
+          var a="<i class='fa fa-times-circle'></i> ";
+          $("#signupForm").validate({
+            rules:{
+              ContentName:{required:true,minlength:2},
+              thefile:"required"
+            },
+	          messages:{
+	            ContentName:{required:a+"请输入您的声音名称",minlength:a+"声音名称必须两个字符以上"},
+	            thefile:a+"您还没有选择声音文件哦"
+	          }
+          });
+          
+          //获取列表
+          getAudioList($("#UserId").val(),"wt_MediaAsset");
+          function getAudioList(UserId,MediaType){
+        	  $.ajax({
+        		        type: "POST",
+        		        url:"http://localhost:908/CM/content/getListContents.do",
+        		        dataType: "json",
+        		        data:JSON.stringify({"UserId":UserId,"MediaType":MediaType}),
+        		        beforeSend:function(){$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
+        		        success: function(ContentList) {
+        		            if (ContentList.ResultType=="1001") {
+        		            	  $(".actList").html(""); //再重新创建新的数据集时，先清空之前的
+        		                ContentListLoad(ContentList);
+        		            } else {
+        		            	$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.ResultList.Message)+")";
+                            }
+                        },
+                        error: function(jqXHR){
+                          $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        		        }     
+        		    });
+          }
+          
+        //创建节目列表DOM树
+          function ContentListLoad(actList){
+              var actListLength=actList.ResultList.AllCount;
+              if(actListLength==0){
+                $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
+              }else{
+                //声明下面需要创建的节点，以便添加内容和添加到文档中
+                var actListDiv,listDiv,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
+                //循环加载列表
+                for(var i=0;i<actListLength;i++){
+                    listDiv=$("<div class='listBox'></div>");
+                    imgDiv=$("<div class='listImg'>");
+                    thumbImg=$("<img alt='image'>");
+                    thumbImg.attr({'src':"../resources/images/a9.jpg"});
+                    conDiv=$("<div class='listCon'>");
+                    conH=$("<h3></h3>");
+                    conP1=$("<p class='secTitle'></p>");
+                    conP1.text(actList.ResultList.List[i].ContentDesc);
+                    
+                    imgDiv.append(thumbImg);
+                    //根据类型显示不同的标记
+                    conH.text(actList.ResultList.List[i].ContentName);
+                    conDiv.append(conH).append(conP1);
+                    listDiv.append(imgDiv).append(conDiv);
+                    
+                    $(".actList").append(listDiv);
+                }
+              }
+          }
+          
+       });
+    </script>
+</body>
+</html>

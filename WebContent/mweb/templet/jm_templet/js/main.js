@@ -54,7 +54,10 @@ $(function(){
 	        $('.currentMusicBarRound')[0].style.left = parseInt(progressValue) + 'px';
 
 	        //播放时长
-	    	$(".playTime").text(formatTime(Math.round(this.currentTime)));
+	        if(formatTime(Math.round(this.currentTime))!=0){
+	        		$(".playTime").text(formatTime(Math.round(this.currentTime)));
+	        }
+	    	
 	    };
 	},false);
 
@@ -70,11 +73,25 @@ $(function(){
 			    if(val.className!="play_state"){
 					audio.pause();
 			    }
+
 			});
 			$(".audioLi").children("span").removeClass("playing").removeClass("play_pause").end().children(".audioIntro").children("h3").css({"color":"#fea734"});
 			$(this).children("span").addClass("playing").end().children(".audioIntro").children("h3").css({"color":"#e96600"});
+			$(".palyCtrlBox").children("h4").text($(this).children(".audioIntro").children("h3").text());
 			audio.src=$(this).attr("data-src");
 			audio.play();
+
+			//判断第一个和最后一个，对上一个、下一个样式进行控制
+			$.each($(".play_state"), function(i,val){
+			    if(val.className!="play_state"){
+					audio.pause();
+			    }
+			});
+			if($(this).first().hasClass("")){
+
+			}else{
+
+			}
 		}
 
 		//从推荐列表选择声音时，播放面板的控制变化
@@ -90,15 +107,23 @@ $(function(){
 	$(".next").on("click",function(){
 		if(isList){
 			$.each($(".play_state"), function(i,val){
+				//alert($(".audioLi").length);
 				//如果有正在播放的列表，那么播放下一条，如果没有，则播放第一条
 			    if(val.className!="play_state"){
+			    	
 			    	//判断是否为最后一个
 			    	if(i>=$(".audioLi").length-1){
-		    			$(".next").css({"color":"#afafaf","cursor":"default"});
 		    			return false;
+		    		}
+		    		if(i==$(".audioLi").length-2){
+		    			$(".next").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+		    		}
+		    		if(i>=0){
+		    			$(".previous").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -84px","cursor":"pointer"});
 		    		}
 		    		$(".audioLi").children("span").removeClass("playing").removeClass("play_pause").end().children(".audioIntro").children("h3").css({"color":"#fea734"});
 		    		listNum=i+1;
+		    		$(".palyCtrlBox").children("h4").text($(".audioLi").eq(listNum).children(".audioIntro").children("h3").text());
 					audio.src=$(".audioLi").eq(listNum).data("src");
 			    	audioPlay($(".audioLi").eq(listNum),audio,true);
 			    	$(".playControl").addClass("play");
@@ -106,6 +131,7 @@ $(function(){
 			    }
 			});
 		}else{
+			$(".palyCtrlBox").children("h4").text($(".audioLi").eq(listNum).children(".audioIntro").children("h3").text());
 			audio.src=$(".audioLi").eq(listNum).data("src");
 			audioPlay($(".audioLi").eq(listNum),audio,true);
 			$(".playControl").addClass("play");
@@ -119,93 +145,68 @@ $(function(){
 			    if(val.className!="play_state"){
 			    	//判断是否为第一个
 		    		if(i<=0){
-		    			$(".previous").css({"color":"#afafaf","cursor":"default"});
 		    			return false;
+		    		}else if(i==1){
+		    			$(".previous").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
 		    		}
-		    		$(".audioLi").children("span").removeClass("playing").removeClass("play_pause").end().children(".audioIntro").children("h3").css({"color":"#fea734"});
+		    		if(i<=$(".audioLi").length-1){
+		    			$(".next").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -116px","cursor":"pointer"});
+		    		}
 		    		listNum=i-1;
+		    		
+		    		$(".audioLi").children("span").removeClass("playing").removeClass("play_pause").end().children(".audioIntro").children("h3").css({"color":"#fea734"});
+		    		$(".palyCtrlBox").children("h4").text($(".audioLi").eq(listNum).children(".audioIntro").children("h3").text());
 					audio.src=$(".audioLi").eq(listNum).data("src");
 			    	audioPlay($(".audioLi").eq(listNum),audio,true);
 			    	$(".playControl").addClass("play");
 			    	return false;
 			    
-			}});
+			}
+		});
 	});
-// callback:"callbackAction",
 
 	//请求推荐资源列表
 	var searchStr=$(".palyCtrlBox").children("h4").text();
-	alert(searchStr);
 	$.ajax({
-	        url: "http://182.92.175.134:808/wt/searchByText.do",
-	        type:"POST",
-	        dataType:"jsonp",
-	        jsonp: "jsonpCallback",
-	        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0",Page:"0",PageSize:"5"},
-	        //返回Json类型    
-            contentType: "application/json;utf-8", 
-	        success: function(resultData) {
-	        	alert("成功");
-	            if (resultData.ReturnType=="1001"){
-	            	loadRecomList(resultData);
-	            }
-	        },
-	        error: function(jqXHR){
-	            alert(jqXHR.readyState);
-	            alert(jqXHR.textStatus);
-	           alert("发生错误" + jqXHR.status);
-	        }    
-	    });
-/*
-$.ajax({
-        url: "http://192.168.1.13:808/wt/searchByText.do",
-        dataType:"jsonp",
-        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0",Page:"0",PageSize:"5"},
-        jsonp: "jsonpCallback",
+        url: "http://182.92.175.134:908/CM/common/jsonp.do",
+        type:"POST",
+        dataType:"json",
+        data:{
+        	"RemoteUrl":"http://182.92.175.134:808/wt/searchByText.do",
+        	"IMEI":"3279A27149B24719991812E6ADBA5583",
+        	"PCDType":"3",
+        	"SearchStr":searchStr,
+        	"ResultType":"0",
+        	"PageType":"0",
+        	"Page":"0",
+        	"PageSize":"20"
+        },
         success: function(resultData) {
-        	alert("成功");
-            if (resultData.ReturnType=="1001"){
-            	loadRecomList(resultData);
+	    var jsonData=$.parseJSON(resultData);
+            if (jsonData.ReturnType=="1001"){
+            	loadRecomList(jsonData);
             }
         },
         error: function(jqXHR){
-            alert(jqXHR.readyState);
-            alert(jqXHR.textStatus);
-           alert("发生错误" + jqXHR.status);
-        }    
-    });
-
-    $.jsonp({
-        url: "http://182.92.175.134:808/wt/searchByText.do",
-        dataType:"html",
-        data:{IMEI:"3279A27149B24719991812E6ADBA5583",PCDType:"3",SearchStr:searchStr,ResultType:"0",PageType:"0",Page:"0",PageSize:"5"},
-        success: function(resultData) {
-        	alert("成功");
-            if (resultData.ReturnType=="1001"){
-            	loadRecomList(resultData);
-            }
-        },
-        error: function(jqXHR){
-            alert(jqXHR.readyState);
-            alert(jqXHR.textStatus);
-           alert("发生错误" + jqXHR.status);
+          alert("发生错误" + jqXHR.status);
         }
     });
-	var resultData={"ResultList":{"AllCount":4,
-		                              "List":[
-												{"ContentURI":"content\/getContentInfo.do?MediaType=AUDIO&ContentId=4924063","ContentPersons":"资讯早班车","ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentTimes":"81000","ContentName":"75亿元资金离场：昨日近14亿元大单抢筹10股","ContentPubTime":null,"ContentPub":"喜马拉雅FM","ContentPlay":"http:\/\/audio.xmcdn.com\/group8\/M03\/29\/E3\/wKgDYFWGIpORmvcoAAoCHbieq9k694.m4a","MediaType":"AUDIO","ContentId":"4924063","ContentDesc":"时事","ContentImg":"http:\/\/fdfs.xmcdn.com\/group4\/M03\/C5\/37\/wKgDs1PzCQ6QbbJvAAKFQf2Cz5Y834_web_large.jpg"},
-												{"ContentURI":"content\/getContentInfo.do?MediaType=AUDIO&ContentId=4517714","ContentPersons":"资讯速递","ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentTimes":"81000","ContentName":"75亿元资金离场：昨日近14亿元大单抢筹10股[财经中间站]","ContentPubTime":null,"ContentPub":"喜马拉雅FM","ContentPlay":"http:\/\/audio.xmcdn.com\/group14\/M09\/45\/9D\/wKgDY1WmmvmjDTOhAAoToCqLZrg152.m4a","MediaType":"AUDIO","ContentId":"4517714","ContentDesc":"头条","ContentImg":"http:\/\/fdfs.xmcdn.com\/group4\/M09\/03\/8E\/wKgDs1QOtymSWfeyAAT2LsA7-2c346_web_large.jpg"},
-												{"ContentURI":"content\/getContentInfo.do?MediaType=AUDIO&ContentId=11978405","ContentPersons":null,"ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentTimes":"1942000","ContentName":"田小米原著都市言情广播剧《所有的深爱都是秘密》第三期","ContentPubTime":"2016-01-31","ContentPub":"喜马拉雅FM","SeqInfo":{"ContentSubCount":"2","ContentURI":"content\/getContentInfo.do?MediaType=SEQU&ContentId=2739093","ContentPersons":null,"ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentName":"《【个人剧】田小米原著都市言情广播剧《所有的深爱都是秘密》》","ContentPub":"喜马拉雅FM","MediaType":"SEQU","ContentId":"2739093","ContentDesc":null,"ContentImg":"http:\/\/fdfs.xmcdn.com\/group14\/M0B\/0B\/52\/wKgDZFbMCDODcD1vAABXw6okoXw301_web_large.jpg"},"ContentPlay":"http:\/\/audio.xmcdn.com\/group10\/M07\/F5\/73\/wKgDaVas64GyPmn0AO-wAp8KOBI307.m4a","MediaType":"AUDIO","ContentId":"11978405","ContentDesc":null,"ContentImg":"http:\/\/fdfs.xmcdn.com\/group7\/M02\/F7\/C1\/wKgDX1as67KQu7stAAIertr0XuY311_web_large.jpg"},
-												{"ContentURI":"content\/getContentInfo.do?MediaType=AUDIO&ContentId=6463705","ContentPersons":null,"ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentTimes":"151000","ContentName":"01.娘子军连歌","ContentPubTime":"2015-04-21","ContentPub":"喜马拉雅FM","SeqInfo":{"ContentSubCount":"2","ContentURI":"content\/getContentInfo.do?MediaType=SEQU&ContentId=390411","ContentPersons":null,"ContentCatalogs":null,"CTime":null,"PlayCount":null,"ContentKeyWord":null,"ContentSubjectWord":null,"ContentName":"《天音老唱片5 银屏笙歌》","ContentPub":"喜马拉雅FM","MediaType":"SEQU","ContentId":"390411","ContentDesc":null,"ContentImg":"http:\/\/s1.xmcdn.com\/css\/img\/common\/album_180.jpg?todo"},"ContentPlay":"http:\/\/audio.xmcdn.com\/group9\/M0A\/29\/2E\/wKgDZlWFTUrT1xxcABK_ZPR-vzc940.m4a","MediaType":"AUDIO","ContentId":"6463705","ContentDesc":null,"ContentImg":"http:\/\/s1.xmcdn.com\/css\/img\/common\/track_180.jpg?v=20160428142650"}
-											]
-									 },
-					"TestDuration":3126,
-					"ResultType":0,
-					"ReturnType":"1001",
-					"SessionId":"d8c3ccf8116b"
-					}
-	loadRecomList(resultData);
-	*/
+	//打开APP或下载
+	$(".downLoad").click(function(){
+		var jmOpenUrl;
+		if($("#jmAudio")[0]){
+			jmOpenUrl=$("#jmAudio").attr("jmOpenUrl");
+		}else{
+			jmOpenUrl=$("span[className!='play_state']").parent(".audioLi").attr("jmOpenUrl");
+		}
+		
+		window.location=jmOpenUrl;
+	    
+        window.setTimeout(function () {
+            window.location.href= "http://182.92.175.134/download/WoTing.apk";
+        },2000);
+	});
+	
 });
 
     function audioPause(obj,audio){

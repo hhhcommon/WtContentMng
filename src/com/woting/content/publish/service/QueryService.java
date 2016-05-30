@@ -586,8 +586,4 @@ public class QueryService {
         if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
         if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
 	}
-	
-	private void modifyContentPubTime(){
-		
-	}
 }
