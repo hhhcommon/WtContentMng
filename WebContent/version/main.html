@@ -18,7 +18,7 @@
   <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
 
   <script src="../resources/js/common.utils.js"></script>
-  <script src="http://www.baidu.com/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
 
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script><!-- 分页 -->
@@ -26,7 +26,6 @@
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/wtcm/pagination/CM_title.init.js"></script>
-  <script src="../resources/wtcm/pagination/CM_title.init.do"></script>
 
   <!-- 以下配置都是为支持form-advanced-demo.js的，但由于../resources/plugins/jquery2.1.1/jquery.nouislider.min.js有问题，失败了，以后再说
   <script src="../resources/plugins/jquery2.1.1/jquery.knob.js"></script>
@@ -69,8 +68,8 @@ h4 {
   font-size:14px;
   font-weight:bold;
   font-family:"open sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-  width:180px;
-  text-width:170;
+  width:200px;
+  text-width:190px;
   padding-right:10px;
   font-weight:nomal;
   text-align:right;
@@ -155,7 +154,7 @@ h4 {
             <td><input type="text" class="form-control" id="pubFileName" placeholder="当前发布版本的名称" readonly></td>
           </tr>
           <tr>
-            <td class="th">当前发布版本的地址Url</td>
+            <td class="th">当前发布版本下载地址</td>
             <td><input type="text" class="form-control" id="pubUrl" placeholder="当前发布版本的Url，下载地址就从此获得" readonly></td>
           </tr>
           <tr>
@@ -218,20 +217,19 @@ $(function() {
 //一、有关版本配置的方法
 //装载配置数据，并进行填充显示
 function loadVerCfgAndFill() {
-  $.ajax({type:"post", async:true, url:rootPath+'/version/getVerCfg.do', dataType:"json",
+  $.ajax({type:"post", async:true, url:rootPath+'version/getVerCfg.do', dataType:"json",
     success: function(jsonData) {
       if (jsonData) {
-        if (jsonData.ReturnType=='1001') {
+        if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+        else {
           var retData=jsonData.VerCfgInfo;
-          $("#pubFileName").val(retData.pubFileName?retData.pubFileName:"");
-          $("#pubUrl").val(retData.pubUrl?retData.pubUrl:"");
-          $("#pubStorePath").val(retData.pubStorePath?retData.pubStorePath:"");
-          $("#verGoodsStorePath").val(retData.verGoodsStorePath?retData.verGoodsStorePath:"");
+          $("#pubFileName").val(retData.PubFileName?retData.PubFileName:"");
+          $("#pubUrl").val(retData.PubUrl?retData.PubUrl:"");
+          $("#pubStorePath").val(retData.PubStorePath?retData.PubStorePath:"");
+          $("#verGoodsStorePath").val(retData.VerGoodsStorePath?retData.VerGoodsStorePath:"");
           oldVerCfgData=retData;
-        } else {
-          alert("发生错误：" + jsonData.Message);
         }
-      } 
+      }
       canBrowse=true;
       $("#browserB").click();
     },
@@ -245,7 +243,30 @@ function loadVerCfgAndFill() {
 function saveCfg() {
   //检查数据合法性：目前不进行检查
   //获得新的数据
-  var 
+  if (($.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val()))=="") {
+    alert("没有任何内容，无法保存！");
+    return;
+  }
+  var cfgData={};
+  if ($.trim($("#pubFileName").val())!="") cfgData.PubFileName=$.trim($("#pubFileName").val());
+  if ($.trim($("#pubUrl").val())!="") cfgData.PubUrl=$.trim($("#pubUrl").val());
+  if ($.trim($("#pubStorePath").val())!="") cfgData.PubStorePath=$.trim($("#pubStorePath").val());
+  if ($.trim($("#verGoodsStorePath").val())!="") cfgData.VerGoodsStorePath=$.trim($("#verGoodsStorePath").val());
+
+  $.ajax({type:"post", async:true, url:rootPath+'version/saveVerCfg.do', dataType:"json", data: cfgData,
+    success: function(jsonData) {
+      if (jsonData) {
+        if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+        else {
+          canBrowse=true;
+          $("#closeB").click();
+        }
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误：" + jqXHR.status);
+    }
+  });
 }
 
 //二、有关版本的方法
