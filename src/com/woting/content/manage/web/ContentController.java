@@ -78,6 +78,7 @@ public class ContentController {
 			map.put("Message", "无节目名称");
 			return map;
 		}
+		
 		String contentimg = m.get("ContentImg")+"";
 		String contenturl = m.get("ContentURI")+"";
 		String contentdescn = m.get("ContentDesc")+"";
@@ -85,6 +86,7 @@ public class ContentController {
 		String seqid = m.get("ContentSequId")+"";
 		String seqname = m.get("ContentSequName")+"";
 		map = contentService.addMediaInfo(userid, username, contentname, contentimg, contenturl, contentkeywords, contentdescn, seqid, seqname);
+
 		return map;
 	}
 	
