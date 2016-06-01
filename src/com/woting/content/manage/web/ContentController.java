@@ -24,7 +24,7 @@ public class ContentController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/getListContents.do")
+	@RequestMapping(value = "/content/getHostContents.do")
 	@ResponseBody
 	public Map<String, Object> getListContents(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String,Object>();
@@ -59,7 +59,7 @@ public class ContentController {
 	 * @param myfiles
 	 * @return
 	 */
-	@RequestMapping(value = "/content/addMediaContents.do")
+	@RequestMapping(value = "/content/addMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addMediaContent(HttpServletRequest request){
 		System.out.println("上传文件");
@@ -96,7 +96,7 @@ public class ContentController {
 	 * @param myfiles
 	 * @return
 	 */
-	@RequestMapping(value = "/content/addSequContents.do")
+	@RequestMapping(value = "/content/addSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addSequContent(HttpServletRequest request,@RequestParam(value = "thefile", required = false) MultipartFile myfiles){
 		System.out.println("上传文件");
@@ -127,46 +127,53 @@ public class ContentController {
 		return map;
 	}
 	
-	@RequestMapping(value = "/content/updateZBContentStatus.do")
+	@RequestMapping(value= "/content/updateMediaInfo.do")
 	@ResponseBody
-	public Map<String, Object> updateStatus(HttpServletRequest request){
-		Map<String, Object> map = new HashMap<String,Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId")+"";
-		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
-			return map;
-		}
-		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
-		if (list==null||!(list.size()>0)) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "数据参数不全");
-			return map;
-		}
-		map = contentService.modifyStatus(userid, list);
-		return map;
+	public Map<String, Object> updateMedia(HttpServletRequest request){
+		
+		return null;
 	}
 	
-	@RequestMapping(value = "/content/removeZBContentInfo.do")
-	@ResponseBody
-	public Map<String, Object> removeContentInfo(HttpServletRequest request){
-		Map<String, Object> map = new HashMap<String,Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId")+"";
-		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
-			return map;
-		}
-		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
-		if (list==null||!(list.size()>0)) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "数据参数不全");
-			return map;
-		}
-		map = contentService.modifyStatus(userid, list);
-		return map;
-	}
+//	@RequestMapping(value = "/content/updateZBContentStatus.do")
+//	@ResponseBody
+//	public Map<String, Object> updateStatus(HttpServletRequest request){
+//		Map<String, Object> map = new HashMap<String,Object>();
+//		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+//		String userid = m.get("UserId")+"";
+//		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
+//			map.put("ReturnType", "1011");
+//			map.put("Message", "无用户信息");
+//			return map;
+//		}
+//		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
+//		if (list==null||!(list.size()>0)) {
+//			map.put("ReturnType", "1011");
+//			map.put("Message", "数据参数不全");
+//			return map;
+//		}
+//		map = contentService.modifyStatus(userid, list);
+//		return map;
+//	}
+	
+//	@RequestMapping(value = "/content/removeZBContentInfo.do")
+//	@ResponseBody
+//	public Map<String, Object> removeContentInfo(HttpServletRequest request){
+//		Map<String, Object> map = new HashMap<String,Object>();
+//		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+//		String userid = m.get("UserId")+"";
+//		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
+//			map.put("ReturnType", "1011");
+//			map.put("Message", "无用户信息");
+//			return map;
+//		}
+//		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
+//		if (list==null||!(list.size()>0)) {
+//			map.put("ReturnType", "1011");
+//			map.put("Message", "数据参数不全");
+//			return map;
+//		}
+//		map = contentService.modifyStatus(userid, list);
+//		return map;
+//	}
 	
 }

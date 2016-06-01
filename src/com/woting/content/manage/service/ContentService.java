@@ -93,7 +93,7 @@ public class ContentService {
 	}
 	
 	public Map<String, Object> updateMediaInfo(){
-		
+//		mediaService.updateMa(ma);
 		return null;
 	}
 
