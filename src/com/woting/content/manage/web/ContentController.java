@@ -77,7 +77,7 @@ public class ContentController {
 			map.put("Message", "无节目名称");
 			return map;
 		}
-		if(myfiles==null&&!(myfiles.length>0)){
+		if(myfiles==null||myfiles.length==0){
 			map.put("ReturnType", "1011");
 			map.put("Message", "无上传文件");
 			return map;
