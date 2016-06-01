@@ -17,6 +17,6 @@ public class FileUploadController extends AbstractFileUploadController{
 
     @Override
     public void afterUploadAllFiles(List<Map<String, Object>> fl, Map<String, Object> a, Map<String, Object> p) {
-        //System.out.println(fl.toString());
+//        System.out.println(fl.toString());
     }
 }

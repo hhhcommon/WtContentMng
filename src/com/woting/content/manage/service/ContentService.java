@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.spiritdata.framework.util.DateUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -25,18 +24,11 @@ import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
-import com.woting.content.publish.utils.CacheUtils;
 
 @Service
 public class ContentService {
 	@Resource
 	private MediaService mediaService;
-
-	private String filepath = WtContentMngConstants.ROOT_PATH + "media/";
-
-	public ContentService() {
-		filepath = filepath + DateUtils.convert2DateStr(new Date(System.currentTimeMillis())) + "/";
-	}
 
 	/**
 	 * 上传单体节目
@@ -44,54 +36,30 @@ public class ContentService {
 	 * @param uploadmap
 	 * @return
 	 */
-	public Map<String, Object> addMediaInfo(MultipartFile[] upfiles, Map<String, Object> uploadmap) {
+	public Map<String, Object> addMediaInfo(String userid, String username, String maname, String maimg, String maurl, String keywords, String madesc, String seqid, String seqname) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String[] filepaths = new String[2];
-		String filename = "";
-		String imgname = "";
-		// 把文件存入服务器里
-		for (MultipartFile upfile : upfiles) {
-			try {
-				if (!upfile.isEmpty()) {
-					if (upfile.getContentType().contains("audio")) { // 上传的音频资源
-						filename = upfile.getOriginalFilename();
-						filepaths[1] = (filepath + filename).trim();
-						File file = CacheUtils.createFile(filepaths[1]);
-						upfile.transferTo(file);
-					}
-					if (upfile.getContentType().contains("image")) { // 上传的图片资源
-						imgname = upfile.getOriginalFilename();
-						filepaths[0] = (filepath + imgname).trim();
-						File file = CacheUtils.createFile(filepaths[0]);
-						upfile.transferTo(file);
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
+		System.out.println(userid+"#"+username+"#"+maname+"#"+maimg+"#"+maurl+"#"+keywords+"#"+madesc+"#"+seqid+"#"+seqname);
 		String maid = SequenceUUID.getPureUUID();
-		String sequid = uploadmap.get("ContentSequId") + "";
-		String sequtitle = uploadmap.get("ContentSequTitle") + "";
+		String sequid = seqid+"";
+		String sequtitle = seqname+ "KeyWords";
 		Timestamp ctime = new Timestamp(System.currentTimeMillis()); // 节目创建时间
 
 		MediaAsset ma = new MediaAsset();
 		ma.setId(maid);
-		ma.setMaTitle(uploadmap.get("ContentName") + "");
-		ma.setMaImg(StringUtils.isNullOrEmptyOrSpace(filepaths[0]) ? "默认图片" : filepaths[0]);
-		ma.setMaURL(filepaths[1]);
+		ma.setMaTitle(maname);
+		ma.setMaImg(maimg.toLowerCase().equals("null")?"www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png":maimg);
+		ma.setMaURL(maurl);//.replace("/opt/tomcat8_CM/webapps/CM/", "http://www.wotingfm.com:908/CM/"));
 		ma.setKeyWords("上传文件测试用待删除");
 		ma.setMaPubType(3);
-		ma.setMaPubId(uploadmap.get("UserId") + "");
-		ma.setDescn(StringUtils.isNullOrEmptyOrSpace(uploadmap.get("ContentDesc") + "") ? "这家伙真懒，什么都没留下"
-				: (uploadmap.get("ContentDesc") + ""));
+		ma.setMaPubId(userid);
+		ma.setMaPublisher(username);
+		ma.setDescn(madesc.toLowerCase().equals("null")?"这家伙真懒，什么都没留下":madesc);
 		ma.setPubCount(0);
 		ma.setCTime(ctime);
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
-		System.out.println(sequid);
+		
 		// 保存专辑与单体媒体对应表
 		if (!StringUtils.isNullOrEmptyOrSpace(sequid) || !sequid.toLowerCase().equals("null")) {
 			SeqMediaAsset sma = new SeqMediaAsset();
@@ -105,10 +73,10 @@ public class ContentService {
 		maSource.setMa(ma);
 		maSource.setId(SequenceUUID.getPureUUID());
 		maSource.setMaSrcType(3);
-		maSource.setMaSrcId(uploadmap.get("UserId") + "");
-		maSource.setMaSource(uploadmap.get("UserName") + "");
+		maSource.setMaSrcId(userid);
+		maSource.setMaSource(username);
 		maSource.setSmType(1);
-		maSource.setPlayURI(filepaths[1]);
+		maSource.setPlayURI(maurl);
 		maSource.setIsMain(1);
 		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ctime);
@@ -123,6 +91,11 @@ public class ContentService {
 		}
 		return map;
 	}
+	
+	public Map<String, Object> updateMediaInfo(){
+		
+		return null;
+	}
 
 	/**
 	 * 创建专辑
@@ -130,56 +103,38 @@ public class ContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSequInfo(MultipartFile upfile, Map<String, Object> m) {
+	public Map<String, Object> addSequInfo(String userid,String username, String smaname, String smaimg, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String imgpath = "";
-		try {
-			if (!upfile.isEmpty()) {
-				if (upfile.getContentType().contains("image")) { // 上传的图片资源
-					String imgname = upfile.getOriginalFilename();
-					imgpath = (filepath + imgname).trim();
-					File file = CacheUtils.createFile(imgpath);
-					upfile.transferTo(file);
-				}
-			}
-		} catch (Exception e) {
-		}
 
 		String smaid = SequenceUUID.getPureUUID();
 		SeqMediaAsset sma = new SeqMediaAsset();
 		sma.setId(smaid);
-		String smatitle = m.get("ContentName") + "";
+		String smatitle = smaname;
 		if (StringUtils.isNullOrEmptyOrSpace(smatitle) || smatitle.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无专辑名称");
 			return map;
 		}
 		sma.setSmaTitle(smatitle);
-		sma.setSmaImg(StringUtils.isNullOrEmptyOrSpace(imgpath) ? "默认图片" : imgpath);
-		sma.setDescn(StringUtils.isNullOrEmptyOrSpace(m.get("ContentDesc") + "") ? "这家伙真懒，什么都没留下"
-				: (m.get("ContentDesc") + ""));
-		Map<String, Object> addmediamap = (Map<String, Object>) m.get("AddMediaInfo");
-		if (addmediamap != null) {
-			List<Map<String, Object>> list = (List<Map<String, Object>>) addmediamap.get("List");
-			for (Map<String, Object> m2 : list) {
-				MediaAsset ma = new MediaAsset();
-				ma.setId(m2.get("ContentId") + "");
-				ma.setMaTitle(m2.get("ContentName") + "");
-				mediaService.bindMa2Sma(ma, sma);
-			}
+		if(smaimg.toLowerCase().equals("null"))
+			smaimg = "www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+		sma.setSmaImg(smaimg);
+		sma.setDescn(smadesc.toLowerCase().equals("null")?"这家伙真懒，什么都没留下":smadesc);
+		for (Map<String, Object> m2 : malist) {
+			MediaAsset ma = new MediaAsset();
+			ma.setId(m2.get("ContentId") + "");
+			ma.setMaTitle(m2.get("ContentName") + "");
+			mediaService.bindMa2Sma(ma, sma);
 		}
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(3);
-		sma.setSmaPubId(m.get("UserId") + "");
-		sma.setSmaPublisher(m.get("UserName") + "");
+		sma.setSmaPubId(userid);
+		sma.setSmaPublisher(username);
 		DictDetail detail = new DictDetail();
 		detail.setId("zho");
 		detail.setNodeName("中文");
 		sma.setLang(detail);
-		if (addmediamap != null)
-			sma.setSmaAllCount(addmediamap.size());
-		else
-			sma.setSmaAllCount(1);
+		sma.setSmaAllCount(malist.size());
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
 
@@ -262,55 +217,37 @@ public class ContentService {
 			map.put("Message", "无专辑修改状态");
 			return map;
 		}
-		if (flowflag.equals("1")) {
-			SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
-			ChannelAsset cha = new ChannelAsset();
-			cha.setId(caid);
-			Channel ch = mediaService.getChInfoById(channelid);
-			cha.setCh(ch);
-			cha.setPubObj(sma);
-			cha.setPublisherId(userid);
-			if (!StringUtils.isNullOrEmptyOrSpace(contenttitle) && !contenttitle.toLowerCase().equals("null"))
-				cha.setPubName(contenttitle);
-			if (!StringUtils.isNullOrEmptyOrSpace(contentimg) && !contentimg.toLowerCase().equals("null"))
-				cha.setPubImg(contentimg);
-			cha.setPubObj(sma);
-			cha.setCheckerId("1");
-			cha.setFlowFlag(1);
-			cha.setSort(0);
-			cha.setCheckRuleIds("0");
-			cha.setCTime(new Timestamp(System.currentTimeMillis()));
-			cha.setIsValidate(1);
-			cha.setInRuleIds("elt");
-			cha.setCheckRuleIds("elt");
-			mediaService.saveCHA(cha);
-			if(mediaService.getCHAInfoById(caid)!=null){
-				map.put("ReturnType", "1001");
-				map.put("Message", "专辑处于待审核状态");
-				return map;
-			} else {
-				map.put("ReturnType", "1011");
-				map.put("Message", "专辑提交审核失败");
-				return map;
-			}
-		}else {
-			if(flowflag.equals("4")) {
-				SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
-				ChannelAsset cha = mediaService.getCHAInfoById(caid);
-				cha.setFlowFlag(4);
-				mediaService.updateCHA(cha);
-				if(mediaService.getCHAInfoById(caid).getFlowFlag()==4){
-					map.put("ReturnType", "1001");
-					map.put("Message", "专辑处于撤回状态");
-					return map;
-				}else{
-					map.put("ReturnType", "1011");
-					map.put("Message", "专辑撤回失败");
-					return map;
-				}
-			}
+		
+		SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
+		ChannelAsset cha = new ChannelAsset();
+		cha.setId(caid);
+		Channel ch = mediaService.getChInfoById(channelid);
+		cha.setCh(ch);
+		cha.setPubObj(sma);
+		cha.setPublisherId(userid);
+		if (!StringUtils.isNullOrEmptyOrSpace(contenttitle) && !contenttitle.toLowerCase().equals("null"))
+			cha.setPubName(contenttitle);
+		if (!StringUtils.isNullOrEmptyOrSpace(contentimg) && !contentimg.toLowerCase().equals("null"))
+			cha.setPubImg(contentimg);
+		cha.setPubObj(sma);
+		cha.setCheckerId("1");
+		cha.setFlowFlag(1);
+		cha.setSort(0);
+		cha.setCheckRuleIds("0");
+		cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		cha.setIsValidate(1);
+		cha.setInRuleIds("elt");
+		cha.setCheckRuleIds("elt");
+		mediaService.saveCHA(cha);
+		if(mediaService.getCHAInfoById(caid)!=null){
+			map.put("ReturnType", "1001");
+			map.put("Message", "专辑处于待审核状态");
+			return map;
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "专辑提交审核失败");
+			return map;
 		}
-		return map;
 	}
 	
 	private Map<String, Object> modifyMaStatus(String userid, Map<String, Object> m){
