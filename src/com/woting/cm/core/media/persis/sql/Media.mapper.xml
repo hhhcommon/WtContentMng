@@ -232,4 +232,20 @@
     where id=#{id,jdbcType=VARCHAR}
   </update>
   
+  <update id="updateMas" parameterType="java.util.Map">
+    update wt_wt_MaSource
+    <set>
+      <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
+      <if test="maId!=null">maId=#{maId,jdbcType=VARCHAR},</if>
+      <if test="maSrcType!=null and maSrcType!=0">maSrcType=#{maSrcType,jdbcType=INTEGER},</if>
+      <if test="maSrcId!=null">maSrcId=#{maSrcId,jdbcType=VARCHAR},</if>
+      <if test="maSource!=null">maSource=#{maSource,jdbcType=VARCHAR},</if>
+      <if test="smType!=null">smType=#{smType,jdbcType=VARCHAR},</if>
+      <if test="playURI!=null">playURI=#{playURI,jdbcType=VARCHAR},</if>
+      <if test="isMain!=null and isMain!=0">isMain=#{isMain,jdbcType=INTEGER},</if>
+      <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>

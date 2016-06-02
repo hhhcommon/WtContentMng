@@ -140,6 +140,10 @@ public class MediaService {
         seqMaRefDao.insert("bindMa2Sma", smrPo);
     }
 
+    public void updateMas(MaSource mas){
+    	mediaAssetDao.update("updateMas", mas.convert2Po());
+    }
+    
     public void updateMa(MediaAsset ma) {
         mediaAssetDao.update("updateMa", ma.convert2Po());
     }
