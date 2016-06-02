@@ -48,6 +48,11 @@ public class MediaService {
         channelDao.setNamespace("A_CHANNEL");
     }
     
+    public MaSource getMasInfoByMasId(String id) {
+//    	maSourceDao.getInfoObject(statementId, idObj)
+		return null;
+    }
+    
     //根据主播id查询其所有单体资源
     public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -98,6 +103,7 @@ public class MediaService {
 		return cha;
     }
     
+    
     public void saveCHA(ChannelAsset cha){
     	channelAssetDao.insert("insert", cha.convert2Po());
     }
@@ -140,6 +146,10 @@ public class MediaService {
         seqMaRefDao.insert("bindMa2Sma", smrPo);
     }
 
+    public void updateMas(MaSource mas){
+    	mediaAssetDao.update("updateMas", mas.convert2Po());
+    }
+    
     public void updateMa(MediaAsset ma) {
         mediaAssetDao.update("updateMa", ma.convert2Po());
     }
