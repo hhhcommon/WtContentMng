@@ -1,5 +1,6 @@
 package com.woting.content.manage.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,7 +123,9 @@ public class ContentController {
 		String contentimg = m.get("ContentImg")+"";
 		String contentdesc = m.get("ContentDesc")+"";
 		String catalogsid = m.get("ContentCatalogsId")+"";
-		List<Map<String, Object>> maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
+		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
+		if(!m.containsKey("AddMediaInfo"))maList=null;
+		else maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
 		map = contentService.addSequInfo(userid, username, contentname, contentimg, catalogsid, contentdesc, maList);
 		return map;
 	}
