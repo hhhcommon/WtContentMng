@@ -188,7 +188,7 @@
 	        //获取列表
 	        getAudioList($("#UserId").val(),"wt_SeqMediaAsset");
 	        function getAudioList(UserId,MediaType){
-	        	var url="http://localhost:908/CM/content/getListContents.do";
+	        	var url="http://localhost:908/CM/content/getHostContents.do";
 	        	var data=JSON.stringify({"UserId":UserId,"MediaType":MediaType});
 	          $.ajax({
 	                  type: "POST",
@@ -201,7 +201,7 @@
 	                          $(".actList").html(""); //再重新创建新的数据集时，先清空之前的
 	                          ContentListLoad(ContentList);
 	                      } else {
-	                    	  $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.ResultList.Message)+")";
+	                    	  $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+ContentList.Message)+")";
 	                      }
 	                  },
 	                  error: function(jqXHR){

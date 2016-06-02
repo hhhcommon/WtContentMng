@@ -57,7 +57,7 @@
 												            <div class="col-sm-6  col-sm-offset-3">
 												                <div class="ibox float-e-margins">
 												                    <div class="ibox-content">
-												                        <form class="form-horizontal m-t" id="addAudioForm" action="http://localhost:908/CM/content/addMediaContents.do" enctype="multipart/form-data" method="post">
+												                        <form class="form-horizontal m-t" id="addAudioForm" enctype="multipart/form-data">
 												                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
 												                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_MediaAsset" />
 												                            <div class="form-group">
@@ -167,7 +167,7 @@
           function getAudioList(UserId,MediaType){
         	  $.ajax({
         		        type: "POST",
-        		        url:"http://localhost:908/CM/content/getListContents.do",
+        		        url:"http://localhost:908/CM/content/getHostContents.do",
         		        dataType: "json",
         		        data:JSON.stringify({"UserId":UserId,"MediaType":MediaType}),
         		        beforeSend:function(){$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
