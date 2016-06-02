@@ -147,11 +147,13 @@ public class ContentService {
 			smaimg = "www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
 		sma.setSmaImg(smaimg);
 		sma.setDescn(smadesc.toLowerCase().equals("null")?"这家伙真懒，什么都没留下":smadesc);
-		for (Map<String, Object> m2 : malist) {
-			MediaAsset ma = new MediaAsset();
-			ma.setId(m2.get("ContentId") + "");
-			ma.setMaTitle(m2.get("ContentName") + "");
-			mediaService.bindMa2Sma(ma, sma);
+		if(malist!=null&&malist.size()>0){
+			for (Map<String, Object> m2 : malist) {
+			    MediaAsset ma = new MediaAsset();
+			    ma.setId(m2.get("ContentId") + "");
+			    ma.setMaTitle(m2.get("ContentName") + "");
+			    mediaService.bindMa2Sma(ma, sma);
+		    }
 		}
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(3);
