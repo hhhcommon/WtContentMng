@@ -43,6 +43,10 @@
     <result  column="cTime"      property="CTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
 
+  <sql id="Base_MaSource_List">
+    id, maId, maSrcType, maSrcId, maSource, smType, playURI, isMain, descn, cTime
+  </sql>
+
   <!-- 专辑 -->
   <resultMap id="seqMediaAssetMap" type="seqMediaAsset">
     <id      column="id"              property="id"              jdbcType="VARCHAR"/>
@@ -75,6 +79,10 @@
     <result  column="descn"      property="descn"      jdbcType="VARCHAR"/>
     <result  column="cTime"      property="CTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
+  
+  <sql id="Base_SeqMaRef_List">
+    id, sId, mId, columnNum, descn, cTime
+  </sql>
 
   <!-- 新增 单体节目 -->
   <insert id="insertMa" parameterType="java.util.Map">
@@ -197,6 +205,7 @@
   <select id="getMaInfoById" parameterType="java.lang.String" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR}
   </select>
+  
   <!-- 根据主播id获取 -->
   <select id="getMaListByMaPubId" parameterType="java.lang.String" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR}
@@ -208,6 +217,14 @@
   
   <select id="getSmaInfoById" parameterType="java.lang.String" resultMap="seqMediaAssetMap">
     select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getSmaInfoById" parameterType="java.lang.String" resultMap="seqMediaAssetMap">
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getS2MRefInfoByMId" parameterType="java.lang.String" resultMap="seqMaRefMap">
+    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
   </select>
   
   <!-- 修改 根据主键-->
@@ -246,6 +263,18 @@
       <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
     </set>
     where id=#{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateSeqMaRef" parameterType="java.util.Map">
+    update wt_wt_MaSource
+    <set>
+      <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
+      <if test="SId!=null">SId=#{SId,jdbcType=VARCHAR},</if>
+      <if test="MId!=null">MId=#{MId,jdbcType=VARCHAR},</if>
+      <if test="columnNum!=null and columnNum>0">columnNum=#{columnNum,jdbcType=VARCHAR},</if>
+      <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
+    </set>
+    where MId=#{MId,jdbcType=VARCHAR}
   </update>
   
 </mapper>
