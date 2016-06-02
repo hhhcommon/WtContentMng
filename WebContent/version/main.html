@@ -117,7 +117,7 @@ h4 {
 <!--显示主区域-->
 <div class="mainArea">
   <!--左侧列表 -->
-  <div class="leftlistArea">
+  <div id="verListArea" class="leftlistArea">
     <!-- 动态节目列表cttList -->
     <div class="cntList"></div>
     <div class="page">
@@ -211,6 +211,10 @@ $(function() {
   $("#saveCfgB").on("click", function() {
     saveCfg();
   });
+
+  //四、初始化页面
+  var param={PageSize:"10", Page:"1"};
+  listAjax(rootPath+'version/getVerList.do', param, $("#verListArea"), drawVerList);
 });
 
 //===================方法
@@ -271,7 +275,108 @@ function saveCfg() {
 
 //二、有关版本的方法
 function dealFun(data) {
-	successData=data;
+  successData=data;
+}
+
+//三、列表操作
+/**
+ * 处理列表的公共方法
+ * @param doUrl 请求列表数据的Url
+ * @param param 请求参数，可能包括页信息，过滤查询信息，页面模式信息等
+ * @param domObj list所处的html对象，以Jquery形式传入
+ * @param callback 回掉函数，注意：此函数包括三个参数，返回的数据值、list所处的html对象、请求参数
+ */
+function listAjax(doUrl, param, domObj, callback){
+  $.ajax({type:"POST", url:doUrl, dataType:"json", data:param,
+    beforeSend: function() {
+      domObj.html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>");
+    },
+    success: function(returnData) {
+      if (returnData.ReturnType!="1001") domObj.html("<div style='text-align:left;height:300px;padding:20px;padding-top:140px;'>"+returnData.Message+"</div>");
+      else {
+        domObj.html(""); //再重新创建新的数据集时，先清空之前的
+        callback(returnData, domObj, param); //主要是填充列表区域
+      } 
+    },
+    error: function(jqXHR) {
+      obj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+    }     
+  });
+}
+
+/**
+ * 画版本列表。
+ * @param listData 版本列表数据
+ * @param domObj 列表所在的html的dom对象，jquery形式
+ * @param param 其他参数
+ */
+function drawVerList(listData, domObj, param) {
+  if (!domObj) return;
+  if (!listData||!listData.ResultList||listData.ResultList.length==0) {
+	  $(domObj).find(".cntList").html("<div style='text-align:center;height:500px;line-height:300px;'>版本列表无数据！</div>");
+  }
+  var verList=listData.ResultList;
+  //设置翻页信息
+  //画列表
+  for(var i=0; i<verList.length ;i++) {
+    listDiv=$("<div class='listBox'></div>");
+    listDiv.attr({
+      verId:verList.ResultList[i].ContentId,
+      actType:actList.ResultList[i].MediaType,
+      columnId:actList.ResultList[i].Id
+    });
+      checkDiv=$("<div class='listCheck'>");
+      checkInput=$("<input type='checkBox' name='' />");
+      imgDiv=$("<div class='listImg'>");
+      thumbImg=$("<img alt='mage'>");
+      thumbImg.attr({'src':actList.ResultList[i].ContentImg});
+      conDiv=$("<div class='listCon'>");
+      conH=$("<h3></h3>");
+      conP1=$("<p class='secTitle'></p>");
+      //alert(actList.ResultList[i].ContentDesc);
+      //alert((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""));
+      conP1.html(actList.ResultList[i].ContentDesc=="null"?"暂无":((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, "")));
+      conP2=$("<p class='other'></p>");
+      conSpan1=$("<span></span>");
+      conSpan1.text("来源："+actList.ResultList[i].ContentSource);
+      conSpan2=$("<span></span>");
+      
+      conSpan2.text(formatDate(new Date(actList.ResultList[i].ContentCTime)));
+      
+      checkDiv.append(checkInput);
+      imgDiv.append(thumbImg);
+      //根据类型显示不同的标记
+      conH.html(actList.ResultList[i].ContentName);
+      
+      switch(actList.ResultList[i].MediaType){
+	        case 'wt_SeqMediaAsset':
+	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
+	        	break;
+	        case 'wt_MediaAsset':
+	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#61b0e8'>单体</span>");
+	        	break;
+	        case 'wt_Broadcast':
+	        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:green'>电台</span>");
+	        	break;
+	        default:
+      }
+      
+      conP2.append(conSpan1);
+      conP2.append(conSpan2);
+      conDiv.append(conH).append(conP1).append(conP2);
+      listDiv.append(checkDiv).append(imgDiv).append(conDiv);
+      //只在已审核界面创建排序号DOM
+      if(actList.ResultList[i].ContentFlowFlag=="2"){
+      	sortDiv=$("<div class='sortUpdate'></div>");
+          sortInput=$("<input type='text' class='sortNum'></input>");
+          sortInput.attr({"value":actList.ResultList[i].ContentSort});
+          sortBtn=$("<button class='sortUpdateBtn'></button>");
+          sortBtn.text("OK");
+          sortDiv.append(sortInput).append(sortBtn);
+          listDiv.append(sortDiv);
+      }
+      	$(".actList").append(listDiv);
+  }
 }
 </script>
 </html>
