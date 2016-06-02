@@ -32,13 +32,13 @@
 				$(".actList").on("click",".listBox",function(ev){
 					var url=rootPath+"content/getContentInfo.do";
 					var data={
-				            UserId: "zhangsan", 
-				            ContentFlowFlag:flowFlag,
-				            Page:"1",
-				            PageSize:"10",
-				            ContentId:$(this).attr("actId"),
-				            MediaType:$(this).attr("actType")
-				        };
+	            UserId: "zhangsan", 
+	            ContentFlowFlag:flowFlag,
+	            Page:"1",
+	            PageSize:"10",
+	            ContentId:$(this).attr("actId"),
+	            MediaType:$(this).attr("actType")
+				  };
 					commonAjax(url,data,$(".table"),ContentInfoLoad);
 					$(".conTable").css({"height":$(".mainShow").height()-$(".itemSortBox").height()-$(".conTitle").height()-150});
 					$(".actList .listBox").children(".listCon").children("h3").css({"color":"#636363"});
@@ -65,12 +65,12 @@
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
 					var url=rootPath+"content/updateContentStatus.do";
 					var data={
-	                        UserId: "zhangsan", 
-	                        ContentFlowFlag:flowFlag,
-	                        Id:$(this).parents(".listBox")[0].getAttribute("columnId"),
-	                        ContentSort:$(this).prev().val(),//js的获取属性值方法
-	                        OpeType:"sort"
-	                    };
+              UserId: "zhangsan", 
+              ContentFlowFlag:flowFlag,
+              Id:$(this).parents(".listBox")[0].getAttribute("columnId"),
+              ContentSort:$(this).prev().val(),//js的获取属性值方法
+              OpeType:"sort"
+	        };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					//阻止事件向上级冒泡
 					ev.stopPropagation();
@@ -105,11 +105,11 @@
 					$("input[type='checkBox'][name='all']").prop({"checked":null});
 					var url=rootPath+"content/updateContentStatus.do";
 					var data={
-				            UserId: "zhangsan", 
-				            ContentFlowFlag:flowFlag,
-				            Id:checkedList,
-				            OpeType:$(this).attr("opeType")
-				        };
+	            UserId: "zhangsan", 
+	            ContentFlowFlag:flowFlag,
+	            Id:checkedList,
+	            OpeType:$(this).attr("opeType")
+				  };
 					commonAjax(url,data,$(".pubList>.actList"),getContentList);
 					
 				});

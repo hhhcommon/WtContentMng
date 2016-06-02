@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="addAudioForm" enctype="multipart/form-data">
+                        <form class="form-horizontal m-t" id="addAudioForm" onsubmit="return false;">
                             <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
                             <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_MediaAsset" />
                             <div class="form-group">
@@ -46,7 +46,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">选择文件：</label>
                                 <div class="col-sm-8">
-                                    <input id="uploadAudio" name="uploadAudio" class="form-control" type="file" />
+                                    <input id="uploadAudio" name="uploadAudio" class="form-control" type="file" accept=".m4a,.mp3" />
                                     <input id="ContentURI" name="ContentURI" type="hidden" value=""  />
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大5M，支持mp3、m4a格式</span>
                                 </div>
@@ -55,9 +55,9 @@
                                 <label class="col-sm-3 control-label">声音封面：</label>
                                 <div class="col-sm-8">
                                     <div class="previewImg">
-                                      <img class="defaultImg" src="../resources/images/constructing.jpg" alt="front cover" />
+                                      <img class="defaultImg" src="../uploadFiles/tempuplf/default.png" alt="front cover" />
                                     </div>
-                                    <input id="uploadImg" name="uploadImg" class="form-control" type="file" />
+                                    <input id="uploadImg" name="uploadImg" class="form-control" type="file" accept=".png,.jpg" />
                                     <input id="ContentImg" name="ContentImg" type="hidden" value="" />
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、PNG格式</span>
                                 </div>
@@ -90,7 +90,7 @@
                             <br /><br />
                             <div class="form-group">
                                 <div class="col-sm-4 text-right">
-                                    <button class="btn btn-primary" id="submitBtn">提交</button>
+                                    <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
                                 </div>
                                 <div class="col-sm-4 text-center">
                                     <button class="btn btn-primary" type="publish">发布</button>
@@ -141,7 +141,6 @@
 	          });
         	  //封面图片预览与上传
         	  $("input[type='file']").change(function(){
-        		  alert($(this).attr("name"));
         		     var _this=$(this);
         		     if($(this).attr("name")=="uploadImg"){
         		    	//图片预览
@@ -195,19 +194,19 @@
         	  
         	//form表单提交
               $("#submitBtn").click(function () {
-            	  alert($("#addAudioForm").serialize());
+            	  if($("#ContentImg").val()==""){
+                      //如未设置封面，将使用平台默认图片
+                      $("#ContentImg").val($(".defaultImg").attr("src"));
+                    }
                  $.ajax({
                 		  url:"http://localhost:908/CM/content/addMediaInfo.do",
                       type:"POST",
                       data:$("#addAudioForm").serialize(),
                       dataType:"json",
                       //表单提交前进行验证
-                      
                       success: function (opeResult) {
                          if (opeResult.ReturnType=="1001") {
-                        	 alert("表单提交成功");
-                        
-                           alert(opeResult.Message);
+                           alert("添加成功");
                          }else{
                            alert(opeResult.Message);
                          }
