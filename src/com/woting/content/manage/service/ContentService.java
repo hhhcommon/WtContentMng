@@ -18,6 +18,7 @@ import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.model.DictRefRes;
+import com.woting.cm.core.dict.service.DictService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -28,6 +29,8 @@ import com.woting.cm.core.media.service.MediaService;
 public class ContentService {
 	@Resource
 	private MediaService mediaService;
+	@Resource
+	private DictService dictService;
 
 	/**
 	 * 上传单体节目
@@ -177,7 +180,18 @@ public class ContentService {
 					dicres.setRefName("专辑-内容分类");
 					dicres.setResTableName("wt_SeqMediaAsset");
 					dicres.setResId(smaid);
-//					dicres.s
+					DictModel dicm = new DictModel();
+					dicm.setId("3");
+					dicm.setDmName("内容分类");
+					dicres.setDm(dicm);
+					DictDetail dicd = new DictDetail();
+					dicd.setId(map2.get("id")+"");
+					Map<String, Object> l = (Map<String, Object>) map2.get("attributes");
+					dicd.setBCode(l.get("bCode")+"");
+					dicd.setDdName(l.get("nodeName")+"");
+					dicres.setDd(dicd);
+					dicres.setCTime(new Timestamp(System.currentTimeMillis()));
+					dictService.bindDictRef(dicres);
 				}
 			}
 		} catch (CloneNotSupportedException e) {
