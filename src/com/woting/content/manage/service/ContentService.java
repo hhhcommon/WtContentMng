@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.channel.model.Channel;
-import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
@@ -94,6 +90,8 @@ public class ContentService {
 	 */
 	public Map<String, Object> updateMediaInfo(MediaAsset ma, SeqMediaAsset sma){
 		mediaService.updateMa(ma);
+//		mediaService.get
+//		mediaService.updateMas(mas);
 		return null;
 	}
 
