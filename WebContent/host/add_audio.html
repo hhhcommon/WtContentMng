@@ -62,16 +62,19 @@
                                     <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、PNG格式</span>
                                 </div>
                             </div>
+                            <!-- 
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">选择专辑：</label>
                                 <div class="col-sm-8">
-		                                <select class="form-control" name="ContentSequTitle">
-								                        <option value="">默认</option>
-								                        <option value="">后来</option>
-								                        <option value="">Bingo</option>
-								                    </select>
+                                    <select class="form-control" name="ContentSequTitle">
+                                        <option value="">默认</option>
+                                        <option value="">后来</option>
+                                        <option value="">Bingo</option>
+                                    </select>
                                 </div>
                             </div>
+                             -->
+                            
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">声音标签：</label>
                                 <div class="col-sm-8">
@@ -179,9 +182,7 @@
                       success: function (opeResult) {
                          if (opeResult.jsonType=="1") {
                         	 alert("上传成功");
-                        	 console.log(_this);
                         	 _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
-                           alert(_this.siblings("input[type='hidden']").val());
                          }else{
                            alert(opeResult.err);
                          }
@@ -194,6 +195,7 @@
         	  
         	//form表单提交
               $("#submitBtn").click(function () {
+            	  alert($("#addAudioForm").serialize());
                  $.ajax({
                 		  url:"http://localhost:908/CM/content/addMediaInfo.do",
                       type:"POST",
@@ -203,6 +205,8 @@
                       
                       success: function (opeResult) {
                          if (opeResult.ReturnType=="1001") {
+                        	 alert("表单提交成功");
+                        
                            alert(opeResult.Message);
                          }else{
                            alert(opeResult.Message);
