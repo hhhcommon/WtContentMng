@@ -86,12 +86,12 @@
 											beforeSend : function() {
 												$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")
 											},
-											success : function(ContentList) {
-												if (ContentList.ReturnType == "1001") {
+											success : function(resultData) {
+												if (resultData.ReturnType == "1001") {
 													$(".actList").html(""); //再重新创建新的数据集时，先清空之前的
-													ContentListLoad(ContentList);
+													ContentListLoad(resultData);
 												} else {
-													$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+ ContentList.Message)+ ")";
+													$(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
 												}
 											},
 											error : function(jqXHR) {
