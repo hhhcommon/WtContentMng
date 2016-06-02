@@ -1,11 +1,17 @@
 @charset "utf-8";
+
 li,a,input{
   outline:0;
+}
+ul,li{
+	list-style:none;
 }
 body{
   font-family:'Microsoft Yahei','Arial';
 }
 
+
+/*添加声音页面*/
 .previewImg{
   width:100px;
   height:100px;
@@ -20,8 +26,7 @@ body{
 
 
 
-
-
+/*列表页面*/
 
 
 .listBox{
