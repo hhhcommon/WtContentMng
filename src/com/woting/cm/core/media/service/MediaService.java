@@ -48,9 +48,16 @@ public class MediaService {
         channelDao.setNamespace("A_CHANNEL");
     }
     
-    public MaSource getMasInfoByMasId(String id) {
-//    	maSourceDao.getInfoObject(statementId, idObj)
-		return null;
+    public MaSource getMasInfoByMasId(Map<String, Object> m) {
+    	MaSource mas = new MaSource();
+    	MaSourcePo maspo = maSourceDao.getInfoObject("getMasInfoByMaId", m);
+    	mas.buildFromPo(maspo);
+		return mas;
+    }
+    
+    public SeqMaRefPo getSeqMaRefByMId(String mid){
+    	SeqMaRefPo smarefpo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mid);
+		return smarefpo;
     }
     
     //根据主播id查询其所有单体资源
@@ -70,7 +77,7 @@ public class MediaService {
     public List<Map<String, Object>> getSmaInfoBySmaPubId(String id){
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
-    	listpo = seqMediaAssetDao.queryForList("getSmaaListBySmaPubId", id);
+    	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
@@ -146,6 +153,9 @@ public class MediaService {
         seqMaRefDao.insert("bindMa2Sma", smrPo);
     }
 
+    public void updateSeqMaRef(SeqMaRefPo seqmapo){
+    	mediaAssetDao.update("updateSeqMaRef", seqmapo);
+    }
     public void updateMas(MaSource mas){
     	mediaAssetDao.update("updateMas", mas.convert2Po());
     }

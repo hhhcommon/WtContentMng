@@ -13,6 +13,7 @@ import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 
 @Service
@@ -90,8 +91,24 @@ public class ContentService {
 	 */
 	public Map<String, Object> updateMediaInfo(MediaAsset ma, SeqMediaAsset sma){
 		mediaService.updateMa(ma);
-//		mediaService.get
-//		mediaService.updateMas(mas);
+		if(sma!=null){
+			SeqMaRefPo seqmapo = new SeqMaRefPo();
+		    seqmapo.setMId(mediaService.getSeqMaRefByMId(ma.getId()).getMId());
+		    seqmapo.setSId(sma.getId());
+		    seqmapo.setCTime(new Timestamp(System.currentTimeMillis()));
+		    mediaService.updateSeqMaRef(seqmapo);
+		}
+		return null;
+	}
+	
+	/**
+	 * 修改专辑信息
+	 * @param ma
+	 * @param sma
+	 * @return
+	 */
+	public Map<String, Object> updateSeqInfo(SeqMediaAsset sma){
+		mediaService.updateSma(sma);
 		return null;
 	}
 
@@ -163,10 +180,6 @@ public class ContentService {
 			map.put("List", list);
 			map.put("AllCount", list.size());
 			map.put("ReturnType", "1001");
-		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "处理专辑失败");
-			return map;
 		}
 		return map;
 	}

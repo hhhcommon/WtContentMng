@@ -144,12 +144,35 @@ public class ContentController {
 		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
 		String maimg = m.get("ContentImg")+"";
 		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
-		String mauri = m.get("ContentSequId")+"";
+		String mauri = m.get("ContentURI")+"";
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
 		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
 		String seqname = m.get("ContentSeqName")+"";
 		if(!seqname.toLowerCase().equals("null")) sma.setSmaTitle(seqname);
+		String madesc = m.get("ContentDesc")+"";
+		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
+//		String subjectwords = m.get("SubjectWords")+"";
+//		if(subjectwords.toLowerCase().equals("null")) mauri=null;
+//		String keywords = m.get("KeyWords")+"";
+//		if(keywords.toLowerCase().equals("null")) mauri=null;
+		contentService.updateMediaInfo(ma,sma);
+		return null;
+	}
+	
+	@RequestMapping(value= "/content/updateSeqInfo.do")
+	@ResponseBody
+	public Map<String, Object> updateSeq(HttpServletRequest request){
+		MediaAsset ma = new MediaAsset();
+		SeqMediaAsset sma = new SeqMediaAsset();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		System.out.println(m);
+		String maid = m.get("ContentId")+"";
+		ma.setId(maid);
+		String maname = m.get("ContentName")+"";
+		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
+		String maimg = m.get("ContentImg")+"";
+		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
 		String madesc = m.get("ContentDesc")+"";
 		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
 //		String subjectwords = m.get("SubjectWords")+"";
