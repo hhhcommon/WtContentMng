@@ -7,9 +7,17 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
+import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
+import com.woting.cm.core.dict.model.DictModel;
+import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -118,7 +126,8 @@ public class ContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSequInfo(String userid,String username, String smaname, String smaimg, String smadesc, List<Map<String, Object>> malist) {
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> addSequInfo(String userid,String username, String smaname, String smaimg, String catalogsid, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		String smaid = SequenceUUID.getPureUUID();
@@ -152,7 +161,29 @@ public class ContentService {
 		sma.setSmaAllCount(malist.size());
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
-
+		
+		try {
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		    DictModel dm=_cd.getDictModelById("3");
+		    System.out.println("#3#"+dm);
+			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
+			System.out.println("##"+eu1);
+			Map<String, Object> m = eu1.getAttributes();
+			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
+			for (Map<String, Object> map2 : chillist) {
+				if(map2.get("id").equals(catalogsid)){
+					DictRefRes dicres = new DictRefRes();
+					dicres.setId(SequenceUUID.getPureUUID());
+					dicres.setRefName("专辑-内容分类");
+					dicres.setResTableName("wt_SeqMediaAsset");
+					dicres.setResId(smaid);
+//					dicres.s
+				}
+			}
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
 		if (mediaService.getSmaInfoById(smaid) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加专辑成功");

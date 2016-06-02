@@ -102,32 +102,28 @@ public class ContentController {
 	 */
 	@RequestMapping(value = "/content/addSeqMediaInfo.do")
 	@ResponseBody
-	public Map<String, Object> addSequContent(HttpServletRequest request,@RequestParam(value = "thefile", required = false) MultipartFile myfiles){
+	public Map<String, Object> addSequContent(HttpServletRequest request){
 		System.out.println("上传文件");
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userid = m.get("UserId")+"";
 		String username = m.get("UserName")+"";
-		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
+		if(userid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
 			map.put("Message", "无用户信息");
 			return map;
 		}
 		String contentname = m.get("ContentName")+"";
-		if(StringUtils.isNullOrEmptyOrSpace(contentname)||contentname.toLowerCase().equals("null")){
+		if(contentname.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
 			map.put("Message", "无节目名称");
 			return map;
 		}
-		if(myfiles==null){
-			map.put("ReturnType", "1011");
-			map.put("Message", "无上传文件");
-			return map;
-		}
 		String contentimg = m.get("ContentImg")+"";
 		String contentdesc = m.get("ContentDesc")+"";
+		String catalogsid = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
-		map = contentService.addSequInfo(userid, username, contentname, contentimg, contentdesc, maList);
+		map = contentService.addSequInfo(userid, username, contentname, contentimg, catalogsid, contentdesc, maList);
 		return map;
 	}
 	
