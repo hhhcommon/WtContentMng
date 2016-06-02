@@ -129,7 +129,6 @@ public class ContentService {
 	 * @param m
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public Map<String, Object> addSequInfo(String userid,String username, String smaname, String smaimg, String catalogsid, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -154,6 +153,7 @@ public class ContentService {
 			    ma.setMaTitle(m2.get("ContentName") + "");
 			    mediaService.bindMa2Sma(ma, sma);
 		    }
+			sma.setSmaAllCount(malist.size());
 		}
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(3);
@@ -163,42 +163,41 @@ public class ContentService {
 		detail.setId("zho");
 		detail.setNodeName("中文");
 		sma.setLang(detail);
-		sma.setSmaAllCount(malist.size());
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
 		
-		try {
-			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
-		    DictModel dm=_cd.getDictModelById("3");
-		    System.out.println("#3#"+dm);
-			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
-			System.out.println("##"+eu1);
-			Map<String, Object> m = eu1.getAttributes();
-			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
-			for (Map<String, Object> map2 : chillist) {
-				if(map2.get("id").equals(catalogsid)){
-					DictRefRes dicres = new DictRefRes();
-					dicres.setId(SequenceUUID.getPureUUID());
-					dicres.setRefName("专辑-内容分类");
-					dicres.setResTableName("wt_SeqMediaAsset");
-					dicres.setResId(smaid);
-					DictModel dicm = new DictModel();
-					dicm.setId("3");
-					dicm.setDmName("内容分类");
-					dicres.setDm(dicm);
-					DictDetail dicd = new DictDetail();
-					dicd.setId(map2.get("id")+"");
-					Map<String, Object> l = (Map<String, Object>) map2.get("attributes");
-					dicd.setBCode(l.get("bCode")+"");
-					dicd.setDdName(l.get("nodeName")+"");
-					dicres.setDd(dicd);
-					dicres.setCTime(new Timestamp(System.currentTimeMillis()));
-					dictService.bindDictRef(dicres);
-				}
-			}
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+//		    DictModel dm=_cd.getDictModelById("3");
+//		    System.out.println("#3#"+dm);
+//			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
+//			System.out.println("##"+eu1);
+//			Map<String, Object> m = eu1.getAttributes();
+//			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
+//			for (Map<String, Object> map2 : chillist) {
+//				if(map2.get("id").equals(catalogsid)){
+//					DictRefRes dicres = new DictRefRes();
+//					dicres.setId(SequenceUUID.getPureUUID());
+//					dicres.setRefName("专辑-内容分类");
+//					dicres.setResTableName("wt_SeqMediaAsset");
+//					dicres.setResId(smaid);
+//					DictModel dicm = new DictModel();
+//					dicm.setId("3");
+//					dicm.setDmName("内容分类");
+//					dicres.setDm(dicm);
+//					DictDetail dicd = new DictDetail();
+//					dicd.setId(map2.get("id")+"");
+//					Map<String, Object> l = (Map<String, Object>) map2.get("attributes");
+//					dicd.setBCode(l.get("bCode")+"");
+//					dicd.setDdName(l.get("nodeName")+"");
+//					dicres.setDd(dicd);
+//					dicres.setCTime(new Timestamp(System.currentTimeMillis()));
+//					dictService.bindDictRef(dicres);
+//				}
+//			}
+//		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+//		}
 		
 		if (mediaService.getSmaInfoById(smaid) != null) {
 			map.put("ReturnType", "1001");
