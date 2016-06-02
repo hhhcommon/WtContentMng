@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.service.ContentService;
 
@@ -130,7 +131,28 @@ public class ContentController {
 	@RequestMapping(value= "/content/updateMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateMedia(HttpServletRequest request){
-		
+		MediaAsset ma = new MediaAsset();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		System.out.println(m);
+		String maid = m.get("ContentId")+"";
+		ma.setId(maid);
+		String maname = m.get("ContentName")+"";
+		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
+		String maimg = m.get("ContentImg")+"";
+		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
+		String mauri = m.get("ContentSequId")+"";
+		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
+//		String seqid = m.get("ContentSeqId")+"";
+//
+//		String seqname = m.get("ContentSeqName")+"";
+//
+		String madesc = m.get("ContentDesc")+"";
+		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
+//		String subjectwords = m.get("SubjectWords")+"";
+//		if(subjectwords.toLowerCase().equals("null")) mauri=null;
+//		String keywords = m.get("KeyWords")+"";
+//		if(keywords.toLowerCase().equals("null")) mauri=null;
+		contentService.updateMediaInfo(ma);
 		return null;
 	}
 	

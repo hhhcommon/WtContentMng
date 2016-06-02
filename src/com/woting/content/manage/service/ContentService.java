@@ -1,10 +1,7 @@
 package com.woting.content.manage.service;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +9,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.spiritdata.framework.util.DateUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -92,8 +86,8 @@ public class ContentService {
 		return map;
 	}
 	
-	public Map<String, Object> updateMediaInfo(){
-//		mediaService.updateMa(ma);
+	public Map<String, Object> updateMediaInfo(MediaAsset ma){
+		mediaService.updateMa(ma);
 		return null;
 	}
 

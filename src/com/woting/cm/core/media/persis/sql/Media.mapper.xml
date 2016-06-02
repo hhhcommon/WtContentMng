@@ -210,4 +210,26 @@
     select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
   </select>
   
+  <!-- 修改 根据主键-->
+  <update id="updateMa" parameterType="java.util.Map">
+    update wt_MediaAsset
+    <set>
+      <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
+      <if test="maTitle!=null">maTitle=#{maTitle,jdbcType=VARCHAR},</if>
+      <if test="maPubType!=null and maPubType!=0">maPubType=#{maPubType,jdbcType=INTEGER},</if>
+      <if test="maPubId!=null">maPubId=#{maPubId,jdbcType=VARCHAR},</if>
+      <if test="maPublisher!=null">maPublisher=#{maPublisher,jdbcType=VARCHAR},</if>
+      <if test="maImg!=null">maImg=#{maImg,jdbcType=VARCHAR},</if>
+      <if test="maURL!=null">maURL=#{maURL,jdbcType=VARCHAR},</if>
+      <if test="subjectWords!=null">subjectWords=#{subjectWords,jdbcType=VARCHAR},</if>
+      <if test="keyWords!=null">keyWords=#{keyWords,jdbcType=VARCHAR},</if>
+      <if test="langDid!=null">langDid=#{langDid,jdbcType=VARCHAR},</if>
+      <if test="language!=null">language=#{language,jdbcType=VARCHAR},</if>
+      <if test="timeLong!=null">timeLong=#{timeLong,jdbcType=VARCHAR},</if>
+      <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
+      <if test="pubCount!=null and pubCount>0">pubCount=#{pubCount,jdbcType=VARCHAR},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>
