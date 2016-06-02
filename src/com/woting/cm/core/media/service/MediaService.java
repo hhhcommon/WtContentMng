@@ -77,7 +77,7 @@ public class MediaService {
     public List<Map<String, Object>> getSmaInfoBySmaPubId(String id){
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
-    	listpo = seqMediaAssetDao.queryForList("getSmaaListBySmaPubId", id);
+    	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);

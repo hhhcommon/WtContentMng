@@ -180,10 +180,6 @@ public class ContentService {
 			map.put("List", list);
 			map.put("AllCount", list.size());
 			map.put("ReturnType", "1001");
-		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "处理专辑失败");
-			return map;
 		}
 		return map;
 	}
