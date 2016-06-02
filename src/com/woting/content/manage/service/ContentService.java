@@ -168,12 +168,14 @@ public class ContentService {
 		
 //		try {
 //			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+//			
 //		    DictModel dm=_cd.getDictModelById("3");
-//		    System.out.println("#3#"+dm);
+//		    System.out.println("#3#"+dm.toString());
 //			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
-//			System.out.println("##"+eu1);
-//			Map<String, Object> m = eu1.getAttributes();
+//			System.out.println("##"+eu1.toString());
+//			Map<String, Object> m = eu1.toTreeMap();
 //			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
+//			System.out.println(chillist);
 //			for (Map<String, Object> map2 : chillist) {
 //				if(map2.get("id").equals(catalogsid)){
 //					DictRefRes dicres = new DictRefRes();

@@ -121,6 +121,7 @@ public class ContentController {
 			return map;
 		}
 		String contentimg = m.get("ContentImg")+"";
+		contentimg = contentimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
 		String contentdesc = m.get("ContentDesc")+"";
 		String catalogsid = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
