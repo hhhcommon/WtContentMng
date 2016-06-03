@@ -71,13 +71,10 @@ public class MediaService {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
         List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
         listpo = mediaAssetDao.queryForList("getMaListByMaPubId", id);
-        System.out.println(JsonUtils.objToJson(listpo));
         for (MediaAssetPo mediaAssetPo : listpo) {
         	MediaAsset ma=new MediaAsset();
 			ma.buildFromPo(mediaAssetPo);
-			System.out.println("#"+ma.toString());
 			list.add(ContentUtils.convert2MediaMap_2(ma.toHashMap(), null, null));
-			System.out.println("##"+ma.toHashMap());
 		}
         return list;
     }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
@@ -170,15 +171,11 @@ public class ContentService {
 			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			
 		    DictModel dm=_cd.getDictModelById("3");
-		    System.out.println("#3#"+dm.toString());
 			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
-			System.out.println("##"+eu1.toString());
 			Map<String, Object> m = eu1.toTreeMap();
 			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
-			System.out.println(chillist);
 			for (Map<String, Object> map2 : chillist) {
 				if(map2.get("id").equals(catalogsid)){
-					System.out.println(map2);
 					DictRefRes dicres = new DictRefRes();
 					dicres.setId(SequenceUUID.getPureUUID());
 					dicres.setRefName("专辑-内容分类");
@@ -187,15 +184,17 @@ public class ContentService {
 					DictModel dicm = new DictModel();
 					dicm.setId("3");
 					dicm.setDmName("内容分类");
+					
 					dicres.setDm(dicm);
 					DictDetail dicd = new DictDetail();
 					dicd.setId(map2.get("id")+"");
+					dicd.setMId("3");
 					Map<String, Object> l = (Map<String, Object>) map2.get("attributes");
 					dicd.setBCode(l.get("bCode")+"");
 					dicd.setDdName(l.get("nodeName")+"");
 					dicres.setDd(dicd);
 					dicres.setCTime(new Timestamp(System.currentTimeMillis()));
-					
+					System.out.println(JsonUtils.objToJson(dicres));
 					mediaService.saveDictRef(dicres);
 //					dictService.bindDictRef(dicres);
 				}
