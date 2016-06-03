@@ -18,7 +18,6 @@ import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.model.DictRefRes;
-import com.woting.cm.core.dict.service.DictService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -29,8 +28,6 @@ import com.woting.cm.core.media.service.MediaService;
 public class ContentService {
 	@Resource
 	private MediaService mediaService;
-	@Resource
-	private DictService dictService;
 
 	/**
 	 * 上传单体节目
@@ -40,7 +37,6 @@ public class ContentService {
 	 */
 	public Map<String, Object> addMediaInfo(String userid, String username, String maname, String maimg, String maurl, String keywords, String madesc, String seqid, String seqname) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		System.out.println(userid+"#"+username+"#"+maname+"#"+maimg+"#"+maurl+"#"+keywords+"#"+madesc+"#"+seqid+"#"+seqname);
 		String maid = SequenceUUID.getPureUUID();
 		String sequid = seqid+"";
 		String sequtitle = seqname+ "KeyWords";
@@ -50,7 +46,7 @@ public class ContentService {
 		ma.setId(maid);
 		ma.setMaTitle(maname);
 		ma.setMaImg(maimg.toLowerCase().equals("null")?"www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png":maimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\", "localhost:908/CM/"));
-		ma.setMaURL(maurl);//.replace("/opt/tomcat8_CM/webapps/CM/", "http://www.wotingfm.com:908/CM/"));
+		ma.setMaURL(maurl);
 		ma.setKeyWords("上传文件测试用待删除");
 		ma.setMaPubType(3);
 		ma.setMaPubId(userid);
@@ -132,6 +128,7 @@ public class ContentService {
 	public Map<String, Object> addSequInfo(String userid,String username, String smaname, String smaimg, String catalogsid, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
+		//保存专辑信息到资源库
 		String smaid = SequenceUUID.getPureUUID();
 		SeqMediaAsset sma = new SeqMediaAsset();
 		sma.setId(smaid);
@@ -146,6 +143,8 @@ public class ContentService {
 			smaimg = "www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
 		sma.setSmaImg(smaimg);
 		sma.setDescn(smadesc.toLowerCase().equals("null")?"这家伙真懒，什么都没留下":smadesc);
+		
+		//保存专辑与单体媒体对应关系
 		if(malist!=null&&malist.size()>0){
 			for (Map<String, Object> m2 : malist) {
 			    MediaAsset ma = new MediaAsset();
@@ -166,40 +165,35 @@ public class ContentService {
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
 		
-//		try {
-//			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
-//			
-//		    DictModel dm=_cd.getDictModelById("3");
-//		    System.out.println("#3#"+dm.toString());
-//			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
-//			System.out.println("##"+eu1.toString());
-//			Map<String, Object> m = eu1.toTreeMap();
-//			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
-//			System.out.println(chillist);
-//			for (Map<String, Object> map2 : chillist) {
-//				if(map2.get("id").equals(catalogsid)){
-//					DictRefRes dicres = new DictRefRes();
-//					dicres.setId(SequenceUUID.getPureUUID());
-//					dicres.setRefName("专辑-内容分类");
-//					dicres.setResTableName("wt_SeqMediaAsset");
-//					dicres.setResId(smaid);
-//					DictModel dicm = new DictModel();
-//					dicm.setId("3");
-//					dicm.setDmName("内容分类");
-//					dicres.setDm(dicm);
-//					DictDetail dicd = new DictDetail();
-//					dicd.setId(map2.get("id")+"");
-//					Map<String, Object> l = (Map<String, Object>) map2.get("attributes");
-//					dicd.setBCode(l.get("bCode")+"");
-//					dicd.setDdName(l.get("nodeName")+"");
-//					dicres.setDd(dicd);
-//					dicres.setCTime(new Timestamp(System.currentTimeMillis()));
-//					dictService.bindDictRef(dicres);
-//				}
-//			}
-//		} catch (CloneNotSupportedException e) {
-//			e.printStackTrace();
-//		}
+		//保存专辑分类信息到wt_ResDict_Ref
+		try {
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		    DictModel dm=_cd.getDictModelById("3");
+			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
+			Map<String, Object> m = eu1.toTreeMap();			
+			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
+			for (Map<String, Object> map2 : chillist) {
+				if(map2.get("id").equals(catalogsid)){
+					DictRefRes dicres = new DictRefRes();
+					dicres.setId(SequenceUUID.getPureUUID());
+					dicres.setRefName("专辑-内容分类");
+					dicres.setResTableName("wt_SeqMediaAsset");
+					dicres.setResId(smaid);
+					dicres.setDm(dm);
+					DictDetail dicd = new DictDetail();
+					dicd.setId(map2.get("id")+"");
+					dicd.setMId("3");
+					Map<String, Object> l = (Map<String, Object>) map2.get("attributes");
+					dicd.setBCode(l.get("bCode")+"");
+					dicd.setDdName(l.get("nodeName")+"");
+					dicres.setDd(dicd);
+					dicres.setCTime(new Timestamp(System.currentTimeMillis()));
+					mediaService.saveDictRef(dicres);
+				}
+			}
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 		
 		if (mediaService.getSmaInfoById(smaid) != null) {
 			map.put("ReturnType", "1001");
