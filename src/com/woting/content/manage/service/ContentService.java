@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
@@ -170,7 +169,7 @@ public class ContentService {
 			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		    DictModel dm=_cd.getDictModelById("3");
 			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
-			Map<String, Object> m = eu1.toTreeMap();			
+			Map<String, Object> m = eu1.toTreeMap();
 			List<Map<String, Object>> chillist = (List<Map<String, Object>>) m.get("children");
 			for (Map<String, Object> map2 : chillist) {
 				if(map2.get("id").equals(catalogsid)){
@@ -216,7 +215,7 @@ public class ContentService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if (mediatype.equals("wt_MediaAsset"))
 			list = mediaService.getMaInfoByMaPubId(userid);
-		if (mediatype.equals("wt_SeqMediaAsset"))
+		if (mediatype.equals("wt_SeqMediaAsset")) 
 			list = mediaService.getSmaInfoBySmaPubId(userid);
 		if (list != null && list.size() > 0) {
 			map.put("List", list);
@@ -375,6 +374,19 @@ public class ContentService {
 //		return m;
 //	}
 
+	public void removeMediaAsset(String contentid){
+		mediaService.removeMa(contentid);
+		mediaService.removeMas(contentid);
+		mediaService.removeMa2Sma(contentid);
+		mediaService.removeResDictRef(contentid);
+		mediaService.removeCha(contentid);
+	}
+	 public void removeSeqMedia(String contentid){
+		 mediaService.removeSma(contentid);
+		 mediaService.removeMa2Sma(contentid);
+		 mediaService.removeResDictRef(contentid);
+		 mediaService.removeCha(contentid);
+	 }
 	/** 计算分享地址的功能 */
 	public static final String preAddr = "http://www.wotingfm.com:908/CM/mweb";// 分享地址前缀
 

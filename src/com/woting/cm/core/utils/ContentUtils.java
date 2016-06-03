@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.spiritdata.framework.util.JsonUtils;
 import com.woting.content.manage.service.ContentService;
 
 
@@ -30,7 +31,7 @@ public abstract class ContentUtils {
         retM.put("ContentURIS", null);//P10-公共：其他播放地址列表，目前为空
         retM.put("ContentDesc", one.get("descn"));//P11-公共：说明
         retM.put("ContentPersons", fetchPersons(personList, 1, retM.get("ContentId")+""));//P12-公共：相关人员列表
-        retM.put("ContentCatalogs", fetchCatas(cataList, 1, retM.get("ContentId")+""));//P13-公共：所有分类列表
+        retM.put("ContentCatalogs", fetchCatas(cataList, "wt_Broadcast", retM.get("ContentId")+""));//P13-公共：所有分类列表
         retM.put("PlayCount", "1234");//P14-公共：播放次数
 
         retM.put("ContentFreq", one.get(""));//S01-特有：主频率，目前为空
@@ -61,7 +62,7 @@ public abstract class ContentUtils {
 //        retM.put("ContentURIS", null);//P10-公共：其他播放地址列表，目前为空
         retM.put("ContentDesc", one.get("descn"));//P11-公共：说明
         retM.put("ContentPersons", fetchPersons(personList, 2, retM.get("ContentId")+""));//P12-公共：相关人员列表
-        retM.put("ContentCatalogs", fetchCatas(cataList, 2, retM.get("ContentId")+""));//P13-公共：所有分类列表
+        retM.put("ContentCatalogs", fetchCatas(cataList, "wt_MediaAsset", retM.get("ContentId")+""));//P13-公共：所有分类列表
         retM.put("PlayCount", "1234");//P14-公共：播放次数
 
         retM.put("ContentTimes", one.get("timeLong"));//S01-特有：播放时长
@@ -87,7 +88,7 @@ public abstract class ContentUtils {
         retM.put("ContentShareURL", ContentService.getShareUrl_ZJ(ContentService.preAddr, one.get("id")+""));//分享地址
         retM.put("ContentDesc", one.get("descn"));//P11-公共：说明
         retM.put("ContentPersons", fetchPersons(personList, 3, retM.get("ContentId")+""));//P12-公共：相关人员列表
-        retM.put("ContentCatalogs", fetchCatas(cataList, 3, retM.get("ContentId")+""));//P13-公共：所有分类列表
+        retM.put("ContentCatalogs", fetchCatas(cataList, "wt_SeqMediaAsset", retM.get("ContentId")+""));//P13-公共：所有分类列表
         retM.put("PlayCount", "1234");//P14-公共：播放次数
 
         retM.put("ContentSubCount", one.get("count"));//S01-特有：下级节目的个数
@@ -111,15 +112,17 @@ public abstract class ContentUtils {
         }
         return ret.size()>0?ret:null;
     }
-    public static List<Map<String, Object>> fetchCatas(List<Map<String, Object>> cataList, int resType, String resId) {
+    public static List<Map<String, Object>> fetchCatas(List<Map<String, Object>> cataList, String resTableName, String resId) {
         if (cataList==null||cataList.size()==0) return null;
         Map<String, Object> oneCata=new HashMap<String, Object>();
         List<Map<String, Object>> ret=new ArrayList<Map<String, Object>>();
         for (Map<String, Object> _c: cataList) {
-            if ((_c.get("resType")+"").equals(resType+"")&&(_c.get("resId")+"").equals(resId)) {
+            if ((_c.get("resTableName")+"").equals(resTableName+"")&&(_c.get("resId")+"").equals(resId)) {
                 oneCata=new HashMap<String, Object>();
                 oneCata.put("CataMName", _c.get("dictMName"));//大分类名称
+                oneCata.put("CataMId", _c.get("3"));
                 oneCata.put("CataTitle", _c.get("pathNames"));//分类名称，树结构名称
+                oneCata.put("CataDid", _c.get("dictDid"));
                 ret.add(oneCata);
             }
         }
