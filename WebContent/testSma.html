@@ -4,14 +4,13 @@
 <meta charset="utf-8">
 </head>
 <body>
- <form name="upload" action="http://localhost:908/CM/content/addSequContents.do" enctype="multipart/form-data" method="post">
+ <form name="upload" action="http://localhost:908/CM/content/addSeqMediaInfo.do" method="post">
 用户id<input type="text" name="UserId" /></br>
 用户昵称<input type="text" name="UserName" /></br>
  专辑名称<input type="text" name="ContentName" /></br>
-专辑分类<input type="text" name="CatalogsId" /></br>
 专辑描述<input type="text" name="ContentDesc" /></br>
+专辑分类<input type="text" name="ContentCatalogsId" /></br>
 专辑类型<input type="text" name="SourceId" value="wt_SeqMediaAsset" /></br>
-  <input type="file" name="thefile" value="专辑图片"/></br>
    <input type="submit" value="上传文件" />
  </form>
 </body>

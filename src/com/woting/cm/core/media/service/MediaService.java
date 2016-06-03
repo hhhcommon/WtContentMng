@@ -8,12 +8,15 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
+import com.woting.cm.core.dict.model.DictRefRes;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -37,6 +40,8 @@ public class MediaService {
     private MybatisDAO<ChannelAssetPo> channelAssetDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<ChannelPo> channelDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<DictRefResPo> dictRdfDao;
 
     @PostConstruct
     public void initParam() {
@@ -46,6 +51,19 @@ public class MediaService {
         seqMediaAssetDao.setNamespace("A_MEDIA");
         channelAssetDao.setNamespace("A_CHANNELASSET");
         channelDao.setNamespace("A_CHANNEL");
+        dictRdfDao.setNamespace("A_DREFRES");
+    }
+    
+    public MaSource getMasInfoByMasId(Map<String, Object> m) {
+    	MaSource mas = new MaSource();
+    	MaSourcePo maspo = maSourceDao.getInfoObject("getMasInfoByMaId", m);
+    	mas.buildFromPo(maspo);
+		return mas;
+    }
+    
+    public SeqMaRefPo getSeqMaRefByMId(String mid){
+    	SeqMaRefPo smarefpo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mid);
+		return smarefpo;
     }
     
     //根据主播id查询其所有单体资源
@@ -65,7 +83,7 @@ public class MediaService {
     public List<Map<String, Object>> getSmaInfoBySmaPubId(String id){
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
-    	listpo = seqMediaAssetDao.queryForList("getSmaaListBySmaPubId", id);
+    	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
@@ -85,21 +103,25 @@ public class MediaService {
     //根据栏目id得到栏目
     public Channel getChInfoById(String id){
     	Channel ch = new Channel();
-    	ChannelPo chpo = channelDao.getInfoObject("getInfo", id);
+    	ChannelPo chpo = channelDao.getInfoObject("getInfoById", id);
     	ch.buildFromPo(chpo);
     	return ch;
     }
     
     //根据栏目发布表id得到栏目发布信息
-    public ChannelAsset getCAInfoById(String id){
+    public ChannelAsset getCHAInfoById(String id){
     	ChannelAsset cha = new ChannelAsset();
     	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
     	cha.buildFromPo(chapo);
 		return cha;
     }
     
+    
+    public void saveCHA(ChannelAsset cha){
+    	channelAssetDao.insert("insert", cha.convert2Po());
+    }
     public void updateCHA(ChannelAsset cha){
-    	channelAssetDao.update("update", cha);
+    	channelAssetDao.update("update", cha.convert2Po());
     }
 
     public MediaAsset getMaInfoById(String id) {
@@ -137,6 +159,13 @@ public class MediaService {
         seqMaRefDao.insert("bindMa2Sma", smrPo);
     }
 
+    public void updateSeqMaRef(SeqMaRefPo seqmapo){
+    	mediaAssetDao.update("updateSeqMaRef", seqmapo);
+    }
+    public void updateMas(MaSource mas){
+    	mediaAssetDao.update("updateMas", mas.convert2Po());
+    }
+    
     public void updateMa(MediaAsset ma) {
         mediaAssetDao.update("updateMa", ma.convert2Po());
     }
@@ -147,5 +176,9 @@ public class MediaService {
 
     public void updateSma(SeqMediaAsset sma) {
         seqMediaAssetDao.update("updateSma", sma.convert2Po());
+    }
+    
+    public void saveDictRef(DictRefRes dictref) {
+    	dictRdfDao.insert("insert", dictref.convert2Po());
     }
 }
