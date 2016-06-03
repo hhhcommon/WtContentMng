@@ -47,10 +47,11 @@
 		        <!-- 导航列表 -->
 		        <nav style="width:100%;height:calc(100% - 180px)" class="nav">
 			        <ul class="" >
-	                <li><a class="J_menuItem" href="./host/add_audio.html">上传声音</a></li>
-	                <li><a class="J_menuItem" href="./host/add_zj.html">创建专辑</a></li>
-	                <li><a class="J_menuItem" href="./host/audio.html">声音管理</a></li>
-	                <li><a class="J_menuItem" href="./host/zj.html">专辑管理</a></li>                   
+                  <li class="navList active"><a _href="./host/zj.html" href="javascript:void(0);">专辑管理</a></li>  
+	                <li class="navList"><a _href="./host/audio.html" href="javascript:void(0);">声音管理</a></li>
+	                <li class="navList"><a _href="./host/add_zj.html" href="javascript:void(0);">创建专辑</a></li>  
+                  <li class="navList"><a _href="./host/add_audio.html" href="javascript:void(0);">添加声音</a></li>
+	                <span class="bar"></span>                
 	            </ul>
 		        </nav>
             
@@ -59,7 +60,7 @@
           <!--中间部分开始-->
           <div class="" id="content-main" style="float:left;width:800px;height:100%;border-left:1px solid #f2f2f2;border-right:1px solid #f2f2f2;">
             <!--登录进来，默认显示Home欢迎首页-->
-            <iframe class="J_iframe" width="100%" height="100%" src="./host/audio.html" frameborder="0" data-id="audio.html" seamless=""></iframe>
+            <iframe class="" width="100%" height="100%" src="./host/zj.html" frameborder="0" data-id="" seamless=""></iframe>
           </div>
           <!-- 右侧热点区 -->
           <div class="news" style="width:180px;height:100%;float:right;padding:10px;">
@@ -76,6 +77,16 @@
       <!-- 自定义js:负责主框架内显示iFrame页面的-->
       <script src="./resources/plugins/hplus/js/contabs.min.js"></script>
       <!-- 第三方插件 -->
-      <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>   
+      <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>
+      <script>
+      $(function(){
+            $(".navList").on("click",function(){
+              $("iframe").attr({"src":$(this).children("a").attr("_href")});
+              $(this).addClass("active").siblings().removeClass("active");
+              $(".bar").css({"top":$(this).index()*$(this).height()});
+            });
+          });
+      </script>
+     
   </body>
 </html>
