@@ -201,7 +201,7 @@ public class ContentController {
 //		map = contentService.modifyStatus(userid, list);
 //		return map;
 //	}
-	
+//	
 //	@RequestMapping(value = "/content/removeZBContentInfo.do")
 //	@ResponseBody
 //	public Map<String, Object> removeContentInfo(HttpServletRequest request){
