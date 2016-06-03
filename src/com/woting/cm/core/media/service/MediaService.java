@@ -8,12 +8,15 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
+import com.woting.cm.core.dict.model.DictRefRes;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -37,6 +40,8 @@ public class MediaService {
     private MybatisDAO<ChannelAssetPo> channelAssetDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<ChannelPo> channelDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<DictRefResPo> dictRdfDao;
 
     @PostConstruct
     public void initParam() {
@@ -46,6 +51,7 @@ public class MediaService {
         seqMediaAssetDao.setNamespace("A_MEDIA");
         channelAssetDao.setNamespace("A_CHANNELASSET");
         channelDao.setNamespace("A_CHANNEL");
+        dictRdfDao.setNamespace("A_DREFRES");
     }
     
     public MaSource getMasInfoByMasId(Map<String, Object> m) {
@@ -65,10 +71,13 @@ public class MediaService {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
         List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
         listpo = mediaAssetDao.queryForList("getMaListByMaPubId", id);
+        System.out.println(JsonUtils.objToJson(listpo));
         for (MediaAssetPo mediaAssetPo : listpo) {
         	MediaAsset ma=new MediaAsset();
 			ma.buildFromPo(mediaAssetPo);
+			System.out.println("#"+ma.toString());
 			list.add(ContentUtils.convert2MediaMap_2(ma.toHashMap(), null, null));
+			System.out.println("##"+ma.toHashMap());
 		}
         return list;
     }
@@ -170,5 +179,9 @@ public class MediaService {
 
     public void updateSma(SeqMediaAsset sma) {
         seqMediaAssetDao.update("updateSma", sma.convert2Po());
+    }
+    
+    public void saveDictRef(DictRefRes dictref) {
+    	dictRdfDao.insert("insert", dictref.convert2Po());
     }
 }
