@@ -24,7 +24,9 @@
 		  共3个专辑
 		</div>
 		<!-- 列表显示区 -->
-		<div class="actList"></div>
+		<div class="actList">
+		  
+		</div>
 	</div>
 	<!-- 全局js -->
 	<script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -38,8 +40,7 @@
 	<script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
 
 	<script>
-		$().ready(
-						function() {
+		$().ready(function() {
 							//获取列表
 							getAudioList("123", "wt_MediaAsset");
 							function getAudioList(UserId, MediaType) {
