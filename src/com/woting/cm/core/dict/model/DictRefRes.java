@@ -81,9 +81,7 @@ public class DictRefRes implements Serializable, ModelSwapPo {
         ret.setDictDid(dd.getId());
         ret.setTitle(dd.getNodeName());
         ret.setBCode(dd.getBCode());
-        System.out.println("测试1");
         if (dm!=null) {
-        	System.out.println("测试2");
             TreeNode<DictDetail> tdd=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
             if (tdd!=null) {
                 ret.setPathIds(tdd.getTreePathId("-",0));
