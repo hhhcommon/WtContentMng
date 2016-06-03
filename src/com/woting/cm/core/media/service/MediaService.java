@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -195,5 +196,29 @@ public class MediaService {
     
     public void saveDictRef(DictRefRes dictref) {
     	dictRdfDao.insert("insert", dictref.convert2Po());
+    }
+    
+    public void removeMa(String id){
+    	mediaAssetDao.delete("removeMaById", id);
+    }
+    
+    public void removeSma(String id){
+    	seqMediaAssetDao.delete("", id);
+    }
+    
+    public void removeMas(String id){
+    	maSourceDao.delete("multiMasByMaId", id);
+    }
+    
+    public void removeMa2Sma(String id){
+    	seqMaRefDao.delete("multiM2SRefByMId", id);
+    }
+    
+    public void removeResDictRef(String id){
+    	dictRdfDao.delete("multiDelBc", id);
+    }
+    
+    public void removeCha(String id){
+    	channelAssetDao.delete("deleteByAssetId", id);
     }
 }

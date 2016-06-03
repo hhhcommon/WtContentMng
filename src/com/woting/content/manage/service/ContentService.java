@@ -374,6 +374,19 @@ public class ContentService {
 //		return m;
 //	}
 
+	public void removeMediaAsset(String contentid){
+		mediaService.removeMa(contentid);
+		mediaService.removeMas(contentid);
+		mediaService.removeMa2Sma(contentid);
+		mediaService.removeResDictRef(contentid);
+		mediaService.removeCha(contentid);
+	}
+	 public void removeSeqMedia(String contentid){
+		 mediaService.removeSma(contentid);
+		 mediaService.removeMa2Sma(contentid);
+		 mediaService.removeResDictRef(contentid);
+		 mediaService.removeCha(contentid);
+	 }
 	/** 计算分享地址的功能 */
 	public static final String preAddr = "http://www.wotingfm.com:908/CM/mweb";// 分享地址前缀
 

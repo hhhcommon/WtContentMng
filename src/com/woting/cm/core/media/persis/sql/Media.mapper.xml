@@ -273,4 +273,20 @@
     where MId=#{MId,jdbcType=VARCHAR}
   </update>
   
+  <delete id="multiMaById" parameterType="java.lang.String">
+      delete from wt_MediaAsset where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="multiSmaById" parameterType="java.lang.String">
+      delete from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="multiMasByMaId" parameterType="java.lang.String">
+      delete from wt_MaSource where maid=#{maid,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="multiM2SRefByMId" parameterType="java.lang.String">
+      delete from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
+  </delete>
+  
 </mapper>

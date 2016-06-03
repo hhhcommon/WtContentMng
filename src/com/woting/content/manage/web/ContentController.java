@@ -202,25 +202,46 @@ public class ContentController {
 //		return map;
 //	}
 //	
-//	@RequestMapping(value = "/content/removeZBContentInfo.do")
-//	@ResponseBody
-//	public Map<String, Object> removeContentInfo(HttpServletRequest request){
-//		Map<String, Object> map = new HashMap<String,Object>();
-//		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-//		String userid = m.get("UserId")+"";
-//		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无用户信息");
-//			return map;
-//		}
-//		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
-//		if (list==null||!(list.size()>0)) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "数据参数不全");
-//			return map;
-//		}
-//		map = contentService.modifyStatus(userid, list);
-//		return map;
-//	}
+	@RequestMapping(value = "/content/removeMediaInfo.do")
+	@ResponseBody
+	public Map<String, Object> removeMediaInfo(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String contentid = m.get("ContentId")+"";
+		if(contentid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无专辑信息");
+			return map;
+		}
+		contentService.removeMediaAsset(contentid);
+		return map;
+	}
+	
+	@RequestMapping(value = "/content/removeSeqMedia.do")
+	@ResponseBody
+	public Map<String, Object> removeSeqInfo(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String contentid = m.get("ContentId")+"";
+		if(contentid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无专辑信息");
+			return map;
+		}
+		contentService.removeSeqMedia(contentid);
+		return map;
+	}
 	
 }
