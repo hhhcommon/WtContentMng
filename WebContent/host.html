@@ -80,13 +80,16 @@
       <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>
       <script>
       $(function(){
-            $(".navList").on("click",function(){
-              $("iframe").attr({"src":$(this).children("a").attr("_href")});
-              $(this).addClass("active").siblings().removeClass("active");
-              $(".bar").css({"top":$(this).index()*$(this).height()});
-            });
-          });
+    	  //点击功能列表，切换页面
+        $(".navList").on("click",function(){
+          $("iframe").attr({"src":$(this).children("a").attr("_href")});
+          $(this).addClass("active").siblings().removeClass("active");
+          $(".bar").css({"top":$(this).index()*$(this).height()});
+        });
+    	  
+      });
       </script>
-     
+      <!-- 遮罩 -->
+      <div class="shade"></div>
   </body>
 </html>

@@ -51,6 +51,23 @@ nav li:hover{
 	left:0;
 	background:#ffa734;
 }
+.shade{
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	background:rgba(0,0,0,0.75);
+	display:none;
+	z-index:10;
+}
+.opeBox{
+	display:none;
+	z-index:100;
+	position:fixed;
+	top:0;
+	left:20%;
+}
 /*添加声音页面*/
 .previewImg{
   width:100px;
@@ -63,7 +80,9 @@ nav li:hover{
 	width:100%;
 	height:100%;
 }
-
+.form-control:focus{
+	border-color:#ffa734;
+}
 
 
 /*列表页面*/

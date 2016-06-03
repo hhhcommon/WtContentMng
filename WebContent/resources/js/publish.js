@@ -136,7 +136,7 @@ function ContentListLoad(actList){
 	        imgDiv.append(thumbImg);
 	        //根据类型显示不同的标记
 	        conH.html(actList.ResultList[i].ContentName);
-	        
+	        /*
 	        switch(actList.ResultList[i].MediaType){
 		        case 'wt_SeqMediaAsset':
 		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
@@ -149,7 +149,7 @@ function ContentListLoad(actList){
 		        	break;
 		        default:
 	        }
-	        
+	        */
 	        conP2.append(conSpan1);
 	        conP2.append(conSpan2);
 	        conDiv.append(conH).append(conP1).append(conP2);
@@ -178,6 +178,12 @@ var subList=[];
 function ContentInfoLoad(conList){
      //下面是获取节目详情
      $(".actThumb").attr({'src':conList.ContentDetail.ContentImg});
+     $(".actTitle").html(conList.ContentDetail.ContentName);
+     if(conList.ContentDetail.MediaType=="wt_SeqMediaAsset"){
+    	 $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
+     }
+     
+     /*
    //根据类型显示不同的标记
      switch(conList.ContentDetail.MediaType){
      case 'wt_SeqMediaAsset':
@@ -192,6 +198,7 @@ function ContentInfoLoad(conList){
      	break;
      default:
      }
+     */
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
      $(".vjName").html((conList.ContentDetail.ContentPersons==null)?"暂无":conList.ContentDetail.ContentPersons);
