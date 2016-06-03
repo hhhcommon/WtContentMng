@@ -208,11 +208,11 @@
   
   <!-- 根据主播id获取 -->
   <select id="getMaListByMaPubId" parameterType="java.lang.String" resultMap="mediaAssetMap">
-    select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR}
+    select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR} order by cTime desc
   </select>
   
   <select id="getSmaListBySmaPubId" parameterType="java.lang.String" resultMap="seqMediaAssetMap">
-    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where smaPubId=#{smaPubId,jdbcType=VARCHAR}
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where smaPubId=#{smaPubId,jdbcType=VARCHAR} order by cTime desc
   </select>
   
   <select id="getSmaInfoById" parameterType="java.lang.String" resultMap="seqMediaAssetMap">

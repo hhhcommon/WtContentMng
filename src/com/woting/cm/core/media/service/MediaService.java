@@ -1,6 +1,7 @@
 package com.woting.cm.core.media.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -84,10 +84,25 @@ public class MediaService {
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
     	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
+    	
+    	String resids = "";
+    	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+			resids+=",'"+seqMediaAssetPo.getId()+"'";
+		}
+    	resids = resids.substring(1);
+    	Map<String, String> param=new HashMap<String, String>();
+        param.put("resTableName", "wt_SeqMediaAsset");
+        param.put("resIds", resids);
+        List<DictRefResPo> rcrpL = dictRdfDao.queryForList("getListByResIds", param);
+        List<Map<String, Object>> catalist = new ArrayList<Map<String,Object>>();
+        for (DictRefResPo dictRefResPo : rcrpL) {
+			catalist.add(dictRefResPo.toHashMap());
+		}
+        
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
-			list.add(ContentUtils.convert2MediaMap_3(sma.toHashMap(), null, null));
+			list.add(ContentUtils.convert2MediaMap_3(sma.toHashMap(), catalist, null));
 		}
 		return list;
     }
