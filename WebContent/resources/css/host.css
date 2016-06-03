@@ -10,13 +10,18 @@ ul,li{
 }
 a{
 	 color:#333;
-  font-size:14px;
 }
 a:hover{
 	text-decoration:none;
+	color:#ffa734;
 }
+a:focus{
+	color:#333;
+	text-decoration:none;
+	}
 body{
   font-family:'Microsoft Yahei','Arial';
+  fong-size:12px;
 }
 
 /*主页面*/
@@ -26,11 +31,26 @@ nav li{
 	line-height:36px;
 	padding-left:20px;
 }
-
+nav ul{
+	position:relative;
+}
+/*
 nav li:hover{
 	background:#f2f2f2;
 }
-
+*/
+.active{
+	background:#f2f2f2;
+}
+.bar{
+	display:block;
+	width:4px;
+	height:36px;
+	position:absolute;
+	top:0;
+	left:0;
+	background:#ffa734;
+}
 /*添加声音页面*/
 .previewImg{
   width:100px;
@@ -47,53 +67,64 @@ nav li:hover{
 
 
 /*列表页面*/
-
-
+.btn:focus{
+	outline:none;
+}
 .listBox{
-  width:100%;
-  height:120px;
-  padding:15px;
-  border-bottom:1px solid #f3f3f4;
-  position:relative;
-  cursor:pointer;
+	width:104px;
+  height:160px;
+  float:left;
+  margin-bottom:8px;
+  margin-right:56px;
+}
+.listBox:nth-child(5n){
+  margin-right:0;
 }
 
-.listBox:hover{
-  background-color:#eff3f6;
+.listBox .imgBox{
+  /*border:1px solid #f2f2f2;
+  border-radius:4px;
+  overflow:hidden;*/
 }
-.listBox .listImg{
-  height:100%;
-  width:15%;
-  margin-right:15px;
-  margin-left:6px;
+.listBox .imgBox a{
+	height:104px;
+  width:104px;
+  background:url(../images/bg-album.jpg) no-repeat right top;
+  display:block;
+  padding:5px 14px 0 0;
 }
-.listBox .listImg img{
-  height:100%;
-  width:100%;
+.listBox .subImg{
+	height:104px;
+  width:104px;
+  border:1px solid #f2f2f2;
+  border-radius:4px;
+  overflow:hidden;
 }
-.listBox .listImg,
-.listBox .listCon{
+.listBox .subImg img{
+	width:100%;
+	height:100%;
+}
+.listBox .imgBox img{
+  height:100px;
+  width:100px;
+}
+.listBox .imgBox,
+.listBox .infoBox{
   float:left;
 }
-.listBox .listCon{
-  width:70%;
-  height:100%;
-}
-
-.listBox p{
-  margin:0 0 2px;
-}
-.listBox .listCon h3{
-  font-size:12px;
-  margin-top:0;
-  margin-bottom:2px;
-  color:#636363;
-  position:relative;
-  display:inline-block;
-  max-width:180px;
+.listBox .infoBox h4{
+  font-size:13px;
+  color:#333;
+  margin:4px 1px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.listBox .infoBox p{
+	color:#999;
+	margin:0;
+	font-size:10px;
+	
 }
 .listBox h3 span{
   width:30px;
@@ -108,18 +139,4 @@ nav li:hover{
   bottom:0;
   color:white;
   -webkit-transform: scale(0.9);
-}
-.listBox .secTitle{
-  font-size:12px;
-  color:#ccc;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.listBox .other{
-  font-size:12px;
-  color:#3871a6;
-}
-.listBox .other span{
-  padding-right:12px;
 }

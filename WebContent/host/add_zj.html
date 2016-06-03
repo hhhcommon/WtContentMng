@@ -20,7 +20,8 @@
 <body class="gray-bg">
     <div class="wrapper wrapper-content">
         <div class="row">
-            <div class="col-sm-6  col-sm-offset-3">
+            <!-- <div class="col-sm-6  col-sm-offset-3"> -->
+            <div class="col-sm-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
                         <h5>创建专辑</h5>
@@ -121,7 +122,7 @@
     });
     $().ready(function(){
 	      //制定表单验证规则与提示
-	      $("#signupForm").validate({
+	      $("#addZjForm").validate({
 		        rules:{
 		          ContentName:{required:true},
 		        },
@@ -168,7 +169,7 @@
                     
                     success: function (opeResult) {
                        if (opeResult.jsonType=="1") {
-                         alert("上传成功");
+                         //alert("上传成功");
                          _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
                        }else{
                          alert(opeResult.err);
@@ -193,7 +194,8 @@
                     dataType:"json",
                     success: function (opeResult) {
                        if (opeResult.ReturnType=="1001") {
-                         alert("添加成功");
+                         alert("专辑创建成功");
+                         $("#addZjForm")[0].reset();
                        }else{
                          alert(opeResult.Message);
                        }
