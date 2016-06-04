@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -65,6 +64,14 @@ public class MediaService {
     public SeqMaRefPo getSeqMaRefByMId(String mid){
     	SeqMaRefPo smarefpo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mid);
 		return smarefpo;
+    }
+    
+    public int getCountInCha(Map<String, Object> m){
+		return channelAssetDao.getCount("countnum", m);
+    }
+    
+    public List<ChannelAssetPo> getContentsByFlowFlag(Map<String, Object> m){
+    	return channelAssetDao.queryForList("getListByFlowFlag", m);
     }
     
     //根据主播id查询其所有单体资源

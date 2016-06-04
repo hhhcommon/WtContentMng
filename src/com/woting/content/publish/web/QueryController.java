@@ -44,7 +44,7 @@ public class QueryController {
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
 		Timestamp endcontentctime = null;
-		String userId = (String) m.get("UserId");
+		String userId = m.get("UserId")+"";
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		if (m.containsKey("CatalogsId"))
@@ -54,27 +54,22 @@ public class QueryController {
 		if (m.containsKey("SourceId"))
 			source = (String) m.get("SourceId");
 		if (m.containsKey("BeginContentPubTime"))
-			begincontentpubtime = Timestamp.valueOf((String) m.get("BeginContentPubTime"));
+			begincontentpubtime = Timestamp.valueOf(m.get("BeginContentPubTime")+"");
 		if (m.containsKey("EndContentPubTime"))
-			endcontentpubtime = Timestamp.valueOf((String) m.get("EndContentPubTime"));
+			endcontentpubtime = Timestamp.valueOf(m.get("EndContentPubTime")+"");
 		if (m.containsKey("BeginContentCTime"))
-			begincontentctime = Timestamp.valueOf((String) m.get("BeginContentCTime"));
+			begincontentctime = Timestamp.valueOf(m.get("BeginContentCTime")+"");
 		if (m.containsKey("EndContentCTime"))
-			endcontentctime = Timestamp.valueOf((String) m.get("EndContentCTime"));
-		if (userId != null) {
-			if (flowFlag > 0 && page > 0 && pagesize > 0) {
-				Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
-						begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
-				map.put("ResultList", maplist.get("List"));
-				map.put("ReturnType", "1001");
-				map.put("ContentCount", maplist.get("Count"));
-			} else {
-				map.put("ReturnType", "1002");
-				map.put("Message", "请求信息有误");
-			}
+			endcontentctime = Timestamp.valueOf(m.get("EndContentCTime")+"");
+		if (flowFlag > 0 && page > 0 && pagesize > 0) {
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
+					begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			map.put("ResultList", maplist.get("List"));
+			map.put("ReturnType", "1001");
+			map.put("ContentCount", maplist.get("Count"));
 		} else {
 			map.put("ReturnType", "1002");
-			map.put("Message", "用户信息有误");
+			map.put("Message", "请求信息有误");
 		}
 		return map;
 	}
