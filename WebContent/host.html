@@ -16,10 +16,8 @@
       <link rel="shortcut icon" href="./resources/images/favicon.ico" />
       <link href="./resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
       <link href="./resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+      <link href="./resources/plugins/hplus/css/style.min.css" rel="stylesheet">
       <link href="./resources/css/host.css" rel="stylesheet">
-      <link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.css" rel="stylesheet" id="layui_layer_skinlayercss">
-      <link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.ext.css" rel="stylesheet" id="layui_layer_skinlayerextcss">
-      <link href="./resources/plugins/hplus/js/plugins/layer/skin/moon/style.css" rel="stylesheet" id="layui_layer_skinmoonstylecss">
       <script src="./resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
       <script src="./resources/js/mainPage.js"></script>
       <script src="./resources/js/host.js"></script>
@@ -47,10 +45,11 @@
 		        <!-- 导航列表 -->
 		        <nav style="width:100%;height:calc(100% - 180px)" class="nav">
 			        <ul class="" >
-	                <li><a class="J_menuItem" href="./host/add_audio.html">上传声音</a></li>
-	                <li><a class="J_menuItem" href="./host/add_zj.html">创建专辑</a></li>
-	                <li><a class="J_menuItem" href="./host/audio.html">声音管理</a></li>
-	                <li><a class="J_menuItem" href="./host/zj.html">专辑管理</a></li>                   
+                  <li class="navList active"><a _href="./host/zj.html" href="javascript:void(0);">专辑管理</a></li>  
+	                <li class="navList"><a _href="./host/audio.html" href="javascript:void(0);">声音管理</a></li>
+	                <li class="navList"><a _href="./host/add_zj.html" href="javascript:void(0);">创建专辑</a></li>  
+                  <li class="navList"><a _href="./host/add_audio.html" href="javascript:void(0);">添加声音</a></li>
+	                <span class="bar"></span>                
 	            </ul>
 		        </nav>
             
@@ -59,7 +58,7 @@
           <!--中间部分开始-->
           <div class="" id="content-main" style="float:left;width:800px;height:100%;border-left:1px solid #f2f2f2;border-right:1px solid #f2f2f2;">
             <!--登录进来，默认显示Home欢迎首页-->
-            <iframe class="J_iframe" width="100%" height="100%" src="./host/audio.html" frameborder="0" data-id="audio.html" seamless=""></iframe>
+            <iframe class="" width="100%" height="100%" src="./host/zj.html" frameborder="0"></iframe>
           </div>
           <!-- 右侧热点区 -->
           <div class="news" style="width:180px;height:100%;float:right;padding:10px;">
@@ -73,9 +72,238 @@
       <script src="./resources/plugins/hplus/js/layer.min.js"></script>
       <!-- 自定义js -->
       <script src="./resources/plugins/hplus/js/hplus.min.js"></script>
-      <!-- 自定义js:负责主框架内显示iFrame页面的-->
-      <script src="./resources/plugins/hplus/js/contabs.min.js"></script>
+      <script src="./resources/js/context.utils.js"></script>
+      <script src="./resources/js/host.js"></script>
+      <!-- jQuery Validation plugin javascript-->
+      <script src="./resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
       <!-- 第三方插件 -->
-      <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>   
+      <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>
+      <script>
+      $.validator.setDefaults({
+          highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
+          success:function(a){a.closest(".form-group").removeClass("has-error")},
+          errorElement:"span",
+          errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
+          errorClass:"help-block m-b-none",
+          validClass:"help-block m-b-none"
+      });
+      </script>
+      <script>
+      $(function(){
+    	  //点击功能列表，切换页面
+        $(".navList").on("click",function(){
+          $("iframe").attr({"src":$(this).children("a").attr("_href")});
+          $(this).addClass("active").siblings().removeClass("active");
+          $(".bar").css({"top":$(this).index()*$(this).height()});
+        });
+
+    	  //以下是创建专辑节目相关内容
+        //初始化创建专辑元素的位置
+        $(".opeBox").css({"left":($(window).width()-$(".opeBox").width())/2});
+        //点击遮罩，或取消，确定，关闭这些点时，隐藏窗口和遮罩
+        $(".shade,.close-link").on("click",function(){
+          $(".shade").css({"display":"none"});
+          $(".opeBox").css({"display":"none"});
+        });
+      //制定表单验证规则与提示
+      /*
+        $("#addZjForm").validate({
+            rules:{
+              ContentName:{required:true},
+            },
+            messages:{
+              ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
+            }
+        });
+        */
+        //封面图片预览与上传
+          $("input[type='file']").change(function(){
+               var _this=$(this);
+                //图片预览
+               if($(".defaultImg").css("display")!="none"){
+                 $(".defaultImg").css({"display":"none"});
+               }
+               var fileReader = new FileReader();
+               fileReader.onload = function(evt)
+               {
+                   if(FileReader.DONE==fileReader.readyState)
+                   {    
+                        var newImg =  $("<img alt='front cover' />");
+                        newImg.attr({"src":this.result});//是Base64的data url数据
+                        if($(".previewImg").children().length>1){
+                          $(".previewImg img:last").replaceWith(newImg);
+                        }else{
+                          $(".previewImg").append(newImg);
+                        }
+                    }
+               }
+               fileReader.readAsDataURL($(this)[0].files[0]);
+               
+                //文件上传
+                var oMyForm = new FormData();
+                oMyForm.append("ContentFile", $(this)[0].files[0]);
+                $.ajax({
+                    url:"http://localhost:908/CM/common/uploadCM.do",
+                    type:"POST",
+                    data:oMyForm,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    dataType:"json",
+                    //表单提交前进行验证
+                    
+                    success: function (opeResult) {
+                       if (opeResult.jsonType=="1") {
+                         //alert("上传成功");
+                         _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                       }else{
+                         alert(opeResult.err);
+                       }
+                    },
+                    error: function(jqXHR){
+                        alert("发生错误" + jqXHR.status);
+                     }     
+                });
+          });
+          
+        //form表单提交
+            $("#submitBtn").click(function () {
+              if($("#ContentImg").val()==""){
+                    //如未设置封面，将使用平台默认图片
+                    $("#ContentImg").val($(".defaultImg").attr("src"));
+                  }
+               $.ajax({
+                    url:"http://localhost:908/CM/content/addSeqMediaInfo.do",
+                    type:"POST",
+                    data:$("#addZjForm").serialize(),
+                    dataType:"json",
+                    success: function (opeResult) {
+                       if (opeResult.ReturnType=="1001") {
+                         alert("专辑创建成功");
+                         $("#addZjForm")[0].reset();
+                       }else{
+                         alert(opeResult.Message);
+                       }
+                    },
+                    error: function(jqXHR){
+                        alert("发生错误" + jqXHR.status);
+                     }
+                });
+            });
+        
+          //获取分类列表
+            getCatalogs();
+            function getCatalogs(){
+              $.ajax({
+                    type: "POST",    
+                    url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
+                    dataType: "json",
+                    data:{cataId: "3"},
+                    success: function(catalogsList) {
+                        if (catalogsList.jsonType=="1") {
+                          catalogsListLoad(catalogsList);
+                        } else {
+                            //alert("获取数据出现问题:"+ConditionsList.Message);
+                        }  
+                    },
+                    error: function(jqXHR){
+                       //alert("发生错误" + jqXHR.status);
+                    }     
+                });
+            }
+          function catalogsListLoad(catalogsList){
+            var listLength=catalogsList.data.children.length;
+            var opt;
+            for(var i=0;i<listLength;i++){
+              opt=$("<option></option>");
+              opt.val(catalogsList.data.children[i].id);
+              opt.text(catalogsList.data.children[i].name);
+              $("#ContentCatalogs").append(opt);
+            }
+          }
+          
+      });
+      </script>
+      <!-- 遮罩 -->
+      <div class="shade"></div>
+      <!--创建专辑界面-->
+		  <div class="row opeBox">
+		      <div class="col-sm-12">
+		          <div class="ibox float-e-margins">
+		              <div class="ibox-title text-center">
+		                  <h5>创建专辑</h5>
+		                  <div class="ibox-tools text-right">
+		                      <a class="close-link">
+		                          <i class="fa fa-times"></i>
+		                      </a>
+		                  </div>
+		              </div>
+		              <div class="ibox-content">
+		                  <form class="form-horizontal m-t" id="addZjForm" onsubmit="return false;">
+		                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+		                      <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
+		                      <div class="form-group">
+		                          <label class="col-sm-3 control-label">专辑名称：</label>
+		                          <div class="col-sm-8">
+		                              <input id="ContentName" name="ContentName" class="form-control" type="text" aria-required="true">
+		                          </div>
+		                      </div>
+		                      <div class="form-group">
+		                          <label class="col-sm-3 control-label">专辑封面：</label>
+		                          <div class="col-sm-8">
+		                              <div class="previewImg">
+		                                <img class="defaultImg" src="resources/images/default.png" alt="front cover" />
+		                              </div>
+		                              <input id="uploadImg" name="uploadImg" class="form-control" type="file" accept=".png,.jpg" />
+		                              <input id="ContentImg" name="ContentImg" type="hidden" value="" />
+		                              <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、PNG格式</span>
+		                          </div>
+		                      </div>
+		                      <div class="form-group">
+		                          <label class="col-sm-3 control-label">专辑分类：</label>
+		                          <div class="col-sm-8">
+		                              <select class="form-control" name="ContentCatalogs" id="ContentCatalogs"></select>
+		                          </div>
+		                      </div>
+		                      <div class="form-group">
+		                          <label class="col-sm-3 control-label">专辑标签：</label>
+		                          <div class="col-sm-8">
+		                              <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
+		                          </div>
+		                      </div>
+		                      <div class="form-group">
+		                          <label class="col-sm-3 control-label">专辑简介：</label>
+		                          <div class="col-sm-8">
+		                              <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
+		                          </div>
+		                      </div>
+		                      <!-- 
+		                      <div class="form-group">
+		                          <label class="col-sm-3 control-label">添加声音：</label>
+		                          <div class="col-sm-8">
+		                              <input id="contentUrl" name="contentUrl" class="form-control" type="file">
+		                          </div>
+		                      </div>
+		                       -->
+		                      
+		                      <div class="form-group">
+		                          <div class="col-sm-3 text-right">
+		                              <button class="btn btn-warning" id="submitBtn" type="submit">提交</button>
+		                          </div>
+		                          <div class="col-sm-3 text-center">
+		                              <button class="btn btn-warning" type="publish">发布</button>
+		                          </div>
+		                          <div class="col-sm-3 text-center">
+                                  <button class="btn btn-warning" type="draftBtn">存草稿</button>
+                              </div>
+		                          <div class="col-sm-3 text-left">
+		                              <a class="close-link btn btn-warning">取消</a>
+		                          </div>
+		                      </div>
+		                  </form>
+		              </div>
+		          </div>
+		      </div>
+		  </div>
   </body>
 </html>

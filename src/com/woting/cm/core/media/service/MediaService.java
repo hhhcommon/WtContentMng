@@ -1,14 +1,15 @@
 package com.woting.cm.core.media.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -84,10 +85,19 @@ public class MediaService {
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
     	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
+    	
+    	String resids = "";
+    	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+			resids+=",'"+seqMediaAssetPo.getId()+"'";
+		}
+    	resids = resids.substring(1);
+    	
+    	List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+    	
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
-			list.add(ContentUtils.convert2MediaMap_3(sma.toHashMap(), null, null));
+			list.add(ContentUtils.convert2MediaMap_3(sma.toHashMap(), catalist, null));
 		}
 		return list;
     }
@@ -114,6 +124,19 @@ public class MediaService {
     	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
     	cha.buildFromPo(chapo);
 		return cha;
+    }
+    
+    //根据资源id得到资源字典项对应关系
+    public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName){
+    	Map<String, String> param=new HashMap<String, String>();
+        param.put("resTableName", resTableName);
+        param.put("resIds", resids);
+        List<DictRefResPo> rcrpL = dictRdfDao.queryForList("getListByResIds", param);
+        List<Map<String, Object>> catalist = new ArrayList<Map<String,Object>>();
+        for (DictRefResPo dictRefResPo : rcrpL) {
+			catalist.add(dictRefResPo.toHashMap());
+		}
+		return catalist;
     }
     
     
@@ -180,5 +203,29 @@ public class MediaService {
     
     public void saveDictRef(DictRefRes dictref) {
     	dictRdfDao.insert("insert", dictref.convert2Po());
+    }
+    
+    public void removeMa(String id){
+    	mediaAssetDao.delete("removeMaById", id);
+    }
+    
+    public void removeSma(String id){
+    	seqMediaAssetDao.delete("", id);
+    }
+    
+    public void removeMas(String id){
+    	maSourceDao.delete("multiMasByMaId", id);
+    }
+    
+    public void removeMa2Sma(String id){
+    	seqMaRefDao.delete("multiM2SRefByMId", id);
+    }
+    
+    public void removeResDictRef(String id){
+    	dictRdfDao.delete("multiDelBc", id);
+    }
+    
+    public void removeCha(String id){
+    	channelAssetDao.delete("deleteByAssetId", id);
     }
 }

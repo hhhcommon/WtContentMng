@@ -17,91 +17,82 @@
     <link href="../resources/css/host.css" rel="stylesheet">
 </head>
 
-<body class="gray-bg">
-    <div class="wrapper wrapper-content">
-        <div class="row">
-            <div class="col-sm-6  col-sm-offset-3">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>创建专辑</h5>
-                        <div class="ibox-tools">
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="ibox-content">
-                        <form class="form-horizontal m-t" id="addZjForm" onsubmit="return false;">
-                            <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
-                            <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">专辑名称：</label>
-                                <div class="col-sm-8">
-                                    <input id="ContentName" name="ContentName" class="form-control" type="text" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">专辑封面：</label>
-                                <div class="col-sm-8">
-                                    <div class="previewImg">
-                                      <img class="defaultImg" src="../uploadFiles/tempuplf/default.png" alt="front cover" />
-                                    </div>
-                                    <input id="uploadImg" name="uploadImg" class="form-control" type="file" accept=".png,.jpg" />
-                                    <input id="ContentImg" name="ContentImg" type="hidden" value="" />
-                                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、PNG格式</span>
-                                </div>
-                            </div>
-                            <!-- 
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">专辑分类：</label>
-                                <div class="col-sm-8">
-                                    <select class="form-control" name="ContentCatalogs">
-                                        <option value="">不 限</option>
-                                        <option value="">新闻</option>
-                                        <option value="">相声</option>
-                                    </select>
-                                </div>
-                            </div>
-                             -->
-                            
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">专辑标签：</label>
-                                <div class="col-sm-8">
-                                    <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">专辑简介：</label>
-                                <div class="col-sm-8">
-                                    <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
-                                </div>
-                            </div>
-                            <!-- 
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">添加声音：</label>
-                                <div class="col-sm-8">
-                                    <input id="contentUrl" name="contentUrl" class="form-control" type="file">
-                                </div>
-                            </div>
-                             -->
-                            
-                            <div class="form-group">
-                                <div class="col-sm-4 text-right">
-                                    <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
-                                </div>
-                                <div class="col-sm-4 text-center">
-                                    <button class="btn btn-primary" type="publish">发布</button>
-                                </div>
-                                <div class="col-sm-4 text-left">
-                                    <a class="close-link btn btn-primary">取消</a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<body class="">
+  <div class="row opeBox">
+      <div class="col-sm-8  col-sm-offset-2">
+          <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                  <h5>创建专辑</h5>
+                  <div class="ibox-tools">
+                      <a class="close-link">
+                          <i class="fa fa-times"></i>
+                      </a>
+                  </div>
+              </div>
+              <div class="ibox-content">
+                  <form class="form-horizontal m-t" id="addZjForm" onsubmit="return false;">
+                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+                      <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
+                      <div class="form-group">
+                          <label class="col-sm-3 control-label">专辑名称：</label>
+                          <div class="col-sm-8">
+                              <input id="ContentName" name="ContentName" class="form-control" type="text" aria-required="true">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-3 control-label">专辑封面：</label>
+                          <div class="col-sm-8">
+                              <div class="previewImg">
+                                <img class="defaultImg" src="../uploadFiles/tempuplf/default.png" alt="front cover" />
+                              </div>
+                              <input id="uploadImg" name="uploadImg" class="form-control" type="file" accept=".png,.jpg" />
+                              <input id="ContentImg" name="ContentImg" type="hidden" value="" />
+                              <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、PNG格式</span>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-3 control-label">专辑分类：</label>
+                          <div class="col-sm-8">
+                              <select class="form-control" name="ContentCatalogs" id="ContentCatalogs"></select>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-3 control-label">专辑标签：</label>
+                          <div class="col-sm-8">
+                              <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="col-sm-3 control-label">专辑简介：</label>
+                          <div class="col-sm-8">
+                              <textarea id="ContentDesc" name="ContentDesc" class="form-control"></textarea>
+                          </div>
+                      </div>
+                      <!-- 
+                      <div class="form-group">
+                          <label class="col-sm-3 control-label">添加声音：</label>
+                          <div class="col-sm-8">
+                              <input id="contentUrl" name="contentUrl" class="form-control" type="file">
+                          </div>
+                      </div>
+                       -->
+                      
+                      <div class="form-group">
+                          <div class="col-sm-4 text-right">
+                              <button class="btn btn-warning" id="submitBtn" type="submit">提交</button>
+                          </div>
+                          <div class="col-sm-4 text-center">
+                              <button class="btn btn-warning" type="publish">发布</button>
+                          </div>
+                          <div class="col-sm-4 text-left">
+                              <a class="close-link btn btn-warning">取消</a>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
     <!-- 全局js -->
     <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
     <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
@@ -113,7 +104,7 @@
     <script>
     $.validator.setDefaults({
         highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
-        success:function(a){a.closest(".form-group").removeClass("has-error").addClass("has-success")},
+        success:function(a){a.closest(".form-group").removeClass("has-error")},
         errorElement:"span",
         errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
         errorClass:"help-block m-b-none",
@@ -121,7 +112,7 @@
     });
     $().ready(function(){
 	      //制定表单验证规则与提示
-	      $("#signupForm").validate({
+	      $("#addZjForm").validate({
 		        rules:{
 		          ContentName:{required:true},
 		        },
@@ -168,7 +159,7 @@
                     
                     success: function (opeResult) {
                        if (opeResult.jsonType=="1") {
-                         alert("上传成功");
+                         //alert("上传成功");
                          _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
                        }else{
                          alert(opeResult.err);
@@ -193,7 +184,8 @@
                     dataType:"json",
                     success: function (opeResult) {
                        if (opeResult.ReturnType=="1001") {
-                         alert("添加成功");
+                         alert("专辑创建成功");
+                         $("#addZjForm")[0].reset();
                        }else{
                          alert(opeResult.Message);
                        }
@@ -203,6 +195,38 @@
                      }
                 });
             });
+        
+          //获取分类列表
+            getCatalogs();
+            function getCatalogs(){
+              $.ajax({
+                    type: "POST",    
+                    url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
+                    dataType: "json",
+                    data:{cataId: "3"},
+                    success: function(catalogsList) {
+                        if (catalogsList.jsonType=="1") {
+                        	catalogsListLoad(catalogsList);
+                        } else {
+                            //alert("获取数据出现问题:"+ConditionsList.Message);
+                        }  
+                    },
+                    error: function(jqXHR){
+                       //alert("发生错误" + jqXHR.status);
+                    }     
+                });
+            }
+          function catalogsListLoad(catalogsList){
+        	  var listLength=catalogsList.data.children.length;
+        	  var opt;
+        	  for(var i=0;i<listLength;i++){
+        		  opt=$("<option></option>");
+        		  opt.val(catalogsList.data.children[i].id);
+        		  opt.text(catalogsList.data.children[i].name);
+        		  $("#ContentCatalogs").append(opt);
+        	  }
+        	  
+          }
           
     });
     </script>

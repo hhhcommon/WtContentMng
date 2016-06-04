@@ -203,24 +203,24 @@
   </insert>
   
   <select id="getMaInfoById" parameterType="java.lang.String" resultMap="mediaAssetMap">
-    select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
   
   <!-- 根据主播id获取 -->
   <select id="getMaListByMaPubId" parameterType="java.lang.String" resultMap="mediaAssetMap">
-    select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR}
+    select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR} order by cTime desc
   </select>
   
   <select id="getSmaListBySmaPubId" parameterType="java.lang.String" resultMap="seqMediaAssetMap">
-    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where smaPubId=#{smaPubId,jdbcType=VARCHAR}
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where smaPubId=#{smaPubId,jdbcType=VARCHAR} order by cTime desc
   </select>
   
   <select id="getSmaInfoById" parameterType="java.lang.String" resultMap="seqMediaAssetMap">
-    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
   
   <select id="getS2MRefInfoByMId" parameterType="java.lang.String" resultMap="seqMaRefMap">
-    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
+    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR} limit 1
   </select>
   
   <!-- 修改 根据主键-->
@@ -272,5 +272,21 @@
     </set>
     where MId=#{MId,jdbcType=VARCHAR}
   </update>
+  
+  <delete id="multiMaById" parameterType="java.lang.String">
+      delete from wt_MediaAsset where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="multiSmaById" parameterType="java.lang.String">
+      delete from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="multiMasByMaId" parameterType="java.lang.String">
+      delete from wt_MaSource where maid=#{maid,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="multiM2SRefByMId" parameterType="java.lang.String">
+      delete from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
+  </delete>
   
 </mapper>
