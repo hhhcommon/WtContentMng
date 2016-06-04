@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -75,7 +74,7 @@ public class MediaService {
         for (MediaAssetPo mediaAssetPo : listpo) {
         	MediaAsset ma=new MediaAsset();
 			ma.buildFromPo(mediaAssetPo);
-			list.add(ContentUtils.convert2MediaMap_2(ma.toHashMap(), null, null));
+			list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
 		}
         return list;
     }
@@ -97,7 +96,7 @@ public class MediaService {
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
-			list.add(ContentUtils.convert2MediaMap_3(sma.toHashMap(), catalist, null));
+			list.add(ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null));
 		}
 		return list;
     }
