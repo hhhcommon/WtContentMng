@@ -66,6 +66,14 @@ public class MediaService {
 		return smarefpo;
     }
     
+    public int getCountInCha(Map<String, Object> m){
+		return channelAssetDao.getCount("countnum", m);
+    }
+    
+    public List<ChannelAssetPo> getContentsByFlowFlag(Map<String, Object> m){
+    	return channelAssetDao.queryForList("getListByFlowFlag", m);
+    }
+    
     //根据主播id查询其所有单体资源
     public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
