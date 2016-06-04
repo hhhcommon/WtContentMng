@@ -203,7 +203,7 @@
   </insert>
   
   <select id="getMaInfoById" parameterType="java.lang.String" resultMap="mediaAssetMap">
-    select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
   
   <!-- 根据主播id获取 -->
@@ -216,11 +216,11 @@
   </select>
   
   <select id="getSmaInfoById" parameterType="java.lang.String" resultMap="seqMediaAssetMap">
-    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
   
   <select id="getS2MRefInfoByMId" parameterType="java.lang.String" resultMap="seqMaRefMap">
-    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
+    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR} limit 1
   </select>
   
   <!-- 修改 根据主键-->
