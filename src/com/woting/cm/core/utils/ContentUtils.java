@@ -120,7 +120,7 @@ public abstract class ContentUtils {
             if ((_c.get("resTableName")+"").equals(resTableName+"")&&(_c.get("resId")+"").equals(resId)) {
                 oneCata=new HashMap<String, Object>();
                 oneCata.put("CataMName", _c.get("dictMName"));//大分类名称
-                oneCata.put("CataMId", _c.get("3"));
+                oneCata.put("CataMId", "3");
                 oneCata.put("CataTitle", _c.get("pathNames"));//分类名称，树结构名称
                 oneCata.put("CataDid", _c.get("dictDid"));
                 ret.add(oneCata);

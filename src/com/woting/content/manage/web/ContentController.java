@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
@@ -181,27 +182,36 @@ public class ContentController {
 		return null;
 	}
 	
-//	@RequestMapping(value = "/content/updateZBContentStatus.do")
-//	@ResponseBody
-//	public Map<String, Object> updateStatus(HttpServletRequest request){
-//		Map<String, Object> map = new HashMap<String,Object>();
-//		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-//		String userid = m.get("UserId")+"";
-//		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无用户信息");
-//			return map;
-//		}
-//		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
-//		if (list==null||!(list.size()>0)) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "数据参数不全");
-//			return map;
-//		}
-//		map = contentService.modifyStatus(userid, list);
-//		return map;
-//	}
-//	
+	@RequestMapping(value = "/content/updateSeqMediaStatus.do")
+	@ResponseBody
+	public Map<String, Object> updateStatus(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String smaid = m.get("ContentId")+"";
+		if(smaid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无专辑id信息");
+			return map;
+		}
+		String chid = m.get("ContentChannelId")+"";
+		if(chid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无栏目id信息");
+			return map;
+		}
+		String smaname = m.get("ContentName")+"";
+		String smaimg = m.get("ContentImg")+"";
+		String desc = m.get("ContentDesc")+"";
+		map = contentService.modifySeqStatus(userid, smaid, smaname, chid, desc, smaimg);
+		return map;
+	}
+	
 	@RequestMapping(value = "/content/removeMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> removeMediaInfo(HttpServletRequest request){

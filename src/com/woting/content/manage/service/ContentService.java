@@ -13,6 +13,8 @@ import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.model.Channel;
+import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
@@ -224,155 +226,92 @@ public class ContentService {
 		}
 		return map;
 	}
+	
+	public Map<String, Object> modifyMediaStatus(String userid, String maid,String maname, String chid, String madesc,String maimg) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		MediaAsset ma = mediaService.getMaInfoById(maid);
+		if(ma==null) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "专辑不存在");
+			return map;
+		}
+		Channel ch = mediaService.getChInfoById(chid);
+		if(ch==null) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "栏目不存在");
+			return map;
+		}
+		ChannelAsset cha = new ChannelAsset();
+		String chaid = SequenceUUID.getPureUUID();
+		cha.setId(chaid);
+		cha.setCh(ch);
+		cha.setPubObj(ma);
+		cha.setPublisherId(userid);
+		cha.setCheckerId("1");
+		cha.setFlowFlag(2);
+		cha.setSort(0);
+		cha.setCheckRuleIds("0");
+		cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		cha.setIsValidate(1);
+		cha.setInRuleIds("elt");
+		cha.setCheckRuleIds("elt");
+		mediaService.saveCHA(cha);
+		if(mediaService.getCHAInfoById(chaid)!=null){
+			map.put("ReturnType", "1001");
+			map.put("Message", "专辑发布成功");
+			MediaAsset ma2 = new MediaAsset();
+			ma2.setId(maid);
+			ma2.setPubCount(ma.getPubCount()+1);
+			mediaService.updateMa(ma2);
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "专辑发布失败");
+		}
+		return map;
+	}
 
-//	/**
-//	 * 修改专辑，单体的发布状态
-//	 * @param userid
-//	 * @param list
-//	 * @return
-//	 */
-//	public Map<String, Object> modifyStatus(String userid, List<Map<String, Object>> list) {
-//		Map<String, Object> map = new HashMap<String,Object>();
-//		for (Map<String, Object> m : list) {
-//			String mediatype = m.get("MediaType") + "";
-//			switch (mediatype) {
-//			case "MediaType":
-//				break;
-//			case "wt_SeqMediaAsset":
-//				map = modifySeqStatus(userid, m);
-//				break;
-//			default:
-//				break;
-//			}
-//		}
-//		return map;
-//	}
-//
-//	private Map<String, Object> modifySeqStatus(String userid, Map<String, Object> m) {
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		String caid = m.get("ChannelAssetId")+"";
-//		if(StringUtils.isNullOrEmptyOrSpace(caid)||caid.toLowerCase().equals("null")) {
-//			caid = SequenceUUID.getPureUUID();
-//		}
-//		String contentid = m.get("ContentId") + "";
-//		String contenttitle = m.get("ContentTitle") + "";
-//		String contentimg = m.get("ContentImg") + "";
-//		String channelid = m.get("ChannelId") + "";
-//		String flowflag = m.get("ContentFlowFlag") + "";
-//		if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无专辑id");
-//			return map;
-//		}
-//		if (StringUtils.isNullOrEmptyOrSpace(flowflag) || flowflag.toLowerCase().equals("null")) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无专辑修改状态");
-//			return map;
-//		}
-//		
-//		SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
-//		ChannelAsset cha = new ChannelAsset();
-//		cha.setId(caid);
-//		Channel ch = mediaService.getChInfoById(channelid);
-//		cha.setCh(ch);
-//		cha.setPubObj(sma);
-//		cha.setPublisherId(userid);
-//		if (!StringUtils.isNullOrEmptyOrSpace(contenttitle) && !contenttitle.toLowerCase().equals("null"))
-//			cha.setPubName(contenttitle);
-//		if (!StringUtils.isNullOrEmptyOrSpace(contentimg) && !contentimg.toLowerCase().equals("null"))
-//			cha.setPubImg(contentimg);
-//		cha.setPubObj(sma);
-//		cha.setCheckerId("1");
-//		cha.setFlowFlag(1);
-//		cha.setSort(0);
-//		cha.setCheckRuleIds("0");
-//		cha.setCTime(new Timestamp(System.currentTimeMillis()));
-//		cha.setIsValidate(1);
-//		cha.setInRuleIds("elt");
-//		cha.setCheckRuleIds("elt");
-//		mediaService.saveCHA(cha);
-//		if(mediaService.getCHAInfoById(caid)!=null){
-//			map.put("ReturnType", "1001");
-//			map.put("Message", "专辑处于待审核状态");
-//			return map;
-//		} else {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "专辑提交审核失败");
-//			return map;
-//		}
-//	}
-//	
-//	private Map<String, Object> modifyMaStatus(String userid, Map<String, Object> m){
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		String caid = m.get("ChannelAssetId")+"";
-//		if(StringUtils.isNullOrEmptyOrSpace(caid)||caid.toLowerCase().equals("null")) {
-//			caid = SequenceUUID.getPureUUID();
-//		}
-//		String contentid = m.get("ContentId") + "";
-//		String contenttitle = m.get("ContentTitle") + "";
-//		String contentimg = m.get("ContentImg") + "";
-//		String channelid = m.get("ChannelId") + "";
-//		String flowflag = m.get("ContentFlowFlag") + "";
-//		if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无节目id");
-//			return map;
-//		}
-//		if (StringUtils.isNullOrEmptyOrSpace(flowflag) || flowflag.toLowerCase().equals("null")) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无节目修改状态");
-//			return map;
-//		}
-//		if(flowflag.equals("1")) {
-//			MediaAsset ma = mediaService.getMaInfoById(contentid);
-//			ChannelAsset cha = new ChannelAsset();
-//			cha.setId(caid);
-//			Channel ch = mediaService.getChInfoById(channelid);
-//			cha.setCh(ch);
-//			cha.setPubObj(ma);
-//			cha.setPublisherId(userid);
-//			if (!StringUtils.isNullOrEmptyOrSpace(contenttitle) && !contenttitle.toLowerCase().equals("null"))
-//				cha.setPubName(contenttitle);
-//			if (!StringUtils.isNullOrEmptyOrSpace(contentimg) && !contentimg.toLowerCase().equals("null"))
-//				cha.setPubImg(contentimg);
-//			cha.setPubObj(ma);
-//			cha.setCheckerId("1");
-//			cha.setFlowFlag(1);
-//			cha.setSort(0);
-//			cha.setCheckRuleIds("0");
-//			cha.setCTime(new Timestamp(System.currentTimeMillis()));
-//			cha.setIsValidate(1);
-//			cha.setInRuleIds("elt");
-//			cha.setCheckRuleIds("elt");
-//			mediaService.saveCHA(cha);
-//			if(mediaService.getCHAInfoById(caid)!=null){
-//				map.put("ReturnType", "1001");
-//				map.put("Message", "节目处于待审核状态");
-//				return map;
-//			} else {
-//				map.put("ReturnType", "1011");
-//				map.put("Message", "节目提交审核失败");
-//				return map;
-//			}
-//		}else {
-//			if(flowflag.equals("4")) {
-//				MediaAsset ma = mediaService.getMaInfoById(contentid);
-//				ChannelAsset cha = mediaService.getCHAInfoById(caid);
-//				cha.setFlowFlag(4);
-//				mediaService.updateCHA(cha);
-//				if(mediaService.getCHAInfoById(caid).getFlowFlag()==4){
-//					map.put("ReturnType", "1001");
-//					map.put("Message", "节目处于撤回状态");
-//					return map;
-//				}else{
-//					map.put("ReturnType", "1011");
-//					map.put("Message", "节目撤回失败");
-//					return map;
-//				}
-//			}
-//		}
-//		return m;
-//	}
+	public Map<String, Object> modifySeqStatus(String userid, String smaid,String smaname, String chid, String smadesc,String smaimg) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		SeqMediaAsset sma = mediaService.getSmaInfoById(smaid);
+		if(sma==null) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "专辑不存在");
+			return map;
+		}
+		Channel ch = mediaService.getChInfoById(chid);
+		if(ch==null) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "栏目不存在");
+			return map;
+		}
+		ChannelAsset cha = new ChannelAsset();
+		String chaid = SequenceUUID.getPureUUID();
+		cha.setId(chaid);
+		cha.setCh(ch);
+		cha.setPubObj(sma);
+		cha.setPublisherId(userid);
+		cha.setCheckerId("1");
+		cha.setFlowFlag(2);
+		cha.setSort(0);
+		cha.setCheckRuleIds("0");
+		cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		cha.setIsValidate(1);
+		cha.setInRuleIds("elt");
+		cha.setCheckRuleIds("elt");
+		mediaService.saveCHA(cha);
+		if(mediaService.getCHAInfoById(chaid)!=null){
+			map.put("ReturnType", "1001");
+			map.put("Message", "专辑发布成功");
+			SeqMediaAsset sma2 = new SeqMediaAsset();
+			sma2.setId(smaid);
+			sma2.setPubCount(sma.getPubCount()+1);
+			mediaService.updateSma(sma2);
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "专辑发布失败");
+		}
+		return map;
+	}
 
 	public void removeMediaAsset(String contentid){
 		mediaService.removeMa(contentid);
