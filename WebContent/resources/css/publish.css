@@ -151,9 +151,6 @@ body{
 	cursor:pointer;
 }
 
-.listBox:hover{
-	background-color:#eff3f6;
-}
 .listBox .listImg{
 	height:100%;
 	width:15%;
