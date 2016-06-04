@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -92,15 +93,12 @@ public class MediaService {
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
     	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
-    	
     	String resids = "";
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			resids+=",'"+seqMediaAssetPo.getId()+"'";
 		}
     	resids = resids.substring(1);
-    	
     	List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);

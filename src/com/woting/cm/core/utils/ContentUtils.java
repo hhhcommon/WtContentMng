@@ -116,6 +116,7 @@ public abstract class ContentUtils {
         if (cataList==null||cataList.size()==0) return null;
         Map<String, Object> oneCata=new HashMap<String, Object>();
         List<Map<String, Object>> ret=new ArrayList<Map<String, Object>>();
+        System.out.println(JsonUtils.objToJson(cataList));
         for (Map<String, Object> _c: cataList) {
             if ((_c.get("resTableName")+"").equals(resTableName+"")&&(_c.get("resId")+"").equals(resId)) {
                 oneCata=new HashMap<String, Object>();
