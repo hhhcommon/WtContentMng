@@ -100,8 +100,11 @@
   </sql>
 
   <!-- 获得记录条数-->
-  <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+  <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(*) from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+  <select id="belongSeqPubCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(*) from wt_ChannelAsset where assetType='wt_SeqMediaAsset' and assetId in (select sId from wt_SeqMA_Ref where mId=#{assetId,jdbcType=VARCHAR})
   </select>
   
   <select id="countnum" parameterType="java.util.Map" resultType="java.lang.Integer">
@@ -109,7 +112,7 @@
   </select>
 
   <!-- 获得列表 -->
-  <select id="getList" resultMap="channelAssetMap" parameterType="java.util.Map">
+  <select id="getList" parameterType="java.util.Map" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset
   </select>
   
@@ -119,11 +122,16 @@
   </select>
 
   <!-- 获得一条数据 -->
-  <select id="getInfo" resultMap="channelAssetMap" parameterType="java.util.Map">
+  <select id="getInfo" parameterType="java.util.Map" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
-  <select id="getInfoById" resultMap="channelAssetMap" parameterType="java.lang.String">
+  <select id="getInfoById" parameterType="java.lang.String" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset where id=#{id,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 是否内容列表已发布 -->
+  <select id="pubChannels" parameterType="java.util.Map" resultMap="channelAssetMap">
+     <if test="_parameter!=null">select * from wt_ChannelAsset where (${whereSql}) and flowFlag=2</if>
   </select>
 
   <!-- 新增数据 -->
@@ -194,8 +202,5 @@
   </delete>
   <delete id="deleteByEntity" parameterType="java.util.Map">
     delete from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
-  </delete>
-  <delete id="deleteByAssetId" parameterType="java.lang.String">
-    delete from wt_ChannelAsset where assetId=#{assetId,jdbcType=VARCHAR}
   </delete>
 </mapper>

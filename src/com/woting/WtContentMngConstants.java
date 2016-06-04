@@ -7,4 +7,6 @@ public class WtContentMngConstants {
     public final static String ROOT_PATH="D:/workIDE/work/WtContentMng/WebContent/";
     //版本配置信息
     public static final String APP_VERSIONCONFIG = "AppVersionConfig";
+    //栏目结构
+    public final static String CACHE_CHANNEL="CacheChannel";
 }
