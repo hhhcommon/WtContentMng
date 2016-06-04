@@ -226,10 +226,12 @@ public class ContentController {
 		String contentid = m.get("ContentId")+"";
 		if(contentid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
-			map.put("Message", "无专辑信息");
+			map.put("Message", "无单体信息");
 			return map;
 		}
 		contentService.removeMediaAsset(contentid);
+		map.put("ReturnType", "1001");
+		map.put("Message", "单体删除成功");
 		return map;
 	}
 	
@@ -251,6 +253,8 @@ public class ContentController {
 			return map;
 		}
 		contentService.removeSeqMedia(contentid);
+		map.put("ReturnType", "1001");
+		map.put("Message", "专辑删除成功");
 		return map;
 	}
 	
