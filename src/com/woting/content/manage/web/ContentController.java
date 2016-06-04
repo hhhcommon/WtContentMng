@@ -122,11 +122,11 @@ public class ContentController {
 		String contentimg = m.get("ContentImg")+"";
 		contentimg = contentimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
 		String contentdesc = m.get("ContentDesc")+"";
-		String catalogsid = m.get("ContentCatalogsId")+"";
+		String did = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
 		if(!m.containsKey("AddMediaInfo"))maList=null;
 		else maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
-		map = contentService.addSequInfo(userid, username, contentname, contentimg, catalogsid, contentdesc, maList);
+		map = contentService.addSequInfo(userid, username, contentname, contentimg, did, contentdesc, maList);
 		return map;
 	}
 	
@@ -134,6 +134,7 @@ public class ContentController {
 	@ResponseBody
 	public Map<String, Object> updateMedia(HttpServletRequest request){
 		MediaAsset ma = new MediaAsset();
+		Map<String, Object> map = new HashMap<String,Object>();
 		SeqMediaAsset sma = new SeqMediaAsset();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
@@ -155,8 +156,8 @@ public class ContentController {
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		contentService.updateMediaInfo(ma,sma);
-		return null;
+		map = contentService.updateMediaInfo(ma,sma);
+		return map;
 	}
 	
 	@RequestMapping(value= "/content/updateSeqInfo.do")
@@ -164,6 +165,7 @@ public class ContentController {
 	public Map<String, Object> updateSeq(HttpServletRequest request){
 		MediaAsset ma = new MediaAsset();
 		SeqMediaAsset sma = new SeqMediaAsset();
+		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
 		String maid = m.get("ContentId")+"";
@@ -178,8 +180,8 @@ public class ContentController {
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		contentService.updateMediaInfo(ma,sma);
-		return null;
+		map = contentService.updateSeqInfo(sma);
+		return map;
 	}
 	
 	@RequestMapping(value = "/content/updateSeqMediaStatus.do")
