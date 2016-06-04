@@ -91,15 +91,9 @@ public class MediaService {
 			resids+=",'"+seqMediaAssetPo.getId()+"'";
 		}
     	resids = resids.substring(1);
-    	Map<String, String> param=new HashMap<String, String>();
-        param.put("resTableName", "wt_SeqMediaAsset");
-        param.put("resIds", resids);
-        List<DictRefResPo> rcrpL = dictRdfDao.queryForList("getListByResIds", param);
-        List<Map<String, Object>> catalist = new ArrayList<Map<String,Object>>();
-        for (DictRefResPo dictRefResPo : rcrpL) {
-			catalist.add(dictRefResPo.toHashMap());
-		}
-        
+    	
+    	List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+    	
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
@@ -130,6 +124,19 @@ public class MediaService {
     	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
     	cha.buildFromPo(chapo);
 		return cha;
+    }
+    
+    //根据资源id得到资源字典项对应关系
+    public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName){
+    	Map<String, String> param=new HashMap<String, String>();
+        param.put("resTableName", resTableName);
+        param.put("resIds", resids);
+        List<DictRefResPo> rcrpL = dictRdfDao.queryForList("getListByResIds", param);
+        List<Map<String, Object>> catalist = new ArrayList<Map<String,Object>>();
+        for (DictRefResPo dictRefResPo : rcrpL) {
+			catalist.add(dictRefResPo.toHashMap());
+		}
+		return catalist;
     }
     
     

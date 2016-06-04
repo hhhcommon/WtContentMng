@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
@@ -121,11 +122,11 @@ public class ContentController {
 		String contentimg = m.get("ContentImg")+"";
 		contentimg = contentimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
 		String contentdesc = m.get("ContentDesc")+"";
-		String catalogsid = m.get("ContentCatalogsId")+"";
+		String did = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
 		if(!m.containsKey("AddMediaInfo"))maList=null;
 		else maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
-		map = contentService.addSequInfo(userid, username, contentname, contentimg, catalogsid, contentdesc, maList);
+		map = contentService.addSequInfo(userid, username, contentname, contentimg, did, contentdesc, maList);
 		return map;
 	}
 	
@@ -133,6 +134,7 @@ public class ContentController {
 	@ResponseBody
 	public Map<String, Object> updateMedia(HttpServletRequest request){
 		MediaAsset ma = new MediaAsset();
+		Map<String, Object> map = new HashMap<String,Object>();
 		SeqMediaAsset sma = new SeqMediaAsset();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
@@ -154,8 +156,8 @@ public class ContentController {
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		contentService.updateMediaInfo(ma,sma);
-		return null;
+		map = contentService.updateMediaInfo(ma,sma);
+		return map;
 	}
 	
 	@RequestMapping(value= "/content/updateSeqInfo.do")
@@ -163,6 +165,7 @@ public class ContentController {
 	public Map<String, Object> updateSeq(HttpServletRequest request){
 		MediaAsset ma = new MediaAsset();
 		SeqMediaAsset sma = new SeqMediaAsset();
+		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
 		String maid = m.get("ContentId")+"";
@@ -177,31 +180,40 @@ public class ContentController {
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		contentService.updateMediaInfo(ma,sma);
-		return null;
+		map = contentService.updateSeqInfo(sma);
+		return map;
 	}
 	
-//	@RequestMapping(value = "/content/updateZBContentStatus.do")
-//	@ResponseBody
-//	public Map<String, Object> updateStatus(HttpServletRequest request){
-//		Map<String, Object> map = new HashMap<String,Object>();
-//		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-//		String userid = m.get("UserId")+"";
-//		if(StringUtils.isNullOrEmptyOrSpace(userid)||userid.toLowerCase().equals("null")){
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无用户信息");
-//			return map;
-//		}
-//		List<Map<String, Object>> list = (List<Map<String, Object>>) m.get("List");
-//		if (list==null||!(list.size()>0)) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "数据参数不全");
-//			return map;
-//		}
-//		map = contentService.modifyStatus(userid, list);
-//		return map;
-//	}
-//	
+	@RequestMapping(value = "/content/updateSeqMediaStatus.do")
+	@ResponseBody
+	public Map<String, Object> updateStatus(HttpServletRequest request){
+		Map<String, Object> map = new HashMap<String,Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String smaid = m.get("ContentId")+"";
+		if(smaid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无专辑id信息");
+			return map;
+		}
+		String chid = m.get("ContentChannelId")+"";
+		if(chid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无栏目id信息");
+			return map;
+		}
+		String smaname = m.get("ContentName")+"";
+		String smaimg = m.get("ContentImg")+"";
+		String desc = m.get("ContentDesc")+"";
+		map = contentService.modifySeqStatus(userid, smaid, smaname, chid, desc, smaimg);
+		return map;
+	}
+	
 	@RequestMapping(value = "/content/removeMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> removeMediaInfo(HttpServletRequest request){
@@ -216,10 +228,12 @@ public class ContentController {
 		String contentid = m.get("ContentId")+"";
 		if(contentid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
-			map.put("Message", "无专辑信息");
+			map.put("Message", "无单体信息");
 			return map;
 		}
 		contentService.removeMediaAsset(contentid);
+		map.put("ReturnType", "1001");
+		map.put("Message", "单体删除成功");
 		return map;
 	}
 	
@@ -241,6 +255,8 @@ public class ContentController {
 			return map;
 		}
 		contentService.removeSeqMedia(contentid);
+		map.put("ReturnType", "1001");
+		map.put("Message", "专辑删除成功");
 		return map;
 	}
 	
