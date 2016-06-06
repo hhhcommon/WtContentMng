@@ -90,7 +90,7 @@ public class QueryController {
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		String id = (String) m.get("ContentId");
-		String mediatype = (String) m.get("MediaType");
+		String mediatype = m.get("MediaType")+"";
 		Map<String, Object> mapdetail = queryService.getContentInfo(pagesize, page, id, mediatype);
 		if (mediatype.equals("wt_SeqMediaAsset")) {
 			if (mapdetail.get("audio") != null) {
