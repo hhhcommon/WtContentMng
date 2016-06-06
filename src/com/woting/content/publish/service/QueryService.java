@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.util.JsonUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.publish.utils.CacheUtils;
 
 @Lazy(true)
@@ -25,6 +27,8 @@ import com.woting.content.publish.utils.CacheUtils;
 public class QueryService {
 	@Resource
 	private DataSource DataSource;
+	@Resource
+	private MediaService mediaService;
 
 	/**
 	 * 查询列表
@@ -40,79 +44,115 @@ public class QueryService {
 	 * @param endctime
 	 * @return
 	 */
-	public Map<String, Object> getContent(int flowFlag, int page, int pagesize, String catalogsid, String source,
+	public Map<String, Object> getContent(int flowFlag, int page, int pagesize, String channelId, String publisherId,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		Map<String, Object> mapall = new HashMap<String, Object>();
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
-		String numall = null;
+		int numall = 0;
+		String sql = "";
 		
-		// 查询需要显示的节目数目
-		String sql = "select count(id) num from wt_ChannelAsset where flowFlag=?";
-		if (catalogsid != null)
-			sql += " and channelId='" + catalogsid + "'";
-		if (source != null)
-			sql += " and publisherId='" + source + "'";
-		if (beginpubtime != null && endpubtime != null)
-			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
-		if (beginctime != null && endctime != null)
-			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, flowFlag);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				numall = rs.getString("num");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
+		Map<String, Object> m = new HashMap<String,Object>();
+		m.put("channelId",channelId);
+		m.put("publisherId", publisherId);
+		m.put("beginPubtime", beginpubtime);
+		m.put("endPubtime", endpubtime);
+		m.put("begincTime", beginctime);
+		m.put("endcTime", endctime);
+		m.put("flowFlag", flowFlag);
+		numall = mediaService.getCountInCha(m);
+		
+//		// 查询需要显示的节目数目
+//		String sql = "select count(id) num from wt_ChannelAsset where flowFlag=?";
+//		if (channelId != null)
+//			sql += " and channelId='" + channelId + "'";
+//		if (publisherId != null)
+//			sql += " and publisherId='" + publisherId + "'";
+//		if (beginpubtime != null && endpubtime != null)
+//			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
+//		if (beginctime != null && endctime != null)
+//			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
+//		try {
+//			conn = DataSource.getConnection();
+//			ps = conn.prepareStatement(sql);
+//			ps.setInt(1, flowFlag);
+//			rs = ps.executeQuery();
+//			while (rs != null && rs.next()) {
+//				numall = rs.getString("num");
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeConnection(conn, ps, rs);
+//		}
+		
+		m.clear();
+		m.put("channelId",channelId);
+		m.put("publisherId", publisherId);
+		m.put("beginPubtime", beginpubtime);
+		m.put("endPubtime", endpubtime);
+		m.put("begincTime", beginctime);
+		m.put("endcTime", endctime);
+		m.put("flowFlag", flowFlag);
+		m.put("beginNum", (page - 1) * pagesize);
+		m.put("size", pagesize);
+		List<ChannelAssetPo> listchapo = mediaService.getContentsByFlowFlag(m);
+		for (ChannelAssetPo channelAssetPo : listchapo) {
+			Map<String, Object> oneData = new HashMap<String, Object>();
+			oneData.put("Id", channelAssetPo.getId());// 栏目ID修改排序功能时使用
+			oneData.put("MediaType", channelAssetPo.getAssetType());
+			oneData.put("ContentId", channelAssetPo.getAssetId());// 内容ID获得详细信息时使用
+			oneData.put("ContentImg", channelAssetPo.getPubImg());
+			oneData.put("ContentCTime", channelAssetPo.getCTime());
+			oneData.put("ContentPubTime", channelAssetPo.getPubTime());
+			oneData.put("ContentSort", channelAssetPo.getSort());
+			oneData.put("ContentFlowFlag", channelAssetPo.getFlowFlag());
+			list2seq.add(oneData);
 		}
 		
-		// 按条件查询需要显示的节目
-		sql = "select id,assetType,assetId,pubImg,cTime,sort,flowFlag,pubTime from wt_ChannelAsset where flowFlag=?";
-		if (catalogsid != null)
-			sql += " and channelId='" + catalogsid + "'";
-		if (source != null)
-			sql += " and publisherId='" + source + "'";
-		if (beginpubtime != null && endpubtime != null)
-			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
-		if (beginctime != null && endctime != null)
-			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-		sql += " order by sort desc,pubTime desc limit ?,?";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, flowFlag);
-			ps.setInt(2, (page - 1) * pagesize);
-			ps.setInt(3, pagesize);
-			ps.setQueryTimeout(10000);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				Map<String, Object> oneData = new HashMap<String, Object>();
-				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
-				oneData.put("MediaType", rs.getString("assetType"));
-				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
-				oneData.put("ContentImg", rs.getString("pubImg"));
-				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
-				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
-				oneData.put("ContentSort", rs.getString("sort"));
-				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
-				list2seq.add(oneData);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
-		}
+//		// 按条件查询需要显示的节目
+//		String sql = "select id,assetType,assetId,pubImg,cTime,sort,flowFlag,pubTime from wt_ChannelAsset where flowFlag=?";
+//		if (channelId != null)
+//			sql += " and channelId='" + channelId + "'";
+//		if (publisherId != null)
+//			sql += " and publisherId='" + publisherId + "'";
+//		if (beginpubtime != null && endpubtime != null)
+//			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
+//		if (beginctime != null && endctime != null)
+//			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
+//		sql += " order by sort desc,pubTime desc limit ?,?";
+//		try {
+//			conn = DataSource.getConnection();
+//			ps = conn.prepareStatement(sql);
+//			ps.setInt(1, flowFlag);
+//			ps.setInt(2, (page - 1) * pagesize);
+//			ps.setInt(3, pagesize);
+//			ps.setQueryTimeout(10000);
+//			rs = ps.executeQuery();
+//			while (rs != null && rs.next()) {
+//				Map<String, Object> oneData = new HashMap<String, Object>();
+//				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
+//				oneData.put("MediaType", rs.getString("assetType"));
+//				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
+//				oneData.put("ContentImg", rs.getString("pubImg"));
+//				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
+//				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
+//				oneData.put("ContentSort", rs.getString("sort"));
+//				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
+//				list2seq.add(oneData);
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeConnection(conn, ps, rs);
+//		}
 		
 		// 查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
 			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
+				mediaService.getSmaInfoById(map.get("ContentId")+"");
 				sql = "select smaTitle,smaPublisher,descn from wt_SeqMediaAsset where id = ? limit 1";
 				try {
 					conn = DataSource.getConnection();

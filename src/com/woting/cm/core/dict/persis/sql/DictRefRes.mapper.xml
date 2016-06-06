@@ -4,7 +4,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="A_DREFRES">
   <!-- 对应关系 -->
-  <resultMap id="DictRefResMap" type="dictRefRes">
+  <resultMap id="dictRefResMap" type="dictRefRes">
     <id      column="id"            property="id"            jdbcType="VARCHAR"/>
     <result  column="refName"       property="refName"       jdbcType="VARCHAR"/>
     <result  column="resTableName"  property="resTableName"  jdbcType="VARCHAR"/>
@@ -95,23 +95,23 @@
   </update>
 
   <!-- 获得列表 -->
-  <select id="getList" resultMap="DictRefResMap" parameterType="java.util.Map">
+  <select id="getList" resultMap="dictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
     <if test="orderByClause!=null">order by ${orderByClause}</if>
     </if>
   </select>
-  <select id="getListByResIds" resultMap="DictRefResMap" parameterType="java.util.Map">
+  <select id="getListByResIds" resultMap="dictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref
     where resTableName=#{resTableName,jdbcType=VARCHAR} and resId in (${resIds})
     <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
 
   <!-- 获得一条数据 -->
-  <select id="getInfo" resultMap="DictRefResMap" parameterType="java.util.Map">
+  <select id="getInfo" resultMap="dictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
-  <select id="getInfoById" resultMap="DictRefResMap" parameterType="java.lang.String">
+  <select id="getInfoById" resultMap="dictRefResMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref where id=#{id,jdbcType=VARCHAR}
   </select>
 

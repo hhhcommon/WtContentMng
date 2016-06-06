@@ -91,7 +91,7 @@ public abstract class CacheUtils {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
-		String ulString = "<li class='audioLi' data-src='#####audioplay#####'><div class='audioIntro'><a href='#####audiourl#####'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='playBtn'></a></li>";
+		String ulString = "<li class='audioLi' data-src='#####audioplay#####'><div class='audioIntro'><a href='#####audiourl#####' target='_self'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='playBtn'></a></li>";
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件

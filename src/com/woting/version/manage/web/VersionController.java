@@ -230,15 +230,15 @@ public class VersionController {
             //0-判断权限：目前没有这个功能
             //1-获得参数
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
-            String condition=m.get("QueryCondition")==null?null:m.get("QueryCondition")+"";
+            String condition=(m==null?"":(m.get("QueryCondition")==null?null:m.get("QueryCondition")+""));
             Map<String, Object> conditionMap=null;
             if (!StringUtils.isNullOrEmptyOrSpace(condition)) conditionMap=(Map<String, Object>)JsonUtils.jsonToObj(condition, Map.class);//得到每页条数
             int page=1;
-            if (m.get("Page")!=null) {
+            if (m!=null&&m.get("Page")!=null) {
                 try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
             }
             int pageSize=10;
-            if (m.get("PageSize")!=null) {
+            if (m!=null&&m.get("PageSize")!=null) {
                 try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
             }
 

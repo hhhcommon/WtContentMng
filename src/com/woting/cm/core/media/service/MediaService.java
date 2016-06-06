@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -67,6 +66,14 @@ public class MediaService {
 		return smarefpo;
     }
     
+    public int getCountInCha(Map<String, Object> m){
+		return channelAssetDao.getCount("countnum", m);
+    }
+    
+    public List<ChannelAssetPo> getContentsByFlowFlag(Map<String, Object> m){
+    	return channelAssetDao.queryForList("getListByFlowFlag", m);
+    }
+    
     //根据主播id查询其所有单体资源
     public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -75,7 +82,7 @@ public class MediaService {
         for (MediaAssetPo mediaAssetPo : listpo) {
         	MediaAsset ma=new MediaAsset();
 			ma.buildFromPo(mediaAssetPo);
-			list.add(ContentUtils.convert2MediaMap_2(ma.toHashMap(), null, null));
+			list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
 		}
         return list;
     }
@@ -85,19 +92,16 @@ public class MediaService {
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
     	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
-    	
     	String resids = "";
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			resids+=",'"+seqMediaAssetPo.getId()+"'";
 		}
     	resids = resids.substring(1);
-    	
     	List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	
     	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			SeqMediaAsset sma = new SeqMediaAsset();
 			sma.buildFromPo(seqMediaAssetPo);
-			list.add(ContentUtils.convert2MediaMap_3(sma.toHashMap(), catalist, null));
+			list.add(ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null));
 		}
 		return list;
     }
@@ -206,11 +210,11 @@ public class MediaService {
     }
     
     public void removeMa(String id){
-    	mediaAssetDao.delete("removeMaById", id);
+    	mediaAssetDao.delete("multiMaById", id);
     }
     
     public void removeSma(String id){
-    	seqMediaAssetDao.delete("", id);
+    	seqMediaAssetDao.delete("multiSmaById", id);
     }
     
     public void removeMas(String id){

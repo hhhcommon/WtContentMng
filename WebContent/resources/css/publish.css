@@ -247,9 +247,6 @@ body{
 	border-radius:20px;
 	border:none;
 }
-.sortUpdateBtn:focus{
-	outline:0;
-}
 
 /*鍙充晶鍐呭璇︽儏鏍峰紡*/
 .pubDetail{

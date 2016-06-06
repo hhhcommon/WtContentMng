@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.woting.content.common.util.RequestUtils;
 import com.woting.content.publish.service.QueryService;
 import com.woting.content.publish.utils.CacheUtils;
 import com.woting.passport.login.utils.RequestDataUtils;
@@ -44,7 +45,7 @@ public class QueryController {
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
 		Timestamp endcontentctime = null;
-		String userId = (String) m.get("UserId");
+		String userId = m.get("UserId")+"";
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		if (m.containsKey("CatalogsId"))
@@ -54,27 +55,22 @@ public class QueryController {
 		if (m.containsKey("SourceId"))
 			source = (String) m.get("SourceId");
 		if (m.containsKey("BeginContentPubTime"))
-			begincontentpubtime = Timestamp.valueOf((String) m.get("BeginContentPubTime"));
+			begincontentpubtime = Timestamp.valueOf(m.get("BeginContentPubTime")+"");
 		if (m.containsKey("EndContentPubTime"))
-			endcontentpubtime = Timestamp.valueOf((String) m.get("EndContentPubTime"));
+			endcontentpubtime = Timestamp.valueOf(m.get("EndContentPubTime")+"");
 		if (m.containsKey("BeginContentCTime"))
-			begincontentctime = Timestamp.valueOf((String) m.get("BeginContentCTime"));
+			begincontentctime = Timestamp.valueOf(m.get("BeginContentCTime")+"");
 		if (m.containsKey("EndContentCTime"))
-			endcontentctime = Timestamp.valueOf((String) m.get("EndContentCTime"));
-		if (userId != null) {
-			if (flowFlag > 0 && page > 0 && pagesize > 0) {
-				Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
-						begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
-				map.put("ResultList", maplist.get("List"));
-				map.put("ReturnType", "1001");
-				map.put("ContentCount", maplist.get("Count"));
-			} else {
-				map.put("ReturnType", "1002");
-				map.put("Message", "请求信息有误");
-			}
+			endcontentctime = Timestamp.valueOf(m.get("EndContentCTime")+"");
+		if (flowFlag > 0 && page > 0 && pagesize > 0) {
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
+					begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			map.put("ResultList", maplist.get("List"));
+			map.put("ReturnType", "1001");
+			map.put("ContentCount", maplist.get("Count"));
 		} else {
 			map.put("ReturnType", "1002");
-			map.put("Message", "用户信息有误");
+			map.put("Message", "请求信息有误");
 		}
 		return map;
 	}
@@ -89,7 +85,7 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getContentInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userId = (String) m.get("UserId");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
@@ -137,7 +133,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/updateContentStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
@@ -157,7 +153,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/getConditions.do")
 	@ResponseBody
 	public Map<String, Object> getCatalogs(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getConditionsInfo();
@@ -175,7 +171,7 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
 		int flowFlag = 0;
 		// String userId = (String) m.get("UserId");
@@ -217,7 +213,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/getZJSubPage.do")
 	@ResponseBody
 	public Map<String, Object> getZJSubPage(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
 		String zjid = (String) m.get("ContentId");
 		String page = (String) m.get("Page");

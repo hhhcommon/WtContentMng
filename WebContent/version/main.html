@@ -16,6 +16,8 @@
   <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
   <link href="../resources/wtcm/layout/CM_toolbar.css" rel="stylesheet">
   <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
+  <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
+  <link href="../resources/css/publish.css" rel="stylesheet">
 
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -26,21 +28,6 @@
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/wtcm/pagination/CM_title.init.js"></script>
-
-  <!-- 以下配置都是为支持form-advanced-demo.js的，但由于../resources/plugins/jquery2.1.1/jquery.nouislider.min.js有问题，失败了，以后再说
-  <script src="../resources/plugins/jquery2.1.1/jquery.knob.js"></script>
-  <script src="../resources/plugins/jquery2.1.1/jquery.nouislider.min.js"></script>
-  <script src="../resources/plugins/bootstrap3.3.4/bootstrap-colorpicker.min.js"></script>
-  <script src="../resources/plugins/bootstrap3.3.4/bootstrap-prettyfile.js"></script>
-  <script src="../resources/plugins/js_others/cropper.min.js"></script>
-  <script src="../resources/plugins/js_others/icheck.min.js"></script>
-  <script src="../resources/plugins/js_others/switchery.js"></script>
-  <script src="../resources/plugins/js_others/chosen.jquery.js"></script>
-  <script src="../resources/plugins/js_others/clockpicker.js"></script>
-  <script src="../resources/plugins/js_others/ion.rangeSlider.min.js"></script>
-  <script src="../resources/plugins/js_others/form-advanced-demo.min.js"></script>
-  <script src="../resources/plugins/bootstrap3.3.4/bootstrap-datepicker.js"></script>
-  -->
 </head>
 <style>
 <!--
@@ -99,7 +86,7 @@ h4 {
 <body style="overflow:hidden;"><div style="height:100%">
 <!--菜单栏-->
 <div class="toobarArea">
-  <button type="button" opeType="pass" class="btn" style="margin-right:10px">添加</button>
+  <button type="button" opeType="pass" class="btn" style="margin-right:10px">添22加</button>
   <button type="button" opeType="nopass" class="btn" style="margin-right:175px" disabled>删除</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
@@ -117,7 +104,7 @@ h4 {
 <!--显示主区域-->
 <div class="mainArea">
   <!--左侧列表 -->
-  <div class="leftlistArea">
+  <div id="verListArea" class="leftlistArea">
     <!-- 动态节目列表cttList -->
     <div class="cntList"></div>
     <div class="page">
@@ -211,6 +198,11 @@ $(function() {
   $("#saveCfgB").on("click", function() {
     saveCfg();
   });
+alert("DDDD");
+  //四、初始化页面
+  var param={PageSize:"10", Page:"1"};
+  alert(rootPath+'version/getVerList.do');
+  listAjax(rootPath+'version/getVerList.do', param, $("#verListArea"), drawVerList);
 });
 
 //===================方法
@@ -271,7 +263,103 @@ function saveCfg() {
 
 //二、有关版本的方法
 function dealFun(data) {
-	successData=data;
+  successData=data;
+}
+
+//三、列表操作
+/**
+ * 处理列表的公共方法
+ * @param doUrl 请求列表数据的Url
+ * @param param 请求参数，可能包括页信息，过滤查询信息，页面模式信息等
+ * @param domObj list所处的html对象，以Jquery形式传入
+ * @param callback 回掉函数，注意：此函数包括三个参数，返回的数据值、list所处的html对象、请求参数
+ */
+function listAjax(doUrl, param, domObj, callback){
+  $.ajax({type:"POST", url:doUrl, dataType:"json", data:param,
+    beforeSend: function() {
+      domObj.html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>");
+    },
+    success: function(returnData) {
+      if (returnData.ReturnType!="1001") domObj.html("<div style='text-align:left;height:300px;padding:20px;padding-top:140px;'>"+returnData.Message+"</div>");
+      else {
+        domObj.html(""); //再重新创建新的数据集时，先清空之前的
+        callback(returnData, domObj, param); //主要是填充列表区域
+      } 
+    },
+    error: function(jqXHR) {
+      obj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+    }     
+  });
+}
+
+/**
+ * 画版本列表。
+ * @param listData 版本列表数据
+ * @param domObj 列表所在的html的dom对象，jquery形式
+ * @param param 其他参数
+ */
+function drawVerList(listData, domObj, param) {
+  if (!domObj) return;
+  if (!listData||!listData.ResultList||listData.ResultList.length==0) {
+    $(domObj).find(".cntList").html("<div style='text-align:center;height:500px;line-height:300px;'>版本列表无数据！</div>");
+  }
+  var verList=listData.ResultList;
+  //设置翻页信息
+  //画列表
+  var oneVer=null, temp=null;
+  var listDiv=null, checkDiv=null, imgDiv=null, conDiv=null;
+  for(var i=0; i<verList.length ;i++) {
+    oneVer=verList[i];
+    if (!oneVer) continue;
+
+    temp=oneVer.VerId;
+    listDiv=$("<div class='listBox'></div>");
+    listDiv.attr({verId:(temp?temp:"")});
+    //1-选择框
+    checkDiv=$("<div class='listCheck'><input type='checkBox' name='selVer'/></div>");
+    listDiv.append(checkDiv);
+    //2-版本图标
+    temp=oneVer.VerImgUrl;
+    imgDiv=$("<div class='listImg'><img alt='版本图标' src='"+(temp?temp:"")+"'/></div>");
+    listDiv.append(imgDiv);
+    //3-内容区域
+    temp=oneVer.AppName;
+    temp=(temp?temp:"");
+    temp+=(oneVer.Version?("("+oneVer.Version+")"):"");
+    conDiv=$("<div class='listCon'><h3>"+temp+"</h3><p class='secTitle'></p><p class='other'></p></div>");
+    temp=oneVer.Descn;
+    conDiv.find(".secTitle").html(temp?temp:"");
+    //内容标签：文件大小；发布时间
+    temp=oneVer.ApkSize;
+    conDiv.find(".other").append($("<span>版本大小："+(temp?temp:"")+"</span>"));
+    temp=oneVer.LastModifyTime;
+    conDiv.find(".other").append($("<span>最近修改时间："+(temp?temp:"")+"</span>"));
+    listDiv.append(conDiv);
+    //4-分类信息
+    typeDiv=$("<div class='sortUpdate'></div>");
+    switch (oneVer.PubFlag) {
+      case "0":
+        temp="未处理";
+        break;
+      case "1":
+        temp="已发布";
+        break;
+      case "2":
+        temp="已撤销";
+        break;
+      case "3":
+      case "-3":
+        temp="已作废";
+        break;
+      default:
+        temp="未知";
+    }
+    if (oneVer.IsCur) typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>P</span>"));
+    typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>");
+    listDiv.append(typeDiv);
+    //加入列表
+    $(domObj).find(".cntList").append(listDiv);
+  }
 }
 </script>
 </html>
