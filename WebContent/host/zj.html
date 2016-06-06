@@ -74,7 +74,14 @@
                 $(".totalCount").text(resultData.ResultList.AllCount);
                 ContentListLoad(resultData);
             	}else{
-            		alert("处理成功！");
+            		switch(obj.opeType){
+	            		case 'conEdit':
+	            			break;
+	            		case 'conDel':
+	            			alert("删除成功");
+	                  break;
+	            		default:
+            		}
             	}
               
             } else {
