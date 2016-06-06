@@ -84,6 +84,7 @@
         validClass:"help-block m-b-none"
       });
       $(function(){
+    	  var dataParam={};
     	  //点击功能列表，切换页面
         $(".navList").on("click",function(){
           $("iframe").attr({"src":$(this).children("a").attr("_href")});
@@ -101,124 +102,99 @@
         });
       
         //封面图片预览与上传
-          $("input[type='file']").change(function(){
-           var _this=$(this);
-            //图片预览
-           if($(".defaultImg").css("display")!="none"){
-             $(".defaultImg").css({"display":"none"});
+        $("input[type='file']").change(function(){
+         var _this=$(this);
+          //图片预览
+         if($(".defaultImg").css("display")!="none"){
+           $(".defaultImg").css({"display":"none"});
+         }
+         var fileReader = new FileReader();
+         fileReader.onload = function(evt)
+         {
+           if(FileReader.DONE==fileReader.readyState)
+           {    
+           var newImg =  $("<img alt='front cover' />");
+           newImg.attr({"src":this.result});//是Base64的data url数据
+           if($(".previewImg").children().length>1){
+             $(".previewImg img:last").replaceWith(newImg);
+           }else{
+             $(".previewImg").append(newImg);
            }
-           var fileReader = new FileReader();
-           fileReader.onload = function(evt)
-           {
-               if(FileReader.DONE==fileReader.readyState)
-               {    
-                    var newImg =  $("<img alt='front cover' />");
-                    newImg.attr({"src":this.result});//是Base64的data url数据
-                    if($(".previewImg").children().length>1){
-                      $(".previewImg img:last").replaceWith(newImg);
-                    }else{
-                      $(".previewImg").append(newImg);
-                    }
-                }
-           }
-           fileReader.readAsDataURL($(this)[0].files[0]);
-           
-            //文件上传
-            var oMyForm = new FormData();
-            oMyForm.append("ContentFile", $(this)[0].files[0]);
-            $.ajax({
-                url:"http://localhost:908/CM/common/uploadCM.do",
-                type:"POST",
-                data:oMyForm,
-                cache: false,
-                processData: false,
-                contentType: false,
-                dataType:"json",
-                //表单提交前进行验证
-                success: function (opeResult) {
-                   if (opeResult.jsonType=="1") {
-                     //alert("上传成功");
-                     _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
-                   }else{
-                     alert(opeResult.err);
-                   }
-                },
-                error: function(jqXHR){
-                  alert("发生错误" + jqXHR.status);
-                }     
-            });
-          });
+            }
+         }
+         fileReader.readAsDataURL($(this)[0].files[0]);
+         
+          //文件上传
+         var oMyForm = new FormData();
+         oMyForm.append("ContentFile", $(this)[0].files[0]);
+         $.ajax({
+           url:"http://localhost:908/CM/common/uploadCM.do",
+           type:"POST",
+           data:oMyForm,
+           cache: false,
+           processData: false,
+           contentType: false,
+           dataType:"json",
+           //表单提交前进行验证
+           success: function (opeResult) {
+              if (opeResult.jsonType=="1") {
+                //alert("上传成功");
+                _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+              }else{
+                alert(opeResult.err);
+              }
+           },
+           error: function(jqXHR){
+             alert("发生错误" + jqXHR.status);
+           }     
+         });
+        });
           
-          //form表单提交
-          $("#submitBtn").click(function () {
-            if($("#ContentImg").val()==""){
-              //如未设置封面，将使用平台默认图片
-              $("#ContentImg").val($(".defaultImg").attr("src"));
-            }
-             $.ajax({
-              url:"http://localhost:908/CM/content/addSeqMediaInfo.do",
-              type:"POST",
-              data:$("#addZjForm").serialize(),
-              dataType:"json",
-              beforeSend : function() {
-            	  //制定表单验证规则与提示
-                $("#addZjForm").validate({
-                    rules:{
-                      ContentName:{required:true},
-                    },
-                    messages:{
-                      ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
-                    }
-                });
-            	  if($(".form-group").hasClass("has-error")){//这判断有问题，找时间研究一下 第一次总是false，第二次才生效，验证执行的先后问题
-            		  return false;
-            	  }
-              },
-              success: function (opeResult) {
-                 if (opeResult.ReturnType=="1001") {
-                   alert("专辑创建成功");
-                   //$("#addZjForm")[0].reset();
-                 }else{
-                   alert(opeResult.Message);
-                 }
-              },
-              error: function(jqXHR){
-                  alert("发生错误" + jqXHR.status);
-               }
-            });
-          });
-        
-          //获取分类列表
-            getCatalogs();
-            function getCatalogs(){
-              $.ajax({
-                type: "POST",    
-                url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
-                dataType: "json",
-                data:{cataId: "3"},
-                success: function(catalogsList) {
-                  if (catalogsList.jsonType=="1") {
-                    catalogsListLoad(catalogsList);
-                  } else {
-                      //alert("获取数据出现问题:"+ConditionsList.Message);
-                  }  
-                },
-                error: function(jqXHR){
-                   //alert("发生错误" + jqXHR.status);
-                }     
-            });
-            }
-          function catalogsListLoad(catalogsList){
-            var listLength=catalogsList.data.children.length;
-            var opt;
-            for(var i=0;i<listLength;i++){
-              opt=$("<option></option>");
-              opt.val(catalogsList.data.children[i].id);
-              opt.text(catalogsList.data.children[i].name);
-              $("#ContentCatalogs").append(opt);
-            }
+        //form表单提交
+        $("#submitBtn").click(function () {
+          if($("#ContentImg").val()==""){
+            //如未设置封面，将使用平台默认图片
+            $("#ContentImg").val($(".defaultImg").attr("src"));
           }
-          
+          dataParam={
+        		  "url":"http://localhost:908/CM/content/addSeqMediaInfo.do",
+        		  "data":$("#addZjForm").serialize(),
+        		  };
+           $.ajax({
+            url:dataParam.url,
+            type:"POST",
+            data:dataParam.data,
+            dataType:"json",
+            beforeSend : function() {
+          	  //制定表单验证规则与提示
+              $("#addZjForm").validate({
+		             rules:{
+		               ContentName:{required:true},
+		             },
+		             messages:{
+		               ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
+		             }
+              });
+          	  if($(".form-group").hasClass("has-error")){//这判断有问题，找时间研究一下 第一次总是false，第二次才生效，验证执行的先后问题
+          		  return false;
+          	  }
+            },
+            success: function (opeResult) {
+               if (opeResult.ReturnType=="1001") {
+                 alert("专辑创建成功");
+                 //$("#addZjForm")[0].reset();
+               }else{
+                 alert(opeResult.Message);
+               }
+            },
+            error: function(jqXHR){
+                alert("发生错误" + jqXHR.status);
+             }
+          });
+        });
+      
+        //获取分类列表
+        getCatalogs();
       });
       </script>
       <!-- 遮罩 -->
