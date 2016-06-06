@@ -16,6 +16,7 @@ import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.service.ContentService;
 
 public class SeqContentService {
@@ -90,7 +91,7 @@ public class SeqContentService {
 		sma.setLang(detail);
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
-		
+		System.out.println(did);
 		if(!did.toLowerCase().equals("null")) 
 			contentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		
@@ -111,10 +112,14 @@ public class SeqContentService {
 	 * @param sma
 	 * @return
 	 */
-	public Map<String, Object> updateSeqInfo(SeqMediaAsset sma) {
+	public Map<String, Object> updateSeqInfo(SeqMediaAsset sma, String did) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		if(mediaService.getSmaInfoById(sma.getId())!=null) {
 			mediaService.updateSma(sma); // 待修改wt_SeqMa_Ref,wt_ResDict_Ref,wt_ChannelAsset
+			if(!did.toLowerCase().equals("null")){
+				mediaService.removeResDictRef(sma.getId());
+				contentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
+			}
 			map.put("ReturnType", "1001");
 		    map.put("Message", "修改成功");
 		}else{
@@ -168,10 +173,7 @@ public class SeqContentService {
 		return map;
 	}
 	
-	public void removeSeqMedia(String contentid) {
-		mediaService.removeSma(contentid);
-		mediaService.removeMa2Sma(contentid);
-		mediaService.removeResDictRef(contentid);
-		mediaService.removeCha(contentid);
+	public void removeSeqMediaAsset(String contentid) {
+		mediaService.removeSeqMedia(contentid);
 	}
 }

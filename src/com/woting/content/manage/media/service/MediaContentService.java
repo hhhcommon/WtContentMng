@@ -182,10 +182,6 @@ public class MediaContentService {
 	}
 	
 	public void removeMediaAsset(String contentid) {
-		mediaService.removeMa(contentid);
-		mediaService.removeMas(contentid);
-		mediaService.removeMa2Sma(contentid);
-		mediaService.removeResDictRef(contentid);
-		mediaService.removeCha(contentid);
+		mediaService.removeMedia(contentid);
 	}
 }

@@ -102,10 +102,14 @@ public class MediaService {
 		    }
     	    resids = resids.substring(1);
     	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+    	    
     	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
-			    list.add(ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null));
+			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null);
+			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoByMId", sma.getId());
+			    smap.put("SubCount", l.size());
+			    list.add(smap);
 		    }
 		}
 		return list;
@@ -243,5 +247,20 @@ public class MediaService {
     
     public void removeCha(String assetId){
     	channelAssetDao.delete("deleteByAssetId", assetId);
+    }
+    
+    public void removeMedia(String id) {
+    	removeMa(id);
+		removeMas(id);
+		removeMa2Sma(id);
+		removeResDictRef(id);
+		removeCha(id);
+    }
+    
+    public void removeSeqMedia(String id){
+    	removeSma(id);
+		removeMa2Sma(id);
+		removeResDictRef(id);
+		removeCha(id);
     }
 }

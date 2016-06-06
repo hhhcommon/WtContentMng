@@ -122,6 +122,6 @@ function getCatalogs(){
       opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
       opt.text(catalogsList.data.children[i].name);
-      $("#ContentCatalogs").append(opt);
+      $("#ContentCatalogsId").append(opt);
     }
   }
