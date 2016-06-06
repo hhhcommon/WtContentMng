@@ -31,7 +31,7 @@ public class SeqContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public Map<String, Object> getContents(String userid, String mediatype) {
+	public Map<String, Object> getHostSeqMediaContents(String userid, String mediatype) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		list = mediaService.getSmaInfoBySmaPubId(userid);
@@ -50,7 +50,7 @@ public class SeqContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSequInfo(String userid, String username, String smaname, String smaimg,
+	public Map<String, Object> addSeqInfo(String userid, String username, String smaname, String smaimg,
 			String did, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -91,7 +91,7 @@ public class SeqContentService {
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
 		
-		if(did.toLowerCase().equals("null")) 
+		if(!did.toLowerCase().equals("null")) 
 			contentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		
 		if (mediaService.getSmaInfoById(smaid) != null) {
