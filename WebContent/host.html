@@ -170,14 +170,14 @@
                       ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
                     }
                 });
-            	  if(a.closest(".form-group").hasClass("has-error")){
+            	  if($(".form-group").hasClass("has-error")){//这判断有问题，找时间研究一下 第一次总是false，第二次才生效，验证执行的先后问题
             		  return false;
             	  }
               },
               success: function (opeResult) {
                  if (opeResult.ReturnType=="1001") {
                    alert("专辑创建成功");
-                   $("#addZjForm")[0].reset();
+                   //$("#addZjForm")[0].reset();
                  }else{
                    alert(opeResult.Message);
                  }
@@ -224,7 +224,7 @@
       <!-- 遮罩 -->
       <div class="shade"></div>
       <!--创建专辑界面-->
-		  <div class="row opeBox">
+		  <div class="row opeBox" opeType="conCreate">
 		      <div class="col-sm-12">
 		          <div class="ibox float-e-margins">
 		              <div class="ibox-title text-center">
