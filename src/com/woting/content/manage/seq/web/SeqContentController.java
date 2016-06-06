@@ -34,13 +34,7 @@ public class SeqContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		String mediatype = m.get("MediaType")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(mediatype)||mediatype.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "查询信息不全");
-			return map;
-		}
-		Map<String, Object> c = seqContentService.getHostSeqMediaContents(userid, mediatype);
+		Map<String, Object> c = seqContentService.getHostSeqMediaContents(userid);
 		if(c!=null&&c.size()>0){
 			map.put("ReturnType", c.get("ReturnType"));
 			c.remove("ReturnType");
