@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -211,11 +210,11 @@ public class MediaService {
     }
     
     public void removeMa(String id){
-    	mediaAssetDao.delete("removeMaById", id);
+    	mediaAssetDao.delete("multiMaById", id);
     }
     
     public void removeSma(String id){
-    	seqMediaAssetDao.delete("", id);
+    	seqMediaAssetDao.delete("multiSmaById", id);
     }
     
     public void removeMas(String id){

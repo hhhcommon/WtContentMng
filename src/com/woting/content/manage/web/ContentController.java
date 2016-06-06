@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
