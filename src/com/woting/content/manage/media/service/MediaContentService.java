@@ -31,7 +31,7 @@ public class MediaContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public Map<String, Object> getHostMediaContents(String userid, String mediatype) {
+	public Map<String, Object> getHostMediaContents(String userid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		list = mediaService.getMaInfoByMaPubId(userid);
