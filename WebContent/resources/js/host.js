@@ -28,8 +28,9 @@ function getContentList(obj) {
 	        		case 'conDel':
 	        			alert("删除成功");
 	        			//删除成功后，再次请求列表
-	        			dataParam.MediaType=mediaType;
+	        			dataParam.MediaType="SEQU";
 	        			dataParam.url="http://localhost:908/CM/content/getHostContents.do";
+	        			delete dataParam["opeType"];
 	        			getContentList(dataParam);
 	              break;
 	        		default:
@@ -47,6 +48,7 @@ function getContentList(obj) {
 //创建节目列表DOM树
 function ContentListLoad(actList) {
   var actListLength = actList.ResultList.AllCount;
+  var mediaType=actList.ResultList.List[0].MediaType;
   if (actListLength == 0) {
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
   } else {
@@ -62,9 +64,9 @@ function ContentListLoad(actList) {
       	"contentImg": actList.ResultList.List[i].ContentImg,
       	"contentCatalogs": actList.ResultList.List[i].ContentCatalogs,
       	"subjectWords": actList.ResultList.List[i].SubjectWords});
-      imgDiv = $("<div class='imgBox'>");
+      imgDiv = $("<div>");
       imgA=$("<a href='javascript:;'></a>");
-      thumbImg = $("<img alt='专辑封面图片''>");
+      thumbImg = $("<img alt='节目封面图片''>");
       thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
       conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
@@ -76,13 +78,19 @@ function ContentListLoad(actList) {
       infoHA=$("<a href='javascript:;'></a>");
       imgShade.append(conUpdate).append(conShare).append(conDel).append(subAdd);
       infoHA.text(actList.ResultList.List[i].ContentName);
-      infoP1 = $("<p class='subCount'></p>");
-      //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
-      infoP1.text("12个声音");
       infoP2 = $("<p class='lastTime'></p>");
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
+      if(mediaType=="SEQU"){
+    	  imgDiv.addClass("imgBox");
+    	  infoP1 = $("<p class='subCount'></p>");
+          //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
+          infoP1.text("12个声音");
+          infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
+      }else{
+    	  imgDiv.addClass("subImg");
+    	  infoDiv.append(infoH.append(infoHA)).append(infoP2);
+      }
       imgDiv.append(imgA.append(thumbImg)).append(imgShade);
-      infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       listDiv.append(imgDiv).append(infoDiv);
       $(".actList").append(listDiv);
     }
