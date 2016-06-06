@@ -264,7 +264,7 @@ public class VersionController {
                     }
                     verList.add(oneV);
                 }
-                resultMap.put("VerLst", verList);
+                resultMap.put("VerList", verList);
                 map.put("ResultList", resultMap);
             }
             return map;

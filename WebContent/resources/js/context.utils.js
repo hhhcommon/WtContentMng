@@ -1,7 +1,5 @@
 /****************************************
- * 主界面标识。
- * 这个js只能被引用在主界面！！！！
- * 括全局变量数据和主页标识
+ * 上下文js
  ****************************************/
 
 /**
@@ -44,7 +42,7 @@ function getGlobelData() {
  */
 function getRootPath() {
   var _gd=getGlobelData();
-  return (_gd?_gd.rootPath:"/");
+  return (_gd?(_gd.rootPath?_gd.rootPath:"/"):"/");
 }
 
 /**

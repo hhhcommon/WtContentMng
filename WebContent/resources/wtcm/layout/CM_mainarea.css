@@ -22,13 +22,13 @@
   overflow:hidden;
   padding-bottom:30px;
 }
-.leftlistArea .cntList {/*列表内容样式*/
+.cntList {/*列表内容样式*/
   position:absolute;
+  border-bottom:1px solid #ccc;
   left:0;
   top:0;
   width:100%;
   height:calc(100% - 43px);
-  border:1px solid blue;
   overflow:auto;
 }
 .page {/*翻页控制*/

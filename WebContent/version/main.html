@@ -14,10 +14,10 @@
   <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
+  
+  <link href="../resources/css/publish.css" rel="stylesheet">
   <link href="../resources/wtcm/layout/CM_toolbar.css" rel="stylesheet">
   <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
-  <link href="../resources/wtcm/layout/CM_mainarea.css" rel="stylesheet">
-  <link href="../resources/css/publish.css" rel="stylesheet">
 
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -86,7 +86,7 @@ h4 {
 <body style="overflow:hidden;"><div style="height:100%">
 <!--菜单栏-->
 <div class="toobarArea">
-  <button type="button" opeType="pass" class="btn" style="margin-right:10px">添22加</button>
+  <button type="button" opeType="pass" class="btn" style="margin-right:10px">添加</button>
   <button type="button" opeType="nopass" class="btn" style="margin-right:175px" disabled>删除</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
@@ -105,8 +105,8 @@ h4 {
 <div class="mainArea">
   <!--左侧列表 -->
   <div id="verListArea" class="leftlistArea">
-    <!-- 动态节目列表cttList -->
-    <div class="cntList"></div>
+    <!-- 动态节目列表cntList -->
+    <div class="cntList">收拾收拾</div>
     <div class="page">
       <div class="gigantic pagination">
         <a href="javascript:void(0);" class="first" data-action="first">&laquo;</a>
@@ -198,11 +198,10 @@ $(function() {
   $("#saveCfgB").on("click", function() {
     saveCfg();
   });
-alert("DDDD");
+
   //四、初始化页面
   var param={PageSize:"10", Page:"1"};
-  alert(rootPath+'version/getVerList.do');
-  listAjax(rootPath+'version/getVerList.do', param, $("#verListArea"), drawVerList);
+  listAjax(rootPath+'version/getVerList.do', param, $("#verListArea .cntList"), drawVerList);
 });
 
 //===================方法
@@ -287,7 +286,7 @@ function listAjax(doUrl, param, domObj, callback){
       } 
     },
     error: function(jqXHR) {
-      obj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+      domObj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
     }     
   });
 }
@@ -300,10 +299,16 @@ function listAjax(doUrl, param, domObj, callback){
  */
 function drawVerList(listData, domObj, param) {
   if (!domObj) return;
-  if (!listData||!listData.ResultList||listData.ResultList.length==0) {
-    $(domObj).find(".cntList").html("<div style='text-align:center;height:500px;line-height:300px;'>版本列表无数据！</div>");
+  if (!listData||!listData.ResultList) {
+    $(domObj).html("<div style='text-align:center;height:500px;line-height:300px;'>版本列表无数据！</div>");
+    return;
   }
-  var verList=listData.ResultList;
+  var result=listData.ResultList;
+  if (!result||!result.VerList) {
+    $(domObj).html("<div style='text-align:center;height:500px;line-height:300px;'>版本列表无数据！</div>");
+    return;
+  }
+  var verList=result.VerList;
   //设置翻页信息
   //画列表
   var oneVer=null, temp=null;
@@ -330,10 +335,10 @@ function drawVerList(listData, domObj, param) {
     temp=oneVer.Descn;
     conDiv.find(".secTitle").html(temp?temp:"");
     //内容标签：文件大小；发布时间
-    temp=oneVer.ApkSize;
-    conDiv.find(".other").append($("<span>版本大小："+(temp?temp:"")+"</span>"));
     temp=oneVer.LastModifyTime;
-    conDiv.find(".other").append($("<span>最近修改时间："+(temp?temp:"")+"</span>"));
+    conDiv.find(".other").append($("<span>"+(temp?temp:"")+"</span>"));
+    temp=oneVer.ApkSize;
+    conDiv.find(".other").append($("<span>|</span><span>"+(temp?temp:"")+"</span>"));
     listDiv.append(conDiv);
     //4-分类信息
     typeDiv=$("<div class='sortUpdate'></div>");
@@ -355,10 +360,10 @@ function drawVerList(listData, domObj, param) {
         temp="未知";
     }
     if (oneVer.IsCur) typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>P</span>"));
-    typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>");
+    typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>"));
     listDiv.append(typeDiv);
     //加入列表
-    $(domObj).find(".cntList").append(listDiv);
+    $(domObj).append(listDiv);
   }
 }
 </script>
