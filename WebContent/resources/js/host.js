@@ -1,5 +1,5 @@
 //var rootPath=getRootPath();
-var userId="123",mediaType,dataParam={}
+var userId="123",dataParam={}
 //公共ajax请求
 function getContentList(obj) {
 	$.ajax({
@@ -28,8 +28,7 @@ function getContentList(obj) {
 	        		case 'conDel':
 	        			alert("删除成功");
 	        			//删除成功后，再次请求列表
-	        			dataParam.MediaType="SEQU";
-	        			dataParam.url="http://localhost:908/CM/content/getHostContents.do";
+	        			dataParam.url="http://localhost:908/CM/content/seq/getHostSeqMediaList.do";
 	        			delete dataParam["opeType"];
 	        			getContentList(dataParam);
 	              break;

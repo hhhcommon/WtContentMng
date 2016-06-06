@@ -39,7 +39,6 @@
   <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
   <script>
     $(function(){
-    	var mediaType="SEQU";
     	//获得父窗口window -> $(window.top) 或$(window.parent)  window可以省略
     	//获得父窗口document -> $(window.top.document)
     	//获取父窗口元素  ->$(window.top.document).find()
@@ -47,8 +46,7 @@
       //获取列表
       dataParam={
     			"UserId":userId,
-    			"MediaType":mediaType,
-    			"url":"http://localhost:908/CM/content/getHostContents.do"
+    			"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"
     	};
       getContentList(dataParam);
       
@@ -68,7 +66,7 @@
         	  dataParam={
         		  "UserId":userId,
         		  "ContentId":$(this).parents(".listBox").attr("contentId"),
-        		  "url":"http://localhost:908/CM/content/removeSeqMedia.do",
+        		  "url":"http://localhost:908/CM/content/seq/removeSeqMedia.do",
         		  "opeType":$(this).attr("opeType")
         	 };
         	  getContentList(dataParam);
