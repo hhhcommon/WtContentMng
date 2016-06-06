@@ -182,7 +182,7 @@
             success: function (opeResult) {
                if (opeResult.ReturnType=="1001") {
                  alert("专辑创建成功");
-                 //$("#addZjForm")[0].reset();
+                 $("#addZjForm")[0].reset();
                }else{
                  alert(opeResult.Message);
                }
@@ -214,7 +214,7 @@
 		              <div class="ibox-content">
 		                  <form class="form-horizontal m-t" id="addZjForm" onsubmit="return false;">
 		                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
-		                      <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="wt_SeqMediaAsset" />
+		                      <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="SEQU" />
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑名称：</label>
 		                          <div class="col-sm-8">
