@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.util.JsonUtils;
+import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.media.service.MediaService;
@@ -292,7 +293,7 @@ public class QueryService {
 			while (rs != null && rs.next()) {
 				catalogs += ","+rs.getString("title");
 			}
-			seqData.put("ContentCatalogs", catalogs.substring(1));
+			seqData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -379,7 +380,7 @@ public class QueryService {
 			while (rs != null && rs.next()) {
 				catalogs += ","+rs.getString("title");
 			}
-			audioData.put("ContentCatalogs", catalogs.substring(1));
+			audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

@@ -57,6 +57,7 @@ public class MediaService {
     public MaSource getMasInfoByMasId(Map<String, Object> m) {
     	MaSource mas = new MaSource();
     	MaSourcePo maspo = maSourceDao.getInfoObject("getMasInfoByMaId", m);
+    	if(maspo==null) return null;
     	mas.buildFromPo(maspo);
 		return mas;
     }
@@ -79,11 +80,13 @@ public class MediaService {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
         List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
         listpo = mediaAssetDao.queryForList("getMaListByMaPubId", id);
-        for (MediaAssetPo mediaAssetPo : listpo) {
-        	MediaAsset ma=new MediaAsset();
-			ma.buildFromPo(mediaAssetPo);
-			list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
-		}
+        if(listpo!=null&&listpo.size()>0){
+        	for (MediaAssetPo mediaAssetPo : listpo) {
+        	    MediaAsset ma=new MediaAsset();
+			    ma.buildFromPo(mediaAssetPo);
+			    list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
+		    }
+        }
         return list;
     }
     
@@ -92,16 +95,18 @@ public class MediaService {
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
     	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
-    	String resids = "";
-    	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-			resids+=",'"+seqMediaAssetPo.getId()+"'";
-		}
-    	resids = resids.substring(1);
-    	List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-			SeqMediaAsset sma = new SeqMediaAsset();
-			sma.buildFromPo(seqMediaAssetPo);
-			list.add(ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null));
+    	if (listpo!=null&&listpo.size()>0) {
+			String resids = "";
+    	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+			    resids+=",'"+seqMediaAssetPo.getId()+"'";
+		    }
+    	    resids = resids.substring(1);
+    	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+    	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+			    SeqMediaAsset sma = new SeqMediaAsset();
+			    sma.buildFromPo(seqMediaAssetPo);
+			    list.add(ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null));
+		    }
 		}
 		return list;
     }
@@ -110,6 +115,7 @@ public class MediaService {
     public SeqMediaAsset getSmaInfoById(String id) {
     	SeqMediaAsset sma = new SeqMediaAsset();
     	SeqMediaAssetPo smapo = seqMediaAssetDao.getInfoObject("getSmaInfoById", id);
+    	if(smapo==null) return null;
     	sma.buildFromPo(smapo);
     	return sma;
 	}
@@ -118,6 +124,7 @@ public class MediaService {
     public Channel getChInfoById(String id){
     	Channel ch = new Channel();
     	ChannelPo chpo = channelDao.getInfoObject("getInfoById", id);
+    	if(chpo==null) return null;
     	ch.buildFromPo(chpo);
     	return ch;
     }
