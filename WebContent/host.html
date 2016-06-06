@@ -16,16 +16,14 @@
       <link rel="shortcut icon" href="./resources/images/favicon.ico" />
       <link href="./resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
       <link href="./resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+      <link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.css" rel="stylesheet" id="layui_layer_skinlayercss">
+      <link href="./resources/plugins/hplus/js/plugins/layer/skin/layer.ext.css" rel="stylesheet" id="layui_layer_skinlayerextcss">
+      <link href="./resources/plugins/hplus/js/plugins/layer/skin/moon/style.css" rel="stylesheet" id="layui_layer_skinmoonstylecss">
       <link href="./resources/plugins/hplus/css/style.min.css" rel="stylesheet">
       <link href="./resources/css/host.css" rel="stylesheet">
       <script src="./resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
       <script src="./resources/js/mainPage.js"></script>
       <script src="./resources/js/host.js"></script>
-    <script>
-      $(function(){
-         
-        });
-    </script>
   </head>
   <body style="background:#f2f2f2;overflow:auto;">
       <!-- 页头 -->
@@ -36,25 +34,23 @@
       </div>
       <!-- 页主体 -->
       <div id="wrapper" style="width:1140px;height:680px;margin:20px auto;background:white;">
-      <!--左侧导航-->
+         <!--左侧导航-->
          <div style="width:160px;height:100%;float:left;">
-		         <!-- 个人信息 -->
+		        <!-- 个人信息 -->
 		        <div class="person" style="width:100%;height:180px;border-bottom:1px solid #f2f2f2;line-height:180px;text-align:center;">
-		          个人中心
+		                              个人中心
 		        </div>
 		        <!-- 导航列表 -->
 		        <nav style="width:100%;height:calc(100% - 180px)" class="nav">
 			        <ul class="" >
-                  <li class="navList active"><a _href="./host/zj.html" href="javascript:void(0);">专辑管理</a></li>  
-	                <li class="navList"><a _href="./host/audio.html" href="javascript:void(0);">声音管理</a></li>
-	                <li class="navList"><a _href="./host/add_zj.html" href="javascript:void(0);">创建专辑</a></li>  
-                  <li class="navList"><a _href="./host/add_audio.html" href="javascript:void(0);">添加声音</a></li>
-	                <span class="bar"></span>                
+                <li class="navList active"><a _href="./host/zj.html" href="javascript:void(0);">专辑管理</a></li>  
+                <li class="navList"><a _href="./host/audio.html" href="javascript:void(0);">声音管理</a></li>
+                <li class="navList"><a _href="./host/add_zj.html" href="javascript:void(0);">创建专辑</a></li>  
+                <li class="navList"><a _href="./host/add_audio.html" href="javascript:void(0);">添加声音</a></li>
+               <span class="bar"></span>                
 	            </ul>
 		        </nav>
-            
           </div>
-          <!--左侧导航结束-->
           <!--中间部分开始-->
           <div class="" id="content-main" style="float:left;width:800px;height:100%;border-left:1px solid #f2f2f2;border-right:1px solid #f2f2f2;">
             <!--登录进来，默认显示Home欢迎首页-->
@@ -80,15 +76,13 @@
       <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>
       <script>
       $.validator.setDefaults({
-          highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
-          success:function(a){a.closest(".form-group").removeClass("has-error")},
-          errorElement:"span",
-          errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
-          errorClass:"help-block m-b-none",
-          validClass:"help-block m-b-none"
+        highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
+        success:function(a){a.closest(".form-group").removeClass("has-error")},
+        errorElement:"span",
+        errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
+        errorClass:"help-block m-b-none",
+        validClass:"help-block m-b-none"
       });
-      </script>
-      <script>
       $(function(){
     	  //点击功能列表，切换页面
         $(".navList").on("click",function(){
@@ -105,111 +99,114 @@
           $(".shade").css({"display":"none"});
           $(".opeBox").css({"display":"none"});
         });
-      //制定表单验证规则与提示
-      /*
-        $("#addZjForm").validate({
-            rules:{
-              ContentName:{required:true},
-            },
-            messages:{
-              ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
-            }
-        });
-        */
+      
         //封面图片预览与上传
           $("input[type='file']").change(function(){
-               var _this=$(this);
-                //图片预览
-               if($(".defaultImg").css("display")!="none"){
-                 $(".defaultImg").css({"display":"none"});
-               }
-               var fileReader = new FileReader();
-               fileReader.onload = function(evt)
-               {
-                   if(FileReader.DONE==fileReader.readyState)
-                   {    
-                        var newImg =  $("<img alt='front cover' />");
-                        newImg.attr({"src":this.result});//是Base64的data url数据
-                        if($(".previewImg").children().length>1){
-                          $(".previewImg img:last").replaceWith(newImg);
-                        }else{
-                          $(".previewImg").append(newImg);
-                        }
+           var _this=$(this);
+            //图片预览
+           if($(".defaultImg").css("display")!="none"){
+             $(".defaultImg").css({"display":"none"});
+           }
+           var fileReader = new FileReader();
+           fileReader.onload = function(evt)
+           {
+               if(FileReader.DONE==fileReader.readyState)
+               {    
+                    var newImg =  $("<img alt='front cover' />");
+                    newImg.attr({"src":this.result});//是Base64的data url数据
+                    if($(".previewImg").children().length>1){
+                      $(".previewImg img:last").replaceWith(newImg);
+                    }else{
+                      $(".previewImg").append(newImg);
                     }
-               }
-               fileReader.readAsDataURL($(this)[0].files[0]);
-               
-                //文件上传
-                var oMyForm = new FormData();
-                oMyForm.append("ContentFile", $(this)[0].files[0]);
-                $.ajax({
-                    url:"http://localhost:908/CM/common/uploadCM.do",
-                    type:"POST",
-                    data:oMyForm,
-                    cache: false,
-                    processData: false,
-                    contentType: false,
-                    dataType:"json",
-                    //表单提交前进行验证
-                    
-                    success: function (opeResult) {
-                       if (opeResult.jsonType=="1") {
-                         //alert("上传成功");
-                         _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
-                       }else{
-                         alert(opeResult.err);
-                       }
-                    },
-                    error: function(jqXHR){
-                        alert("发生错误" + jqXHR.status);
-                     }     
-                });
+                }
+           }
+           fileReader.readAsDataURL($(this)[0].files[0]);
+           
+            //文件上传
+            var oMyForm = new FormData();
+            oMyForm.append("ContentFile", $(this)[0].files[0]);
+            $.ajax({
+                url:"http://localhost:908/CM/common/uploadCM.do",
+                type:"POST",
+                data:oMyForm,
+                cache: false,
+                processData: false,
+                contentType: false,
+                dataType:"json",
+                //表单提交前进行验证
+                success: function (opeResult) {
+                   if (opeResult.jsonType=="1") {
+                     //alert("上传成功");
+                     _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                   }else{
+                     alert(opeResult.err);
+                   }
+                },
+                error: function(jqXHR){
+                  alert("发生错误" + jqXHR.status);
+                }     
+            });
           });
           
-        //form表单提交
-            $("#submitBtn").click(function () {
-              if($("#ContentImg").val()==""){
-                    //如未设置封面，将使用平台默认图片
-                    $("#ContentImg").val($(".defaultImg").attr("src"));
-                  }
-               $.ajax({
-                    url:"http://localhost:908/CM/content/addSeqMediaInfo.do",
-                    type:"POST",
-                    data:$("#addZjForm").serialize(),
-                    dataType:"json",
-                    success: function (opeResult) {
-                       if (opeResult.ReturnType=="1001") {
-                         alert("专辑创建成功");
-                         $("#addZjForm")[0].reset();
-                       }else{
-                         alert(opeResult.Message);
-                       }
+          //form表单提交
+          $("#submitBtn").click(function () {
+            if($("#ContentImg").val()==""){
+              //如未设置封面，将使用平台默认图片
+              $("#ContentImg").val($(".defaultImg").attr("src"));
+            }
+             $.ajax({
+              url:"http://localhost:908/CM/content/addSeqMediaInfo.do",
+              type:"POST",
+              data:$("#addZjForm").serialize(),
+              dataType:"json",
+              beforeSend : function() {
+            	  //制定表单验证规则与提示
+                $("#addZjForm").validate({
+                    rules:{
+                      ContentName:{required:true},
                     },
-                    error: function(jqXHR){
-                        alert("发生错误" + jqXHR.status);
-                     }
+                    messages:{
+                      ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
+                    }
                 });
+            	  if(a.closest(".form-group").hasClass("has-error")){
+            		  return false;
+            	  }
+              },
+              success: function (opeResult) {
+                 if (opeResult.ReturnType=="1001") {
+                   alert("专辑创建成功");
+                   $("#addZjForm")[0].reset();
+                 }else{
+                   alert(opeResult.Message);
+                 }
+              },
+              error: function(jqXHR){
+                  alert("发生错误" + jqXHR.status);
+               }
             });
+          });
         
           //获取分类列表
             getCatalogs();
             function getCatalogs(){
               $.ajax({
-                    type: "POST",    
-                    url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
-                    dataType: "json",
-                    data:{cataId: "3"},
-                    success: function(catalogsList) {
-                        if (catalogsList.jsonType=="1") {
-                          catalogsListLoad(catalogsList);
-                        } else {
-                            //alert("获取数据出现问题:"+ConditionsList.Message);
-                        }  
-                    },
-                    error: function(jqXHR){
-                       //alert("发生错误" + jqXHR.status);
-                    }     
-                });
+                type: "POST",    
+                url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
+                dataType: "json",
+                data:{cataId: "3"},
+                success: function(catalogsList) {
+                  if (catalogsList.jsonType=="1") {
+                    catalogsListLoad(catalogsList);
+                  } else {
+                      //alert("获取数据出现问题:"+ConditionsList.Message);
+                  }  
+                },
+                error: function(jqXHR){
+                   //alert("发生错误" + jqXHR.status);
+                }     
+            });
             }
           function catalogsListLoad(catalogsList){
             var listLength=catalogsList.data.children.length;

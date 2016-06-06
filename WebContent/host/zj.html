@@ -21,7 +21,7 @@
   <div class="" style="padding:0 25px;">
     <!-- 操作和状态显示 -->
     <div class="" style="width:100%;height:70px;line-height:70px;">
-      <span>共3个专辑</span>
+      <p style="display:inline-block">共<spn class="totalCount"></spn>个专辑</p>
       <button class="btn btn-warning" style="display:inline;width:auto;height:30px;float:right;padding:2px 12px;margin:15px 8px;">创建专辑</button>
     </div>
     <!-- 列表显示区 -->
@@ -39,29 +39,44 @@
   <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
 
   <script>
+    
     $().ready(function() {
+    	var userId="123";
+      
+      var mediaType="wt_SeqMediaAsset";
+      var dataParam={};
     	//获得父窗口window -> $(window.top) 或$(window.parent)  window可以省略
     	//获得父窗口document -> $(window.top.document)
     	//获取父窗口元素  ->$(window.top.document).find()
     	
       //获取列表
-      getAudioList("123", "wt_MediaAsset");
-      function getAudioList(UserId, MediaType) {
+      dataParam={
+    			"UserId":userId,
+    			"MediaType":mediaType,
+    			"url":"http://localhost:908/CM/content/getHostContents.do"
+    	};
+      getContentList(dataParam);
+      function getContentList(obj) {
         $.ajax({
           type : "POST",
-          url : "http://localhost:908/CM/content/getHostContents.do",
+          url : obj.url,
           dataType : "json",
-          data : JSON.stringify({
-            "UserId" : UserId,
-            "MediaType" : MediaType
-          }),
+          data : JSON.stringify(obj),
           beforeSend : function() {
-            $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")
+        	  if(!obj.opeType){
+        		  $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>");
+        	  }
           },
           success : function(resultData) {
             if (resultData.ReturnType == "1001") {
-              $(".actList").html(""); //再重新创建新的数据集时，先清空之前的
-              ContentListLoad(resultData);
+            	if(!obj.opeType){
+            		$(".actList").html(""); //再重新创建新的数据集时，先清空之前的
+                $(".totalCount").text(resultData.ResultList.AllCount);
+                ContentListLoad(resultData);
+            	}else{
+            		alert("处理成功！");
+            	}
+              
             } else {
               $(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
             }
@@ -75,6 +90,26 @@
       $(".btn").on("click",function(){
     	  $(window.top.document).find(".shade,.opeBox").css({"display":"block"});
       })
+      //对专辑的改、删等4种操作
+      $(".actList").on("click","i",function(){
+        switch($(this).attr("opeType")){
+	        case 'conEdit':
+	        	break;
+        	case 'conShare':
+        		break;
+          case 'conDel':
+        	  dataParam={
+        		  "UserId":userId,
+        		  "ContentId":$(this).parents(".listBox").attr("contentId"),
+        		  "url":"http://localhost:908/CM/content/removeSeqMedia.do"
+        	 };
+        	  getContentList(dataParam);
+          	break;
+          case 'conAdd':
+          default:
+        }
+        
+      });
       //创建节目列表DOM树
       function ContentListLoad(actList) {
         var actListLength = actList.ResultList.AllCount;
@@ -82,32 +117,44 @@
           $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
         } else {
           //声明下面需要创建的节点，以便添加内容和添加到文档中
-          var actListDiv,listDiv,imgDiv,imgA,thumbImg,infoDiv,infoH,infHA,infoP1,infoP2;
+          var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conEdit,conShare,conDel,conAdd,infoDiv,infoH,infHA,infoP1,infoP2;
           //循环加载列表
           for (var i = 0; i < actListLength; i++) {
             listDiv = $("<div class='listBox'></div>");
+            listDiv.attr({
+            	"contentId": actList.ResultList.List[i].ContentId,
+            	"contentName": actList.ResultList.List[i].ContentName,
+            	"contentDesc": actList.ResultList.List[i].ContentDesc,
+            	"contentImg": actList.ResultList.List[i].ContentImg,
+            	"contentCatalogs": actList.ResultList.List[i].ContentCatalogs,
+            	"subjectWords": actList.ResultList.List[i].SubjectWords});
             imgDiv = $("<div class='imgBox'>");
             imgA=$("<a href='javascript:;'></a>");
-            thumbImg = $("<img alt='image'>");
+            thumbImg = $("<img alt='专辑封面图片''>");
             thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
+            imgShade=$("<div class='imgShade'></div>");
+            conEdit=$("<i class='fa fa-pencil' opeType='conEdit'></i>");
+            conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");
+            conDel=$("<i class='fa fa-trash-o' opeType='conDel'></i>");
+            conAdd=$("<i class='fa fa-plus-square-o' opeType='conAdd'></i>");
             infoDiv = $("<div class='infoBox'>");
             infoH = $("<h4></h4>");
             infoHA=$("<a href='javascript:;'></a>");
+            imgShade.append(conEdit).append(conShare).append(conDel).append(conAdd);
             infoHA.text(actList.ResultList.List[i].ContentName);
             infoP1 = $("<p class='subCount'></p>");
             //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
             infoP1.text("12个声音");
             infoP2 = $("<p class='lastTime'></p>");
-            //infoP2.text(actList.ResultList.List[i].CTime);
-            infoP2.text("2016-06-01");
-            imgDiv.append(imgA.append(thumbImg));
+            infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
+            imgDiv.append(imgA.append(thumbImg)).append(imgShade);
             infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
             listDiv.append(imgDiv).append(infoDiv);
             $(".actList").append(listDiv);
           }
         }
       }
-
+      
     });
   </script>
 </body>
