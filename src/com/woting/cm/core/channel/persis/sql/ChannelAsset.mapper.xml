@@ -200,6 +200,9 @@
   <delete id="delete" parameterType="java.lang.String">
     delete from wt_ChannelAsset where id=#{id,jdbcType=VARCHAR}
   </delete>
+  <delete id="deleteByAssetId" parameterType="java.lang.String">
+    delete from wt_ChannelAsset where assetId=#{assetId,jdbcType=VARCHAR}
+  </delete>
   <delete id="deleteByEntity" parameterType="java.util.Map">
     delete from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </delete>

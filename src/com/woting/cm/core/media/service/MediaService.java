@@ -41,7 +41,7 @@ public class MediaService {
     @Resource(name="defaultDAO")
     private MybatisDAO<ChannelPo> channelDao;
     @Resource(name="defaultDAO")
-    private MybatisDAO<DictRefResPo> dictRdfDao;
+    private MybatisDAO<DictRefResPo> dictRefDao;
 
     @PostConstruct
     public void initParam() {
@@ -51,7 +51,7 @@ public class MediaService {
         seqMediaAssetDao.setNamespace("A_MEDIA");
         channelAssetDao.setNamespace("A_CHANNELASSET");
         channelDao.setNamespace("A_CHANNEL");
-        dictRdfDao.setNamespace("A_DREFRES");
+        dictRefDao.setNamespace("A_DREFRES");
     }
     
     public MaSource getMasInfoByMasId(Map<String, Object> m) {
@@ -135,7 +135,7 @@ public class MediaService {
     	Map<String, String> param=new HashMap<String, String>();
         param.put("resTableName", resTableName);
         param.put("resIds", resids);
-        List<DictRefResPo> rcrpL = dictRdfDao.queryForList("getListByResIds", param);
+        List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResIds", param);
         List<Map<String, Object>> catalist = new ArrayList<Map<String,Object>>();
         for (DictRefResPo dictRefResPo : rcrpL) {
 			catalist.add(dictRefResPo.toHashMap());
@@ -206,7 +206,7 @@ public class MediaService {
     }
     
     public void saveDictRef(DictRefRes dictref) {
-    	dictRdfDao.insert("insert", dictref.convert2Po());
+    	dictRefDao.insert("insert", dictref.convert2Po());
     }
     
     public void removeMa(String id){
@@ -225,11 +225,16 @@ public class MediaService {
     	seqMaRefDao.delete("multiM2SRefByMId", id);
     }
     
-    public void removeResDictRef(String id){
-    	dictRdfDao.delete("multiDelBc", id);
+    public void removeResDictRef(String... id){
+    	String value = "";
+    	for (String string : id) {
+			value += ",'"+string+"'";
+		}
+    	value = value.substring(1);
+    	dictRefDao.delete("multiDelBc", value);
     }
     
-    public void removeCha(String id){
-    	channelAssetDao.delete("deleteByAssetId", id);
+    public void removeCha(String assetId){
+    	channelAssetDao.delete("deleteByAssetId", assetId);
     }
 }
