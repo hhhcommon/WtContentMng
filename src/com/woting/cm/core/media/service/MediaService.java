@@ -238,13 +238,8 @@ public class MediaService {
     	seqMaRefDao.delete("multiM2SRefByMId", mid);
     }
     
-    public void removeResDictRef(String... id){
-    	String value = "";
-    	for (String string : id) {
-			value += ",'"+string+"'";
-		}
-    	value = value.substring(1);
-    	dictRefDao.delete("multiDelBc", value);
+    public void removeResDictRef(String id){
+    	dictRefDao.delete("multiDelByResId", id);
     }
     
     public void removeCha(String assetId){

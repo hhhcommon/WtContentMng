@@ -119,4 +119,8 @@
   <delete id="multiDelBc" parameterType="java.lang.String">
     delete from wt_ResDict_Ref where resId in (${value}) and resTableName='wt_Broadcast'
   </delete>
+  
+  <delete id="multiDelByResId" parameterType="java.lang.String">
+    delete from wt_ResDict_Ref where resId=#{resId,jdbcType=VARCHAR}
+  </delete>
 </mapper>
