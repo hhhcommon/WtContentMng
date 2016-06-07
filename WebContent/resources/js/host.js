@@ -113,7 +113,12 @@ function getCatalogs(catalog){
       data:{cataId: "3"},
       success: function(catalogsList) {
         if (catalogsList.jsonType=="1") {
-          catalogsListLoad(catalogsList,catalog);
+        	if(catalog){
+        		catalogsListLoad(catalogsList,catalog);
+        	}else{
+        		catalogsListLoad(catalogsList);
+        	}
+          
         } else {
             //alert("获取数据出现问题:"+ConditionsList.Message);
         }  

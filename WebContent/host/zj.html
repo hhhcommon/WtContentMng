@@ -20,9 +20,9 @@
 <body>
   <div class="" style="padding:0 25px;">
     <!-- 操作和状态显示 -->
-    <div class="" style="width:100%;height:70px;line-height:70px;">
-      <p style="display:inline-block">共<spn class="totalCount"></spn>个专辑</p>
-      <button class="btn btn-warning" style="display:inline;width:auto;height:30px;float:right;padding:2px 12px;margin:15px 8px;">创建专辑</button>
+    <div class="commBox">
+      <p>共<spn class="totalCount"></spn>个专辑</p>
+      <button class="btn btn-warning">创建专辑</button>
     </div>
     <!-- 列表显示区 -->
     <div class="actList"></div>
@@ -52,7 +52,7 @@
       
       //点击创建专辑按钮，弹出创建专辑界面
       $(".btn").on("click",function(){
-    	  $(window.top.document).find(".shade,.opeBox").css({"display":"block"});
+    	  $(window.top.document).find(".shade,#sequ").css({"display":"block"});
       })
       //对专辑的改、删等4种操作
       $(".actList").on("click","i",function(){

@@ -50,6 +50,22 @@ nav li:hover{
 	left:0;
 	background:#ffa734;
 }
+.commBox{
+	width:100%;
+	height:70px;
+	line-height:70px;
+}
+.commBox p{
+	display:inline-block;
+}
+.commBox .btn{
+	display:inline;
+	width:auto;
+	height:30px;
+	float:right;
+	padding:2px 12px;
+	margin:15px 8px;
+}
 .shade{
 	width:100%;
 	height:100%;
