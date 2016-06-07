@@ -61,9 +61,9 @@ public class MediaContentController {
 		}
 
 		String contentimg = m.get("ContentImg")+"";
-		contentimg=contentimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
+		contentimg=contentimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		String contenturl = m.get("ContentURI")+"";
-		contenturl=contenturl.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
+		contenturl=contenturl.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		String contentdescn = m.get("ContentDesc")+"";
 		String contentkeywords = m.get("KeyWords")+"";
 		String seqid = m.get("ContentSequId")+"";
