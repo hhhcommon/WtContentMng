@@ -66,16 +66,22 @@
 	        	*/
 	        	$(".btn").trigger("click");
 	        	$(window.top.document).find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改专辑");
-	        	
+	        	var contentId,contentName,contentDesc,contentImg,subjectWords,catalogsId;
+	        	contentId=$(this).parents(".listBox").attr("contentId");
+	        	contentName=$(this).parents(".listBox").attr("contentName");
+	        	contentDesc=$(this).parents(".listBox").attr("ContentDesc");
+	        	contentImg=$(this).parents(".listBox").attr("ContentImg");
+	        	subjectWords=$(this).parents(".listBox").attr("SubjectWords");
+	        	catalogsId=$(this).parents(".listBox").attr("ContentCatalogsId");
 	        	var contentIdEle=$("<input id='ContentId' name='ContentId' class='form-control' type='hidden' value='' />");
-	        	contentIdEle.val($(this).parents(".listBox").attr("contentId"));
-	        	getCatalogs($(this).parents(".listBox").attr("ContentCatalogsId"));
+	        	contentIdEle.val(contentId);
+	        	getCatalogs(catalogsId);
 	        	$(window.top.document).find("form").append(contentId);
-	        	$(window.top.document).find("#ContentName").val($(this).parents(".listBox").attr("contentName"));
-	        	$(window.top.document).find(".defaultImg").attr({"src":($(this).parents(".listBox").attr("ContentImg")).slice(1)});
-	        	$(window.top.document).find("#ContentImg").val($(this).parents(".listBox").attr("ContentImg"));
-	        	$(window.top.document).find("#SubjectWords").val($(this).parents(".listBox").attr("SubjectWords"));
-	        	$(window.top.document).find("#ContentDesc").val($(this).parents(".listBox").attr("ContentDesc"));
+	        	$(window.top.document).find("#ContentName").val(contentName);
+	        	$(window.top.document).find(".defaultImg").attr({"src":contentImg.slice(1)});
+	        	$(window.top.document).find("#ContentImg").val(contentImg);
+	        	$(window.top.document).find("#SubjectWords").val(subjectWords);
+	        	$(window.top.document).find("#ContentDesc").val(contentDesc);
 	        	break;
         	case 'conShare':
         		break;
