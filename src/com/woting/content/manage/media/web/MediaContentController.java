@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -77,8 +79,8 @@ public class MediaContentController {
 	@ResponseBody
 	public Map<String, Object> updateMediaInfo(HttpServletRequest request){
 		MediaAsset ma = new MediaAsset();
-		Map<String, Object> map = new HashMap<String,Object>();
 		SeqMediaAsset sma = new SeqMediaAsset();
+		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String maid = m.get("ContentId")+"";
 		ma.setId(maid);
@@ -92,16 +94,14 @@ public class MediaContentController {
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
 		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
-		String seqname = m.get("ContentSeqName")+"";
-		if(!seqname.toLowerCase().equals("null")) sma.setSmaTitle(seqname);
 		String madesc = m.get("ContentDesc")+"";
 		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
+		if(seqid.toLowerCase().equals("null"))map = mediaContentService.updateMediaInfo(ma,null);
+		else map = mediaContentService.updateMediaInfo(ma, sma);
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		map = mediaContentService.updateMediaInfo(ma,sma);
-		
 		return map;
 	}
 	

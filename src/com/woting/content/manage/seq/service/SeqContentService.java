@@ -178,10 +178,10 @@ public class SeqContentService {
 		Map<String, Object> map = new HashMap<String,Object>();
 		mediaService.removeSeqMedia(contentid);
 		if(mediaService.getSmaInfoById(contentid)!=null){
-			map.put("ReturnType", "1001");
+			map.put("ReturnType", "1011");
 			map.put("Message", "专辑删除失败");
 		}else{
-			map.put("ReturnType", "1011");
+			map.put("ReturnType", "1001");
 			map.put("Message", "专辑删除成功");
 		}
 		return map;
