@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.seq.service.SeqContentService;
@@ -19,7 +18,7 @@ import com.woting.content.manage.seq.service.SeqContentService;
 public class SeqContentController {
 	@Resource
 	private SeqContentService seqContentService;
-
+	
 	@RequestMapping(value = "/content/seq/getHostSeqMediaList.do")
 	@ResponseBody
 	public Map<String, Object> getSeqMediaList(HttpServletRequest request){
@@ -147,9 +146,7 @@ public class SeqContentController {
 			map.put("Message", "无专辑信息");
 			return map;
 		}
-		seqContentService.removeSeqMediaAsset(contentid);
-		map.put("ReturnType", "1001");
-		map.put("Message", "专辑删除成功");
+		map = seqContentService.removeSeqMediaAsset(contentid);
 		return map;
 	}
 }

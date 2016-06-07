@@ -2,14 +2,11 @@ package com.woting.content.manage.media.web;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -153,9 +150,7 @@ public class MediaContentController {
 			map.put("Message", "无专辑信息");
 			return map;
 		}
-		mediaContentService.removeMediaAsset(contentid);
-		map.put("ReturnType", "1001");
-		map.put("Message", "单体删除成功");
+		map = mediaContentService.removeMediaAsset(contentid);
 		return map;
 	}
 }

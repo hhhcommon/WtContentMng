@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -18,6 +19,7 @@ import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.service.ContentService;
 
+@Service
 public class SeqContentService {
 	@Resource
 	private MediaService mediaService;
@@ -172,7 +174,16 @@ public class SeqContentService {
 		return map;
 	}
 	
-	public void removeSeqMediaAsset(String contentid) {
+	public Map<String, Object> removeSeqMediaAsset(String contentid) {
+		Map<String, Object> map = new HashMap<String,Object>();
 		mediaService.removeSeqMedia(contentid);
+		if(mediaService.getSmaInfoById(contentid)!=null){
+			map.put("ReturnType", "1001");
+			map.put("Message", "专辑删除失败");
+		}else{
+			map.put("ReturnType", "1011");
+			map.put("Message", "专辑删除成功");
+		}
+		return map;
 	}
 }
