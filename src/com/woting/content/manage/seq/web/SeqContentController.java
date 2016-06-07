@@ -75,19 +75,22 @@ public class SeqContentController {
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request){
-		MediaAsset ma = new MediaAsset();
 		SeqMediaAsset sma = new SeqMediaAsset();
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		System.out.println(m);
-		String maid = m.get("ContentId")+"";
-		ma.setId(maid);
-		String maname = m.get("ContentName")+"";
-		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
-		String maimg = m.get("ContentImg")+"";
-		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
-		String madesc = m.get("ContentDesc")+"";
-		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
+		String smaid = m.get("ContentId")+"";
+		if(smaid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+		    map.put("Message", "修改失败");
+		    return map;
+		}
+		sma.setId(smaid);
+		String smaname = m.get("ContentName")+"";
+		if(!smaname.toLowerCase().equals("null")) sma.setSmaTitle(smaname);
+		String smaimg = m.get("ContentImg")+"";
+		if(!smaimg.toLowerCase().equals("null")) sma.setSmaImg(smaimg);
+		String smadesc = m.get("ContentDesc")+"";
+		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
 		String did = m.get("ContentCatalogsId")+""; //更改专辑的内容分类
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
