@@ -65,8 +65,8 @@ function ContentListLoad(actList) {
       	"contentName": actList.ResultList.List[i].ContentName,
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
-      	//"contentCatalogsId": actList.ResultList.List[i].ContentCatalogsId,
-      	"contentCatalogsId": "nPy",
+      	"contentCatalogsId": actList.ResultList.List[i].ContentCatalogsId,
+      	//"contentCatalogsId": "nPy",
       	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord})
       imgDiv = $("<div>");
       imgA=$("<a href='javascript:;'></a>");
@@ -113,7 +113,12 @@ function getCatalogs(catalog){
       data:{cataId: "3"},
       success: function(catalogsList) {
         if (catalogsList.jsonType=="1") {
-          catalogsListLoad(catalogsList,catalog);
+        	if(catalog){
+        		catalogsListLoad(catalogsList,catalog);
+        	}else{
+        		catalogsListLoad(catalogsList);
+        	}
+          
         } else {
             //alert("获取数据出现问题:"+ConditionsList.Message);
         }  
