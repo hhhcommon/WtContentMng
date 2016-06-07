@@ -70,11 +70,12 @@
 	        	contentId=$(this).parents(".listBox").attr("contentId");
 	        	contentName=$(this).parents(".listBox").attr("contentName");
 	        	contentDesc=$(this).parents(".listBox").attr("ContentDesc");
-	        	contentImg=$(this).parents(".listBox").attr("ContentImg");
+	        	contentImg=($(this).parents(".listBox").attr("ContentImg")).slice(1);
 	        	subjectWords=$(this).parents(".listBox").attr("SubjectWords");
 	        	catalogsId=$(this).parents(".listBox").attr("ContentCatalogsId");
 	        	var contentIdEle=$("<input id='ContentId' name='ContentId' class='form-control' type='hidden' value='' />");
 	        	contentIdEle.val(contentId);
+	        	alert(catalogsId);
 	        	getCatalogs(catalogsId);
 	        	$(window.top.document).find("form").append(contentIdEle);
 	        	$(window.top.document).find("#ContentName").val(contentName);
