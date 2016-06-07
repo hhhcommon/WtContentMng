@@ -128,7 +128,7 @@ nav li:hover{
   display:block;
   padding:5px 14px 0 0;
 }
-.listBox .imgBox:hover,
+.listBox .imgBox:hover .imgShade,
 .listBox .subImg:hover .imgShade{
 	display:block;
 }

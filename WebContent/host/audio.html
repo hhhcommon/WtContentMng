@@ -40,12 +40,10 @@
 
 	<script>
 		$().ready(function() {
-			var mediaType="SEQU";
 			//获取列表
 			dataParam={
           "UserId":userId,
-          "MediaType":mediaType,
-          "url":"http://localhost:908/CM/content/getHostContents.do",
+          "url":"http://localhost:908/CM/content/media/getHostMediaList.do",
       };
 			getContentList(dataParam);
 	//创建节目列表DOM树

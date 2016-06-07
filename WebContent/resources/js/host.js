@@ -1,5 +1,5 @@
 //var rootPath=getRootPath();
-var userId="123",mediaType,dataParam={}
+var userId="123",dataParam={}
 //公共ajax请求
 function getContentList(obj) {
 	$.ajax({
@@ -21,15 +21,18 @@ function getContentList(obj) {
 	    	}else{
 	    		switch(obj.opeType){
 	    			case 'conAdd':
+	    				/*
 	    				alert("添加成功");
+	    				$("#addZjForm")[0].reset();
+	    				$(".shade,.opeBox").css({"display":"none"});
+	    				*/
 	    			break;
 	        		case 'conUpdate':
 	        			break;
 	        		case 'conDel':
 	        			alert("删除成功");
 	        			//删除成功后，再次请求列表
-	        			dataParam.MediaType="SEQU";
-	        			dataParam.url="http://localhost:908/CM/content/getHostContents.do";
+	        			dataParam.url="http://localhost:908/CM/content/seq/getHostSeqMediaList.do";
 	        			delete dataParam["opeType"];
 	        			getContentList(dataParam);
 	              break;
@@ -62,8 +65,9 @@ function ContentListLoad(actList) {
       	"contentName": actList.ResultList.List[i].ContentName,
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
-      	"contentCatalogs": actList.ResultList.List[i].ContentCatalogs,
-      	"subjectWords": actList.ResultList.List[i].SubjectWords});
+      	//"contentCatalogsId": actList.ResultList.List[i].ContentCatalogsId,
+      	"contentCatalogsId": "nPy",
+      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord})
       imgDiv = $("<div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
@@ -83,7 +87,7 @@ function ContentListLoad(actList) {
       if(mediaType=="SEQU"){
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
-          //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
+          //infoP1.text(actList.ResultList.List[i].ContentSubCount+"个声音");
           infoP1.text("12个声音");
           infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       }else{
@@ -97,7 +101,11 @@ function ContentListLoad(actList) {
   }
 }
 //获取分类列表
-function getCatalogs(){
+/*
+ * 修改节目时，传递原有的分类ID，以便将其设置到选中状态供修改
+ * 添加节目时，则不需要
+ * */
+function getCatalogs(catalog){
     $.ajax({
       type: "POST",    
       url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
@@ -105,7 +113,7 @@ function getCatalogs(){
       data:{cataId: "3"},
       success: function(catalogsList) {
         if (catalogsList.jsonType=="1") {
-          catalogsListLoad(catalogsList);
+          catalogsListLoad(catalogsList,catalog);
         } else {
             //alert("获取数据出现问题:"+ConditionsList.Message);
         }  
@@ -115,12 +123,15 @@ function getCatalogs(){
       }     
     });
   }
-  function catalogsListLoad(catalogsList){
+  function catalogsListLoad(catalogsList,catalog){
     var listLength=catalogsList.data.children.length;
     var opt;
     for(var i=0;i<listLength;i++){
       opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
+      if(catalog && i==catalog){
+    	  opt.attr({"selected":"selected"});
+      }
       opt.text(catalogsList.data.children[i].name);
       $("#ContentCatalogsId").append(opt);
     }
