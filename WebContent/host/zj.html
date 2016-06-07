@@ -76,7 +76,7 @@
 	        	var contentIdEle=$("<input id='ContentId' name='ContentId' class='form-control' type='hidden' value='' />");
 	        	contentIdEle.val(contentId);
 	        	getCatalogs(catalogsId);
-	        	$(window.top.document).find("form").append(contentId);
+	        	$(window.top.document).find("form").append(contentIdEle);
 	        	$(window.top.document).find("#ContentName").val(contentName);
 	        	$(window.top.document).find(".defaultImg").attr({"src":contentImg.slice(1)});
 	        	$(window.top.document).find("#ContentImg").val(contentImg);

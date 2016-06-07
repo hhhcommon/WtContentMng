@@ -65,8 +65,8 @@ function ContentListLoad(actList) {
       	"contentName": actList.ResultList.List[i].ContentName,
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
-      	//"contentCatalogsId": actList.ResultList.List[i].ContentCatalogsId,
-      	"contentCatalogsId": "nPy",
+      	"contentCatalogsId": actList.ResultList.List[i].ContentCatalogsId,
+      	//"contentCatalogsId": "nPy",
       	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord})
       imgDiv = $("<div>");
       imgA=$("<a href='javascript:;'></a>");

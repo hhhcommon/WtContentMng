@@ -95,8 +95,12 @@
     	  //以下是创建专辑节目相关内容
         //初始化创建专辑元素的位置
         $(".opeBox").css({"left":($(window).width()-$(".opeBox").width())/2});
-        //点击遮罩，或取消，确定，关闭这些点时，隐藏窗口和遮罩
+        //点击遮罩，或取消，确定，关闭这些点时，隐藏窗口和遮罩,并重置表单
         $(".shade,.close-link").on("click",function(){
+        	$("form")[0].reset();
+        	$(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
+        	$("input").remove("#ContentId");
+        	$(".defaultImg").attr({"src":"resources/images/default.png"});
           $(".shade,.opeBox").css({"display":"none"});
         });
       
@@ -337,6 +341,7 @@
 		                              <select class="form-control" name="ContentCatalogsId" id="ContentCatalogsId"></select>
 		                          </div>
 		                      </div>
+		                      
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑标签：</label>
 		                          <div class="col-sm-8">
