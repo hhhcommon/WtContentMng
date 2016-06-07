@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.woting.content.common.util.RequestUtils;
 import com.woting.content.publish.service.QueryService;
 import com.woting.content.publish.utils.CacheUtils;
 import com.woting.passport.login.utils.RequestDataUtils;
@@ -84,12 +85,12 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getContentInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userId = (String) m.get("UserId");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		String id = (String) m.get("ContentId");
-		String mediatype = (String) m.get("MediaType");
+		String mediatype = m.get("MediaType")+"";
 		Map<String, Object> mapdetail = queryService.getContentInfo(pagesize, page, id, mediatype);
 		if (mediatype.equals("wt_SeqMediaAsset")) {
 			if (mapdetail.get("audio") != null) {
@@ -132,7 +133,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/updateContentStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
@@ -152,7 +153,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/getConditions.do")
 	@ResponseBody
 	public Map<String, Object> getCatalogs(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getConditionsInfo();
@@ -170,7 +171,7 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
 		int flowFlag = 0;
 		// String userId = (String) m.get("UserId");
@@ -212,7 +213,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/getZJSubPage.do")
 	@ResponseBody
 	public Map<String, Object> getZJSubPage(HttpServletRequest request) {
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		System.out.println(m);
 		String zjid = (String) m.get("ContentId");
 		String page = (String) m.get("Page");

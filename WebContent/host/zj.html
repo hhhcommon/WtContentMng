@@ -20,9 +20,9 @@
 <body>
   <div class="" style="padding:0 25px;">
     <!-- 操作和状态显示 -->
-    <div class="" style="width:100%;height:70px;line-height:70px;">
-      <span>共3个专辑</span>
-      <button class="btn btn-warning" style="display:inline;width:auto;height:30px;float:right;padding:2px 12px;margin:15px 8px;">创建专辑</button>
+    <div class="commBox">
+      <p>共<spn class="totalCount"></spn>个专辑</p>
+      <button class="btn btn-warning">创建专辑</button>
     </div>
     <!-- 列表显示区 -->
     <div class="actList"></div>
@@ -37,77 +37,68 @@
   <script src="../resources/js/host.js"></script>
   <!-- jQuery Validation plugin javascript-->
   <script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
-
   <script>
-    $().ready(function() {
+    $(function(){
     	//获得父窗口window -> $(window.top) 或$(window.parent)  window可以省略
     	//获得父窗口document -> $(window.top.document)
     	//获取父窗口元素  ->$(window.top.document).find()
     	
       //获取列表
-      getAudioList("123", "wt_MediaAsset");
-      function getAudioList(UserId, MediaType) {
-        $.ajax({
-          type : "POST",
-          url : "http://localhost:908/CM/content/getHostContents.do",
-          dataType : "json",
-          data : JSON.stringify({
-            "UserId" : UserId,
-            "MediaType" : MediaType
-          }),
-          beforeSend : function() {
-            $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")
-          },
-          success : function(resultData) {
-            if (resultData.ReturnType == "1001") {
-              $(".actList").html(""); //再重新创建新的数据集时，先清空之前的
-              ContentListLoad(resultData);
-            } else {
-              $(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
-            }
-          },
-          error : function(jqXHR) {
-            $(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+ jqXHR.status+ "</div>");
-          }
-        });
-      }
+      dataParam={
+    			"UserId":userId,
+    			"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"
+    	};
+      getContentList(dataParam);
+      
       //点击创建专辑按钮，弹出创建专辑界面
       $(".btn").on("click",function(){
-    	  $(window.top.document).find(".shade,.opeBox").css({"display":"block"});
+    	  $(window.top.document).find(".shade,#sequ").css({"display":"block"});
       })
-      //创建节目列表DOM树
-      function ContentListLoad(actList) {
-        var actListLength = actList.ResultList.AllCount;
-        if (actListLength == 0) {
-          $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
-        } else {
-          //声明下面需要创建的节点，以便添加内容和添加到文档中
-          var actListDiv,listDiv,imgDiv,imgA,thumbImg,infoDiv,infoH,infHA,infoP1,infoP2;
-          //循环加载列表
-          for (var i = 0; i < actListLength; i++) {
-            listDiv = $("<div class='listBox'></div>");
-            imgDiv = $("<div class='imgBox'>");
-            imgA=$("<a href='javascript:;'></a>");
-            thumbImg = $("<img alt='image'>");
-            thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
-            infoDiv = $("<div class='infoBox'>");
-            infoH = $("<h4></h4>");
-            infoHA=$("<a href='javascript:;'></a>");
-            infoHA.text(actList.ResultList.List[i].ContentName);
-            infoP1 = $("<p class='subCount'></p>");
-            //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
-            infoP1.text("12个声音");
-            infoP2 = $("<p class='lastTime'></p>");
-            //infoP2.text(actList.ResultList.List[i].CTime);
-            infoP2.text("2016-06-01");
-            imgDiv.append(imgA.append(thumbImg));
-            infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
-            listDiv.append(imgDiv).append(infoDiv);
-            $(".actList").append(listDiv);
-          }
+      //对专辑的改、删等4种操作
+      $(".actList").on("click","i",function(){
+        switch($(this).attr("opeType")){
+	        case 'conUpdate':
+	        	//使用添加界面，对添加界面做相关调整
+	        	/*
+	        	1,界面文字修改
+	        	2，元素VALUE获取
+	        	3，存取元素值，和提交时的对比
+	        	*/
+	        	$(".btn").trigger("click");
+	        	$(window.top.document).find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改专辑");
+	        	var contentId,contentName,contentDesc,contentImg,subjectWords,catalogsId;
+	        	contentId=$(this).parents(".listBox").attr("contentId");
+	        	contentName=$(this).parents(".listBox").attr("contentName");
+	        	contentDesc=$(this).parents(".listBox").attr("ContentDesc");
+	        	contentImg=$(this).parents(".listBox").attr("ContentImg");
+	        	subjectWords=$(this).parents(".listBox").attr("SubjectWords");
+	        	catalogsId=$(this).parents(".listBox").attr("ContentCatalogsId");
+	        	var contentIdEle=$("<input id='ContentId' name='ContentId' class='form-control' type='hidden' value='' />");
+	        	contentIdEle.val(contentId);
+	        	getCatalogs(catalogsId);
+	        	$(window.top.document).find("form").append(contentIdEle);
+	        	$(window.top.document).find("#ContentName").val(contentName);
+	        	$(window.top.document).find(".defaultImg").attr({"src":contentImg.slice(1)});
+	        	$(window.top.document).find("#ContentImg").val(contentImg);
+	        	$(window.top.document).find("#SubjectWords").val(subjectWords);
+	        	$(window.top.document).find("#ContentDesc").val(contentDesc);
+	        	break;
+        	case 'conShare':
+        		break;
+          case 'conDel':
+        	  dataParam={
+        		  "UserId":userId,
+        		  "ContentId":$(this).parents(".listBox").attr("contentId"),
+        		  "url":"http://localhost:908/CM/content/seq/removeSeqMediaInfo.do",
+        		  "opeType":$(this).attr("opeType"),
+        		  "mediaType":"SEQU"
+        	 };
+        	  getContentList(dataParam);
+          	break;
+          case 'subAdd':
+          default:
         }
-      }
-
+      });
     });
   </script>
 </body>

@@ -20,7 +20,6 @@ a:focus{
 	text-decoration:none;
 	}
 body{
-  font-family:'Microsoft Yahei','Arial';
   fong-size:12px;
 }
 
@@ -39,6 +38,41 @@ nav li:hover{
 	background:#f2f2f2;
 }
 */
+#wrapper{
+	width:1140px;
+	height:680px;
+	margin:20px auto;
+	background:white;
+}
+#wrapper .navLeft{
+	width:160px;
+	height:100%;
+	float:left;
+}
+#wrapper .person{
+	width:100%;
+	height:180px;
+	border-bottom:1px solid #f2f2f2;
+	line-height:180px;
+	text-align:center;
+}
+#wrapper nav{
+	width:100%;
+	height:calc(100% - 180px)
+}
+#content-main{
+	float:left;
+	width:800px;
+	height:100%;
+	border-left:1px solid #f2f2f2;
+	border-right:1px solid #f2f2f2;
+}
+#wrapper .news{
+  width:180px;
+  height:100%;
+  float:right;
+  padding:10px;
+}
 .active{
 	background:#f2f2f2;
 }
@@ -50,6 +84,22 @@ nav li:hover{
 	top:0;
 	left:0;
 	background:#ffa734;
+}
+.commBox{
+	width:100%;
+	height:70px;
+	line-height:70px;
+}
+.commBox p{
+	display:inline-block;
+}
+.commBox .btn{
+	display:inline;
+	width:auto;
+	height:30px;
+	float:right;
+	padding:2px 12px;
+	margin:15px 8px;
 }
 .shade{
 	width:100%;
@@ -117,6 +167,10 @@ nav li:hover{
   /*border:1px solid #f2f2f2;
   border-radius:4px;
   overflow:hidden;*/
+  position:relative;
+  border-left:1px solid #f2f2f2;
+  border-bottom:1px solid #f2f2f2;
+  overflow:hidden;
 }
 .listBox .imgBox a{
 	height:104px;
@@ -125,12 +179,56 @@ nav li:hover{
   display:block;
   padding:5px 14px 0 0;
 }
+.listBox .imgBox:hover .imgShade,
+.listBox .subImg:hover .imgShade{
+	display:block;
+}
+.listBox .imgBox .imgShade,
+.listBox .subImg .imgShade{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	background:rgba(0,0,0,0.65);
+	display:none;
+}
+.imgShade i{
+	display:inline-block;
+	width:25px;
+	height:25px;
+	position:absolute;
+	text-align:center;
+	line-height:25px;
+	color:white;
+	font-size:14px;
+}
+.imgShade i:nth-child(1){
+	top:20px;
+	left:20px;
+}
+.imgShade i:nth-child(2){
+  top:20px;
+  right:20px;
+}
+.imgShade i:nth-child(3){
+  bottom:20px;
+  left:20px;
+}
+.imgShade i:nth-child(4){
+  bottom:20px;
+  right:20px;
+}
+.imgShade i:hover{
+	cursor:pointer;
+}
 .listBox .subImg{
 	height:104px;
   width:104px;
   border:1px solid #f2f2f2;
   border-radius:4px;
   overflow:hidden;
+  position:relative;
 }
 .listBox .subImg img{
 	width:100%;

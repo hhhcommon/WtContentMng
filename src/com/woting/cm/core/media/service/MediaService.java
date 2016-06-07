@@ -41,7 +41,7 @@ public class MediaService {
     @Resource(name="defaultDAO")
     private MybatisDAO<ChannelPo> channelDao;
     @Resource(name="defaultDAO")
-    private MybatisDAO<DictRefResPo> dictRdfDao;
+    private MybatisDAO<DictRefResPo> dictRefDao;
 
     @PostConstruct
     public void initParam() {
@@ -51,12 +51,13 @@ public class MediaService {
         seqMediaAssetDao.setNamespace("A_MEDIA");
         channelAssetDao.setNamespace("A_CHANNELASSET");
         channelDao.setNamespace("A_CHANNEL");
-        dictRdfDao.setNamespace("A_DREFRES");
+        dictRefDao.setNamespace("A_DREFRES");
     }
     
     public MaSource getMasInfoByMasId(Map<String, Object> m) {
     	MaSource mas = new MaSource();
     	MaSourcePo maspo = maSourceDao.getInfoObject("getMasInfoByMaId", m);
+    	if(maspo==null) return null;
     	mas.buildFromPo(maspo);
 		return mas;
     }
@@ -79,11 +80,13 @@ public class MediaService {
         List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
         List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
         listpo = mediaAssetDao.queryForList("getMaListByMaPubId", id);
-        for (MediaAssetPo mediaAssetPo : listpo) {
-        	MediaAsset ma=new MediaAsset();
-			ma.buildFromPo(mediaAssetPo);
-			list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
-		}
+        if(listpo!=null&&listpo.size()>0){
+        	for (MediaAssetPo mediaAssetPo : listpo) {
+        	    MediaAsset ma=new MediaAsset();
+			    ma.buildFromPo(mediaAssetPo);
+			    list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
+		    }
+        }
         return list;
     }
     
@@ -92,19 +95,21 @@ public class MediaService {
     	List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
     	listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", id);
-    	
-    	String resids = "";
-    	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-			resids+=",'"+seqMediaAssetPo.getId()+"'";
-		}
-    	resids = resids.substring(1);
-    	
-    	List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	
-    	for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-			SeqMediaAsset sma = new SeqMediaAsset();
-			sma.buildFromPo(seqMediaAssetPo);
-			list.add(ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null));
+    	if (listpo!=null&&listpo.size()>0) {
+			String resids = "";
+    	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+			    resids+=",'"+seqMediaAssetPo.getId()+"'";
+		    }
+    	    resids = resids.substring(1);
+    	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+    	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+			    SeqMediaAsset sma = new SeqMediaAsset();
+			    sma.buildFromPo(seqMediaAssetPo);
+			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
+			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoByMId", sma.getId());
+			    smap.put("SubCount", l.size());
+			    list.add(smap);
+		    }
 		}
 		return list;
     }
@@ -113,6 +118,7 @@ public class MediaService {
     public SeqMediaAsset getSmaInfoById(String id) {
     	SeqMediaAsset sma = new SeqMediaAsset();
     	SeqMediaAssetPo smapo = seqMediaAssetDao.getInfoObject("getSmaInfoById", id);
+    	if(smapo==null) return null;
     	sma.buildFromPo(smapo);
     	return sma;
 	}
@@ -121,6 +127,7 @@ public class MediaService {
     public Channel getChInfoById(String id){
     	Channel ch = new Channel();
     	ChannelPo chpo = channelDao.getInfoObject("getInfoById", id);
+    	if(chpo==null) return null;
     	ch.buildFromPo(chpo);
     	return ch;
     }
@@ -129,6 +136,7 @@ public class MediaService {
     public ChannelAsset getCHAInfoById(String id){
     	ChannelAsset cha = new ChannelAsset();
     	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
+    	if (chapo==null) return null;
     	cha.buildFromPo(chapo);
 		return cha;
     }
@@ -138,7 +146,7 @@ public class MediaService {
     	Map<String, String> param=new HashMap<String, String>();
         param.put("resTableName", resTableName);
         param.put("resIds", resids);
-        List<DictRefResPo> rcrpL = dictRdfDao.queryForList("getListByResIds", param);
+        List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResIds", param);
         List<Map<String, Object>> catalist = new ArrayList<Map<String,Object>>();
         for (DictRefResPo dictRefResPo : rcrpL) {
 			catalist.add(dictRefResPo.toHashMap());
@@ -156,7 +164,9 @@ public class MediaService {
 
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();
-        ma.buildFromPo(mediaAssetDao.getInfoObject("getMaInfoById", id));
+        MediaAssetPo mapo = mediaAssetDao.getInfoObject("getMaInfoById", id);
+        if(mapo==null) return null;
+        else ma.buildFromPo(mapo);
         return ma;
     }
 
@@ -209,30 +219,45 @@ public class MediaService {
     }
     
     public void saveDictRef(DictRefRes dictref) {
-    	dictRdfDao.insert("insert", dictref.convert2Po());
+    	dictRefDao.insert("insert", dictref.convert2Po());
     }
     
     public void removeMa(String id){
-    	mediaAssetDao.delete("removeMaById", id);
+    	mediaAssetDao.delete("multiMaById", id);
     }
     
     public void removeSma(String id){
-    	seqMediaAssetDao.delete("", id);
+    	seqMediaAssetDao.delete("multiSmaById", id);
     }
     
-    public void removeMas(String id){
-    	maSourceDao.delete("multiMasByMaId", id);
+    public void removeMas(String maid){
+    	maSourceDao.delete("multiMasByMaId", maid);
     }
     
-    public void removeMa2Sma(String id){
-    	seqMaRefDao.delete("multiM2SRefByMId", id);
+    public void removeMa2Sma(String mid){
+    	seqMaRefDao.delete("multiM2SRefByMId", mid);
     }
     
     public void removeResDictRef(String id){
-    	dictRdfDao.delete("multiDelBc", id);
+    	dictRefDao.delete("multiDelByResId", id);
     }
     
-    public void removeCha(String id){
-    	channelAssetDao.delete("deleteByAssetId", id);
+    public void removeCha(String assetId){
+    	channelAssetDao.delete("deleteByAssetId", assetId);
+    }
+    
+    public void removeMedia(String id) {
+    	removeMa(id);
+		removeMas(id);
+		removeMa2Sma(id);
+		removeResDictRef(id);
+		removeCha(id);
+    }
+    
+    public void removeSeqMedia(String id){
+    	removeSma(id);
+		removeMa2Sma(id);
+		removeResDictRef(id);
+		removeCha(id);
     }
 }
