@@ -32,7 +32,6 @@ function getContentList(obj) {
 	        		case 'conDel':
 	        			alert("删除成功");
 	        			//删除成功后，再次请求列表
-	        			delete dataParam["opeType"];
 	        			if(dataParam['mediaType']=="AUDIO"){
 	        				dataParam.url="http://localhost:908/CM/content/media/getHostMediaList.do";
 	        			}else{
@@ -99,8 +98,8 @@ function ContentListLoad(actList) {
       if(mediaType=="SEQU"){
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
-          //infoP1.text(actList.ResultList.List[i].ContentSubCount+"个声音");
-          infoP1.text("12个声音");
+          infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
+          //infoP1.text("12个声音");
           infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       }else{
     	  imgDiv.addClass("subImg");

@@ -85,6 +85,7 @@
       });
       $(function(){
     	  var dataParam={};
+    	  var iframe=$(document.getElementById('myIframe').contentWindow.document);
     	  //点击功能列表，切换页面
         $(".navList").on("click",function(){
           $("iframe").attr({"src":$(this).children("a").attr("_href")});
@@ -102,8 +103,7 @@
         	$("form")[0].reset();
         	$(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
         	$("input").remove("#ContentId");
-        	$(".defaultImg").attr({"src":"resources/images/default.png"}).css({"display":"block"});
-        	$(".previewImg").remove(".newImg");
+        	$("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
           $(".shade,.opeBox").css({"display":"none"});
         });
       
@@ -166,48 +166,23 @@
               $("#ContentImg").val($(".defaultImg").attr("src"));
             }
             dataParam={
-              "url":"http://localhost:908/CM/content/addSeqMediaInfo.do",
-              "data":$("#addZjForm").serialize()
+              "url":"http://localhost:908/CM/content/seq/addSeqMediaInfo.do",
+              "data":$("#addSequForm").serialize()
             };
             submitForm(dataParam);
         	}else{
         		dataParam={
               "url":"http://localhost:908/CM/content/seq/updateSeqMediaInfo.do",
-              "data":$("#addZjForm").serialize()
+              "data":$("#addSequForm").serialize()
             };
             submitForm(dataParam);
         	}
-
-          function submitForm(obj){
-        	  $.ajax({
-                  url:obj.url,
-                  type:"POST",
-                  data:obj.data,
-                  dataType:"json",
-                  success: function (opeResult) {
-                     if (opeResult.ReturnType=="1001") {
-                       if(obj.data.ContentId){
-                    	   alert("专辑修改成功");
-                       }else{
-                    	   alert("专辑创建成功");
-                       }
-                       $("#addZjForm")[0].reset();
-                       $(".shade,.opeBox").css({"display":"none"});
-                       //添加成功后，重新加载列表
-                       AfterAddList({"UserId":userId,"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"});
-                     }else{
-                       alert(opeResult.Message);
-                     }
-                  },
-                  error: function(jqXHR){
-                      alert("发生错误" + jqXHR.status);
-                   }
-                });
-          }
+        });
+         
           /*
              beforeSend : function() {
               //制定表单验证规则与提示
-              $("#addZjForm").validate({
+              $("#addSequForm").validate({
                  rules:{
                    ContentName:{required:true},
                  },
@@ -221,7 +196,7 @@
             },
           */
            
-            var iframe=$(document.getElementById('myIframe').contentWindow.document);
+            
             function AfterAddList(obj) {
             	  $.ajax({
             	    type : "POST",
@@ -236,7 +211,7 @@
             	      if (resultData.ReturnType == "1001") {
             	    	  iframe.find(".actList").html(""); //再重新创建新的数据集时，先清空之前的
             	    	  iframe.find(".totalCount").text(resultData.ResultList.AllCount);
-         	            ContentListLoad(resultData);
+         	            ContentListLoad2(resultData);
             	      } else {
             	    	  iframe.find(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
             	      }
@@ -248,7 +223,7 @@
             	}
             
           //创建节目列表DOM树
-            function ContentListLoad(actList) {
+            function ContentListLoad2(actList) {
               var actListLength = actList.ResultList.AllCount;
               var mediaType=actList.ResultList.List[0].MediaType;
               if (actListLength == 0) {
@@ -285,8 +260,8 @@
                   if(mediaType=="SEQU"){
                     imgDiv.addClass("imgBox");
                     infoP1 = $("<p class='subCount'></p>");
-                      //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
-                      infoP1.text("12个声音");
+                      infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
+                      //infoP1.text("12个声音");
                       infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
                   }else{
                     imgDiv.addClass("subImg");
@@ -298,7 +273,36 @@
                 }
               }
             }
-        });
+        
+        function submitForm(obj){
+            $.ajax({
+	            url:obj.url,
+	            type:"POST",
+	            data:obj.data,
+	            dataType:"json",
+	            success: function (opeResult) {
+	               if (opeResult.ReturnType=="1001") {
+	                 if(obj.data.ContentId){
+	                   alert("专辑修改成功");
+	                   $(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
+	                   $("input").remove("#ContentId");
+	                   $("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
+	                 }else{
+	                   alert("专辑创建成功");
+	                 }
+	                 $("#addSequForm")[0].reset();
+	                 $(".shade,.opeBox").css({"display":"none"});
+	                 //添加成功后，重新加载列表
+	                 AfterAddList({"UserId":userId,"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"});
+	               }else{
+	                 alert(opeResult.Message);
+	               }
+	            },
+	            error: function(jqXHR){
+	                alert("发生错误" + jqXHR.status);
+	             }
+	          });
+        }
       
         //获取分类列表
         getCatalogs();
@@ -319,7 +323,7 @@
 		                  </div>
 		              </div>
 		              <div class="ibox-content">
-		                  <form class="form-horizontal m-t" id="addZjForm" onsubmit="return false;">
+		                  <form class="form-horizontal m-t" id="addSequForm" onsubmit="return false;">
 		                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑名称：</label>
