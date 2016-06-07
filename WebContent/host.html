@@ -54,7 +54,7 @@
           <!--中间部分开始-->
           <div class="" id="content-main" style="float:left;width:800px;height:100%;border-left:1px solid #f2f2f2;border-right:1px solid #f2f2f2;">
             <!--登录进来，默认显示Home欢迎首页-->
-            <iframe class="" width="100%" height="100%" src="./host/zj.html" frameborder="0"></iframe>
+            <iframe class="" width="100%" height="100%" src="./host/zj.html" frameborder="0" id="myIframe"></iframe>
           </div>
           <!-- 右侧热点区 -->
           <div class="news" style="width:180px;height:100%;float:right;padding:10px;">
@@ -97,8 +97,7 @@
         $(".opeBox").css({"left":($(window).width()-$(".opeBox").width())/2});
         //点击遮罩，或取消，确定，关闭这些点时，隐藏窗口和遮罩
         $(".shade,.close-link").on("click",function(){
-          $(".shade").css({"display":"none"});
-          $(".opeBox").css({"display":"none"});
+          $(".shade,.opeBox").css({"display":"none"});
         });
       
         //封面图片预览与上传
@@ -152,45 +151,146 @@
           
         //form表单提交
         $("#submitBtn").click(function () {
-          if($("#ContentImg").val()==""){
-            //如未设置封面，将使用平台默认图片
-            $("#ContentImg").val($(".defaultImg").attr("src"));
+        	var opeType=$(".opeBox").attr("opeType");
+        	alert(opeType);
+        	if(opeType=="conAdd"){
+        		if($("#ContentImg").val()==""){
+              //如未设置封面，将使用平台默认图片
+              $("#ContentImg").val($(".defaultImg").attr("src"));
+            }
+            dataParam={
+              "url":"http://localhost:908/CM/content/addSeqMediaInfo.do",
+              "data":$("#addZjForm").serialize()
+            };
+            submitForm(dataParam);
+        	}else{
+        		dataParam={
+              "url":"http://localhost:908/CM/content/seq/updateSeqMediaInfo.do",
+              "data":$("#addZjForm").serialize()
+            };
+            submitForm(dataParam);
+        	}
+
+          function submitForm(obj){
+        	  $.ajax({
+                  url:obj.url,
+                  type:"POST",
+                  data:obj.data,
+                  dataType:"json",
+                  success: function (opeResult) {
+                     if (opeResult.ReturnType=="1001") {
+                       if(obj.data.ContentId){
+                    	   alert("专辑修改成功");
+                       }else{
+                    	   alert("专辑创建成功");
+                       }
+                       $("#addZjForm")[0].reset();
+                       $(".shade,.opeBox").css({"display":"none"});
+                       //添加成功后，重新加载列表
+                       AfterAddList({"UserId":userId,"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"});
+                     }else{
+                       alert(opeResult.Message);
+                     }
+                  },
+                  error: function(jqXHR){
+                      alert("发生错误" + jqXHR.status);
+                   }
+                });
           }
-          dataParam={
-        		  "url":"http://localhost:908/CM/content/addSeqMediaInfo.do",
-        		  "data":$("#addZjForm").serialize(),
-        		  };
-           $.ajax({
-            url:dataParam.url,
-            type:"POST",
-            data:dataParam.data,
-            dataType:"json",
-            beforeSend : function() {
-          	  //制定表单验证规则与提示
+          /*
+             beforeSend : function() {
+              //制定表单验证规则与提示
               $("#addZjForm").validate({
-		             rules:{
-		               ContentName:{required:true},
-		             },
-		             messages:{
-		               ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
-		             }
+                 rules:{
+                   ContentName:{required:true},
+                 },
+                 messages:{
+                   ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入专辑名称"}
+                 }
               });
-          	  if($(".form-group").hasClass("has-error")){//这判断有问题，找时间研究一下 第一次总是false，第二次才生效，验证执行的先后问题
-          		  return false;
-          	  }
+              if($(".form-group").hasClass("has-error")){//这判断有问题，找时间研究一下 第一次总是false，第二次才生效，验证执行的先后问题
+                return false;
+              }
             },
-            success: function (opeResult) {
-               if (opeResult.ReturnType=="1001") {
-                 alert("专辑创建成功");
-                 $("#addZjForm")[0].reset();
-               }else{
-                 alert(opeResult.Message);
-               }
-            },
-            error: function(jqXHR){
-                alert("发生错误" + jqXHR.status);
-             }
-          });
+          */
+           
+            var iframe=$(document.getElementById('myIframe').contentWindow.document);
+            function AfterAddList(obj) {
+            	  $.ajax({
+            	    type : "POST",
+            	    url : obj.url,
+            	    dataType : "json",
+            	    data : JSON.stringify(obj),
+            	    beforeSend : function() {
+            	    	iframe.find(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>");
+            	     
+            	    },
+            	    success : function(resultData) {
+            	      if (resultData.ReturnType == "1001") {
+            	    	  iframe.find(".actList").html(""); //再重新创建新的数据集时，先清空之前的
+            	    	  iframe.find(".totalCount").text(resultData.ResultList.AllCount);
+         	            ContentListLoad(resultData);
+            	      } else {
+            	    	  iframe.find(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
+            	      }
+            	    },
+            	    error : function(jqXHR) {
+            	    	iframe.find(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+ jqXHR.status+ "</div>");
+            	    }
+            	  });
+            	}
+            
+          //创建节目列表DOM树
+            function ContentListLoad(actList) {
+              var actListLength = actList.ResultList.AllCount;
+              var mediaType=actList.ResultList.List[0].MediaType;
+              if (actListLength == 0) {
+            	  iframe.find(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
+              } else {
+                //声明下面需要创建的节点，以便添加内容和添加到文档中
+                var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conShare,conDel,subAdd,infoDiv,infoH,infHA,infoP1,infoP2;
+                //循环加载列表
+                for (var i = 0; i < actListLength; i++) {
+                  listDiv = $("<div class='listBox'></div>");
+                  listDiv.attr({
+                    "contentId": actList.ResultList.List[i].ContentId,
+                    "contentName": actList.ResultList.List[i].ContentName,
+                    "contentDesc": actList.ResultList.List[i].ContentDesc,
+                    "contentImg": actList.ResultList.List[i].ContentImg,
+                    "contentCatalogs": actList.ResultList.List[i].ContentCatalogs,
+                    "subjectWords": actList.ResultList.List[i].SubjectWords});
+                  imgDiv = $("<div>");
+                  imgA=$("<a href='javascript:;'></a>");
+                  thumbImg = $("<img alt='节目封面图片''>");
+                  thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
+                  imgShade=$("<div class='imgShade'></div>");
+                  conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
+                  conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");
+                  conDel=$("<i class='fa fa-trash-o' opeType='conDel'></i>");
+                  subAdd=$("<i class='fa fa-plus-square-o' opeType='subAdd'></i>");
+                  infoDiv = $("<div class='infoBox'>");
+                  infoH = $("<h4></h4>");
+                  infoHA=$("<a href='javascript:;'></a>");
+                  imgShade.append(conUpdate).append(conShare).append(conDel).append(subAdd);
+                  infoHA.text(actList.ResultList.List[i].ContentName);
+                  infoP2 = $("<p class='lastTime'></p>");
+                  infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
+                  if(mediaType=="SEQU"){
+                    imgDiv.addClass("imgBox");
+                    infoP1 = $("<p class='subCount'></p>");
+                      //infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
+                      infoP1.text("12个声音");
+                      infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
+                  }else{
+                    imgDiv.addClass("subImg");
+                    infoDiv.append(infoH.append(infoHA)).append(infoP2);
+                  }
+                  imgDiv.append(imgA.append(thumbImg)).append(imgShade);
+                  listDiv.append(imgDiv).append(infoDiv);
+                  iframe.find(".actList").append(listDiv);
+                }
+              }
+            }
         });
       
         //获取分类列表
@@ -200,7 +300,7 @@
       <!-- 遮罩 -->
       <div class="shade"></div>
       <!--创建专辑界面-->
-		  <div class="row opeBox" opeType="conCreate">
+		  <div class="row opeBox" opeType="conAdd">
 		      <div class="col-sm-12">
 		          <div class="ibox float-e-margins">
 		              <div class="ibox-title text-center">
@@ -214,7 +314,6 @@
 		              <div class="ibox-content">
 		                  <form class="form-horizontal m-t" id="addZjForm" onsubmit="return false;">
 		                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
-		                      <input id="MediaType" name="MediaType" class="form-control" type="hidden" value="SEQU" />
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑名称：</label>
 		                          <div class="col-sm-8">
@@ -235,7 +334,7 @@
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑分类：</label>
 		                          <div class="col-sm-8">
-		                              <select class="form-control" name="ContentCatalogs" id="ContentCatalogs"></select>
+		                              <select class="form-control" name="ContentCatalogsId" id="ContentCatalogsId"></select>
 		                          </div>
 		                      </div>
 		                      <div class="form-group">
