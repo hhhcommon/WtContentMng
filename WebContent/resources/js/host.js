@@ -60,14 +60,20 @@ function ContentListLoad(actList) {
     //循环加载列表
     for (var i = 0; i < actListLength; i++) {
       listDiv = $("<div class='listBox'></div>");
+      var did;
+      if(actList.ResultList.List[i].ContentCatalogs){
+    	  did=actList.ResultList.List[i].ContentCatalogs[0].CataDid;
+      }else{
+    	  did="nPy";
+      }
       listDiv.attr({
       	"contentId": actList.ResultList.List[i].ContentId,
       	"contentName": actList.ResultList.List[i].ContentName,
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
-      	"contentCatalogsId": actList.ResultList.List[i].ContentCatalogsId,
+      	"contentCatalogsId": did,
       	//"contentCatalogsId": "nPy",
-      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord})
+      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord});
       imgDiv = $("<div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
@@ -134,8 +140,8 @@ function getCatalogs(catalog){
     for(var i=0;i<listLength;i++){
       opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
-      if(catalog && i==catalog){
-    	  opt.attr({"selected":"selected"});
+      if(catalog && catalogsList.data.children[i].id==catalog){
+    	  opt.prop("selected");
       }
       opt.text(catalogsList.data.children[i].name);
       $("#ContentCatalogsId").append(opt);
