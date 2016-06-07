@@ -87,6 +87,7 @@ public class SeqContentController {
 		String smaname = m.get("ContentName")+"";
 		if(!smaname.toLowerCase().equals("null")) sma.setSmaTitle(smaname);
 		String smaimg = m.get("ContentImg")+"";
+		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		if(!smaimg.toLowerCase().equals("null")) sma.setSmaImg(smaimg);
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
