@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.seq.service.SeqContentService;
@@ -19,7 +18,7 @@ import com.woting.content.manage.seq.service.SeqContentService;
 public class SeqContentController {
 	@Resource
 	private SeqContentService seqContentService;
-
+	
 	@RequestMapping(value = "/content/seq/getHostSeqMediaList.do")
 	@ResponseBody
 	public Map<String, Object> getSeqMediaList(HttpServletRequest request){
@@ -62,7 +61,7 @@ public class SeqContentController {
 			return map;
 		}
 		String smaimg = m.get("ContentImg")+"";
-		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
+		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		String smadesc = m.get("ContentDesc")+"";
 		String did = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
@@ -88,6 +87,7 @@ public class SeqContentController {
 		String smaname = m.get("ContentName")+"";
 		if(!smaname.toLowerCase().equals("null")) sma.setSmaTitle(smaname);
 		String smaimg = m.get("ContentImg")+"";
+		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		if(!smaimg.toLowerCase().equals("null")) sma.setSmaImg(smaimg);
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
@@ -147,9 +147,7 @@ public class SeqContentController {
 			map.put("Message", "无专辑信息");
 			return map;
 		}
-		seqContentService.removeSeqMediaAsset(contentid);
-		map.put("ReturnType", "1001");
-		map.put("Message", "专辑删除成功");
+		map = seqContentService.removeSeqMediaAsset(contentid);
 		return map;
 	}
 }

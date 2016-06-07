@@ -2,14 +2,11 @@ package com.woting.content.manage.media.web;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -56,22 +53,22 @@ public class MediaContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		String contentname = m.get("ContentName")+"";
-		if(StringUtils.isNullOrEmptyOrSpace(contentname)||contentname.toLowerCase().equals("null")){
+		String maname = m.get("ContentName")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(maname)||maname.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
 			map.put("Message", "无节目名称");
 			return map;
 		}
 
-		String contentimg = m.get("ContentImg")+"";
-		contentimg=contentimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
-		String contenturl = m.get("ContentURI")+"";
-		contenturl=contenturl.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "../uploadFiles/tempuplf/");
-		String contentdescn = m.get("ContentDesc")+"";
+		String maimg = m.get("ContentImg")+"";
+		maimg=maimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		String mauri = m.get("ContentURI")+"";
+		mauri=mauri.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		String madescn = m.get("ContentDesc")+"";
 		String contentkeywords = m.get("KeyWords")+"";
 		String seqid = m.get("ContentSequId")+"";
 		String seqname = m.get("ContentSequName")+"";
-		map = mediaContentService.addMediaInfo(userid, username, contentname, contentimg, contenturl, contentkeywords, contentdescn, seqid, seqname);
+		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, contentkeywords, madescn, seqid, seqname);
 
 		return map;
 	}
@@ -88,8 +85,10 @@ public class MediaContentController {
 		String maname = m.get("ContentName")+"";
 		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
 		String maimg = m.get("ContentImg")+"";
+		maimg=maimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
 		String mauri = m.get("ContentURI")+"";
+		mauri=mauri.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
 		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
@@ -153,9 +152,7 @@ public class MediaContentController {
 			map.put("Message", "无专辑信息");
 			return map;
 		}
-		mediaContentService.removeMediaAsset(contentid);
-		map.put("ReturnType", "1001");
-		map.put("Message", "单体删除成功");
+		map = mediaContentService.removeMediaAsset(contentid);
 		return map;
 	}
 }

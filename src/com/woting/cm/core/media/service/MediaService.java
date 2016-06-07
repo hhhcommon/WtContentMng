@@ -101,9 +101,7 @@ public class MediaService {
 			    resids+=",'"+seqMediaAssetPo.getId()+"'";
 		    }
     	    resids = resids.substring(1);
-    	    System.out.println("专辑id列表"+resids);
     	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	    System.out.println("查询到的分类"+catalist);
     	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
@@ -138,6 +136,7 @@ public class MediaService {
     public ChannelAsset getCHAInfoById(String id){
     	ChannelAsset cha = new ChannelAsset();
     	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoById",id);
+    	if (chapo==null) return null;
     	cha.buildFromPo(chapo);
 		return cha;
     }
