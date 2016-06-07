@@ -101,12 +101,13 @@ public class MediaService {
 			    resids+=",'"+seqMediaAssetPo.getId()+"'";
 		    }
     	    resids = resids.substring(1);
+    	    System.out.println("专辑id列表"+resids);
     	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	    
+    	    System.out.println("查询到的分类"+catalist);
     	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
-			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), catalist, null, null, null);
+			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
 			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoByMId", sma.getId());
 			    smap.put("SubCount", l.size());
 			    list.add(smap);

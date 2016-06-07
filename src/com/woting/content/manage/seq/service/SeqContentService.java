@@ -16,7 +16,6 @@ import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
-import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.service.ContentService;
 
 public class SeqContentService {
