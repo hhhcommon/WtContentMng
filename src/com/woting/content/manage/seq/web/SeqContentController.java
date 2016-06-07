@@ -62,6 +62,7 @@ public class SeqContentController {
 		}
 		String smaimg = m.get("ContentImg")+"";
 		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		System.out.println(smaimg);
 		String smadesc = m.get("ContentDesc")+"";
 		String did = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;

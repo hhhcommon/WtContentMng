@@ -123,7 +123,7 @@ public class MediaContentService {
 		Map<String, Object> map = new HashMap<String,Object>();
 		if(mediaService.getMaInfoById(ma.getId())!=null){
 			mediaService.updateMa(ma);
-		    if (sma != null) {
+		    if (sma!=null) {
 			    SeqMaRefPo seqmapo = new SeqMaRefPo();
 			    seqmapo.setMId(mediaService.getSeqMaRefByMId(ma.getId()).getMId());
 			    seqmapo.setSId(sma.getId());
@@ -187,7 +187,7 @@ public class MediaContentService {
 		Map<String, Object> map = new HashMap<String,Object>();
 		mediaService.removeMedia(contentid);
 		if(mediaService.getMaInfoById(contentid)!=null){
-			map.put("ReturnType", "1001");
+			map.put("ReturnType", "1011");
 			map.put("Message", "单体删除失败");
 		}else{
 			map.put("ReturnType", "1001");
