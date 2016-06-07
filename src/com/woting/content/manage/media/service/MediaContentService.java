@@ -17,14 +17,14 @@ import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
-import com.woting.content.manage.service.ContentService;
+import com.woting.content.manage.dict.service.DictContentService;
 
 @Service
 public class MediaContentService {
 	@Resource
 	private MediaService mediaService;
 	@Resource
-	private ContentService contentService;
+	private DictContentService dictContentService;
 	
 	/**
 	 * 查询主播的资源列表
@@ -84,7 +84,7 @@ public class MediaContentService {
 			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId(seqid, "wt_SeqMediaAsset");
 			if(catalist!=null&&catalist.size()>0)
 				for (Map<String, Object> map2 : catalist) {
-					contentService.addCataLogs("3", map2.get("dictDid")+"", "wt_MediaAsset", maid);
+					dictContentService.addCataLogs("3", map2.get("dictDid")+"", "wt_MediaAsset", maid);
 				}
 		}
 

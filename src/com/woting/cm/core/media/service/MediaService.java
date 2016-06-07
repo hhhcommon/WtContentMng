@@ -230,21 +230,16 @@ public class MediaService {
     	seqMediaAssetDao.delete("multiSmaById", id);
     }
     
-    public void removeMas(String id){
-    	maSourceDao.delete("multiMasByMaId", id);
+    public void removeMas(String maid){
+    	maSourceDao.delete("multiMasByMaId", maid);
     }
     
-    public void removeMa2Sma(String id){
-    	seqMaRefDao.delete("multiM2SRefByMId", id);
+    public void removeMa2Sma(String mid){
+    	seqMaRefDao.delete("multiM2SRefByMId", mid);
     }
     
-    public void removeResDictRef(String... id){
-    	String value = "";
-    	for (String string : id) {
-			value += ",'"+string+"'";
-		}
-    	value = value.substring(1);
-    	dictRefDao.delete("multiDelBc", value);
+    public void removeResDictRef(String id){
+    	dictRefDao.delete("multiDelByResId", id);
     }
     
     public void removeCha(String assetId){

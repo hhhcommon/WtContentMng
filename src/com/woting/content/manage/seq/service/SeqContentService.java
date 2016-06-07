@@ -17,14 +17,14 @@ import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
-import com.woting.content.manage.service.ContentService;
+import com.woting.content.manage.dict.service.DictContentService;
 
 @Service
 public class SeqContentService {
 	@Resource
 	private MediaService mediaService;
 	@Resource
-	private ContentService contentService;
+	private DictContentService dictContentService;
 
 	/**
 	 * 查询主播的资源列表
@@ -92,9 +92,8 @@ public class SeqContentService {
 		sma.setLang(detail);
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
-		System.out.println(did);
 		if(!did.toLowerCase().equals("null")) 
-			contentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
+			dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		
 		if (mediaService.getSmaInfoById(smaid) != null) {
 			map.put("ReturnType", "1001");
@@ -119,7 +118,7 @@ public class SeqContentService {
 			mediaService.updateSma(sma); // 待修改wt_SeqMa_Ref,wt_ResDict_Ref,wt_ChannelAsset
 			if(!did.toLowerCase().equals("null")){
 				mediaService.removeResDictRef(sma.getId());
-				contentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
+				dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
 			}
 			map.put("ReturnType", "1001");
 		    map.put("Message", "修改成功");
