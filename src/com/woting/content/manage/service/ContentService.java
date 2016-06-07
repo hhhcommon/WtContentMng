@@ -192,7 +192,7 @@ public class ContentService {
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
 		
-		if(did.toLowerCase().equals("null")) 
+		if(!did.toLowerCase().equals("null")) 
 			addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		
 		if (mediaService.getSmaInfoById(smaid) != null) {

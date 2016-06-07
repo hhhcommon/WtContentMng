@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -91,11 +88,12 @@ public class SeqContentController {
 		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
 		String madesc = m.get("ContentDesc")+"";
 		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
+		String did = m.get("ContentCatalogsId")+""; //更改专辑的内容分类
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		map = seqContentService.updateSeqInfo(sma);
+		map = seqContentService.updateSeqInfo(sma,did);
 		return map;
 	}
 	
@@ -146,7 +144,7 @@ public class SeqContentController {
 			map.put("Message", "无专辑信息");
 			return map;
 		}
-		seqContentService.removeSeqMedia(contentid);
+		seqContentService.removeSeqMediaAsset(contentid);
 		map.put("ReturnType", "1001");
 		map.put("Message", "专辑删除成功");
 		return map;

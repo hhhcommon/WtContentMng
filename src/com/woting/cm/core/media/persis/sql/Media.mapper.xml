@@ -220,8 +220,10 @@
   </select>
   
   <select id="getS2MRefInfoByMId" parameterType="java.lang.String" resultMap="seqMaRefMap">
-    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR} limit 1
+    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
   </select>
+  
+  
   
   <!-- 修改 根据主键-->
   <update id="updateMa" parameterType="java.util.Map">
