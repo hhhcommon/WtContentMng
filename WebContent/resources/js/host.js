@@ -71,9 +71,9 @@ function ContentListLoad(actList) {
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
       	"contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
-      	//"contentCatalogsId": "nPy",
-      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord});
-      imgDiv = $("<div>");
+      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord
+     });
+      imgDiv = $("<div></div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
       thumbImg.attr({'src' : '.'+actList.ResultList.List[i].ContentImg});
@@ -93,7 +93,6 @@ function ContentListLoad(actList) {
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
           infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
-          //infoP1.text("12个声音");
           infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       }else{
     	  imgDiv.addClass("subImg");
@@ -135,13 +134,26 @@ function getCatalogs(catalog){
   }
   function catalogsListLoad(catalogsList,catalog){
     var listLength=catalogsList.data.children.length;
-    //var opt;
+    var opt,ca;
+    if(catalog){
+    	ca=catalog;
+    	alert(ca);
+    }
     for(var i=0;i<listLength;i++){
-      var opt=$("<option></option>");
+      opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
-      if(catalog && catalogsList.data.children[i].id==catalog){
-    	  opt.attr("selected",true);
-      }
+     // alert("val:"+typeof opt.val());
+     //alert("ca:"+typeof ca);
+      
+    	  if(opt.val()==ca){
+        	  opt.attr("selected","selected");
+        	  //alert(opt.attr("selected"));
+          }
+      
+      /*if(catalog && catalogsList.data.children[i].id==catalog){
+    	  opt.attr("selected","selected");
+    	  alert(opt.attr("selected"));
+      }*/
       opt.text(catalogsList.data.children[i].id);
       $("#ContentCatalogsId").append(opt);
     }
