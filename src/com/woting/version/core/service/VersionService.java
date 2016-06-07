@@ -139,7 +139,9 @@ public class VersionService {
      * @return 版本列表
      */
     public Page<Version> getVersionList(Map<String, Object> conditionMap, int page, int pageSize) {
+        if (page<1) page=1;
         Map<String, Object> param=new HashMap<String, Object>();
+        param.put("sortByClause", "id desc");
         //条件处理，暂不处理
         return verDao.pageQuery(param, page, pageSize);
     }

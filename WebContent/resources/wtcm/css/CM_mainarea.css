@@ -1,0 +1,89 @@
+@charset "utf-8";
+/**
+ * 内容管理-实际操作区：主显示区域
+ */
+
+/*一、主显示*/
+.mainArea {/*主显示区域*/
+  height:calc(100% - 40px);
+  width:100%;
+  position:absolute;
+  overflow:auto;
+}
+
+/*二、左侧列表*/
+.leftlistArea {/*左侧列表区域样式*/
+  position:absolute;
+  left:0;
+  top:0;
+  width:420px;
+  height:100%;
+  border-right:1px solid #ccc;
+  overflow:hidden;
+  padding-bottom:30px;
+}
+.leftlistArea .cntList {/*列表内容样式*/
+  position:absolute;
+  border-bottom:1px solid #ccc;
+  left:0;
+  top:0;
+  width:100%;
+  height:calc(100% - 43px);
+  overflow:auto;
+}
+
+/*三、右侧详细区域*/
+.detailArea {
+  position:absolute;
+  right:0;
+  top:0;
+  height:100%;
+  width:calc(100% - 420px);
+  background:white;
+}
+.pubDetail .conBox{
+	padding:25px 30px 10px 40px;
+	height:100%;
+}
+.pubDetail .conBox .conTitle{
+	position:relative;
+	overflow:hidden;
+}
+
+.pubDetail .conBox .conTitle .titleImg{
+	float:left;
+	width:98px;
+	height:98px;
+	border:1px solid #f3f3f4;
+}
+.pubDetail .conBox .conTitle .titleImg img{
+	width:100%;
+	height:100%;
+}
+.pubDetail .conBox .conTitle .detail{
+	float:left;
+	padding-left:20px;
+	width:calc(100% - 120px);
+}
+.pubDetail .conBox .conTitle h2{
+	font-weight:600;
+	margin-right:24px;
+	position:relative;
+	font-size:20px;
+}
+.pubDetail .conBox .conTitle h2 span{
+	width:30px;
+	height:16px;
+	font-size:10px;
+	font-weight: normal;
+	line-height:16px;
+	text-align: center;
+	background:#f9be36;
+	border-radius: 5px;
+	position:absolute;
+	right:-24px;
+	top:-10px;
+	color:white;
+	-webkit-transform: scale(0.9);
+	padding-left:0;
+}

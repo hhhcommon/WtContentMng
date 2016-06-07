@@ -241,18 +241,37 @@ public class VersionController {
             if (m!=null&&m.get("PageSize")!=null) {
                 try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
             }
+            int toLast=0;
+            if (m!=null&&m.get("GotoLast")!=null) {
+                try {toLast=Integer.parseInt(m.get("GotoLast")+"");} catch(Exception e) {};
+            }
 
             //2-业务处理：获得版本信息
+            if (toLast==1) page=1;
             Page<Version> p=verService.getVersionList(conditionMap, page, pageSize);
+            if (toLast==1) {
+                int lastPage=p.getDataCount()%pageSize;
+                lastPage+=p.getDataCount()%pageSize==0?0:1;
+                page=lastPage;
+                p=verService.getVersionList(conditionMap, page, pageSize);
+            }
+            if (p.getDataCount()>0&&p.getResult().size()==0) {//页数超出了，到最后一页
+                int lastPage=p.getDataCount()%pageSize;
+                lastPage+=p.getDataCount()%pageSize==0?0:1;
+                if (page>lastPage) {
+                    page=lastPage;
+                    p=verService.getVersionList(conditionMap, page, pageSize);
+                }
+            }
 
             //3-处理返回值
-            if (p==null||p.getDataCount()==0) {
+            if (p==null||p.getDataCount()==0||p.getResult().isEmpty()) {
                 map.put("ReturnType", "1011");
-                map.put("Message", "该版本号无对应版本信息");
+                map.put("Message", "无对应的版本列表");
             } else {
                 map.put("ReturnType", "1001");
                 Map<String, Object> resultMap=new HashMap<String, Object>();
-                resultMap.put("AllSize",p.getDataCount()+"");
+                resultMap.put("AllCount",p.getDataCount()+"");
                 resultMap.put("CurPage",p.getPageIndex()+"");
                 resultMap.put("PageSize",p.getPageSize()+"");
                 List<Map<String, String>> verList=new ArrayList<Map<String, String>>();
