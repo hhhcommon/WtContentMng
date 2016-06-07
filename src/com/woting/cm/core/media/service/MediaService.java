@@ -164,7 +164,9 @@ public class MediaService {
 
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();
-        ma.buildFromPo(mediaAssetDao.getInfoObject("getMaInfoById", id));
+        MediaAssetPo mapo = mediaAssetDao.getInfoObject("getMaInfoById", id);
+        if(mapo==null) return null;
+        else ma.buildFromPo(mapo);
         return ma;
     }
 
