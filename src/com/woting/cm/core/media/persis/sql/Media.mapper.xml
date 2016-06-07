@@ -275,6 +275,26 @@
     where MId=#{MId,jdbcType=VARCHAR}
   </update>
   
+  <update id="updateSma" parameterType="java.util.Map">
+  	update wt_SeqMediaAsset
+  	<set>
+  	  <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
+      <if test="smaTitle!=null">smaTitle=#{smaTitle,jdbcType=VARCHAR},</if>
+      <if test="smaPubType!=null and smaPubType!=0">smaPubType=#{smaPubType,jdbcType=INTEGER},</if>
+      <if test="smaPubId!=null">smaPubId=#{smaPubId,jdbcType=VARCHAR},</if>
+      <if test="smaPublisher!=null">smaPublisher=#{smaPublisher,jdbcType=VARCHAR},</if>
+      <if test="smaImg!=null">smaImg=#{smaImg,jdbcType=VARCHAR},</if>
+      <if test="smaAllCount!=null and smaAllCount!=0">smaAllCount=#{smaAllCount,jdbcType=VARCHAR},</if>
+      <if test="subjectWords!=null">subjectWords=#{subjectWords,jdbcType=VARCHAR},</if>
+      <if test="keyWords!=null">keyWords=#{keyWords,jdbcType=VARCHAR},</if>
+      <if test="langDid!=null">langDid=#{langDid,jdbcType=VARCHAR},</if>
+      <if test="language!=null">language=#{language,jdbcType=VARCHAR},</if>
+      <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
+      <if test="pubCount!=null and pubCount>0">pubCount=#{pubCount,jdbcType=VARCHAR},</if>
+  	</set>
+  	where id=#{id,jdbcType=VARCHAR}
+  </update>
+  
   <delete id="multiMaById" parameterType="java.lang.String">
       delete from wt_MediaAsset where id=#{id,jdbcType=VARCHAR}
   </delete>
