@@ -32,8 +32,14 @@ function getContentList(obj) {
 	        		case 'conDel':
 	        			alert("删除成功");
 	        			//删除成功后，再次请求列表
-	        			dataParam.url="http://localhost:908/CM/content/seq/getHostSeqMediaList.do";
 	        			delete dataParam["opeType"];
+	        			if(dataParam['mediaType']=="AUDIO"){
+	        				dataParam.url="http://localhost:908/CM/content/media/getHostMediaList.do";
+	        			}else{
+	        				dataParam.url="http://localhost:908/CM/content/seq/getHostSeqMediaList.do";
+	        			}
+	        			delete dataParam["opeType"];
+	        			delete dataParam["mediaType"];
 	        			getContentList(dataParam);
 	              break;
 	        		default:
@@ -136,9 +142,9 @@ function getCatalogs(catalog){
   }
   function catalogsListLoad(catalogsList,catalog){
     var listLength=catalogsList.data.children.length;
-    var opt;
+    //var opt;
     for(var i=0;i<listLength;i++){
-      opt=$("<option></option>");
+      var opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
       if(catalog && catalogsList.data.children[i].id==catalog){
     	  opt.prop("selected");
