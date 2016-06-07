@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
@@ -15,6 +18,7 @@ import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.media.service.MediaService;
 
+@Service
 public class DictContentService {
 	@Resource
 	private MediaService mediaService;

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -71,7 +70,6 @@ public class MediaContentController {
 		String seqid = m.get("ContentSequId")+"";
 		String seqname = m.get("ContentSequName")+"";
 		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, contentkeywords, madescn, seqid, seqname);
-
 		return map;
 	}
 	

@@ -15,12 +15,16 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.handler.MappedInterceptor;
 
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.media.model.MediaAsset;
+import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.publish.utils.CacheUtils;
 
 @Lazy(true)
@@ -152,44 +156,20 @@ public class QueryService {
 		
 		// 查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
-			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
-				mediaService.getSmaInfoById(map.get("ContentId")+"");
-				sql = "select smaTitle,smaPublisher,descn from wt_SeqMediaAsset where id = ? limit 1";
-				try {
-					conn = DataSource.getConnection();
-					ps = conn.prepareStatement(sql);
-					ps.setString(1, (String) map.get("ContentId"));
-					rs = ps.executeQuery();
-					while (rs != null && rs.next()) {
-						map.put("ContentName", rs.getString("smaTitle"));
-						map.put("ContentSource", rs.getString("smaPublisher"));
-						map.put("ContentDesc", rs.getString("descn"));
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} finally {
-					closeConnection(conn, ps, rs);
-				}
+			if (map.get("MediaType").equals("SEQU")) {
+				SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId")+"");
+				map.put("ContentName",sma.getSmaTitle());
+				map.put("ContentSource", sma.getPublisher());
+				map.put("ContentDesc", sma.getDescn());
 			} else {
-				if (map.get("MediaType").equals("wt_MediaAsset")) {
-					sql = "select maTitle,maPublisher,descn from wt_MediaAsset where id = ? limit 1";
-					try {
-						conn = DataSource.getConnection();
-						ps = conn.prepareStatement(sql);
-						ps.setString(1, (String) map.get("ContentId"));
-						rs = ps.executeQuery();
-						while (rs != null && rs.next()) {
-							map.put("ContentName", rs.getString("maTitle"));
-							map.put("ContentSource", rs.getString("maPublisher"));
-							map.put("ContentDesc", rs.getString("descn"));
-						}
-					} catch (SQLException e) {
-						e.printStackTrace();
-					} finally {
-						closeConnection(conn, ps, rs);
-					}
+				if (map.get("MediaType").equals("AUDIO")) {
+					MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId")+"");
+					map.put("ContentName", ma.getMaTitle());
+					map.put("ContentSource", ma.getMaPublisher());
+					map.put("ContentDesc", ma.getDescn());
 				} else {
-					if (map.get("MediaType").equals("wt_Broadcast")) {
+					if (map.get("MediaType").equals("RADIO")) {
+						//待更改
 						sql = "select bcTitle,bcPublisher,descn from wt_Broadcast where id = ? limit 1";
 						try {
 							conn = DataSource.getConnection();
@@ -258,47 +238,50 @@ public class QueryService {
 		List<Map<String, Object>> listaudio = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, id);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				seqData.put("ContentId", rs.getString("id"));
-				seqData.put("ContentName", rs.getString("smaTitle"));
-				seqData.put("MediaType", acttype);
-				seqData.put("ContentImg", rs.getString("smaImg"));
-				seqData.put("ContentSubCount", rs.getString("smaAllCount"));
-				seqData.put("ContentPubTime", rs.getTimestamp("smaPublishTime"));
-				seqData.put("ContentSource", rs.getString("smaPublisher"));
-				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
-				seqData.put("ContentPersons", null);
-				seqData.put("ContentKeyWord", rs.getString("keyWords"));
-	//			seqData.put("ContentCatalogs", rs.getString("title"));
-				seqData.put("ContentDesc", rs.getString("descn"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
-		}
-		
-		sql = "select title from wt_ResDict_Ref where resId=?";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, (String) seqData.get("ContentId"));
-			rs = ps.executeQuery();
-			String catalogs = "";
-			while (rs != null && rs.next()) {
-				catalogs += ","+rs.getString("title");
-			}
-			seqData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
-		}
+		SeqMediaAsset sma = mediaService.getSmaInfoById(id);
+//		seqData = ContentUtils.convert2Sma(sma.toHashMap(), null, null, null, null);
+//		try {
+//			conn = DataSource.getConnection();
+//			ps = conn.prepareStatement(sql);
+//			ps.setString(1, id);
+//			rs = ps.executeQuery();
+//			while (rs != null && rs.next()) {
+//				seqData.put("ContentId", rs.getString("id"));
+//				seqData.put("ContentName", rs.getString("smaTitle"));
+//				seqData.put("MediaType", acttype);
+//				seqData.put("ContentImg", rs.getString("smaImg"));
+//				seqData.put("ContentSubCount", rs.getString("smaAllCount"));
+//				seqData.put("ContentPubTime", rs.getTimestamp("smaPublishTime"));
+//				seqData.put("ContentSource", rs.getString("smaPublisher"));
+//				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
+//				seqData.put("ContentPersons", null);
+//				seqData.put("ContentKeyWord", rs.getString("keyWords"));
+//	//			seqData.put("ContentCatalogs", rs.getString("title"));
+//				seqData.put("ContentDesc", rs.getString("descn"));
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeConnection(conn, ps, rs);
+//		}
+		List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
+		seqData = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
+//		sql = "select title from wt_ResDict_Ref where resId=?";
+//		try {
+//			conn = DataSource.getConnection();
+//			ps = conn.prepareStatement(sql);
+//			ps.setString(1, (String) seqData.get("ContentId"));
+//			rs = ps.executeQuery();
+//			String catalogs = "";
+//			while (rs != null && rs.next()) {
+//				catalogs += ","+rs.getString("title");
+//			}
+//			seqData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeConnection(conn, ps, rs);
+//		}
 
 		// 查询专辑和单体的联系
 		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
