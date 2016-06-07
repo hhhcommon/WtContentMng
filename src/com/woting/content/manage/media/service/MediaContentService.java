@@ -182,6 +182,12 @@ public class MediaContentService {
 	}
 	
 	public void removeMediaAsset(String contentid) {
+		Map<String, Object> map = new HashMap<String,Object>();
 		mediaService.removeMedia(contentid);
+		if(mediaService.getMaInfoById(contentid)!=null){
+			map.put("ReturnType", "1001");
+			map.put("Message", "单体删除失败");
+		}
+		
 	}
 }
