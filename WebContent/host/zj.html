@@ -90,7 +90,8 @@
         		  "UserId":userId,
         		  "ContentId":$(this).parents(".listBox").attr("contentId"),
         		  "url":"http://localhost:908/CM/content/seq/removeSeqMediaInfo.do",
-        		  "opeType":$(this).attr("opeType")
+        		  "opeType":$(this).attr("opeType"),
+        		  "mediaType":"SEQU"
         	 };
         	  getContentList(dataParam);
           	break;

@@ -33,7 +33,7 @@
                   </div>
               </div>
               <div class="ibox-content">
-                  <form class="form-horizontal m-t" id="addAudioForm" onsubmit="return false;">
+                  <form class="form-horizontal m-t" id="addMediaForm" onsubmit="return false;">
                       <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
                       <div class="form-group">
                           <label class="col-sm-3 control-label">声音名称：</label>
@@ -126,7 +126,7 @@
         });
         $().ready(function(){
         	  //表单验证
-	          $("#addAudioForm").validate({
+	          $("#addMediaForm").validate({
 		            rules:{
 		              ContentName:{required:true},
 		              ContentFile:"required"
@@ -198,13 +198,13 @@
                  $.ajax({
                 		  url:"http://localhost:908/CM/content/addMediaInfo.do",
                       type:"POST",
-                      data:$("#addAudioForm").serialize(),
+                      data:$("#addMediaForm").serialize(),
                       dataType:"json",
                       //表单提交前进行验证
                       success: function (opeResult) {
                          if (opeResult.ReturnType=="1001") {
                            alert("添加成功");
-                           $("#addAudioForm")[0].reset();
+                           $("#addMediaForm")[0].reset();
                          }else{
                            alert(opeResult.Message);
                          }
