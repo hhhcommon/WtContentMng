@@ -65,24 +65,18 @@ function ContentListLoad(actList) {
     //循环加载列表
     for (var i = 0; i < actListLength; i++) {
       listDiv = $("<div class='listBox'></div>");
-      var did;
-      if(actList.ResultList.List[i].ContentCatalogs){
-    	  did=actList.ResultList.List[i].ContentCatalogs[0].CataDid;
-      }else{
-    	  did="nPy";
-      }
       listDiv.attr({
       	"contentId": actList.ResultList.List[i].ContentId,
       	"contentName": actList.ResultList.List[i].ContentName,
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
-      	"contentCatalogsId": did,
+      	"contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
       	//"contentCatalogsId": "nPy",
       	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord});
       imgDiv = $("<div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
-      thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
+      thumbImg.attr({'src' : '.'+actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
       conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
       conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");
@@ -146,9 +140,9 @@ function getCatalogs(catalog){
       var opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
       if(catalog && catalogsList.data.children[i].id==catalog){
-    	  opt.prop("selected");
+    	  opt.attr("selected",true);
       }
-      opt.text(catalogsList.data.children[i].name);
+      opt.text(catalogsList.data.children[i].id);
       $("#ContentCatalogsId").append(opt);
     }
   }
