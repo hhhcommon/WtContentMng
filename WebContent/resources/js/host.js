@@ -71,7 +71,6 @@ function ContentListLoad(actList) {
       }else{
     	  did="nPy";
       }
-      alert(did);
       listDiv.attr({
       	"contentId": actList.ResultList.List[i].ContentId,
       	"contentName": actList.ResultList.List[i].ContentName,

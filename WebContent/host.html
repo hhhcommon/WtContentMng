@@ -284,6 +284,9 @@
 	               if (opeResult.ReturnType=="1001") {
 	                 if(obj.data.ContentId){
 	                   alert("专辑修改成功");
+	                   $(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
+	                   $("input").remove("#ContentId");
+	                   $("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
 	                 }else{
 	                   alert("专辑创建成功");
 	                 }
