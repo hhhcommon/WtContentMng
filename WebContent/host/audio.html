@@ -43,14 +43,14 @@
 			//获取列表
 			dataParam={
           "UserId":userId,
-          "url":"http://localhost:908/CM/content/media/getHostMediaList.do",
+          "url":rootPath+"content/media/getHostMediaList.do",
       };
 			getContentList(dataParam);
 			
 			//点击添加节目按钮，弹出添加界面
       $(".btn").on("click",function(){
-    	  alert("aaa");
-        $(window.top.document).find(".shade,#media").css({"display":"block"});
+    	  $(window.top.document).find("#newIframe").attr({"src":"./host/add_audio.html"}).css({"display":"block"});
+        $(window.top.document).find(".shade").css({"display":"block"});
       })
       
     //对专辑的改、删等4种操作
@@ -64,7 +64,8 @@
             3，存取元素值，和提交时的对比
             */
             $(".btn").trigger("click");
-            $(window.top.document).find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改专辑");
+            /*
+            $(window.top.document).find("#newIframe #media").attr({"opeType":"conUpdate"}).find("h5").text("修改声音");
             var contentId,contentName,contentDesc,contentImg,subjectWords,catalogsId;
             contentId=$(this).parents(".listBox").attr("contentId");
             contentName=$(this).parents(".listBox").attr("contentName");
@@ -80,7 +81,7 @@
             $(window.top.document).find(".defaultImg").attr({"src":contentImg.slice(1)});
             $(window.top.document).find("#ContentImg").val(contentImg);
             $(window.top.document).find("#SubjectWords").val(subjectWords);
-            $(window.top.document).find("#ContentDesc").val(contentDesc);
+            $(window.top.document).find("#ContentDesc").val(contentDesc);*/
             break;
           case 'conShare':
             break;
@@ -88,7 +89,7 @@
             dataParam={
               "UserId":userId,
               "ContentId":$(this).parents(".listBox").attr("contentId"),
-              "url":"http://localhost:908/CM/content/media/removeMediaInfo.do",
+              "url":rootPath+"content/media/removeMediaInfo.do",
               "opeType":$(this).attr("opeType"),
               "mediaType":"AUDIO"
            };

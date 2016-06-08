@@ -55,6 +55,7 @@
           <div class="" id="content-main">
             <!--登录进来，默认显示Home欢迎首页-->
             <iframe class="" width="100%" height="100%" src="./host/zj.html" frameborder="0" id="myIframe"></iframe>
+            <iframe class="newIframe" width="100%" height="680px" src="./host/add_audio.html" scrolling="no" frameborder="0" id="newIframe"></iframe>
           </div>
           <!-- 右侧热点区 -->
           <div class="news">
@@ -97,14 +98,14 @@
     	            以下是创建专辑节目相关内容
     	  */
         //初始化创建专辑元素的位置
-        $(".opeBox").css({"left":($(window).width()-$(".opeBox").width())/2});
+        $(".opeBox,#newIframe").css({"left":($(window).width()-$(".opeBox").width())/2});
         //点击遮罩，或取消，确定，关闭这些点时，隐藏窗口和遮罩,并重置表单
         $(".shade,.close-link").on("click",function(){
         	$("form")[0].reset();
         	$(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
         	$("input").remove("#ContentId");
         	$("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
-          $(".shade,.opeBox").css({"display":"none"});
+          $(".shade,.opeBox,#newIframe").css({"display":"none"});
         });
       
         //封面图片预览与上传
@@ -134,7 +135,7 @@
          var oMyForm = new FormData();
          oMyForm.append("ContentFile", $(this)[0].files[0]);
          $.ajax({
-           url:"http://localhost:908/CM/common/uploadCM.do",
+           url:rootPath+"common/uploadCM.do",
            type:"POST",
            data:oMyForm,
            cache: false,
@@ -165,13 +166,13 @@
               $("#ContentImg").val($(".defaultImg").attr("src"));
             }
             dataParam={
-              "url":"http://localhost:908/CM/content/seq/addSeqMediaInfo.do",
+              "url":rootPath+"content/seq/addSeqMediaInfo.do",
               "data":$("#addSequForm").serialize()
             };
             submitForm(dataParam);
         	}else{
         		dataParam={
-              "url":"http://localhost:908/CM/content/seq/updateSeqMediaInfo.do",
+              "url":rootPath+"content/seq/updateSeqMediaInfo.do",
               "data":$("#addSequForm").serialize(),
               "contentId":$("#ContentId").val()
             };
@@ -214,7 +215,7 @@
                    $("#addSequForm")[0].reset();
                    $(".shade,.opeBox").css({"display":"none"});
                    //添加成功后，重新加载列表
-                   AfterAddList({"UserId":userId,"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"});
+                   AfterAddList({"UserId":userId,"url":rootPath+"content/seq/getHostSeqMediaList.do"});
                  }else{
                    alert(opeResult.Message);
                  }
@@ -389,5 +390,6 @@
 		          </div>
 		      </div>
 		  </div>
+		  
   </body>
 </html>

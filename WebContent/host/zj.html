@@ -46,7 +46,7 @@
       //获取列表
       dataParam={
     			"UserId":userId,
-    			"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"
+    			"url":rootPath+"content/seq/getHostSeqMediaList.do"
     	};
       getContentList(dataParam);
       
@@ -89,7 +89,7 @@
         	  dataParam={
         		  "UserId":userId,
         		  "ContentId":$(this).parents(".listBox").attr("contentId"),
-        		  "url":"http://localhost:908/CM/content/seq/removeSeqMediaInfo.do",
+        		  "url":rootPath+"content/seq/removeSeqMediaInfo.do",
         		  "opeType":$(this).attr("opeType"),
         		  "mediaType":"SEQU"
         	 };
