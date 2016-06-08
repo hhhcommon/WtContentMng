@@ -279,10 +279,10 @@ function fy(event){
 	}
 	$(".page").find("span").removeClass("disabled");
 	if (current_page == 1) {
-		$(".previous").addClass('disabled');
+	  $(".previous").addClass('disabled');
 	}
 	if (current_page == contentCount) {
-		$(".next").addClass('disabled');
+	  $(".next").addClass('disabled');
 	}
 	
 	//当前页
