@@ -55,6 +55,7 @@
       
     //对专辑的改、删等4种操作
       $(".actList").on("click","i",function(){
+    	 // var myIframe=$(($(window.top.document).find("#myIframe"))[0].contentWindow);
         switch($(this).attr("opeType")){
           case 'conUpdate':
             //使用添加界面，对添加界面做相关调整
@@ -65,8 +66,11 @@
             */
             $(".btn").trigger("click");
             alert("sfsdfsd");
-            alert($(window.top.document).find("#newIframe").find(".opeBox").attr("opeType"));
-            $(window.top.document).find("#newIframe").find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改声音");
+            //获得另一个iframe的window对象   -》 $($(window.top.document).find("#newIframe")[0].contentWindow)
+            //获得另一个iframe的document对象   -》$($(window.top.document).find("#newIframe")[0].contentWindow.document)
+            alert($($(window.top.document).find("#newIframe")[0].contentWindow.document));
+            console.log($($(window.top.document).find("#newIframe")[0].contentWindow.document).find(".opeBox"));
+            $($(window.top.document).find("#newIframe")[0].contentWindow.document).find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改声音");
             var contentId,contentName,contentDesc,contentImg,subjectWords;
             contentId=$(this).parents(".listBox").attr("contentId");
             contentName=$(this).parents(".listBox").attr("contentName");
