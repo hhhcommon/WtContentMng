@@ -201,7 +201,7 @@ function ContentInfoLoad(conList){
      */
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
-     $(".vjName").html((conList.ContentDetail.ContentPersons==null)?"暂无":conList.ContentDetail.ContentPersons);
+     $(".vjName").html(!conList.ContentDetail.ContentPersons?"暂无":conList.ContentDetail.ContentPersons);
      $(".actDesn").html((conList.ContentDetail.ContentDesc).replace(/\<br \/\>/g, ""));
      $(".cloumn").html(conList.ContentDetail.ContentCatalogs);
      

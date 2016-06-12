@@ -1,4 +1,4 @@
-//var rootPath=getRootPath();
+var rootPath=getRootPath();
 var userId="123",dataParam={}
 //公共ajax请求
 function getContentList(obj) {
@@ -33,9 +33,9 @@ function getContentList(obj) {
 	        			alert("删除成功");
 	        			//删除成功后，再次请求列表
 	        			if(dataParam['mediaType']=="AUDIO"){
-	        				dataParam.url="http://localhost:908/CM/content/media/getHostMediaList.do";
+	        				dataParam.url=rootPath+"content/media/getHostMediaList.do";
 	        			}else{
-	        				dataParam.url="http://localhost:908/CM/content/seq/getHostSeqMediaList.do";
+	        				dataParam.url=rootPath+"content/seq/getHostSeqMediaList.do";
 	        			}
 	        			delete dataParam["opeType"];
 	        			delete dataParam["mediaType"];
@@ -70,10 +70,9 @@ function ContentListLoad(actList) {
       	"contentName": actList.ResultList.List[i].ContentName,
       	"contentDesc": actList.ResultList.List[i].ContentDesc,
       	"contentImg": actList.ResultList.List[i].ContentImg,
-      	"contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
-      	//"contentCatalogsId": "nPy",
-      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord});
-      imgDiv = $("<div>");
+      	"contentSubjectWord": actList.ResultList.List[i].ContentSubjectWord
+     });
+      imgDiv = $("<div></div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
       thumbImg.attr({'src' : '.'+actList.ResultList.List[i].ContentImg});
@@ -90,10 +89,12 @@ function ContentListLoad(actList) {
       infoP2 = $("<p class='lastTime'></p>");
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
       if(mediaType=="SEQU"){
+    	  listDiv.attr({
+    	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
+    	  });
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
           infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
-          //infoP1.text("12个声音");
           infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       }else{
     	  imgDiv.addClass("subImg");
@@ -113,7 +114,7 @@ function ContentListLoad(actList) {
 function getCatalogs(catalog){
     $.ajax({
       type: "POST",    
-      url:"http://localhost:908/CM/common/getCataTreeWithSelf.do",
+      url:rootPath+"common/getCataTreeWithSelf.do",
       dataType: "json",
       data:{cataId: "3"},
       success: function(catalogsList) {
@@ -135,13 +136,23 @@ function getCatalogs(catalog){
   }
   function catalogsListLoad(catalogsList,catalog){
     var listLength=catalogsList.data.children.length;
-    //var opt;
+    var opt;
     for(var i=0;i<listLength;i++){
-      var opt=$("<option></option>");
+      opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
-      if(catalog && catalogsList.data.children[i].id==catalog){
-    	  opt.attr("selected",true);
-      }
+     //alert("val:"+typeof opt.val());
+     //alert("ca:"+typeof ca);
+      
+	  if(opt.val()==""){
+		  //alert("进入");
+		  opt.attr("selected","selected");
+		  //alert(opt.attr("selected"));
+	  }
+      
+      /*if(catalog && catalogsList.data.children[i].id==catalog){
+    	  opt.attr("selected","selected");
+    	  alert(opt.attr("selected"));
+      }*/
       opt.text(catalogsList.data.children[i].id);
       $("#ContentCatalogsId").append(opt);
     }

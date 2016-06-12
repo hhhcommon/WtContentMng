@@ -54,7 +54,8 @@
           <!--中间部分开始-->
           <div class="" id="content-main">
             <!--登录进来，默认显示Home欢迎首页-->
-            <iframe class="" width="100%" height="100%" src="./host/zj.html" frameborder="0" id="myIframe"></iframe>
+            <iframe width="100%" height="100%" src="./host/zj.html" frameborder="0" id="myIframe"></iframe>
+            <iframe width="100%" height="680px" src="./host/add_audio.html" scrolling="no" frameborder="0" id="newIframe"></iframe>
           </div>
           <!-- 右侧热点区 -->
           <div class="news">
@@ -68,8 +69,6 @@
       <script src="./resources/plugins/hplus/js/layer.min.js"></script>
       <!-- 自定义js -->
       <script src="./resources/plugins/hplus/js/hplus.min.js"></script>
-      <script src="./resources/js/context.utils.js"></script>
-      <script src="./resources/js/host.js"></script>
       <!-- jQuery Validation plugin javascript-->
       <script src="./resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
       <!-- 第三方插件 -->
@@ -97,14 +96,14 @@
     	            以下是创建专辑节目相关内容
     	  */
         //初始化创建专辑元素的位置
-        $(".opeBox").css({"left":($(window).width()-$(".opeBox").width())/2});
+        $(".opeBox,#newIframe").css({"left":($(window).width()-$(".opeBox").width())/2});
         //点击遮罩，或取消，确定，关闭这些点时，隐藏窗口和遮罩,并重置表单
         $(".shade,.close-link").on("click",function(){
         	$("form")[0].reset();
         	$(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
         	$("input").remove("#ContentId");
         	$("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
-          $(".shade,.opeBox").css({"display":"none"});
+          $(".shade,.opeBox,#newIframe").css({"display":"none"});
         });
       
         //封面图片预览与上传
@@ -134,7 +133,7 @@
          var oMyForm = new FormData();
          oMyForm.append("ContentFile", $(this)[0].files[0]);
          $.ajax({
-           url:"http://localhost:908/CM/common/uploadCM.do",
+           url:rootPath+"common/uploadCM.do",
            type:"POST",
            data:oMyForm,
            cache: false,
@@ -159,21 +158,21 @@
         //form表单提交
         $("#submitBtn").click(function () {
         	var opeType=$(".opeBox").attr("opeType");
-        	alert(opeType);
         	if(opeType=="conAdd"){
         		if($("#ContentImg").val()==""){
               //如未设置封面，将使用平台默认图片
               $("#ContentImg").val($(".defaultImg").attr("src"));
             }
             dataParam={
-              "url":"http://localhost:908/CM/content/seq/addSeqMediaInfo.do",
+              "url":rootPath+"content/seq/addSeqMediaInfo.do",
               "data":$("#addSequForm").serialize()
             };
             submitForm(dataParam);
         	}else{
         		dataParam={
-              "url":"http://localhost:908/CM/content/seq/updateSeqMediaInfo.do",
-              "data":$("#addSequForm").serialize()
+              "url":rootPath+"content/seq/updateSeqMediaInfo.do",
+              "data":$("#addSequForm").serialize(),
+              "contentId":$("#ContentId").val()
             };
             submitForm(dataParam);
         	}
@@ -203,7 +202,7 @@
               dataType:"json",
               success: function (opeResult) {
                  if (opeResult.ReturnType=="1001") {
-                   if(obj.data.ContentId){
+                   if(obj.contentId){
                      alert("专辑修改成功");
                      $(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
                      $("input").remove("#ContentId");
@@ -214,7 +213,7 @@
                    $("#addSequForm")[0].reset();
                    $(".shade,.opeBox").css({"display":"none"});
                    //添加成功后，重新加载列表
-                   AfterAddList({"UserId":userId,"url":"http://localhost:908/CM/content/seq/getHostSeqMediaList.do"});
+                   AfterAddList({"UserId":userId,"url":rootPath+"content/seq/getHostSeqMediaList.do"});
                  }else{
                    alert(opeResult.Message);
                  }
@@ -227,7 +226,6 @@
             
         function AfterAddList(obj) {
         	iframe=$(document.getElementById('myIframe').contentWindow.document)
-        	alert("添加成功，加载列表");
       	  $.ajax({
       	    type : "POST",
       	    url : obj.url,
@@ -346,7 +344,7 @@
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑分类：</label>
 		                          <div class="col-sm-8">
-		                              <select class="form-control" name="ContentCatalogsId" id="ContentCatalogsId"></select>
+		                              <select class="form-control" name="ContentCatalogsId" id="ContentCatalogsId" value="" ></select>
 		                          </div>
 		                      </div>
 		                      
@@ -390,5 +388,6 @@
 		          </div>
 		      </div>
 		  </div>
+		  
   </body>
 </html>
