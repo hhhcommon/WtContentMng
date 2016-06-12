@@ -106,6 +106,12 @@
     where resTableName=#{resTableName,jdbcType=VARCHAR} and resId in (${resIds})
     <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
+  
+  <select id="getListByResId" resultMap="dictRefResMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_ResDict_Ref
+    where resTableName=#{resTableName,jdbcType=VARCHAR} and resId=#{resId,jdbcType=VARCHAR}
+    <if test="orderByClause!=null">order by ${orderByClause}</if>
+  </select>
 
   <!-- 获得一条数据 -->
   <select id="getInfo" resultMap="dictRefResMap" parameterType="java.util.Map">

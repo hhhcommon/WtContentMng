@@ -52,7 +52,7 @@ public class MediaContentService {
 	 * @param uploadmap
 	 * @return
 	 */
-	public Map<String, Object> addMediaInfo(String userid, String username, String maname, String maimg, String maurl,
+	public Map<String, Object> addMediaInfo(String userid, String username, String maname, String maimg, String maurl, String mastatus,
 			String keywords, String madesc, String seqid, String seqname) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String maid = SequenceUUID.getPureUUID();
@@ -62,7 +62,7 @@ public class MediaContentService {
 		MediaAsset ma = new MediaAsset();
 		ma.setId(maid);
 		ma.setMaTitle(maname);
-		ma.setMaImg(maimg.toLowerCase().equals("null") ? "www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png" : maimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\", "localhost:908/CM/"));
+		ma.setMaImg(maimg);
 		ma.setMaURL(maurl);
 		ma.setKeyWords("上传文件测试用待删除");
 		ma.setMaPubType(3);
@@ -70,6 +70,7 @@ public class MediaContentService {
 		ma.setMaPublisher(username);
 		ma.setDescn(madesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : madesc);
 		ma.setPubCount(0);
+		ma.setMaStatus(Integer.valueOf(mastatus));
 		ma.setCTime(ctime);
 
 		// 保存单体资源

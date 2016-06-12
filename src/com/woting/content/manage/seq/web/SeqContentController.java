@@ -113,7 +113,8 @@ public class SeqContentController {
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
 		String did = m.get("ContentCatalogsId")+""; //更改专辑的内容分类
-		
+		String smastatus = m.get("ContentStatus")+"";
+		if(!smastatus.toLowerCase().equals("null")) sma.setSmaStatus(Integer.valueOf(smastatus));
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
