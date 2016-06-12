@@ -138,9 +138,9 @@
 			          }
 	          });
 	          $(".close-link").on("click",function(){
-	              $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
-	              $("#addMediaForm")[0].reset();
-	            });
+	        	  $("#addMediaForm")[0].reset();
+	            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
+	          });
         	  //封面图片预览与上传
         	  $("input[type='file']").change(function(){
         		     var _this=$(this);
@@ -211,7 +211,6 @@
                            alert("添加成功");
                            $("#addMediaForm")[0].reset();
                            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
-                           $("#addMediaForm")[0].reset();
                          //添加成功后，重新加载列表
                            AfterAddList({"UserId":userId,"url":rootPath+"content/media/getHostMediaList.do"});
                          }else{
