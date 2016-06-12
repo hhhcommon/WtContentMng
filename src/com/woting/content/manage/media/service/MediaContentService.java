@@ -81,7 +81,7 @@ public class MediaContentService {
 			sma.setId(seqid);
 			sma.setSmaTitle(sequtitle);
 			mediaService.bindMa2Sma(ma, sma);
-			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId(seqid, "wt_SeqMediaAsset");
+			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'"+seqid+"'", "wt_SeqMediaAsset");
 			if(catalist!=null&&catalist.size()>0)
 				for (Map<String, Object> map2 : catalist) {
 					dictContentService.addCataLogs("3", map2.get("dictDid")+"", "wt_MediaAsset", maid);
