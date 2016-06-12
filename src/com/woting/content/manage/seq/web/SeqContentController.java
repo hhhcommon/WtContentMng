@@ -19,6 +19,11 @@ public class SeqContentController {
 	@Resource
 	private SeqContentService seqContentService;
 	
+	/**
+	 * 得到主播id下的专辑列表(包括发布和未发布的)
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/seq/getHostSeqMediaList.do")
 	@ResponseBody
 	public Map<String, Object> getSeqMediaList(HttpServletRequest request){
@@ -42,6 +47,11 @@ public class SeqContentController {
 		return map;
 	}
 	
+	/**
+	 * 创建新专辑
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/seq/addSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addSeqMediaInfo(HttpServletRequest request){
@@ -61,7 +71,7 @@ public class SeqContentController {
 			return map;
 		}
 		String smaimg = m.get("ContentImg")+"";
-		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		smaimg = smaimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908");
 		String smadesc = m.get("ContentDesc")+"";
 		String did = m.get("ContentCatalogsId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
@@ -71,6 +81,11 @@ public class SeqContentController {
 		return map;
 	}
 	
+	/**
+	 * 修改专辑信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request){
@@ -87,7 +102,7 @@ public class SeqContentController {
 		String smaname = m.get("ContentName")+"";
 		if(!smaname.toLowerCase().equals("null")) sma.setSmaTitle(smaname);
 		String smaimg = m.get("ContentImg")+"";
-		smaimg = smaimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		smaimg = smaimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908");
 		if(!smaimg.toLowerCase().equals("null")) sma.setSmaImg(smaimg);
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
@@ -100,6 +115,11 @@ public class SeqContentController {
 		return map;
 	}
 	
+	/**
+	 * 发布专辑
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/seq/updateSeqMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request){
@@ -130,6 +150,11 @@ public class SeqContentController {
 		return map;
 	}
 	
+	/**
+	 * 删除专辑
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/seq/removeSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> removeSeqMediaInfo(HttpServletRequest request){
