@@ -20,12 +20,13 @@
     <result  column="timeLong"       property="timeLong"       jdbcType="VARCHAR"/>
     <result  column="descn"          property="descn"          jdbcType="VARCHAR"/>
     <result  column="pubCount"       property="pubCount"       jdbcType="INTEGER"/>
+    <result  column="maStatus"       property="maStatus"       jdbcType="INTEGER"/>
     <result  column="cTime"          property="CTime"          jdbcType="TIMESTAMP"/>
   </resultMap>
   
    <!-- 所有列 -->
   <sql id="Base_Media_List">
-    id, maTitle, maPubType, maPubId, maPublisher, maPublishTime, maImg, maURL, subjectWords, keyWords, langDid, language, timeLong, descn, pubCount, cTime
+    id, maTitle, maPubType, maPubId, maPublisher, maPublishTime, maImg, maURL, subjectWords, keyWords, langDid, language, timeLong, descn, pubCount, maStatus, cTime
   </sql>
   
 
@@ -63,11 +64,12 @@
     <result  column="language"        property="language"        jdbcType="VARCHAR"/>
     <result  column="descn"           property="descn"           jdbcType="VARCHAR"/>
     <result  column="pubCount"        property="pubCount"        jdbcType="INTEGER"/>
+    <result  column="smaStatus"       property="smaStatus"       jdbcType="INTEGER"/>
     <result  column="cTime"           property="CTime"           jdbcType="TIMESTAMP"/>
   </resultMap>
   
   <sql id="Base_SequMedia_List">
-    id, smaTitle, smaPubType, smaPubId, smaPublisher, smaPublishTime, smaImg, smaAllCount, subjectWords, keyWords, langDid, language, descn, pubCount, cTime
+    id, smaTitle, smaPubType, smaPubId, smaPublisher, smaPublishTime, smaImg, smaAllCount, subjectWords, keyWords, langDid, language, descn, pubCount, smaStatus, cTime
   </sql>
 
   <!-- 专辑和单体节目关系 -->
@@ -102,6 +104,7 @@
       <if test="timeLong!=null">timeLong,</if>
       <if test="descn!=null">descn,</if>
       <if test="pubCount!=null and pubCount>0">pubCount,</if>
+      <if test="maStatus!=null and maStatus>0">maStatus,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
@@ -118,6 +121,7 @@
       <if test="timeLong!=null">#{timeLong,jdbcType=VARCHAR},</if>
       <if test="descn!=null">#{descn,jdbcType=VARCHAR},</if>
       <if test="pubCount!=null and pubCount>0">#{pubCount,jdbcType=VARCHAR},</if>
+      <if test="maStatus!=null and maStatus>0">#{maStatus,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
 
@@ -165,6 +169,7 @@
       <if test="language!=null">language,</if>
       <if test="descn!=null">descn,</if>
       <if test="pubCount!=null and pubCount>0">pubCount,</if>
+      <if test="smaStatus!=null and smaStatus>0">smaStatus,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
@@ -180,6 +185,7 @@
       <if test="language!=null">#{language,jdbcType=VARCHAR},</if>
       <if test="descn!=null">#{descn,jdbcType=VARCHAR},</if>
       <if test="pubCount!=null and pubCount>0">#{pubCount,jdbcType=VARCHAR},</if>
+      <if test="smaStatus!=null and smaStatus>0">#{smaStatus,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
 
@@ -243,6 +249,7 @@
       <if test="timeLong!=null">timeLong=#{timeLong,jdbcType=VARCHAR},</if>
       <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
       <if test="pubCount!=null and pubCount>0">pubCount=#{pubCount,jdbcType=VARCHAR},</if>
+      <if test="maStatus!=null and maStatus>0">maStatus=#{maStatus,jdbcType=VARCHAR},</if>
     </set>
     where id=#{id,jdbcType=VARCHAR}
   </update>
@@ -291,6 +298,7 @@
       <if test="language!=null">language=#{language,jdbcType=VARCHAR},</if>
       <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
       <if test="pubCount!=null and pubCount>0">pubCount=#{pubCount,jdbcType=VARCHAR},</if>
+      <if test="smaStatus!=null and smaStatus>0">smaStatus=#{smaStatus,jdbcType=VARCHAR},</if>
   	</set>
   	where id=#{id,jdbcType=VARCHAR}
   </update>
