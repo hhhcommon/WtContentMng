@@ -52,7 +52,7 @@ public class SeqContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSeqInfo(String userid, String username, String smaname, String smaimg,
+	public Map<String, Object> addSeqInfo(String userid, String username, String smaname, String smaimg, String smastatus,
 			String did, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -82,6 +82,7 @@ public class SeqContentService {
 			}
 			sma.setSmaAllCount(malist.size());
 		}
+		sma.setSmaStatus(Integer.valueOf(smastatus));
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(3);
 		sma.setSmaPubId(userid);

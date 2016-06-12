@@ -70,6 +70,12 @@ public class SeqContentController {
 			map.put("Message", "无节目名称");
 			return map;
 		}
+		String smastatus = m.get("ContentStatus")+"";
+		if(smastatus.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无资源状态");
+			return map;
+		}
 		String smaimg = m.get("ContentImg")+"";
 		smaimg = smaimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
 		String smadesc = m.get("ContentDesc")+"";
@@ -77,7 +83,7 @@ public class SeqContentController {
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
 		if(!m.containsKey("AddMediaInfo"))maList=null;
 		else maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
-		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, did, smadesc, maList);
+		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, smadesc, maList);
 		return map;
 	}
 	
@@ -107,6 +113,7 @@ public class SeqContentController {
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
 		String did = m.get("ContentCatalogsId")+""; //更改专辑的内容分类
+		
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
