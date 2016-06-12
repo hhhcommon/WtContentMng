@@ -19,6 +19,11 @@ public class MediaContentController {
 	@Resource
 	private MediaContentService mediaContentService;
 
+	/**
+	 * 得到主播单体节目列表
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/media/getHostMediaList.do")
 	@ResponseBody
 	public Map<String, Object> getMediaList(HttpServletRequest request){
@@ -42,6 +47,11 @@ public class MediaContentController {
 		return map;
 	}
 	
+	/**
+	 * 创建单体节目
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/media/addMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addMediaInfo(HttpServletRequest request){
@@ -62,9 +72,9 @@ public class MediaContentController {
 		}
 
 		String maimg = m.get("ContentImg")+"";
-		maimg=maimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "www.wotingfm.com:908");
 		String mauri = m.get("ContentURI")+"";
-		mauri=mauri.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "www.wotingfm.com:908");
 		String madescn = m.get("ContentDesc")+"";
 		String contentkeywords = m.get("KeyWords")+"";
 		String seqid = m.get("ContentSequId")+"";
@@ -73,6 +83,11 @@ public class MediaContentController {
 		return map;
 	}
 	
+	/**
+	 * 修改单体节目信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/media/updateMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateMediaInfo(HttpServletRequest request){
@@ -85,10 +100,10 @@ public class MediaContentController {
 		String maname = m.get("ContentName")+"";
 		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
 		String maimg = m.get("ContentImg")+"";
-		maimg=maimg.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "www.wotingfm.com:908");
 		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
 		String mauri = m.get("ContentURI")+"";
-		mauri=mauri.replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "./uploadFiles/tempuplf/");
+		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "www.wotingfm.com:908");
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
 		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
@@ -103,6 +118,11 @@ public class MediaContentController {
 		return map;
 	}
 	
+	/**
+	 * 发布单体节目(发布单体节目时，必须要绑定在专辑的下面)
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/media/updateMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateMediaStatus(HttpServletRequest request){
@@ -133,6 +153,11 @@ public class MediaContentController {
 		return map;
 	}
 	
+	/**
+	 * 删除单体节目信息
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/content/media/removeMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> removeMediaInfo(HttpServletRequest request){
