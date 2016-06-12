@@ -124,9 +124,8 @@ function getCatalogs(catalog){
         	}else{
         		catalogsListLoad(catalogsList);
         	}
-          
         } else {
-            //alert("获取数据出现问题:"+ConditionsList.Message);
+            //alert("获取数据出现问题:"+catalogsList.Message);
         }  
       },
       error: function(jqXHR){

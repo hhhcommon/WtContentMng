@@ -56,19 +56,12 @@
                               <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大1M，支持JPG、PNG格式</span>
                           </div>
                       </div>
-                      <!-- 
                       <div class="form-group">
                           <label class="col-sm-3 control-label">选择专辑：</label>
                           <div class="col-sm-8">
-                              <select class="form-control" name="ContentSequTitle">
-                                  <option value="">默认</option>
-                                  <option value="">后来</option>
-                                  <option value="">Bingo</option>
-                              </select>
+                              <select class="form-control" name="ContentSequId" id="ContentSequId"></select>
                           </div>
                       </div>
-                       -->
-                      
                       <div class="form-group">
                           <label class="col-sm-3 control-label">声音标签：</label>
                           <div class="col-sm-8">
@@ -138,7 +131,6 @@
 			          }
 	          });
 	          $(".close-link").on("click",function(){
-	        	  $("#addMediaForm")[0].reset();
 	            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
 	          });
         	  //封面图片预览与上传
@@ -302,7 +294,40 @@
                 }
               }
             
-	          
+            //添加单体时，获取专辑列表
+            /*
+             *
+             * */
+          getSeqMediaList();
+          function getSeqMediaList(){
+              $.ajax({
+                type: "POST",    
+                url:rootPath+"content/seq/getHostSeqMediaList.do",
+                dataType: "json",
+                data:{"UserId":userId},
+                success: function(seqMediaList) {
+                  if (seqMediaList.ReturnType == "1001") {
+                	  seqMediaListLoad(seqMediaList);
+                  } else {
+                      //alert("获取数据出现问题:"+seqMediaList.Message);
+                  }  
+                },
+                error: function(jqXHR){
+                   //alert("发生错误" + jqXHR.status);
+                }
+              });
+            }
+            function seqMediaListLoad(seqMediaList){
+              var listLength=seqMediaList.ResultList.AllCount;
+              alert(listLength);
+              var opt;
+              for(var i=0;i<listLength;i++){
+                opt=$("<option></option>");
+                opt.val(seqMediaList.ResultList.List[i].ContentId);
+                opt.text(seqMediaList.ResultList.List[i].ContentName);
+                $("#ContentSequId").append(opt);
+              }
+            }    
         });
     </script>
 </body>

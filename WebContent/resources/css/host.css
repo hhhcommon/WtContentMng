@@ -94,7 +94,8 @@ nav li:hover{
 }
 #wrapper nav{
 	width:100%;
-	height:calc(100% - 180px)
+	height:calc(100% - 180px);
+	margin-top:8px;
 }
 #content-main{
 	float:left;
