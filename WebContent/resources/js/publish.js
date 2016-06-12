@@ -124,7 +124,7 @@ function ContentListLoad(actList){
 	        conP1=$("<p class='secTitle'></p>");
 	        //alert(actList.ResultList[i].ContentDesc);
 	        //alert((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, ""));
-	        conP1.html(actList.ResultList[i].ContentDesc=="null"?"暂无":((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, "")));
+	        conP1.html(!actList.ResultList[i].ContentDesc?"暂无":((actList.ResultList[i].ContentDesc).replace(/\<br \/\>/g, "")));
 	        conP2=$("<p class='other'></p>");
 	        conSpan1=$("<span></span>");
 	        conSpan1.text("来源："+actList.ResultList[i].ContentSource);

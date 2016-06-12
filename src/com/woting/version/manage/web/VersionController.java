@@ -250,13 +250,13 @@ public class VersionController {
             if (toLast==1) page=1;
             Page<Version> p=verService.getVersionList(conditionMap, page, pageSize);
             if (toLast==1) {
-                int lastPage=p.getDataCount()%pageSize;
+                int lastPage=p.getDataCount()/pageSize;
                 lastPage+=p.getDataCount()%pageSize==0?0:1;
                 page=lastPage;
                 p=verService.getVersionList(conditionMap, page, pageSize);
             }
             if (p.getDataCount()>0&&p.getResult().size()==0) {//页数超出了，到最后一页
-                int lastPage=p.getDataCount()%pageSize;
+                int lastPage=p.getDataCount()/pageSize;
                 lastPage+=p.getDataCount()%pageSize==0?0:1;
                 if (page>lastPage) {
                     page=lastPage;

@@ -18,16 +18,13 @@ function setPage(pageData) {
     return;
   }
   $("div .pagination>.totalPage").html(pageData.AllPage);
-  alert("123");
   if (pageData.AllPage<=1) {
     $("div .pagination>span").each(function(){$(this).addClass('disabled')});
     $("div .pagination>.toPage").attr("readonly","true").attr("disabled","true");
   } else {
     $("div .pagination>.toPage").removeAttr("disabled").removeAttr("readonly");
     $("div .pagination>.toPage").removeClass('disabled');
-    alert($("div .pagination>.toPage").val());
     $("div .pagination>.toPage").val(pageData.Page);
-    alert($("div .pagination>.toPage").val());
     $("div .pagination>.jump").removeClass('disabled');
     if (pageData.Page<=1) {
       $("div .pagination>.first").addClass('disabled');
