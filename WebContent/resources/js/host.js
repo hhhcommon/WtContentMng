@@ -77,10 +77,10 @@ function ContentListLoad(actList) {
       thumbImg = $("<img alt='节目封面图片''>");
       thumbImg.attr({'src':actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
-      conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
-      conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");
-      conDel=$("<i class='fa fa-trash-o' opeType='conDel'></i>");
-      subAdd=$("<i class='fa fa-plus-square-o' opeType='subAdd'></i>");
+      conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate' title='修改'></i>");
+      conShare=$("<i class='fa fa-external-link' opeType='conShare' title='分享'></i>");
+      conDel=$("<i class='fa fa-trash-o' opeType='conDel' title='删除'></i>");
+      subAdd=$("<i class='fa fa-plus-square-o' opeType='subAdd' title='发布'></i>");
       infoDiv = $("<div class='infoBox'>");
       infoH = $("<h4></h4>");
       infoHA=$("<a href='javascript:;'></a>");
