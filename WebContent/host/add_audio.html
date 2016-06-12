@@ -83,7 +83,7 @@
                               <button class="btn btn-warning" type="publish">发布</button>
                           </div>
                           <div class="col-sm-3 text-right" m-btn>
-                              <button class="btn btn-warning" type="draft">存草稿</button>
+                              <button class="btn btn-warning" id="draftBtn" type="draft">存草稿</button>
                           </div>
                           <div class="col-sm-3 text-right" m-btn>
                               <a class="close-link btn btn-warning">
@@ -187,7 +187,9 @@
         	  });
         	  
         	//form表单提交
-              $("#submitBtn").click(function () {
+              $("#submitBtn,#draftBtn").click(function () {
+            	  var contentStatus=$(this).attr("id")=="submitBtn"?"1":"0";
+                $("#ContentStatus").val(contentStatus);
             	  if($("#ContentImg").val()==""){
                       //如未设置封面，将使用平台默认图片
                       $("#ContentImg").val($(".defaultImg").attr("src"));
@@ -319,7 +321,6 @@
             }
             function seqMediaListLoad(seqMediaList){
               var listLength=seqMediaList.ResultList.AllCount;
-              alert(listLength);
               var opt;
               for(var i=0;i<listLength;i++){
                 opt=$("<option></option>");

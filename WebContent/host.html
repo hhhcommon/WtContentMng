@@ -167,7 +167,9 @@
         });
           
         //form表单提交
-        $("#submitBtn").click(function () {
+        $("#submitBtn,#draftBtn").click(function () {
+        	var contentStatus=$(this).attr("id")=="submitBtn"?"1":"0";
+        	$("#ContentStatus").val(contentStatus);
         	var opeType=$(".opeBox").attr("opeType");
         	if(opeType=="conAdd"){
         		if($("#ContentImg").val()==""){
@@ -335,6 +337,7 @@
 		              <div class="ibox-content">
 		                  <form class="form-horizontal m-t" id="addSequForm" onsubmit="return false;">
 		                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
+		                      <input id="ContentStatus" name="ContentStatus" class="form-control" type="hidden" value="123" />
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑名称：</label>
 		                          <div class="col-sm-8">
@@ -388,7 +391,7 @@
 		                              <button class="btn btn-warning" type="publish">发布</button>
 		                          </div>
 		                          <div class="col-sm-3 text-center">
-                                  <button class="btn btn-warning" type="draftBtn">存草稿</button>
+                                  <button class="btn btn-warning" id="draftBtn" type="draftBtn">存草稿</button>
                               </div>
 		                          <div class="col-sm-3 text-left">
 		                              <a class="close-link btn btn-warning">取消</a>
