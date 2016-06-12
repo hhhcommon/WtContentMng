@@ -100,10 +100,10 @@ public class MediaContentController {
 		String maname = m.get("ContentName")+"";
 		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
 		String maimg = m.get("ContentImg")+"";
-		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "www.wotingfm.com:908");
+		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908");
 		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
 		String mauri = m.get("ContentURI")+"";
-		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "www.wotingfm.com:908");
+		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908");
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
 		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
