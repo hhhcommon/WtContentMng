@@ -105,8 +105,6 @@ public class MediaService {
 			    sma.buildFromPo(seqMediaAssetPo);
 			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
 			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoByMId", sma.getId());
-			    System.out.println("##"+l);
-			    System.out.println("###"+l.size());
 			    smap.put("SubCount", l.size());
 			    list.add(smap);
 		    }

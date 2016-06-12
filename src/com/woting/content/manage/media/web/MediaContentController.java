@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -70,8 +71,16 @@ public class MediaContentController {
 			map.put("Message", "无节目名称");
 			return map;
 		}
-
+		String mastatus = m.get("ContentStatus")+"";
+		if(mastatus.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+			map.put("Message", "无资源状态");
+			return map;
+		}
+		
 		String maimg = m.get("ContentImg")+"";
+		if(maimg.toLowerCase().equals("null"))
+			maimg="www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
 		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
 		String mauri = m.get("ContentURI")+"";
 		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
@@ -79,7 +88,8 @@ public class MediaContentController {
 		String contentkeywords = m.get("KeyWords")+"";
 		String seqid = m.get("ContentSequId")+"";
 		String seqname = m.get("ContentSequName")+"";
-		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, contentkeywords, madescn, seqid, seqname);
+		
+		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, mastatus, contentkeywords, madescn, seqid, seqname);
 		return map;
 	}
 	
@@ -109,8 +119,11 @@ public class MediaContentController {
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
 		String madesc = m.get("ContentDesc")+"";
 		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
+		String mastatus = m.get("ContentStatus")+"";
+		if(!mastatus.toLowerCase().equals("null")) ma.setMaStatus(Integer.valueOf(mastatus));
 		if(seqid.toLowerCase().equals("null"))map = mediaContentService.updateMediaInfo(ma,null);
 		else map = mediaContentService.updateMediaInfo(ma, sma);
+		
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";

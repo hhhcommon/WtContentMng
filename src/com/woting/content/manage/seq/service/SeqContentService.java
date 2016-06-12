@@ -79,6 +79,7 @@ public class SeqContentService {
 				ma.setId(m2.get("ContentId") + "");
 				ma.setMaTitle(m2.get("ContentName") + "");
 				mediaService.bindMa2Sma(ma, sma);
+				dictContentService.addCataLogs("3", did, "wt_MediaAsset", ma.getId());
 			}
 			sma.setSmaAllCount(malist.size());
 		}
