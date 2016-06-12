@@ -75,7 +75,7 @@ function ContentListLoad(actList) {
       imgDiv = $("<div></div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
-      thumbImg.attr({'src' : '.'+actList.ResultList.List[i].ContentImg});
+      thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
       conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
       conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");

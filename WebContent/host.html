@@ -23,13 +23,14 @@
       <link href="./resources/css/host.css" rel="stylesheet">
       <script src="./resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
       <script src="./resources/js/mainPage.js"></script>
+      <script src="./resources/js/context.utils.js"></script>
       <script src="./resources/js/host.js"></script>
   </head>
   <body style="background:#f2f2f2;overflow:auto;">
       <!-- 页头 -->
       <div style="width:100%;height:52px;background:#fff;border-bottom:2px solid #ccc;">
         <div class="" style="float:left;width:15%;line-height:50px;">
-          <img alt="woting logo" style="width:80%;height:32px;padding-left:30px;" src="./resources/images/logo_yellow.png" />
+          <img alt="woting logo" style="width:80%;height:32px;padding-left:30px;" src="http://wotingfm.com:908/CM/resources/images/logo_yellow.png" />
         </div>
       </div>
       <!-- 页主体 -->
@@ -38,15 +39,20 @@
          <div class="navLeft">
 		        <!-- 个人信息 -->
 		        <div class="person">
-		                              个人中心
+		          <div class="perImg">
+		            <img src="http://wotingfm.com:908/CM/resources/images/a5.jpg" alt=""/>
+		            <p>胖胖</p>
+		          </div>
+		          <div class="perRelation">
+		             <div class="fs"><span><a href="#">1.3万</a></span>粉丝</div>
+		             <div class="gz"><span><a href="#">668</a></span>关注</div>
+		          </div>
 		        </div>
 		        <!-- 导航列表 -->
 		        <nav class="nav">
 			        <ul>
                 <li class="navList active"><a _href="./host/zj.html" href="javascript:void(0);">专辑管理</a></li>  
                 <li class="navList"><a _href="./host/audio.html" href="javascript:void(0);">声音管理</a></li>
-                <li class="navList"><a _href="./host/add_zj.html" href="javascript:void(0);">创建专辑</a></li>  
-                <li class="navList"><a _href="./host/add_audio.html" href="javascript:void(0);">添加声音</a></li>
                <span class="bar"></span>                
 	            </ul>
 		        </nav>
@@ -58,8 +64,13 @@
             <iframe width="100%" height="680px" src="./host/add_audio.html" scrolling="no" frameborder="0" id="newIframe"></iframe>
           </div>
           <!-- 右侧热点区 -->
-          <div class="news">
-                                          新闻热点
+          <div class="sources">
+	          <div class="hots">
+	                                          新闻热点
+	          </div>
+	          <div class="dataAnalysis">
+                                          数据分析
+            </div>
           </div>
       </div>
       <!-- 全局js -->
@@ -102,7 +113,7 @@
         	$("form")[0].reset();
         	$(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
         	$("input").remove("#ContentId");
-        	$("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
+        	$("<div class='previewImg'><img class='defaultImg' src='http://wotingfm.com:908/CM/resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
           $(".shade,.opeBox,#newIframe").css({"display":"none"});
         });
       
@@ -206,7 +217,7 @@
                      alert("专辑修改成功");
                      $(".opeBox").attr({"opeType":"conAdd"}).find("h5").text("创建专辑");
                      $("input").remove("#ContentId");
-                     $("<div class='previewImg'><img class='defaultImg' src='resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
+                     $("<div class='previewImg'><img class='defaultImg' src='http://wotingfm.com:908/CM/resources/images/default.png' alt='front cover' /></div>").replaceAll(".previewImg");
                    }else{
                      alert("专辑创建成功");
                    }
@@ -273,7 +284,7 @@
             imgDiv = $("<div>");
             imgA=$("<a href='javascript:;'></a>");
             thumbImg = $("<img alt='节目封面图片''>");
-            thumbImg.attr({'src' : '.'+actList.ResultList.List[i].ContentImg});
+            thumbImg.attr({'src' : actList.ResultList.List[i].ContentImg});
             imgShade=$("<div class='imgShade'></div>");
             conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
             conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");
