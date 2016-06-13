@@ -235,6 +235,14 @@ function getDateMonthLastDay_format(date, fmt) {
   return (new Date((new Date(date.getFullYear(), date.getMonth()+1, 1)).getTime()-(1000*60*60*24))).format(fmt);
 }
 
+function getPureStrFromHTML(htmlStr) {
+  var pureStr=htmlStr.replace(/(\n)/g, "");
+  pureStr=pureStr.replace(/(\t)/g, "");
+  pureStr=pureStr.replace(/(\r)/g, "");
+  pureStr=pureStr.replace(/<\/?[^>]*>/g, "");
+  return pureStr.replace(/\s*/g, "");  
+}
+
 //扩展方法
 /**
  * 扩展String属性：得到中英混排文字符串长度

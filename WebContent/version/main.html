@@ -12,8 +12,8 @@
 
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
+
+  <link href="../resources/plugins/summernote/summernote.css" rel="stylesheet">
 
   <link href="../resources/wtcm/css/CM_mainarea.css" rel="stylesheet">
   <link href="../resources/wtcm/css/CM_toolbar.css" rel="stylesheet">
@@ -27,6 +27,10 @@
   <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script><!-- 分页 -->
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
   <script src="../resources/js/context.utils.js"></script>
+
+  <script src="../resources/plugins/summernote/summernote.min.js"></script>
+  <script src="../resources/plugins/summernote/lang/summernote-zh-CN.js"></script>
+
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/wtcm/js/CM_pagination.js"></script>
 </head>
@@ -64,9 +68,6 @@ h4 {
 }
 .modal-body tr .add-th {
   width:120px;
-}
-.modal-body tr td {
-  border:1px solid red;
 }
 .modal-body tr td input {
   width:380px;
@@ -183,34 +184,35 @@ h4 {
         <table>
           <tr>
             <td class="th add-th">版本名称</td>
-            <td><input type="text" class="form-control" id="verName" placeholder="版本名称"></td>
-            <td rowspan="3"><div style="width:100px;height:100px; border:1px solid black;"></div></td>
+            <td colspan="3"><input type="text" class="form-control" id="verName" placeholder="版本名称" style="width:440px;"></td>
+            <td rowspan="3" style="width:400px;padding:10px;"><div style="width:100px;height:100px; border:1px solid black;"></div></td>
           </tr>
           <tr>
             <td class="th add-th">版本号</td>
-            <td><input type="text" class="form-control" id="verNum" placeholder="版本号"></td>
-          </tr>
-          <tr>
-            <td class="th add-th">版本状态</td>
-            <td><input type="text" class="form-control" id="verFlag" placeholder="状态"></td>
+            <td><input type="text" class="form-control" id="verNum" placeholder="版本号" style="width:170px;"></td>
+            <td class="th add-th" style="width:100px;">版本状态</td>
+            <td><select class="form-control" id="verFlag" placeholder="状态" style="width:170px;">
+              <option value=1>发布</option>
+              <option value=0>草稿</option>
+            </select></td>
           </tr>
           <tr>
             <td class="th add-th">上传版本文件</td>
-            <td colspan="2"><input type="text" class="form-control" id="pubUrl" placeholder="当前发布版本的Url，下载地址就从此获得"></td>
+            <td colspan="3"><input type="text" class="form-control" id="pubUrl" placeholder="当前发布版本的Url，下载地址就从此获得" style="width:440px;"></td>
           </tr>
           <tr>
             <td class="th add-th">版本说明</td>
-            <td><input type="text" class="form-control" id="verGoodsStorePath" placeholder="服务器端目录设置，默认为/opt/version/his/+{版本序号}"></td>
+            <td colspan="4"><textarea id="verMemo" placeholder="版本说明" autofocus></textarea></td>
           </tr>
           <tr>
             <td class="th add-th">Bug修改记录</td>
-            <td><input type="text" class="form-control" id="verGoodsStorePath" placeholder="服务器端目录设置，默认为/opt/version/his/+{版本序号}"></td>
+            <td colspan="4"><textarea id="verBug" placeholder="Bug(错误/问题)修改记录" autofocus></textarea></td>
           </tr>
         </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-        <button id="saveVer" type="button" class="btn btn-primary">提交</button>
+        <button id="saveVerB" type="button" class="btn btn-primary">提交</button>
       </div>
     </div>
   </div>
@@ -218,7 +220,7 @@ h4 {
 
 </div></body>
 
-<script>
+<script>alert("0");
 var canBrowse=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
@@ -252,6 +254,9 @@ $(function() {
   });
   $("#saveCfgB").on("click", function() {
     saveCfg();
+  });
+  $("#saveVerB").on("click", function() {
+    saveVer();
   });
 
   //四、翻页处理，先不进行包装
@@ -290,6 +295,20 @@ $(function() {
   });
 
   //五、初始化页面
+  $('#verMemo').summernote({
+    lang:'zh-CN',
+    height:150,
+    minHeight:150,
+    maxHeight:150,
+    focus: true
+  });
+  $('#verBug').summernote({
+    lang: 'zh-CN',
+    height:150,
+    minHeight:150,
+    maxHeight:150,
+    focus: true
+  });
   setPage(null);
   listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
 });
@@ -351,8 +370,49 @@ function saveCfg() {
 }
 
 //二、有关版本的方法
-function dealFun(data) {
-  successData=data;
+//保存
+function saveVer() {
+  //检查数据合法性：目前不进行检查
+  var checkErr="";
+  var focus=0;
+  if (!$.trim($("#verName").val())) checkErr+="\n请输入版本名称",(focus==0?focus=1:focus=focus);
+  if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
+  var bugHtml=$('#verBug').summernote('code');
+  alert(bugHtml);
+  alert(getPureStrFromHTML(bugHtml));
+  return;
+  if ($('#verBug').summernote('code')=='<p><br></p>') checkErr+="\n请输入Bug修改记录",(focus==0?focus=2:focus=focus);
+  if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
+  if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
+  if (checkErr) {
+    alert(checkErr.substring(1));
+    return;
+  }
+  //获得新的数据
+  if (($.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val()))=="") {
+    alert("没有任何内容，无法保存！");
+    return;
+  }
+  var cfgData={};
+  if ($.trim($("#pubFileName").val())!="") cfgData.PubFileName=$.trim($("#pubFileName").val());
+  if ($.trim($("#pubUrl").val())!="") cfgData.PubUrl=$.trim($("#pubUrl").val());
+  if ($.trim($("#pubStorePath").val())!="") cfgData.PubStorePath=$.trim($("#pubStorePath").val());
+  if ($.trim($("#verGoodsStorePath").val())!="") cfgData.VerGoodsStorePath=$.trim($("#verGoodsStorePath").val());
+
+  $.ajax({type:"post", async:true, url:rootPath+'version/saveVerCfg.do', dataType:"json", data: cfgData,
+    success: function(jsonData) {
+      if (jsonData) {
+        if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+        else {
+          canBrowse=true;
+          $("#closeB").click();
+        }
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误：" + jqXHR.status);
+    }
+  });
 }
 
 //三、列表操作
