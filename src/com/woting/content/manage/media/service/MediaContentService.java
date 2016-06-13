@@ -102,7 +102,12 @@ public class MediaContentService {
 		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ctime);
 		mediaService.saveMas(maSource);
-
+		
+		// 获取专辑分类
+		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
+		if(chasma!=null) 
+			modifyMediaStatus(userid, maid, seqid, 0);
+		
 		if (mediaService.getMaInfoById(maid) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "上传文件成功");
@@ -140,7 +145,7 @@ public class MediaContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifyMediaStatus(String userid, String maid, String smaid) {
+	public Map<String, Object> modifyMediaStatus(String userid, String maid, String smaid, int flowflag) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = mediaService.getMaInfoById(maid);
 		if (ma == null) {
@@ -160,22 +165,29 @@ public class MediaContentService {
 			map.put("Message", "栏目不存在");
 			return map;
 		}
-		ChannelAsset cha = new ChannelAsset();
-		String chaid = SequenceUUID.getPureUUID();
-		cha.setId(chaid);
-		cha.setCh(ch);
-		cha.setPubObj(ma);
-		cha.setPublisherId(userid);
-		cha.setCheckerId("1");
-		cha.setFlowFlag(2);
-		cha.setSort(0);
-		cha.setCheckRuleIds("0");
-		cha.setCTime(new Timestamp(System.currentTimeMillis()));
-		cha.setIsValidate(1);
-		cha.setInRuleIds("elt");
-		cha.setCheckRuleIds("elt");
-		mediaService.saveCHA(cha);
-		if (mediaService.getCHAInfoById(chaid) != null) {
+		ChannelAsset cha = mediaService.getCHAInfoByAssetId(maid);
+		if(cha!=null){
+			cha.setFlowFlag(flowflag);
+			mediaService.updateCha(cha);
+		}else{
+			cha = new ChannelAsset();
+		    String chaid = SequenceUUID.getPureUUID();
+		    cha.setId(chaid);
+		    cha.setCh(ch);
+		    cha.setPubObj(ma);
+		    cha.setPublisherId(userid);
+		    cha.setCheckerId("1");
+		    cha.setFlowFlag(flowflag);
+		    cha.setSort(0);
+		    cha.setCheckRuleIds("0");
+		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		    if(flowflag==2)cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    cha.setIsValidate(1);
+		    cha.setInRuleIds("elt");
+		    cha.setCheckRuleIds("elt");
+		    mediaService.saveCha(cha);
+		}
+		if (mediaService.getCHAInfoById(cha.getId()) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "节目发布成功");
 			MediaAsset ma2 = new MediaAsset();

@@ -121,6 +121,12 @@ public class MediaService {
     	return sma;
 	}
     
+    public List<SeqMaRefPo> getSmaListBySid(String sid) {
+    	List<SeqMaRefPo> seqMaRefPos = seqMaRefDao.queryForList("getS2MRefInfoByMId", sid);
+    	if(seqMaRefPos==null) return null;
+    	return seqMaRefPos;
+	}
+    
     //根据栏目id得到栏目
     public Channel getChInfoById(String id){
     	Channel ch = new Channel();
@@ -161,12 +167,14 @@ public class MediaService {
 		return catalist;
     }
     
-    
-    public void saveCHA(ChannelAsset cha){
-    	channelAssetDao.insert("insert", cha.convert2Po());
+    public List<DictRefResPo> getResDictRefByResId(String resid){
+        List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResId", resid);
+		return rcrpL;
     }
-    public void updateCHA(ChannelAsset cha){
-    	channelAssetDao.update("update", cha.convert2Po());
+    
+    
+    public void saveCha(ChannelAsset cha){
+    	channelAssetDao.insert("insert", cha.convert2Po());
     }
 
     public MediaAsset getMaInfoById(String id) {
@@ -209,22 +217,27 @@ public class MediaService {
     public void updateSeqMaRef(SeqMaRefPo seqmapo){
     	mediaAssetDao.update("updateSeqMaRef", seqmapo);
     }
+    
     public void updateMas(MaSource mas){
     	mediaAssetDao.update("updateMas", mas.convert2Po());
     }
     
     public void updateMa(MediaAsset ma) {
         mediaAssetDao.update("updateMa", ma.convert2Po());
+    } 
+    
+    public void updateSma(SeqMediaAsset sma) {
+        seqMediaAssetDao.update("updateSma", sma.convert2Po());
+    }
+    
+    public void updateCha(ChannelAsset cha) {
+    	channelAssetDao.update("update", cha.convert2Po());
     }
 
     public void saveSma(SeqMediaAsset sma) {
         seqMediaAssetDao.insert("insertSma", sma.convert2Po());
     }
 
-    public void updateSma(SeqMediaAsset sma) {
-        seqMediaAssetDao.update("updateSma", sma.convert2Po());
-    }
-    
     public void saveDictRef(DictRefRes dictref) {
     	dictRefDao.insert("insert", dictref.convert2Po());
     }

@@ -16,6 +16,7 @@ import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.media.service.MediaContentService;
@@ -56,7 +57,7 @@ public class SeqContentService {
 	 * @return
 	 */
 	public Map<String, Object> addSeqInfo(String userid, String username, String smaname, String smaimg, String smastatus,
-			String did, String smadesc, List<Map<String, Object>> malist) {
+			String did, String chid, String smadesc, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		// 保存专辑信息到资源库
@@ -78,9 +79,7 @@ public class SeqContentService {
 		// 保存专辑与单体媒体对应关系
 		if (malist != null && malist.size() > 0) {
 			for (Map<String, Object> m2 : malist) {
-				MediaAsset ma = new MediaAsset();
-				ma.setId(m2.get("ContentId") + "");
-				ma.setMaTitle(m2.get("ContentName") + "");
+				MediaAsset ma = mediaService.getMaInfoById(m2.get("ContentId") + "");
 				mediaService.bindMa2Sma(ma, sma);
 				dictContentService.addCataLogs("3", did, "wt_MediaAsset", ma.getId());
 			}
@@ -99,11 +98,13 @@ public class SeqContentService {
 		mediaService.saveSma(sma);
 		if(!did.toLowerCase().equals("null")) 
 			dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
-		
-		if (mediaService.getSmaInfoById(smaid) != null) {
+		map = modifySeqStatus(userid, smaid, chid, 0, malist);
+		if (mediaService.getSmaInfoById(smaid) != null && map.get("ReturnType").equals("1001")) {
+			map.clear();
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加专辑成功");
 		} else {
+			map.clear();
 			map.put("ReturnType", "1011");
 			map.put("Message", "添加专辑失败");
 		}
@@ -117,13 +118,28 @@ public class SeqContentService {
 	 * @param sma
 	 * @return
 	 */
-	public Map<String, Object> updateSeqInfo(SeqMediaAsset sma, String did) {
+	public Map<String, Object> updateSeqInfo(String userid, SeqMediaAsset sma, String did, String chid, List<Map<String, Object>> malist) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		if(mediaService.getSmaInfoById(sma.getId())!=null) {
-			mediaService.updateSma(sma); // 待修改wt_SeqMa_Ref,wt_ResDict_Ref,wt_ChannelAsset
+			mediaService.updateSma(sma);
+			if(malist!=null&&malist.size()>0){
+				for (Map<String, Object> m : malist) {
+					MediaAsset ma = mediaService.getMaInfoById(m.get("ContentId") + "");
+					mediaService.bindMa2Sma(ma, sma);
+				}
+			}
 			if(!did.toLowerCase().equals("null")){
 				mediaService.removeResDictRef(sma.getId());
 				dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
+				List<SeqMaRefPo> l = mediaService.getSmaListBySid(sma.getId());
+				for (SeqMaRefPo seqMaRefPo : l) { // 查询专辑下级信息，删除下级单体的内容分类数据信息，重新写入wt_ResDict_Ref表内
+					mediaService.removeResDictRef(seqMaRefPo.getMId());
+					dictContentService.addCataLogs("3", did, "wt_MediaAsset", seqMaRefPo.getMId());
+				}
+			}
+			if(!chid.toLowerCase().equals("null")){
+				mediaService.removeCha(sma.getId());
+				modifySeqStatus(userid, sma.getId(), chid, 0, malist);
 			}
 			map.put("ReturnType", "1001");
 		    map.put("Message", "修改成功");
@@ -134,7 +150,7 @@ public class SeqContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifySeqStatus(String userid, String smaid, String chid, List<Map<String, Object>> medialist) {
+	public Map<String, Object> modifySeqStatus(String userid, String smaid, String chid, int flowflag, List<Map<String, Object>> medialist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		SeqMediaAsset sma = mediaService.getSmaInfoById(smaid);
 		if (sma == null) {
@@ -155,17 +171,18 @@ public class SeqContentService {
 		cha.setPubObj(sma);
 		cha.setPublisherId(userid);
 		cha.setCheckerId("1");
-		cha.setFlowFlag(2);
+		cha.setFlowFlag(flowflag);
 		cha.setSort(0);
 		cha.setCheckRuleIds("0");
 		cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		if(flowflag==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 		cha.setIsValidate(1);
 		cha.setInRuleIds("elt");
 		cha.setCheckRuleIds("elt");
 		//发布专辑
-		mediaService.saveCHA(cha);
+		mediaService.saveCha(cha);
 		//发布专辑下级节目
-		if(!medialist.isEmpty()&&medialist.size()>0){
+		if(medialist!=null&&medialist.size()>0) {
 			for (Map<String, Object> m : medialist) {
 				String maid = m.get("ContentId")+"";
 				MediaAsset ma= mediaService.getMaInfoById(maid);
@@ -173,7 +190,7 @@ public class SeqContentService {
 					map.put("ReturnType", "1011");
 					map.put("Message", maid+"单体发布失败");
 				}
-				mediaContentService.modifyMediaStatus(userid, maid, smaid);
+				mediaContentService.modifyMediaStatus(userid, maid, smaid , 2);
 			}
 		}
 		
