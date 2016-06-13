@@ -80,7 +80,7 @@
                               <button class="btn btn-warning" id="submitBtn" type="submit">提交</button>
                           </div>
                           <div class="col-sm-3 text-right" m-btn>
-                              <button class="btn btn-warning" type="publish">发布</button>
+                              <button class="btn btn-warning" id="pubBtn" type="publish">发布</button>
                           </div>
                           <div class="col-sm-3 text-right" m-btn>
                               <button class="btn btn-warning" id="draftBtn" type="draft">存草稿</button>
@@ -188,7 +188,7 @@
         	  
         	//form表单提交
               $("#submitBtn,#draftBtn").click(function () {
-            	  var contentStatus=$(this).attr("id")=="submitBtn"?"1":"0";
+            	  var contentStatus=$(this).attr("id")=="draftBtn"?"0":"1";
                 $("#ContentStatus").val(contentStatus);
             	  if($("#ContentImg").val()==""){
                       //如未设置封面，将使用平台默认图片
@@ -295,7 +295,8 @@
                   }
                 }
               }
-            
+              //获得单体列表
+              getChannel();
             //添加单体时，获取专辑列表
             /*
              *
@@ -310,12 +311,7 @@
                 success: function(seqMediaList) {
                   if (seqMediaList.ReturnType == "1001") {
                 	  seqMediaListLoad(seqMediaList);
-                  } else {
-                      //alert("获取数据出现问题:"+seqMediaList.Message);
-                  }  
-                },
-                error: function(jqXHR){
-                   //alert("发生错误" + jqXHR.status);
+                  } 
                 }
               });
             }
