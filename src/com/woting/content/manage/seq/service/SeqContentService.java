@@ -175,11 +175,12 @@ public class SeqContentService {
 		cha.setSort(0);
 		cha.setCheckRuleIds("0");
 		cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		if(flowflag==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 		cha.setIsValidate(1);
 		cha.setInRuleIds("elt");
 		cha.setCheckRuleIds("elt");
 		//发布专辑
-		mediaService.saveCHA(cha);
+		mediaService.saveCha(cha);
 		//发布专辑下级节目
 		if(medialist!=null&&medialist.size()>0) {
 			for (Map<String, Object> m : medialist) {
