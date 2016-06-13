@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
@@ -133,6 +135,7 @@ public class SeqContentController {
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		System.out.println(JsonUtils.objToJson(m));
 		String userid = m.get("UserId")+"";
 		if(userid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
@@ -151,10 +154,8 @@ public class SeqContentController {
 			map.put("Message", "无栏目id信息");
 			return map;
 		}
-		String smaname = m.get("ContentName")+"";
-		String smaimg = m.get("ContentImg")+"";
-		String desc = m.get("ContentDesc")+"";
-		map = seqContentService.modifySeqStatus(userid, smaid, smaname, chid, desc, smaimg);
+		List<Map<String, Object>> medialist = (List<Map<String, Object>>) m.get("MediaInfo");
+		map = seqContentService.modifySeqStatus(userid, smaid, chid, medialist);
 		return map;
 	}
 	

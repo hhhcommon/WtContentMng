@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -150,19 +149,16 @@ public class MediaContentController {
 		String maid = m.get("ContentId")+"";
 		if(maid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
+			map.put("Message", "无节目id信息");
+			return map;
+		}
+		String smaid = m.get("ContentSequId")+"";
+		if (smaid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		String chid = m.get("ContentChannelId")+"";
-		if(chid.toLowerCase().equals("null")){
-			map.put("ReturnType", "1011");
-			map.put("Message", "无栏目id信息");
-			return map;
-		}
-		String maname = m.get("ContentName")+"";
-		String maimg = m.get("ContentImg")+"";
-		String desc = m.get("ContentDesc")+"";
-		map = mediaContentService.modifyMediaStatus(userid, maid, maname, chid, desc, maimg);
+		map = mediaContentService.modifyMediaStatus(userid, maid, smaid);
 		return map;
 	}
 	

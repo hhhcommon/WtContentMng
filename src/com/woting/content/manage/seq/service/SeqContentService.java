@@ -18,6 +18,7 @@ import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
+import com.woting.content.manage.media.service.MediaContentService;
 
 @Service
 public class SeqContentService {
@@ -25,6 +26,8 @@ public class SeqContentService {
 	private MediaService mediaService;
 	@Resource
 	private DictContentService dictContentService;
+	@Resource
+	private MediaContentService mediaContentService;
 
 	/**
 	 * 查询主播的资源列表
@@ -131,8 +134,7 @@ public class SeqContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifySeqStatus(String userid, String smaid, String smaname, String chid, String smadesc,
-			String smaimg) {
+	public Map<String, Object> modifySeqStatus(String userid, String smaid, String chid, List<Map<String, Object>> medialist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		SeqMediaAsset sma = mediaService.getSmaInfoById(smaid);
 		if (sma == null) {
@@ -160,7 +162,21 @@ public class SeqContentService {
 		cha.setIsValidate(1);
 		cha.setInRuleIds("elt");
 		cha.setCheckRuleIds("elt");
+		//发布专辑
 		mediaService.saveCHA(cha);
+		//发布专辑下级节目
+		if(!medialist.isEmpty()&&medialist.size()>0){
+			for (Map<String, Object> m : medialist) {
+				String maid = m.get("ContentId")+"";
+				MediaAsset ma= mediaService.getMaInfoById(maid);
+				if(ma==null){
+					map.put("ReturnType", "1011");
+					map.put("Message", maid+"单体发布失败");
+				}
+				mediaContentService.modifyMediaStatus(userid, maid, smaid);
+			}
+		}
+		
 		if (mediaService.getCHAInfoById(chaid) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "专辑发布成功");

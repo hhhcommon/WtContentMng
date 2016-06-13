@@ -139,6 +139,15 @@ public class MediaService {
 		return cha;
     }
     
+  //根据栏目发布表资源id得到栏目发布信息
+    public ChannelAsset getCHAInfoByAssetId(String id){
+    	ChannelAsset cha = new ChannelAsset();
+    	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoByAssetId",id);
+    	if (chapo==null) return null;
+    	cha.buildFromPo(chapo);
+		return cha;
+    }
+    
     //根据资源id得到资源字典项对应关系
     public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName){
     	Map<String, String> param=new HashMap<String, String>();

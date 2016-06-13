@@ -128,6 +128,9 @@
   <select id="getInfoById" parameterType="java.lang.String" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset where id=#{id,jdbcType=VARCHAR}
   </select>
+  <select id="getInfoByAssetId" parameterType="java.lang.String" resultMap="channelAssetMap">
+    select <include refid="Base_Column_List"/>from wt_ChannelAsset where assetId=#{assetId,jdbcType=VARCHAR}
+  </select>
 
   <!-- 是否内容列表已发布 -->
   <select id="pubChannels" parameterType="java.util.Map" resultMap="channelAssetMap">

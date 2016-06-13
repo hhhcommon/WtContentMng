@@ -140,16 +140,21 @@ public class MediaContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifyMediaStatus(String userid, String maid, String maname, String chid, String madesc,
-			String maimg) {
+	public Map<String, Object> modifyMediaStatus(String userid, String maid, String smaid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = mediaService.getMaInfoById(maid);
 		if (ma == null) {
 			map.put("ReturnType", "1011");
-			map.put("Message", "专辑不存在");
+			map.put("Message", "节目不存在");
 			return map;
 		}
-		Channel ch = mediaService.getChInfoById(chid);
+		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(smaid);
+		if(chasma==null) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "未查询到专辑发布信息");
+			return map;
+		}
+		Channel ch = chasma.getCh();
 		if (ch == null) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "栏目不存在");
@@ -172,14 +177,14 @@ public class MediaContentService {
 		mediaService.saveCHA(cha);
 		if (mediaService.getCHAInfoById(chaid) != null) {
 			map.put("ReturnType", "1001");
-			map.put("Message", "专辑发布成功");
+			map.put("Message", "节目发布成功");
 			MediaAsset ma2 = new MediaAsset();
 			ma2.setId(maid);
 			ma2.setPubCount(ma.getPubCount() + 1);
 			mediaService.updateMa(ma2);
 		} else {
 			map.put("ReturnType", "1011");
-			map.put("Message", "专辑发布失败");
+			map.put("Message", "节目发布失败");
 		}
 		return map;
 	}
