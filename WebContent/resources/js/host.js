@@ -21,34 +21,29 @@ function getContentList(obj) {
 	    	}else{
 	    		switch(obj.opeType){
 	    			case 'conAdd':
-	    				/*
-	    				alert("添加成功");
-	    				$("#addZjForm")[0].reset();
-	    				$(".shade,.opeBox").css({"display":"none"});
-	    				*/
 	    			break;
 	        		case 'conUpdate':
 	        			break;
 	        		case 'conDel':
 	        			alert("删除成功");
+	        			//操作成功后，再次请求列表
+	        			if(dataParam['mediaType']=="AUDIO"){
+	        				dataParam.url=rootPath+"content/media/getHostMediaList.do";
+	        			}else{
+	        				dataParam.url=rootPath+"content/seq/getHostSeqMediaList.do";
+	        			}
+	        			delete dataParam["opeType"];
+	        			delete dataParam["mediaType"];
+	        			getContentList(dataParam);
 	        			break;
 	        	    case 'conPub':
 	        		  	alert("发布成功");
 	        		    break;
 	        	    default:	
 	    		}
-	    		//操作成功后，再次请求列表
-    			if(dataParam['mediaType']=="AUDIO"){
-    				dataParam.url=rootPath+"content/media/getHostMediaList.do";
-    			}else{
-    				dataParam.url=rootPath+"content/seq/getHostSeqMediaList.do";
-    			}
-    			delete dataParam["opeType"];
-    			delete dataParam["mediaType"];
-    			getContentList(dataParam);
 	    	}
 	    } else {
-	      $(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
+	      alert(resultData.Message);
 	    }
 	  },
 	  error : function(jqXHR) {
@@ -116,7 +111,7 @@ function ContentListLoad(actList) {
  * 修改节目时，传递原有的分类ID，以便将其设置到选中状态供修改
  * 添加节目时，则不需要
  * */
-function getCatalogs(catalog){
+  function getCatalogs(catalog){
     $.ajax({
       type: "POST",    
       url:rootPath+"common/getCataTreeWithSelf.do",
@@ -124,11 +119,11 @@ function getCatalogs(catalog){
       data:{cataId: "3"},
       success: function(catalogsList) {
         if (catalogsList.jsonType=="1") {
-        	if(catalog){
-        		catalogsListLoad(catalogsList,catalog);
-        	}else{
-        		catalogsListLoad(catalogsList);
-        	}
+	    	if(catalog){
+	    		catalogsListLoad(catalogsList,catalog);
+	    	}else{
+	    		catalogsListLoad(catalogsList);
+	    	}
         }
       }     
     });
@@ -139,19 +134,9 @@ function getCatalogs(catalog){
     for(var i=0;i<listLength;i++){
       opt=$("<option></option>");
       opt.val(catalogsList.data.children[i].id);
-     //alert("val:"+typeof opt.val());
-     //alert("ca:"+typeof ca);
-      
-	  if(opt.val()==""){
-		  //alert("进入");
-		  opt.attr("selected","selected");
-		  //alert(opt.attr("selected"));
-	  }
-      
-      /*if(catalog && catalogsList.data.children[i].id==catalog){
+      if(catalog && (opt.val()==catalog)){
     	  opt.attr("selected","selected");
-    	  alert(opt.attr("selected"));
-      }*/
+      }
       opt.text(catalogsList.data.children[i].id);
       $("#ContentCatalogsId").append(opt);
     }

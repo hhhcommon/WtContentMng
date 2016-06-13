@@ -65,7 +65,6 @@
 	        	3，存取元素值，和提交时的对比
 	        	*/
 	        	$(".btn").trigger("click");
-	        	console.log($(window.top.document).find(".opeBox"))
 	        	$(window.top.document).find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改专辑");
 	        	var contentId,contentName,contentDesc,contentImg,subjectWords,catalogsId;
 	        	contentId=$(this).parents(".listBox").attr("contentId");
