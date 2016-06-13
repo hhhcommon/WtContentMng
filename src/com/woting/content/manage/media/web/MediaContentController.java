@@ -86,9 +86,8 @@ public class MediaContentController {
 		String madescn = m.get("ContentDesc")+"";
 		String contentkeywords = m.get("KeyWords")+"";
 		String seqid = m.get("ContentSequId")+"";
-		String seqname = m.get("ContentSequName")+"";
 		
-		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, mastatus, contentkeywords, madescn, seqid, seqname);
+		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, mastatus, contentkeywords, madescn, seqid);
 		return map;
 	}
 	
@@ -114,13 +113,13 @@ public class MediaContentController {
 		String mauri = m.get("ContentURI")+"";
 		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
-		String seqid = m.get("ContentSeqId")+"";
+		String seqid = m.get("ContentSequId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
 		String madesc = m.get("ContentDesc")+"";
 		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);
 		String mastatus = m.get("ContentStatus")+"";
 		if(!mastatus.toLowerCase().equals("null")) ma.setMaStatus(Integer.valueOf(mastatus));
-		if(seqid.toLowerCase().equals("null"))map = mediaContentService.updateMediaInfo(ma,null);
+		if(seqid.toLowerCase().equals("null")) map = mediaContentService.updateMediaInfo(ma,null);
 		else map = mediaContentService.updateMediaInfo(ma, sma);
 		
 //		String subjectwords = m.get("SubjectWords")+"";

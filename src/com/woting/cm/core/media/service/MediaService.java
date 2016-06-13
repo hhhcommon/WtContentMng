@@ -87,7 +87,11 @@ public class MediaService {
         	for (MediaAssetPo mediaAssetPo : listpo) {
         	    MediaAsset ma=new MediaAsset();
 			    ma.buildFromPo(mediaAssetPo);
-			    list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
+			    Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null);
+			    SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
+			    m.put("ContentSeqId", seqMaRefPo==null?null:seqMaRefPo.getSId());
+//			    m.put("ContentSeqName",seqMaRefPo==null?null:seqMaRefPo.);
+			    list.add(m);
 		    }
         }
         return list;
@@ -282,20 +286,18 @@ public class MediaService {
     public void removeSeqMedia(String id){
     	removeSma(id);
 		removeMa2Sma(id);
-		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
-		if (getResDictRefByResId(id)!=null) { // 删除与专辑绑定的下级节目内容分类信息
-			removeResDictRef(id);
-			for (SeqMaRefPo seqMaRefPo : l) {
-			    removeResDictRef(seqMaRefPo.getMId());
-		    }
-		}
-		if (getCHAInfoByAssetId(id)!=null) { // 删除与专辑绑定的下级节目栏目信息
-			removeCha(id);
-			for (SeqMaRefPo seqMaRefPo : l) {
-				removeCha(seqMaRefPo.getMId());
-			}
-		}
-		
-		
+		removeResDictRef(id);
+		removeCha(id);
+//		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
+//		if (getResDictRefByResId(id)!=null) { // 删除与专辑绑定的下级节目内容分类信息
+//			for (SeqMaRefPo seqMaRefPo : l) {
+//			    removeResDictRef(seqMaRefPo.getMId());
+//		    }
+//		}
+//		if (getCHAInfoByAssetId(id)!=null) { // 删除与专辑绑定的下级节目栏目信息
+//			for (SeqMaRefPo seqMaRefPo : l) {
+//				removeCha(seqMaRefPo.getMId());
+//			}
+//		}
     }
 }
