@@ -90,7 +90,8 @@ function ContentListLoad(actList) {
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
       if(mediaType=="SEQU"){
     	  listDiv.attr({
-    	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
+    	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
+    	  "contentChannelId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
     	  });
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
@@ -124,12 +125,7 @@ function getCatalogs(catalog){
         	}else{
         		catalogsListLoad(catalogsList);
         	}
-        } else {
-            //alert("获取数据出现问题:"+catalogsList.Message);
-        }  
-      },
-      error: function(jqXHR){
-         //alert("发生错误" + jqXHR.status);
+        }
       }     
     });
   }
@@ -156,3 +152,30 @@ function getCatalogs(catalog){
       $("#ContentCatalogsId").append(opt);
     }
   }
+  
+//获取栏目列表
+  /*
+   * 
+   * */
+  function getChannel(){
+      $.ajax({
+        type: "POST",    
+        url:rootPath+"common/getChannelTreeWithSelf.do",
+        dataType: "json",
+        success: function(channelList) {
+          if (channelList.jsonType=="1") {
+        	  channelListLoad(channelList);
+          }
+        }     
+      });
+    }
+    function channelListLoad(channelList){
+      var listLength=channelList.data.children.length;
+      var opt;
+      for(var i=0;i<listLength;i++){
+        opt=$("<option></option>");
+        opt.val(channelList.data.children[i].id);
+        opt.text(catalogsList.data.children[i].name);
+        $("#ContentChannelId").append(opt);
+      }
+    }

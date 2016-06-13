@@ -337,7 +337,7 @@
 		              <div class="ibox-content">
 		                  <form class="form-horizontal m-t" id="addSequForm" onsubmit="return false;">
 		                      <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
-		                      <input id="ContentStatus" name="ContentStatus" class="form-control" type="hidden" value="123" />
+		                      <input id="ContentStatus" name="ContentStatus" class="form-control" type="hidden" value="" />
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑名称：</label>
 		                          <div class="col-sm-8">
@@ -361,6 +361,12 @@
 		                              <select class="form-control" name="ContentCatalogsId" id="ContentCatalogsId" value="" ></select>
 		                          </div>
 		                      </div>
+		                      <div class="form-group">
+                              <label class="col-sm-3 control-label">发布栏目：</label>
+                              <div class="col-sm-8">
+                                  <select class="form-control" name="ContentChannelId" id="ContentChannelId" value="" ></select>
+                              </div>
+                          </div>
 		                      
 		                      <div class="form-group">
 		                          <label class="col-sm-3 control-label">专辑标签：</label>
@@ -388,7 +394,7 @@
 		                              <button class="btn btn-warning" id="submitBtn" type="submit">提交</button>
 		                          </div>
 		                          <div class="col-sm-3 text-center">
-		                              <button class="btn btn-warning" type="publish">发布</button>
+		                              <button class="btn btn-warning" id="pubBtn" type="publish">发布</button>
 		                          </div>
 		                          <div class="col-sm-3 text-center">
                                   <button class="btn btn-warning" id="draftBtn" type="draftBtn">存草稿</button>
