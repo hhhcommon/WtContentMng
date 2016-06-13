@@ -259,7 +259,7 @@
   </update>
   
   <update id="updateMas" parameterType="java.util.Map">
-    update wt_wt_MaSource
+    update wt_MaSource
     <set>
       <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
       <if test="maId!=null">maId=#{maId,jdbcType=VARCHAR},</if>
@@ -275,7 +275,7 @@
   </update>
   
   <update id="updateSeqMaRef" parameterType="java.util.Map">
-    update wt_wt_MaSource
+    update wt_SeqMA_Ref
     <set>
       <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
       <if test="SId!=null">SId=#{SId,jdbcType=VARCHAR},</if>
