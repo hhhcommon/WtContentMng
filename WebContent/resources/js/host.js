@@ -31,18 +31,21 @@ function getContentList(obj) {
 	        			break;
 	        		case 'conDel':
 	        			alert("删除成功");
-	        			//删除成功后，再次请求列表
-	        			if(dataParam['mediaType']=="AUDIO"){
-	        				dataParam.url=rootPath+"content/media/getHostMediaList.do";
-	        			}else{
-	        				dataParam.url=rootPath+"content/seq/getHostSeqMediaList.do";
-	        			}
-	        			delete dataParam["opeType"];
-	        			delete dataParam["mediaType"];
-	        			getContentList(dataParam);
-	              break;
-	        		default:
+	        			break;
+	        	    case 'conPub':
+	        		  	alert("发布成功");
+	        		    break;
+	        	    default:	
 	    		}
+	    		//操作成功后，再次请求列表
+    			if(dataParam['mediaType']=="AUDIO"){
+    				dataParam.url=rootPath+"content/media/getHostMediaList.do";
+    			}else{
+    				dataParam.url=rootPath+"content/seq/getHostSeqMediaList.do";
+    			}
+    			delete dataParam["opeType"];
+    			delete dataParam["mediaType"];
+    			getContentList(dataParam);
 	    	}
 	    } else {
 	      $(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
@@ -61,7 +64,7 @@ function ContentListLoad(actList) {
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
   } else {
     //声明下面需要创建的节点，以便添加内容和添加到文档中
-    var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conShare,conDel,subAdd,infoDiv,infoH,infHA,infoP1,infoP2;
+    var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conShare,conDel,conPub,infoDiv,infoH,infHA,infoP1,infoP2;
     //循环加载列表
     for (var i = 0; i < actListLength; i++) {
       listDiv = $("<div class='listBox'></div>");
@@ -80,11 +83,11 @@ function ContentListLoad(actList) {
       conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate' title='修改'></i>");
       conShare=$("<i class='fa fa-external-link' opeType='conShare' title='分享'></i>");
       conDel=$("<i class='fa fa-trash-o' opeType='conDel' title='删除'></i>");
-      subAdd=$("<i class='fa fa-plus-square-o' opeType='subAdd' title='发布'></i>");
+      conPub=$("<i class='fa fa-plus-square-o' opeType='conPub' title='发布'></i>");
       infoDiv = $("<div class='infoBox'>");
       infoH = $("<h4></h4>");
       infoHA=$("<a href='javascript:;'></a>");
-      imgShade.append(conUpdate).append(conShare).append(conDel).append(subAdd);
+      imgShade.append(conUpdate).append(conShare).append(conDel).append(conPub);
       infoHA.text(actList.ResultList.List[i].ContentName);
       infoP2 = $("<p class='lastTime'></p>");
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
@@ -98,6 +101,7 @@ function ContentListLoad(actList) {
           infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
           infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       }else{
+    	  listDiv.attr({"contentSeqId": actList.ResultList.List[i].ContentSeqId});
     	  imgDiv.addClass("subImg");
     	  infoDiv.append(infoH.append(infoHA)).append(infoP2);
       }
@@ -153,19 +157,14 @@ function getCatalogs(catalog){
     }
   }
   
-//获取栏目列表
-  /*
-   * 
-   * */
+  //获取栏目列表
   function getChannel(){
       $.ajax({
         type: "POST",    
         url:rootPath+"common/getChannelTreeWithSelf.do",
         dataType: "json",
         success: function(channelList) {
-          if (channelList.jsonType=="1") {
-        	  channelListLoad(channelList);
-          }
+          if (channelList.jsonType=="1"){channelListLoad(channelList);}
         }
       });
     }
@@ -188,9 +187,7 @@ function getCatalogs(catalog){
           dataType: "json",
           data:{"UserId":userId},
           success: function(seqMediaList) {
-            if (seqMediaList.ReturnType == "1001") {
-          	  seqMediaListLoad(seqMediaList);
-            } 
+            if(seqMediaList.ReturnType == "1001"){seqMediaListLoad(seqMediaList);} 
           }
         });
       }

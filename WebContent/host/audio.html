@@ -39,8 +39,7 @@
 	<script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
 
 	<script>
-		$().ready(function() {
-			
+		$(function(){
 			//获取列表
 			dataParam={
           "UserId":userId,
@@ -56,7 +55,6 @@
       
     //对专辑的改、删等4种操作
       $(".actList").on("click","i",function(){
-    	   // var myIframe=$(($(window.top.document).find("#myIframe"))[0].contentWindow);
    	    var parentIframe=$(window.top.document);
         switch($(this).attr("opeType")){
           case 'conUpdate':
@@ -99,7 +97,25 @@
            };
             getContentList(dataParam);
             break;
-          case 'subAdd':
+          case 'conPub':
+        	  alert("要发布啦");
+        	  var contentSeqId=$(this).parents(".listBox").attr("contentSeqId");
+        	  alert(contentSeqId);
+        	  //单体发布时，如果没有专辑ID，则无法发布
+        	  if(!contentSeqId){
+        		  alert("该声音还未选择专辑！")
+        		  return false;
+        	  }
+        	  dataParam={
+              "UserId":userId,
+              "ContentId":$(this).parents(".listBox").attr("contentId"),
+              "url":rootPath+"/content/media/updateMediaStatus.do",
+              "opeType":$(this).attr("opeType"),
+              "ContentSeqId":contentSeqId,
+              "mediaType":"AUDIO"
+            };
+            getContentList(dataParam);
+        	  break;
           default:
         }
       });
