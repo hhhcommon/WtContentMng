@@ -134,7 +134,7 @@ public class SeqContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifySeqStatus(String userid, String smaid, String smaname, String chid, String smadesc, String smaimg, List<Map<String, Object>> medialist) {
+	public Map<String, Object> modifySeqStatus(String userid, String smaid, String chid, List<Map<String, Object>> medialist) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		SeqMediaAsset sma = mediaService.getSmaInfoById(smaid);
 		if (sma == null) {
@@ -173,7 +173,7 @@ public class SeqContentService {
 					map.put("ReturnType", "1011");
 					map.put("Message", maid+"单体发布失败");
 				}
-				mediaContentService.modifyMediaStatus(userid, maid, ma.getMaTitle(), smaid, ma.getDescn(), ma.getMaImg());
+				mediaContentService.modifyMediaStatus(userid, maid, smaid);
 			}
 		}
 		

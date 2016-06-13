@@ -152,16 +152,13 @@ public class MediaContentController {
 			map.put("Message", "无节目id信息");
 			return map;
 		}
-		String maname = m.get("ContentName")+"";
-		String maimg = m.get("ContentImg")+"";
-		String desc = m.get("ContentDesc")+"";
 		String smaid = m.get("ContentSequId")+"";
 		if (smaid.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		map = mediaContentService.modifyMediaStatus(userid, maid, maname, smaid, desc, maimg);
+		map = mediaContentService.modifyMediaStatus(userid, maid, smaid);
 		return map;
 	}
 	

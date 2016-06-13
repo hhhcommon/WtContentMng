@@ -154,11 +154,8 @@ public class SeqContentController {
 			map.put("Message", "无栏目id信息");
 			return map;
 		}
-		String smaname = m.get("ContentName")+"";
-		String smaimg = m.get("ContentImg")+"";
-		String desc = m.get("ContentDesc")+"";
 		List<Map<String, Object>> medialist = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.modifySeqStatus(userid, smaid, smaname, chid, desc, smaimg, medialist);
+		map = seqContentService.modifySeqStatus(userid, smaid, chid, medialist);
 		return map;
 	}
 	

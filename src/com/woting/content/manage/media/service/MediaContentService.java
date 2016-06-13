@@ -140,8 +140,7 @@ public class MediaContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifyMediaStatus(String userid, String maid, String maname, String smaid, String madesc,
-			String maimg) {
+	public Map<String, Object> modifyMediaStatus(String userid, String maid, String smaid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = mediaService.getMaInfoById(maid);
 		if (ma == null) {
