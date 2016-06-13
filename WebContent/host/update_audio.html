@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>上传声音</title>
+<title>修改声音</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 
@@ -17,7 +17,7 @@
 <script src="../resources/js/host.js"></script>
 </head>
 <body class="">
-  <div class="row opeBox" id="media" opeType="conAdd">
+  <div class="row opeBox" id="media" opeType="conUpdate">
       <div class="col-sm-12">
           <div class="ibox float-e-margins">
               <div class="ibox-title">
@@ -29,21 +29,13 @@
                   </div>
               </div>
               <div class="ibox-content">
-                  <form class="form-horizontal m-t" id="addMediaForm" onsubmit="return false;">
+                  <form class="form-horizontal m-t" id="updateMediaForm" onsubmit="return false;">
                       <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
                       <input id="ContentStatus" name="ContentStatus" class="form-control" type="hidden" value="" />
                       <div class="form-group">
                           <label class="col-sm-3 control-label">声音名称：</label>
                           <div class="col-sm-8">
                               <input id="ContentName" name="ContentName" class="form-control" type="text">
-                          </div>
-                      </div>
-                      <div class="form-group audioFile">
-                          <label class="col-sm-3 control-label">选择文件：</label>
-                          <div class="col-sm-8">
-                              <input id="uploadAudio" name="uploadAudio" class="form-control" type="file" accept=".m4a,.mp3" />
-                              <input id="ContentURI" name="ContentURI" type="hidden" value=""  />
-                              <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大5M，支持mp3、m4a格式</span>
                           </div>
                       </div>
                       <div class="form-group">
@@ -118,27 +110,27 @@
           validClass:"help-block m-b-none"
         });
         $().ready(function(){
-        	  var dataParam={};
+            var dataParam={};
             var iframe;
-        	  //表单验证
-	          $("#addMediaForm").validate({
-		            rules:{
-		              ContentName:{required:true},
-		              ContentFile:"required"
-		            },
-			          messages:{
-			            ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入您的声音名称"},
-			            ContentFile:"<i class='fa fa-times-circle'></i> "+"您还没有选择声音文件哦"
-			          }
-	          });
-	          $(".close-link").on("click",function(){
-	            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
-	          });
-        	  //封面图片预览与上传
-        	  $("input[type='file']").change(function(){
-        		     var _this=$(this);
-        		     if($(this).attr("name")=="uploadImg"){
-        		    	//图片预览
+            //表单验证
+            $("#updateMediaForm").validate({
+                rules:{
+                  ContentName:{required:true},
+                  ContentFile:"required"
+                },
+                messages:{
+                  ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入您的声音名称"},
+                  ContentFile:"<i class='fa fa-times-circle'></i> "+"您还没有选择声音文件哦"
+                }
+            });
+            $(".close-link").on("click",function(){
+              $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
+            });
+            //封面图片预览与上传
+            $("input[type='file']").change(function(){
+                 var _this=$(this);
+                 if($(this).attr("name")=="uploadImg"){
+                  //图片预览
                          if($(".defaultImg").css("display")!="none"){
                            $(".defaultImg").css({"display":"none"});
                          }
@@ -158,8 +150,8 @@
                          }
                          fileReader.readAsDataURL($(this)[0].files[0]);
                          
-        		     }
-        		     
+                 }
+                 
                   //文件上传
                   var oMyForm = new FormData();
                   oMyForm.append("ContentFile", $(this)[0].files[0]);
@@ -175,8 +167,8 @@
                       
                       success: function (opeResult) {
                          if (opeResult.jsonType=="1") {
-                        	 //alert("上传成功");
-                        	 _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                           //alert("上传成功");
+                           _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
                          }else{
                            alert(opeResult.err);
                          }
@@ -185,26 +177,26 @@
                           alert("发生错误" + jqXHR.status);
                        }     
                   });
-        	  });
-        	  
-        	//form表单提交
+            });
+            
+          //form表单提交
               $("#submitBtn,#draftBtn").click(function () {
-            	  var contentStatus=$(this).attr("id")=="draftBtn"?"0":"1";
+                var contentStatus=$(this).attr("id")=="draftBtn"?"0":"1";
                 $("#ContentStatus").val(contentStatus);
-            	  if($("#ContentImg").val()==""){
+                if($("#ContentImg").val()==""){
                       //如未设置封面，将使用平台默认图片
                       $("#ContentImg").val($(".defaultImg").attr("src"));
                     }
                  $.ajax({
-                		  url:rootPath+"content/media/addMediaInfo.do",
+                      url:rootPath+"content/media/addMediaInfo.do",
                       type:"POST",
-                      data:$("#addMediaForm").serialize(),
+                      data:$("#updateMediaForm").serialize(),
                       dataType:"json",
                       //表单提交前进行验证
                       success: function (opeResult) {
                          if (opeResult.ReturnType=="1001") {
                            alert("添加成功");
-                           $("#addMediaForm")[0].reset();
+                           $("#updateMediaForm")[0].reset();
                            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
                          //添加成功后，重新加载列表
                            AfterAddList({"UserId":userId,"url":rootPath+"content/media/getHostMediaList.do"});
@@ -217,7 +209,7 @@
                        }
                   });
               });
-        	
+          
               function AfterAddList(obj) {
                   iframe=$(window.top.document.getElementById('myIframe').contentWindow.document);
                   $.ajax({
@@ -310,7 +302,7 @@
                 data:{"UserId":userId},
                 success: function(seqMediaList) {
                   if (seqMediaList.ReturnType == "1001") {
-                	  seqMediaListLoad(seqMediaList);
+                    seqMediaListLoad(seqMediaList);
                   } 
                 }
               });

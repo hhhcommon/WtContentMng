@@ -65,11 +65,10 @@
             3，存取元素值，和提交时的对比
             */
             $(".btn").trigger("click");
-            alert("sfsdfsd");
-            //获得另一个iframe的window对象   -》 $($(window.top.document).find("#newIframe")[0].contentWindow)
-            //获得另一个iframe的document对象   -》$($(window.top.document).find("#newIframe")[0].contentWindow.document)
-            alert($($(window.top.document).find("#newIframe")[0].contentWindow.document));
-            console.log($($(window.top.document).find("#newIframe")[0].contentWindow.document).find(".opeBox"));
+            alert("单体修改");
+            console.log($(parent["newIframe"].document).find(".opeBox"));
+            //获得另一个iframe的document对象   -》parent["newIframe"].document
+            //console.log($($(window.top.document).find("#newIframe")[0].contentWindow.document).find(".opeBox"));
             $($(window.top.document).find("#newIframe")[0].contentWindow.document).find(".opeBox").attr({"opeType":"conUpdate"}).find("h5").text("修改声音");
             var contentId,contentName,contentDesc,contentImg,subjectWords;
             contentId=$(this).parents(".listBox").attr("contentId");

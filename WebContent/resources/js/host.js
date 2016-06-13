@@ -166,7 +166,7 @@ function getCatalogs(catalog){
           if (channelList.jsonType=="1") {
         	  channelListLoad(channelList);
           }
-        }     
+        }
       });
     }
     function channelListLoad(channelList){
@@ -175,7 +175,7 @@ function getCatalogs(catalog){
       for(var i=0;i<listLength;i++){
         opt=$("<option></option>");
         opt.val(channelList.data.children[i].id);
-        opt.text(catalogsList.data.children[i].name);
+        opt.text(channelList.data.children[i].name);
         $("#ContentChannelId").append(opt);
       }
     }
