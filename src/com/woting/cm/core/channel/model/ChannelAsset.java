@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 
 import com.spiritdata.framework.core.model.ModelSwapPo;
 import com.spiritdata.framework.exceptionC.Plat0006CException;
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -146,7 +145,6 @@ public class ChannelAsset implements Serializable, ModelSwapPo {
                 if (StringUtils.isNullOrEmptyOrSpace(pubImg)) ret.setPubImg(((SeqMediaAsset)pubObj).getSmaImg());
             }
         }
-        System.out.println(JsonUtils.objToJson(ret));
         return ret;
     }
 

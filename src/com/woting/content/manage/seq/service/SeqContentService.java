@@ -8,9 +8,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.FacesRequestAttributes;
-
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -98,7 +95,7 @@ public class SeqContentService {
 		sma.setLang(detail);
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
-		if(!did.toLowerCase().equals("null")) 
+		if(!did.toLowerCase().equals("null"))
 			dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		map = modifySeqStatus(userid, smaid, chid, 0, malist);
 		if (mediaService.getSmaInfoById(smaid) != null && map.get("ReturnType").equals("1001")) {
@@ -191,16 +188,13 @@ public class SeqContentService {
 		    cha.setSort(0);
 		    cha.setCheckRuleIds("0");
 		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
-		    System.out.println("专辑flowflag="+flowflag);
 		    if(flowflag==2) {
 		    	cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-		    	System.out.println("发布");
 		    }
 		    cha.setIsValidate(1);
 		    cha.setInRuleIds("elt");
 		    cha.setCheckRuleIds("elt");
 		    //发布专辑
-		    System.out.println("##"+JsonUtils.objToJson(cha));
 		    mediaService.saveCha(cha);
 		}
 		

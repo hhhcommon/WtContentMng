@@ -126,10 +126,6 @@ public class SeqContentController {
 		String did = m.get("ContentCatalogsId")+""; // 更改专辑的内容分类
 		String chid = m.get("ContentChannelId")+""; // 更改专辑的栏目
 		List<Map<String, Object>> malist = (List<Map<String, Object>>) m.get("MediaInfo");
-//		String subjectwords = m.get("SubjectWords")+"";
-//		if(subjectwords.toLowerCase().equals("null")) mauri=null;
-//		String keywords = m.get("KeyWords")+"";
-//		if(keywords.toLowerCase().equals("null")) mauri=null;
 		map = seqContentService.updateSeqInfo(userid,sma,did,chid,malist);
 		return map;
 	}
