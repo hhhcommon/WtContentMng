@@ -158,7 +158,7 @@ public class MediaContentController {
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		map = mediaContentService.modifyMediaStatus(userid, maid, smaid);
+		map = mediaContentService.modifyMediaStatus(userid, maid, smaid, 2);
 		return map;
 	}
 	

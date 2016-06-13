@@ -140,7 +140,7 @@ public class MediaContentService {
 		return map;
 	}
 	
-	public Map<String, Object> modifyMediaStatus(String userid, String maid, String smaid) {
+	public Map<String, Object> modifyMediaStatus(String userid, String maid, String smaid, int flowflag) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = mediaService.getMaInfoById(maid);
 		if (ma == null) {
@@ -167,7 +167,7 @@ public class MediaContentService {
 		cha.setPubObj(ma);
 		cha.setPublisherId(userid);
 		cha.setCheckerId("1");
-		cha.setFlowFlag(2);
+		cha.setFlowFlag(flowflag);
 		cha.setSort(0);
 		cha.setCheckRuleIds("0");
 		cha.setCTime(new Timestamp(System.currentTimeMillis()));

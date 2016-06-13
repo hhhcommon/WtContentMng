@@ -121,6 +121,12 @@ public class MediaService {
     	return sma;
 	}
     
+    public List<SeqMaRefPo> getSmaListBySid(String sid) {
+    	List<SeqMaRefPo> seqMaRefPos = seqMaRefDao.queryForList("getS2MRefInfoByMId", sid);
+    	if(seqMaRefPos==null) return null;
+    	return seqMaRefPos;
+	}
+    
     //根据栏目id得到栏目
     public Channel getChInfoById(String id){
     	Channel ch = new Channel();

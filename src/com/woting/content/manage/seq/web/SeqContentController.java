@@ -82,10 +82,11 @@ public class SeqContentController {
 		smaimg = smaimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
 		String smadesc = m.get("ContentDesc")+"";
 		String did = m.get("ContentCatalogsId")+"";
+		String chid = m.get("ContentChannelId")+"";
 		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
-		if(!m.containsKey("AddMediaInfo"))maList=null;
-		else maList = (List<Map<String, Object>>) m.get("AddMediaInfo");
-		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, smadesc, maList);
+		if(!m.containsKey("MediaInfo"))maList=null;
+		else maList = (List<Map<String, Object>>) m.get("MediaInfo");
+		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, chid, smadesc, maList);
 		return map;
 	}
 	
@@ -100,6 +101,12 @@ public class SeqContentController {
 		SeqMediaAsset sma = new SeqMediaAsset();
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId")+"";
+		if(userid.toLowerCase().equals("null")){
+			map.put("ReturnType", "1011");
+		    map.put("Message", "无用户信息");
+		    return map;
+		}
 		String smaid = m.get("ContentId")+"";
 		if(smaid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
@@ -114,14 +121,16 @@ public class SeqContentController {
 		if(!smaimg.toLowerCase().equals("null")) sma.setSmaImg(smaimg);
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
-		String did = m.get("ContentCatalogsId")+""; //更改专辑的内容分类
 		String smastatus = m.get("ContentStatus")+"";
 		if(!smastatus.toLowerCase().equals("null")) sma.setSmaStatus(Integer.valueOf(smastatus));
+		String did = m.get("ContentCatalogsId")+""; // 更改专辑的内容分类
+		String chid = m.get("ContentChannelId")+""; // 更改专辑的栏目
+		List<Map<String, Object>> malist = (List<Map<String, Object>>) m.get("MediaInfo");
 //		String subjectwords = m.get("SubjectWords")+"";
 //		if(subjectwords.toLowerCase().equals("null")) mauri=null;
 //		String keywords = m.get("KeyWords")+"";
 //		if(keywords.toLowerCase().equals("null")) mauri=null;
-		map = seqContentService.updateSeqInfo(sma,did);
+		map = seqContentService.updateSeqInfo(userid,sma,did,chid,malist);
 		return map;
 	}
 	
@@ -155,7 +164,7 @@ public class SeqContentController {
 			return map;
 		}
 		List<Map<String, Object>> medialist = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.modifySeqStatus(userid, smaid, chid, medialist);
+		map = seqContentService.modifySeqStatus(userid, smaid, chid, 2, medialist);
 		return map;
 	}
 	
