@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
@@ -174,6 +175,8 @@ public class MediaContentService {
 		if(cha!=null){
 			cha.setFlowFlag(flowflag);
 			cha.setCh(ch);
+			if(flowflag==2)
+				cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 			mediaService.updateCha(cha);
 		}else{
 			cha = new ChannelAsset();
@@ -187,10 +190,15 @@ public class MediaContentService {
 		    cha.setSort(0);
 		    cha.setCheckRuleIds("0");
 		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
-		    if(flowflag==2)cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    System.out.println("单体flowflag="+flowflag);
+		    if(flowflag==2) {
+		    	cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    	System.out.println("发布");
+		    }
 		    cha.setIsValidate(1);
 		    cha.setInRuleIds("elt");
 		    cha.setCheckRuleIds("elt");
+		    System.out.println("#"+JsonUtils.objToJson(cha));
 		    mediaService.saveCha(cha);
 		}
 		if (flowflag==2&&chasma.getFlowFlag()!=2) {
