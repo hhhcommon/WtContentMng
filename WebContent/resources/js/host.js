@@ -179,3 +179,28 @@ function getCatalogs(catalog){
         $("#ContentChannelId").append(opt);
       }
     }
+    
+  //添加/修改单体时，获取专辑列表
+    function getSeqMediaList(){
+        $.ajax({
+          type: "POST",    
+          url:rootPath+"content/seq/getHostSeqMediaList.do",
+          dataType: "json",
+          data:{"UserId":userId},
+          success: function(seqMediaList) {
+            if (seqMediaList.ReturnType == "1001") {
+          	  seqMediaListLoad(seqMediaList);
+            } 
+          }
+        });
+      }
+      function seqMediaListLoad(seqMediaList){
+        var listLength=seqMediaList.ResultList.AllCount;
+        var opt;
+        for(var i=0;i<listLength;i++){
+          opt=$("<option></option>");
+          opt.val(seqMediaList.ResultList.List[i].ContentId);
+          opt.text(seqMediaList.ResultList.List[i].ContentName);
+          $("#ContentSequId").append(opt);
+        }
+      }    

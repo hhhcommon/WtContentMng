@@ -17,7 +17,7 @@
 <script src="../resources/js/host.js"></script>
 </head>
 <body class="">
-  <div class="row opeBox" id="media" opeType="conAdd">
+  <div class="row opeBox" id="media" opeType="conAdd" style="display:block">
       <div class="col-sm-12">
           <div class="ibox float-e-margins">
               <div class="ibox-title">
@@ -110,8 +110,8 @@
     <script>
         //表单验证默认设置
         $.validator.setDefaults({
-          highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
-          success:function(a){a.closest(".form-group").removeClass("has-error").addClass("has-success")},
+          highlight:function(a){$(a).closest(".form-group").addClass("has-error")},
+          success:function(a){a.closest(".form-group").removeClass("has-error")},
           errorElement:"span",
           errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
           errorClass:"help-block m-b-none",
@@ -296,35 +296,9 @@
                   }
                 }
               }
-              
-            //添加单体时，获取专辑列表
-            /*
-             *
-             * */
-          getSeqMediaList();
-          function getSeqMediaList(){
-              $.ajax({
-                type: "POST",    
-                url:rootPath+"content/seq/getHostSeqMediaList.do",
-                dataType: "json",
-                data:{"UserId":userId},
-                success: function(seqMediaList) {
-                  if (seqMediaList.ReturnType == "1001") {
-                	  seqMediaListLoad(seqMediaList);
-                  } 
-                }
-              });
-            }
-            function seqMediaListLoad(seqMediaList){
-              var listLength=seqMediaList.ResultList.AllCount;
-              var opt;
-              for(var i=0;i<listLength;i++){
-                opt=$("<option></option>");
-                opt.val(seqMediaList.ResultList.List[i].ContentId);
-                opt.text(seqMediaList.ResultList.List[i].ContentName);
-                $("#ContentSequId").append(opt);
-              }
-            }    
+              //获取专辑列表
+              getSeqMediaList();
+            
         });
     </script>
 </body>
