@@ -17,11 +17,11 @@
 <script src="../resources/js/host.js"></script>
 </head>
 <body class="">
-  <div class="row opeBox" id="media" opeType="conUpdate">
+  <div class="row opeBox" id="media" opeType="conUpdate" style="display:block">
       <div class="col-sm-12">
           <div class="ibox float-e-margins">
               <div class="ibox-title">
-                  <h5>添加声音</h5>
+                  <h5>修改声音</h5>
                   <div class="ibox-tools">
                       <a class="close-link">
                           <i class="fa fa-times"></i>
@@ -42,7 +42,7 @@
                           <label class="col-sm-3 control-label">声音封面：</label>
                           <div class="col-sm-8">
                               <div class="previewImg">
-                                <img class="defaultImg" src="../uploadFiles/tempuplf/default.png" alt="front cover" />
+                                <img class="defaultImg" src="" alt="front cover" />
                               </div>
                               <input id="uploadImg" name="uploadImg" class="form-control" type="file" accept=".png,.jpg" />
                               <input id="ContentImg" name="ContentImg" type="hidden" value="" />
@@ -102,8 +102,8 @@
     <script>
         //表单验证默认设置
         $.validator.setDefaults({
-          highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
-          success:function(a){a.closest(".form-group").removeClass("has-error").addClass("has-success")},
+          highlight:function(a){$(a).closest(".form-group").addClass("has-error")},
+          success:function(a){a.closest(".form-group").removeClass("has-error")},
           errorElement:"span",
           errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
           errorClass:"help-block m-b-none",
@@ -126,57 +126,53 @@
             $(".close-link").on("click",function(){
               $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
             });
-            //封面图片预览与上传
+          //封面图片预览与上传
             $("input[type='file']").change(function(){
-                 var _this=$(this);
-                 if($(this).attr("name")=="uploadImg"){
-                  //图片预览
-                         if($(".defaultImg").css("display")!="none"){
-                           $(".defaultImg").css({"display":"none"});
-                         }
-                         var fileReader = new FileReader();
-                         fileReader.onload = function(evt)
-                         {
-                             if(FileReader.DONE==fileReader.readyState)
-                             {    
-                                  var newImg =  $("<img alt='front cover' />");
-                                  newImg.attr({"src":this.result});//是Base64的data url数据
-                                  if($(".previewImg").children().length>1){
-                                    $(".previewImg img:last").replaceWith(newImg);
-                                  }else{
-                                    $(".previewImg").append(newImg);
-                                  }
-                              }
-                         }
-                         fileReader.readAsDataURL($(this)[0].files[0]);
-                         
-                 }
-                 
-                  //文件上传
-                  var oMyForm = new FormData();
-                  oMyForm.append("ContentFile", $(this)[0].files[0]);
-                  $.ajax({
-                      url:rootPath+"common/uploadCM.do",
-                      type:"POST",
-                      data:oMyForm,
-                      cache: false,
-                      processData: false,
-                      contentType: false,
-                      dataType:"json",
-                      //表单提交前进行验证
-                      
-                      success: function (opeResult) {
-                         if (opeResult.jsonType=="1") {
-                           //alert("上传成功");
-                           _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
-                         }else{
-                           alert(opeResult.err);
-                         }
-                      },
-                      error: function(jqXHR){
-                          alert("发生错误" + jqXHR.status);
-                       }     
-                  });
+             var _this=$(this);
+              //图片预览
+             if($(".defaultImg").css("display")!="none"){
+               $(".defaultImg").css({"display":"none"});
+             }
+             var fileReader = new FileReader();
+             fileReader.onload = function(evt)
+             {
+               if(FileReader.DONE==fileReader.readyState)
+               {    
+               var newImg = $("<img alt='front cover' class='newImg' />");
+               newImg.attr({"src":this.result});//是Base64的data url数据
+               if($(".previewImg").children().length>1){
+                 $(".previewImg img:last").replaceWith(newImg);
+               }else{
+                 $(".previewImg").append(newImg);
+               }
+                }
+             }
+             fileReader.readAsDataURL($(this)[0].files[0]);
+             
+              //文件上传
+             var oMyForm = new FormData();
+             oMyForm.append("ContentFile", $(this)[0].files[0]);
+             $.ajax({
+               url:rootPath+"common/uploadCM.do",
+               type:"POST",
+               data:oMyForm,
+               cache: false,
+               processData: false,
+               contentType: false,
+               dataType:"json",
+               //表单提交前进行验证
+               success: function (opeResult) {
+                  if (opeResult.jsonType=="1") {
+                    //alert("上传成功");
+                    _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                  }else{
+                    alert(opeResult.err);
+                  }
+               },
+               error: function(jqXHR){
+                 alert("发生错误" + jqXHR.status);
+               }     
+             });
             });
             
           //form表单提交
@@ -188,14 +184,14 @@
                       $("#ContentImg").val($(".defaultImg").attr("src"));
                     }
                  $.ajax({
-                      url:rootPath+"content/media/addMediaInfo.do",
+                      url:rootPath+"content/media/updateMediaInfo.do",
                       type:"POST",
                       data:$("#updateMediaForm").serialize(),
                       dataType:"json",
                       //表单提交前进行验证
                       success: function (opeResult) {
                          if (opeResult.ReturnType=="1001") {
-                           alert("添加成功");
+                           alert("修改成功");
                            $("#updateMediaForm")[0].reset();
                            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
                          //添加成功后，重新加载列表
@@ -211,7 +207,7 @@
               });
           
               function AfterAddList(obj) {
-                  iframe=$(window.top.document.getElementById('myIframe').contentWindow.document);
+                  iframe=$(parent['myIframe'].document);
                   $.ajax({
                     type : "POST",
                     url : obj.url,
@@ -238,7 +234,7 @@
                     
               //创建节目列表DOM树
               function ContentListLoad2(actList) {
-                iframe==$(window.top.document.getElementById('myIframe').contentWindow.document);
+                iframe==$(parent['myIframe'].document);
                 var actListLength = actList.ResultList.AllCount;
                 var mediaType=actList.ResultList.List[0].MediaType;
                 if (actListLength == 0) {
@@ -289,34 +285,8 @@
                 }
               }
               
-            //添加单体时，获取专辑列表
-            /*
-             *
-             * */
-          getSeqMediaList();
-          function getSeqMediaList(){
-              $.ajax({
-                type: "POST",    
-                url:rootPath+"content/seq/getHostSeqMediaList.do",
-                dataType: "json",
-                data:{"UserId":userId},
-                success: function(seqMediaList) {
-                  if (seqMediaList.ReturnType == "1001") {
-                    seqMediaListLoad(seqMediaList);
-                  } 
-                }
-              });
-            }
-            function seqMediaListLoad(seqMediaList){
-              var listLength=seqMediaList.ResultList.AllCount;
-              var opt;
-              for(var i=0;i<listLength;i++){
-                opt=$("<option></option>");
-                opt.val(seqMediaList.ResultList.List[i].ContentId);
-                opt.text(seqMediaList.ResultList.List[i].ContentName);
-                $("#ContentSequId").append(opt);
-              }
-            }    
+              //获取专辑列表
+              getSeqMediaList();
         });
     </script>
 </body>

@@ -61,7 +61,7 @@
           <div class="" id="content-main">
             <!--登录进来，默认显示Home欢迎首页-->
             <iframe width="100%" height="100%" src="./host/zj.html" frameborder="0" name="myIframe" id="myIframe"></iframe>
-            <iframe width="100%" height="680px" src="./host/add_audio.html" scrolling="no" frameborder="0" name="newIframe" id="newIframe"></iframe>
+            <iframe width="100%" height="680px" src="" scrolling="no" frameborder="0" name="newIframe" id="newIframe"></iframe>
           </div>
           <!-- 右侧热点区 -->
           <div class="sources">
@@ -86,7 +86,7 @@
       <script src="./resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>
       <script>
       $.validator.setDefaults({
-        highlight:function(a){$(a).closest(".form-group").removeClass("has-success").addClass("has-error")},
+        highlight:function(a){$(a).closest(".form-group").addClass("has-error")},
         success:function(a){a.closest(".form-group").removeClass("has-error")},
         errorElement:"span",
         errorPlacement:function(a,b){if(b.is(":radio")||b.is(":checkbox")){a.appendTo(b.parent().parent().parent())}else{a.appendTo(b.parent())}},
