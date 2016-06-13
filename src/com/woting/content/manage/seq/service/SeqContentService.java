@@ -128,18 +128,24 @@ public class SeqContentService {
 					mediaService.bindMa2Sma(ma, sma);
 				}
 			}
+			List<SeqMaRefPo> l = mediaService.getSmaListBySid(sma.getId());
 			if(!did.toLowerCase().equals("null")){
 				mediaService.removeResDictRef(sma.getId());
 				dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
-				List<SeqMaRefPo> l = mediaService.getSmaListBySid(sma.getId());
-				for (SeqMaRefPo seqMaRefPo : l) { // 查询专辑下级信息，删除下级单体的内容分类数据信息，重新写入wt_ResDict_Ref表内
-					mediaService.removeResDictRef(seqMaRefPo.getMId());
-					dictContentService.addCataLogs("3", did, "wt_MediaAsset", seqMaRefPo.getMId());
-				}
+				if(l!=null&&l.size()>0)
+				    for (SeqMaRefPo seqMaRefPo : l) { // 查询专辑下级信息，删除下级单体的内容分类数据信息，重新写入wt_ResDict_Ref表内
+					    mediaService.removeResDictRef(seqMaRefPo.getMId());
+					    dictContentService.addCataLogs("3", did, "wt_MediaAsset", seqMaRefPo.getMId());
+				    }
 			}
 			if(!chid.toLowerCase().equals("null")){
 				mediaService.removeCha(sma.getId());
 				modifySeqStatus(userid, sma.getId(), chid, 0, malist);
+				if(l!=null&&l.size()>0)
+					for (SeqMaRefPo seqMaRefPo : l) {
+						mediaService.removeCha(seqMaRefPo.getMId());
+						mediaContentService.modifyMediaStatus(userid, seqMaRefPo.getMId(), sma.getId(), 0);
+					}
 			}
 			map.put("ReturnType", "1001");
 		    map.put("Message", "修改成功");
@@ -164,23 +170,31 @@ public class SeqContentService {
 			map.put("Message", "栏目不存在");
 			return map;
 		}
-		ChannelAsset cha = new ChannelAsset();
-		String chaid = SequenceUUID.getPureUUID();
-		cha.setId(chaid);
-		cha.setCh(ch);
-		cha.setPubObj(sma);
-		cha.setPublisherId(userid);
-		cha.setCheckerId("1");
-		cha.setFlowFlag(flowflag);
-		cha.setSort(0);
-		cha.setCheckRuleIds("0");
-		cha.setCTime(new Timestamp(System.currentTimeMillis()));
-		if(flowflag==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-		cha.setIsValidate(1);
-		cha.setInRuleIds("elt");
-		cha.setCheckRuleIds("elt");
-		//发布专辑
-		mediaService.saveCha(cha);
+		ChannelAsset cha = mediaService.getCHAInfoByAssetId(smaid);
+		if(cha!=null){
+			cha.setFlowFlag(flowflag);
+			cha.setCh(ch);
+			mediaService.updateCha(cha);
+		}else{
+			cha = new ChannelAsset();
+		    String chaid = SequenceUUID.getPureUUID();
+		    cha.setId(chaid);
+		    cha.setCh(ch);
+		    cha.setPubObj(sma);
+		    cha.setPublisherId(userid);
+		    cha.setCheckerId("1");
+		    cha.setFlowFlag(flowflag);
+		    cha.setSort(0);
+		    cha.setCheckRuleIds("0");
+		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
+		    if(flowflag==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    cha.setIsValidate(1);
+		    cha.setInRuleIds("elt");
+		    cha.setCheckRuleIds("elt");
+		    //发布专辑
+		    mediaService.saveCha(cha);
+		}
+		
 		//发布专辑下级节目
 		if(medialist!=null&&medialist.size()>0) {
 			for (Map<String, Object> m : medialist) {
@@ -194,7 +208,7 @@ public class SeqContentService {
 			}
 		}
 		
-		if (mediaService.getCHAInfoById(chaid) != null) {
+		if (mediaService.getCHAInfoById(cha.getId()) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "专辑发布成功");
 			SeqMediaAsset sma2 = new SeqMediaAsset();

@@ -168,6 +168,7 @@ public class MediaContentService {
 		ChannelAsset cha = mediaService.getCHAInfoByAssetId(maid);
 		if(cha!=null){
 			cha.setFlowFlag(flowflag);
+			cha.setCh(ch);
 			mediaService.updateCha(cha);
 		}else{
 			cha = new ChannelAsset();

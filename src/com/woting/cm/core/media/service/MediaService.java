@@ -65,6 +65,11 @@ public class MediaService {
 		return smarefpo;
     }
     
+    public List<SeqMaRefPo> getSeqMaRefBySid(String sid){
+    	List<SeqMaRefPo> list = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
+		return list;
+    }
+    
     public int getCountInCha(Map<String, Object> m){
 		return channelAssetDao.getCount("countnum", m);
     }
@@ -104,7 +109,7 @@ public class MediaService {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
 			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
-			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoByMId", sma.getId());
+			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 			    smap.put("SubCount", l.size());
 			    list.add(smap);
 		    }
@@ -122,7 +127,7 @@ public class MediaService {
 	}
     
     public List<SeqMaRefPo> getSmaListBySid(String sid) {
-    	List<SeqMaRefPo> seqMaRefPos = seqMaRefDao.queryForList("getS2MRefInfoByMId", sid);
+    	List<SeqMaRefPo> seqMaRefPos = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
     	if(seqMaRefPos==null) return null;
     	return seqMaRefPos;
 	}
@@ -277,7 +282,20 @@ public class MediaService {
     public void removeSeqMedia(String id){
     	removeSma(id);
 		removeMa2Sma(id);
-		removeResDictRef(id);
-		removeCha(id);
+		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
+		if (getResDictRefByResId(id)!=null) { // 删除与专辑绑定的下级节目内容分类信息
+			removeResDictRef(id);
+			for (SeqMaRefPo seqMaRefPo : l) {
+			    removeResDictRef(seqMaRefPo.getMId());
+		    }
+		}
+		if (getCHAInfoByAssetId(id)!=null) { // 删除与专辑绑定的下级节目栏目信息
+			removeCha(id);
+			for (SeqMaRefPo seqMaRefPo : l) {
+				removeCha(seqMaRefPo.getMId());
+			}
+		}
+		
+		
     }
 }

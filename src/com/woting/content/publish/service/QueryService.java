@@ -15,8 +15,6 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.handler.MappedInterceptor;
-
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
