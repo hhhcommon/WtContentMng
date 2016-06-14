@@ -123,9 +123,12 @@
                   ContentFile:"<i class='fa fa-times-circle'></i> "+"您还没有选择声音文件哦"
                 }
             });
-            $(".close-link").on("click",function(){
-              $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
-            });
+          //获取专辑列表
+          getSeqMediaList();
+          
+          $(".close-link").on("click",function(){
+            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
+          });
           //封面图片预览与上传
             $("input[type='file']").change(function(){
              var _this=$(this);
@@ -284,9 +287,6 @@
                   }
                 }
               }
-              
-              //获取专辑列表
-              getSeqMediaList();
         });
     </script>
 </body>

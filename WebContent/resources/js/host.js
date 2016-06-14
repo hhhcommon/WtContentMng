@@ -175,6 +175,6 @@ function ContentListLoad(actList) {
           opt=$("<option></option>");
           opt.val(seqMediaList.ResultList.List[i].ContentId);
           opt.text(seqMediaList.ResultList.List[i].ContentName);
-          $("#ContentSequId").append(opt);
+          $("#ContentSeqId").append(opt);
         }
       }    
