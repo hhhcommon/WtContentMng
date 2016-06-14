@@ -108,10 +108,11 @@ public class MediaService {
 		    }
     	    resids = resids.substring(1);
     	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+    	    List<Map<String, Object>> chalist = getCHAByAssetIds(resids, "wt_SeqMediaAsset");
     	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
-			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
+			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, chalist, null);
 			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 			    smap.put("SubCount", l.size());
 			    list.add(smap);
@@ -179,6 +180,20 @@ public class MediaService {
         List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResId", resid);
 		return rcrpL;
     }
+    
+  //根据资源id得到资源栏目对应关系
+    public List<Map<String, Object>> getCHAByAssetIds(String assetIds, String assetType){
+    	Map<String, String> param=new HashMap<String, String>();
+        param.put("assetType", assetType);
+        param.put("assetIds", assetIds);
+        List<ChannelAssetPo> chal = channelAssetDao.queryForList("getListByAssetIds", param);
+        List<Map<String, Object>> chalist = new ArrayList<Map<String,Object>>();
+        for (ChannelAssetPo chapo : chal) {
+			chalist.add(chapo.toHashMap());
+		}
+		return chalist;
+    }
+    
     
     
     public MediaAsset getMaInfoById(String id) {
@@ -262,8 +277,12 @@ public class MediaService {
     	maSourceDao.delete("multiMasByMaId", maid);
     }
     
-    public void removeMa2Sma(String mid){
+    public void removeMa2SmaByMid(String mid){
     	seqMaRefDao.delete("multiM2SRefByMId", mid);
+    }
+    
+    public void removeMa2SmaBySid(String sid){
+    	seqMaRefDao.delete("multiM2SRefBySId", sid);
     }
     
     public void removeResDictRef(String id){
@@ -277,14 +296,14 @@ public class MediaService {
     public void removeMedia(String id) {
     	removeMa(id);
 		removeMas(id);
-		removeMa2Sma(id);
+		removeMa2SmaByMid(id);
 		removeResDictRef(id);
 		removeCha(id);
     }
     
     public void removeSeqMedia(String id){
     	removeSma(id);
-		removeMa2Sma(id);
+		removeMa2SmaBySid(id);
 		removeResDictRef(id);
 		removeCha(id);
 //		List<SeqMaRefPo> l = getSeqMaRefBySid(id);

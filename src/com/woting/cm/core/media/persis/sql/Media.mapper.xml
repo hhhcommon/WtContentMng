@@ -323,4 +323,8 @@
       delete from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
   </delete>
   
+  <delete id="multiM2SRefBySId" parameterType="java.lang.String">
+      delete from wt_SeqMA_Ref where sid=#{sid,jdbcType=VARCHAR}
+  </delete>
+  
 </mapper>
