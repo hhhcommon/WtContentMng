@@ -235,6 +235,9 @@ function getDateMonthLastDay_format(date, fmt) {
   return (new Date((new Date(date.getFullYear(), date.getMonth()+1, 1)).getTime()-(1000*60*60*24))).format(fmt);
 }
 
+/**
+ * 从Html中得到干净的字符串
+ */
 function getPureStrFromHTML(htmlStr) {
   var pureStr=htmlStr.replace(/(\n)/g, "");
   pureStr=pureStr.replace(/(\t)/g, "");

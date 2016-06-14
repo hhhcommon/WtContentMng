@@ -136,7 +136,7 @@ h4 {
   <div class="modal-dialog my-mdialog">
     <div class="modal-content">
       <div class="modal-header" style="padding-bottom:5px;">
-        <button type="button" class="close" id="closeB" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" id="closeB_verCfg" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title">版本配置信息</h4>
         <div class="btn-group my-btnOper">
           <button id="browserB" class="btn btn-primary" type="button">浏览</button>
@@ -177,7 +177,7 @@ h4 {
   <div class="modal-dialog my-mdialog" style="width:1000px;">
     <div class="modal-content">
       <div class="modal-header" style="padding-bottom:5px;">
-        <button type="button" class="close" id="closeB" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" id="closeB_ver" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" style="margin-bottom:5px;">添加版本</h4>
       </div>
       <div class="modal-body my-mbody">
@@ -220,7 +220,7 @@ h4 {
 
 </div></body>
 
-<script>alert("0");
+<script>alert("7");
 var canBrowse=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
@@ -255,32 +255,37 @@ $(function() {
   $("#saveCfgB").on("click", function() {
     saveCfg();
   });
+
+  //四、新增修改版本处理
   $("#saveVerB").on("click", function() {
     saveVer();
   });
+  $("#verAdd").on("hide.bs.modal", function () {
+    cleanVerWin();
+  });
 
-  //四、翻页处理，先不进行包装
+  //五、翻页处理，先不进行包装
   $(".pagination .first").on("click", function() {//第一页
     if ($(this).hasClass("disabled")) return;
     page.Page="1";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .previous").on("click", function() {//上一页
     if ($(this).hasClass("disabled")) return;
     var _p=Number(page.Page);
     if (_p>1) page.Page=(_p-1)+"";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .next").on("click", function() {//下一页
     if ($(this).hasClass("disabled")) return;
     var _p=Number(page.Page);
     page.Page=(_p+1)+"";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .last").on("click", function() {//尾页
     if ($(this).hasClass("disabled")) return;
     page.GotoLast="1";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .jump").on("click", function() {//跳至
     if ($(this).hasClass("disabled")) return;
@@ -291,33 +296,35 @@ $(function() {
       return;
     }
     page.Page=_page;
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
 
-  //五、初始化页面
-  $('#verMemo').summernote({
+  //六、初始化页面
+  $("#verMemo").summernote({
     lang:'zh-CN',
+    placeholder:'在此输入版本说明，介绍版本的情况，注意：可不包括bug的修改说明',
     height:150,
     minHeight:150,
     maxHeight:150,
-    focus: true
+    focus:true
   });
-  $('#verBug').summernote({
+  $("#verBug").summernote({
     lang: 'zh-CN',
+    placeholder:'在此输入Bug修改记录，记录和上一个版本相比，都修改了那些Bug',
     height:150,
     minHeight:150,
     maxHeight:150,
     focus: true
   });
   setPage(null);
-  listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+  listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
 });
 
 //===================方法
 //一、有关版本配置的方法
 //装载配置数据，并进行填充显示
 function loadVerCfgAndFill() {
-  $.ajax({type:"post", async:true, url:rootPath+'version/getVerCfg.do', dataType:"json",
+  $.ajax({type:"post", async:true, url:rootPath+"version/getVerCfg.do", dataType:"json",
     success: function(jsonData) {
       if (jsonData) {
         if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
@@ -335,7 +342,7 @@ function loadVerCfgAndFill() {
     },
     error: function(jqXHR){
       alert("发生错误：" + jqXHR.status);
-      $("#closeB").click();
+      $("#closeB_verCfg").click();
     }
   });
 }
@@ -353,13 +360,13 @@ function saveCfg() {
   if ($.trim($("#pubStorePath").val())!="") cfgData.PubStorePath=$.trim($("#pubStorePath").val());
   if ($.trim($("#verGoodsStorePath").val())!="") cfgData.VerGoodsStorePath=$.trim($("#verGoodsStorePath").val());
 
-  $.ajax({type:"post", async:true, url:rootPath+'version/saveVerCfg.do', dataType:"json", data: cfgData,
+  $.ajax({type:"post", async:true, url:rootPath+"version/saveVerCfg.do", dataType:"json", data: cfgData,
     success: function(jsonData) {
       if (jsonData) {
         if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
         else {
           canBrowse=true;
-          $("#closeB").click();
+          $("#closeB_verCfg").click();
         }
       }
     },
@@ -370,6 +377,14 @@ function saveCfg() {
 }
 
 //二、有关版本的方法
+//清空版本界面
+function cleanVerWin() {
+  $("#verName").val("");
+  $("#verNum").val("");
+  $("#verFlag").val(1);
+  $("#verMemo").summernote("code", "");
+  $("#verBug").summernote("code", "");
+}
 //保存
 function saveVer() {
   //检查数据合法性：目前不进行检查
@@ -377,35 +392,46 @@ function saveVer() {
   var focus=0;
   if (!$.trim($("#verName").val())) checkErr+="\n请输入版本名称",(focus==0?focus=1:focus=focus);
   if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
-  var bugHtml=$('#verBug').summernote('code');
-  alert(bugHtml);
-  alert(getPureStrFromHTML(bugHtml));
-  return;
-  if ($('#verBug').summernote('code')=='<p><br></p>') checkErr+="\n请输入Bug修改记录",(focus==0?focus=2:focus=focus);
-  if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
-  if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
-  if (checkErr) {
-    alert(checkErr.substring(1));
-    return;
-  }
-  //获得新的数据
-  if (($.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val()))=="") {
-    alert("没有任何内容，无法保存！");
-    return;
-  }
-  var cfgData={};
-  if ($.trim($("#pubFileName").val())!="") cfgData.PubFileName=$.trim($("#pubFileName").val());
-  if ($.trim($("#pubUrl").val())!="") cfgData.PubUrl=$.trim($("#pubUrl").val());
-  if ($.trim($("#pubStorePath").val())!="") cfgData.PubStorePath=$.trim($("#pubStorePath").val());
-  if ($.trim($("#verGoodsStorePath").val())!="") cfgData.VerGoodsStorePath=$.trim($("#verGoodsStorePath").val());
+  var memoHtml=$("#verMemo").summernote("code");
+  if (!$.trim(getPureStrFromHTML(memoHtml))) checkErr+="\n请输入版本说明",(focus==0?focus=3:focus=focus);
+  var bugHtml=$("#verBug").summernote("code");
+  if (!$.trim(getPureStrFromHTML(bugHtml))) checkErr+="\n请输入Bug修改记录",(focus==0?focus=4:focus=focus);
 
-  $.ajax({type:"post", async:true, url:rootPath+'version/saveVerCfg.do', dataType:"json", data: cfgData,
+  if (checkErr&&focus!=0) {
+    alert(checkErr.substring(1));
+    alert(focus);
+    switch (focus) {
+      case 1:
+        $("#verName").focus();
+        break;
+      case 2:
+        $("#verNum").focus();
+        break;
+      case 3:
+        $("#verMemo").summernote("focus");
+        break;
+      case 4:
+        $("#verBug").summernote("focus");
+        break;
+      default: ;
+    }
+    return;
+  }
+
+  var verData={};
+  if ($.trim($("#verName").val())!="") verData.AppName=$.trim($("#verName").val());
+  if ($.trim($("#verNum").val())!="") verData.Version=$.trim($("#verNum").val());
+  if ($.trim($("#verFlag").val())!="") verData.PubFlag=$("#verFlag").val();
+  if ($.trim(getPureStrFromHTML(memoHtml))) verData.Descn=$("#verMemo").summernote("code");
+  if ($.trim(getPureStrFromHTML(bugHtml))) verData.BugPatch=$("#verBug").summernote("code");
+
+  $.ajax({type:"post", async:true, url:rootPath+"version/insertVer.do", dataType:"json", data: verData,
     success: function(jsonData) {
       if (jsonData) {
-        if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+        if (jsonData.ReturnType!="1001") alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
         else {
           canBrowse=true;
-          $("#closeB").click();
+          $("#closeB_ver").click();
         }
       }
     },
