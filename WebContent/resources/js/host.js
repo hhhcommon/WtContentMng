@@ -43,7 +43,7 @@ function getContentList(obj) {
 	    		}
 	    	}
 	    } else {
-	      alert(resultData.Message);
+	    	$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+resultData.Message+"</div>");
 	    }
 	  },
 	  error : function(jqXHR) {
@@ -89,7 +89,7 @@ function ContentListLoad(actList) {
       if(mediaType=="SEQU"){
     	  listDiv.attr({
     	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
-    	  "contentChannelId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
+    	  //"contentChannelId": actList.ResultList.List[i].ContentChannels[0].CataDid
     	  });
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
@@ -111,7 +111,7 @@ function ContentListLoad(actList) {
  * 修改节目时，传递原有的分类ID，以便将其设置到选中状态供修改
  * 添加节目时，则不需要
  * */
-  function getCatalogs(catalog){
+  function getCatalogs(){
     $.ajax({
       type: "POST",    
       url:rootPath+"common/getCataTreeWithSelf.do",
@@ -119,11 +119,7 @@ function ContentListLoad(actList) {
       data:{cataId: "3"},
       success: function(catalogsList) {
         if (catalogsList.jsonType=="1") {
-	    	if(catalog){
-	    		catalogsListLoad(catalogsList,catalog);
-	    	}else{
-	    		catalogsListLoad(catalogsList);
-	    	}
+	    	catalogsListLoad(catalogsList);
         }
       }     
     });
@@ -133,11 +129,7 @@ function ContentListLoad(actList) {
     var opt;
     for(var i=0;i<listLength;i++){
       opt=$("<option></option>");
-      opt.val(catalogsList.data.children[i].id);
-      if(catalog && (opt.val()==catalog)){
-    	  opt.attr("selected","selected");
-      }
-      opt.text(catalogsList.data.children[i].id);
+      opt.val(catalogsList.data.children[i].id).text(catalogsList.data.children[i].name);
       $("#ContentCatalogsId").append(opt);
     }
   }
