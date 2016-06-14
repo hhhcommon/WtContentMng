@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 
 import com.spiritdata.framework.core.model.ModelSwapPo;
 import com.spiritdata.framework.exceptionC.Plat0006CException;
-import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -132,7 +131,7 @@ public class ChannelAsset implements Serializable, ModelSwapPo {
         ret.setPubImg(pubImg);
         ret.setFlowFlag(flowFlag);
         ret.setCTime(CTime);
-
+        ret.setPubTime(pubTime);
         if (pubObj!=null) {
             if (pubObj instanceof MediaAsset) {
                 ret.setAssetId(((MediaAsset)pubObj).getId());
@@ -146,7 +145,6 @@ public class ChannelAsset implements Serializable, ModelSwapPo {
                 if (StringUtils.isNullOrEmptyOrSpace(pubImg)) ret.setPubImg(((SeqMediaAsset)pubObj).getSmaImg());
             }
         }
-        System.out.println(JsonUtils.objToJson(ret));
         return ret;
     }
 
@@ -167,6 +165,7 @@ public class ChannelAsset implements Serializable, ModelSwapPo {
         pubImg=_po.getPubImg();
         flowFlag=_po.getFlowFlag();
         CTime=_po.getCTime();
+        pubTime=_po.getPubTime();
 
         //所对应的栏目和发布对象不能在这里获得，这里只是进行记录
         Channel c=new Channel();

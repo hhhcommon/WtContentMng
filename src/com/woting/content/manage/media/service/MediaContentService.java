@@ -174,6 +174,8 @@ public class MediaContentService {
 		if(cha!=null){
 			cha.setFlowFlag(flowflag);
 			cha.setCh(ch);
+			if(flowflag==2)
+				cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 			mediaService.updateCha(cha);
 		}else{
 			cha = new ChannelAsset();
@@ -187,7 +189,9 @@ public class MediaContentService {
 		    cha.setSort(0);
 		    cha.setCheckRuleIds("0");
 		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
-		    if(flowflag==2)cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    if(flowflag==2) {
+		    	cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    }
 		    cha.setIsValidate(1);
 		    cha.setInRuleIds("elt");
 		    cha.setCheckRuleIds("elt");

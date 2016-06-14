@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -96,7 +95,7 @@ public class SeqContentService {
 		sma.setLang(detail);
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
-		if(!did.toLowerCase().equals("null")) 
+		if(!did.toLowerCase().equals("null"))
 			dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		map = modifySeqStatus(userid, smaid, chid, 0, malist);
 		if (mediaService.getSmaInfoById(smaid) != null && map.get("ReturnType").equals("1001")) {
@@ -174,6 +173,8 @@ public class SeqContentService {
 		if(cha!=null){
 			cha.setFlowFlag(flowflag);
 			cha.setCh(ch);
+			if(flowflag==2)
+				cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 			mediaService.updateCha(cha);
 		}else{
 			cha = new ChannelAsset();
@@ -187,7 +188,9 @@ public class SeqContentService {
 		    cha.setSort(0);
 		    cha.setCheckRuleIds("0");
 		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
-		    if(flowflag==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    if(flowflag==2) {
+		    	cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    }
 		    cha.setIsValidate(1);
 		    cha.setInRuleIds("elt");
 		    cha.setCheckRuleIds("elt");

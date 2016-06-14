@@ -90,7 +90,6 @@ public class MediaService {
 			    Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null);
 			    SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
 			    m.put("ContentSeqId", seqMaRefPo==null?null:seqMaRefPo.getSId());
-//			    m.put("ContentSeqName",seqMaRefPo==null?null:seqMaRefPo.);
 			    list.add(m);
 		    }
         }
@@ -182,10 +181,6 @@ public class MediaService {
     }
     
     
-    public void saveCha(ChannelAsset cha){
-    	channelAssetDao.insert("insert", cha.convert2Po());
-    }
-
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();
         MediaAssetPo mapo = mediaAssetDao.getInfoObject("getMaInfoById", id);
@@ -193,15 +188,7 @@ public class MediaService {
         else ma.buildFromPo(mapo);
         return ma;
     }
-
-    public void saveMa(MediaAsset ma) {
-        mediaAssetDao.insert("insertMa", ma.convert2Po());
-    }
-
-    public void saveMas(MaSource mas) {
-        maSourceDao.insert("insertMas", mas.convert2Po());
-    }
-
+    
     public MaSource getSameMas(MaSource mas) {
         MaSourcePo masPo=maSourceDao.getInfoObject("getSameSam", mas);
         if (masPo==null) return null;
@@ -209,7 +196,7 @@ public class MediaService {
         _mas.buildFromPo(masPo);
         return _mas;
     }
-
+    
     public void bindMa2Sma(MediaAsset ma, SeqMediaAsset sma) {
         SeqMaRefPo smrPo=new SeqMaRefPo();
         if (StringUtils.isNullOrEmptyOrSpace(ma.getId())||StringUtils.isNullOrEmptyOrSpace(sma.getId())) {
@@ -222,7 +209,27 @@ public class MediaService {
         smrPo.setDescn(sma.getSmaTitle()+"--"+ma.getMaTitle());
         seqMaRefDao.insert("bindMa2Sma", smrPo);
     }
+    
+    public void saveMa(MediaAsset ma) {
+        mediaAssetDao.insert("insertMa", ma.convert2Po());
+    }
 
+    public void saveMas(MaSource mas) {
+        maSourceDao.insert("insertMas", mas.convert2Po());
+    }
+    
+    public void saveCha(ChannelAsset cha){
+    	channelAssetDao.insert("insert", cha.convert2Po());
+    }
+    
+    public void saveSma(SeqMediaAsset sma) {
+        seqMediaAssetDao.insert("insertSma", sma.convert2Po());
+    }
+
+    public void saveDictRef(DictRefRes dictref) {
+    	dictRefDao.insert("insert", dictref.convert2Po());
+    }
+    
     public void updateSeqMaRef(SeqMaRefPo seqmapo){
     	mediaAssetDao.update("updateSeqMaRef", seqmapo);
     }
@@ -243,14 +250,6 @@ public class MediaService {
     	channelAssetDao.update("update", cha.convert2Po());
     }
 
-    public void saveSma(SeqMediaAsset sma) {
-        seqMediaAssetDao.insert("insertSma", sma.convert2Po());
-    }
-
-    public void saveDictRef(DictRefRes dictref) {
-    	dictRefDao.insert("insert", dictref.convert2Po());
-    }
-    
     public void removeMa(String id){
     	mediaAssetDao.delete("multiMaById", id);
     }
