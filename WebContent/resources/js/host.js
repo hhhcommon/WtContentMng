@@ -21,17 +21,12 @@ function getContentList(obj) {
 	    	}else{
 	    		switch(obj.opeType){
 	    			case 'conAdd':
-	    				/*
-	    				alert("添加成功");
-	    				$("#addZjForm")[0].reset();
-	    				$(".shade,.opeBox").css({"display":"none"});
-	    				*/
 	    			break;
 	        		case 'conUpdate':
 	        			break;
 	        		case 'conDel':
 	        			alert("删除成功");
-	        			//删除成功后，再次请求列表
+	        			//操作成功后，再次请求列表
 	        			if(dataParam['mediaType']=="AUDIO"){
 	        				dataParam.url=rootPath+"content/media/getHostMediaList.do";
 	        			}else{
@@ -40,12 +35,15 @@ function getContentList(obj) {
 	        			delete dataParam["opeType"];
 	        			delete dataParam["mediaType"];
 	        			getContentList(dataParam);
-	              break;
-	        		default:
+	        			break;
+	        	    case 'conPub':
+	        		  	alert("发布成功");
+	        		    break;
+	        	    default:	
 	    		}
 	    	}
 	    } else {
-	      $(".actList").html("<div style='text-align:center;height:300px;padding:20px;padding-top:140px;'>"+ resultData.Message)+ ")";
+	    	$(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>"+resultData.Message+"</div>");
 	    }
 	  },
 	  error : function(jqXHR) {
@@ -61,7 +59,7 @@ function ContentListLoad(actList) {
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
   } else {
     //声明下面需要创建的节点，以便添加内容和添加到文档中
-    var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conShare,conDel,subAdd,infoDiv,infoH,infHA,infoP1,infoP2;
+    var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conShare,conDel,conPub,infoDiv,infoH,infHA,infoP1,infoP2;
     //循环加载列表
     for (var i = 0; i < actListLength; i++) {
       listDiv = $("<div class='listBox'></div>");
@@ -75,28 +73,30 @@ function ContentListLoad(actList) {
       imgDiv = $("<div></div>");
       imgA=$("<a href='javascript:;'></a>");
       thumbImg = $("<img alt='节目封面图片''>");
-      thumbImg.attr({'src' : '.'+actList.ResultList.List[i].ContentImg});
+      thumbImg.attr({'src':actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
-      conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate'></i>");
-      conShare=$("<i class='fa fa-external-link' opeType='conShare'></i>");
-      conDel=$("<i class='fa fa-trash-o' opeType='conDel'></i>");
-      subAdd=$("<i class='fa fa-plus-square-o' opeType='subAdd'></i>");
+      conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate' title='修改'></i>");
+      conShare=$("<i class='fa fa-external-link' opeType='conShare' title='分享'></i>");
+      conDel=$("<i class='fa fa-trash-o' opeType='conDel' title='删除'></i>");
+      conPub=$("<i class='fa fa-plus-square-o' opeType='conPub' title='发布'></i>");
       infoDiv = $("<div class='infoBox'>");
       infoH = $("<h4></h4>");
       infoHA=$("<a href='javascript:;'></a>");
-      imgShade.append(conUpdate).append(conShare).append(conDel).append(subAdd);
+      imgShade.append(conUpdate).append(conShare).append(conDel).append(conPub);
       infoHA.text(actList.ResultList.List[i].ContentName);
       infoP2 = $("<p class='lastTime'></p>");
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
       if(mediaType=="SEQU"){
     	  listDiv.attr({
-    	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
+    	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
+    	  //"contentChannelId": actList.ResultList.List[i].ContentChannels[0].CataDid
     	  });
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
           infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
           infoDiv.append(infoH.append(infoHA)).append(infoP1).append(infoP2);
       }else{
+    	  listDiv.attr({"contentSeqId": actList.ResultList.List[i].ContentSeqId});
     	  imgDiv.addClass("subImg");
     	  infoDiv.append(infoH.append(infoHA)).append(infoP2);
       }
@@ -111,7 +111,7 @@ function ContentListLoad(actList) {
  * 修改节目时，传递原有的分类ID，以便将其设置到选中状态供修改
  * 添加节目时，则不需要
  * */
-function getCatalogs(catalog){
+  function getCatalogs(){
     $.ajax({
       type: "POST",    
       url:rootPath+"common/getCataTreeWithSelf.do",
@@ -119,18 +119,8 @@ function getCatalogs(catalog){
       data:{cataId: "3"},
       success: function(catalogsList) {
         if (catalogsList.jsonType=="1") {
-        	if(catalog){
-        		catalogsListLoad(catalogsList,catalog);
-        	}else{
-        		catalogsListLoad(catalogsList);
-        	}
-          
-        } else {
-            //alert("获取数据出现问题:"+ConditionsList.Message);
-        }  
-      },
-      error: function(jqXHR){
-         //alert("发生错误" + jqXHR.status);
+	    	catalogsListLoad(catalogsList);
+        }
       }     
     });
   }
@@ -139,21 +129,52 @@ function getCatalogs(catalog){
     var opt;
     for(var i=0;i<listLength;i++){
       opt=$("<option></option>");
-      opt.val(catalogsList.data.children[i].id);
-     //alert("val:"+typeof opt.val());
-     //alert("ca:"+typeof ca);
-      
-	  if(opt.val()==""){
-		  //alert("进入");
-		  opt.attr("selected","selected");
-		  //alert(opt.attr("selected"));
-	  }
-      
-      /*if(catalog && catalogsList.data.children[i].id==catalog){
-    	  opt.attr("selected","selected");
-    	  alert(opt.attr("selected"));
-      }*/
-      opt.text(catalogsList.data.children[i].id);
+      opt.val(catalogsList.data.children[i].id).text(catalogsList.data.children[i].name);
       $("#ContentCatalogsId").append(opt);
     }
   }
+  
+  //获取栏目列表
+  function getChannel(){
+      $.ajax({
+        type: "POST",    
+        url:rootPath+"common/getChannelTreeWithSelf.do",
+        dataType: "json",
+        success: function(channelList) {
+          if (channelList.jsonType=="1"){channelListLoad(channelList);}
+        }
+      });
+    }
+    function channelListLoad(channelList){
+      var listLength=channelList.data.children.length;
+      var opt;
+      for(var i=0;i<listLength;i++){
+        opt=$("<option></option>");
+        opt.val(channelList.data.children[i].id);
+        opt.text(channelList.data.children[i].name);
+        $("#ContentChannelId").append(opt);
+      }
+    }
+    
+  //添加/修改单体时，获取专辑列表
+    function getSeqMediaList(){
+        $.ajax({
+          type: "POST",    
+          url:rootPath+"content/seq/getHostSeqMediaList.do",
+          dataType: "json",
+          data:{"UserId":userId},
+          success: function(seqMediaList) {
+            if(seqMediaList.ReturnType == "1001"){seqMediaListLoad(seqMediaList);} 
+          }
+        });
+      }
+      function seqMediaListLoad(seqMediaList){
+        var listLength=seqMediaList.ResultList.AllCount;
+        var opt;
+        for(var i=0;i<listLength;i++){
+          opt=$("<option></option>");
+          opt.val(seqMediaList.ResultList.List[i].ContentId);
+          opt.text(seqMediaList.ResultList.List[i].ContentName);
+          $("#ContentSeqId").append(opt);
+        }
+      }    

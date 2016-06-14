@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>上传声音</title>
+<title>修改声音</title>
 <meta name="keywords" content="">
 <meta name="description" content="">
 
@@ -17,11 +17,11 @@
 <script src="../resources/js/host.js"></script>
 </head>
 <body class="">
-  <div class="row opeBox" id="media" opeType="conAdd" style="display:block">
+  <div class="row opeBox" id="media" opeType="conUpdate" style="display:block">
       <div class="col-sm-12">
           <div class="ibox float-e-margins">
               <div class="ibox-title">
-                  <h5>添加声音</h5>
+                  <h5>修改声音</h5>
                   <div class="ibox-tools">
                       <a class="close-link">
                           <i class="fa fa-times"></i>
@@ -29,7 +29,7 @@
                   </div>
               </div>
               <div class="ibox-content">
-                  <form class="form-horizontal m-t" id="addMediaForm" onsubmit="return false;">
+                  <form class="form-horizontal m-t" id="updateMediaForm" onsubmit="return false;">
                       <input id="UserId" name="UserId" class="form-control" type="hidden" value="123" />
                       <input id="ContentStatus" name="ContentStatus" class="form-control" type="hidden" value="" />
                       <div class="form-group">
@@ -38,19 +38,11 @@
                               <input id="ContentName" name="ContentName" class="form-control" type="text">
                           </div>
                       </div>
-                      <div class="form-group audioFile">
-                          <label class="col-sm-3 control-label">选择文件：</label>
-                          <div class="col-sm-8">
-                              <input id="uploadAudio" name="uploadAudio" class="form-control" type="file" accept=".m4a,.mp3" />
-                              <input id="ContentURI" name="ContentURI" type="hidden" value=""  />
-                              <span class="help-block m-b-none"><i class="fa fa-info-circle"></i>文件最大5M，支持mp3、m4a格式</span>
-                          </div>
-                      </div>
                       <div class="form-group">
                           <label class="col-sm-3 control-label">声音封面：</label>
                           <div class="col-sm-8">
                               <div class="previewImg">
-                                <img class="defaultImg" src="../uploadFiles/tempuplf/default.png" alt="front cover" />
+                                <img class="defaultImg" src="" alt="front cover" />
                               </div>
                               <input id="uploadImg" name="uploadImg" class="form-control" type="file" accept=".png,.jpg" />
                               <input id="ContentImg" name="ContentImg" type="hidden" value="" />
@@ -118,93 +110,91 @@
           validClass:"help-block m-b-none"
         });
         $().ready(function(){
-        	  var dataParam={};
+            var dataParam={};
             var iframe;
-        	  //表单验证
-	          $("#addMediaForm").validate({
-		            rules:{
-		              ContentName:{required:true},
-		              ContentFile:"required"
-		            },
-			          messages:{
-			            ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入您的声音名称"},
-			            ContentFile:"<i class='fa fa-times-circle'></i> "+"您还没有选择声音文件哦"
-			          }
-	          });
-	          $(".close-link").on("click",function(){
-	            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
-	          });
-        	  //封面图片预览与上传
-        	  $("input[type='file']").change(function(){
-        		     var _this=$(this);
-        		     if($(this).attr("name")=="uploadImg"){
-        		    	//图片预览
-                         if($(".defaultImg").css("display")!="none"){
-                           $(".defaultImg").css({"display":"none"});
-                         }
-                         var fileReader = new FileReader();
-                         fileReader.onload = function(evt)
-                         {
-                             if(FileReader.DONE==fileReader.readyState)
-                             {    
-                                  var newImg =  $("<img alt='front cover' />");
-                                  newImg.attr({"src":this.result});//是Base64的data url数据
-                                  if($(".previewImg").children().length>1){
-                                    $(".previewImg img:last").replaceWith(newImg);
-                                  }else{
-                                    $(".previewImg").append(newImg);
-                                  }
-                              }
-                         }
-                         fileReader.readAsDataURL($(this)[0].files[0]);
-                         
-        		     }
-        		     
-                  //文件上传
-                  var oMyForm = new FormData();
-                  oMyForm.append("ContentFile", $(this)[0].files[0]);
-                  $.ajax({
-                      url:rootPath+"common/uploadCM.do",
-                      type:"POST",
-                      data:oMyForm,
-                      cache: false,
-                      processData: false,
-                      contentType: false,
-                      dataType:"json",
-                      //表单提交前进行验证
-                      
-                      success: function (opeResult) {
-                         if (opeResult.jsonType=="1") {
-                        	 //alert("上传成功");
-                        	 _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
-                         }else{
-                           alert(opeResult.err);
-                         }
-                      },
-                      error: function(jqXHR){
-                          alert("发生错误" + jqXHR.status);
-                       }     
-                  });
-        	  });
-        	  
-        	//form表单提交
+            //表单验证
+            $("#updateMediaForm").validate({
+                rules:{
+                  ContentName:{required:true},
+                  ContentFile:"required"
+                },
+                messages:{
+                  ContentName:{required:"<i class='fa fa-times-circle'></i> "+"请输入您的声音名称"},
+                  ContentFile:"<i class='fa fa-times-circle'></i> "+"您还没有选择声音文件哦"
+                }
+            });
+          //获取专辑列表
+          getSeqMediaList();
+          
+          $(".close-link").on("click",function(){
+            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
+          });
+          //封面图片预览与上传
+            $("input[type='file']").change(function(){
+             var _this=$(this);
+              //图片预览
+             if($(".defaultImg").css("display")!="none"){
+               $(".defaultImg").css({"display":"none"});
+             }
+             var fileReader = new FileReader();
+             fileReader.onload = function(evt)
+             {
+               if(FileReader.DONE==fileReader.readyState)
+               {    
+               var newImg = $("<img alt='front cover' class='newImg' />");
+               newImg.attr({"src":this.result});//是Base64的data url数据
+               if($(".previewImg").children().length>1){
+                 $(".previewImg img:last").replaceWith(newImg);
+               }else{
+                 $(".previewImg").append(newImg);
+               }
+                }
+             }
+             fileReader.readAsDataURL($(this)[0].files[0]);
+             
+              //文件上传
+             var oMyForm = new FormData();
+             oMyForm.append("ContentFile", $(this)[0].files[0]);
+             $.ajax({
+               url:rootPath+"common/uploadCM.do",
+               type:"POST",
+               data:oMyForm,
+               cache: false,
+               processData: false,
+               contentType: false,
+               dataType:"json",
+               //表单提交前进行验证
+               success: function (opeResult) {
+                  if (opeResult.jsonType=="1") {
+                    _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                  }else{
+                    alert(opeResult.err);
+                  }
+               },
+               error: function(jqXHR){
+                 alert("发生错误" + jqXHR.status);
+               }     
+             });
+            });
+            
+          //form表单提交
               $("#submitBtn,#draftBtn").click(function () {
-            	  var contentStatus=$(this).attr("id")=="draftBtn"?"0":"1";
+                var contentStatus=$(this).attr("id")=="draftBtn"?"0":"1";
                 $("#ContentStatus").val(contentStatus);
-            	  if($("#ContentImg").val()==""){
+                if($("#ContentImg").val()==""){
                       //如未设置封面，将使用平台默认图片
                       $("#ContentImg").val($(".defaultImg").attr("src"));
                     }
                  $.ajax({
-                		  url:rootPath+"content/media/addMediaInfo.do",
+                      url:rootPath+"content/media/updateMediaInfo.do",
                       type:"POST",
-                      data:$("#addMediaForm").serialize(),
+                      data:$("#updateMediaForm").serialize(),
                       dataType:"json",
                       //表单提交前进行验证
                       success: function (opeResult) {
                          if (opeResult.ReturnType=="1001") {
-                           alert("添加成功");
-                           $("#addMediaForm")[0].reset();
+                           alert("修改成功");
+                           $("#updateMediaForm")[0].reset();
                            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
                          //添加成功后，重新加载列表
                            AfterAddList({"UserId":userId,"url":rootPath+"content/media/getHostMediaList.do"});
@@ -217,9 +207,9 @@
                        }
                   });
               });
-        	
+          
               function AfterAddList(obj) {
-                  iframe=$(window.top.document.getElementById('myIframe').contentWindow.document);
+                  iframe=$(parent['myIframe'].document);
                   $.ajax({
                     type : "POST",
                     url : obj.url,
@@ -246,7 +236,7 @@
                     
               //创建节目列表DOM树
               function ContentListLoad2(actList) {
-                iframe==$(window.top.document.getElementById('myIframe').contentWindow.document);
+                iframe==$(parent['myIframe'].document);
                 var actListLength = actList.ResultList.AllCount;
                 var mediaType=actList.ResultList.List[0].MediaType;
                 if (actListLength == 0) {
@@ -297,9 +287,6 @@
                   }
                 }
               }
-              //获取专辑列表
-              getSeqMediaList();
-            
         });
     </script>
 </body>

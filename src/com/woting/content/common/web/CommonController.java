@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -12,9 +13,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.ui.tree.ZTree;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.mem._CacheChannel;
+import com.woting.cm.core.channel.model.Channel;
+import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
@@ -27,6 +33,9 @@ import org.jsoup.Jsoup;
 @Controller
 @RequestMapping(value="/common/")
 public class CommonController {
+	@Resource
+	private ChannelService channelService;
+	
     @RequestMapping(value="getCataTreeWithSelf.do")
     @ResponseBody
     public Map<String,Object> getCataTreeWithSelf(HttpServletRequest request) {
@@ -49,6 +58,24 @@ public class CommonController {
             map.put("jsonType", "2");
             map.put("err", "无法得到正确的分类Id");
         }
+        return map;
+    }
+    
+    
+    @RequestMapping(value="getChannelTreeWithSelf.do")
+    @ResponseBody
+    public Map<String,Object> getChannelTreeWithSelf(HttpServletRequest request) {
+        Map<String,Object> map=new HashMap<String, Object>();
+         _CacheChannel _cd=channelService.loadCache();
+         try {
+			ZTree<Channel> zc = new ZTree<>(_cd.channelTree);
+			map.put("jsonType", "1");
+            map.put("data", zc.toTreeMap());
+		} catch (Exception e) {
+			map.put("jsonType", "2");
+            map.put("err", e.getMessage());
+			e.printStackTrace();
+		}
         return map;
     }
 

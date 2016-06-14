@@ -45,7 +45,7 @@ public class QueryController {
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
 		Timestamp endcontentctime = null;
-		String userId = m.get("UserId")+"";
+//		String userId = m.get("UserId")+"";
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		if (m.containsKey("CatalogsId"))
@@ -86,7 +86,7 @@ public class QueryController {
 	public Map<String, Object> getContentInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userId = (String) m.get("UserId");
+//		String userId = (String) m.get("UserId");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
 		String id = (String) m.get("ContentId");
@@ -135,7 +135,7 @@ public class QueryController {
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		String userId = (String) m.get("UserId");
+//		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
 		String numbers = (String) m.get("ContentSort");
 		String opeType = (String) m.get("OpeType");
@@ -153,8 +153,8 @@ public class QueryController {
 	@RequestMapping(value = "/content/getConditions.do")
 	@ResponseBody
 	public Map<String, Object> getCatalogs(HttpServletRequest request) {
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userId = (String) m.get("UserId");
+//		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+//		String userId = (String) m.get("UserId");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getConditionsInfo();
 		map.put("ReturnType", "1001");

@@ -15,8 +15,6 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.handler.MappedInterceptor;
-
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
@@ -156,19 +154,19 @@ public class QueryService {
 		
 		// 查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
-			if (map.get("MediaType").equals("SEQU")) {
+			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
 				SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId")+"");
 				map.put("ContentName",sma.getSmaTitle());
 				map.put("ContentSource", sma.getPublisher());
 				map.put("ContentDesc", sma.getDescn());
 			} else {
-				if (map.get("MediaType").equals("AUDIO")) {
+				if (map.get("MediaType").equals("wt_MediaAsset")) {
 					MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId")+"");
 					map.put("ContentName", ma.getMaTitle());
 					map.put("ContentSource", ma.getMaPublisher());
 					map.put("ContentDesc", ma.getDescn());
 				} else {
-					if (map.get("MediaType").equals("RADIO")) {
+					if (map.get("MediaType").equals("wt_Broadcast")) {
 						//待更改
 						sql = "select bcTitle,bcPublisher,descn from wt_Broadcast where id = ? limit 1";
 						try {

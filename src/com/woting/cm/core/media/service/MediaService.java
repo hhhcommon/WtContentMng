@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -67,6 +65,11 @@ public class MediaService {
 		return smarefpo;
     }
     
+    public List<SeqMaRefPo> getSeqMaRefBySid(String sid){
+    	List<SeqMaRefPo> list = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
+		return list;
+    }
+    
     public int getCountInCha(Map<String, Object> m){
 		return channelAssetDao.getCount("countnum", m);
     }
@@ -84,7 +87,10 @@ public class MediaService {
         	for (MediaAssetPo mediaAssetPo : listpo) {
         	    MediaAsset ma=new MediaAsset();
 			    ma.buildFromPo(mediaAssetPo);
-			    list.add(ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null));
+			    Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null);
+			    SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
+			    m.put("ContentSeqId", seqMaRefPo==null?null:seqMaRefPo.getSId());
+			    list.add(m);
 		    }
         }
         return list;
@@ -106,7 +112,7 @@ public class MediaService {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
 			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
-			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoByMId", sma.getId());
+			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 			    smap.put("SubCount", l.size());
 			    list.add(smap);
 		    }
@@ -121,6 +127,12 @@ public class MediaService {
     	if(smapo==null) return null;
     	sma.buildFromPo(smapo);
     	return sma;
+	}
+    
+    public List<SeqMaRefPo> getSmaListBySid(String sid) {
+    	List<SeqMaRefPo> seqMaRefPos = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
+    	if(seqMaRefPos==null) return null;
+    	return seqMaRefPos;
 	}
     
     //根据栏目id得到栏目
@@ -141,6 +153,15 @@ public class MediaService {
 		return cha;
     }
     
+  //根据栏目发布表资源id得到栏目发布信息
+    public ChannelAsset getCHAInfoByAssetId(String id){
+    	ChannelAsset cha = new ChannelAsset();
+    	ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoByAssetId",id);
+    	if (chapo==null) return null;
+    	cha.buildFromPo(chapo);
+		return cha;
+    }
+    
     //根据资源id得到资源字典项对应关系
     public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName){
     	Map<String, String> param=new HashMap<String, String>();
@@ -154,14 +175,12 @@ public class MediaService {
 		return catalist;
     }
     
+    public List<DictRefResPo> getResDictRefByResId(String resid){
+        List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResId", resid);
+		return rcrpL;
+    }
     
-    public void saveCHA(ChannelAsset cha){
-    	channelAssetDao.insert("insert", cha.convert2Po());
-    }
-    public void updateCHA(ChannelAsset cha){
-    	channelAssetDao.update("update", cha.convert2Po());
-    }
-
+    
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();
         MediaAssetPo mapo = mediaAssetDao.getInfoObject("getMaInfoById", id);
@@ -169,15 +188,7 @@ public class MediaService {
         else ma.buildFromPo(mapo);
         return ma;
     }
-
-    public void saveMa(MediaAsset ma) {
-        mediaAssetDao.insert("insertMa", ma.convert2Po());
-    }
-
-    public void saveMas(MaSource mas) {
-        maSourceDao.insert("insertMas", mas.convert2Po());
-    }
-
+    
     public MaSource getSameMas(MaSource mas) {
         MaSourcePo masPo=maSourceDao.getInfoObject("getSameSam", mas);
         if (masPo==null) return null;
@@ -185,7 +196,7 @@ public class MediaService {
         _mas.buildFromPo(masPo);
         return _mas;
     }
-
+    
     public void bindMa2Sma(MediaAsset ma, SeqMediaAsset sma) {
         SeqMaRefPo smrPo=new SeqMaRefPo();
         if (StringUtils.isNullOrEmptyOrSpace(ma.getId())||StringUtils.isNullOrEmptyOrSpace(sma.getId())) {
@@ -198,30 +209,47 @@ public class MediaService {
         smrPo.setDescn(sma.getSmaTitle()+"--"+ma.getMaTitle());
         seqMaRefDao.insert("bindMa2Sma", smrPo);
     }
+    
+    public void saveMa(MediaAsset ma) {
+        mediaAssetDao.insert("insertMa", ma.convert2Po());
+    }
 
+    public void saveMas(MaSource mas) {
+        maSourceDao.insert("insertMas", mas.convert2Po());
+    }
+    
+    public void saveCha(ChannelAsset cha){
+    	channelAssetDao.insert("insert", cha.convert2Po());
+    }
+    
+    public void saveSma(SeqMediaAsset sma) {
+        seqMediaAssetDao.insert("insertSma", sma.convert2Po());
+    }
+
+    public void saveDictRef(DictRefRes dictref) {
+    	dictRefDao.insert("insert", dictref.convert2Po());
+    }
+    
     public void updateSeqMaRef(SeqMaRefPo seqmapo){
     	mediaAssetDao.update("updateSeqMaRef", seqmapo);
     }
+    
     public void updateMas(MaSource mas){
     	mediaAssetDao.update("updateMas", mas.convert2Po());
     }
     
     public void updateMa(MediaAsset ma) {
         mediaAssetDao.update("updateMa", ma.convert2Po());
-    }
-
-    public void saveSma(SeqMediaAsset sma) {
-        seqMediaAssetDao.insert("insertSma", sma.convert2Po());
-    }
-
+    } 
+    
     public void updateSma(SeqMediaAsset sma) {
         seqMediaAssetDao.update("updateSma", sma.convert2Po());
     }
     
-    public void saveDictRef(DictRefRes dictref) {
-    	dictRefDao.insert("insert", dictref.convert2Po());
+    public void updateCha(ChannelAsset cha) {
+    	channelAssetDao.update("update", cha.convert2Po());
     }
-    
+
     public void removeMa(String id){
     	mediaAssetDao.delete("multiMaById", id);
     }
@@ -259,5 +287,16 @@ public class MediaService {
 		removeMa2Sma(id);
 		removeResDictRef(id);
 		removeCha(id);
+//		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
+//		if (getResDictRefByResId(id)!=null) { // 删除与专辑绑定的下级节目内容分类信息
+//			for (SeqMaRefPo seqMaRefPo : l) {
+//			    removeResDictRef(seqMaRefPo.getMId());
+//		    }
+//		}
+//		if (getCHAInfoByAssetId(id)!=null) { // 删除与专辑绑定的下级节目栏目信息
+//			for (SeqMaRefPo seqMaRefPo : l) {
+//				removeCha(seqMaRefPo.getMId());
+//			}
+//		}
     }
 }
