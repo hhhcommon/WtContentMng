@@ -154,6 +154,7 @@ public class VersionService {
         Map<String, Object> param=new HashMap<String, Object>();
         param.put("isCurVer", 1);
         Version v=verDao.getInfoObject(param);
+        if (v==null) return 1;
         int pubFlag=v.getPubFlag();
         if (pubFlag==1||Math.abs(pubFlag)==3) return 1;
         return 0;
