@@ -113,7 +113,7 @@ public class MediaContentController {
 		String mauri = m.get("ContentURI")+"";
 		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
 		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
-		String seqid = m.get("ContentSequId")+"";
+		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
 		String madesc = m.get("ContentDesc")+"";
 		if(!madesc.toLowerCase().equals("null")) ma.setDescn(madesc);

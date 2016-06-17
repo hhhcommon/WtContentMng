@@ -23,6 +23,7 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.utils.ContentUtils;
+import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.exceptionC.Wtcm0101CException;
 
 public class MediaService {
@@ -40,6 +41,8 @@ public class MediaService {
     private MybatisDAO<ChannelPo> channelDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<DictRefResPo> dictRefDao;
+    @Resource
+    private ChannelContentService channelContentService;
 
     @PostConstruct
     public void initParam() {
@@ -108,11 +111,12 @@ public class MediaService {
 		    }
     	    resids = resids.substring(1);
     	    List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-    	    List<Map<String, Object>> chalist = getCHAByAssetIds(resids, "wt_SeqMediaAsset");
+    	    List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_SeqMediaAsset");
+    	    List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
     	    for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 			    SeqMediaAsset sma = new SeqMediaAsset();
 			    sma.buildFromPo(seqMediaAssetPo);
-			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, chalist, null);
+			    Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList, null);
 			    List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 			    smap.put("SubCount", l.size());
 			    list.add(smap);
@@ -163,6 +167,14 @@ public class MediaService {
 		return cha;
     }
     
+    public List<ChannelAssetPo> getCHAListByAssetId(String assetIds, String assetType){
+    	Map<String, String> param=new HashMap<String, String>();
+        param.put("assetType", assetType);
+        param.put("assetIds", assetIds);
+    	List<ChannelAssetPo> chapolist = channelAssetDao.queryForList("getListByAssetIds", param);
+		return chapolist;
+    }
+    
     //根据资源id得到资源字典项对应关系
     public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName){
     	Map<String, String> param=new HashMap<String, String>();
@@ -180,22 +192,7 @@ public class MediaService {
         List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResId", resid);
 		return rcrpL;
     }
-    
-  //根据资源id得到资源栏目对应关系
-    public List<Map<String, Object>> getCHAByAssetIds(String assetIds, String assetType){
-    	Map<String, String> param=new HashMap<String, String>();
-        param.put("assetType", assetType);
-        param.put("assetIds", assetIds);
-        List<ChannelAssetPo> chal = channelAssetDao.queryForList("getListByAssetIds", param);
-        List<Map<String, Object>> chalist = new ArrayList<Map<String,Object>>();
-        for (ChannelAssetPo chapo : chal) {
-			chalist.add(chapo.toHashMap());
-		}
-		return chalist;
-    }
-    
-    
-    
+ 
     public MediaAsset getMaInfoById(String id) {
         MediaAsset ma=new MediaAsset();
         MediaAssetPo mapo = mediaAssetDao.getInfoObject("getMaInfoById", id);
