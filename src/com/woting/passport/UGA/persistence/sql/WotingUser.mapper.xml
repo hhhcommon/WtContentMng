@@ -10,7 +10,6 @@
     <result  column="userName"       property="userName"       jdbcType="VARCHAR"/>
     <result  column="password"       property="password"       jdbcType="VARCHAR"/>
     <result  column="mainPhoneNum"   property="mainPhoneNum"   jdbcType="VARCHAR"/>
-<!--     <result  column="innerPhoneNum"  property="innerPhoneNum"  jdbcType="VARCHAR"/> -->
     <result  column="mailAddress"    property="mailAddress"    jdbcType="VARCHAR"/>
     <result  column="userType"       property="userType"       jdbcType="INTEGER"/>
     <result  column="userState"      property="userState"      jdbcType="INTEGER"/>
@@ -38,7 +37,6 @@
         <if test="userName!=null"> and userName=#{userName,jdbcType=VARCHAR}</if>
         <if test="password!=null"> and password=#{password,jdbcType=VARCHAR}</if>
         <if test="mainPhoneNum!=null"> and mainPhoneNum=#{mainPhoneNum,jdbcType=VARCHAR}</if>
-<!--         <if test="innerPhoneNum!=null"> and innerPhoneNum=#{innerPhoneNum,jdbcType=VARCHAR}</if> -->
         <if test="mailAddress!=null"> and mailAddress=#{mailAddress,jdbcType=VARCHAR}</if>
         <if test="userType!=null and userType!=0"> and userType=#{userType,jdbcType=INTEGER}</if>
         <if test="userState!=null"> and userState=#{userState,jdbcType=INTEGER}</if>
@@ -76,7 +74,6 @@
       a.loginName like '%${searchStr}%'
       or a.mailAddress like '%${searchStr}%'
       or a.mainPhoneNum like '%${searchStr}%'
-<!--       or a.innerPhoneNum like '%${searchStr}%' -->
     )
   </select>
 
@@ -108,7 +105,6 @@
       <if test="userName!=null">userName,</if>
       <if test="password!=null">password,</if>
       <if test="mainPhoneNum!=null">mainPhoneNum,</if>
-<!--       <if test="innerPhoneNum!=null">innerPhoneNum,</if> -->
       <if test="mailAddress!=null">mailAddress,</if>
       <if test="userType!=null and userType!=0">userType,</if>
       <if test="userState!=null">userState,</if>
@@ -123,7 +119,6 @@
       <if test="userName!=null">#{userName,jdbcType=VARCHAR},</if>
       <if test="password!=null">#{password,jdbcType=VARCHAR},</if>
       <if test="mainPhoneNum!=null">#{mainPhoneNum,jdbcType=VARCHAR},</if>
-<!--       <if test="innerPhoneNum!=null">#{innerPhoneNum,jdbcType=VARCHAR},</if> -->
       <if test="mailAddress!=null">#{mailAddress,jdbcType=VARCHAR},</if>
       <if test="userType!=null and userType!=0">#{userType,jdbcType=INTEGER},</if>
       <if test="userState!=null">#{userState,jdbcType=INTEGER},</if>
@@ -141,7 +136,6 @@
       <if test="userName!=null">userName=#{userName,jdbcType=VARCHAR},</if>
       <if test="password!=null">password=#{password,jdbcType=VARCHAR},</if>
       <if test="mainPhoneNum!=null">mainPhoneNum=#{mainPhoneNum,jdbcType=VARCHAR},</if>
-<!--       <if test="innerPhoneNum!=null">innerPhoneNum=#{innerPhoneNum,jdbcType=VARCHAR},</if> -->
       <if test="mailAddress!=null">mailAddress=#{mailAddress,jdbcType=VARCHAR},</if>
       <if test="userType!=null and userType!=0">userType=#{userType,jdbcType=INTEGER},</if>
       <if test="userState!=null">userState=#{userState,jdbcType=INTEGER},</if>

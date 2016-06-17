@@ -34,7 +34,6 @@ public class RedisUtils {
 	private static void release(Jedis jedis) {
 		if(jedis!=null)
 			jedisPool.returnResource(jedis);
-		System.out.println(jedisPool.getNumActive());
 	}
 	
 	public static void addPhoneCheckInfo(String phonenum, String checknum){

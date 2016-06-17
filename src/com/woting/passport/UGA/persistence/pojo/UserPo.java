@@ -12,10 +12,11 @@ public class UserPo extends UgaUser {
 
     private String mainPhoneNum; //用户主手机号码，用户可能有多个手机号码
     private String mailAddress; //用户邮箱
-    private int userType; //用户分类：1=普通用户;2=编辑用户
+    private int userType; //用户分类：1=用户;2=外围人员
     private int userState;//用户状态，0~2
     private String portraitBig;//用户头像大
     private String portraitMini;//用户头像小
+    
     private String descn; //用户描述
     private Timestamp CTime; //记录创建时间
     private Timestamp lmTime; //最后修改时间:last modify time
