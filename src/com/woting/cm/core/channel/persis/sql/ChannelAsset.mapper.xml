@@ -120,6 +120,11 @@
     select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> 
     order by sort desc,pubTime desc limit #{beginNum,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
+  
+  <select id="getListByAssetIds" resultMap="channelAssetMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_ChannelAsset
+    where assetType=#{assetType,jdbcType=VARCHAR} and assetId in (${assetIds})
+  </select>
 
   <!-- 获得一条数据 -->
   <select id="getInfo" parameterType="java.util.Map" resultMap="channelAssetMap">
