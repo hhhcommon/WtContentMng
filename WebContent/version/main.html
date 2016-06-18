@@ -19,6 +19,7 @@
   <link href="../resources/wtcm/css/CM_toolbar.css" rel="stylesheet">
   <link href="../resources/wtcm/css/CM_pagination.css" rel="stylesheet">
   <link href="../resources/wtcm/css/CM_listoneline.css" rel="stylesheet">
+  <link href="../resources/wtcm/css/CM_detail.css" rel="stylesheet">
 
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -94,7 +95,7 @@ h4 {
 <body style="overflow:hidden;"><div style="height:100%">
 <!--菜单栏-->
 <div class="toobarArea">
-  <button type="button" opeType="verAdd" class="btn" style="margin-right:10px" data-toggle="modal" data-target="#verAdd">添加</button>
+  <button type="button" opeType="verAdd" class="btn" style="margin-right:10px" >添加</button>
   <button type="button" opeType="verDel" class="btn" style="margin-right:175px" disabled>删除</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
@@ -127,7 +128,27 @@ h4 {
     </div>
   </div>
   <!--右侧详情-->
-  <div class="detailArea">ettsetstet 收拾收拾
+  <div class="detailArea">
+    <div class="conBox" style="display:yes;">
+      <div class="conTitle">
+        <div class="titleImg"><img alt="image"></div>
+        <div class="detail">
+          <div>
+            <h2 style="display:inline" id="title">米粒妈·苏西托曼经典欧美儿歌大全·苏西托曼经·苏西托曼经</h2>
+            <span style='background-color:#f9be36' title='当前发布版本'>C</span><span style='background-color:#61b0e8'>已发布</span>
+          </div>
+          <table style="margin-top:20px;">
+            <tr><th>发布时间:</th><td id="pubTime"></td><th>发布包大小:</th><td id="apkSize"></td></tr>
+            <tr><th>发布地址:</th><td id="pubTime" claspan=3></td></tr>
+            <tr><td calspan=4>简介:</td></tr>
+          </table>
+        </div>
+      </div>
+      <!-- Bug记录 -->
+      <div id="bugMemo">
+        
+      </div>
+    </div>
   </div>
 </div>
 
@@ -220,11 +241,11 @@ h4 {
 
 </div></body>
 
-<script>alert("101");
-var canBrowse=true;//是否允许浏览
+<script>alert("14");
+var canBrowse_VerCfg=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
-var page={PageSize:"3", Page:"1", AllPage:null, GotoLast:"0"};
+var page={PageSize:"6", Page:"1", AllPage:null, GotoLast:"0"};
 var verMap={};
 
 //初始化页面
@@ -242,7 +263,7 @@ $(function() {
 
   //三、配置窗口处理
   $("#browserB").on("click", function() {//浏览
-    if (!canBrowse) return;
+    if (!canBrowse_VerCfg) return;
     $(".my-mbody").find("input").each(function() {
       $(this).attr("readonly","true");
     });
@@ -257,6 +278,19 @@ $(function() {
   });
 
   //四、新增修改版本处理
+  $("button[opeType='verAdd']").on("click", function() {//新增版本
+	  //首先判断是可以新增版本
+	  $.ajax({type:"post", async:true, url:rootPath+"version/allowInsert.do", dataType:"json",
+	    success: function(jsonData) {
+	    	if (jsonData.AllowInsert==1) $('#verAdd').modal('show');
+	    	else alert("上一个版本还未处理完，不能新增！");
+	    },
+	    error: function(jqXHR){
+	      alert("发生错误：" + jqXHR.status);
+	      $("#closeB_verCfg").click();
+	    }
+	  });
+  });
   $("#saveVerB").on("click", function() {
     saveVer();
   });
@@ -337,7 +371,7 @@ function loadVerCfgAndFill() {
           oldVerCfgData=retData;
         }
       }
-      canBrowse=true;
+      canBrowse_VerCfg=true;
       $("#browserB").click();
     },
     error: function(jqXHR){
@@ -365,7 +399,7 @@ function saveCfg() {
       if (jsonData) {
         if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
         else {
-          canBrowse=true;
+          canBrowse_VerCfg=true;
           $("#closeB_verCfg").click();
         }
       }
@@ -398,8 +432,7 @@ function saveVer() {
   if (!$.trim(getPureStrFromHTML(bugHtml))) checkErr+="\n请输入Bug修改记录",(focus==0?focus=4:focus=focus);
 
   if (checkErr&&focus!=0) {
-    alert(checkErr.substring(1));
-    alert(focus);
+	  alert(checkErr);
     switch (focus) {
       case 1:
         $("#verName").focus();
@@ -428,9 +461,13 @@ function saveVer() {
   $.ajax({type:"post", async:true, url:rootPath+"version/insertVer.do", dataType:"json", data: verData,
     success: function(jsonData) {
       if (jsonData) {
-        if (jsonData.ReturnType!="1001") alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-        else {
-          canBrowse=true;
+        if (jsonData.ReturnType!="1001") {
+          alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+          $("#verNum").focus();
+        } else {
+        	alert("添加新版本成功")
+          page.Page="1";
+          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
           $("#closeB_ver").click();
         }
       }
@@ -449,7 +486,7 @@ function saveVer() {
  * @param domObj list所处的html对象，以Jquery形式传入
  * @param callback 回掉函数，注意：此函数包括三个参数，返回的数据值、list所处的html对象、请求参数
  */
-function listAjax(doUrl, param, domObj, callback){
+function listAjax(doUrl, param, domObj, callback) {
   $.ajax({type:"POST", url:doUrl, dataType:"json", data:param,
     beforeSend: function() {
       domObj.find(".cntList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>");
@@ -539,7 +576,7 @@ function drawVerList(listData, domObj, param) {
       default:
         temp="未知";
     }
-    if (oneVer.IsCur=="true") typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>P</span>"));
+    if (oneVer.IsCur=="true") typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>C</span>"));
     else typeDiv.append($("<span style='background-color:#fff;color:#fff;'>P</span>"));
     typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>"));
     lineDiv.append(typeDiv);
@@ -565,12 +602,19 @@ function drawVerList(listData, domObj, param) {
  * @param verId 版本id
  */
 function drawVerDetail(verId) {
-  $("div .detailArea").html("");
+	alert(allFields(verMap[verId]));
+  $("#title").html(verMap[verId].AppName);
+  $("#pubTime").html(verMap[verId].PubTime);
+  $("#desn").html(verMap[verId].Descn);
+  
+	
+/*
   alert(allFields(verMap[verId]));
   alert(verMap[verId].AppName);
   var detailDiv=$("<div></div>");
   detailDiv.html(allFields(verMap[verId]));
   $("div .detailArea").append(detailDiv);
+	*/
 }
 </script>
 </html>
