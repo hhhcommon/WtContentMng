@@ -44,11 +44,7 @@ public class PassportController {
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            
-//            MobileParam mp=MobileUtils.getMobileParam(m);
-//            MobileKey sk=(mp==null?null:mp.getMobileKey());
-//            if (sk!=null) map.put("SessionId", sk.getSessionId());
-            
+      
             String ln=(m.get("UserName")==null?null:m.get("UserName")+"");
             String pwd=(m.get("Password")==null?null:m.get("Password")+"");
             String errMsg="";
@@ -221,28 +217,37 @@ public class PassportController {
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            
             String thirdType = m.get("ThirdType")+"";
             String thirdUserId = m.get("ThirdUserId")+"";
             String thirdUserName = m.get("ThirdUserName")+"";
             String thirdUserImg = m.get("ThirdUserImg")+"";
             Map<String, Object> thirdUserInfo = (Map<String, Object>) m.get("ThirdUserInfo");
             String errMsg="";
+            //1-获得用户信息
             if(thirdType.toLowerCase().equals("null")) errMsg+=",无法获得第三方登录类型";
             if(thirdUserId.toLowerCase().equals("null")) errMsg+=",无法获取第三方用户Id";
-            if(thirdUserName.toLowerCase().equals("null")) errMsg+=",无法获取第三方用户名称";
+//            if(thirdUserName.toLowerCase().equals("null")) errMsg+=",无法获取第三方用户名称";
             if (!StringUtils.isNullOrEmptyOrSpace(errMsg)) {
                 errMsg=errMsg.substring(1);
                 map.put("ReturnType", "1002");
                 map.put("Message", errMsg);
                 return map;
             }
-            
-            
+            //2第三方登录
+            Map<String, Object> rm = userService.thirdLogin(thirdType, thirdUserId, thirdUserName, thirdUserImg, thirdUserInfo);
+            //3设置返回值
+            map.put("IsNew", "True");
+            if ((Integer)rm.get("count")>1) map.put("IsNew", "False");
+            map.put("UserInfo", ((UserPo)rm.get("userInfo")).toHashMap4Mobile());
+            map.put("ReturnType", "1001");
+            return map;
 		} catch (Exception e) {
-			
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+            map.put("TClass", e.getClass().getName());
+            map.put("Message", e.getMessage());
+            return map;
 		}
-		return null;
 	}
 	
 	/**
