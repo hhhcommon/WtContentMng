@@ -121,8 +121,8 @@ h4 {
         <span class="previous" data-action="previous">&lsaquo;上页</span>
         <span class="next" data-action="next">下页&rsaquo;</span>
         <span class="last" data-action="last">尾页&raquo;</span>
-        <span class="jump" data-action="toPage">跳至</span><input type="text" class="toPage" value=""/>
-        <i>&nbsp;&nbsp;&nbsp;</i><i>共</i><i class="totalPage">12345</i><i>页</i>
+        <span class="jump" data-action="toPage">跳至</span><span><input type="text" class="toPage" value=""/></span>
+        <i>共</i><i class="totalPage"></i><i>页</i>
       </div>
     </div>
   </div>
@@ -220,7 +220,7 @@ h4 {
 
 </div></body>
 
-<script>alert("7");
+<script>alert("101");
 var canBrowse=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();

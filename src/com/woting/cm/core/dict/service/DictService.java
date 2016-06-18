@@ -100,9 +100,9 @@ public class DictService {
                     dd.buildFromPo(ddp);
                     ddl.add(dd);
                 }
+                _cd.ddList=(ddl.size()==0?null:ddl);//字典项列表，按照层级结果，按照排序的广度遍历树
 
                 List<DictDetail> templ=new ArrayList<DictDetail>();
-                _cd.ddList=(ddl.size()==0?null:ddl);//字典项列表，按照层级结果，按照排序的广度遍历树
                 if (_cd.ddList!=null&&_cd.ddList.size()>0) {
                     for (DictDetail dd: _cd.ddList) {
                         if (tempDmId.equals(dd.getMId())) templ.add(dd);
