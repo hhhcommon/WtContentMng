@@ -398,8 +398,6 @@ function saveVer() {
   if (!$.trim(getPureStrFromHTML(bugHtml))) checkErr+="\n请输入Bug修改记录",(focus==0?focus=4:focus=focus);
 
   if (checkErr&&focus!=0) {
-    alert(checkErr.substring(1));
-    alert(focus);
     switch (focus) {
       case 1:
         $("#verName").focus();
