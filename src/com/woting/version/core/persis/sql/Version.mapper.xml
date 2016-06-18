@@ -90,21 +90,23 @@
   </select>
   <select id="getAllPubHistVerList" parameterType="java.util.Map" resultMap="versionMap">
     select <include refid="Base_Column_List"/> from p_Version
-    <![CDATA[ where id<{id,jdbcType=INTEGER} and pubFlag>0 ]]>
+    <![CDATA[ where id<#{id,jdbcType=INTEGER} and pubFlag>0 ]]>
     order by desc id 
   </select>
 
   <!-- 获得新于某个版本号的发布过的版本的个数，用于判断是否可以删除 -->
   <select id="newerVerCount" parameterType="java.util.Map" resultType="java.lang.Integer">
-    select count(*) from p_Version <![CDATA[ where id>{id,jdbcType=INTEGER} and pubFlag>0 ]]>
+    select count(*) from p_Version <![CDATA[ where id>#{id,jdbcType=INTEGER} and pubFlag>0 ]]>
   </select>
   <select id="newerVerList" parameterType="java.util.Map" resultType="java.lang.Integer">
-    select count(*) from p_Version <![CDATA[ where id>{id,jdbcType=INTEGER} and pubFlag>0 ]]> order by id
+    select count(*) from p_Version <![CDATA[ where id>#{id,jdbcType=INTEGER} and pubFlag>0 ]]> order by id
   </select>
 
   <!-- 获得应该比较的版本记录 -->
-  <select id="getCmpVer" parameterType="java.util.Map" resultType="java.lang.Integer">
-    select * from p_Version id=(select max(id) from p_Version where pubFlag>0 <if test="lessId!=null and lessId>0"><![CDATA[and id<lessId]]></if>)
+  <select id="getCmpVer" parameterType="java.util.Map" resultMap="versionMap">
+    select a.* from p_Version a,
+    (select max(id) as id from p_Version where pubFlag>0 <if test="lessId!=null and lessId>0"><![CDATA[ and id<#{lessId,jdbcType=VARCHAR}]]></if>) b
+    where a.id=b.id
   </select>
 
   <!-- 获得一条数据 -->

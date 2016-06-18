@@ -22,7 +22,7 @@
   overflow:hidden;
   padding-bottom:30px;
 }
-.leftlistArea  .cntList {/*列表内容样式*/
+.cntList {/*列表内容样式*/
   position:absolute;
   border-bottom:1px solid #ccc;
   left:0;
@@ -31,7 +31,7 @@
   height:calc(100% - 43px);
   overflow:auto;
 }
-.leftlistArea  .page {/*翻页*/
+.page {/*翻页*/
   position:fixed;
   left:0;
   bottom:0;

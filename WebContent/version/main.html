@@ -12,12 +12,13 @@
 
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/plugins/jqpagination/jqpagination.css" rel="stylesheet"/>
+
+  <link href="../resources/plugins/summernote/summernote.css" rel="stylesheet">
 
   <link href="../resources/wtcm/css/CM_mainarea.css" rel="stylesheet">
   <link href="../resources/wtcm/css/CM_toolbar.css" rel="stylesheet">
   <link href="../resources/wtcm/css/CM_pagination.css" rel="stylesheet">
+  <link href="../resources/wtcm/css/CM_listoneline.css" rel="stylesheet">
 
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -26,6 +27,10 @@
   <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script><!-- 分页 -->
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
   <script src="../resources/js/context.utils.js"></script>
+
+  <script src="../resources/plugins/summernote/summernote.min.js"></script>
+  <script src="../resources/plugins/summernote/lang/summernote-zh-CN.js"></script>
+
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/wtcm/js/CM_pagination.js"></script>
 </head>
@@ -61,6 +66,9 @@ h4 {
   font-weight:nomal;
   text-align:right;
 }
+.modal-body tr .add-th {
+  width:120px;
+}
 .modal-body tr td input {
   width:380px;
 }
@@ -86,8 +94,8 @@ h4 {
 <body style="overflow:hidden;"><div style="height:100%">
 <!--菜单栏-->
 <div class="toobarArea">
-  <button type="button" opeType="pass" class="btn" style="margin-right:10px">添加</button>
-  <button type="button" opeType="nopass" class="btn" style="margin-right:175px" disabled>删除</button>
+  <button type="button" opeType="verAdd" class="btn" style="margin-right:10px" data-toggle="modal" data-target="#verAdd">添加</button>
+  <button type="button" opeType="verDel" class="btn" style="margin-right:175px" disabled>删除</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
   <div class="splite" style="left:418px"></div>
@@ -113,13 +121,13 @@ h4 {
         <span class="previous" data-action="previous">&lsaquo;上页</span>
         <span class="next" data-action="next">下页&rsaquo;</span>
         <span class="last" data-action="last">尾页&raquo;</span>
-        <span class="jump" data-action="toPage">跳至</span><input type="text" class="toPage" value=""/>
-        <i>&nbsp;&nbsp;&nbsp;</i><i>共</i><i class="totalPage">12345</i><i>页</i>
+        <span class="jump" data-action="toPage">跳至</span><span><input type="text" class="toPage" value=""/></span>
+        <i>共</i><i class="totalPage"></i><i>页</i>
       </div>
     </div>
   </div>
   <!--右侧详情-->
-  <div class="detailArea" style="border:2px solid yellow;">ettsetstet 收拾收拾
+  <div class="detailArea">ettsetstet 收拾收拾
   </div>
 </div>
 
@@ -128,7 +136,7 @@ h4 {
   <div class="modal-dialog my-mdialog">
     <div class="modal-content">
       <div class="modal-header" style="padding-bottom:5px;">
-        <button type="button" class="close" id="closeB" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" id="closeB_verCfg" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title">版本配置信息</h4>
         <div class="btn-group my-btnOper">
           <button id="browserB" class="btn btn-primary" type="button">浏览</button>
@@ -164,9 +172,55 @@ h4 {
   </div>
 </div>
 
+<!--弹出内容：新增版本-->
+<div id="verAdd" class="modal inmodal" data-backdrop="static">
+  <div class="modal-dialog my-mdialog" style="width:1000px;">
+    <div class="modal-content">
+      <div class="modal-header" style="padding-bottom:5px;">
+        <button type="button" class="close" id="closeB_ver" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" style="margin-bottom:5px;">添加版本</h4>
+      </div>
+      <div class="modal-body my-mbody">
+        <table>
+          <tr>
+            <td class="th add-th">版本名称</td>
+            <td colspan="3"><input type="text" class="form-control" id="verName" placeholder="版本名称" style="width:440px;"></td>
+            <td rowspan="3" style="width:400px;padding:10px;"><div style="width:100px;height:100px; border:1px solid black;"></div></td>
+          </tr>
+          <tr>
+            <td class="th add-th">版本号</td>
+            <td><input type="text" class="form-control" id="verNum" placeholder="版本号" style="width:170px;"></td>
+            <td class="th add-th" style="width:100px;">版本状态</td>
+            <td><select class="form-control" id="verFlag" placeholder="状态" style="width:170px;">
+              <option value=1>发布</option>
+              <option value=0>草稿</option>
+            </select></td>
+          </tr>
+          <tr>
+            <td class="th add-th">上传版本文件</td>
+            <td colspan="3"><input type="text" class="form-control" id="pubUrl" placeholder="当前发布版本的Url，下载地址就从此获得" style="width:440px;"></td>
+          </tr>
+          <tr>
+            <td class="th add-th">版本说明</td>
+            <td colspan="4"><textarea id="verMemo" placeholder="版本说明" autofocus></textarea></td>
+          </tr>
+          <tr>
+            <td class="th add-th">Bug修改记录</td>
+            <td colspan="4"><textarea id="verBug" placeholder="Bug(错误/问题)修改记录" autofocus></textarea></td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+        <button id="saveVerB" type="button" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div></body>
 
-<script>
+<script>alert("101");
 var canBrowse=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
@@ -202,46 +256,75 @@ $(function() {
     saveCfg();
   });
 
-  //四、翻页处理，先不进行包装
+  //四、新增修改版本处理
+  $("#saveVerB").on("click", function() {
+    saveVer();
+  });
+  $("#verAdd").on("hide.bs.modal", function () {
+    cleanVerWin();
+  });
+
+  //五、翻页处理，先不进行包装
   $(".pagination .first").on("click", function() {//第一页
+    if ($(this).hasClass("disabled")) return;
     page.Page="1";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .previous").on("click", function() {//上一页
+    if ($(this).hasClass("disabled")) return;
     var _p=Number(page.Page);
     if (_p>1) page.Page=(_p-1)+"";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .next").on("click", function() {//下一页
+    if ($(this).hasClass("disabled")) return;
     var _p=Number(page.Page);
     page.Page=(_p+1)+"";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .last").on("click", function() {//尾页
+    if ($(this).hasClass("disabled")) return;
     page.GotoLast="1";
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
   $(".pagination .jump").on("click", function() {//跳至
+    if ($(this).hasClass("disabled")) return;
     var _page=$(".pagination .toPage").val();
-	var reg = new RegExp("^[0-9]*$");
+    var reg=new RegExp("^[0-9]*$");
     if(!reg.test(_page)) {
       alert("请输入有效页码！");
       return;
     }
     page.Page=_page;
-    listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+    listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
 
-  //五、初始化页面
+  //六、初始化页面
+  $("#verMemo").summernote({
+    lang:'zh-CN',
+    placeholder:'在此输入版本说明，介绍版本的情况，注意：可不包括bug的修改说明',
+    height:150,
+    minHeight:150,
+    maxHeight:150,
+    focus:true
+  });
+  $("#verBug").summernote({
+    lang: 'zh-CN',
+    placeholder:'在此输入Bug修改记录，记录和上一个版本相比，都修改了那些Bug',
+    height:150,
+    minHeight:150,
+    maxHeight:150,
+    focus: true
+  });
   setPage(null);
-  listAjax(rootPath+'version/getVerList.do', page, $("#verListArea"), drawVerList);
+  listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
 });
 
 //===================方法
 //一、有关版本配置的方法
 //装载配置数据，并进行填充显示
 function loadVerCfgAndFill() {
-  $.ajax({type:"post", async:true, url:rootPath+'version/getVerCfg.do', dataType:"json",
+  $.ajax({type:"post", async:true, url:rootPath+"version/getVerCfg.do", dataType:"json",
     success: function(jsonData) {
       if (jsonData) {
         if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
@@ -259,7 +342,7 @@ function loadVerCfgAndFill() {
     },
     error: function(jqXHR){
       alert("发生错误：" + jqXHR.status);
-      $("#closeB").click();
+      $("#closeB_verCfg").click();
     }
   });
 }
@@ -277,13 +360,13 @@ function saveCfg() {
   if ($.trim($("#pubStorePath").val())!="") cfgData.PubStorePath=$.trim($("#pubStorePath").val());
   if ($.trim($("#verGoodsStorePath").val())!="") cfgData.VerGoodsStorePath=$.trim($("#verGoodsStorePath").val());
 
-  $.ajax({type:"post", async:true, url:rootPath+'version/saveVerCfg.do', dataType:"json", data: cfgData,
+  $.ajax({type:"post", async:true, url:rootPath+"version/saveVerCfg.do", dataType:"json", data: cfgData,
     success: function(jsonData) {
       if (jsonData) {
         if (jsonData.ReturnType!='1001') alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
         else {
           canBrowse=true;
-          $("#closeB").click();
+          $("#closeB_verCfg").click();
         }
       }
     },
@@ -294,8 +377,68 @@ function saveCfg() {
 }
 
 //二、有关版本的方法
-function dealFun(data) {
-  successData=data;
+//清空版本界面
+function cleanVerWin() {
+  $("#verName").val("");
+  $("#verNum").val("");
+  $("#verFlag").val(1);
+  $("#verMemo").summernote("code", "");
+  $("#verBug").summernote("code", "");
+}
+//保存
+function saveVer() {
+  //检查数据合法性：目前不进行检查
+  var checkErr="";
+  var focus=0;
+  if (!$.trim($("#verName").val())) checkErr+="\n请输入版本名称",(focus==0?focus=1:focus=focus);
+  if (!$.trim($("#verNum").val())) checkErr+="\n请输入版本状态",(focus==0?focus=2:focus=focus);
+  var memoHtml=$("#verMemo").summernote("code");
+  if (!$.trim(getPureStrFromHTML(memoHtml))) checkErr+="\n请输入版本说明",(focus==0?focus=3:focus=focus);
+  var bugHtml=$("#verBug").summernote("code");
+  if (!$.trim(getPureStrFromHTML(bugHtml))) checkErr+="\n请输入Bug修改记录",(focus==0?focus=4:focus=focus);
+
+  if (checkErr&&focus!=0) {
+    alert(checkErr.substring(1));
+    alert(focus);
+    switch (focus) {
+      case 1:
+        $("#verName").focus();
+        break;
+      case 2:
+        $("#verNum").focus();
+        break;
+      case 3:
+        $("#verMemo").summernote("focus");
+        break;
+      case 4:
+        $("#verBug").summernote("focus");
+        break;
+      default: ;
+    }
+    return;
+  }
+
+  var verData={};
+  if ($.trim($("#verName").val())!="") verData.AppName=$.trim($("#verName").val());
+  if ($.trim($("#verNum").val())!="") verData.Version=$.trim($("#verNum").val());
+  if ($.trim($("#verFlag").val())!="") verData.PubFlag=$("#verFlag").val();
+  if ($.trim(getPureStrFromHTML(memoHtml))) verData.Descn=$("#verMemo").summernote("code");
+  if ($.trim(getPureStrFromHTML(bugHtml))) verData.BugPatch=$("#verBug").summernote("code");
+
+  $.ajax({type:"post", async:true, url:rootPath+"version/insertVer.do", dataType:"json", data: verData,
+    success: function(jsonData) {
+      if (jsonData) {
+        if (jsonData.ReturnType!="1001") alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+        else {
+          canBrowse=true;
+          $("#closeB_ver").click();
+        }
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误：" + jqXHR.status);
+    }
+  });
 }
 
 //三、列表操作
@@ -348,37 +491,37 @@ function drawVerList(listData, domObj, param) {
   //一、画列表
   var verList=result.VerList;
   var oneVer=null, temp=null;
-  var listDiv=null, checkDiv=null, imgDiv=null, conDiv=null;
+  var lineDiv=null, checkDiv=null, imgDiv=null, conDiv=null;
 
   for(var i=0; i<verList.length ;i++) {
     oneVer=verList[i];
     if (!oneVer) continue;
 
     temp=oneVer.VerId;
-    listDiv=$("<div class='listBox'></div>");
-    listDiv.attr({verId:(temp?temp:"")});
+    lineDiv=$("<div class='lineBox'></div>");
+    lineDiv.attr({verId:(temp?temp:"")});
     //1-选择框
-    checkDiv=$("<div class='listCheck'><input type='checkBox' name='selVer'/></div>");
-    listDiv.append(checkDiv);
+    checkDiv=$("<div class='l-check'><input type='checkBox' name='selVer'/></div>");
+    lineDiv.append(checkDiv);
     //2-版本图标
     temp=oneVer.VerImgUrl;
-    imgDiv=$("<div class='listImg'><img alt='版本图标' src='"+(temp?temp:"")+"'/></div>");
-    listDiv.append(imgDiv);
+    imgDiv=$("<div class='l-img'><img alt='版本图标' src='"+(temp?temp:"")+"'/></div>");
+    lineDiv.append(imgDiv);
     //3-内容区域
     temp=oneVer.AppName;
     temp=(temp?temp:"");
     temp+=(oneVer.Version?("("+oneVer.Version+")"):"");
-    conDiv=$("<div class='listCon'><h3>"+temp+"</h3><p class='secTitle'></p><p class='other'></p></div>");
+    conDiv=$("<div class='l-con'><h3>"+temp+"</h3><p class='memo'></p><p class='other'></p></div>");
     temp=oneVer.Descn;
-    conDiv.find(".secTitle").html(temp?temp:"");
+    conDiv.find(".memo").html(temp?temp:"");
     //内容标签：文件大小；发布时间
     temp=oneVer.LastModifyTime;
     conDiv.find(".other").append($("<span>"+(temp?temp:"")+"</span>"));
     temp=oneVer.ApkSize;
     conDiv.find(".other").append($("<span>|</span><span>"+(temp?temp:"")+"</span>"));
-    listDiv.append(conDiv);
+    lineDiv.append(conDiv);
     //4-分类信息
-    typeDiv=$("<div class='sortUpdate'></div>");
+    typeDiv=$("<div class='typemark'></div>");
     switch (oneVer.PubFlag) {
       case "0":
         temp="未处理";
@@ -396,14 +539,15 @@ function drawVerList(listData, domObj, param) {
       default:
         temp="未知";
     }
-    if (oneVer.IsCur) typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>P</span>"));
+    if (oneVer.IsCur=="true") typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>P</span>"));
+    else typeDiv.append($("<span style='background-color:#fff;color:#fff;'>P</span>"));
     typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>"));
-    listDiv.append(typeDiv);
+    lineDiv.append(typeDiv);
 
     verMap[oneVer.VerId]=oneVer;
-    $(listDiv).attr("onClick", "drawVerDetail('"+oneVer.VerId+"')");
+    $(lineDiv).attr("onClick", "drawVerDetail('"+oneVer.VerId+"')");
     //加入列表
-    $(domObj).find(".cntList").append(listDiv);
+    $(domObj).find(".cntList").append(lineDiv);
   }
 
   //二、设置翻页信息
@@ -421,10 +565,12 @@ function drawVerList(listData, domObj, param) {
  * @param verId 版本id
  */
 function drawVerDetail(verId) {
-  $("div .verDetail").html("");
+  $("div .detailArea").html("");
+  alert(allFields(verMap[verId]));
+  alert(verMap[verId].AppName);
   var detailDiv=$("<div></div>");
-  detailDiv.html(verMap[verId].VerName);
-  $("div .verDetail").append(detailDiv);
+  detailDiv.html(allFields(verMap[verId]));
+  $("div .detailArea").append(detailDiv);
 }
 </script>
 </html>

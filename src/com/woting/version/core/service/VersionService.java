@@ -154,6 +154,7 @@ public class VersionService {
         Map<String, Object> param=new HashMap<String, Object>();
         param.put("isCurVer", 1);
         Version v=verDao.getInfoObject(param);
+        if (v==null) return 1;
         int pubFlag=v.getPubFlag();
         if (pubFlag==1||Math.abs(pubFlag)==3) return 1;
         return 0;
@@ -304,18 +305,18 @@ public class VersionService {
      */
     public int validateVer(String version, int verId) {
         if (!isValiVerOfDomain(version)) return 2;
-        String vd[]=version.split(".");
+        String vd[]=version.split("\\.");
 
         Map<String, Object> param=new HashMap<String, Object>();
         if (verId!=-1) param.put("lessId", verId);
 
         Version v=verDao.getInfoObject("getCmpVer", param);
-        while (v!=null&&isValiVerOfDomain(v.getVersion())) {
+        while (v!=null&&!isValiVerOfDomain(v.getVersion())) {
             param.put("lessId", v.getId());
             v=verDao.getInfoObject("getCmpVer", param);
         }
         if (v==null) return 1;
-        String _vd[]=(v.getVersion()).split(".");
+        String _vd[]=(v.getVersion()).split("\\.");
         if (Integer.parseInt(_vd[4])>Integer.parseInt(vd[4])) return 4;
         if (Integer.parseInt(_vd[0])>Integer.parseInt(vd[0])) return 3;
         if (Integer.parseInt(_vd[0])<Integer.parseInt(vd[0])) return 1;
@@ -332,7 +333,7 @@ public class VersionService {
      */
     private boolean isValiVerOfDomain(String version) {
         if (StringUtils.isNullOrEmptyOrSpace(version)) return false;
-        String vd[]=version.split(".");
+        String vd[]=version.split("\\.");
         if (vd.length!=5) return false;
         if (vd[3].length()!=1) return false;
         char c=vd[3].toCharArray()[0];
