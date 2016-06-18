@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.woting.content.common.util.RequestUtils;
 import com.woting.content.publish.service.QueryService;
 import com.woting.content.publish.utils.CacheUtils;
@@ -179,7 +178,6 @@ public class QueryController {
 		int pagesize = 0;
 		if (m.containsKey("ContentFlowFlag"))
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
-		int num = 0;
 		StringBuilder sb = new StringBuilder();
 		for (int i = 1; i < 675; i++) { //目前测试i循环参数固定
 			page = i;
@@ -195,8 +193,6 @@ public class QueryController {
 						map.put("SubList", m2.get("audio"));
 					}
 					sb.append(sequid);
-					num++;
-					System.out.println(num);
 					CacheUtils.publishZJ(map);
 				}
 			}

@@ -13,16 +13,24 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.utils.ContentUtils;
+import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.publish.utils.CacheUtils;
 
 @Lazy(true)
@@ -32,6 +40,8 @@ public class QueryService {
 	private DataSource DataSource;
 	@Resource
 	private MediaService mediaService;
+	@Resource
+	private ChannelContentService chaService;
 
 	/**
 	 * 查询列表
@@ -67,30 +77,6 @@ public class QueryService {
 		m.put("flowFlag", flowFlag);
 		numall = mediaService.getCountInCha(m);
 		
-//		// 查询需要显示的节目数目
-//		String sql = "select count(id) num from wt_ChannelAsset where flowFlag=?";
-//		if (channelId != null)
-//			sql += " and channelId='" + channelId + "'";
-//		if (publisherId != null)
-//			sql += " and publisherId='" + publisherId + "'";
-//		if (beginpubtime != null && endpubtime != null)
-//			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
-//		if (beginctime != null && endctime != null)
-//			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-//		try {
-//			conn = DataSource.getConnection();
-//			ps = conn.prepareStatement(sql);
-//			ps.setInt(1, flowFlag);
-//			rs = ps.executeQuery();
-//			while (rs != null && rs.next()) {
-//				numall = rs.getString("num");
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			closeConnection(conn, ps, rs);
-//		}
-		
 		m.clear();
 		m.put("channelId",channelId);
 		m.put("publisherId", publisherId);
@@ -114,43 +100,6 @@ public class QueryService {
 			oneData.put("ContentFlowFlag", channelAssetPo.getFlowFlag());
 			list2seq.add(oneData);
 		}
-		
-//		// 按条件查询需要显示的节目
-//		String sql = "select id,assetType,assetId,pubImg,cTime,sort,flowFlag,pubTime from wt_ChannelAsset where flowFlag=?";
-//		if (channelId != null)
-//			sql += " and channelId='" + channelId + "'";
-//		if (publisherId != null)
-//			sql += " and publisherId='" + publisherId + "'";
-//		if (beginpubtime != null && endpubtime != null)
-//			sql += " and pubTime>'" + beginpubtime + "' and pubTime<'" + endpubtime + "'";
-//		if (beginctime != null && endctime != null)
-//			sql += " and cTime>'" + beginctime + "' and cTime<'" + endctime + "'";
-//		sql += " order by sort desc,pubTime desc limit ?,?";
-//		try {
-//			conn = DataSource.getConnection();
-//			ps = conn.prepareStatement(sql);
-//			ps.setInt(1, flowFlag);
-//			ps.setInt(2, (page - 1) * pagesize);
-//			ps.setInt(3, pagesize);
-//			ps.setQueryTimeout(10000);
-//			rs = ps.executeQuery();
-//			while (rs != null && rs.next()) {
-//				Map<String, Object> oneData = new HashMap<String, Object>();
-//				oneData.put("Id", rs.getString("id"));// 栏目ID修改排序功能时使用
-//				oneData.put("MediaType", rs.getString("assetType"));
-//				oneData.put("ContentId", rs.getString("assetId"));// 内容ID获得详细信息时使用
-//				oneData.put("ContentImg", rs.getString("pubImg"));
-//				oneData.put("ContentCTime", rs.getTimestamp("cTime"));
-//				oneData.put("ContentPubTime", rs.getTimestamp("pubTime"));
-//				oneData.put("ContentSort", rs.getString("sort"));
-//				oneData.put("ContentFlowFlag", rs.getString("flowFlag"));
-//				list2seq.add(oneData);
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			closeConnection(conn, ps, rs);
-//		}
 		
 		// 查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
@@ -229,73 +178,18 @@ public class QueryService {
 	 * @return
 	 */
 	public Map<String, Object> getSeqInfo(int pagesize, int page, String id, String acttype) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		String sql = "select id,smaTitle,smaImg,smaAllCount,smaPublisher,keyWords,descn,CTime,smaPublishTime from wt_SeqMediaAsset where id = ? limit 1";
 		List<Map<String, Object>> listaudio = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
 		SeqMediaAsset sma = mediaService.getSmaInfoById(id);
-//		seqData = ContentUtils.convert2Sma(sma.toHashMap(), null, null, null, null);
-//		try {
-//			conn = DataSource.getConnection();
-//			ps = conn.prepareStatement(sql);
-//			ps.setString(1, id);
-//			rs = ps.executeQuery();
-//			while (rs != null && rs.next()) {
-//				seqData.put("ContentId", rs.getString("id"));
-//				seqData.put("ContentName", rs.getString("smaTitle"));
-//				seqData.put("MediaType", acttype);
-//				seqData.put("ContentImg", rs.getString("smaImg"));
-//				seqData.put("ContentSubCount", rs.getString("smaAllCount"));
-//				seqData.put("ContentPubTime", rs.getTimestamp("smaPublishTime"));
-//				seqData.put("ContentSource", rs.getString("smaPublisher"));
-//				seqData.put("ContentCTime", rs.getTimestamp("CTime"));
-//				seqData.put("ContentPersons", null);
-//				seqData.put("ContentKeyWord", rs.getString("keyWords"));
-//	//			seqData.put("ContentCatalogs", rs.getString("title"));
-//				seqData.put("ContentDesc", rs.getString("descn"));
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			closeConnection(conn, ps, rs);
-//		}
 		List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
 		seqData = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
-//		sql = "select title from wt_ResDict_Ref where resId=?";
-//		try {
-//			conn = DataSource.getConnection();
-//			ps = conn.prepareStatement(sql);
-//			ps.setString(1, (String) seqData.get("ContentId"));
-//			rs = ps.executeQuery();
-//			String catalogs = "";
-//			while (rs != null && rs.next()) {
-//				catalogs += ","+rs.getString("title");
-//			}
-//			seqData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		} finally {
-//			closeConnection(conn, ps, rs);
-//		}
 
 		// 查询专辑和单体的联系
-		sql = "select sId,mId from wt_SeqMA_Ref where sid = ?";
 		List<String> listaudioid = new ArrayList<String>();
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, (String) seqData.get("ContentId"));
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				listaudioid.add(rs.getString("mId"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
+		List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(seqData.get("ContentId")+"");
+		for (SeqMaRefPo seqMaRefPo : listseqmaref) {
+			listaudioid.add(seqMaRefPo.getMId());
 		}
 
 		// 查询单体信息
@@ -322,51 +216,26 @@ public class QueryService {
 	 * @return
 	 */
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Map<String, Object> audioData = new HashMap<String, Object>();// 单体信息
-		String sql = "select id,maTitle,maPublishTime,maImg,timeLong,maPublisher,descn,cTime,maURL from wt_MediaAsset where id = ? limit 1";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, contentid);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				audioData.put("ContentId", rs.getString("id"));
-				audioData.put("ContentName", rs.getString("maTitle"));
-				audioData.put("MediaType", acttype);
-				audioData.put("ContentImg", rs.getString("maImg"));
-				audioData.put("ContentCTime", rs.getTimestamp("cTime"));
-				audioData.put("ContentPubTime", rs.getTimestamp("maPublishTime"));
-				audioData.put("ContentDesc", rs.getString("descn"));
-				audioData.put("ContentTimes", rs.getLong("timeLong"));
-				audioData.put("ContentSource", rs.getString("maPublisher"));
-				audioData.put("ContentURI",rs.getString("maURL"));
-				audioData.put("ContentPersons", null);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
-		}
+		Map<String, Object> audioData = new HashMap<String,Object>();
+		MediaAsset ma = mediaService.getMaInfoById(contentid);
+		audioData.put("ContentId",ma.getId());
+		audioData.put("ContentName",ma.getMaTitle());
+		audioData.put("MediaType", acttype);
+		audioData.put("ContentImg", ma.getMaImg());
+		audioData.put("ContentCTime",ma.getCTime());
+		audioData.put("ContentPubTime", ma.getMaPublishTime());
+		audioData.put("ContentDesc", ma.getDescn());
+		audioData.put("ContentTimes", ma.getCTime());
+		audioData.put("ContentSource", ma.getMaPublisher());
+		audioData.put("ContentURI", ma.getMaURL());
+		audioData.put("ContentPersons", null);
 		
-		sql = "select title from wt_ResDict_Ref where resId=?";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, (String) audioData.get("ContentId"));
-			rs = ps.executeQuery();
-			String catalogs = "";
-			while (rs != null && rs.next()) {
-				catalogs += ","+rs.getString("title");
-			}
-			audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
+		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId")+"");
+		String catalogs = "";
+		for (DictRefResPo dictRefResPo : listdicref) {
+			catalogs+= ","+dictRefResPo.getTitle();
 		}
+		audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
 		return audioData;
 	}
 
@@ -442,34 +311,22 @@ public class QueryService {
 	/**
 	 * 修改审核状态
 	 * 
-	 * @param id
+	 * @param id 栏目发布表id
 	 * @param number
 	 * @return
 	 */
 	public Map<String, Object> modifyStatus(String id, String number) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		Map<String, Object> map = new HashMap<String, Object>();
-		String sql = "update wt_ChannelAsset set flowFlag = ?,pubTime= ? where id = ?";
 		id = id.replaceAll("%2C", ",");
 		id = id.substring(0, id.length() - 1);
 		String[] ids = id.split(",");
 		int num = 0;
 		for (int i = 0; i < ids.length; i++) {
-			try {
-				conn = DataSource.getConnection();
-				ps = conn.prepareStatement(sql);
-				ps.setInt(1, Integer.valueOf(number));
-				Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-				ps.setTimestamp(2, timestamp);
-				ps.setString(3, ids[i]);
-				num = ps.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} finally {
-				closeConnection(conn, ps, rs);
-			}
+			ChannelAsset cha = new ChannelAsset();
+			cha.setId(ids[i]);
+		    cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		    cha.setFlowFlag(Integer.valueOf(number));
+		    num = mediaService.updateCha(cha);
 		}
 		if (num == 1) {
 			map.put("ReturnType", "1001");
@@ -492,6 +349,12 @@ public class QueryService {
 		ResultSet rs = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		int num = 0;
+		ChannelAsset oldcha = mediaService.getCHAInfoById(id);
+		ChannelAsset newcha = new ChannelAsset();
+		newcha.setCh(oldcha.getCh());
+		newcha.setId(id);
+		newcha.setSort(Integer.valueOf(sort));
+		newcha.setPubTime(new Timestamp(System.currentTimeMillis()));
 		String sql = "update wt_ChannelAsset set sort = ?,pubTime= ? where id = ?";
 		try {
 			conn = DataSource.getConnection();
@@ -526,6 +389,7 @@ public class QueryService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> listcatalogs = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> listorganize = new ArrayList<Map<String, Object>>();
+		
 		String sql = "select id,channelName from wt_Channel"; // 获得栏目分类信息
 		try {
 			conn = DataSource.getConnection();
@@ -573,7 +437,7 @@ public class QueryService {
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		//1-根据zjId，计算出文件存放目录
-		String path=WtContentMngConstants.ROOT_PATH + "mweb/zj/"+zjId+"/";
+		String path=SystemCache.getCache(FConstants.APPOSPATH).getContent()+""+ "mweb/zj/"+zjId+"/";
 		//2-判断是否有page所对应的数据
 		File thisPage, nextPage;
 		thisPage = new File(path+"P"+page+".json");//func()

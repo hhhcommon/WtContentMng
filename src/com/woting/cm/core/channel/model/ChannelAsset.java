@@ -120,7 +120,7 @@ public class ChannelAsset implements Serializable, ModelSwapPo {
         if (StringUtils.isNullOrEmptyOrSpace(this.getId())) ret.setId(SequenceUUID.getPureUUID());
         else ret.setId(this.getId());
 
-        ret.setChannelId(ch.getId());
+        if (ch!=null&&StringUtils.isNullOrEmptyOrSpace(ch.getId())) ret.setChannelId(ch.getId());
         ret.setPublisherId(publisherId);
         ret.setCheckerId(checkerId);
         ret.setInRuleIds(inRuleIds);

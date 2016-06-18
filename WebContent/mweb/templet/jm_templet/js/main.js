@@ -168,11 +168,11 @@ $(function(){
 	//请求推荐资源列表
 	var searchStr=$(".palyCtrlBox").children("h4").text();
 	$.ajax({
-        url: "http://182.92.175.134:908/CM/common/jsonp.do",
+        url: "http://123.56.254.75:908/CM/common/jsonp.do",
         type:"POST",
         dataType:"json",
         data:{
-        	"RemoteUrl":"http://182.92.175.134:808/wt/searchByText.do",
+        	"RemoteUrl":"http://123.56.254.75:808/wt/searchByText.do",
         	"IMEI":"3279A27149B24719991812E6ADBA5583",
         	"PCDType":"3",
         	"SearchStr":searchStr,

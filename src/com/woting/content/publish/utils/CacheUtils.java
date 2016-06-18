@@ -11,8 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
-import com.woting.WtContentMngConstants;
 
 /**
  * 静态数据生成工具
@@ -24,9 +25,8 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	// http://localhost:908/CM/ http://www.wotingfm.com:908/CM/
-	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
-	private static String rootpath = WtContentMngConstants.ROOT_PATH; // 静态文件根路径
+	private static String jmurlrootpath = "http://123.56.254.75:908/CM/"; // 静态节目content.html路径头信息
+	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
 	 * 专辑静态文件发布(info.json,P*.json和content.html)

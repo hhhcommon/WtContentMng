@@ -205,20 +205,48 @@ public class PassportController {
 	}
 	
 	/**
-	 * 用户注册
+	 * 第三方登录
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping(value="user/afterThirdAuth.do")
 	@ResponseBody
 	public Map<String, Object> afterThirdAuth(HttpServletRequest request){
-		
-		
+		Map<String,Object> map=new HashMap<String, Object>();
+		try {
+			//0-获取参数
+            Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+            if (m==null||m.size()==0) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数");
+                return map;
+            }
+            
+            String thirdType = m.get("ThirdType")+"";
+            String thirdUserId = m.get("ThirdUserId")+"";
+            String thirdUserName = m.get("ThirdUserName")+"";
+            String thirdUserImg = m.get("ThirdUserImg")+"";
+            Map<String, Object> thirdUserInfo = (Map<String, Object>) m.get("ThirdUserInfo");
+            String errMsg="";
+            if(thirdType.toLowerCase().equals("null")) errMsg+=",无法获得第三方登录类型";
+            if(thirdUserId.toLowerCase().equals("null")) errMsg+=",无法获取第三方用户Id";
+            if(thirdUserName.toLowerCase().equals("null")) errMsg+=",无法获取第三方用户名称";
+            if (!StringUtils.isNullOrEmptyOrSpace(errMsg)) {
+                errMsg=errMsg.substring(1);
+                map.put("ReturnType", "1002");
+                map.put("Message", errMsg);
+                return map;
+            }
+            
+            
+		} catch (Exception e) {
+			
+		}
 		return null;
 	}
 	
 	/**
-	 * 用户注册
+	 * 修改用户基本信息
 	 * @param request
 	 * @return
 	 */
@@ -227,7 +255,6 @@ public class PassportController {
 	public Map<String, Object> updateUserInfo(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String,Object>();
 		try {
-			
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
             if (m==null||m.size()==0) {
                 map.put("ReturnType", "0000");
@@ -249,9 +276,12 @@ public class PassportController {
             upo.setUserId(userid);
             String userimg = m.get("UserImg")+"";
             if(!userimg.toLowerCase().equals("null")) upo.setPortraitBig(userimg);
-//            String userage = m.get("UserAge")+"";
-//            String userbirgth = m.get("UserBirthday")+"";
-//            String usersex = m.get("UserSex")+"";
+            String userage = m.get("Age")+"";
+            if(!userage.toLowerCase().equals("null")) upo.setAge(userage);
+            String userbirgth = m.get("Birthday")+"";
+            if(!userbirgth.toLowerCase().equals("null")) upo.setBirthday(userbirgth);
+            String usersex = m.get("Sex")+"";
+            if(!usersex.toLowerCase().equals("null")) upo.setSex(usersex);
             String descn = m.get("Descn")+"";
             if (!descn.toLowerCase().equals("null")) upo.setDescn(descn);
             if(userService.updateUser(upo)==1) {
@@ -259,7 +289,6 @@ public class PassportController {
             	map.put("Message", "修改成功");
             	return map;
             }
-            
 		} catch (Exception e) {
 			
 		}
@@ -313,4 +342,72 @@ public class PassportController {
             return map;
         }
     }
+    
+    /**
+	 * 修改登录密码
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="user/updatePwd.do")
+	@ResponseBody
+	public Map<String, Object> updatePassword(HttpServletRequest request){
+		Map<String,Object> map=new HashMap<String, Object>();
+		try {
+			//0-获取参数
+            Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+            if (m==null||m.size()==0) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数");
+                return map;
+            }
+            String userid = m.get("UserId")+"";
+            if(userid.toLowerCase().equals("null")) {
+            	map.put("ReturnType", "1002");
+                map.put("Message", "无法获取用户id");
+                return map;
+            }
+            String errMsg = "";
+            String oldpassword = m.get("OldPassword")+"";
+            if(oldpassword.toLowerCase().equals("null")) errMsg+=",无旧密码";
+            String newpassword = m.get("NewPassword")+"";
+            if(newpassword.toLowerCase().equals("null")) errMsg+=",无新密码";
+            if (!StringUtils.isNullOrEmptyOrSpace(errMsg)) {
+                errMsg=errMsg.substring(1);
+                map.put("ReturnType", "1003");
+                map.put("Message", errMsg+",密码信息获取失败");
+                return map;
+            }
+            if(oldpassword.equals(newpassword)) {
+            	map.put("ReturnType", "1004");
+                map.put("Message", "新旧密码不能相同");
+                return map;
+            }
+            UserPo u = userService.getUserById(userid);
+            if(u==null) {
+            	map.put("ReturnType", "1005");
+            	map.put("Message", "用户信息不存在");
+            	return map;
+            }
+            if(!u.getPassword().equals(oldpassword)) {
+            	map.put("ReturnType", "1006");
+            	map.put("Message", "旧密码不匹配");
+            	return map;
+            }
+            UserPo newuser = new UserPo();
+            newuser.setUserId(userid);
+            newuser.setPassword(newpassword);
+            if(userService.updateUser(newuser)!=1) {
+            	map.put("ReturnType", "1007");
+            	map.put("Message", "存储新密码失败");
+            	return map;
+            }
+            map.put("ReturnType", "1001");
+            return map;
+		} catch (Exception e) {
+			map.put("ReturnType", "T");
+            map.put("TClass", e.getClass().getName());
+            map.put("Message", e.getMessage());
+            return map;
+		}
+	}
 }

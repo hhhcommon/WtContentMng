@@ -258,8 +258,8 @@ public class MediaService {
         seqMediaAssetDao.update("updateSma", sma.convert2Po());
     }
     
-    public void updateCha(ChannelAsset cha) {
-    	channelAssetDao.update("update", cha.convert2Po());
+    public int  updateCha(ChannelAsset cha) {
+    	return channelAssetDao.update("update", cha.convert2Po());
     }
 
     public void removeMa(String id){

@@ -51,6 +51,7 @@ CREATE TABLE plat_User (
   password       varchar(100)               DEFAULT NULL  COMMENT '密码',
   mailAddress    varchar(100)               DEFAULT NULL  COMMENT '邮箱(非空为一索引)',
   mainPhoneNum   varchar(100)               DEFAULT NULL  COMMENT '用户主手机号码',
+  userNature     int(1) unsigned            DEFAULT '0'   COMMENT '用户性质：1自然人用户，2机构用户',
   userType       int(1) unsigned  NOT NULL                COMMENT '用户分类：1自然人用户，2机构用户',
   userState      int(1)           NOT NULL  DEFAULT '0'   COMMENT '用户状态，0-2,0代表未激活的用户，1代表已激用户，2代表失效用户,3根据邮箱找密码的用户',
   portraitBig    varchar(300)                             COMMENT '用户头像大',
@@ -188,7 +189,7 @@ CREATE TABLE wt_Friend_Rel (
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='009好友列表';
 /**此表信息可以根据005表生成，既邀请成功的信息倒入此表*/
 
-/**010 WT_PERSONALIAS(人员别名表)*/
+/**010 WT_USERALIAS(人员别名表)*/
 DROP TABLE IF EXISTS wt_PersonAlias;
 CREATE TABLE wt_UserAlias (
   id              varchar(32)  NOT NULL  COMMENT 'uuid(主键)',
