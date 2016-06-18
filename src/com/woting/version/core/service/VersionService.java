@@ -337,7 +337,7 @@ public class VersionService {
         if (vd.length!=5) return false;
         if (vd[3].length()!=1) return false;
         char c=vd[3].toCharArray()[0];
-        if (!(c>'A'&&c<'Z')) return false;
+        if (!(c>='A'&&c<='Z')) return false;
         try { Integer.parseInt(vd[0]); } catch(Exception e) {return false;}
         try { Integer.parseInt(vd[1]); } catch(Exception e) {return false;}
         try { Integer.parseInt(vd[2]); } catch(Exception e) {return false;}

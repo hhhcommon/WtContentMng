@@ -1,45 +1,9 @@
 @charset "utf-8";
 /**
- * 内容管理-实际操作区：主显示区域
+ * 内容管理-详细内容区域
  */
 
-/*一、主显示*/
-.mainArea {/*主显示区域*/
-  height:calc(100% - 40px);
-  width:100%;
-  position:absolute;
-  overflow:auto;
-}
-
-/*二、左侧列表*/
-.leftlistArea {/*左侧列表区域样式*/
-  position:absolute;
-  left:0;
-  top:0;
-  width:420px;
-  height:100%;
-  border-right:1px solid #ccc;
-  overflow:hidden;
-  padding-bottom:30px;
-}
-.cntList {/*列表内容样式*/
-  position:absolute;
-  border-bottom:1px solid #ccc;
-  left:0;
-  top:0;
-  width:100%;
-  height:calc(100% - 43px);
-  overflow:auto;
-}
-.page {/*翻页*/
-  position:fixed;
-  left:0;
-  bottom:0;
-  height:43px;
-  width:100%;
-}
-
-/*三、右侧详细区域*/
+/*主区域*/
 .detailArea {
   position:absolute;
   right:0;
@@ -47,4 +11,85 @@
   height:100%;
   width:calc(100% - 420px);
   background:white;
+}
+/*内容盒子*/
+.detailArea .conBox {
+  padding:25px 30px 10px 40px;
+  height:100%;
+}
+/*上部Title区域*/
+.detailArea .conBox .conTitle {
+  position:relative;
+  overflow:hidden;
+  padding-bottom:10px;
+  border-bottom:1px solid #ccc;
+}
+.detailArea .conBox .conTitle .titleImg {
+  float:left;
+  width:98px;
+  height:98px;
+  border:1px solid #f3f3f4;
+}
+.detailArea .conBox .conTitle .titleImg img {
+  width:100%;
+  height:100%;
+}
+.detailArea .conBox .conTitle .detail {
+  float:left;
+  padding-left:20px;
+  width:calc(100% - 120px);
+}
+
+
+.detailArea .conBox .conTitle h2 {
+  font-weight:600;
+  margin-right:24px;
+  position:relative;
+  font-size:20px;
+}
+.detailArea .conBox .conTitle h2 span{
+  width:30px;
+  height:16px;
+  font-size:10px;
+  font-weight: normal;
+  line-height:16px;
+  text-align: center;
+  background:#f9be36;
+  border-radius: 5px;
+  position:absolute;
+  right:-24px;
+  top:-10px;
+  color:white;
+  -webkit-transform: scale(0.9);
+  padding-left:0;
+}
+.detailArea .conBox .conTitle span{
+  padding-left:24px;
+  color:#ccc;
+  font-size:12px;
+}
+
+.detailArea .conBox .conTitle dl{
+  font-size:12px;
+  color:#343434;
+  line-height:1.6em;
+  padding-top:10px;
+}
+.detailArea .conBox .conTitle dl dt{
+  float:left;
+  padding-right:8px;
+  clear:left;
+  color:#767676;
+  clear:both;
+}
+.detailArea .conBox .conTitle dl dt dd {
+  float:left;
+}
+
+/*下部区域*/
+.detailArea .conBox .conTable{
+  width:100%;
+  height:auto;
+  padding-bottom:30px;
+  overflow-y:auto;
 }
