@@ -133,10 +133,8 @@ h4 {
       <div class="conTitle">
         <div class="titleImg"><img alt="image"></div>
         <div class="detail">
-          <div>
-            <h2 style="display:inline" id="title">米粒妈·苏西托曼经典欧美儿歌大全·苏西托曼经·苏西托曼经</h2>
-            <span style='background-color:#f9be36' title='当前发布版本'>C</span><span style='background-color:#61b0e8'>已发布</span>
-          </div>
+          <h2 style="display:inline" id="title">米粒妈·苏西托曼经典欧美儿歌大全·苏西托曼经·苏西托曼经</h2>
+          <span id="d_isCur" style="background-color:#f9be36" title="当前发布版本">C</span><span id="d_pubflag" style="background-color:#61b0e8">已发布</span>
           <table style="margin-top:20px;">
             <tr><th>发布时间:</th><td id="pubTime"></td><th>发布包大小:</th><td id="apkSize"></td></tr>
             <tr><th>发布地址:</th><td id="pubTime" claspan=3></td></tr>
@@ -238,10 +236,9 @@ h4 {
     </div>
   </div>
 </div>
-
 </div></body>
 
-<script>alert("14");
+<script>alert("019");
 var canBrowse_VerCfg=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
@@ -279,17 +276,17 @@ $(function() {
 
   //四、新增修改版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
-	  //首先判断是可以新增版本
-	  $.ajax({type:"post", async:true, url:rootPath+"version/allowInsert.do", dataType:"json",
-	    success: function(jsonData) {
-	    	if (jsonData.AllowInsert==1) $('#verAdd').modal('show');
-	    	else alert("上一个版本还未处理完，不能新增！");
-	    },
-	    error: function(jqXHR){
-	      alert("发生错误：" + jqXHR.status);
-	      $("#closeB_verCfg").click();
-	    }
-	  });
+    //首先判断是可以新增版本
+    $.ajax({type:"post", async:true, url:rootPath+"version/allowInsert.do", dataType:"json",
+      success: function(jsonData) {
+        if (jsonData.AllowInsert==1) $('#verAdd').modal('show');
+        else alert("上一个版本还未处理完，不能新增！");
+      },
+      error: function(jqXHR){
+        alert("发生错误：" + jqXHR.status);
+        $("#closeB_verCfg").click();
+      }
+    });
   });
   $("#saveVerB").on("click", function() {
     saveVer();
@@ -298,7 +295,19 @@ $(function() {
     cleanVerWin();
   });
 
-  //五、翻页处理，先不进行包装
+  //五、列表处理
+  $(".cntList").on("mouseenter",".lineBox",function(ev) {
+    $(this).find("#nbsp").css({"background-color":"#f8f2e4","color":"#f8f2e4"});
+    $(this).css("background-color", "#f8f2e4");
+    if ($(this).find(".selectLine").length==0) $(".hoverLine").css({"top":($(".cntList").scrollTop()+$(this).offset().top-40)});
+  });
+  $(".cntList").on("mouseleave",".lineBox",function(ev) {
+    $(this).find("#nbsp").css({"background-color":"#fff","color":"#fff"});
+    $(this).css("background-color", "#fff");
+    $(".hoverLine").css({"top":"-70px"});
+  });
+
+  //六、翻页处理，先不进行包装
   $(".pagination .first").on("click", function() {//第一页
     if ($(this).hasClass("disabled")) return;
     page.Page="1";
@@ -333,7 +342,7 @@ $(function() {
     listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
 
-  //六、初始化页面
+  //七、初始化页面
   $("#verMemo").summernote({
     lang:'zh-CN',
     placeholder:'在此输入版本说明，介绍版本的情况，注意：可不包括bug的修改说明',
@@ -432,7 +441,7 @@ function saveVer() {
   if (!$.trim(getPureStrFromHTML(bugHtml))) checkErr+="\n请输入Bug修改记录",(focus==0?focus=4:focus=focus);
 
   if (checkErr&&focus!=0) {
-	  alert(checkErr);
+    alert(checkErr);
     switch (focus) {
       case 1:
         $("#verName").focus();
@@ -465,7 +474,7 @@ function saveVer() {
           alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
           $("#verNum").focus();
         } else {
-        	alert("添加新版本成功")
+          alert("添加新版本成功")
           page.Page="1";
           listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
           $("#closeB_ver").click();
@@ -525,6 +534,7 @@ function drawVerList(listData, domObj, param) {
     setPage(null);
     return;
   }
+  $(domObj).find(".cntList").html("");
   //一、画列表
   var verList=result.VerList;
   var oneVer=null, temp=null;
@@ -549,7 +559,7 @@ function drawVerList(listData, domObj, param) {
     temp=(temp?temp:"");
     temp+=(oneVer.Version?("("+oneVer.Version+")"):"");
     conDiv=$("<div class='l-con'><h3>"+temp+"</h3><p class='memo'></p><p class='other'></p></div>");
-    temp=oneVer.Descn;
+    temp=getPureStrFromHTML(oneVer.Descn);
     conDiv.find(".memo").html(temp?temp:"");
     //内容标签：文件大小；发布时间
     temp=oneVer.LastModifyTime;
@@ -577,15 +587,17 @@ function drawVerList(listData, domObj, param) {
         temp="未知";
     }
     if (oneVer.IsCur=="true") typeDiv.append($("<span style='background-color:#f9be36' title='当前发布版本'>C</span>"));
-    else typeDiv.append($("<span style='background-color:#fff;color:#fff;'>P</span>"));
+    else typeDiv.append($("<span id='nbsp' style='background-color:#fff;color:#fff;'>C</span>"));
     typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>"));
     lineDiv.append(typeDiv);
 
     verMap[oneVer.VerId]=oneVer;
-    $(lineDiv).attr("onClick", "drawVerDetail('"+oneVer.VerId+"')");
+    $(lineDiv).attr("onClick", "clickLine('"+oneVer.VerId+"')");
     //加入列表
     $(domObj).find(".cntList").append(lineDiv);
   }
+  $(".lineBox").first().trigger("click");
+  $(domObj).find(".cntList").append($("<span class='hoverLine' style='top:-70px'></span>"));
 
   //二、设置翻页信息
   page.PageSize=result.PageSize;
@@ -597,24 +609,32 @@ function drawVerList(listData, domObj, param) {
   setPage(page);
 }
 
+function clickLine(verId) {
+  var selLine=$("div[verid='"+verId+"']");
+  $(".hoverLine").css({"top":"-70px"});
+  $("div").remove(".selectLine");
+  selLine.append("<div class='selectLine'></div>");
+  drawVerDetail(verId);
+}
+
 /**
  * 画版本的详细区域
  * @param verId 版本id
  */
 function drawVerDetail(verId) {
-	alert(allFields(verMap[verId]));
+  //alert(allFields(verMap[verId]));
   $("#title").html(verMap[verId].AppName);
   $("#pubTime").html(verMap[verId].PubTime);
   $("#desn").html(verMap[verId].Descn);
   
-	
+  
 /*
   alert(allFields(verMap[verId]));
   alert(verMap[verId].AppName);
   var detailDiv=$("<div></div>");
   detailDiv.html(allFields(verMap[verId]));
   $("div .detailArea").append(detailDiv);
-	*/
+  */
 }
 </script>
 </html>
