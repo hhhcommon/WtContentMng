@@ -110,6 +110,7 @@ public class VersionController {
             //0-判断权限：目前没有这个功能
             //1-获得参数
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+            if (m==null) m=new HashMap<String, Object>();
             String version=m.get("Version")==null?null:m.get("Version")+"";
             //2-业务处理：获得版本信息
             Version v=verService.getVersion(version);

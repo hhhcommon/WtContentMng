@@ -105,8 +105,10 @@ h4 {
 <body style="overflow:hidden;"><div style="height:100%">
 <!--菜单栏-->
 <div class="toobarArea">
-  <button type="button" opeType="verAdd" class="btn" style="margin-right:10px" >添加</button>
-  <button type="button" opeType="verDel" class="btn" style="margin-right:175px" disabled>删除</button>
+  <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
+  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" disabled>修改</button>
+  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
+  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
   <div class="splite" style="left:418px"></div>
@@ -256,13 +258,15 @@ h4 {
 </div>
 </div></body>
 
-<script>alert("032");
+<script>
 var canBrowse_VerCfg=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
-var page={PageSize:"6", Page:"1", AllPage:null, GotoLast:"0"};
+var page={PageSize:"8", Page:"1", AllPage:null, GotoLast:"0"};
 var verMap={};
-var curDetailVer="";
+var curDetailVerId="";
+var curVer=null; //当前发布版本
+var verWinType=1;//1新增;2修改
 
 //初始化页面
 $(function() {
@@ -296,16 +300,49 @@ $(function() {
   //四、新增修改版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
+    verWinType=1;
+    $("#verAdd").find(".modal-header>h4").html("添加版本");
     $.ajax({type:"post", async:true, url:rootPath+"version/allowInsert.do", dataType:"json",
       success: function(jsonData) {
-        if (jsonData.AllowInsert==1) $('#verAdd').modal('show');
-        else alert("上一个版本还未处理完，不能新增！");
+        if (jsonData.AllowInsert==1) {
+          if (curVer==null) {
+            $.ajax({type:"post", async:true, url:rootPath+"version/getVersionInfo.do", dataType:"json",
+              success: function(jsonData) {
+                curVer=jsonData.VersionInfo;
+                $("#verName").val(curVer.AppName);
+                $("#verMemo").summernote("code", curVer.Descn);
+                $('#verAdd').modal('show');
+              },
+              error: function(jqXHR) {
+                $('#verAdd').modal('show');
+              }
+            });
+          } else {
+            $("#verName").val(curVer.AppName);
+            $("#verMemo").summernote("code", curVer.Descn);
+            $('#verAdd').modal('show');
+          }
+        } else alert("上一个版本还未处理完，不能新增！");
       },
-      error: function(jqXHR){
+      error: function(jqXHR) {
         alert("发生错误：" + jqXHR.status);
         $("#closeB_verCfg").click();
       }
     });
+  });
+  $("button[opeType='verMod']").on("click", function() {//修改版本
+    //首先判断是可以新增版本
+    var selVer=verMap[curDetailVerId];
+    verWinType=2;
+    $("#verAdd").find(".modal-header>h4").html("修改版本");
+    $("#verName").val(selVer.AppName);
+    $("#verNum").val(selVer.Version);
+    var temp=selVer.StoreFile;
+    if (temp.lastIndexOf("\\")!=-1) temp=temp.substr(temp.lastIndexOf("\\")+1);
+    $("#apkFileText").val(temp);
+    $("#verMemo").summernote("code", selVer.Descn);
+    $("#verBug").summernote("code", selVer.BugPatch);
+    $('#verAdd').modal('show');
   });
   $("#saveVerB").on("click", function() {
     saveVer();
@@ -363,7 +400,7 @@ $(function() {
 
   //七、文件处理
   $("#apkFileText").on("click", function() {
-    $("#apkFile").click();
+	$("#apkFile").click();
   });
   $("#apkFile").change(function() {
     $("#apkFileText").val($(this).val());
@@ -376,7 +413,7 @@ $(function() {
     if (root.indexOf(":")>0) {
       
     } else {
-    	
+      
     }
     $("#imgArea").html(root);
   });
@@ -463,6 +500,7 @@ function cleanVerWin() {
   $("#verName").val("");
   $("#verNum").val("");
   $("#verFlag").val(1);
+  $("#apkFileText").val("");
   $("#verMemo").summernote("code", "");
   $("#verBug").summernote("code", "");
 }
@@ -477,6 +515,7 @@ function saveVer() {
   if (!$.trim(getPureStrFromHTML(memoHtml))) checkErr+="\n请输入版本说明",(focus==0?focus=3:focus=focus);
   var bugHtml=$("#verBug").summernote("code");
   if (!$.trim(getPureStrFromHTML(bugHtml))) checkErr+="\n请输入Bug修改记录",(focus==0?focus=4:focus=focus);
+  if (!$.trim($("#apkFileName").val())) checkErr+="\n请选择文件",(focus==0?focus=0:focus=focus);
 
   if (checkErr&&focus!=0) {
     alert(checkErr);
@@ -500,7 +539,11 @@ function saveVer() {
 
   var verForm=new FormData();
   verForm.append("ContentFile", $("#apkFile")[0].files[0]);
-  verForm.append("OperFlag", "add");
+  verForm.append("OperFlag", verWinType==1?"Add":"Mod");
+  if (verWinType!=1) {
+    verForm.append("VerId", curDetailVerId);
+    verForm.append("IsCur", verMap[curDetailVerId].IsCur=="true"?1:0);
+  }
   if ($.trim($("#verName").val())!="") verForm.append("AppName", $.trim($("#verName").val()));
   if ($.trim($("#verNum").val())!="") verForm.append("Version", $.trim($("#verNum").val()));
   if ($.trim($("#verFlag").val())!="") verForm.append("PubFlag", $.trim($("#verFlag").val()));
@@ -517,13 +560,18 @@ function saveVer() {
     dataType:"json",
     //表单提交前进行验证
     success: function (jsonData) {
-      alert(allFields(jsonData));
       if (jsonData) {
         if (jsonData.ReturnType!="1001") {
           alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
           $("#verNum").focus();
         } else {
-          alert("添加新版本成功")
+          if (verWinType==1) {
+            alert("添加新版本成功");
+            if (jsonData.NewVer.IsCur=="1") curVer=jsonData.NewVer;
+          } else {
+            alert("修改版本成功");
+            verMap[curDetailVerId]=jsonData.ModVer;
+          }
           page.Page="1";
           listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
           $("#closeB_ver").click();
@@ -570,6 +618,7 @@ function saveVer() {
  * @param callback 回掉函数，注意：此函数包括三个参数，返回的数据值、list所处的html对象、请求参数
  */
 function listAjax(doUrl, param, domObj, callback) {
+  $(".conBox").hide();
   $.ajax({type:"POST", url:doUrl, dataType:"json", data:param,
     beforeSend: function() {
       domObj.find(".cntList").html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>");
@@ -688,6 +737,8 @@ function clickLine(verId) {
   $(".hoverLine").css({"top":"-70px"});
   $("div").remove(".selectLine");
   selLine.append("<div class='selectLine'></div>");
+  //修改处理
+  $("button[opeType='verMod']").removeAttr("disabled");
   drawVerDetail(verId);
 }
 
@@ -696,8 +747,8 @@ function clickLine(verId) {
  * @param verId 版本id
  */
 function drawVerDetail(verId) {
-  if (curDetailVer==verId) return;
-  curDetailVer=verId;
+  if (curDetailVerId==verId) return;
+  curDetailVerId=verId;
   var verData=verMap[verId];
   $("#d_title").html(verData.AppName);
   $("#d_pubNum").html(verData.Version);
@@ -750,7 +801,7 @@ function drawVerDetail(verId) {
 function getHtmlFromBugList(bugPath) {
   if (bugPath.length==0) return "&nbsp";
   var retHtml="";
-  for (var i=0; i<bugPath.length-1; i++) {
+  for (var i=0; i<bugPath.length; i++) {
     retHtml+="<h1><span>"+bugPath[i].Version+"</span><span class='verTimeMark'>"+bugPath[i].PubTime+"</span></h1>"+bugPath[i].Bug;
   }
   return retHtml;

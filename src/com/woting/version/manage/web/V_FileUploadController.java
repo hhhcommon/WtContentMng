@@ -1,6 +1,7 @@
 package com.woting.version.manage.web;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import com.spiritdata.framework.core.web.AbstractFileUploadController;
+import com.spiritdata.framework.util.FileNameUtils;
+import com.spiritdata.framework.util.FileUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.version.core.model.Version;
 import com.woting.version.core.model.VersionConfig;
@@ -23,8 +26,21 @@ public class V_FileUploadController extends AbstractFileUploadController {
 
     @Override
     public void afterUploadAllFiles(Map<String, Object> retMap, Map<String, Object> a, Map<String, Object> p) {
+        if (this.verCfg==null) verCfg=verService.getVerConfig();
         try {
             //1-获得参数
+            //操作类型 
+            String operFlag=p.get("OperFlag")==null?null:p.get("OperFlag")+"";
+            //Id
+            int verId=-1;
+            if (p.get("VerId")!=null) {
+                try {verId=Integer.parseInt(p.get("VerId")+"");} catch(Exception e) {};
+            }
+            //IsCur
+            int IsCur=0;
+            if (p.get("IsCur")!=null) {
+                try {IsCur=Integer.parseInt(p.get("IsCur")+"");} catch(Exception e) {};
+            }
             //版本
             String version=p.get("Version")==null?null:p.get("Version")+"";
             String appName=p.get("AppName")==null?null:p.get("AppName")+"";
@@ -43,26 +59,53 @@ public class V_FileUploadController extends AbstractFileUploadController {
             //bug记录
             String bug=p.get("BugPatch")==null?null:p.get("BugPatch")+"";
 
+            List<Map<String, Object>> files=(List)retMap.get("ful");
             //2-拷贝
-            if (pubFlag==1) {//发布
-                
+            if (pubFlag==1&&(operFlag.equals("Add")||(operFlag.equals("Mod")&&IsCur==1))) {
+                String fileName=FileNameUtils.getFileName(verCfg.getPubUrl());
+                fileName=verCfg.getPubStorePath()+"/"+fileName;
+                FileUtils.copyFile(files.get(0).get("storeFilename")+"", fileName);
             }
+            if (operFlag.equals("Add")) {//3-新增方法
+                Version v=new Version();
+                v.setAppName(appName);
+                v.setVersion(version);
+                v.setVerMemo(descn);
+                v.setBugMemo(bug);
+                v.setPubFlag(pubFlag);
+                v.setIsCurVer(1);
+                v.setApkFile(files.get(0).get("storeFilename")+"");
+                try {
+                    v.setApkSize(Integer.parseInt(files.get(0).get("size")+""));
+                } catch(Exception e) {}
+                verService.insert(v, force);
 
-            //3-插入方法
-            Version v=new Version();
-            v.setAppName(appName);
-            v.setVersion(version);
-            v.setVerMemo(descn);
-            v.setBugMemo(bug);
-            v.setPubFlag(pubFlag);
-            v.setApkFile("文件名，不包括路径");//待改
-            v.setApkSize(234);//待改
-            v.setIsCurVer(1);
+                retMap.put("ReturnType", "1001");
+                retMap.put("Message", "新增成功");
+                retMap.put("NewVer", v.toViewMap4View());
+            }
+            if (operFlag.equals("Mod")) {//3-修改方法
+                Version v=new Version();
+                v.setId(verId);
+                v.setAppName(appName);
+                v.setVersion(version);
+                v.setVerMemo(descn);
+                v.setBugMemo(bug);
+                v.setPubFlag(pubFlag);
+                v.setIsCurVer(IsCur);
+                if (files!=null&&files.get(0)!=null&&files.get(0).get("storeFilename")!=null) {
+                    v.setApkFile(files.get(0).get("storeFilename")+"");//待改
+                    try {
+                        v.setApkSize(Integer.parseInt(files.get(0).get("size")+""));//待改
+                    } catch(Exception e) {}
+                }
+                verService.update(v);
 
-            verService.insert(v, force);
-
-            retMap.put("ReturnType", "1001");
-            retMap.put("Message", "新增成功");
+                retMap.put("ReturnType", "1001");
+                retMap.put("Message", "修改成功");
+                v=verService.getVersion(version);
+                retMap.put("ModVer", v.toViewMap4View());
+            }
         } catch(Exception e) {
             e.printStackTrace();
             retMap.put("ReturnType", "T");
@@ -74,10 +117,16 @@ public class V_FileUploadController extends AbstractFileUploadController {
     @Override
     public Map<String, Object> beforeUploadFile(Map<String, Object> a, Map<String, Object> p) {
         Map<String,Object> map=new HashMap<String, Object>();
-        if (this.verCfg==null) verCfg=verService.getVerConfig();
         try {
             //0-判断权限：目前没有这个功能
             //1-获得参数
+            //操作类型 
+            String operFlag=p.get("OperFlag")==null?null:p.get("OperFlag")+"";
+            //Id
+            int verId=-1;
+            if (p.get("VerId")!=null) {
+                try {verId=Integer.parseInt(p.get("VerId")+"");} catch(Exception e) {};
+            }
             //版本
             String version=p.get("Version")==null?null:p.get("Version")+"";
             String appName=p.get("AppName")==null?null:p.get("AppName")+"";
@@ -97,7 +146,7 @@ public class V_FileUploadController extends AbstractFileUploadController {
                 map.put("Message", "无法获得有用参数");
                 return map;
             }
-            int validateVer=verService.validateVer(version, -1); //版本号是否符合规则
+            int validateVer=verService.validateVer(version, verId); //版本号是否符合规则
             if (validateVer!=1) {
                 if (validateVer==2) {
                     map.put("ReturnType", "2001");
@@ -111,7 +160,7 @@ public class V_FileUploadController extends AbstractFileUploadController {
                 }
                 return map;
             }
-            if (force==0&&verService.judgeInsert()==0) {//判断是否可以加入
+            if (operFlag.equals("Add")&&force==0&&verService.judgeInsert()==0) {//判断是否可以加入
                 map.put("ReturnType", "1002");
                 map.put("Message", "还有未发布的版本，不能新增版本");
                 return map;
@@ -128,7 +177,9 @@ public class V_FileUploadController extends AbstractFileUploadController {
 
     @Override
     public void setMySavePath(Map<String, Object> a, Map<String, Object> p) {
+        if (this.verCfg==null) verCfg=verService.getVerConfig();
         String version=p.get("Version")==null?null:p.get("Version")+"";
-        if (version!=null) this.setSavePath("versionFile/"+version);
+        version=FileNameUtils.concatPath(verCfg.getVerGoodsStorePath(), version);
+        if (version!=null) this.setSavePath(version);
     }
 }

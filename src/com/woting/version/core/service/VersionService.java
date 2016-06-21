@@ -207,17 +207,20 @@ public class VersionService {
         Version _v=verDao.getInfoObject(param);
         if (_v==null) return -1;
         boolean changed=false;
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getAppName())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getAppName())) {
             changed=!v.getAppName().equals(_v.getAppName());
         }
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getVersion())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getVersion())) {
             changed=!v.getVersion().equals(_v.getVersion());
         }
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getVerMemo())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getVerMemo())) {
             changed=!v.getVerMemo().trim().equals(_v.getVerMemo().trim());
         }
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getBugMemo())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getBugMemo())) {
             changed=!v.getBugMemo().trim().equals(_v.getBugMemo().trim());
+        }
+        if (!changed) {
+            changed=!(v.getPubFlag()==_v.getPubFlag());
         }
         //文件比较？？先不做
         if (!changed) return 0;

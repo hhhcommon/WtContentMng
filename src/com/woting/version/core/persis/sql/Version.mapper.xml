@@ -125,7 +125,7 @@
       <if test="version!=null">version,</if>
       <if test="verMemo!=null">verMemo,</if>
       <if test="bugMemo!=null">bugMemo,</if>
-      <if test="pubFlag!=null and pubFlag!=0">pubFlag,</if>
+      <if test="pubFlag!=null">pubFlag,</if>
       <if test="apkFile!=null">apkFile,</if>
       <if test="apkSize!=null">apkSize,</if>
       <if test="isCurVer!=null">isCurVer,</if>
@@ -158,7 +158,7 @@
       <if test="version!=null">version=#{version,jdbcType=VARCHAR},</if>
       <if test="verMemo!=null">verMemo=#{verMemo,jdbcType=VARCHAR},</if>
       <if test="bugMemo!=null">bugMemo=#{bugMemo,jdbcType=VARCHAR},</if>
-      <if test="pubFlag!=null and pubFlag!=0">pubFlag=#{pubFlag,jdbcType=INTEGER},</if>
+      <if test="pubFlag!=null">pubFlag=#{pubFlag,jdbcType=INTEGER},</if>
       <if test="apkFile!=null">apkFile=#{apkFile,jdbcType=VARCHAR},</if>
       <if test="apkSize!=null">apkSize=#{apkSize,jdbcType=INTEGER},</if>
       <if test="isCurVer!=null">isCurVer=#{isCurVer,jdbcType=INTEGER},</if>
@@ -176,7 +176,7 @@
       <if test="version!=null">version=#{version,jdbcType=VARCHAR},</if>
       <if test="verMemo!=null">verMemo=#{verMemo,jdbcType=VARCHAR},</if>
       <if test="bugMemo!=null">bugMemo=#{bugMemo,jdbcType=VARCHAR},</if>
-      <if test="pubFlag!=null and pubFlag!=0">pubFlag=#{pubFlag,jdbcType=INTEGER},</if>
+      <if test="pubFlag!=null">pubFlag=#{pubFlag,jdbcType=INTEGER},</if>
       <if test="apkFile!=null">apkFile=#{apkFile,jdbcType=VARCHAR},</if>
       <if test="apkSize!=null">apkSize=#{apkSize,jdbcType=INTEGER},</if>
       <if test="isCurVer!=null">isCurVer=#{isCurVer,jdbcType=INTEGER},</if>
