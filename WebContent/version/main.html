@@ -23,6 +23,7 @@
 
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/form/jquery.form.js"></script>
 
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/jqpagination/jquery.jqpagination.js"></script><!-- 分页 -->
@@ -40,9 +41,6 @@
 /*模态窗口样式设置*/
 .my-mbody {
   background-color: #F8FAFB;
-}
-.my-mdialog {
-  margin:80px auto;
 }
 h4 {
   font-weight:bold;
@@ -77,9 +75,6 @@ h4 {
   border-top:1px dashed #e5e5e5;
   height:10px;
 }
-.my-mbody input {
-}
-
 /*操作按钮*/
 .my-btnOper {
   margin-top:10px;
@@ -89,6 +84,21 @@ h4 {
   height:28px;
   line-height:28px;
   padding:0px 12px;
+}
+.imgArea {
+  background-color:#fff;
+  background-image:none;
+  border: 1px solid #ccc;
+  border-radius:4px;
+  box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color:#333;
+  display:block;
+  padding:30px 15px;
+  font-size:14px;
+  height:150px;
+  width:150px;
+  line-height:1.42857;
+  transition:border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
 -->
 </style>
@@ -129,22 +139,23 @@ h4 {
   </div>
   <!--右侧详情-->
   <div class="detailArea">
-    <div class="conBox" style="display:yes;">
+    <div class="conBox" style="display:none;">
       <div class="conTitle">
         <div class="titleImg"><img alt="image"></div>
         <div class="detail">
-          <h2 style="display:inline" id="title">米粒妈·苏西托曼经典欧美儿歌大全·苏西托曼经·苏西托曼经</h2>
-          <span id="d_isCur" style="background-color:#f9be36" title="当前发布版本">C</span><span id="d_pubflag" style="background-color:#61b0e8">已发布</span>
-          <table style="margin-top:20px;">
-            <tr><th>发布时间:</th><td id="pubTime"></td><th>发布包大小:</th><td id="apkSize"></td></tr>
-            <tr><th>发布地址:</th><td id="pubTime" claspan=3></td></tr>
-            <tr><td calspan=4>简介:</td></tr>
-          </table>
+          <h2 style="display:inline" id="d_title"></h2>
+          <span class="pubTag" id="d_isCur" style="background-color:#f9be36" title="当前版本"></span>
+          <span class="pubTag" id="d_pubflag" style="background-color:#61b0e8"></span>
+          <div>
+            <p class="d_p"><span class="dh">版本号:</span><span id="d_pubNum"></span></p>
+            <p class="d_p"><span class="dh">发布时间:</span><span id="d_pubTime" style="padding-right:10px"></span><span class="dh">发布包大小:</span><span id="d_apkSize"></span></p>
+            <p class="d_p"><span class="dh">发布地址:</span><span id="d_pubUrl"></span></p>
+            <p class="d_p"><span class="dh">简介:</span><span id="d_verDescn"></span></p>
+          </div>
         </div>
       </div>
       <!-- Bug记录 -->
       <div id="bugMemo">
-        
       </div>
     </div>
   </div>
@@ -152,7 +163,7 @@ h4 {
 
 <!--弹出内容：设置配置-->
 <div id="verCfg" class="modal inmodal" data-backdrop="static">
-  <div class="modal-dialog my-mdialog">
+  <div class="modal-dialog" style="margin:80px auto;">
     <div class="modal-content">
       <div class="modal-header" style="padding-bottom:5px;">
         <button type="button" class="close" id="closeB_verCfg" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -193,18 +204,22 @@ h4 {
 
 <!--弹出内容：新增版本-->
 <div id="verAdd" class="modal inmodal" data-backdrop="static">
-  <div class="modal-dialog my-mdialog" style="width:1000px;">
+  <div class="modal-dialog" style="width:1000px; margin:10px auto 0 auto">
     <div class="modal-content">
       <div class="modal-header" style="padding-bottom:5px;">
         <button type="button" class="close" id="closeB_ver" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" style="margin-bottom:5px;">添加版本</h4>
       </div>
-      <div class="modal-body my-mbody">
+      <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
+      <form id="verOperForm" enctype ="multipart/form-data">
         <table>
           <tr>
             <td class="th add-th">版本名称</td>
             <td colspan="3"><input type="text" class="form-control" id="verName" placeholder="版本名称" style="width:440px;"></td>
-            <td rowspan="3" style="width:400px;padding:10px;"><div style="width:100px;height:100px; border:1px solid black;"></div></td>
+            <td rowspan="3" style="width:400px;padding-left:20px;">
+              <div class="imgArea" id="imgArea">点击,选择图片文件<br/><br/>文件最大1M,支持JPG\PNG格式</div>
+              <input type="file" class="form-control" id="imgFile" style="display:none" accept="image/*">
+            </td>
           </tr>
           <tr>
             <td class="th add-th">版本号</td>
@@ -217,7 +232,10 @@ h4 {
           </tr>
           <tr>
             <td class="th add-th">上传版本文件</td>
-            <td colspan="3"><input type="text" class="form-control" id="pubUrl" placeholder="当前发布版本的Url，下载地址就从此获得" style="width:440px;"></td>
+            <td colspan="3">
+              <input type="text" class="form-control" id="apkFileText" placeholder="点击，选择版本文件" style="width:440px; background-color:#fff;" readonly>
+              <input type="file" class="form-control" id="apkFile" style="display:none;">
+            </td>
           </tr>
           <tr>
             <td class="th add-th">版本说明</td>
@@ -228,7 +246,7 @@ h4 {
             <td colspan="4"><textarea id="verBug" placeholder="Bug(错误/问题)修改记录" autofocus></textarea></td>
           </tr>
         </table>
-      </div>
+      </form></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
         <button id="saveVerB" type="button" class="btn btn-primary">提交</button>
@@ -238,12 +256,13 @@ h4 {
 </div>
 </div></body>
 
-<script>alert("019");
+<script>alert("032");
 var canBrowse_VerCfg=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
 var page={PageSize:"6", Page:"1", AllPage:null, GotoLast:"0"};
 var verMap={};
+var curDetailVer="";
 
 //初始化页面
 $(function() {
@@ -342,21 +361,40 @@ $(function() {
     listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
   });
 
-  //七、初始化页面
+  //七、文件处理
+  $("#apkFileText").on("click", function() {
+    $("#apkFile").click();
+  });
+  $("#apkFile").change(function() {
+    $("#apkFileText").val($(this).val());
+  });
+  $("#imgArea").on("click", function() {
+    $("#imgFile").click();
+  });
+  $("#imgFile").change(function() {
+    var root=document.getElementById("imgFile").value;
+    if (root.indexOf(":")>0) {
+      
+    } else {
+    	
+    }
+    $("#imgArea").html(root);
+  });
+  //八、初始化页面
   $("#verMemo").summernote({
     lang:'zh-CN',
     placeholder:'在此输入版本说明，介绍版本的情况，注意：可不包括bug的修改说明',
-    height:150,
-    minHeight:150,
-    maxHeight:150,
+    height:80,
+    minHeight:80,
+    maxHeight:80,
     focus:true
   });
   $("#verBug").summernote({
     lang: 'zh-CN',
     placeholder:'在此输入Bug修改记录，记录和上一个版本相比，都修改了那些Bug',
-    height:150,
-    minHeight:150,
-    maxHeight:150,
+    height:120,
+    minHeight:120,
+    maxHeight:120,
     focus: true
   });
   setPage(null);
@@ -460,14 +498,50 @@ function saveVer() {
     return;
   }
 
-  var verData={};
-  if ($.trim($("#verName").val())!="") verData.AppName=$.trim($("#verName").val());
-  if ($.trim($("#verNum").val())!="") verData.Version=$.trim($("#verNum").val());
-  if ($.trim($("#verFlag").val())!="") verData.PubFlag=$("#verFlag").val();
-  if ($.trim(getPureStrFromHTML(memoHtml))) verData.Descn=$("#verMemo").summernote("code");
-  if ($.trim(getPureStrFromHTML(bugHtml))) verData.BugPatch=$("#verBug").summernote("code");
+  var verForm=new FormData();
+  verForm.append("ContentFile", $("#apkFile")[0].files[0]);
+  verForm.append("OperFlag", "add");
+  if ($.trim($("#verName").val())!="") verForm.append("AppName", $.trim($("#verName").val()));
+  if ($.trim($("#verNum").val())!="") verForm.append("Version", $.trim($("#verNum").val()));
+  if ($.trim($("#verFlag").val())!="") verForm.append("PubFlag", $.trim($("#verFlag").val()));
+  if ($.trim(getPureStrFromHTML(memoHtml))) verForm.append("Descn", $("#verMemo").summernote("code"));
+  if ($.trim(getPureStrFromHTML(bugHtml))) verForm.append("BugPatch", $("#verBug").summernote("code"));
 
-  $.ajax({type:"post", async:true, url:rootPath+"version/insertVer.do", dataType:"json", data: verData,
+  $.ajax({
+    url:rootPath+"/version/fileupload.do",
+    type:"POST",
+    data:verForm,
+    cache: false,
+    processData: false,
+    contentType: false,
+    dataType:"json",
+    //表单提交前进行验证
+    success: function (jsonData) {
+      alert(allFields(jsonData));
+      if (jsonData) {
+        if (jsonData.ReturnType!="1001") {
+          alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+          $("#verNum").focus();
+        } else {
+          alert("添加新版本成功")
+          page.Page="1";
+          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
+          $("#closeB_ver").click();
+        }
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }     
+  });
+  return;
+  var formData = new FormData($("#verOperForm")[0]); 
+  $.ajax({
+    url:rootPath+"common/uploadCM.do",
+    type:"POST",
+    async:false,
+    dataType:"json",
+    data: formData,
     success: function(jsonData) {
       if (jsonData) {
         if (jsonData.ReturnType!="1001") {
@@ -482,7 +556,7 @@ function saveVer() {
       }
     },
     error: function(jqXHR){
-      alert("发生错误：" + jqXHR.status);
+      alert("发生错误123：" + jqXHR.status);
     }
   });
 }
@@ -622,19 +696,64 @@ function clickLine(verId) {
  * @param verId 版本id
  */
 function drawVerDetail(verId) {
-  //alert(allFields(verMap[verId]));
-  $("#title").html(verMap[verId].AppName);
-  $("#pubTime").html(verMap[verId].PubTime);
-  $("#desn").html(verMap[verId].Descn);
-  
-  
-/*
-  alert(allFields(verMap[verId]));
-  alert(verMap[verId].AppName);
-  var detailDiv=$("<div></div>");
-  detailDiv.html(allFields(verMap[verId]));
-  $("div .detailArea").append(detailDiv);
-  */
+  if (curDetailVer==verId) return;
+  curDetailVer=verId;
+  var verData=verMap[verId];
+  $("#d_title").html(verData.AppName);
+  $("#d_pubNum").html(verData.Version);
+  $("#d_pubTime").html(verData.PubTime);
+  $("#d_verDescn").html(verData.Descn);
+  var temp="";
+  switch (verData.PubFlag) {
+    case "0":
+      temp="未处理";
+      break;
+    case "1":
+      temp="已发布";
+      break;
+    case "2":
+      temp="已撤销";
+      break;
+    case "3":
+    case "-3":
+      temp="已作废";
+      break;
+    default:
+      temp="未知";
+  }
+  $("#d_pubflag").html(temp);
+  if (verData.IsCur=="true") $("#d_isCur").html("C");
+  else $("#d_isCur").hide();
+  $("#d_apkSize").html(verData.ApkSize);
+  $("#d_pubUrl").html(verData.PubUrl);
+
+  if (verData.bugList) $("#bugMemo").html(verData.bugList);
+  else {
+    $.ajax({type:"post", async:true, url:rootPath+"version/getVerDescnHistory.do", dataType:"json", data: {"Version":verData.Version},
+      success: function(jsonData) {
+        if (jsonData) {
+          if (jsonData.ReturnType!="1001") {
+            $("#bugMemo").html("");
+          } else {
+            verData.bugList=getHtmlFromBugList(jsonData.VerDescnBugs.BugPatch);
+            $("#bugMemo").html(verData.bugList);
+          }
+        }
+      },
+      error: function(jqXHR) {
+        $("#bugMemo").html("");
+      }
+    });
+  }
+  if ($(".conBox").is(":hidden")) $(".conBox").show();
+}
+function getHtmlFromBugList(bugPath) {
+  if (bugPath.length==0) return "&nbsp";
+  var retHtml="";
+  for (var i=0; i<bugPath.length-1; i++) {
+    retHtml+="<h1><span>"+bugPath[i].Version+"</span><span class='verTimeMark'>"+bugPath[i].PubTime+"</span></h1>"+bugPath[i].Bug;
+  }
+  return retHtml;
 }
 </script>
 </html>

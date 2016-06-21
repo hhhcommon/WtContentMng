@@ -163,15 +163,33 @@ public class VersionService {
     /**
      * 插入新的数据
      * @param version 版本号
-     * @param pubFlag 发布状态
-     * @param descn 版本描述
-     * @param bug 版本Bug修改记录
+     * @param force 是否强制
      */
-    public void insert(Version v) {
+    public void insert(Version version, int force) {
         Map<String, Object> param=new HashMap<String, Object>();
-        param.put("isCurVer", 0);
-        verDao.update("updateAll", param);
-        verDao.insert(v);
+        param.put("isCurVer", 1);
+        Version v=verDao.getInfoObject(param);
+        boolean canInsert=false;
+        if (v==null) canInsert=true;
+        if (!canInsert) {
+            int pubFlag=v.getPubFlag();
+            if (force==1) {
+                canInsert=true;
+                if (pubFlag==1||pubFlag==2) v.setPubFlag(3);
+                if (pubFlag==0) v.setPubFlag(-3);
+                verDao.update(v);
+            } else {
+                if (pubFlag==1||Math.abs(pubFlag)==3) canInsert=true;
+                else canInsert=false;
+            }
+        }
+
+        if (canInsert) {
+            param.clear();
+            param.put("isCurVer", 0);
+            verDao.update("updateAll", param);
+            verDao.insert(version);
+        }
     }
 
     /**

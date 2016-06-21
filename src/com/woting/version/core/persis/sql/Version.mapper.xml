@@ -91,7 +91,7 @@
   <select id="getAllPubHistVerList" parameterType="java.util.Map" resultMap="versionMap">
     select <include refid="Base_Column_List"/> from p_Version
     <![CDATA[ where id<#{id,jdbcType=INTEGER} and pubFlag>0 ]]>
-    order by desc id 
+    order by id desc
   </select>
 
   <!-- 获得新于某个版本号的发布过的版本的个数，用于判断是否可以删除 -->

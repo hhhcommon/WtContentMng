@@ -370,6 +370,9 @@ public class VersionController {
                 map.put("Message", "还有未发布的版本，不能新增版本");
                 return map;
             }
+            if (force==1) {//作废之前未发布的版本
+                //TODO
+            }
             //2.2-插入方法调用
             Version v=new Version();
             v.setAppName(appName);
@@ -381,7 +384,7 @@ public class VersionController {
             v.setApkSize(234);//待改
             v.setIsCurVer(1);
 
-            verService.insert(v);
+            verService.insert(v,force);
 
             map.put("ReturnType", "1001");
             map.put("Message", "新增成功");
