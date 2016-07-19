@@ -195,9 +195,9 @@ $(function(){
 	$(".downLoad").click(function(){
 		var jmOpenUrl;
 		if($("#jmAudio")[0]){
-			jmOpenUrl=$("#jmAudio").attr("jmOpenUrl");
+			jmOpenUrl=$("#jmAudio").attr("jmOpenApp");
 		}else{
-			jmOpenUrl=$("span[className!='play_state']").parent(".audioLi").attr("jmOpenUrl");
+			jmOpenUrl=$("span[className!='play_state']").parent(".audioLi").attr("jmOpenApp");
 		}
 		
 		window.location=jmOpenUrl;
