@@ -193,14 +193,8 @@ $(function(){
     });
 	//打开APP或下载
 	$(".downLoad").click(function(){
-		var jmOpenUrl;
-		if($("#jmAudio")[0]){
-			jmOpenUrl=$("#jmAudio").attr("jmOpenApp");
-		}else{
-			jmOpenUrl=$("span[className!='play_state']").parent(".audioLi").attr("jmOpenApp");
-		}
-		
-		window.location=jmOpenUrl;
+
+		window.location=$("#jmAudio").attr("jmOpenApp");
 	    
         window.setTimeout(function () {
             window.location.href= "http://182.92.175.134/download/WoTing.apk";
