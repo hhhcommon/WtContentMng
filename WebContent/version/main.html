@@ -339,6 +339,7 @@ $(function() {
     $("#verNum").val(selVer.Version);
     var temp=selVer.StoreFile;
     if (temp.lastIndexOf("\\")!=-1) temp=temp.substr(temp.lastIndexOf("\\")+1);
+    if (temp.lastIndexOf("/")!=-1) temp=temp.substr(temp.lastIndexOf("/")+1);
     $("#apkFileText").val(temp);
     $("#verMemo").summernote("code", selVer.Descn);
     $("#verBug").summernote("code", selVer.BugPatch);

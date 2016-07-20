@@ -116,7 +116,6 @@ var selectsId=null;//当前选中的记录Id
 var curPageSize=null;//当前页尺寸
 var curPageNum=null;//当前页码
 
-
 $(function(){
   $("#w").window({
     onClose:function(){
@@ -186,40 +185,39 @@ $(function(){
 
   $("#cataTree").tree({});
   loadData();//读取列表数据
-  
-  
+
   var rId=null,mId=null;  //将分类ID传递到分页方法中，以便和分页内容一致
   $('#cataTree').tree({
-		onClick: function(node){
-			//alert(allFields(node));
-			//alert(allFields(node.attributes));
-			//alert(node.id);
-			//alert(node.attributes.mId);
-			//点击的如果是2大类根节点时，查询所有；如果点击的下面的分类则按分类查询
-			if(node.id=='1' || node.id=='2'){
-				loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
-				rId=null;
-				mId=null;
-			}else{
-           		loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
-           		rId=node.id;
-      			mId=node.attributes.mId;
-			}
-		}
-	});
+        onClick: function(node){
+            //alert(allFields(node));
+            //alert(allFields(node.attributes));
+            //alert(node.id);
+            //alert(node.attributes.mId);
+            //点击的如果是2大类根节点时，查询所有；如果点击的下面的分类则按分类查询
+            if(node.id=='1' || node.id=='2'){
+                loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+                rId=null;
+                mId=null;
+            }else{
+                   loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
+                   rId=node.id;
+                  mId=node.attributes.mId;
+            }
+        }
+    });
   //分页
   $('#bcList').datagrid('getPager').pagination({
     pageSize: 15,
     pageList: [15, 30, 50],
     onSelectPage: function (pageNumber, pageSize){
-    	loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize,rId,mId);
+        loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize,rId,mId);
     }
   });
 });
 
 //分页方法
 function fy(pageNumber, pageSize){
-	loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+    loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
 }
 //读取数据，并进行初始化
 function loadData() {
@@ -254,8 +252,8 @@ function loadList(pageNum, pageSize,rId,mId) {
   
   //点击分类时增加分类名称参数
   if(rId!=null){
-	  param.rId=rId;
-	  param.mId=mId;
+      param.rId=rId;
+      param.mId=mId;
   }
  
   curPageNum=param.pageNumber;

@@ -1,17 +1,18 @@
 package com.woting.version.manage.web;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import com.spiritdata.framework.core.web.AbstractFileUploadController;
 import com.spiritdata.framework.util.FileNameUtils;
-import com.spiritdata.framework.util.FileUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.version.core.model.Version;
 import com.woting.version.core.model.VersionConfig;
@@ -63,8 +64,10 @@ public class V_FileUploadController extends AbstractFileUploadController {
             //2-拷贝
             if (pubFlag==1&&(operFlag.equals("Add")||(operFlag.equals("Mod")&&IsCur==1))) {
                 String fileName=FileNameUtils.getFileName(verCfg.getPubUrl());
-                fileName=verCfg.getPubStorePath()+"/"+fileName;
-                FileUtils.copyFile(files.get(0).get("storeFilename")+"", fileName);
+                fileName=verCfg.getPubStorePath()+"/"+verCfg.getPubFileName();
+                File s=new File(files.get(0).get("storeFilename")+"");
+                File d=new File(fileName);
+                FileUtils.copyFile(s, d);
             }
             if (operFlag.equals("Add")) {//3-新增方法
                 Version v=new Version();
