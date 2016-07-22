@@ -16,10 +16,13 @@ import com.woting.content.common.util.RequestUtils;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.mem._CacheChannel;
+import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
@@ -120,10 +123,13 @@ public class BroadcastController {
                 l.add(eu1.toTreeMap());
                 dm=_cd.getDictModelById("2");
                 eu1=new EasyUiTree<DictDetail>(dm.dictTree);
-               // TreeNode<DictDetail> node=(TreeNode<DictDetail>)dm.dictTree.findNode("tjid");
-               // TreeUtils.
-                
                 l.add(eu1.toTreeMap());
+                dm=_cd.getDictModelById("3");
+                eu1=new EasyUiTree<DictDetail>(dm.dictTree);
+                l.add(eu1.toTreeMap());
+                _CacheChannel _cc=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent();
+                EasyUiTree<Channel> eu2=new EasyUiTree<Channel>(_cc.channelTree);
+                l.add(eu2.toTreeMap());
                 map.put("jsonType", "1");
                 map.put("data", l);
             } catch (CloneNotSupportedException e) {

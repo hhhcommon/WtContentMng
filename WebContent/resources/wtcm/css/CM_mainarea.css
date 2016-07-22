@@ -3,6 +3,8 @@
  * 内容管理-实际操作区：主显示区域
  */
 
+body{font-family:微软雅黑,'Microsoft Yahei',黑体,Verdana,Arial,sans-serif !important;}
+
 /*一、主显示*/
 .mainArea {/*主显示区域*/
   height:calc(100% - 40px);
@@ -47,4 +49,16 @@
   height:100%;
   width:calc(100% - 420px);
   background:white;
+}
+
+/*四、滚动条统一设置*/
+::-webkit-scrollbar-track {
+  background-color: #f5f5f5
+}
+::-webkit-scrollbar {
+  width: 2px;
+  background-color: #f5f5f5
+}
+::-webkit-scrollbar-thumb {
+  background-color: #2e7eb1
 }

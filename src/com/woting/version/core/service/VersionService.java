@@ -163,15 +163,33 @@ public class VersionService {
     /**
      * 插入新的数据
      * @param version 版本号
-     * @param pubFlag 发布状态
-     * @param descn 版本描述
-     * @param bug 版本Bug修改记录
+     * @param force 是否强制
      */
-    public void insert(Version v) {
+    public void insert(Version version, int force) {
         Map<String, Object> param=new HashMap<String, Object>();
-        param.put("isCurVer", 0);
-        verDao.update("updateAll", param);
-        verDao.insert(v);
+        param.put("isCurVer", 1);
+        Version v=verDao.getInfoObject(param);
+        boolean canInsert=false;
+        if (v==null) canInsert=true;
+        if (!canInsert) {
+            int pubFlag=v.getPubFlag();
+            if (force==1) {
+                canInsert=true;
+                if (pubFlag==1||pubFlag==2) v.setPubFlag(3);
+                if (pubFlag==0) v.setPubFlag(-3);
+                verDao.update(v);
+            } else {
+                if (pubFlag==1||Math.abs(pubFlag)==3) canInsert=true;
+                else canInsert=false;
+            }
+        }
+
+        if (canInsert) {
+            param.clear();
+            param.put("isCurVer", 0);
+            verDao.update("updateAll", param);
+            verDao.insert(version);
+        }
     }
 
     /**
@@ -189,17 +207,20 @@ public class VersionService {
         Version _v=verDao.getInfoObject(param);
         if (_v==null) return -1;
         boolean changed=false;
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getAppName())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getAppName())) {
             changed=!v.getAppName().equals(_v.getAppName());
         }
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getVersion())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getVersion())) {
             changed=!v.getVersion().equals(_v.getVersion());
         }
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getVerMemo())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getVerMemo())) {
             changed=!v.getVerMemo().trim().equals(_v.getVerMemo().trim());
         }
-        if (!changed&&StringUtils.isNullOrEmptyOrSpace(v.getBugMemo())) {
+        if (!changed&&!StringUtils.isNullOrEmptyOrSpace(v.getBugMemo())) {
             changed=!v.getBugMemo().trim().equals(_v.getBugMemo().trim());
+        }
+        if (!changed) {
+            changed=!(v.getPubFlag()==_v.getPubFlag());
         }
         //文件比较？？先不做
         if (!changed) return 0;
@@ -337,7 +358,7 @@ public class VersionService {
         if (vd.length!=5) return false;
         if (vd[3].length()!=1) return false;
         char c=vd[3].toCharArray()[0];
-        if (!(c>'A'&&c<'Z')) return false;
+        if (!(c>='A'&&c<='Z')) return false;
         try { Integer.parseInt(vd[0]); } catch(Exception e) {return false;}
         try { Integer.parseInt(vd[1]); } catch(Exception e) {return false;}
         try { Integer.parseInt(vd[2]); } catch(Exception e) {return false;}

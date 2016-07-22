@@ -43,6 +43,8 @@
 /*行区域::文字内容区-右侧::标题*/
 .lineBox .l-con h3 {
   font-size:12px;
+  font-family:微软雅黑,'Microsoft Yahei',黑体,Verdana,Arial,sans-serif !important;
+  font-weight:600;
   margin-top:0;
   margin-bottom:2px;
   color:#636363;
@@ -89,5 +91,25 @@
 .lineBox .l-img,
 .lineBox .l-con {
   float:left;
+}
+
+/*选中和划过某行*/
+.selectLine {
+  position:absolute;
+  top:0;
+  left:0;
+  width:4px;
+  height:70px;
+  background-color:#0077c7;
+  border-radius:2px;
+}
+.hoverLine {
+  position:absolute;
+  top:0;
+  left:0;
+  width:4px;
+  height:68px;
+  background-color:#F8AC59;
+  border-radius:2px;
 }
 

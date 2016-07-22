@@ -37,12 +37,12 @@
   width:40px;
   margin-top:10px;
   height:20px;
+  line-height:20px;
   font-size:12px;
   background:white;
   color:black;
   text-align:center;
   padding:0 2px;
-  margin-left:-14px;
   border:1px solid #ccc;
 }
 
