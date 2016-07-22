@@ -116,7 +116,6 @@ h4 {
   position: absolute;
   top: 23%;
   left: 23%;
-	
 }
 .mask span{
   position: absolute;
@@ -129,12 +128,17 @@ h4 {
 -->
 </style>
 <body style="overflow:hidden;"><div style="height:100%">
+<!-- 遮罩层 -->
+<div class="mask" id="mask">
+  <img src="../resources/images/waiting_circle.gif"/>
+  <span>请耐心等待...</span>
+</div>
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
-  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" disabled>修改</button>
-  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
-  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
+  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" >修改</button>
+  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" >删除</button>
+  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px">作废</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
   <div class="splite" style="left:418px"></div>
@@ -319,10 +323,7 @@ $(function() {
       $(this).removeAttr("readonly");
     });
   });
-  $("#saveCfgB").on("click", function() {
-    saveCfg();
-  });
-
+  
   //四、新增修改版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
@@ -371,13 +372,18 @@ $(function() {
     $("#verBug").summernote("code", selVer.BugPatch);
     $('#verAdd').modal('show');
   });
+  $("button[opetype='verDel']").on("click",function(){//删除版本
+  	
+  });
   $("#saveVerB").on("click", function() {
     saveVer();
   });
   $("#verAdd").on("hide.bs.modal", function () {
     cleanVerWin();
   });
-
+  $("#saveVerB").on("click", function() {
+    saveVer();
+  });
   //五、列表处理
   $(".cntList").on("mouseenter",".lineBox",function(ev) {
     $(this).find("#nbsp").css({"background-color":"#f8f2e4","color":"#f8f2e4"});
@@ -540,7 +546,6 @@ function saveVer() {
   $("#mask").show();
   $("#closeVerB").attr("disabled", "true");
   $("#saveVerB").attr("disabled", "true");
-
   //检查数据合法性：目前不进行检查
   var checkErr="";
   var focus=0;
@@ -599,6 +604,9 @@ function saveVer() {
     //表单提交前进行验证
     success: function (jsonData) {
       if (jsonData) {
+      	$("#mask").hide();
+        $("#closeVerB").removeAttr("disabled");
+        $("#saveVerB").removeAttr("disabled");
         if (jsonData.ReturnType!="1001") {
           alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
           $("#verNum").focus();
