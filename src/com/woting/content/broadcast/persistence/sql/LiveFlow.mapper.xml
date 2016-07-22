@@ -76,6 +76,9 @@
   <select id="getInfoById" resultMap="BaseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/> from wt_BCLiveFlow where id=#{id,jdbcType=VARCHAR}
   </select>
+  <select id="getInfoByBcId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/> from wt_BCLiveFlow where bcId=#{bcId,jdbcType=VARCHAR}
+  </select>
 
   <!-- 新增数据 -->
   <insert id="insert" parameterType="java.util.Map">

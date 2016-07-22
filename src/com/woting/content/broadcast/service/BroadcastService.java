@@ -1,5 +1,6 @@
 package com.woting.content.broadcast.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
 import com.woting.WtContentMngConstants;
@@ -23,6 +25,7 @@ import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
 import com.woting.content.broadcast.persistence.pojo.FrequncePo;
 import com.woting.content.broadcast.persistence.pojo.LiveFlowPo;
+import com.woting.content.publish.utils.CacheUtils;
 
 public class BroadcastService {
     @Resource(name="defaultDAO")
@@ -271,5 +274,62 @@ public class BroadcastService {
         param.put("orderByClause", "resId, dictMid, bCode");
         List<DictRefResPo> rcrpL = dictRefResDao.queryForList("getListByResIds", param);
         return rcrpL;
+    }
+    
+    public List<Map<String, Object>> getBroadcastListInfo(int page, int pagesize) {
+    	List<Map<String, Object>> bclist = new ArrayList<Map<String,Object>>();
+    	String bcliststr = CacheUtils.readFile("E:/wanjianceshi/FMInfo.txt");//"/opt/tomcat8_CM/webapps/CM/mweb/broadcast/FMInfo.txt"
+    	List<Map<String, Object>> l = (List<Map<String, Object>>) JsonUtils.jsonToObj(bcliststr, List.class);
+    	
+    	if(page==0&&pagesize==0){
+    		for (Map<String, Object> m : l) {
+    			Map<String, Object> mbc = new HashMap<String,Object>();
+    			if(m.containsKey("streams")) {
+    				List<Map<String, Object>> ls = (List<Map<String, Object>>) m.get("streams");
+    				String url = ((Map<String, Object>)ls.get(0)).get("url")+"";
+    				mbc.put("channelName", m.get("channelName"));
+    				mbc.put("url", url);
+    			}else {
+    				mbc.put("channelName",m.get("channelName"));
+    				mbc.put("url", m.get("url"));
+    			}
+    			bclist.add(mbc);
+			}
+    		return bclist;
+    	}
+    	
+    	if(l.size()-1 < (page-1)*pagesize) return null;
+    	
+    	for (int i = (page-1)*pagesize; i < page*pagesize; i++) {
+    		if(l.size()-1<i&&bclist.size()>0) return bclist;
+    		Map<String, Object> mbc = new HashMap<String,Object>();
+    		Map<String, Object> m = l.get(i);
+			if(m.containsKey("streams")) {
+				List<Map<String, Object>> ls = (List<Map<String, Object>>) m.get("streams");
+				String url = ((Map<String, Object>)ls.get(0)).get("url")+"";
+				mbc.put("channelName", m.get("channelName"));
+				mbc.put("url", url);
+			}else {
+				mbc.put("channelName",m.get("channelName"));
+				mbc.put("url", m.get("url"));
+			}
+			bclist.add(mbc);
+		}
+    	return bclist;
+    }
+    
+    public List<Map<String, Object>> getSqlList(){
+    	List<BroadcastPo> listbp = broadcastDao.queryForList();
+    	for (BroadcastPo broadcastPo : listbp) {
+			LiveFlowPo liveFlowPo = bc_liveflowDao.getInfoObject("getInfoByBcId", broadcastPo.getId());
+			if(liveFlowPo!=null){
+				Map<String, Object> m = new HashMap<String,Object>();
+				m.put("channelName", broadcastPo.getBcTitle());
+				List<Map<String, Object>> l = new ArrayList<Map<String,Object>>();
+				Map<String, Object> m2 = new HashMap<String,Object>();
+				m2.put("streamName", "蜻蜓资源");
+			}
+		}
+    	return null;
     }
 }

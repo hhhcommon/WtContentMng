@@ -27,7 +27,7 @@ import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.broadcast.service.BroadcastService;
 
 @Controller
-@RequestMapping(value="/bc/")
+@RequestMapping(value="/content/bc/")
 public class BroadcastController {
     @Resource
     private BroadcastService bcService;
@@ -147,6 +147,63 @@ public class BroadcastController {
             map.put("bcInfo", m);
             map.put("returnType","1001");
         }
+        return map;
+    }
+    
+    @RequestMapping(value="getBcList.do")
+    @ResponseBody
+    public Map<String,Object> getBcList(HttpServletRequest request) {
+        Map<String,Object> map=new HashMap<String, Object>();
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+        String userid = m.get("UserId")+"";
+        String page = m.get("Page")+"";
+        String pagesize = m.get("PageSize")+"";
+        String errMsg = "";
+        
+        System.out.println(userid+"#"+page+"#"+pagesize);
+        
+        if(userid.toLowerCase().equals("null")) errMsg+=",无用户信息";
+        if(page.toLowerCase().equals("null")) errMsg+=",无页码信息";
+        if(pagesize.toLowerCase().equals("null")) errMsg+=",无每页条数信息";
+        if (!StringUtils.isNullOrEmptyOrSpace(errMsg)) {
+            errMsg=errMsg.substring(1);
+            map.put("ReturnType", "1002");
+            map.put("Message", errMsg);
+            return map;
+        }
+        int pagenum = Integer.valueOf(page);
+        int pagesizenum = Integer.valueOf(pagesize);
+        List<Map<String, Object>> bclist = bcService.getBroadcastListInfo(pagenum, pagesizenum);
+        
+        if(bclist==null) {
+        	map.put("ReturnType", "1002");
+        	map.put("Message", "无数据");
+        	return map;
+        }
+        map.put("ReturnType", "1001");
+        map.put("ResultList", bclist);
+        map.put("AllCount", bclist.size());
+        return map;
+    }
+    
+    @RequestMapping(value="getSQLList.do")
+    @ResponseBody
+    public Map<String,Object> getSQLList(HttpServletRequest request) {
+        Map<String,Object> map=new HashMap<String, Object>();
+        
+        
+        
+//       
+//        List<Map<String, Object>> bclist = bcService.getBroadcastListInfo(pagenum, pagesizenum);
+//        
+//        if(bclist==null) {
+//        	map.put("ReturnType", "1002");
+//        	map.put("Message", "无数据");
+//        	return map;
+//        }
+//        map.put("ReturnType", "1001");
+//        map.put("ResultList", bclist);
+//        map.put("AllCount", bclist.size());
         return map;
     }
 }

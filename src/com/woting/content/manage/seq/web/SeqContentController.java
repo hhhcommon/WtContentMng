@@ -37,6 +37,11 @@ public class SeqContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
+		
+		String url = "{\"channelName\":\"酷狗FM--CRI环球旅游广播\",\"url\":\"http://fm.shuoba.org/channel3/1/48.m3u8\"}";
+		Map<String, Object> ms = (Map<String, Object>) JsonUtils.jsonToObj(url, Map.class);
+		System.out.println(ms.get("url"));
+		
 		Map<String, Object> c = seqContentService.getHostSeqMediaContents(userid);
 		if(c!=null&&c.size()>0){
 			map.put("ReturnType", c.get("ReturnType"));
