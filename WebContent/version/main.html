@@ -100,6 +100,32 @@ h4 {
   line-height:1.42857;
   transition:border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
+/*遮罩按钮*/
+#mask{
+  width: 100%;
+  height: 770px;
+  background:rgba(0,0,0,0.3);
+  text-align: center;
+  position:absolute;
+  z-index:2000;
+ display:none;
+}
+.mask img{
+  width: 13%;
+  height: 13%;
+  position: absolute;
+  top: 23%;
+  left: 23%;
+	
+}
+.mask span{
+  position: absolute;
+  top: 27%;
+  left: 38%;
+  font-size: 26px;
+  display:inline-block;
+  color:white;
+}
 -->
 </style>
 <body style="overflow:hidden;"><div style="height:100%">
@@ -507,6 +533,14 @@ function cleanVerWin() {
 }
 //保存
 function saveVer() {
+  $("#mask").css({
+    "top":$("#verAdd").find(".modal-content").position().top,
+    "left":$("#verAdd").find(".modal-content").position().left,
+  });
+  $("#mask").show();
+  $("#closeVerB").attr("disabled", "true");
+  $("#saveVerB").attr("disabled", "true");
+
   //检查数据合法性：目前不进行检查
   var checkErr="";
   var focus=0;
@@ -535,6 +569,9 @@ function saveVer() {
         break;
       default: ;
     }
+    $("#mask").hide();
+    $("#closeVerB").removeAttr("disabled");
+    $("#saveVerB").removeAttr("disabled");
     return;
   }
 
@@ -577,37 +614,40 @@ function saveVer() {
           listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
           $("#closeB_ver").click();
         }
+        $("#mask").hide();
+        $("#closeVerB").removeAttr("disabled");
+        $("#saveVerB").removeAttr("disabled");
       }
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
     }     
   });
-  return;
-  var formData = new FormData($("#verOperForm")[0]); 
-  $.ajax({
-    url:rootPath+"common/uploadCM.do",
-    type:"POST",
-    async:false,
-    dataType:"json",
-    data: formData,
-    success: function(jsonData) {
-      if (jsonData) {
-        if (jsonData.ReturnType!="1001") {
-          alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-          $("#verNum").focus();
-        } else {
-          alert("添加新版本成功")
-          page.Page="1";
-          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
-          $("#closeB_ver").click();
-        }
-      }
-    },
-    error: function(jqXHR){
-      alert("发生错误123：" + jqXHR.status);
-    }
-  });
+//
+//var formData = new FormData($("#verOperForm")[0]); 
+//$.ajax({
+//  url:rootPath+"common/uploadCM.do",
+//  type:"POST",
+//  async:false,
+//  dataType:"json",
+//  data: formData,
+//  success: function(jsonData) {
+//    if (jsonData) {
+//      if (jsonData.ReturnType!="1001") {
+//        alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+//        $("#verNum").focus();
+//      } else {
+//        alert("添加新版本成功")
+//        page.Page="1";
+//        listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
+//        $("#closeB_ver").click();
+//      }
+//    }
+//  },
+//  error: function(jqXHR){
+//    alert("发生错误123：" + jqXHR.status);
+//  }
+//});
 }
 
 //三、列表操作
