@@ -297,7 +297,8 @@ var verMap={};
 var curDetailVerId="";
 var curVer=null; //当前发布版本
 var verWinType=1;//1新增;2修改
-
+var flag;//判断是否一个未选
+var array=new Array();//用于保存选中的那一条数据的ID
 //初始化页面
 $(function() {
   /*一、日期处理*/
@@ -324,7 +325,7 @@ $(function() {
     });
   });
   
-  //四、新增修改版本处理
+  //四、新增修改删除版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
     verWinType=1;
@@ -358,7 +359,7 @@ $(function() {
     });
   });
   $("button[opeType='verMod']").on("click", function() {//修改版本
-    //首先判断是可以新增版本
+    //首先判断是可以修改版本
     var selVer=verMap[curDetailVerId];
     verWinType=2;
     $("#verAdd").find(".modal-header>h4").html("修改版本");
@@ -372,8 +373,20 @@ $(function() {
     $("#verBug").summernote("code", selVer.BugPatch);
     $('#verAdd').modal('show');
   });
-  $("button[opetype='verDel']").on("click",function(){//删除版本
-  	
+  $("button[opeType='verDel']").on("click",function(){//删除版本
+  	//首先判断是可以删除版本
+  	$("input[name='selVer']:checkBox").each(function(){
+  	 if($(this).attr("checked")){//判断是否被选中
+  	 	 flag=true;//只要有一个被选择设置为true
+  	 }
+  	})
+  	if(flag){
+  	  $("input[name='selVer']:checkBox").each(function(){
+  			if($(this).attr("checked")){
+  				
+  			}
+  		})
+  	}
   });
   $("#saveVerB").on("click", function() {
     saveVer();
