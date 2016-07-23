@@ -100,15 +100,45 @@ h4 {
   line-height:1.42857;
   transition:border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
+/*遮罩按钮*/
+#mask{
+  width: 100%;
+  height: 770px;
+  background:rgba(0,0,0,0.3);
+  text-align: center;
+  position:absolute;
+  z-index:2000;
+ display:none;
+}
+.mask img{
+  width: 13%;
+  height: 13%;
+  position: absolute;
+  top: 23%;
+  left: 23%;
+}
+.mask span{
+  position: absolute;
+  top: 27%;
+  left: 38%;
+  font-size: 26px;
+  display:inline-block;
+  color:white;
+}
 -->
 </style>
 <body style="overflow:hidden;"><div style="height:100%">
+<!-- 遮罩层 -->
+<div class="mask" id="mask">
+  <img src="../resources/images/waiting_circle.gif"/>
+  <span>请耐心等待...</span>
+</div>
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
-  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" disabled>修改</button>
-  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
-  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
+  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" >修改</button>
+  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" >删除</button>
+  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px">作废</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
   <div class="splite" style="left:418px"></div>
@@ -267,7 +297,8 @@ var verMap={};
 var curDetailVerId="";
 var curVer=null; //当前发布版本
 var verWinType=1;//1新增;2修改
-
+var flag;//判断是否一个未选
+var array=new Array();//用于保存选中的那一条数据的ID
 //初始化页面
 $(function() {
   /*一、日期处理*/
@@ -293,11 +324,8 @@ $(function() {
       $(this).removeAttr("readonly");
     });
   });
-  $("#saveCfgB").on("click", function() {
-    saveCfg();
-  });
-
-  //四、新增修改版本处理
+  
+  //四、新增修改删除版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
     verWinType=1;
@@ -331,7 +359,7 @@ $(function() {
     });
   });
   $("button[opeType='verMod']").on("click", function() {//修改版本
-    //首先判断是可以新增版本
+    //首先判断是可以修改版本
     var selVer=verMap[curDetailVerId];
     verWinType=2;
     $("#verAdd").find(".modal-header>h4").html("修改版本");
@@ -345,13 +373,30 @@ $(function() {
     $("#verBug").summernote("code", selVer.BugPatch);
     $('#verAdd').modal('show');
   });
+  $("button[opeType='verDel']").on("click",function(){//删除版本
+  	//首先判断是可以删除版本
+  	$("input[name='selVer']:checkBox").each(function(){
+  	 if($(this).attr("checked")){//判断是否被选中
+  	 	 flag=true;//只要有一个被选择设置为true
+  	 }
+  	})
+  	if(flag){
+  	  $("input[name='selVer']:checkBox").each(function(){
+  			if($(this).attr("checked")){
+  				
+  			}
+  		})
+  	}
+  });
   $("#saveVerB").on("click", function() {
     saveVer();
   });
   $("#verAdd").on("hide.bs.modal", function () {
     cleanVerWin();
   });
-
+  $("#saveVerB").on("click", function() {
+    saveVer();
+  });
   //五、列表处理
   $(".cntList").on("mouseenter",".lineBox",function(ev) {
     $(this).find("#nbsp").css({"background-color":"#f8f2e4","color":"#f8f2e4"});
@@ -507,6 +552,13 @@ function cleanVerWin() {
 }
 //保存
 function saveVer() {
+  $("#mask").css({
+    "top":$("#verAdd").find(".modal-content").position().top,
+    "left":$("#verAdd").find(".modal-content").position().left,
+  });
+  $("#mask").show();
+  $("#closeVerB").attr("disabled", "true");
+  $("#saveVerB").attr("disabled", "true");
   //检查数据合法性：目前不进行检查
   var checkErr="";
   var focus=0;
@@ -535,6 +587,9 @@ function saveVer() {
         break;
       default: ;
     }
+    $("#mask").hide();
+    $("#closeVerB").removeAttr("disabled");
+    $("#saveVerB").removeAttr("disabled");
     return;
   }
 
@@ -562,6 +617,9 @@ function saveVer() {
     //表单提交前进行验证
     success: function (jsonData) {
       if (jsonData) {
+      	$("#mask").hide();
+        $("#closeVerB").removeAttr("disabled");
+        $("#saveVerB").removeAttr("disabled");
         if (jsonData.ReturnType!="1001") {
           alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
           $("#verNum").focus();
@@ -577,37 +635,40 @@ function saveVer() {
           listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
           $("#closeB_ver").click();
         }
+        $("#mask").hide();
+        $("#closeVerB").removeAttr("disabled");
+        $("#saveVerB").removeAttr("disabled");
       }
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
     }     
   });
-  return;
-  var formData = new FormData($("#verOperForm")[0]); 
-  $.ajax({
-    url:rootPath+"common/uploadCM.do",
-    type:"POST",
-    async:false,
-    dataType:"json",
-    data: formData,
-    success: function(jsonData) {
-      if (jsonData) {
-        if (jsonData.ReturnType!="1001") {
-          alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-          $("#verNum").focus();
-        } else {
-          alert("添加新版本成功")
-          page.Page="1";
-          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
-          $("#closeB_ver").click();
-        }
-      }
-    },
-    error: function(jqXHR){
-      alert("发生错误123：" + jqXHR.status);
-    }
-  });
+//
+//var formData = new FormData($("#verOperForm")[0]); 
+//$.ajax({
+//  url:rootPath+"common/uploadCM.do",
+//  type:"POST",
+//  async:false,
+//  dataType:"json",
+//  data: formData,
+//  success: function(jsonData) {
+//    if (jsonData) {
+//      if (jsonData.ReturnType!="1001") {
+//        alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+//        $("#verNum").focus();
+//      } else {
+//        alert("添加新版本成功")
+//        page.Page="1";
+//        listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
+//        $("#closeB_ver").click();
+//      }
+//    }
+//  },
+//  error: function(jqXHR){
+//    alert("发生错误123：" + jqXHR.status);
+//  }
+//});
 }
 
 //三、列表操作
