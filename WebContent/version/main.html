@@ -83,7 +83,7 @@ h4 {
   margin-left:450px;
 }
 .my-btnOper button {
-  height:28px;
+  height:30px;
   line-height:28px;
   padding:0px 12px;
 }
@@ -294,7 +294,7 @@ h4 {
 var canBrowse_VerCfg=true;//是否允许浏览
 var oldVerCfgData=null;//从后台取到的配置数据
 var rootPath=getRootPath();
-var page={PageSize:"8", Page:"1", AllPage:null, GotoLast:"0"};
+var page={PageSize:"6", Page:"1", AllPage:null, GotoLast:"0"};
 var verMap={};
 var curDetailVerId="";
 var curVer=null; //当前发布版本
@@ -752,23 +752,27 @@ function drawVerList(listData, domObj, param) {
 		$.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
       success:function(jsonData){
       	if(jsonData){
+          //alert(allFields(jsonData));//弹出请求这个接口的一些信息
       		if(jsonData.AllowDel==0){
-      			alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+      			alert("当前是最新版本，不能删除");
       			$("button[opeType='verDel']").attr("disabled","true");
 	          $("button[opeType='verInvalid']").attr("disabled","true");
       		}else{
       			  $("button[opeType='verDel']").on("click",function(){
-	      		    $.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
+      			  	$.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
 	                success:function(jsonData){
-	              	  if(jsonData.ReturnType!="1001"){
-	              		  alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-	              	  }else{              	  	
-                        page.Page="1";
-                        listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList); 
-                        $("button[opeType='verDel']").attr("disabled","true");
-	                      $("button[opeType='verInvalid']").attr("disabled","true");
-	              	  }
-	                },
+	                	if(jsonData){
+	                		if(jsonData.ReturnType!="1001"){
+	              		      alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+	              	    }else{  
+	              	    	  window.location.reload();
+//	              	    	  $("button[opeType='verDel']").attr("disabled","true");
+//	                        $("button[opeType='verInvalid']").attr("disabled","true");
+//                          page.Page="1";
+//                          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList); 
+                      }
+	                	}
+	              	},
 	                error:function(jqXHR){
 	          	      alert("发生错误" + jqXHR.status);
 	                }
