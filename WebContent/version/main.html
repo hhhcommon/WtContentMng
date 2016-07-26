@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta name="keywords" content="Apk, 版本管理">
   <meta name="description" content="实现我听Android平台的Apk文档发布和简单的版本说明功能">
-
+  <meta http-equiv="pragma" content="no-cache">        
+  <meta http-equiv="cache-control" content="no-cache">      
+  <meta http-equiv="expires" content="0">
   <title>Apk版本管理</title>
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
@@ -137,8 +139,8 @@ h4 {
 <div class="toobarArea">
   <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
   <button type="button" opeType="verMod" class="btn" style="margin-right:3px" >修改</button>
-  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" >删除</button>
-  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px">作废</button>
+  <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
+  <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
   <div class="splite" style="left:300px"></div>
   <button type="button" opeType="verconfig" class="btn" style="margin-right:60px" data-toggle="modal" data-target="#verCfg">配置信息</button>
   <div class="splite" style="left:418px"></div>
@@ -297,10 +299,13 @@ var verMap={};
 var curDetailVerId="";
 var curVer=null; //当前发布版本
 var verWinType=1;//1新增;2修改
-var flag;//判断是否一个未选
-var array=new Array();//用于保存选中的那一条数据的ID
+
 //初始化页面
 $(function() {
+	/*清除浏览器缓存*/
+	$.ajaxSetup ({
+    cache: false //设置成false将不会从浏览器缓存读取信息
+  });
   /*一、日期处理*/
   $("#data_5 .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
   //--设置当前月份
@@ -325,7 +330,7 @@ $(function() {
     });
   });
   
-  //四、新增修改删除版本处理
+  //四、新增修改版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
     verWinType=1;
@@ -373,29 +378,11 @@ $(function() {
     $("#verBug").summernote("code", selVer.BugPatch);
     $('#verAdd').modal('show');
   });
-  $("button[opeType='verDel']").on("click",function(){//删除版本
-  	//首先判断是可以删除版本
-  	$("input[name='selVer']:checkBox").each(function(){
-  	 if($(this).attr("checked")){//判断是否被选中
-  	 	 flag=true;//只要有一个被选择设置为true
-  	 }
-  	})
-  	if(flag){
-  	  $("input[name='selVer']:checkBox").each(function(){
-  			if($(this).attr("checked")){
-  				
-  			}
-  		})
-  	}
-  });
   $("#saveVerB").on("click", function() {
     saveVer();
   });
   $("#verAdd").on("hide.bs.modal", function () {
     cleanVerWin();
-  });
-  $("#saveVerB").on("click", function() {
-    saveVer();
   });
   //五、列表处理
   $(".cntList").on("mouseenter",".lineBox",function(ev) {
@@ -644,31 +631,6 @@ function saveVer() {
       alert("发生错误" + jqXHR.status);
     }     
   });
-//
-//var formData = new FormData($("#verOperForm")[0]); 
-//$.ajax({
-//  url:rootPath+"common/uploadCM.do",
-//  type:"POST",
-//  async:false,
-//  dataType:"json",
-//  data: formData,
-//  success: function(jsonData) {
-//    if (jsonData) {
-//      if (jsonData.ReturnType!="1001") {
-//        alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-//        $("#verNum").focus();
-//      } else {
-//        alert("添加新版本成功")
-//        page.Page="1";
-//        listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
-//        $("#closeB_ver").click();
-//      }
-//    }
-//  },
-//  error: function(jqXHR){
-//    alert("发生错误123：" + jqXHR.status);
-//  }
-//});
 }
 
 //三、列表操作
@@ -728,12 +690,11 @@ function drawVerList(listData, domObj, param) {
   for(var i=0; i<verList.length ;i++) {
     oneVer=verList[i];
     if (!oneVer) continue;
-
     temp=oneVer.VerId;
     lineDiv=$("<div class='lineBox'></div>");
-    lineDiv.attr({verId:(temp?temp:"")});
+    lineDiv.attr({VerId:(temp?temp:"")});
     //1-选择框
-    checkDiv=$("<div class='l-check'><input type='checkBox' name='selVer'/></div>");
+    checkDiv=$("<div class='l-check'><input type='radio' name='selVer' id='radios'/></div>");
     lineDiv.append(checkDiv);
     //2-版本图标
     temp=oneVer.VerImgUrl;
@@ -775,7 +736,6 @@ function drawVerList(listData, domObj, param) {
     else typeDiv.append($("<span id='nbsp' style='background-color:#fff;color:#fff;'>C</span>"));
     typeDiv.append($("<span style='background-color:#61b0e8'>"+temp+"</span>"));
     lineDiv.append(typeDiv);
-
     verMap[oneVer.VerId]=oneVer;
     $(lineDiv).attr("onClick", "clickLine('"+oneVer.VerId+"')");
     //加入列表
@@ -783,7 +743,45 @@ function drawVerList(listData, domObj, param) {
   }
   $(".lineBox").first().trigger("click");
   $(domObj).find(".cntList").append($("<span class='hoverLine' style='top:-70px'></span>"));
-
+	//点击删除按钮，删除对应的版本
+	$("input[type='radio']").on("click",function(){
+		$("button[opeType='verDel']").removeAttr("disabled");
+	  $("button[opeType='verInvalid']").removeAttr("disabled");
+		var verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
+		console.log(verId);
+		$.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
+      success:function(jsonData){
+      	if(jsonData){
+      		if(jsonData.AllowDel==0){
+      			alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+      			$("button[opeType='verDel']").attr("disabled","true");
+	          $("button[opeType='verInvalid']").attr("disabled","true");
+      		}else{
+      			  $("button[opeType='verDel']").on("click",function(){
+	      		    $.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
+	                success:function(jsonData){
+	              	  if(jsonData.ReturnType!="1001"){
+	              		  alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+	              	  }else{              	  	
+                        page.Page="1";
+                        listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList); 
+                        $("button[opeType='verDel']").attr("disabled","true");
+	                      $("button[opeType='verInvalid']").attr("disabled","true");
+	              	  }
+	                },
+	                error:function(jqXHR){
+	          	      alert("发生错误" + jqXHR.status);
+	                }
+	              })
+	           })
+      		}
+      	}
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    })
+	})
   //二、设置翻页信息
   page.PageSize=result.PageSize;
   page.Page=result.CurPage;

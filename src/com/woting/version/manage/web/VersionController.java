@@ -502,7 +502,7 @@ public class VersionController {
             }
             //2-业务处理：获得版本信息，并处理返回值
             map.put("ReturnType", "1001");
-            map.put("AllowInsert", verService.judgeDel(verId));
+            map.put("AllowDel", verService.judgeDel(verId));
             return map;
         } catch(Exception e) {
             e.printStackTrace();
