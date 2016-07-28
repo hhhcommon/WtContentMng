@@ -138,7 +138,7 @@ h4 {
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
-  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" >修改</button>
+  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" disabled>修改</button>
   <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
   <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
   <div class="splite" style="left:300px"></div>
@@ -330,7 +330,7 @@ $(function() {
     });
   });
   
-  //四、新增修改版本处理
+  //四、新增修改删除版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
     verWinType=1;
@@ -378,6 +378,25 @@ $(function() {
     $("#verBug").summernote("code", selVer.BugPatch);
     $('#verAdd').modal('show');
   });
+  $("button[opeType='verDel']").on("click", function() {//删除版本
+    $.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
+     success:function(jsonData) {
+       if(jsonData) {
+          if(jsonData.ReturnType!="1001") {
+            alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+          } else {
+            $("button[opeType='verDel']").attr("disabled","true");
+            $("button[opeType='verInvalid']").attr("disabled","true");
+            page.Page="1";
+            listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
+          }
+       }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
   $("#saveVerB").on("click", function() {
     saveVer();
   });
@@ -395,7 +414,34 @@ $(function() {
     $(this).css("background-color", "#fff");
     $(".hoverLine").css({"top":"-70px"});
   });
-
+  //选中radio后的处理
+  $(".cntList").on("click", ".lineBox", function() {
+    $("button[opeType='verMod']").removeAttr("disabled");
+    var $radio = $(this).find("input[type='radio']");
+    var $flag= $radio.is(":checked");
+    if( !$flag){
+        $radio.prop("checked",true); 
+    }
+    verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
+    $.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
+      success:function(jsonData){
+        if(jsonData){
+          if (jsonData.AllowDel==1) {
+      	    $("button[opeType='verDel']").removeAttr("disabled");
+      	    $("button[opeType='verInvalid']").removeAttr("disabled");
+          }else {
+          	$("button[opeType='verDel']").attr("disabled","true");
+            $("button[opeType='verInvalid']").attr("disabled","true");
+            alert("当前版本是最新版本，不支持删除功能!");
+          }
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    })
+  });
+  
   //六、翻页处理，先不进行包装
   $(".pagination .first").on("click", function() {//第一页
     if ($(this).hasClass("disabled")) return;
@@ -450,7 +496,7 @@ $(function() {
     }
     $("#imgArea").html(root);
   });
-  //八、初始化页面
+  //八、版本说明和bug记录初始化
   $("#verMemo").summernote({
     lang:'zh-CN',
     placeholder:'在此输入版本说明，介绍版本的情况，注意：可不包括bug的修改说明',
@@ -501,7 +547,7 @@ function loadVerCfgAndFill() {
 function saveCfg() {
   //检查数据合法性：目前不进行检查
   //获得新的数据
-  if (($.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val()))=="") {
+  if (($.trim($("#pubFileName").val())+$.trim($("#pubUrl").val())+$.trim($("#pubStorePath").val())+$.trim($("#verGoodsStorePath").val()))=="") {
     alert("没有任何内容，无法保存！");
     return;
   }
@@ -741,51 +787,8 @@ function drawVerList(listData, domObj, param) {
     //加入列表
     $(domObj).find(".cntList").append(lineDiv);
   }
-  $(".lineBox").first().trigger("click");
   $(domObj).find(".cntList").append($("<span class='hoverLine' style='top:-70px'></span>"));
-	//点击删除按钮，删除对应的版本
-	$("input[type='radio']").on("click",function(){
-		$("button[opeType='verDel']").removeAttr("disabled");
-	  $("button[opeType='verInvalid']").removeAttr("disabled");
-		var verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
-		console.log(verId);
-		$.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
-      success:function(jsonData){
-      	if(jsonData){
-          //alert(allFields(jsonData));//弹出请求这个接口的一些信息
-      		if(jsonData.AllowDel==0){
-      			alert("当前是最新版本，不能删除");
-      			$("button[opeType='verDel']").attr("disabled","true");
-	          $("button[opeType='verInvalid']").attr("disabled","true");
-      		}else{
-      			  $("button[opeType='verDel']").on("click",function(){
-      			  	$.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
-	                success:function(jsonData){
-	                	if(jsonData){
-	                		if(jsonData.ReturnType!="1001"){
-	              		      alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-	              	    }else{  
-	              	    	  window.location.reload();
-//	              	    	  $("button[opeType='verDel']").attr("disabled","true");
-//	                        $("button[opeType='verInvalid']").attr("disabled","true");
-//                          page.Page="1";
-//                          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList); 
-                      }
-	                	}
-	              	},
-	                error:function(jqXHR){
-	          	      alert("发生错误" + jqXHR.status);
-	                }
-	              })
-	           })
-      		}
-      	}
-      },
-      error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    })
-	})
+	
   //二、设置翻页信息
   page.PageSize=result.PageSize;
   page.Page=result.CurPage;
@@ -801,8 +804,6 @@ function clickLine(verId) {
   $(".hoverLine").css({"top":"-70px"});
   $("div").remove(".selectLine");
   selLine.append("<div class='selectLine'></div>");
-  //修改处理
-  $("button[opeType='verMod']").removeAttr("disabled");
   drawVerDetail(verId);
 }
 
