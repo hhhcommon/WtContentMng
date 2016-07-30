@@ -138,7 +138,7 @@ h4 {
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
-  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" >修改</button>
+  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" disabled>修改</button>
   <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
   <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
   <div class="splite" style="left:300px"></div>
@@ -302,8 +302,8 @@ var verWinType=1;//1新增;2修改
 
 //初始化页面
 $(function() {
-	/*清除浏览器缓存*/
-	$.ajaxSetup ({
+  /*清除浏览器缓存*/
+  $.ajaxSetup ({
     cache: false //设置成false将不会从浏览器缓存读取信息
   });
   /*一、日期处理*/
@@ -330,7 +330,7 @@ $(function() {
     });
   });
   
-  //四、新增修改版本处理
+  //四、新增修改删除版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
     verWinType=1;
@@ -364,7 +364,7 @@ $(function() {
     });
   });
   $("button[opeType='verMod']").on("click", function() {//修改版本
-    //首先判断是可以修改版本
+    //首先判断是可以修改版本？？？
     var selVer=verMap[curDetailVerId];
     verWinType=2;
     $("#verAdd").find(".modal-header>h4").html("修改版本");
@@ -377,6 +377,25 @@ $(function() {
     $("#verMemo").summernote("code", selVer.Descn);
     $("#verBug").summernote("code", selVer.BugPatch);
     $('#verAdd').modal('show');
+  });
+  $("button[opeType='verDel']").on("click", function() {//删除版本
+    $.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
+      success:function(jsonData) {
+        if(jsonData) {
+          if(jsonData.ReturnType!="1001") {
+            alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+          } else {
+            $("button[opeType='verMod']").attr("disabled","true");
+            $("button[opeType='verDel']").attr("disabled","true");
+            $("button[opeType='verInvalid']").attr("disabled","true");
+            listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
+          }
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
   });
   $("#saveVerB").on("click", function() {
     saveVer();
@@ -394,6 +413,29 @@ $(function() {
     $(this).find("#nbsp").css({"background-color":"#fff","color":"#fff"});
     $(this).css("background-color", "#fff");
     $(".hoverLine").css({"top":"-70px"});
+  });
+  //选中radio后的处理
+  $(".cntList").on("click"， "input[type='radio']", function(ev) {
+    $("button[opeType='verMod']").attr("disabled","true");
+    $("button[opeType='verDel']").attr("disabled","true");
+    $("button[opeType='verInvalid']").attr("disabled","true");
+  });
+  $("input[type='radio']").on("click",function(){
+    $("button[opeType='verMod']").removeAttr("disabled");
+    var verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
+    $.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
+      success:function(jsonData){
+        if(jsonData){
+          if (jsonData.AllowDel==1) {
+      	    $("button[opeType='verDel']").removeAttr("disabled");
+      	    $("button[opeType='verInvalid']").removeAttr("disabled");
+          }
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    })
   });
 
   //六、翻页处理，先不进行包装
@@ -433,7 +475,7 @@ $(function() {
 
   //七、文件处理
   $("#apkFileText").on("click", function() {
-	$("#apkFile").click();
+  $("#apkFile").click();
   });
   $("#apkFile").change(function() {
     $("#apkFileText").val($(this).val());
@@ -604,7 +646,7 @@ function saveVer() {
     //表单提交前进行验证
     success: function (jsonData) {
       if (jsonData) {
-      	$("#mask").hide();
+        $("#mask").hide();
         $("#closeVerB").removeAttr("disabled");
         $("#saveVerB").removeAttr("disabled");
         if (jsonData.ReturnType!="1001") {
@@ -743,49 +785,6 @@ function drawVerList(listData, domObj, param) {
   }
   $(".lineBox").first().trigger("click");
   $(domObj).find(".cntList").append($("<span class='hoverLine' style='top:-70px'></span>"));
-	//点击删除按钮，删除对应的版本
-	$("input[type='radio']").on("click",function(){
-		$("button[opeType='verDel']").removeAttr("disabled");
-	  $("button[opeType='verInvalid']").removeAttr("disabled");
-		var verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
-		console.log(verId);
-		$.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
-      success:function(jsonData){
-      	if(jsonData){
-          //alert(allFields(jsonData));//弹出请求这个接口的一些信息
-      		if(jsonData.AllowDel==0){
-      			alert("当前是最新版本，不能删除");
-      			$("button[opeType='verDel']").attr("disabled","true");
-	          $("button[opeType='verInvalid']").attr("disabled","true");
-      		}else{
-      			  $("button[opeType='verDel']").on("click",function(){
-      			  	$.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
-	                success:function(jsonData){
-	                	if(jsonData){
-	                		if(jsonData.ReturnType!="1001"){
-	              		      alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
-	              	    }else{  
-	              	    	  window.location.reload();
-//	              	    	  $("button[opeType='verDel']").attr("disabled","true");
-//	                        $("button[opeType='verInvalid']").attr("disabled","true");
-//                          page.Page="1";
-//                          listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList); 
-                      }
-	                	}
-	              	},
-	                error:function(jqXHR){
-	          	      alert("发生错误" + jqXHR.status);
-	                }
-	              })
-	           })
-      		}
-      	}
-      },
-      error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    })
-	})
   //二、设置翻页信息
   page.PageSize=result.PageSize;
   page.Page=result.CurPage;
