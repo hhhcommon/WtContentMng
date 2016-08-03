@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -231,6 +232,7 @@ public class MediaService {
     }
     
     public void saveCha(ChannelAsset cha){
+    	System.out.println(JsonUtils.objToJson(cha.convert2Po()));
     	channelAssetDao.insert("insert", cha.convert2Po());
     }
     

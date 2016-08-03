@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -56,9 +55,8 @@ public class SeqContentService {
 	 * @return
 	 */
 	public Map<String, Object> addSeqInfo(String userid, String username, String smaname, String smaimg, String smastatus,
-			String did, String chid, String smadesc, List<Map<String, Object>> malist) {
+			String did, String chid, String smadesc, List<Map<String, Object>> malist, List<String> tagslist) {
 		Map<String, Object> map = new HashMap<String, Object>();
-
 		// 保存专辑信息到资源库
 		String smaid = SequenceUUID.getPureUUID();
 		SeqMediaAsset sma = new SeqMediaAsset();
@@ -71,7 +69,7 @@ public class SeqContentService {
 		}
 		sma.setSmaTitle(smatitle);
 		if (smaimg.toLowerCase().equals("null"))
-			smaimg = "www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+			smaimg = "http://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
 		sma.setSmaImg(smaimg);
 		sma.setDescn(smadesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : smadesc);
 
@@ -224,6 +222,7 @@ public class SeqContentService {
 		}
 		return map;
 	}
+	
 	
 	public Map<String, Object> removeSeqMediaAsset(String contentid) {
 		Map<String, Object> map = new HashMap<String,Object>();

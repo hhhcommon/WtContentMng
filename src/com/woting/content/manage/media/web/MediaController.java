@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -15,9 +16,10 @@ import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.media.service.MediaContentService;
 
 @Controller
-public class MediaContentController {
+public class MediaController {
 	@Resource
 	private MediaContentService mediaContentService;
+	private static String ip_address = "123.56.254.75";
 
 	/**
 	 * 得到主播单体节目列表
@@ -76,17 +78,16 @@ public class MediaContentController {
 			map.put("Message", "无资源状态");
 			return map;
 		}
-		
+		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
 		String maimg = m.get("ContentImg")+"";
 		if(maimg.toLowerCase().equals("null"))
-			maimg="www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
+			maimg="htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+		maimg=maimg.replace(rootpath, "http://"+ip_address+":908/CM/");
 		String mauri = m.get("ContentURI")+"";
-		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
+		mauri=mauri.replace(rootpath, "http://"+ip_address+":908/CM/");
 		String madescn = m.get("ContentDesc")+"";
 		String contentkeywords = m.get("KeyWords")+"";
-		String seqid = m.get("ContentSequId")+"";
-		
+		String seqid = m.get("ContentSeqId")+"";
 		map = mediaContentService.addMediaInfo(userid, username, maname, maimg, mauri, mastatus, contentkeywords, madescn, seqid);
 		return map;
 	}
@@ -107,12 +108,17 @@ public class MediaContentController {
 		ma.setId(maid);
 		String maname = m.get("ContentName")+"";
 		if(!maname.toLowerCase().equals("null")) ma.setMaTitle(maname);
+		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
 		String maimg = m.get("ContentImg")+"";
-		maimg=maimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
+		if(maimg.equals("null"))
+			maimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+		maimg=maimg.replace(rootpath, "http://"+ip_address+":908/CM/");
 		if(!maimg.toLowerCase().equals("null")) ma.setMaImg(maimg);
 		String mauri = m.get("ContentURI")+"";
-		mauri=mauri.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
-		if(!mauri.toLowerCase().equals("null")) ma.setMaURL(mauri);
+		if(!mauri.toLowerCase().equals("null")) {
+			mauri=mauri.replace(rootpath, "http://"+ip_address+":908/CM/");
+			ma.setMaURL(mauri);
+		} 
 		String seqid = m.get("ContentSeqId")+"";
 		if(!seqid.toLowerCase().equals("null")) sma.setId(seqid);
 		String madesc = m.get("ContentDesc")+"";
@@ -121,11 +127,6 @@ public class MediaContentController {
 		if(!mastatus.toLowerCase().equals("null")) ma.setMaStatus(Integer.valueOf(mastatus));
 		if(seqid.toLowerCase().equals("null")) map = mediaContentService.updateMediaInfo(ma,null);
 		else map = mediaContentService.updateMediaInfo(ma, sma);
-		
-//		String subjectwords = m.get("SubjectWords")+"";
-//		if(subjectwords.toLowerCase().equals("null")) mauri=null;
-//		String keywords = m.get("KeyWords")+"";
-//		if(keywords.toLowerCase().equals("null")) mauri=null;
 		return map;
 	}
 	

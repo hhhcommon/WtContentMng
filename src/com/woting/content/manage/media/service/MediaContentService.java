@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
@@ -16,14 +14,13 @@ import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
-import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seq.service.SeqContentService;
 
 @Service
 public class MediaContentService {
 	@Resource
-	private MediaService mediaService;
+	private com.woting.cm.core.media.service.MediaService mediaService;
 	@Resource
 	private DictContentService dictContentService;
 	@Resource
