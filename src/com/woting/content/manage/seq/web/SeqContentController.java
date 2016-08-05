@@ -18,7 +18,7 @@ import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.seq.service.SeqContentService;
 
 @Controller
-public class SeqController {
+public class SeqContentController {
 	@Resource
 	private SeqContentService seqContentService;
 	private static String ip_address = "123.56.254.75";
