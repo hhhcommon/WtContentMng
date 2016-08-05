@@ -20,12 +20,27 @@
 <body>
 	<div class="" style="padding:0 25px;">
 	  <!-- 操作和状态显示 -->
-		<div class="commBox">
-		  <p>共<span class="totalCount">0</span>个声音</p>
-		  <button class="btn btn-warning">添加声音</button>
-		</div>
-		<!-- 列表显示区 -->
-		<div class="actList"></div>
+	  <div class="commBox">
+        <p>共<span class="totalCount">0</span>个声音</p>
+        <div class="input-group col-xs-4">
+          <input type="text" placeholder="搜索" class="input-sm form-control"><span class="input-group-btn">
+          <button type="button" class="btn btn-sm btn-warning">搜索</button></span>
+        </div>
+        <div class="btn-group roll-nav roll-right content-tabs" style='width:120px;left:470px;top:-155px;'>
+          <button class="dropdown J_tabClose" data-toggle="dropdown" aria-expanded="false" style="width: 120px;" >请选择状态
+        	<span class="caret"></span>
+          </button>
+          <ul role="menu" class="dropdown-menu dropdown-menu-right">
+            <li class="J_tabShowActive"><a>已发布</a></li>
+            <li class=""><a>已发布</a></li>
+            <li class="J_tabCloseAll"><a>审核中</a></li>
+            <li class="J_tabCloseOther"><a>未通过</a></li>
+          </ul>
+        </div>
+        <button class="btn btn-warning create" style="position:relative;top:-160px;left:525px;">添加声音</button>
+      </div>
+	  <!-- 列表显示区 -->
+	  <div class="actList"></div>
 	</div>
 	<!-- 全局js -->
 	<script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -39,25 +54,25 @@
 	<script src="../resources/plugins/hplus/js/plugins/validate/jquery.validate.min.js"></script>
 
 	<script>
-		$(function(){
+	$(function(){
 			//获取列表
 			dataParam={
-          "UserId":userId,
-          "url":rootPath+"content/media/getHostMediaList.do",
-      };
+                "UserId":userId,
+                "url":rootPath+"content/media/getHostMediaList.do",
+            };
 			getContentList(dataParam);
 			
 			//点击添加节目按钮，弹出添加界面
-      $(".btn").on("click",function(){
+        $(".create").on("click",function(){
     	  $(window.top.document).find("#newIframe").attr({"src":"./host/add_audio.html"}).css({"display":"block"});
-        $(window.top.document).find(".shade").css({"display":"block"});
-      })
+          $(window.top.document).find(".shade").css({"display":"block"});
+        })
       
-    //对专辑的改、删等4种操作
-      $(".actList").on("click","i",function(){
-   	    var parentDoc=$(window.top.document);
-        switch($(this).attr("opeType")){
-          case 'conUpdate':
+    //对声音的改、删等4种操作
+        $(".actList").on("click","i",function(){
+   	      var parentDoc=$(window.top.document);
+          switch($(this).attr("opeType")){
+            case 'conUpdate':
             /*
             1，元素VALUE获取
             2，存取元素值，和提交时的对比
@@ -68,7 +83,7 @@
             var _this=$(this).parents(".listBox");
             //这里可能是iframe里的页面还没渲染完成，如果不延时执行，获取里面的页面元素时将获取不到
             window.setTimeout(function(){
-            	 var newIframe=$(parent["newIframe"].document);
+               var newIframe=$(parent["newIframe"].document);
                var contentId,contentName,contentDesc,contentImg,subjectWords;
                contentId=_this.attr("contentId");
                contentName=_this.attr("contentName");
@@ -114,7 +129,7 @@
               "ContentSeqId":contentSeqId
             };
             getContentList(dataParam);
-        	  break;
+        	break;
           default:
         }
       });

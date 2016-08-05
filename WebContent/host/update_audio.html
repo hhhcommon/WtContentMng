@@ -79,9 +79,7 @@
                               <button class="btn btn-warning" id="draftBtn" type="draft">存草稿</button>
                           </div>
                           <div class="col-sm-3 text-right" m-btn>
-                              <a class="close-link btn btn-warning">
-                                                                                          取消
-                          </a>
+                              <a class="close-link btn btn-warning"> 取消</a>
                           </div>
                       </div>
                   </form>
@@ -165,10 +163,10 @@
                dataType:"json",
                //表单提交前进行验证
                success: function (opeResult) {
-                  if (opeResult.jsonType=="1") {
-                    _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                  if(opeResult.ful[0].storeFilename){
+              	    _this.siblings("input[type='hidden']").val(opeResult.ful[0].storeFilename);
                   }else{
-                    alert(opeResult.err);
+              	    alert(opeResult.err)
                   }
                },
                error: function(jqXHR){
@@ -188,11 +186,11 @@
                  $.ajax({
                       url:rootPath+"content/media/updateMediaInfo.do",
                       type:"POST",
-                      data:$("#updateMediaForm").serialize(),
+                      data:$("#updateMediaForm").serializeArray(),
                       dataType:"json",
                       //表单提交前进行验证
                       success: function (opeResult) {
-                         if (opeResult.ReturnType=="1001") {
+                      	if (opeResult.ReturnType=="1001") {
                            alert("修改成功");
                            $("#updateMediaForm")[0].reset();
                            $(window.top.document).find(".shade,#newIframe").css({"display":"none"});
@@ -253,7 +251,8 @@
                       "contentDesc": actList.ResultList.List[i].ContentDesc,
                       "contentImg": actList.ResultList.List[i].ContentImg,
                       "contentCatalogs": actList.ResultList.List[i].ContentCatalogs,
-                      "subjectWords": actList.ResultList.List[i].SubjectWords});
+                      "subjectWords": actList.ResultList.List[i].SubjectWords
+                    });
                     imgDiv = $("<div>");
                     imgA=$("<a href='javascript:;'></a>");
                     thumbImg = $("<img alt='节目封面图片''>");

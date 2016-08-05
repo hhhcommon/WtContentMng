@@ -16,12 +16,12 @@ function getContentList(obj) {
 	    if (resultData.ReturnType == "1001") {
 	    	if(!obj.opeType){
 	    		$(".actList").html(""); //再重新创建新的数据集时，先清空之前的
-		        $(".totalCount").text(resultData.ResultList.AllCount);
+    	        $(".totalCount").text(resultData.ResultList.AllCount);
 		        ContentListLoad(resultData);
 	    	}else{
 	    		switch(obj.opeType){
 	    			case 'conAdd':
-	    			break;
+	    			    break;
 	        		case 'conUpdate':
 	        			break;
 	        		case 'conDel':
@@ -72,7 +72,7 @@ function ContentListLoad(actList) {
      });
       imgDiv = $("<div></div>");
       imgA=$("<a href='javascript:;'></a>");
-      thumbImg = $("<img alt='节目封面图片''>");
+      thumbImg = $("<img alt='节目封面图片'>");
       thumbImg.attr({'src':actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
       conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate' title='修改'></i>");
@@ -87,10 +87,10 @@ function ContentListLoad(actList) {
       infoP2 = $("<p class='lastTime'></p>");
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
       if(mediaType=="SEQU"){
-    	  listDiv.attr({
-    	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
-    	  //"contentChannelId": actList.ResultList.List[i].ContentChannels[0].CataDid
-    	  });
+//  	  listDiv.attr({
+//  	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
+//    	  "contentChannelId": actList.ResultList.List[i].ContentChannels[0].CataDid
+//  	  });
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
           infoP1.text(actList.ResultList.List[i].SubCount+"个声音");
@@ -111,31 +111,31 @@ function ContentListLoad(actList) {
  * 修改节目时，传递原有的分类ID，以便将其设置到选中状态供修改
  * 添加节目时，则不需要
  * */
-  function getCatalogs(){
-    $.ajax({
-      type: "POST",    
-      url:rootPath+"common/getCataTreeWithSelf.do",
-      dataType: "json",
-      data:{cataId: "3"},
-      success: function(catalogsList) {
-        if (catalogsList.jsonType=="1") {
-	    	catalogsListLoad(catalogsList);
-        }
-      }     
-    });
-  }
-  function catalogsListLoad(catalogsList,catalog){
-    var listLength=catalogsList.data.children.length;
-    var opt;
-    for(var i=0;i<listLength;i++){
-      opt=$("<option></option>");
-      opt.val(catalogsList.data.children[i].id).text(catalogsList.data.children[i].name);
-      $("#ContentCatalogsId").append(opt);
+    function getCatalogs(){
+      $.ajax({
+        type: "POST",    
+        url:rootPath+"common/getCataTreeWithSelf.do",
+        dataType: "json",
+        data:{cataId: "3"},
+        success: function(catalogsList) {
+          if (catalogsList.jsonType=="1") {
+	    	  catalogsListLoad(catalogsList);
+          }
+        }     
+      });
     }
-  }
+    function catalogsListLoad(catalogsList,catalog){
+      var listLength=catalogsList.data.children.length;
+      var opt;
+      for(var i=0;i<listLength;i++){
+        opt=$("<option></option>");
+        opt.val(catalogsList.data.children[i].id).text(catalogsList.data.children[i].name);
+        $("#ContentCatalogsId").append(opt);
+      }
+    }
   
-  //获取栏目列表
-  function getChannel(){
+    //获取栏目列表
+    function getChannel(){
       $.ajax({
         type: "POST",    
         url:rootPath+"common/getChannelTreeWithSelf.do",
@@ -156,7 +156,7 @@ function ContentListLoad(actList) {
       }
     }
     
-  //添加/修改单体时，获取专辑列表
+    //添加/修改单体时，获取专辑列表
     function getSeqMediaList(){
         $.ajax({
           type: "POST",    
@@ -168,7 +168,7 @@ function ContentListLoad(actList) {
           }
         });
       }
-      function seqMediaListLoad(seqMediaList){
+    function seqMediaListLoad(seqMediaList){
         var listLength=seqMediaList.ResultList.AllCount;
         var opt;
         for(var i=0;i<listLength;i++){
@@ -177,4 +177,4 @@ function ContentListLoad(actList) {
           opt.text(seqMediaList.ResultList.List[i].ContentName);
           $("#ContentSeqId").append(opt);
         }
-      }    
+    }    

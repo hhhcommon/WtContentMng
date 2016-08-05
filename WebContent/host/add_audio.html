@@ -87,9 +87,7 @@
                               <button class="btn btn-warning" id="draftBtn" type="draft">存草稿</button>
                           </div>
                           <div class="col-sm-3 text-right" m-btn>
-                              <a class="close-link btn btn-warning">
-                                                                                          取消
-                          </a>
+                              <a class="close-link btn btn-warning">取消</a>
                           </div>
                       </div>
                   </form>
@@ -157,8 +155,7 @@
                               }
                          }
                          fileReader.readAsDataURL($(this)[0].files[0]);
-                         
-        		     }
+                   }
         		     
                   //文件上传
                   var oMyForm = new FormData();
@@ -174,31 +171,30 @@
                       //表单提交前进行验证
                       
                       success: function (opeResult) {
-                         if (opeResult.jsonType=="1") {
-                        	 //alert("上传成功");
-                        	 _this.siblings("input[type='hidden']").val(opeResult.data[0].storeFilename);
+                         if(opeResult.ful[0].storeFilename){
+              	           _this.siblings("input[type='hidden']").val(opeResult.ful[0].storeFilename);
                          }else{
-                           alert(opeResult.err);
+              	           alert(opeResult.err)
                          }
                       },
                       error: function(jqXHR){
                           alert("发生错误" + jqXHR.status);
-                       }     
+                      }     
                   });
         	  });
         	  
-        	//form表单提交
+          //form表单提交
               $("#submitBtn,#draftBtn").click(function () {
             	  var contentStatus=$(this).attr("id")=="draftBtn"?"0":"1";
                 $("#ContentStatus").val(contentStatus);
             	  if($("#ContentImg").val()==""){
                       //如未设置封面，将使用平台默认图片
                       $("#ContentImg").val($(".defaultImg").attr("src"));
-                    }
-                 $.ajax({
+                }
+                $.ajax({
                 		  url:rootPath+"content/media/addMediaInfo.do",
                       type:"POST",
-                      data:$("#addMediaForm").serialize(),
+                      data:$("#addMediaForm").serializeArray(),
                       dataType:"json",
                       //表单提交前进行验证
                       success: function (opeResult) {
@@ -214,8 +210,8 @@
                       },
                       error: function(jqXHR){
                           alert("发生错误" + jqXHR.status);
-                       }
-                  });
+                      }
+                });
               });
         	
               function AfterAddList(obj) {
@@ -242,7 +238,7 @@
                       iframe.find(".actList").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+ jqXHR.status+ "</div>");
                     }
                   });
-               }
+              }
                     
               //创建节目列表DOM树
               function ContentListLoad2(actList) {
