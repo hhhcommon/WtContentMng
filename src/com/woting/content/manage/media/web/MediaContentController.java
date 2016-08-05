@@ -16,7 +16,7 @@ import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.media.service.MediaContentService;
 
 @Controller
-public class MediaController {
+public class MediaContentController {
 	@Resource
 	private MediaContentService mediaContentService;
 	private static String ip_address = "123.56.254.75";

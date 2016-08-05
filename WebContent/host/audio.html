@@ -68,7 +68,7 @@
             var _this=$(this).parents(".listBox");
             //这里可能是iframe里的页面还没渲染完成，如果不延时执行，获取里面的页面元素时将获取不到
             window.setTimeout(function(){
-            	 var newIframe=$(parent["newIframe"].document);
+               var newIframe=$(parent["newIframe"].document);
                var contentId,contentName,contentDesc,contentImg,subjectWords;
                contentId=_this.attr("contentId");
                contentName=_this.attr("contentName");

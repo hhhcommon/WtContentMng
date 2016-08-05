@@ -90,7 +90,7 @@
     select <include refid="Base_Column_List"/> from wt_Broadcast <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   <select id="getInfoById" resultMap="BaseResultMap" parameterType="java.lang.String">
-    select <include refid="Base_Column_List"/> from wt_Broadcast where id=#{id,jdbcType=VARCHAR}
+    select <include refid="Base_Column_List"/> from wt_Broadcast where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
 
   <!-- 新增数据 -->

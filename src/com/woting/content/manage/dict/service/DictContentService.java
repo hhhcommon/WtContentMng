@@ -9,9 +9,7 @@ import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
@@ -38,6 +36,7 @@ public class DictContentService {
         dictdDao.setNamespace("A_DDETAIL");
     }
 	
+	@SuppressWarnings("unchecked")
 	public void addCataLogs(String mid, String did, String mediatype, String assetid) {
 		// 保存专辑分类信息到wt_ResDict_Ref
 		try {

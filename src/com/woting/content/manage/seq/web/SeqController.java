@@ -98,10 +98,7 @@ public class SeqController {
 		String smadesc = m.get("ContentDesc")+"";
 		String did = m.get("ContentCatalogsId")+"";
 		String chid = m.get("ContentChannelId")+"";
-		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
-		if(!m.containsKey("MediaInfo"))maList=null;
-		else maList = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, chid, smadesc, maList, tagslist);
+		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, chid, smadesc, tagslist);
 		return map;
 	}
 	
@@ -142,8 +139,7 @@ public class SeqController {
 		if(!smastatus.toLowerCase().equals("null")) sma.setSmaStatus(Integer.valueOf(smastatus));
 		String did = m.get("ContentCatalogsId")+""; // 更改专辑的内容分类
 		String chid = m.get("ContentChannelId")+""; // 更改专辑的栏目
-		List<Map<String, Object>> malist = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.updateSeqInfo(userid,sma,did,chid,malist);
+		map = seqContentService.updateSeqInfo(userid,sma,did,chid);
 		return map;
 	}
 	
@@ -176,8 +172,13 @@ public class SeqController {
 			map.put("Message", "无栏目id信息");
 			return map;
 		}
-		List<Map<String, Object>> medialist = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.modifySeqStatus(userid, smaid, chid, 2, medialist);
+		String subcount = m.get("SubCount")+"";
+		if(subcount.equals("null") || (!subcount.equals("null") && Integer.valueOf(subcount)==0)){
+			map.put("ReturnType","1011");
+			map.put("Message","专辑无下级单体");
+			return map;
+		}
+		map = seqContentService.modifySeqStatus(userid, smaid, chid, 2);
 		return map;
 	}
 	

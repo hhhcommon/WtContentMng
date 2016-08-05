@@ -16,7 +16,6 @@ import com.woting.content.common.util.RequestUtils;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
-import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
@@ -111,7 +110,8 @@ public class BroadcastController {
     public Map<String,Object> getCataTrees4View(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
         List<Map<String, Object>> l = new ArrayList<Map<String, Object>>();
-        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        @SuppressWarnings("unchecked")
+		CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         if (cache==null) {
             map.put("jsonType", "0");
             map.put("data", "没有数据");
@@ -146,7 +146,7 @@ public class BroadcastController {
     public Map<String,Object> getInfo(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
         Map<String, Object> m=RequestUtils.getDataFromRequest(request);
-        m=bcService.getInfo(m.get("bcId")+"");
+        m=bcService.getBroadcastInfo(m.get("bcId")+"");
         if (m==null) {
             map.put("returnType","1002");
         } else {

@@ -28,6 +28,8 @@ import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.utils.ContentUtils;
+import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
+import com.woting.content.broadcast.service.BroadcastService;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.publish.utils.CacheUtils;
 
@@ -40,6 +42,8 @@ public class QueryService {
 	private MediaService mediaService;
 	@Resource
 	private ChannelContentService chaService;
+	@Resource
+	private BroadcastService bcService;
 
 	/**
 	 * 查询列表
@@ -245,31 +249,17 @@ public class QueryService {
 	 * @return
 	 */
 	public Map<String, Object> getBroadcastInfo(String contentid, String acttype) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		Map<String, Object> broadcastData = new HashMap<String, Object>();// 单体信息
-		String sql = "select id,bcTitle,bcImg,bcPublisher,descn,cTime from wt_Broadcast where id = ? limit 1";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, contentid);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				broadcastData.put("ContentId", rs.getString("id"));
-				broadcastData.put("ContentName", rs.getString("bcTitle"));
-				broadcastData.put("MediaType", acttype);
-				broadcastData.put("ContentImg", rs.getString("bcImg"));
-				broadcastData.put("ContentCTime", rs.getTimestamp("cTime"));
-				broadcastData.put("ContentDesc", rs.getString("descn"));
-				broadcastData.put("ContentSource", rs.getString("bcPublisher"));
-				broadcastData.put("ContentPersons", null);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
-		}
+		BroadcastPo bc = bcService.getBroadcastList(contentid);
+		if (bc==null) return null;
+		broadcastData.put("ContentId", bc.getId());
+		broadcastData.put("ContentName", bc.getBcTitle());
+		broadcastData.put("MediaType", bc.getBcTitle());
+		broadcastData.put("ContentImg", bc.getBcImg());
+		broadcastData.put("ContentCTime", bc.getCTime());
+		broadcastData.put("ContentDesc", bc.getDesc());
+		broadcastData.put("ContentSource", bc.getBcPublisher());
+		broadcastData.put("ContentPersons", null);
 		return broadcastData;
 	}
 
@@ -353,6 +343,7 @@ public class QueryService {
 		newcha.setId(id);
 		newcha.setSort(Integer.valueOf(sort));
 		newcha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		
 		String sql = "update wt_ChannelAsset set sort = ?,pubTime= ? where id = ?";
 		try {
 			conn = DataSource.getConnection();

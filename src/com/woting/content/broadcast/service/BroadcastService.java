@@ -49,7 +49,8 @@ public class BroadcastService {
      * 新增内容
      * @param m
      */
-    public void add(Map<String, Object> m) {
+    @SuppressWarnings("unchecked")
+	public void add(Map<String, Object> m) {
         BroadcastPo bPo = new BroadcastPo();
         bPo.setId(SequenceUUID.getUUIDSubSegment(4));
         bPo.setBcTitle(m.get("bcTitle")+"");
@@ -245,7 +246,12 @@ public class BroadcastService {
         dictRefResDao.delete("multiDelBc", ids);
     }
 
-    public Map<String, Object> getInfo(String bcId) {
+    /**
+     * 
+     * @param bcId
+     * @return
+     */
+    public Map<String, Object> getBroadcastInfo(String bcId) {
         Map<String, Object> ret = new HashMap<String, Object>();
         //基本信息
         BroadcastPo bp = broadcastDao.getInfoObject("getInfoById", bcId);
@@ -263,7 +269,6 @@ public class BroadcastService {
         param.put("orderByClause", "dictMid, bCode");
         List<DictRefResPo> rcrpL = dictRefResDao.queryForList(param);
         if (rcrpL!=null&&rcrpL.size()>0) ret.put("cataList", rcrpL);
-
         return ret;
     }
 
@@ -276,7 +281,19 @@ public class BroadcastService {
         return rcrpL;
     }
     
-    public List<Map<String, Object>> getBroadcastListInfo(int page, int pagesize) {
+    public BroadcastPo getBroadcastList(String bcid) {
+    	BroadcastPo bc = broadcastDao.getInfoObject("getInfoById", bcid);
+		return bc;
+    }
+    
+    /**
+     * 分了获取电台列表
+     * @param page
+     * @param pagesize
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getBroadcastListInfo(int page, int pagesize) {
     	List<Map<String, Object>> bclist = new ArrayList<Map<String,Object>>();
     	String bcliststr = CacheUtils.readFile("E:/wanjianceshi/FMInfo.txt");//"/opt/tomcat8_CM/webapps/CM/mweb/broadcast/FMInfo.txt"
     	List<Map<String, Object>> l = (List<Map<String, Object>>) JsonUtils.jsonToObj(bcliststr, List.class);
@@ -318,18 +335,18 @@ public class BroadcastService {
     	return bclist;
     }
     
-    public List<Map<String, Object>> getSqlList(){
-    	List<BroadcastPo> listbp = broadcastDao.queryForList();
-    	for (BroadcastPo broadcastPo : listbp) {
-			LiveFlowPo liveFlowPo = bc_liveflowDao.getInfoObject("getInfoByBcId", broadcastPo.getId());
-			if(liveFlowPo!=null){
-				Map<String, Object> m = new HashMap<String,Object>();
-				m.put("channelName", broadcastPo.getBcTitle());
-				List<Map<String, Object>> l = new ArrayList<Map<String,Object>>();
-				Map<String, Object> m2 = new HashMap<String,Object>();
-				m2.put("streamName", "蜻蜓资源");
-			}
-		}
-    	return null;
-    }
+//    public List<Map<String, Object>> getSqlList(){
+//    	List<BroadcastPo> listbp = broadcastDao.queryForList();
+//    	for (BroadcastPo broadcastPo : listbp) {
+//			LiveFlowPo liveFlowPo = bc_liveflowDao.getInfoObject("getInfoByBcId", broadcastPo.getId());
+//			if(liveFlowPo!=null){
+//				Map<String, Object> m = new HashMap<String,Object>();
+//				m.put("channelName", broadcastPo.getBcTitle());
+//				List<Map<String, Object>> l = new ArrayList<Map<String,Object>>();
+//				Map<String, Object> m2 = new HashMap<String,Object>();
+//				m2.put("streamName", "蜻蜓资源");
+//			}
+//		}
+//    	return null;
+//    }
 }

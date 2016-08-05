@@ -103,7 +103,7 @@ public class MediaContentService {
 		// 获取专辑分类
 		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
 		if(chasma!=null) 
-			modifyMediaStatus(userid, maid, seqid, 0);
+			modifyMediaStatus(userid, maid, seqid, chasma.getFlowFlag());
 		
 		if (mediaService.getMaInfoById(maid) != null) {
 			map.put("ReturnType", "1001");
@@ -194,8 +194,9 @@ public class MediaContentService {
 		    cha.setCheckRuleIds("elt");
 		    mediaService.saveCha(cha);
 		}
-		if (flowflag==2&&chasma.getFlowFlag()!=2) {
-			seqContentService.modifySeqStatus(userid, smaid, chasma.getCh().getId(), 2, null);
+		if (flowflag==2&&chasma.getFlowFlag()==0) {
+			chasma.setFlowFlag(flowflag);
+			mediaService.updateCha(chasma);
 		}
 		if (mediaService.getCHAInfoById(cha.getId()) != null) {
 			map.put("ReturnType", "1001");
