@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
@@ -16,14 +14,13 @@ import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
-import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seq.service.SeqContentService;
 
 @Service
 public class MediaContentService {
 	@Resource
-	private MediaService mediaService;
+	private com.woting.cm.core.media.service.MediaService mediaService;
 	@Resource
 	private DictContentService dictContentService;
 	@Resource
@@ -106,7 +103,7 @@ public class MediaContentService {
 		// 获取专辑分类
 		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
 		if(chasma!=null) 
-			modifyMediaStatus(userid, maid, seqid, 0);
+			modifyMediaStatus(userid, maid, seqid, chasma.getFlowFlag());
 		
 		if (mediaService.getMaInfoById(maid) != null) {
 			map.put("ReturnType", "1001");
@@ -197,8 +194,9 @@ public class MediaContentService {
 		    cha.setCheckRuleIds("elt");
 		    mediaService.saveCha(cha);
 		}
-		if (flowflag==2&&chasma.getFlowFlag()!=2) {
-			seqContentService.modifySeqStatus(userid, smaid, chasma.getCh().getId(), 2, null);
+		if (flowflag==2&&chasma.getFlowFlag()==0) {
+			chasma.setFlowFlag(flowflag);
+			mediaService.updateCha(chasma);
 		}
 		if (mediaService.getCHAInfoById(cha.getId()) != null) {
 			map.put("ReturnType", "1001");

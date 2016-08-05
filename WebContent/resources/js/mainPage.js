@@ -7,5 +7,5 @@
 var IS_MAINPAGE=true;
 
 var GLOBAL_DATA={
-  rootPath:"http://localhost:808/CM/"//"http://localhost:808/CM/"
+  rootPath:"http://localhost:908/CM/"//"http://localhost:808/CM/"
 };

@@ -3,7 +3,6 @@ package com.woting.content.publish.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -166,20 +165,16 @@ public abstract class CacheUtils {
 		BufferedReader br = null;
 		File file = new File(path);
 		try {
-			in = new InputStreamReader(new FileInputStream(file));
+			in = new InputStreamReader(new FileInputStream(file),"gbk");
 			br = new BufferedReader(in);
 			String zjstr = "";
-			try {
-				while ((zjstr = br.readLine()) != null) {
-					sb.append(zjstr);
-					sb.append("\r\n");
-				}
-				in.close();
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			while ((zjstr = br.readLine()) != null) {
+				sb.append(zjstr);
+				sb.append("\r\n");
 			}
-		} catch (FileNotFoundException e) {
+			in.close();
+			br.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return sb.toString();

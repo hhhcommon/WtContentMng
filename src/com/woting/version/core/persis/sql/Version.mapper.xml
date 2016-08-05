@@ -98,8 +98,8 @@
   <select id="newerVerCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(*) from p_Version <![CDATA[ where id>#{id,jdbcType=INTEGER} and pubFlag>0 ]]>
   </select>
-  <select id="newerVerList" parameterType="java.util.Map" resultType="java.lang.Integer">
-    select count(*) from p_Version <![CDATA[ where id>#{id,jdbcType=INTEGER} and pubFlag>0 ]]> order by id
+  <select id="newerVerList" parameterType="java.util.Map" resultMap="versionMap">
+    select <include refid="Base_Column_List"/> from p_Version <![CDATA[ where id>#{id,jdbcType=INTEGER} and pubFlag>0 ]]> order by id
   </select>
 
   <!-- 获得应该比较的版本记录 -->
@@ -186,10 +186,10 @@
       <if test="extHisPatchInfo!=null">extHisPatchInfo=#{extHisPatchInfo,jdbcType=VARCHAR},</if>
     </set>
   </update>
-
-  <!-- 删除数据 -->
-  <delete id="delete" parameterType="java.lang.String">
-    delete from p_Version where id=#{id,jdbcType=VARCHAR}
+<!-- 删除数据 -->
+<!--   id=#{id,jdbcType=VARCHAR} -->
+  <delete id="delete" parameterType="java.util.Map">
+    delete from p_Version <![CDATA[ where id=#{id,jdbcType=INTEGER}]]>
   </delete>
   <delete id="deleteByEntity" parameterType="java.util.Map">
     delete from p_Version <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>

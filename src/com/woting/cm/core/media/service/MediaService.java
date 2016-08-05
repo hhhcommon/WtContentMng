@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -134,6 +135,11 @@ public class MediaService {
     	return sma;
 	}
     
+    public List<MediaAssetPo> getMaListBySmaId(String smaid) {
+    	List<MediaAssetPo> malist = mediaAssetDao.queryForList("getMaInfoBySmaId", smaid);
+		return null;
+    }
+    
     public List<SeqMaRefPo> getSmaListBySid(String sid) {
     	List<SeqMaRefPo> seqMaRefPos = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
     	if(seqMaRefPos==null) return null;
@@ -231,6 +237,7 @@ public class MediaService {
     }
     
     public void saveCha(ChannelAsset cha){
+    	System.out.println(JsonUtils.objToJson(cha.convert2Po()));
     	channelAssetDao.insert("insert", cha.convert2Po());
     }
     
@@ -299,20 +306,20 @@ public class MediaService {
     }
     
     public void removeSeqMedia(String id){
-    	removeSma(id);
-		removeMa2SmaBySid(id);
+		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
+		if (getResDictRefByResId(id)!=null) { // 删除与专辑绑定的下级节目内容分类信息
+			for (SeqMaRefPo seqMaRefPo : l) {
+			    removeResDictRef(seqMaRefPo.getMId());
+		    }
+		}
 		removeResDictRef(id);
+		if (getCHAInfoByAssetId(id)!=null) { // 删除与专辑绑定的下级节目栏目信息
+			for (SeqMaRefPo seqMaRefPo : l) {
+				removeCha(seqMaRefPo.getMId());
+			}
+		}
 		removeCha(id);
-//		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
-//		if (getResDictRefByResId(id)!=null) { // 删除与专辑绑定的下级节目内容分类信息
-//			for (SeqMaRefPo seqMaRefPo : l) {
-//			    removeResDictRef(seqMaRefPo.getMId());
-//		    }
-//		}
-//		if (getCHAInfoByAssetId(id)!=null) { // 删除与专辑绑定的下级节目栏目信息
-//			for (SeqMaRefPo seqMaRefPo : l) {
-//				removeCha(seqMaRefPo.getMId());
-//			}
-//		}
+		removeMa2SmaBySid(id);
+		removeSma(id);
     }
 }

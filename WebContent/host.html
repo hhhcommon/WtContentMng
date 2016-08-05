@@ -90,8 +90,8 @@
         validClass:"help-block m-b-none"
       });
       $(function(){
-      	/*清除浏览器缓存*/
-	      $.ajaxSetup ({
+        /*清除浏览器缓存*/
+          $.ajaxSetup ({
           cache: false 
         });
         var dataParam={};
@@ -154,9 +154,9 @@
             //表单提交前进行验证
             success: function (opeResult) {
               if(opeResult.ful[0].storeFilename){
-              	_this.siblings("input[type='hidden']").val(opeResult.ful[0].storeFilename);
+                _this.siblings("input[type='hidden']").val(opeResult.ful[0].storeFilename);
               }else{
-              	alert(opeResult.err)
+                alert(opeResult.err)
               }
             },
             error: function(jqXHR){
@@ -429,12 +429,6 @@
                                   </select>
                               </div>
                           </div>
-                          <!--<div class="form-group">
-                              <label class="col-sm-3 control-label">专辑标签：</label>
-                              <div class="col-sm-8">
-                                  <input id="SubjectWords" name="SubjectWords" class="form-control" type="text">
-                              </div>
-                          </div>-->
                           <div class="form-group">
                               <label class="col-sm-3 control-label">专辑简介：</label>
                               <div class="col-sm-8">
@@ -448,8 +442,7 @@
                                   <input id="contentUrl" name="contentUrl" class="form-control" type="file">
                               </div>
                           </div>
-                           -->
-                          
+                          -->
                           <div class="form-group">
                               <div class="col-sm-3 text-right">
                                   <button class="btn btn-warning" id="submitBtn" type="submit">提交</button>
