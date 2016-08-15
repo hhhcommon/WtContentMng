@@ -1,5 +1,8 @@
 @charset "utf-8";
-
+*{
+	padding:0;
+	margin:0;
+}
 li,a,input{
   outline:0;
 }
@@ -239,7 +242,7 @@ nav li:hover{
   height:160px;
   float:left;
   margin-bottom:8px;
-  margin-right:56px;
+  margin-right:36px;
 }
 .listBox:nth-child(5n){
   margin-right:0;
@@ -378,3 +381,6 @@ nav li:hover{
 #media .form-group:last-child{
 	margin-top:-30px;
 }
+
+
+
