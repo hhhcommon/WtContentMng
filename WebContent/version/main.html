@@ -302,8 +302,8 @@ var verWinType=1;//1新增;2修改
 
 //初始化页面
 $(function() {
-  /*清除浏览器缓存*/
-  $.ajaxSetup ({
+	/*清除浏览器缓存*/
+	$.ajaxSetup ({
     cache: false //设置成false将不会从浏览器缓存读取信息
   });
   /*一、日期处理*/
@@ -364,7 +364,7 @@ $(function() {
     });
   });
   $("button[opeType='verMod']").on("click", function() {//修改版本
-    //首先判断是可以修改版本？？？
+    //首先判断是可以修改版本
     var selVer=verMap[curDetailVerId];
     verWinType=2;
     $("#verAdd").find(".modal-header>h4").html("修改版本");
@@ -380,17 +380,17 @@ $(function() {
   });
   $("button[opeType='verDel']").on("click", function() {//删除版本
     $.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
-      success:function(jsonData) {
-        if(jsonData) {
+     success:function(jsonData) {
+       if(jsonData) {
           if(jsonData.ReturnType!="1001") {
             alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
           } else {
-            $("button[opeType='verMod']").attr("disabled","true");
             $("button[opeType='verDel']").attr("disabled","true");
             $("button[opeType='verInvalid']").attr("disabled","true");
+            page.Page="1";
             listAjax(rootPath+"version/getVerList.do", page, $("#verListArea"), drawVerList);
           }
-        }
+       }
       },
       error:function(jqXHR){
         alert("发生错误" + jqXHR.status);
@@ -415,20 +415,24 @@ $(function() {
     $(".hoverLine").css({"top":"-70px"});
   });
   //选中radio后的处理
-  $(".cntList").on("click"， "input[type='radio']", function(ev) {
-    $("button[opeType='verMod']").attr("disabled","true");
-    $("button[opeType='verDel']").attr("disabled","true");
-    $("button[opeType='verInvalid']").attr("disabled","true");
-  });
-  $("input[type='radio']").on("click",function(){
+  $(".cntList").on("click", ".lineBox", function() {
     $("button[opeType='verMod']").removeAttr("disabled");
-    var verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
+    var $radio = $(this).find("input[type='radio']");
+    var $flag= $radio.is(":checked");
+    if( !$flag){
+        $radio.prop("checked",true); 
+    }
+    verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
     $.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
       success:function(jsonData){
         if(jsonData){
           if (jsonData.AllowDel==1) {
       	    $("button[opeType='verDel']").removeAttr("disabled");
       	    $("button[opeType='verInvalid']").removeAttr("disabled");
+          }else {
+          	$("button[opeType='verDel']").attr("disabled","true");
+            $("button[opeType='verInvalid']").attr("disabled","true");
+            alert("当前版本是最新版本，不支持删除功能!");
           }
         }
       },
@@ -437,7 +441,7 @@ $(function() {
       }
     })
   });
-
+  
   //六、翻页处理，先不进行包装
   $(".pagination .first").on("click", function() {//第一页
     if ($(this).hasClass("disabled")) return;
@@ -475,7 +479,7 @@ $(function() {
 
   //七、文件处理
   $("#apkFileText").on("click", function() {
-  $("#apkFile").click();
+	$("#apkFile").click();
   });
   $("#apkFile").change(function() {
     $("#apkFileText").val($(this).val());
@@ -492,7 +496,7 @@ $(function() {
     }
     $("#imgArea").html(root);
   });
-  //八、初始化页面
+  //八、版本说明和bug记录初始化
   $("#verMemo").summernote({
     lang:'zh-CN',
     placeholder:'在此输入版本说明，介绍版本的情况，注意：可不包括bug的修改说明',
@@ -543,7 +547,7 @@ function loadVerCfgAndFill() {
 function saveCfg() {
   //检查数据合法性：目前不进行检查
   //获得新的数据
-  if (($.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val())+$.trim($("#pubFileName").val()))=="") {
+  if (($.trim($("#pubFileName").val())+$.trim($("#pubUrl").val())+$.trim($("#pubStorePath").val())+$.trim($("#verGoodsStorePath").val()))=="") {
     alert("没有任何内容，无法保存！");
     return;
   }
@@ -646,7 +650,7 @@ function saveVer() {
     //表单提交前进行验证
     success: function (jsonData) {
       if (jsonData) {
-        $("#mask").hide();
+      	$("#mask").hide();
         $("#closeVerB").removeAttr("disabled");
         $("#saveVerB").removeAttr("disabled");
         if (jsonData.ReturnType!="1001") {
@@ -783,8 +787,8 @@ function drawVerList(listData, domObj, param) {
     //加入列表
     $(domObj).find(".cntList").append(lineDiv);
   }
-  $(".lineBox").first().trigger("click");
   $(domObj).find(".cntList").append($("<span class='hoverLine' style='top:-70px'></span>"));
+	
   //二、设置翻页信息
   page.PageSize=result.PageSize;
   page.Page=result.CurPage;
@@ -800,8 +804,6 @@ function clickLine(verId) {
   $(".hoverLine").css({"top":"-70px"});
   $("div").remove(".selectLine");
   selLine.append("<div class='selectLine'></div>");
-  //修改处理
-  $("button[opeType='verMod']").removeAttr("disabled");
   drawVerDetail(verId);
 }
 
