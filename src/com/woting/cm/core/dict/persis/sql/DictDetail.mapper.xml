@@ -112,10 +112,14 @@
   <select id="getInfo" resultMap="baseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/>from plat_DictD <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
+   <select id="getKeyWords" resultMap="baseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from plat_DictD where mId=#{mId,jdbcType=VARCHAR} limit #{begin,jdbcType=VARCHAR},#{size,jdbcType=VARCHAR}
+  </select>
+  
   <select id="getInfoById" resultMap="baseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/>from plat_DictD where id=#{id,jdbcType=VARCHAR}
   </select>
-
+  
   <!-- 新增数据 -->
   <insert id="insert" parameterType="java.util.Map">
     insert into plat_DictD

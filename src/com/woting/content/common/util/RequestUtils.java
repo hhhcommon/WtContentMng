@@ -8,10 +8,8 @@ import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
-
 import com.spiritdata.framework.util.JsonUtils;
 
 public abstract class RequestUtils {
@@ -20,7 +18,8 @@ public abstract class RequestUtils {
      * @param req 请求内容
      * @return 返回参数
      */
-    public static Map<String, Object> getDataFromRequest(ServletRequest req) {
+    @SuppressWarnings("unchecked")
+	public static Map<String, Object> getDataFromRequest(ServletRequest req) {
         Map<String, Object> retM=new HashMap<String, Object>();
         //1-从数据流中获得参数：这种参数必须是json格式的
         InputStreamReader isr=null;

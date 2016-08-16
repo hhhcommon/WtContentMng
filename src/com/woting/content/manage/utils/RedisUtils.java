@@ -31,6 +31,7 @@ public class RedisUtils {
 	 * 
 	 * @param jedis
 	 */
+	@SuppressWarnings("deprecation")
 	private static void release(Jedis jedis) {
 		if(jedis!=null)
 			jedisPool.returnResource(jedis);

@@ -10,16 +10,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.spiritdata.framework.util.JsonUtils;
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.common.util.RequestUtils;
 import com.woting.content.manage.seq.service.SeqContentService;
 
 @Controller
-public class SeqContentController {
+public class SeqController {
 	@Resource
 	private SeqContentService seqContentService;
+	private static String ip_address = "123.56.254.75";
 	
 	/**
 	 * 得到主播id下的专辑列表(包括发布和未发布的)
@@ -37,6 +39,7 @@ public class SeqContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
+		
 		Map<String, Object> c = seqContentService.getHostSeqMediaContents(userid);
 		if(c!=null&&c.size()>0){
 			map.put("ReturnType", c.get("ReturnType"));
@@ -54,6 +57,7 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/addSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addSeqMediaInfo(HttpServletRequest request){
@@ -78,15 +82,23 @@ public class SeqContentController {
 			map.put("Message", "无资源状态");
 			return map;
 		}
+		String tags = m.get("ContentTags")+"";
+		List<String> tagslist = new ArrayList<String>();
+		if(!tags.equals("null")){
+			String[] tagid = tags.split(",");
+			for (String str : tagid) {
+				tagslist.add(str);
+			}
+		}
+		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
 		String smaimg = m.get("ContentImg")+"";
-		smaimg = smaimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
+		if(smaimg.equals("null"))
+			smaimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+		smaimg = smaimg.replace(rootpath, "http://"+ip_address+":908/CM/");
 		String smadesc = m.get("ContentDesc")+"";
 		String did = m.get("ContentCatalogsId")+"";
 		String chid = m.get("ContentChannelId")+"";
-		List<Map<String, Object>> maList = new ArrayList<Map<String,Object>>();;
-		if(!m.containsKey("MediaInfo"))maList=null;
-		else maList = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, chid, smadesc, maList);
+		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, chid, smadesc, tagslist);
 		return map;
 	}
 	
@@ -95,6 +107,7 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request){
@@ -116,8 +129,9 @@ public class SeqContentController {
 		sma.setId(smaid);
 		String smaname = m.get("ContentName")+"";
 		if(!smaname.toLowerCase().equals("null")) sma.setSmaTitle(smaname);
+		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
 		String smaimg = m.get("ContentImg")+"";
-		smaimg = smaimg.replace("/opt/tomcat8_CM/webapps", "http://www.wotingfm.com:908").replace("D:\\workIDE\\work\\WtContentMng\\WebContent\\uploadFiles\\tempuplf\\", "http://localhost:908/CM/uploadFiles/tempuplf/");
+		smaimg = smaimg.replace(rootpath, "http://"+ip_address+":908/CM/");
 		if(!smaimg.toLowerCase().equals("null")) sma.setSmaImg(smaimg);
 		String smadesc = m.get("ContentDesc")+"";
 		if(!smadesc.toLowerCase().equals("null")) sma.setDescn(smadesc);
@@ -125,8 +139,7 @@ public class SeqContentController {
 		if(!smastatus.toLowerCase().equals("null")) sma.setSmaStatus(Integer.valueOf(smastatus));
 		String did = m.get("ContentCatalogsId")+""; // 更改专辑的内容分类
 		String chid = m.get("ContentChannelId")+""; // 更改专辑的栏目
-		List<Map<String, Object>> malist = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.updateSeqInfo(userid,sma,did,chid,malist);
+		map = seqContentService.updateSeqInfo(userid,sma,did,chid);
 		return map;
 	}
 	
@@ -135,12 +148,12 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String,Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		System.out.println(JsonUtils.objToJson(m));
 		String userid = m.get("UserId")+"";
 		if(userid.toLowerCase().equals("null")){
 			map.put("ReturnType", "1011");
@@ -159,8 +172,13 @@ public class SeqContentController {
 			map.put("Message", "无栏目id信息");
 			return map;
 		}
-		List<Map<String, Object>> medialist = (List<Map<String, Object>>) m.get("MediaInfo");
-		map = seqContentService.modifySeqStatus(userid, smaid, chid, 2, medialist);
+		String subcount = m.get("SubCount")+"";
+		if(subcount.equals("null") || (!subcount.equals("null") && Integer.valueOf(subcount)==0)){
+			map.put("ReturnType","1011");
+			map.put("Message","专辑无下级单体");
+			return map;
+		}
+		map = seqContentService.modifySeqStatus(userid, smaid, chid, 2);
 		return map;
 	}
 	

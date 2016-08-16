@@ -207,6 +207,7 @@ public abstract class ContentUtils {
                 oneChn.put("ChannelName", _c.get("channelName"));
                 oneChn.put("PubTime", _c.get("pubTime"));
                 oneChn.put("FlowFlag", _c.get("flowFlag"));
+                oneChn.put("ChannelId", _c.get("channelId"));
                 ret.add(oneChn);
             }
         }

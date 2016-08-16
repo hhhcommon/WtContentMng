@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>栏目管理</title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+      <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+      <!-- <link href="../resources/plugins/css_others/custom.css" rel="stylesheet"> -->
+      <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+      <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet">
+      <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+      <link href="../resources/plugins/hplus/css/plugins/treeview/bootstrap-treeview.css" rel="stylesheet"/>
+      <link href="../resources/plugins/hplus/css/plugins/treeview/bootstrap.min14ed.css" rel="stylesheet"/>
+      <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
+      <link href="../resources/plugins/hplus/css/plugins/treeview/bootstrap-treeview.css" rel="stylesheet"/>
+      <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+      <script src="../resources/js/context.utils.js"></script>
+      <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+      <script src="../resources/plugins/hplus/js/content.min.js"></script>
+      <script src="../resources/plugins/hplus/js/plugins/treeview/bootstrap-treeview.js"></script>
+	</head>
+<style>
+/*顶部导航条*/
+.toobarArea {
+    height: 40px;
+    width: 100%;
+    line-height: 30px;
+    background: #eff3f6;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding-left: 15px;
+    padding-top: 5px;
+    overflow: hidden;
+}
+.toobarArea button {
+    width: 60px;
+    height: 24px;
+    margin-top: -4px;
+    background: #0077c7;
+    color: white;
+    text-align: center;
+    padding: 2px;
+    font-size: 12px;
+    border-radius: 0px;
+}
+/*主区域*/
+.mainArea{
+	height:100%;
+    width: 100%;
+    position: absolute;
+    overflow: auto;
+}
+/*分类列表*/
+.claListArea {/*左侧列表区域样式*/
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 500px;
+    height: 100%;
+    border-right: 1px solid #ccc;
+    overflow-y:auto;
+}
+.claListArea  {
+    position: relative;
+    padding-bottom: 9px;
+}
+.list-group .list-group-item {
+	padding: 10px 25px;
+}
+.list-group{
+	overflow: hidden;
+}
+.Catalog{
+	float: left;
+}
+.Source{
+	position: absolute;
+    top: 80px;
+    left: 184px;
+}
+.list-group .Catalog ul h5{
+   margin-left:15px;
+}
+.list-group .Source ul h5{
+    margin-left: 92px;
+    position: absolute;
+    top: -27px;
+}
+/*树形菜单*/
+li{
+	list-style: none;
+}
+a:link,a:visited{
+	text-decoration: none;
+}
+a{
+	color:#333;
+}
+.catalogs,.source{
+	width: 168px;
+    height: 28px;
+    border: 1px solid #e7eaec;
+    text-align: left;
+    border-bottom: 1px solid #e7eaec;
+    text-indent: 15px;
+}
+.catalogs{
+	margin-left: -35px;	
+}
+.source{
+    margin-left: 52px;
+}
+/*分页*/
+.claListArea .page {
+	width:500px;
+	height:40px;
+	position:fixed;
+	bottom:0;
+	left:0;
+	padding:0 27px 0 0;
+	background-color:#f3f3f4;
+	border-top:1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+/*内容详情*/
+.claDetailArea {
+    position:absolute;
+    right:0;
+    top:0;
+    height:100%;
+    width:calc(100% - 500px);
+    background:white;
+}
+</style>
+  <body style="overflow:hidden;">
+	  <div class="wrapper wrapper-content" style="height:100%;">
+	    <!--菜单栏-->
+	    <div class="toobarArea">
+		  <button type="button" opeType="colAdd" class="btn" style="margin-right:3px;">添加</button>
+		  <button type="button" opeType="colMod" class="btn" style="margin-right:3px;">修改</button>
+		  <button type="button" opeType="colDel" class="btn" style="margin-right:3px;">删除</button>	
+	    </div>
+		<!--显示主区域-->
+		<div class="mainArea">
+		  <!--栏目列表-->
+		  <div id="claListArea" class="claListArea">
+			<!--动态加载栏目列表-->
+			<div class="col-sm-12">
+              <div class="ibox float-e-margins">
+                <h5>栏目列表</h5>
+                <div class="ibox-content">
+                  <div id="treeview12" class="test">
+                    <ul class='list-group'>
+                      		
+                    </ul>
+                   </div>
+                </div>
+              </div>
+			</div>
+            <div class="page">
+              <div class="gigantic pagination">
+                <i class="currentPage">1</i><i>/</i><i class="totalPage">1</i><i>页</i>
+                <span class="previous" data-action="previous">上一页</span>
+                <span class="next" data-action="next">下一页</span>
+                <span class="jump" data-action="toPage">跳至</span><input type="text" class="toPage" value="" />
+              </div>
+            </div>
+		  </div>
+		  <!--右侧详情-->
+	      <div id="claDetailArea" class="claDetailArea">
+			<!--动态加载栏目详情-->
+		    <div class="col-sm-12">
+              <div class="ibox float-e-margins">
+                <h5>栏目详情</h5>
+                <div class="ibox-content">
+                  <ul class="detail"></ul>
+                      
+                </div>
+              </div>
+		    </div>
+	       </div>
+		</div>
+	  </div>
+  </body>
+  <script type="text/javascript">
+    $(function(){
+	  //获取栏目列表
+	  var rootPath=getRootPath();
+      $.ajax({
+		type:"POST",
+		url:rootPath+"content/getConditions.do",
+		dataType:"json",
+		data:{UserId: "zhangsan"},
+		success:function(resultList){
+		  if(resultList.ReturnType=="1001"){
+			var catalogLength=resultList.Catalogs.length;
+			var sourceLength=resultList.Source.length;
+			//动态生成栏目列表
+			var catalogList,CatalogsName,ulH;
+			ulH=$("<ul><h5>栏目分类</h5></ul>");
+			for(var i=0;i<catalogLength;i++){
+			  catalogsName=$("<li class='catalogs'>"+resultList.Catalogs[i].CatalogsName+"</li>");
+			  $(ulH).append(catalogsName);
+			}
+			catalogList=$("<li class='Catalog'></li>").append(ulH);
+			$(".list-group").append(catalogList);
+			//动态生成来源列表
+			var sourceList,SourceName,ulH;
+			ulH=$("<ul><h5>栏目来源</h5></ul>");
+			for(var i=0;i<sourceLength;i++){
+			  sourceName=$("<li class='source'>"+resultList.Source[i].SourceName+"</li>");
+			  $(ulH).append(sourceName);
+			}
+			sourceList=$("<li class='Source'></li>").append(ulH);
+			$(".list-group").append(sourceList);
+		  }
+		}
+      })
+
+			
+    });
+  </script>
+</html>

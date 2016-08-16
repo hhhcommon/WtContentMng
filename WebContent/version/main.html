@@ -138,7 +138,7 @@ h4 {
 <!--菜单栏-->
 <div class="toobarArea">
   <button type="button" opeType="verAdd" class="btn" style="margin-right:3px" >添加</button>
-  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" disabled>修改</button>
+  <button type="button" opeType="verMod" class="btn" style="margin-right:3px" >修改</button>
   <button type="button" opeType="verDel" class="btn" style="margin-right:3px" disabled>删除</button>
   <button type="button" opeType="verInvalid" class="btn" style="margin-right:50px" disabled>作废</button>
   <div class="splite" style="left:300px"></div>
@@ -330,7 +330,7 @@ $(function() {
     });
   });
   
-  //四、新增修改删除版本处理
+  //四、新增修改版本处理
   $("button[opeType='verAdd']").on("click", function() {//新增版本
     //首先判断是可以新增版本
     verWinType=1;
@@ -417,6 +417,8 @@ $(function() {
   //选中radio后的处理
   $(".cntList").on("click", ".lineBox", function() {
     $("button[opeType='verMod']").removeAttr("disabled");
+//  $("button[opeType='verDel']").removeAttr("disabled");
+//  $("button[opeType='verInvalid']").removeAttr("disabled");
     var $radio = $(this).find("input[type='radio']");
     var $flag= $radio.is(":checked");
     if( !$flag){
@@ -432,7 +434,6 @@ $(function() {
           }else {
           	$("button[opeType='verDel']").attr("disabled","true");
             $("button[opeType='verInvalid']").attr("disabled","true");
-            alert("当前版本是最新版本，不支持删除功能!");
           }
         }
       },
@@ -788,7 +789,41 @@ function drawVerList(listData, domObj, param) {
     $(domObj).find(".cntList").append(lineDiv);
   }
   $(domObj).find(".cntList").append($("<span class='hoverLine' style='top:-70px'></span>"));
-	
+	//点击删除按钮，删除对应的版本
+	$("input[type='radio']").on("click",function(){
+		$("button[opeType='verDel']").removeAttr("disabled");
+	  $("button[opeType='verInvalid']").removeAttr("disabled");
+		var verId=($("input[type='radio']:checked").parent().parent()).attr("verid");
+		console.log(verId);
+		$.ajax({type:"post", async:true, url:rootPath+"version/allowDel.do", dataType:"json",data:{"VerId":verId},
+      success:function(jsonData){
+      	if(jsonData){
+      		if(jsonData.ReturnType!="1001"){
+      			alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+      		}else{
+      			  $("button[opeType='verDel']").on("click",function(){
+	      		    $.ajax({type:"post", async:true, url:rootPath+"version/delVer.do", dataType:"json",data:{"VerId":verId},
+	                success:function(jsonData){
+	              	  if(jsonData.ReturnType!="1001"){
+	              		  alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+	              	  }else{
+	              		  $("#radios:checked").parent().parent().remove();
+	              	  }
+	                },
+	                error:function(jqXHR){
+	          	      alert("发生错误" + jqXHR.status);
+	                }
+	              })
+	           })
+      		}
+      	}
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    })
+	})
+
   //二、设置翻页信息
   page.PageSize=result.PageSize;
   page.Page=result.CurPage;

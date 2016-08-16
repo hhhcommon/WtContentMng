@@ -2,6 +2,7 @@ package com.woting.content.common.web;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -23,6 +24,7 @@ import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.content.common.util.RequestUtils;
+import com.woting.content.manage.dict.service.DictContentService;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.Connection;
@@ -33,7 +35,14 @@ import org.jsoup.Jsoup;
 public class CommonController {
 	@Resource
 	private ChannelService channelService;
+	@Resource
+	private DictContentService dictdService;
 	
+	/**
+	 * 获取内容分类树
+	 * @param request
+	 * @return
+	 */
     @RequestMapping(value="getCataTreeWithSelf.do")
     @ResponseBody
     public Map<String,Object> getCataTreeWithSelf(HttpServletRequest request) {
@@ -41,7 +50,8 @@ public class CommonController {
         Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         String cataId=(String)m.get("cataId");
         if (!StringUtils.isNullOrEmptyOrSpace(cataId)&&!cataId.equals("null")) {
-            _CacheDictionary _cd=( (CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+            @SuppressWarnings("unchecked")
+			_CacheDictionary _cd=( (CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
             try {
                 DictModel dm=_cd.getDictModelById(cataId);
                 ZTree<DictDetail> eu1=new ZTree<DictDetail>(dm.dictTree);
@@ -59,7 +69,11 @@ public class CommonController {
         return map;
     }
     
-    
+    /**
+     * 获取栏目列表
+     * @param request
+     * @return
+     */
     @RequestMapping(value="getChannelTreeWithSelf.do")
     @ResponseBody
     public Map<String,Object> getChannelTreeWithSelf(HttpServletRequest request) {
@@ -74,6 +88,26 @@ public class CommonController {
             map.put("err", e.getMessage());
 			e.printStackTrace();
 		}
+        return map;
+    }
+    
+    @RequestMapping(value="getCategoryTags.do")
+    @ResponseBody
+    public Map<String,Object> getCategoryTags(HttpServletRequest request) {
+    	Map<String,Object> map=new HashMap<String, Object>();
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+        String dictdid = m.get("CategoryId")+"";
+        if(dictdid.equals("null")){
+        	map.put("ReturnType", "1002");
+        	map.put("Message", "缺少内容分类id");
+        	return map;
+        }
+        List<Map<String, Object>> dictdlist = dictdService.getkeywordByDictMid("6", 8);
+        if(dictdlist!=null&&dictdlist.size()>0){
+        	map.put("ReturnType", "1001");
+        	map.put("AllCount", dictdlist.size());
+        	map.put("ResultList", dictdlist);
+        }
         return map;
     }
 

@@ -13,11 +13,11 @@ function getConditions(){
             if (ConditionsList.ReturnType=="1001") {
                 ConditionsListLoad(ConditionsList);
             } else {
-                //alert("获取数据出现问题:"+ConditionsList.Message);
+                  alert("获取数据出现问题:"+ConditionsList.Message);
             }  
         },
         error: function(jqXHR){
-           //alert("发生错误" + jqXHR.status);
+             alert("发生错误" + jqXHR.status);
         }     
     });
 }
@@ -136,20 +136,21 @@ function ContentListLoad(actList){
 	        imgDiv.append(thumbImg);
 	        //根据类型显示不同的标记
 	        conH.html(actList.ResultList[i].ContentName);
-	        /*
-	        switch(actList.ResultList[i].MediaType){
-		        case 'wt_SeqMediaAsset':
-		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#f9be36'>专辑</span>");
-		        	break;
-		        case 'wt_MediaAsset':
-		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:#61b0e8'>单体</span>");
-		        	break;
-		        case 'wt_Broadcast':
-		        	conH.html(actList.ResultList[i].ContentName+"<span style='background-color:green'>电台</span>");
-		        	break;
-		        default:
-	        }
-	        */
+	       
+//	        switch(conList.ContentDetail.MediaType){
+//            case 'wt_SeqMediaAsset':
+//  	        $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
+//  	        $(".listCon").html(conList.ContentDetail.ContentName+"<span class='kind' style='background-color:#f9be36'>专辑</span>");
+//   	      break;
+//            case 'wt_MediaAsset':
+//  	        $(".listCon").html(conList.ContentDetail.ContentName+"<span class='kind' style='background-color:#61b0e8'>单体</span>");
+//   	       break;
+//            case 'wt_Broadcast':
+//  	        $(".listCon").html(conList.ContentDetail.ContentName+"<span class='kind' style='background-color:green'>电台</span>");
+//   	      break;
+//            default:
+//          }
+	       
 	        conP2.append(conSpan1);
 	        conP2.append(conSpan2);
 	        conDiv.append(conH).append(conP1).append(conP2);
@@ -179,26 +180,28 @@ function ContentInfoLoad(conList){
      //下面是获取节目详情
      $(".actThumb").attr({'src':conList.ContentDetail.ContentImg});
      $(".actTitle").html(conList.ContentDetail.ContentName);
-     if(conList.ContentDetail.MediaType=="wt_SeqMediaAsset"){
+     if(conList.ContentDetail.MediaType=="SEQU"){
     	 $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
+     }else if(conList.ContentDetail.MediaType=="wt_MediaAsset"){
+     	
      }
      
-     /*
+    
    //根据类型显示不同的标记
-     switch(conList.ContentDetail.MediaType){
-     case 'wt_SeqMediaAsset':
-    	 $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
-    	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:#f9be36'>专辑</span>");
-     	break;
-     case 'wt_MediaAsset':
-    	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:#61b0e8'>单体</span>");
-     	break;
-     case 'wt_Broadcast':
-    	 $(".actTitle").html(conList.ContentDetail.ContentName+"<span style='background-color:green'>电台</span>");
-     	break;
-     default:
-     }
-     */
+//   switch(conList.ContentDetail.MediaType){
+//   case 'SEQU':
+//  	 $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
+//  	 $(".listCon").html(conList.ContentDetail.ContentName+"<span class='kind' style='background-color:#f9be36'>专辑</span>");
+//   	break;
+//   case 'wt_MediaAsset':
+//  	 $(".listCon").html(conList.ContentDetail.ContentName+"<span class='kind' style='background-color:#61b0e8'>单体</span>");
+//   	break;
+//   case 'wt_Broadcast':
+//  	 $(".listCon").html(conList.ContentDetail.ContentName+"<span class='kind' style='background-color:green'>电台</span>");
+//   	break;
+//   default:
+//   }
+     
      $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
      $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
      $(".vjName").html(!conList.ContentDetail.ContentPersons?"暂无":conList.ContentDetail.ContentPersons);
@@ -207,7 +210,7 @@ function ContentInfoLoad(conList){
      
      $(".pubDetail .conBox").css({"display":"block"});
      //创建单体列表DOM结构
-     if(conList.ContentDetail.MediaType=="wt_SeqMediaAsset"){
+     if(conList.ContentDetail.MediaType=="SEQU"){
     	 AudioListLoad(conList.SubList,false);
          //将专辑单体列表存储起来，以便排序使用 --对象深度复制
          subList = jQuery.extend(true, [], conList.SubList);
