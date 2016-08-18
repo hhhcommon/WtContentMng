@@ -45,11 +45,13 @@ public abstract class RequestUtils {
             if (br!=null) try {br.close();} catch(Exception e) {}
         }
         //2-从?参数中读取数据
-        if (retM==null) retM=new HashMap<String, Object>();
-        Enumeration<String> enu=req.getParameterNames();
-        while(enu.hasMoreElements()) {
-            String name=(String)enu.nextElement();
-            retM.put(name, req.getParameter(name));
+        if (retM==null) {
+            retM=new HashMap<String, Object>();
+            Enumeration<String> enu=req.getParameterNames();
+            while(enu.hasMoreElements()) {
+                String name=(String)enu.nextElement();
+                retM.put(name, req.getParameter(name));
+            }
         }
         if (retM==null||retM.isEmpty()) return null;
         return retM;
