@@ -23,7 +23,7 @@ import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
-import com.woting.content.common.util.RequestUtils;
+import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.dict.service.DictContentService;
 
 import org.jsoup.nodes.Document;

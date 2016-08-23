@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.woting.content.common.util.RequestUtils;
+import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.publish.service.QueryService;
 import com.woting.content.publish.utils.CacheUtils;
 import com.woting.passport.login.utils.RequestDataUtils;

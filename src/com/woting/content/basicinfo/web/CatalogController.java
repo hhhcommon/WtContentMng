@@ -10,10 +10,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.service.DictService;
-import com.woting.content.common.util.RequestUtils;
 
 /**
  * 分类(字典)信息前台控制

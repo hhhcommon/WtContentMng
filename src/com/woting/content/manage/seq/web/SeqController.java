@@ -14,7 +14,7 @@ import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.SeqMediaAsset;
-import com.woting.content.common.util.RequestUtils;
+import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.seq.service.SeqContentService;
 
 @Controller
