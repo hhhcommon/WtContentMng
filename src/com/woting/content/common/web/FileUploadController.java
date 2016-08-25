@@ -1,6 +1,5 @@
 package com.woting.content.common.web;
 
-
 import java.io.File;
 import java.util.Map;
 import org.springframework.stereotype.Controller;
@@ -8,7 +7,6 @@ import com.spiritdata.framework.core.web.AbstractFileUploadController;
 import com.spiritdata.framework.util.FileNameUtils;
 import com.spiritdata.framework.util.FileUtils;
 import com.spiritdata.framework.util.SequenceUUID;
-
 
 @Controller
 public class FileUploadController extends AbstractFileUploadController{

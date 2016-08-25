@@ -37,7 +37,7 @@ public class CommonController {
 	private ChannelService channelService;
 	@Resource
 	private DictContentService dictdService;
-	
+
 	/**
 	 * 获取内容分类树
 	 * @param request
@@ -68,7 +68,7 @@ public class CommonController {
         }
         return map;
     }
-    
+
     /**
      * 获取栏目列表
      * @param request

@@ -22,7 +22,7 @@ public class SeqController {
 	@Resource
 	private SeqContentService seqContentService;
 	private static String ip_address = "123.56.254.75";
-	
+
 	/**
 	 * 得到主播id下的专辑列表(包括发布和未发布的)
 	 * @param request

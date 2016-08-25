@@ -124,12 +124,7 @@
   <insert id="insert" parameterType="java.util.Map">
     insert into plat_DictD
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id!=null">id,</if>
-      <if test="MId!=null">mId,</if>
-      <if test="parentId!=null">pId,</if>
-      <if test="sort!=null and sort!=0">sort,</if>
-      <if test="isValidate!=null and isValidate!=0">isValidate,</if>
-      <if test="ddName!=null">ddName,</if>
+      id,mId,pId,sort,isValidate,ddName,
       <if test="NPy!=null">nPy,</if>
       <if test="aliasName!=null">aliasName,</if>
       <if test="anPy!=null">anPy,</if>
@@ -139,12 +134,10 @@
       <if test="desc!=null">descn,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
-      <if test="MId!=null">#{MId,jdbcType=VARCHAR},</if>
+      #{id,jdbcType=VARCHAR},#{MId,jdbcType=VARCHAR},
       <if test="parentId!=null">#{parentId,jdbcType=VARCHAR},</if>
-      <if test="sort!=null and sort!=0">#{sort,jdbcType=INTEGER},</if>
-      <if test="isValidate!=null and isValidate!=0">#{isValidate,jdbcType=INTEGER},</if>
-      <if test="ddName!=null">#{ddName,jdbcType=VARCHAR},</if>
+      <if test="parentId==null">0,</if>
+      #{sort,jdbcType=INTEGER},#{isValidate,jdbcType=INTEGER},#{ddName,jdbcType=VARCHAR},
       <if test="NPy!=null">#{NPy,jdbcType=VARCHAR},</if>
       <if test="aliasName!=null">#{aliasName,jdbcType=VARCHAR},</if>
       <if test="anPy!=null">#{anPy,jdbcType=VARCHAR},</if>

@@ -68,7 +68,7 @@
             var _JSON_DATA={"_JSON_DATA":JSON.stringify(_data)}
             var testurl="baseinfo/addCatalog.do?aa=bb&cc=DD&CatalogType=3";
     $.ajax({type:"get", async:true, url:testurl, dataType:"json",
-    	data:_JSON_DATA,
+    	data:_data,
       success: function(jsonData) {
     	  alert(jsonData.type);
       },
