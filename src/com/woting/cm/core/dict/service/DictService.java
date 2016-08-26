@@ -280,15 +280,39 @@ public class DictService {
     }
 
     /**
-     * 修改字典项，同时处理字典缓存
+     * 删除字典项，同时处理字典缓存
      * @param dd 字典项信息
      * @param force 是否强制删除
      * @return "1"成功删除,"2"未找到相应的结点,"3::因为什么什么关联信息的存在而不能删除"
      */
-    public String delDictDetail(DictDetail dd, int force) {
+    public String delDictDetail(DictDetail dd, boolean force) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
         DictModel dm=cd.dictModelMap.get(dd.getMId());
-        return "";
+        if (dm==null||dm.dictTree==null) return "2";
+        TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
+        if (myInTree==null) return "2";
+
+        List<TreeNodeBean> ddl=myInTree.getAllBeansList();
+        //检查是否有相关信息，注意是递归查找
+        String inStr="";
+        String inStr2="";
+        for (TreeNodeBean _dd:ddl) {
+            inStr+="or id='"+_dd.getId()+"'";
+            inStr2+="or (dictMid='"+dd.getMId()+"' and dictDid='"+_dd.getId()+"')";
+        }
+        inStr=inStr.substring(3);
+        inStr2=inStr2.substring(3);
+        int count=dictRefDao.getCount("existRefDict", inStr2);
+        if (count>0&&!force) return "3::由于有关联信息存在，不能删除";
+        else {
+            //删除关联
+            dictRefDao.execute("delByDicts", inStr2);
+            //删除本表
+            dictDDao.delete("delByIds", inStr);
+            //处理缓存
+            myInTree.getParent().removeChild(myInTree.getId());
+            return "1";
+        }
     }
 }

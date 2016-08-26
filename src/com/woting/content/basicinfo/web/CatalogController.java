@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.tree.TreeNode;
+import com.spiritdata.framework.ui.tree.EasyUiTree;
+import com.spiritdata.framework.ui.tree.UiTree;
 import com.spiritdata.framework.ui.tree.ZTree;
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
@@ -50,11 +52,20 @@ public class CatalogController {
             }
             String catalogType=(m.get("CatalogType")==null?null:m.get("CatalogType")+"");
             String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
+            String treeType=(m.get("TreeViewType")==null?"ZTREE":(m.get("TreeViewType")+"").toUpperCase());
+            int sizeLimit=(m.get("SizeLimit")==null?0:Integer.parseInt(m.get("SizeLimit")+""));
+
             if (StringUtils.isNullOrEmptyOrSpace(catalogType)) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数[CatalogType]");
                 return map;
             }
+            if (!(treeType.equals("ZTREE")||treeType.equals("EASYUITREE"))) {
+                map.put("ReturnType", "1003");
+                map.put("Message", "未知的显示树类型["+m.get("TreeViewType")+"]");
+                return map;
+            }
+
             _CacheDictionary _cd=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
             try {
                 DictModel dm=_cd.getDictModelById(catalogType);
@@ -67,22 +78,21 @@ public class CatalogController {
                     map.put("Message", "未找到分类");
                     return map;
                 }
-                String treeType=(m.get("TreeViewType")==null?"ZTREE":(m.get("TreeViewType")+"").toUpperCase());
-                int sizeLimit=(m.get("SizeLimit")==null?-1:Integer.parseInt(m.get("SizeLimit")+""));
-                if (treeType.equals("ZTREE")) {
-                    if (root.getAllCount()<sizeLimit||sizeLimit==-1) {
-                        ZTree<DictDetail> zTree=new ZTree<DictDetail>(root);
-                        map.put("ReturnType", "1001");
-                        map.put("Data", zTree.toTreeMap());
-                    } else {
-                        
-                    }
-                } else if (treeType.equals("EASYUITREE")) {
-                    
+                UiTree<DictDetail> uiTree=null;
+                if (root.getAllCount()<sizeLimit||sizeLimit==0) {
+                    if (treeType.equals("ZTREE")) uiTree=new ZTree<DictDetail>(root);
+                    else
+                    if (treeType.equals("EASYUITREE")) uiTree=new EasyUiTree<DictDetail>(root);
                 } else {
-                    map.put("ReturnType", "1003");
-                    map.put("Message", "未知的显示树类型["+m.get("TreeViewType")+"]");
-                    return map;
+                    if (treeType.equals("ZTREE")) uiTree=new ZTree<DictDetail>(root, sizeLimit);
+                    else
+                    if (treeType.equals("EASYUITREE")) uiTree=new EasyUiTree<DictDetail>(root, sizeLimit);
+                }
+                if (uiTree!=null) {
+                    map.put("ReturnType", "1001");
+                    map.put("Data", uiTree.toTreeMap());
+                } else {
+                    map.put("ReturnType", "1011");
                 }
             } catch (CloneNotSupportedException e) {
                 map.put("jsonType", "2");
@@ -149,7 +159,14 @@ public class CatalogController {
                 return map;
             }
             dd.setDesc((data.get("Descn")==null?null:data.get("Descn")+""));
-            dd.setIsValidate(1);
+            try {
+                int validate=(data.get("Validate")==null?1:Integer.parseInt(data.get("Validate")+""));
+                dd.setIsValidate(validate>2&&validate<1?1:validate); //默认是生效的
+            } catch (Exception e) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "参数[Validate]需要是整数，当前Validate值为["+data.get("Validate")+"]");
+                return map;
+            }
             //2-加入字典项
             String ret=dictService.insertDictDetail(dd);
             if (ret.equals("2")) {
@@ -201,7 +218,7 @@ public class CatalogController {
             String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
             if (StringUtils.isNullOrEmptyOrSpace(catalogType)) {
                 map.put("ReturnType", "0000");
-                map.put("Message", "无法获取需要的参数[catalogType]");
+                map.put("Message", "无法获取需要的参数[CatalogType]");
                 return map;
             }
             if (StringUtils.isNullOrEmptyOrSpace(catalogId)) {
@@ -215,17 +232,11 @@ public class CatalogController {
                 map.put("Message", "无法获取需要的参数[Data]");
                 return map;
             }
-            String name=(data.get("Name")==null?null:data.get("Name")+"");
-            if (StringUtils.isNullOrEmptyOrSpace(name)) {
-                map.put("ReturnType", "0000");
-                map.put("Message", "无法获取需要的参数[Name]");
-                return map;
-            }
             //1-组织参数
             DictDetail dd=new DictDetail(); //字典项业务对象
             dd.setMId(catalogType);
-            if (!StringUtils.isNullOrEmptyOrSpace(catalogId)) dd.setId(catalogId);
-            dd.setDdName(name);
+            dd.setId(catalogId);
+            dd.setDdName(data.get("Name")==null?null:data.get("Name")+"");;
             dd.setParentId((data.get("ParentId")==null?null:data.get("ParentId")+""));
             dd.setAliasName((data.get("AliasName")==null?null:data.get("AliasName")+""));
             dd.setBCode((data.get("BCode")==null?null:data.get("BCode")+""));
@@ -241,7 +252,7 @@ public class CatalogController {
                 dd.setIsValidate(validate>2&&validate<1?1:validate); //默认是生效的
             } catch (Exception e) {
                 map.put("ReturnType", "0000");
-                map.put("Message", "参数[Validate]需要是整数，当前Sort值为["+data.get("Validate")+"]");
+                map.put("Message", "参数[Validate]需要是整数，当前Validate值为["+data.get("Validate")+"]");
                 return map;
             }
             dd.setDesc((data.get("Descn")==null?null:data.get("Descn")+""));
@@ -292,23 +303,28 @@ public class CatalogController {
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
             if (m==null||m.size()==0) {
                 map.put("ReturnType", "0000");
-                map.put("Message", "无法获取需要的参数");
+                map.put("Message", "参数解释错误");
                 return map;
             }
             String catalogType=(m.get("CatalogType")==null?null:m.get("CatalogType")+"");
-            String CatalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
-            if (StringUtils.isNullOrEmptyOrSpace(CatalogId)) {
+            if (StringUtils.isNullOrEmptyOrSpace(catalogType)) {
                 map.put("ReturnType", "0000");
-                map.put("Message", "无法获取需要的参数");
+                map.put("Message", "无法获取需要的参数[CatalogType]");
                 return map;
             }
+            String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
+            if (StringUtils.isNullOrEmptyOrSpace(catalogId)) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数[CatalogId]");
+                return map;
+            }
+            //默认是不允许强制删除的
+            boolean force=(m.get("Force")==null?0:Integer.parseInt(m.get("Force")+""))==1;
             //1-组织参数
             DictDetail dd=new DictDetail(); //字典项业务对象
             dd.setMId(catalogType);
-            if (StringUtils.isNullOrEmptyOrSpace(CatalogId)) dd.setId(CatalogId);
-            int force=(m.get("Force")==null?1:Integer.parseInt(m.get("Force")+""));
-            force=force==1?1:0;//默认是不允许强制删除的
-            //2-修改字典项
+            dd.setId(catalogId);
+            //2-删除典项
             String ret=dictService.delDictDetail(dd, force);
             if (ret.equals("1")) {
                 map.put("ReturnType", "1001");

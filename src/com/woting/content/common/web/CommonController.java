@@ -57,7 +57,7 @@ public class CommonController {
                 ZTree<DictDetail> eu1=new ZTree<DictDetail>(dm.dictTree);
                 map.put("jsonType", "1");
                 map.put("data", eu1.toTreeMap());
-            } catch (CloneNotSupportedException e) {
+            } catch (Exception e) {
                 map.put("jsonType", "2");
                 map.put("err", e.getMessage());
                 e.printStackTrace();
