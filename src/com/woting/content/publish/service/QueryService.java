@@ -17,11 +17,15 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -218,7 +222,10 @@ public class QueryService {
 	 * @return
 	 */
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
-		Map<String, Object> audioData = new HashMap<String,Object>();
+        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        _CacheDictionary cd=cache.getContent();
+
+        Map<String, Object> audioData = new HashMap<String,Object>();
 		MediaAsset ma = mediaService.getMaInfoById(contentid);
 		audioData.put("ContentId",ma.getId());
 		audioData.put("ContentName",ma.getMaTitle());
@@ -235,7 +242,8 @@ public class QueryService {
 		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId")+"");
 		String catalogs = "";
 		for (DictRefResPo dictRefResPo : listdicref) {
-			catalogs+= ","+dictRefResPo.getTitle();
+		    DictDetail dd=cd.getDictDetail(dictRefResPo.getDictMid(), dictRefResPo.getDictDid());
+		    if (dd!=null) catalogs+= ","+dd.getNodeName();
 		}
 		audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
 		return audioData;

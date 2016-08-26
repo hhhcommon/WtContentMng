@@ -77,8 +77,8 @@ public class BroadcastController {
                         DictRefResPo rcrp=rcrpL.get(i);
                         if (rcrp.getResId().equals(ids)) {
                             if (!up) up=true;
-                            if (rcrp.getDictMid().equals("1")) typeName+=","+rcrp.getTitle();
-                            else if (rcrp.getDictMid().equals("2")) areaName+=","+rcrp.getPathNames();
+//                            if (rcrp.getDictMid().equals("1")) typeName+=","+rcrp.getTitle();
+//                            else if (rcrp.getDictMid().equals("2")) areaName+=","+rcrp.getPathNames();
                             if (i==rcrpL.size()-1) down=true;
                         } else {
                             if (up) down=true;
