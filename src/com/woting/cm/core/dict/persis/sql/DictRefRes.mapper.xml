@@ -94,8 +94,13 @@
     where id=#{id,jdbcType=VARCHAR}
   </update>
 
+  <!-- 看是否有关联 -->
+  <select id="existRefDict" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from wt_ResDict_Ref where ${value}
+  </select>
+
   <!-- 获得列表 -->
-  <select id="getList" resultMap="dictRefResMap" parameterType="java.util.Map">
+  <select id="getList" parameterType="java.util.Map" resultMap="dictRefResMap">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
     <if test="orderByClause!=null">order by ${orderByClause}</if>
@@ -123,8 +128,10 @@
   <delete id="multiDelBc" parameterType="java.lang.String">
     delete from wt_ResDict_Ref where resId in (${value}) and resTableName='wt_Broadcast'
   </delete>
-  
   <delete id="multiDelByResId" parameterType="java.lang.String">
     delete from wt_ResDict_Ref where resId=#{resId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delByDicts" parameterType="java.lang.String">
+    delete from wt_ResDict_Ref where ${value}
   </delete>
 </mapper>
