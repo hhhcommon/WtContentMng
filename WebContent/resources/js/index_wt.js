@@ -5,9 +5,8 @@ function menuTreeLoad(menuTree){
     var mainLi,firstA,firstI,labelSpan,iconSpan,secondUl,secondLi,secondA,publishSpan;
     //外层循环加载一级菜单内容
     for(var i=0;i<menuTreeLen;i++){
-        mainLi=$("<li></li");
+        mainLi=$("<li></li>");
         var menuGroupName=menuTree.menuList[i].menuGroupName;
-        //alert(menuGroupName);
         firstA=$("<a href='javascript:;'></a>");
         firstI=$("<i></i>");
         //通过一级菜单名称，添加对应图标

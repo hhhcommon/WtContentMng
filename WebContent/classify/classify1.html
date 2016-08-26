@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电台分类</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+    <link href="../resources/plugins/hplus/css/plugins/treeview/bootstrap-treeview.css" rel="stylesheet"/>
+    <link href="../resources/plugins/hplus/css/plugins/treeview/bootstrap.min14ed.css" rel="stylesheet"/>
+    <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
+    <link href="../resources/css/classify.css" rel="stylesheet">
+    <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+    <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+    <script src="../resources/plugins/hplus/js/content.min.js"></script>
+    <script src="../resources/plugins/hplus/js/plugins/treeview/bootstrap-treeview.js"></script>
+    <script src="../resources/js/context.utils.js"></script>
+    <script src="../resources/js/classify.js"></script>
+</head>
+<style>
+/*模态窗口样式设置*/
+.my-mbody {
+  background-color: #F8FAFB;
+}
+h4 {
+  font-weight:bold;
+  padding-left:10px;
+  text-align:left;
+}
+
+/* 配置：表单区域 */
+.modal-body tr {
+  width:100%;
+}
+.modal-body tr .th {
+  margin-left:30px;
+  height:60px;
+  line-height:36px;
+  font-size:14px;
+  font-weight:bold;
+  font-family:"open sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+  width:200px;
+  text-width:190px;
+  padding-right:10px;
+  font-weight:nomal;
+  text-align:right;
+}
+.modal-body tr .add-th {
+  width:120px;
+}
+.modal-body tr td input {
+  width:380px;
+}
+.splittr {
+  border-top:1px dashed #e5e5e5;
+  height:10px;
+}
+</style>
+<body style="overflow:hidden;">
+	<div class="wrapper wrapper-content" style="height:100%;">
+    <!--菜单栏-->
+    <div class="toobarArea">
+	   <button type="button" opeType="claAdd" class="btn" style="margin-right:3px;">添加</button>
+	   <button type="button" opeType="claMod" class="btn" style="margin-right:3px;" disabled>修改</button>
+	   <button type="button" opeType="claDel" class="btn" style="margin-right:3px;" disabled>删除</button>
+    </div>
+	  <!--显示主区域-->
+	  <div class="mainArea">
+		<!--电台列表-->
+		<div id="claListArea" class="claListArea">
+			<!--动态加载电台列表-->
+			  <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                  <h5>电台分类</h5>
+                  <div class="ibox-content">
+                    <div id="treeview12" class="test">
+                      <ul class='list-group'>
+                      		
+                      </ul>
+                   </div>
+                  </div>
+                </div>
+			  </div>
+              <!--<div class="page">
+                <div class="gigantic pagination">
+                  <i class="currentPage">1</i><i>/</i><i class="totalPage">1</i><i>页</i>
+                  <span class="previous" data-action="previous">上一页</span>
+                  <span class="next" data-action="next">下一页</span>
+                  <span class="jump" data-action="toPage">跳至</span><input type="text" class="toPage" value="" />
+                </div>
+              </div>-->
+		</div>
+		<!--右侧详情-->
+	    <div id="claDetailArea" class="claDetailArea">
+		  <!--动态加载电台分类详情-->
+		  <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+              <h5>分类详情</h5>
+              <div class="ibox-content">
+                <ul class="detail"></ul>
+                      
+              </div>
+            </div>
+		  </div>
+	    </div>
+	  </div>
+	</div>
+	<!--弹出内容:增加分类-->
+	<div id="claAdd" class="modal inmodal" data-backdrop="static" tabindex="-1" role="dialog"  aria-hidden="true"> 
+	  <div class="modal-dialog modal-lg" >
+	  	<div class="modal-content" style="width:98%;height:356px;">
+	  	  <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">增加分类</h4>
+          </div>
+          <div class="modal-body">
+          	<form id="verOperForm" enctype ="multipart/form-data">
+          	  <table>
+          	  	<tr>
+          	  	<td class="th add-th">分类名称</td>
+          	  	  <td class="colspan"><input type="text"/ placeholder="请填写分类名称"></td>
+          	  	</tr>
+          	  	<tr>
+          	      <td class="th add-th">分类ID</td>
+          	  	  <td class="colspan"><input type="text"/ placeholder="请填写分类ID"></td>
+          	  	</tr>
+          	  </table>	
+          	</form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">保存</button>
+            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+          </div>
+	  	</div>
+	  </div>
+	</div>
+</body>
+<script>
+    $(function(){
+      //请求加载电台列表
+      var data={cataId:"1"};
+      getCataTree(data);
+      //添加电台分类
+      $("button[opeType=claAdd]").on("click",function(){
+      	$('#claAdd').modal('show');
+      })
+
+    })
+</script>
+</html>

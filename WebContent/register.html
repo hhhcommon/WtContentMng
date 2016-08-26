@@ -17,7 +17,7 @@
         <div class="middle-box text-center loginscreen   animated fadeInDown">
             <div>
                 <div>
-                    <h1 class="logo-name">W T</h1>
+                    <h1 class="logo-name">W T T</h1>
                 </div>
                 <h3>欢迎注册 </h3>
                 <p>创建一个新账户</p>
@@ -42,17 +42,38 @@
             </div>
         </div>
         <!-- 全局js -->
-        <script src="../resources/plugins/jquery2.1.1/jquery-2.1.1.min.js"></script>
+        <script src="resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
         <script src="../resources/plugins/bootstrap3.3.4/bootstrap.min.js"></script>
         <!-- iCheck -->
         <script src="../resources/plugins/js_others/icheck.min.js"></script>
+        <script src="resource1234s/js/common.utils.js"></script>
         <script>
-            $(document).ready(function () {
-                $('.i-checks').iCheck({
-                    checkboxClass: 'icheckbox_square-green',
-                    radioClass: 'iradio_square-green',
-                });
-            });
+            alert("1234");
+            var _data={
+            		  "CatalogType":"1",
+            		  "CatalogId":["ABC","DEF"],
+            		  "Data":{
+            		    "name":"西城区",
+            		    "bCode":"110105",
+            		    "sort":["123","456"],
+            		    "descn":{
+                		    "name":"西城区",
+                		    "bCode":"110105",
+                		    "sort":"10",
+                		    "descn":"西城区"
+                		  }
+            		  }
+            		};
+    $.ajax({type:"post", async:true, url:"baseinfo/addCatalog.do", dataType:"json",
+    	data:_data,
+      success: function(jsonData) {
+    	  alert(jsonData.type);
+      },
+      error: function(jqXHR) {
+        alert("发生错误：" + jqXHR.status);
+        $("#closeB_verCfg").click();
+      }
+    });
         </script>
     </body>
 </html>

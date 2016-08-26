@@ -53,7 +53,7 @@
               <ul>
                 <li class="navList active"><a _href="./host/zj.html" href="javascript:void(0);">专辑管理</a></li>  
                 <li class="navList"><a _href="./host/audio.html" href="javascript:void(0);">声音管理</a></li>
-               <span class="bar"></span>                
+                <span class="bar"></span>                
               </ul>
             </nav>
           </div>
@@ -328,7 +328,6 @@
               "contentName": actList.ResultList.List[i].ContentName,
               "contentDesc": actList.ResultList.List[i].ContentDesc,
               "contentImg": actList.ResultList.List[i].ContentImg,
-              "contentCatalogs": actList.ResultList.List[i].ContentCatalogs,
               "subjectWords": actList.ResultList.List[i].SubjectWords});
             imgDiv = $("<div></div>");
             imgA=$("<a href='javascript:;'></a>");
@@ -347,6 +346,10 @@
             infoP2 = $("<p class='lastTime'></p>");
             infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
             if(mediaType=="SEQU"){
+            	listDiv.attr({
+//  	          "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
+//    	        "contentChannelId": actList.ResultList.List[i].ContentPubChannels[0].ChannelId
+    	        });
               imgDiv.addClass("imgBox");
               infoP1 = $("<p class='subCount'></p>");
               infoP1.text(actList.ResultList.List[i].SubCount+"个声音");

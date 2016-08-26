@@ -1,5 +1,6 @@
 package com.woting.cm.core.dict.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +8,17 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
+import com.spiritdata.framework.util.SequenceUUID;
+import com.spiritdata.framework.util.StringUtils;
 import com.spiritdata.framework.util.TreeUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictMaster;
@@ -149,7 +156,7 @@ public class DictService {
             DictDetailPo newDdp=dd.convert2Po();
             dictDDao.insert(newDdp);
         } catch(Exception e) {
-            throw new Wtcm0301CException(e);
+            throw new Wtcm0301CException("新增字典项", e);
         }
     }
 
@@ -163,5 +170,107 @@ public class DictService {
             dictRefDao.insert(newDrrPo);
         } catch(Exception e) {
         }
+    }
+
+    /**
+     * 加入新字典项，同时处理字典缓存
+     * @param dd 字典项信息
+     * @return 1-成功；2-未找到父亲结点；3-名称重复，同级重复；4-bCode重复，某分类下重复
+     */
+    public int insertDictDetail(DictDetail dd) {
+        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        _CacheDictionary cd=cache.getContent();
+        DictModel dm=cd.dictModelMap.get(dd.getMId());
+        if (dm==null||dm.dictTree==null) return 2;
+        if (dm.getDdByBCode(dd.getBCode())!=null) return 4;
+
+        TreeNode<DictDetail> parentNode=dm.dictTree;
+        if (StringUtils.isNullOrEmptyOrSpace(dd.getParentId())) {//父节点为空
+            parentNode=(TreeNode<DictDetail>)parentNode.findNode(dd.getParentId());
+            if (parentNode==null) return 2;
+        }
+        if (!parentNode.isLeaf()) {
+            List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
+            for (TreeNode<? extends TreeNodeBean> cn: cl) {
+                if (cn.getNodeName().equals(dd.getNodeName())) return 3;
+            }
+        }
+
+        //插入字典项
+        dd.setId(SequenceUUID.getUUIDSubSegment(0));
+        dd.setCTime(new Timestamp(System.currentTimeMillis()));
+        try {
+            //数据库
+            DictDetailPo newDdp=dd.convert2Po();
+            dictDDao.insert(newDdp);
+            //缓存
+            TreeNode<DictDetail> nd=new TreeNode<DictDetail>(dd);
+            parentNode.addChild(nd);
+            return 1;
+        } catch(Exception e) {
+            throw new Wtcm0301CException("新增字典项", e);
+        }
+    }
+
+    /**
+     * 修改字典项，同时处理字典缓存
+     * @param dd 字典项信息
+     * @return 1-修改成功；2-对应的结点未找到；3-名称重复，同级重复；4-bCode重复，某分类下重复；5-与原信息相同，不必修改
+     */
+    public int updateDictDetail(DictDetail dd) {
+        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        _CacheDictionary cd=cache.getContent();
+        DictModel dm=cd.dictModelMap.get(dd.getMId());
+
+        if (dm==null||dm.dictTree==null) return 2;
+        TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
+        if (myInTree==null) return 2;
+
+        if (dm.getDdByBCode(dd.getBCode())!=null&&!(myInTree.getTnEntity().getBCode().equals(dd.getBCode()))) return 4;
+        //看看是否要更换所属父节点
+        boolean changeFather=!myInTree.getTnEntity().getParentId().equals(dd.getParentId());
+        TreeNode<DictDetail> parentNode=dm.dictTree;
+        if (StringUtils.isNullOrEmptyOrSpace(dd.getParentId())) {//父节点为空
+            parentNode=(TreeNode<DictDetail>)parentNode.findNode(dd.getParentId());
+        }
+        if (!parentNode.isLeaf()) {
+            List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
+            for (TreeNode<? extends TreeNodeBean> cn: cl) {
+                if (cn.getNodeName().equals(dd.getNodeName())) return 3;
+            }
+        }
+        if (myInTree.getTnEntity().getNodeName().equals(dd.getNodeName())&&myInTree.getTnEntity().getOrder()==dd.getOrder()
+          &&myInTree.getTnEntity().getAliasName().equals(dd.getAliasName())&&myInTree.getTnEntity().getIsValidate()==dd.getIsValidate()
+          &&myInTree.getTnEntity().getBCode().equals(dd.getBCode())&&myInTree.getTnEntity().getDesc().equals(dd.getDesc())
+          ) {
+            return 5;
+        }
+
+        //修改字典项
+        try {
+            //数据库
+            DictDetailPo newDdp=dd.convert2Po();
+            dictDDao.update(newDdp);
+            //缓存
+            TreeNode<DictDetail> nd=new TreeNode<DictDetail>(dd);
+            myInTree.getParent().removeChild(myInTree.getId());
+            parentNode.addChild(nd);
+            return 1;
+        } catch(Exception e) {
+            throw new Wtcm0301CException("新增字典项", e);
+        }
+    }
+
+    /**
+     * 修改字典项，同时处理字典缓存
+     * @param dd 字典项信息
+     * @param force 是否强制删除
+     * @return "1"成功删除,"2"未找到相应的结点,"3::因为什么什么关联信息的存在而不能删除"
+     */
+    public String delDictDetail(DictDetail dd, int force) {
+        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        _CacheDictionary cd=cache.getContent();
+        DictModel dm=cd.dictModelMap.get(dd.getMId());
+        return "";
     }
 }

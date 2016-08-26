@@ -18,7 +18,7 @@ function getContentList(obj) {
 	    		$(".actList").html(""); //再重新创建新的数据集时，先清空之前的
     	        $(".totalCount").text(resultData.ResultList.AllCount);
 		        ContentListLoad(resultData);
-	    	}else{
+		    }else{
 	    		switch(obj.opeType){
 	    			case 'conAdd':
 	    			    break;
@@ -59,7 +59,7 @@ function ContentListLoad(actList) {
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>还没有创建节目哦！</div>");
   } else {
     //声明下面需要创建的节点，以便添加内容和添加到文档中
-    var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conShare,conDel,conPub,infoDiv,infoH,infHA,infoP1,infoP2;
+    var actListDiv,listDiv,imgDiv,imgA,thumbImg,imgShade,conUpdate,conEye,conDel,conPub,infoDiv,infoH,infHA,infoP1,infoP2;
     //循环加载列表
     for (var i = 0; i < actListLength; i++) {
       listDiv = $("<div class='listBox'></div>");
@@ -76,21 +76,21 @@ function ContentListLoad(actList) {
       thumbImg.attr({'src':actList.ResultList.List[i].ContentImg});
       imgShade=$("<div class='imgShade'></div>");
       conUpdate=$("<i class='fa fa-pencil' opeType='conUpdate' title='修改'></i>");
-      conShare=$("<i class='fa fa-external-link' opeType='conShare' title='分享'></i>");
+      conEye=$("<i class='fa fa-eye' opeType='conEye' title='浏览'></i>");
       conDel=$("<i class='fa fa-trash-o' opeType='conDel' title='删除'></i>");
       conPub=$("<i class='fa fa-plus-square-o' opeType='conPub' title='发布'></i>");
       infoDiv = $("<div class='infoBox'>");
       infoH = $("<h4></h4>");
       infoHA=$("<a href='javascript:;'></a>");
-      imgShade.append(conUpdate).append(conShare).append(conDel).append(conPub);
+      imgShade.append(conUpdate).append(conEye).append(conDel).append(conPub);
       infoHA.text(actList.ResultList.List[i].ContentName);
       infoP2 = $("<p class='lastTime'></p>");
       infoP2.text((actList.ResultList.List[i].CTime).slice(0,10));
       if(mediaType=="SEQU"){
-//  	  listDiv.attr({
-//  	  "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid
-//    	  "contentChannelId": actList.ResultList.List[i].ContentChannels[0].CataDid
-//  	  });
+          listDiv.attr({
+//  	    "contentCatalogsId": actList.ResultList.List[i].ContentCatalogs[0].CataDid,
+//    	    "contentChannelId": actList.ResultList.List[i].ContentPubChannels[0].ChannelId
+    	  });
     	  imgDiv.addClass("imgBox");
     	  infoP1 = $("<p class='subCount'></p>");
           infoP1.text(actList.ResultList.List[i].SubCount+"个声音");

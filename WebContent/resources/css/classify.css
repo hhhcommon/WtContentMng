@@ -1,0 +1,104 @@
+@charset "utf-8";
+
+/*顶部导航条*/
+.toobarArea {
+    height: 40px;
+    width: 100%;
+    line-height: 30px;
+    background: #eff3f6;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding-left: 15px;
+    padding-top: 5px;
+    overflow: hidden;
+}
+.toobarArea button {
+    width: 60px;
+    height: 24px;
+    margin-top: -4px;
+    background: #0077c7;
+    color: white;
+    text-align: center;
+    padding: 2px;
+    font-size: 12px;
+    border-radius: 0px;
+}
+/*主区域*/
+.mainArea{
+	height:100%;
+    width: 100%;
+    position: absolute;
+    overflow: auto;
+}
+/*分类列表*/
+.claListArea {/*左侧列表区域样式*/
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 400px;
+    height: 100%;
+    border-right: 1px solid #ccc;
+    overflow-y:auto;
+}
+.claListArea  {
+    position: relative;
+    padding-bottom: 9px;
+}
+.list-group .list-group-item {
+	padding: 10px 25px;
+}
+/*树形菜单*/
+li{
+	list-style: none;
+}
+a:link,a:visited{
+	text-decoration: none;
+}
+a{
+	color:#333;
+}
+.inactive{
+	display: block;
+}
+.list-group-item  ul li {
+	width: 139%;
+    border: 1px solid #e7eaec;
+    border-bottom: 0;
+    margin-left: -65px;
+}
+.list-group-item span{
+	position: absolute;
+    top: 14px;
+    left: 10px;
+}
+.list-group-item ul li a{
+	padding-left: 50px;
+    color:#333;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    position: relative;
+}
+/*分页*/
+.claListArea .page {
+	width:400px;
+	height:40px;
+	position:fixed;
+	bottom:0;
+	left:0;
+	padding:0 27px 0 0;
+	background-color:#f3f3f4;
+	border-top:1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+
+/*内容详情*/
+.claDetailArea {
+    position:absolute;
+    right:0;
+    top:0;
+    height:100%;
+    width:calc(100% - 400px);
+    background:white;
+}
+

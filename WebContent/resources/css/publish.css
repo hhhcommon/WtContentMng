@@ -193,7 +193,7 @@ body{
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-.listBox h3 span{
+.listBox .kind{
 	width:30px;
 	height:16px;
 	font-size:10px;
@@ -299,8 +299,8 @@ body{
 	background:#f9be36;
 	border-radius: 5px;
 	position:absolute;
-	right:-24px;
-	top:-10px;
+	right:-36px;
+	top:7px;
 	color:white;
 	-webkit-transform: scale(0.9);
 	padding-left:0;

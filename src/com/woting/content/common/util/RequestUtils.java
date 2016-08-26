@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import com.spiritdata.framework.util.JsonUtils;
+import javax.servlet.http.HttpServletRequest;
 
 public abstract class RequestUtils {
     /**
@@ -21,6 +22,7 @@ public abstract class RequestUtils {
     @SuppressWarnings("unchecked")
 	public static Map<String, Object> getDataFromRequest(ServletRequest req) {
         Map<String, Object> retM=new HashMap<String, Object>();
+        ((HttpServletRequest)req).getQueryString();
         //1-从数据流中获得参数：这种参数必须是json格式的
         InputStreamReader isr=null;
         BufferedReader br=null;
@@ -45,11 +47,13 @@ public abstract class RequestUtils {
             if (br!=null) try {br.close();} catch(Exception e) {}
         }
         //2-从?参数中读取数据
-        if (retM==null) retM=new HashMap<String, Object>();
-        Enumeration<String> enu=req.getParameterNames();
-        while(enu.hasMoreElements()) {
-            String name=(String)enu.nextElement();
-            retM.put(name, req.getParameter(name));
+        if (retM==null||retM.isEmpty()) {
+            retM=new HashMap<String, Object>();
+            Enumeration<String> enu=req.getParameterNames();
+            while(enu.hasMoreElements()) {
+                String name=(String)enu.nextElement();
+                retM.put(name, req.getParameter(name));
+            }
         }
         if (retM==null||retM.isEmpty()) return null;
         return retM;
