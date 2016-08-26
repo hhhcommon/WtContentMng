@@ -12,7 +12,8 @@ ul,li{
   padding:0;
 }
 a{
-	 color:#333;
+	color:#333;
+	cursor:pointer;
 }
 a:hover{
 	text-decoration:none;

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <!-- saved from url=(0066)http://www.sucaihuo.com/modals/3/328/demo/form_validate.html?v=3.0 -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-
     <title>创建专辑</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -55,19 +54,27 @@
                           <div class="col-sm-8">
                               <select class="form-control" name="ContentCatalogs" id="ContentCatalogs">
                               	<option value="">请选择</option>
-                              </select>
+                              </select>   
                           </div>
                       </div>
                       <div class="form-group">
 		                  <div class="changeLabel">
                               <label class="col-sm-5 control-label change-label">选择标签(最多可选3个)</label>
-                              <input type="hidden" name="ContentTags" id="ContentTags" value="0">
+                              <input type="hidden" name="ContentTags" id="ContentTags" value="">
                               <div class="metas clearfix new_tags" style="">
                                 <ul class="ul-metas" id="ul-metas">
                                 </ul>
                               </div>
                           </div>
 		              </div>
+		              <div class="form-group">
+                              <label class="col-sm-3 control-label">发布栏目：</label>
+                              <div class="col-sm-8">
+                                  <select class="form-control" name="ContentChannelId" id="ContentChannelId" value="" >
+                                    <!--<option value="">请选择</option>-->
+                                  </select>
+                              </div>
+                      </div>
                       <div class="form-group">
                           <label class="col-sm-3 control-label">专辑简介：</label>
                           <div class="col-sm-8">

@@ -195,13 +195,13 @@ $(function(){
             //alert(node.attributes.mId);
             //点击的如果是2大类根节点时，查询所有；如果点击的下面的分类则按分类查询
             if(node.id=='1' || node.id=='2'){
-                loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
-                rId=null;
-                mId=null;
+              loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+              rId=null;
+              mId=null;
             }else{
-                   loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
-                   rId=node.id;
-                  mId=node.attributes.mId;
+              loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize,node.id,node.attributes.mId);
+              rId=node.id;
+              mId=node.attributes.mId;
             }
         }
     });
@@ -217,20 +217,20 @@ $(function(){
 
 //分页方法
 function fy(pageNumber, pageSize){
-    loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+  loadList($('#bcList').datagrid('getPager').pagination('options').pageNumber, $('#bcList').datagrid('getPager').pagination('options').pageSize);
 }
 //读取数据，并进行初始化
 function loadData() {
   //读取树
   loadTree();
   //读取列表
-  loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
+  //loadList(1, $('#bcList').datagrid('getPager').pagination('options').pageSize);
 }
 
 function loadTree() {
   $.ajax({type:"post", async:true, url:'<%=path%>/bc/getCataTrees4View.do', dataType:"json",
     success: function(jsonData) {
-      if (jsonData.jsonType==1) $('#cataTree').tree("loadData", jsonData.data);
+      if (jsonData.jsonType==1) $('#cataTree').init("loadData", jsonData.data);
       else $('#cataTree').html("没有数据");
     }
   });
