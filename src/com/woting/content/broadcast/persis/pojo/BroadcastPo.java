@@ -1,4 +1,4 @@
-package com.woting.content.broadcast.persistence.pojo;
+package com.woting.content.broadcast.persis.pojo;
 
 import java.sql.Timestamp;
 

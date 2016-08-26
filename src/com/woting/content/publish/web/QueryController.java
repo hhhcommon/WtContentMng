@@ -96,7 +96,6 @@ public class QueryController {
 				map.put("ContentDetail", mapdetail.get("sequ"));
 				map.put("SubList", mapdetail.get("audio"));
 				map.put("ReturnType", "1001");
-				map.put("ContentCount", mapdetail.get("count"));
 			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有相关内容 ");

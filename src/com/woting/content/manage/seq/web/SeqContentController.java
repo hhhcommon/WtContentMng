@@ -57,7 +57,6 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/addSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addSeqMediaInfo(HttpServletRequest request){
@@ -107,7 +106,6 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request){
@@ -148,7 +146,6 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request){

@@ -192,7 +192,7 @@
                $.ajax({
                     url:"http://localhost:908/CM/content/addSeqMediaInfo.do",
                     type:"POST",
-                    data:$("#addZjForm").serialize(),
+                    data:$("#addZjForm").serializeArray(),
                     dataType:"json",
                     success: function (opeResult) {
                        if (opeResult.ReturnType=="1001") {
