@@ -21,7 +21,6 @@ public class ChannelContentService {
         _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
     }
 	
-	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getChannelAssetList(List<ChannelAssetPo> chapolist){
 		if(chapolist==null) return null;
 		 List<Map<String, Object>> ret=new ArrayList<Map<String, Object>>();

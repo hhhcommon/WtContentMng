@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
@@ -88,8 +90,9 @@ public class SeqContentService {
 			dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
 		if(!chid.equals("null"))
 			map = modifySeqStatus(userid, smaid, chid, 0);
-		if (mediaService.getSmaInfoById(smaid) != null && map.get("ReturnType").equals("1001")) {
-			map.clear();
+		if (mediaService.getSmaInfoById(smaid) != null) {
+			if(chid.equals("null")||map.get("ReturnType").equals("1001"))
+				map.clear();
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加专辑成功");
 		} else {
@@ -136,11 +139,6 @@ public class SeqContentService {
 					mediaService.removeCha(sma.getId());
 					modifySeqStatus(userid, sma.getId(), chid, flowflag);
 				}
-//				if(l!=null&&l.size()>0)
-//					for (SeqMaRefPo seqMaRefPo : l) {
-//						mediaService.removeCha(seqMaRefPo.getMId());
-//						mediaContentService.modifyMediaStatus(userid, seqMaRefPo.getMId(), sma.getId(), 0);
-//					}
 			}
 			map.put("ReturnType", "1001");
 		    map.put("Message", "修改成功");
@@ -166,7 +164,7 @@ public class SeqContentService {
 			return map;
 		}
 		List<MediaAssetPo> malist = mediaService.getMaListBySmaId(smaid);
-		if(malist==null||malist.size()==0) {
+		if(flowflag!=0 && (malist==null||malist.size()==0)) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "专辑无下级单体");
 			return map;

@@ -145,7 +145,7 @@ public class ChannelController {
             }
             //1-组织参数
             Channel c=new Channel(); //栏目业务对象
-            if (StringUtils.isNullOrEmptyOrSpace(channelId)) c.setParentId(channelId);
+            if (!StringUtils.isNullOrEmptyOrSpace(channelId)) c.setParentId(channelId);
             c.setChannelName(name);
             Owner o=new Owner(Integer.parseInt(owner.get("OwnerType")+""), owner.get("OwnerId")+"");
             c.setOwner(o);
@@ -241,7 +241,6 @@ public class ChannelController {
             int ret=channelService.updateChannel(c);
             if (ret==1) {
                 map.put("ReturnType", "1001");
-                map.put("Message", "添加成功");
             } else if (ret==2) {
                 map.put("ReturnType", "1002");
                 map.put("Message", "未找到分类");
@@ -302,7 +301,6 @@ public class ChannelController {
             String ret=channelService.delChannel(c, force);
             if (ret.equals("1")) {
                 map.put("ReturnType", "1001");
-                map.put("Message", "添加成功");
             } else if (ret.equals("2")) {
                 map.put("ReturnType", "1002");
                 map.put("Message", "未找到对应结点");

@@ -184,6 +184,7 @@ public class MediaContentService {
 		    cha.setCheckerId("1");
 		    cha.setFlowFlag(flowflag);
 		    cha.setSort(0);
+		    cha.setPubImg(ma.getMaImg());
 		    cha.setCheckRuleIds("0");
 		    cha.setCTime(new Timestamp(System.currentTimeMillis()));
 		    if(flowflag==2) {

@@ -12,23 +12,25 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.utils.ContentUtils;
-import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
+import com.woting.content.broadcast.persis.pojo.BroadcastPo;
 import com.woting.content.broadcast.service.BroadcastService;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.publish.utils.CacheUtils;
@@ -185,11 +187,16 @@ public class QueryService {
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
 		SeqMediaAsset sma = mediaService.getSmaInfoById(id);
 		List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
-		seqData = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, null, null);
+		List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
+		List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId());
+		Map<String, Object> smap = sma.toHashMap();
+		smap.put("count", listseqmaref.size());
+		smap.put("smaPublishTime",chlist.get(0).get("pubTime"));
+		seqData = ContentUtils.convert2Sma(smap, null, catalist, chlist, null);
 
 		// 查询专辑和单体的联系
 		List<String> listaudioid = new ArrayList<String>();
-		List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(seqData.get("ContentId")+"");
+		
 		for (SeqMaRefPo seqMaRefPo : listseqmaref) {
 			listaudioid.add(seqMaRefPo.getMId());
 		}
@@ -201,10 +208,8 @@ public class QueryService {
 
 		if (listaudio.size() == 0) {
 			map.put("audio", null);
-			map.put("count", 0);
 		} else {
 			map.put("audio", listaudio);
-			map.put("count", listaudio.size());
 		}
 		map.put("sequ", seqData);
 		return map;
@@ -218,7 +223,10 @@ public class QueryService {
 	 * @return
 	 */
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
-		Map<String, Object> audioData = new HashMap<String,Object>();
+        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        _CacheDictionary cd=cache.getContent();
+
+        Map<String, Object> audioData = new HashMap<String,Object>();
 		MediaAsset ma = mediaService.getMaInfoById(contentid);
 		audioData.put("ContentId",ma.getId());
 		audioData.put("ContentName",ma.getMaTitle());
@@ -235,7 +243,8 @@ public class QueryService {
 		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId")+"");
 		String catalogs = "";
 		for (DictRefResPo dictRefResPo : listdicref) {
-			catalogs+= ","+dictRefResPo.getTitle();
+		    DictDetail dd=cd.getDictDetail(dictRefResPo.getDictMid(), dictRefResPo.getDictDid());
+		    if (dd!=null) catalogs+= ","+dd.getNodeName();
 		}
 		audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
 		return audioData;

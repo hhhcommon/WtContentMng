@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.spiritdata.framework.util.JsonUtils;
+
 /**
  * 内容方法类：内容数据的转换，主要——存储对象转换为显示对象。
  * 注意：这里的方法，对传入的参数不做强制的校验
@@ -213,6 +215,7 @@ public abstract class ContentUtils {
         }
         return ret.size()>0?ret:null;
     }
+    
     private static int fetchFavorite(List<Map<String, Object>> favoriteList, String resTableName, String resId) {//喜欢处理
         if (favoriteList==null||favoriteList.size()==0) return 0;
         int ret=0;
