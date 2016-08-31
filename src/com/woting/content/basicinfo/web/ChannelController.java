@@ -145,7 +145,7 @@ public class ChannelController {
             }
             //1-组织参数
             Channel c=new Channel(); //栏目业务对象
-            if (StringUtils.isNullOrEmptyOrSpace(channelId)) c.setParentId(channelId);
+            if (!StringUtils.isNullOrEmptyOrSpace(channelId)) c.setParentId(channelId);
             c.setChannelName(name);
             Owner o=new Owner(Integer.parseInt(owner.get("OwnerType")+""), owner.get("OwnerId")+"");
             c.setOwner(o);
