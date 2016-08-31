@@ -417,8 +417,6 @@ $(function() {
   //选中radio后的处理
   $(".cntList").on("click", ".lineBox", function() {
     $("button[opeType='verMod']").removeAttr("disabled");
-//  $("button[opeType='verDel']").removeAttr("disabled");
-//  $("button[opeType='verInvalid']").removeAttr("disabled");
     var $radio = $(this).find("input[type='radio']");
     var $flag= $radio.is(":checked");
     if( !$flag){

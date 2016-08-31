@@ -23,7 +23,7 @@ import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
-import com.woting.content.common.util.RequestUtils;
+import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.dict.service.DictContentService;
 
 import org.jsoup.nodes.Document;
@@ -37,7 +37,7 @@ public class CommonController {
 	private ChannelService channelService;
 	@Resource
 	private DictContentService dictdService;
-	
+
 	/**
 	 * 获取内容分类树
 	 * @param request
@@ -57,7 +57,7 @@ public class CommonController {
                 ZTree<DictDetail> eu1=new ZTree<DictDetail>(dm.dictTree);
                 map.put("jsonType", "1");
                 map.put("data", eu1.toTreeMap());
-            } catch (CloneNotSupportedException e) {
+            } catch (Exception e) {
                 map.put("jsonType", "2");
                 map.put("err", e.getMessage());
                 e.printStackTrace();
@@ -68,7 +68,7 @@ public class CommonController {
         }
         return map;
     }
-    
+
     /**
      * 获取栏目列表
      * @param request

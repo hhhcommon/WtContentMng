@@ -106,9 +106,12 @@
   <select id="belongSeqPubCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(*) from wt_ChannelAsset where assetType='wt_SeqMediaAsset' and assetId in (select sId from wt_SeqMA_Ref where mId=#{assetId,jdbcType=VARCHAR})
   </select>
-  
   <select id="countnum" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(*) from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey_B"/></if>
+  </select>
+  <!-- 看是否有关联 -->
+  <select id="existRefChannel" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from wt_ChannelAsset where ${value}
   </select>
 
   <!-- 获得列表 -->
@@ -213,5 +216,8 @@
   </delete>
   <delete id="deleteByEntity" parameterType="java.util.Map">
     delete from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+  <delete id="delByChannels" parameterType="java.lang.String">
+    delete from wt_ChannelAsset where ${value}
   </delete>
 </mapper>

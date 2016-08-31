@@ -206,7 +206,6 @@ public abstract class ContentUtils {
         for (Map<String, Object> _c: channelList) {
             if ((_c.get("assetType")+"").equals(resTableName)&&(_c.get("assetId")+"").equals(resId)) {
                 oneChn=new HashMap<String, Object>();
-                System.out.println(JsonUtils.objToJson(_c));
                 oneChn.put("ChannelName", _c.get("channelName"));
                 oneChn.put("PubTime", _c.get("pubTime"));
                 oneChn.put("FlowFlag", _c.get("flowFlag"));

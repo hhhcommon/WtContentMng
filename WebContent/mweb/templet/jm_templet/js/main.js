@@ -1,3 +1,4 @@
+var rootPath=getRootPath();
 $(function(){
 	//控制播放的节目的顺序号
 	var listNum=0;
@@ -168,11 +169,11 @@ $(function(){
 	//请求推荐资源列表
 	var searchStr=$(".palyCtrlBox").children("h4").text();
 	$.ajax({
-        url: "http://123.56.254.75:908/CM/common/jsonp.do",
+        url: rootPath+"common/jsonp.do",
         type:"POST",
         dataType:"json",
         data:{
-        	"RemoteUrl":"http://123.56.254.75:808/wt/searchByText.do",
+        	"RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         	"IMEI":"3279A27149B24719991812E6ADBA5583",
         	"PCDType":"3",
         	"SearchStr":searchStr,
@@ -197,7 +198,7 @@ $(function(){
 		window.location=$("#jmAudio").attr("jmOpenApp");
 	    
         window.setTimeout(function () {
-            window.location.href= "http://182.92.175.134/download/WoTing.apk";
+            window.location.href= "http://www.wotingfm.com/download/WoTing.apk";
         },2000);
 	});
 	

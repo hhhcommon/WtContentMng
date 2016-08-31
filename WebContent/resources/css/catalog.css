@@ -13,13 +13,14 @@
     overflow: hidden;
 }
 .toobarArea button {
-    width: 60px;
+    width: 88px;
     height: 24px;
-    margin-top: -4px;
+    margin-top: 0px;
     background: #0077c7;
     color: white;
     text-align: center;
-    padding: 2px;
+    line-height: 24px;
+    padding: 0px 2px 15px 8px;
     font-size: 12px;
     border-radius: 0px;
 }
@@ -47,8 +48,10 @@
 .list-group .list-group-item {
 	padding: 10px 25px;
 }
+
 /*树形菜单*/
-li{
+
+/*li{
 	list-style: none;
 }
 a:link,a:visited{
@@ -78,7 +81,7 @@ a{
     height: 36px;
     line-height: 36px;
     position: relative;
-}
+}*/
 /*分页*/
 .claListArea .page {
 	width:400px;

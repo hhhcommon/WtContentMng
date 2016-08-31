@@ -1,3 +1,4 @@
+var rootPath=getRootPath();
 $(function(){
 	var page=2;
 	var nextPage="false";
@@ -48,7 +49,7 @@ $(function(){
 		if($(document).height() - $(this).scrollTop() - $(this).height()<60){
 			$.ajax({
 		        type: "POST",
-		        url:"http://123.56.254.75:908/CM/content/getZJSubPage.do",
+		        url:rootPath+"content/getZJSubPage.do",
 		        dataType: "json",
 		        data:{Page:page,ContentId:$(".zjIntro").attr("contentId")},
 		        success: function(resultData) {

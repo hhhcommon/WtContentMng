@@ -48,14 +48,15 @@
         <script src="../resources/plugins/js_others/icheck.min.js"></script>
         <script src="resource1234s/js/common.utils.js"></script>
         <script>
-            alert("1234");
+            alert("get-JSON_DATA");
             var _data={
-            		  "CatalogType":"1",
+          		  "CatalogType":"1",
+        		  "aa":"aa",
             		  "CatalogId":["ABC","DEF"],
             		  "Data":{
             		    "name":"西城区",
             		    "bCode":"110105",
-            		    "sort":["123","456"],
+            		    "sort":"sort",
             		    "descn":{
                 		    "name":"西城区",
                 		    "bCode":"110105",
@@ -64,7 +65,9 @@
                 		  }
             		  }
             		};
-    $.ajax({type:"post", async:true, url:"baseinfo/addCatalog.do", dataType:"json",
+            var _JSON_DATA={"_JSON_DATA":JSON.stringify(_data)}
+            var testurl="baseinfo/addCatalog.do?aa=bb&cc=DD&CatalogType=3";
+    $.ajax({type:"get", async:true, url:testurl, dataType:"json",
     	data:_data,
       success: function(jsonData) {
     	  alert(jsonData.type);

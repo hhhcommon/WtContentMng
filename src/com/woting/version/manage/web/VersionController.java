@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.content.common.util.RequestUtils;
+import com.spiritdata.framework.util.RequestUtils;
 import com.woting.version.core.model.Version;
 import com.woting.version.core.model.VersionConfig;
 import com.woting.version.core.service.VersionService;

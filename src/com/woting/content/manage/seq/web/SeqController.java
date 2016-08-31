@@ -14,15 +14,15 @@ import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.SeqMediaAsset;
-import com.woting.content.common.util.RequestUtils;
+import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.seq.service.SeqContentService;
 
 @Controller
-public class SeqContentController {
+public class SeqController {
 	@Resource
 	private SeqContentService seqContentService;
 	private static String ip_address = "123.56.254.75";
-	
+
 	/**
 	 * 得到主播id下的专辑列表(包括发布和未发布的)
 	 * @param request
@@ -57,6 +57,7 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/addSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addSeqMediaInfo(HttpServletRequest request){
@@ -106,6 +107,7 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request){
@@ -146,6 +148,7 @@ public class SeqContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request){

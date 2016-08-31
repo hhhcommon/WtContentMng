@@ -71,15 +71,26 @@ public class DictModel extends DictMaster {
      */
     public DictDetail getDdByBCode(String bCode) {
         if (dictTree==null||StringUtils.isNullOrEmptyOrSpace(bCode)) return null;
-
-        return getDdByBCode(dictTree, bCode);
+        
+        TreeNode<? extends TreeNodeBean> o=getDdByBCode(dictTree,bCode);
+        if (o==null) return null;
+        return (DictDetail)o.getTnEntity();
     }
-    private DictDetail getDdByBCode(TreeNode<? extends TreeNodeBean> cl, String bCode) {
-        if (dictTree.getTnEntity().getBCode().equals(bCode)) return (DictDetail)cl.getTnEntity();
+    private TreeNode<? extends TreeNodeBean> getDdByBCode(TreeNode<? extends TreeNodeBean> cl, String bCode) {
         if (cl.isLeaf()) return null;
-        for (TreeNode<? extends TreeNodeBean> cn: dictTree.getChildren()) {
-            return getDdByBCode(cn, bCode);
+        TreeNode<? extends TreeNodeBean> retNode=null;
+        for (TreeNode<? extends TreeNodeBean> cn: cl.getChildren()) {
+            if (((DictDetail)cn.getTnEntity()).getBCode().equals(bCode)) {
+                retNode=cn;
+                break;
+            }
         }
-        return null;
+        if (retNode==null) {
+            for (TreeNode<? extends TreeNodeBean> cn: cl.getChildren()) {
+                if (!cn.isLeaf()) retNode=getDdByBCode(cn, bCode);
+                if (retNode!=null) break;
+            }
+        }
+        return retNode;
     }
 }
