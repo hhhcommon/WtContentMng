@@ -1,6 +1,6 @@
-var rootPath=getRootPath();
 $(function(){
-	//控制播放的节目的顺序号
+  var rootPath=getRootPath();
+  //控制播放的节目的顺序号
 	var listNum=0;
 	//获取播放元素容器
 	var audio=$("audio")[0];
@@ -183,10 +183,10 @@ $(function(){
         	"PageSize":"20"
         },
         success: function(resultData) {
-	    var jsonData=$.parseJSON(resultData);
-            if (jsonData.ReturnType=="1001"){
-            	loadRecomList(jsonData);
-            }
+	        var jsonData=$.parseJSON(resultData);
+          if (jsonData.ReturnType=="1001"){
+            loadRecomList(jsonData);
+          }
         },
         error: function(jqXHR){
           alert("发生错误" + jqXHR.status);
