@@ -204,19 +204,19 @@ public class ChannelService {
         TreeNode<Channel> myInTree=(TreeNode<Channel>)cc.channelTree.findNode(c.getId());
         if (myInTree==null) return 2;
 
-        if ((c.getNodeName()!=null&&c.getNodeName().equals(myInTree.getTnEntity().getNodeName()))
+        if ((c.getNodeName()==null||(c.getNodeName()!=null&&c.getNodeName().equals(myInTree.getTnEntity().getNodeName())))
           &&myInTree.getTnEntity().getOrder()==c.getOrder()
-          &&(c.getContentType()!=null&&c.getContentType().equals(myInTree.getTnEntity().getContentType()))
+          &&(c.getContentType()==null||(c.getContentType()!=null&&c.getContentType().equals(myInTree.getTnEntity().getContentType())))
           &&myInTree.getTnEntity().getIsValidate()==c.getIsValidate()
-          &&(c.getOwner()!=null&&c.getOwner().equals(myInTree.getTnEntity().getOwner()))
-          &&(c.getDescn()!=null&&c.getDescn().equals(myInTree.getTnEntity().getDescn()))
-          &&(c.getParentId()!=null&&c.getParentId().equals(myInTree.getTnEntity().getParentId()))
+          &&(c.getOwner()==null||(c.getOwner()!=null&&c.getOwner().equals(myInTree.getTnEntity().getOwner())))
+          &&(c.getDescn()==null||(c.getDescn()!=null&&c.getDescn().equals(myInTree.getTnEntity().getDescn())))
+          &&(c.getParentId()==null||(c.getParentId()!=null&&c.getParentId().equals(myInTree.getTnEntity().getParentId())))
           ) {
           return 4;
         }
 
         boolean changeFather=false;
-        TreeNode<Channel> parentNode=null;
+        TreeNode<Channel> parentNode=cc.channelTree;
         if (!StringUtils.isNullOrEmptyOrSpace(c.getParentId())) {//父节点为空
             //看看是否要更换所属父节点
             changeFather=!myInTree.getTnEntity().getParentId().equals(c.getParentId());
@@ -224,10 +224,11 @@ public class ChannelService {
         } else {
             parentNode=(TreeNode<Channel>)myInTree.getParent();
         }
+        String compareName=StringUtils.isNullOrEmptyOrSpace(c.getNodeName())?myInTree.getNodeName():c.getNodeName();
         if (parentNode!=null&&!parentNode.isLeaf()) {
             List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
             for (TreeNode<? extends TreeNodeBean> cn: cl) {
-                if (cn.getNodeName().equals(c.getNodeName())&&!cn.getId().equals(c.getId())) return 3;
+                if (cn.getNodeName().equals(compareName)&&!cn.getId().equals(c.getId())) return 3;
             }
         }
 
@@ -237,7 +238,14 @@ public class ChannelService {
             channelDao.update(c.convert2Po());
             //缓存
             if (changeFather) {
+                if (c.getNodeName()==null) c.setNodeName(myInTree.getTnEntity().getNodeName());
+                if (c.getOwner()==null) c.setOwner(myInTree.getTnEntity().getOwner());
+                if (c.getIsValidate()==0) c.setIsValidate(myInTree.getTnEntity().getIsValidate());
+                if (c.getOrder()==0) c.setOrder(myInTree.getTnEntity().getOrder());
+                if (c.getContentType()==null) c.setContentType(myInTree.getTnEntity().getContentType());
+                if (c.getDescn()==null) c.setDescn(myInTree.getTnEntity().getDescn());
                 TreeNode<Channel> nd=new TreeNode<Channel>(c);
+
                 myInTree.getParent().removeChild(myInTree.getId());
                 parentNode.addChild(nd);
             } else {
@@ -246,7 +254,7 @@ public class ChannelService {
                 if (myInTree.getTnEntity().getIsValidate()!=c.getIsValidate()) myInTree.getTnEntity().setIsValidate(c.getIsValidate());
                 if (myInTree.getTnEntity().getOrder()!=c.getOrder()) myInTree.getTnEntity().setOrder(c.getOrder());
                 if (c.getContentType()!=null&&!c.getContentType().equals(myInTree.getTnEntity().getContentType())) myInTree.getTnEntity().setContentType(c.getContentType());
-                if (c.getDescn()!=null&&c.getDescn().equals(myInTree.getTnEntity().getDescn())) myInTree.getTnEntity().setDescn(c.getDescn());
+                if (c.getDescn()!=null&&!c.getDescn().equals(myInTree.getTnEntity().getDescn())) myInTree.getTnEntity().setDescn(c.getDescn());
             }
             return 1;
         } catch(Exception e) {
@@ -272,11 +280,11 @@ public class ChannelService {
         String inStr="";
         String inStr2="";
         for (TreeNodeBean _c:cl) {
-            inStr+="or id='"+_c.getId()+"'";
-            inStr2+="or channelId='"+_c.getId()+"')";
+            inStr+=" or id='"+_c.getId()+"'";
+            inStr2+=" or channelId='"+_c.getId()+"')";
         }
-        inStr=inStr.substring(3);
-        inStr2=inStr2.substring(3);
+        inStr=inStr.substring(4);
+        inStr2=inStr2.substring(4);
         int count=channelAssetDao.getCount("existRefChannel", inStr2);
         if (count>0&&!force) return "3::由于有关联信息存在，不能删除";
         else {

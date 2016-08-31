@@ -73,12 +73,7 @@ public class BroadcastService {
             drrPo.setResTableName("wt_Broadcast");
             drrPo.setResId(bPo.getId());
             drrPo.setDictMid(tempDictM.getId());
-            drrPo.setDictMName(tempDictM.getDmName());
             drrPo.setDictDid(tempIds);
-            drrPo.setTitle(tempNode.getNodeName());
-            drrPo.setBCode(tempNode.getTnEntity().getBCode());
-            drrPo.setPathNames(tempNode.getTreePathName("-", 0));
-            drrPo.setPathIds(tempNode.getTreePathId("-", 0));
             dictRefResDao.insert(drrPo);
         }
         //字典--分类
@@ -94,12 +89,7 @@ public class BroadcastService {
                 drrPo.setResTableName("wt_Broadcast");
                 drrPo.setResId(bPo.getId());
                 drrPo.setDictMid(tempDictM.getId());
-                drrPo.setDictMName(tempDictM.getDmName());
                 drrPo.setDictDid(ids[i]);
-                drrPo.setTitle(tempNode.getNodeName());
-                drrPo.setBCode(tempNode.getTnEntity().getBCode());
-                drrPo.setPathNames(tempNode.getTreePathName("-", 0));
-                drrPo.setPathIds(tempNode.getTreePathId("-", 0));
                 dictRefResDao.insert(drrPo);
             }
         }
@@ -153,12 +143,7 @@ public class BroadcastService {
             drrPo.setResTableName("wt_Broadcast");
             drrPo.setResId(bPo.getId());
             drrPo.setDictMid(tempDictM.getId());
-            drrPo.setDictMName(tempDictM.getDmName());
             drrPo.setDictDid(tempIds);
-            drrPo.setTitle(tempNode.getNodeName());
-            drrPo.setBCode(tempNode.getTnEntity().getBCode());
-            drrPo.setPathNames(tempNode.getTreePathName("-", 0));
-            drrPo.setPathIds(tempNode.getTreePathId("-", 0));
             dictRefResDao.insert(drrPo);
         }
         //字典--分类
@@ -174,12 +159,7 @@ public class BroadcastService {
                 drrPo.setResTableName("wt_Broadcast");
                 drrPo.setResId(bPo.getId());
                 drrPo.setDictMid(tempDictM.getId());
-                drrPo.setDictMName(tempDictM.getDmName());
                 drrPo.setDictDid(ids[i]);
-                drrPo.setTitle(tempNode.getNodeName());
-                drrPo.setBCode(tempNode.getTnEntity().getBCode());
-                drrPo.setPathNames(tempNode.getTreePathName("-", 0));
-                drrPo.setPathIds(tempNode.getTreePathId("-", 0));
                 dictRefResDao.insert(drrPo);
             }
         }
