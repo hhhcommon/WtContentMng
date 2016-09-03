@@ -32,6 +32,7 @@ import com.woting.exceptionC.Wtcm1000CException;
 
 @Service
 public class DictService {
+    private static final Object updateLock=new Object();
     @Resource(name="defaultDAO")
     private MybatisDAO<DictMasterPo> dictMDao;
     @Resource(name="defaultDAO")
@@ -91,13 +92,13 @@ public class DictService {
                 param.put("ownerId", "cm");
                 param.put("ownerType", "100");
                 int i=1;
-                Page<DictDetailPo> ddPage=dictDDao.pageQuery("getListByOnwerDemo", param, i++, 10000);
+                Page<DictDetailPo> ddPage=dictDDao.pageQuery("getListByOnwer", param, i++, 10000);
                 List<DictDetailPo> ddpol=new ArrayList<DictDetailPo>();
                 boolean hasDD=!ddPage.getResult().isEmpty();
                 //分页处理
                 while (hasDD) {
                     ddpol.addAll(ddPage.getResult());
-                    ddPage=dictDDao.pageQuery("getListByOnwerDemo", param, i++,10000);
+                    ddPage=dictDDao.pageQuery("getListByOnwer", param, i++,10000);
                     hasDD=!ddPage.getResult().isEmpty();
                 }
                 if (ddpol==null||ddpol.size()==0) return _cd;
@@ -220,69 +221,62 @@ public class DictService {
     public int updateDictDetail(DictDetail dd) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
-        DictModel dm=cd.dictModelMap.get(dd.getMId());
+        synchronized (updateLock) {
+            DictModel dm=cd.dictModelMap.get(dd.getMId());
 
-        if (dm==null||dm.dictTree==null) return 2;
-        TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
-        if (myInTree==null) return 3;
+            if (dm==null||dm.dictTree==null) return 2;
+            TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
+            if (myInTree==null) return 3;
 
-        if ((dd.getNodeName()==null||(dd.getNodeName()!=null&&dd.getNodeName().equals(myInTree.getTnEntity().getNodeName())))
-          &&myInTree.getTnEntity().getOrder()==dd.getOrder()
-          &&(dd.getAliasName()==null||(dd.getAliasName()!=null&&dd.getAliasName().equals(myInTree.getTnEntity().getAliasName())))
-          &&myInTree.getTnEntity().getIsValidate()==dd.getIsValidate()
-          &&(dd.getBCode()==null||(dd.getBCode()!=null&&dd.getBCode().equals(myInTree.getTnEntity().getBCode())))
-          &&(dd.getDesc()==null||(dd.getDesc()!=null&&dd.getDesc().equals(myInTree.getTnEntity().getDesc())))
-          &&(dd.getParentId()==null||(dd.getParentId()!=null&&dd.getParentId().equals(myInTree.getTnEntity().getParentId())))
-          ) {
-          return 6;
-        }
-
-        if (dm.getDdByBCode(dd.getBCode())!=null&&!(myInTree.getTnEntity().getBCode().equals(dd.getBCode()))) return 5;
-
-        boolean changeFather=false;
-        TreeNode<DictDetail> parentNode=dm.dictTree;
-        if (!StringUtils.isNullOrEmptyOrSpace(dd.getParentId())) {//父节点为空
-            //看看是否要更换所属父节点
-            changeFather=!myInTree.getTnEntity().getParentId().equals(dd.getParentId());
-            parentNode=(TreeNode<DictDetail>)parentNode.findNode(dd.getParentId());
-        } else {
-            parentNode=(TreeNode<DictDetail>)myInTree.getParent();
-        }
-        String compareName=StringUtils.isNullOrEmptyOrSpace(dd.getNodeName())?myInTree.getNodeName():dd.getNodeName();
-        if (parentNode!=null&&!parentNode.isLeaf()) {
-            List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
-            for (TreeNode<? extends TreeNodeBean> cn: cl) {
-                if (cn.getNodeName().equals(compareName)&&!cn.getId().equals(dd.getId())) return 4;
+            if ((dd.getNodeName()==null||(dd.getNodeName()!=null&&dd.getNodeName().equals(myInTree.getTnEntity().getNodeName())))
+              &&myInTree.getTnEntity().getOrder()==dd.getOrder()
+              &&(dd.getAliasName()==null||(dd.getAliasName()!=null&&dd.getAliasName().equals(myInTree.getTnEntity().getAliasName())))
+              &&myInTree.getTnEntity().getIsValidate()==dd.getIsValidate()
+              &&(dd.getBCode()==null||(dd.getBCode()!=null&&dd.getBCode().equals(myInTree.getTnEntity().getBCode())))
+              &&(dd.getDesc()==null||(dd.getDesc()!=null&&dd.getDesc().equals(myInTree.getTnEntity().getDesc())))
+              &&(dd.getParentId()==null||(dd.getParentId()!=null&&dd.getParentId().equals(myInTree.getTnEntity().getParentId())))
+              ) {
+              return 6;
             }
-        }
 
-        //修改字典项
-        try {
-            //数据库
-            dictDDao.update(dd.convert2Po());
-            //缓存
-            if (changeFather) {
-                if (dd.getNodeName()==null) dd.setNodeName(myInTree.getTnEntity().getNodeName());
-                if (dd.getOrder()==0) dd.setOrder(myInTree.getTnEntity().getOrder());
-                if (dd.getAliasName()==null) dd.setAliasName(myInTree.getTnEntity().getAliasName());
-                if (dd.getIsValidate()==0) dd.setIsValidate(myInTree.getTnEntity().getIsValidate());
-                if (dd.getBCode()==null) dd.setBCode(myInTree.getTnEntity().getBCode());
-                if (dd.getDesc()==null) dd.setDesc(myInTree.getTnEntity().getDesc());
-                TreeNode<DictDetail> nd=new TreeNode<DictDetail>(dd);
+            if (dm.getDdByBCode(dd.getBCode())!=null&&!(myInTree.getTnEntity().getBCode().equals(dd.getBCode()))) return 5;
 
-                myInTree.getParent().removeChild(myInTree.getId());
-                parentNode.addChild(nd);
+            boolean changeFather=false;
+            TreeNode<DictDetail> parentNode=dm.dictTree;
+            if (!StringUtils.isNullOrEmptyOrSpace(dd.getParentId())) {//父节点不为空
+                //看看是否要更换所属父节点
+                if (!dd.getParentId().equals("0")) parentNode=(TreeNode<DictDetail>)parentNode.findNode(dd.getParentId());
+                if (parentNode!=null) changeFather=!myInTree.getTnEntity().getParentId().equals(dd.getParentId());
             } else {
+                parentNode=(TreeNode<DictDetail>)myInTree.getParent();
+            }
+            if (!StringUtils.isNullOrEmptyOrSpace(dd.getNodeName())) {
+                if (parentNode!=null&&!parentNode.isLeaf()) {
+                    List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
+                    for (TreeNode<? extends TreeNodeBean> cn: cl) {
+                        if (cn.getNodeName().equals(dd.getNodeName())&&!cn.getId().equals(dd.getId())) return 4;
+                    }
+                }
+            }
+            //修改字典项
+            try {
+                //数据库
+                dictDDao.update(dd.convert2Po());
+                //缓存
                 if (dd.getNodeName()!=null&&!dd.getNodeName().equals(myInTree.getTnEntity().getNodeName()))  myInTree.getTnEntity().setNodeName(dd.getNodeName());
                 if (myInTree.getTnEntity().getOrder()!=dd.getOrder()) myInTree.getTnEntity().setOrder(dd.getOrder());
                 if (dd.getAliasName()!=null&&!dd.getAliasName().equals(myInTree.getTnEntity().getAliasName())) myInTree.getTnEntity().setAliasName(dd.getAliasName());
                 if (myInTree.getTnEntity().getIsValidate()!=dd.getIsValidate()) myInTree.getTnEntity().setIsValidate(dd.getIsValidate());
                 if (dd.getBCode()!=null&&!dd.getBCode().equals(myInTree.getTnEntity().getBCode())) myInTree.getTnEntity().setBCode(dd.getBCode());
                 if (dd.getDesc()!=null&&!dd.getDesc().equals(myInTree.getTnEntity().getDesc())) myInTree.getTnEntity().setDesc(dd.getDesc());
+                if (changeFather) {
+                    TreeNode<? extends TreeNodeBean> delNode=myInTree.getParent().removeChild(myInTree.getId());
+                    parentNode.addChild(delNode);
+                }
+                return 1;
+            } catch(Exception e) {
+                throw new Wtcm0301CException("新增字典项", e);
             }
-            return 1;
-        } catch(Exception e) {
-            throw new Wtcm0301CException("新增字典项", e);
         }
     }
 
@@ -295,31 +289,33 @@ public class DictService {
     public String delDictDetail(DictDetail dd, boolean force) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
-        DictModel dm=cd.dictModelMap.get(dd.getMId());
-        if (dm==null||dm.dictTree==null) return "2";
-        TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
-        if (myInTree==null) return "2";
+        synchronized (updateLock) {
+            DictModel dm=cd.dictModelMap.get(dd.getMId());
+            if (dm==null||dm.dictTree==null) return "2";
+            TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
+            if (myInTree==null) return "2";
 
-        List<TreeNodeBean> ddl=myInTree.getAllBeansList();
-        //检查是否有相关信息，注意是递归查找
-        String inStr="";
-        String inStr2="";
-        for (TreeNodeBean _dd:ddl) {
-            inStr+=" or id='"+_dd.getId()+"'";
-            inStr2+=" or (dictMid='"+dd.getMId()+"' and dictDid='"+_dd.getId()+"')";
-        }
-        inStr=inStr.substring(4);
-        inStr2=inStr2.substring(4);
-        int count=dictRefDao.getCount("existRefDict", inStr2);
-        if (count>0&&!force) return "3::由于有关联信息存在，不能删除";
-        else {
-            //删除关联
-            dictRefDao.execute("delByDicts", inStr2);
-            //删除本表
-            dictDDao.delete("delByIds", inStr);
-            //处理缓存
-            myInTree.getParent().removeChild(myInTree.getId());
-            return "1";
+            List<TreeNodeBean> ddl=myInTree.getAllBeansList();
+            //检查是否有相关信息，注意是递归查找
+            String inStr="";
+            String inStr2="";
+            for (TreeNodeBean _dd:ddl) {
+                inStr+=" or id='"+_dd.getId()+"'";
+                inStr2+=" or (dictMid='"+dd.getMId()+"' and dictDid='"+_dd.getId()+"')";
+            }
+            inStr=inStr.substring(4);
+            inStr2=inStr2.substring(4);
+            int count=dictRefDao.getCount("existRefDict", inStr2);
+            if (count>0&&!force) return "3::由于有关联信息存在，不能删除";
+            else {
+                //删除关联
+                dictRefDao.execute("delByDicts", inStr2);
+                //删除本表
+                dictDDao.delete("delByIds", inStr);
+                //处理缓存
+                myInTree.getParent().removeChild(myInTree.getId());
+                return "1";
+            }
         }
     }
 }

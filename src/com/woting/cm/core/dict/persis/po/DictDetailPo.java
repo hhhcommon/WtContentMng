@@ -10,7 +10,7 @@ import com.spiritdata.framework.core.model.BaseObject;
  * @author wh
  */
 public class DictDetailPo extends BaseObject {
-    private static final long serialVersionUID = 3494500574282767402L;
+    private static final long serialVersionUID=3494500574282767402L;
 
     private String id; //字典项ID，在TreeNodeBean中对应id
     private String MId; //字典组ID
@@ -32,90 +32,90 @@ public class DictDetailPo extends BaseObject {
         return id;
     }
     public void setId(String id) {
-        this.id = id;
+        this.id=id;
     }
     public String getMId() {
         return MId;
     }
     public void setMId(String mId) {
-        MId = mId;
+        MId=mId;
     }
     public String getParentId() {
         return parentId;
     }
     public void setParentId(String parentId) {
-        this.parentId = parentId;
+        this.parentId=parentId;
     }
     public int getSort() {
         return sort;
     }
     public void setSort(int sort) {
-        this.sort = sort;
+        this.sort=(sort<=0?0:sort);
     }
     public int getIsValidate() {
         return isValidate;
     }
     public void setIsValidate(int isValidate) {
-        this.isValidate = isValidate;
+        this.isValidate=isValidate;
     }
     public String getDdName() {
         return ddName;
     }
     public void setDdName(String ddName) {
-        this.ddName = ddName;
+        this.ddName=ddName;
     }
     public String getNPy() {
         return NPy;
     }
     public void setNPy(String nPy) {
-        NPy = nPy;
+        NPy=nPy;
     }
     public String getAliasName() {
         return aliasName;
     }
     public void setAliasName(String aliasName) {
-        this.aliasName = aliasName;
+        this.aliasName=aliasName;
     }
     public String getAnPy() {
         return anPy;
     }
     public void setAnPy(String anPy) {
-        this.anPy = anPy;
+        this.anPy=anPy;
     }
     public String getBCode() {
         return BCode;
     }
     public void setBCode(String bCode) {
-        BCode = bCode;
+        BCode=bCode;
     }
     public int getDType() {
         return DType;
     }
     public void setDType(int dType) {
-        DType = dType;
+        DType=dType;
     }
     public String getDRef() {
         return DRef;
     }
     public void setDRef(String dRef) {
-        DRef = dRef;
+        DRef=dRef;
     }
     public String getDesc() {
         return desc;
     }
     public void setDesc(String desc) {
-        this.desc = desc;
+        this.desc=desc;
     }
     public Timestamp getCTime() {
         return CTime;
     }
     public void setCTime(Timestamp cTime) {
-        CTime = cTime;
+        CTime=cTime;
     }
     public Timestamp getLmTime() {
         return lmTime;
     }
     public void setLmTime(Timestamp lmTime) {
-        this.lmTime = lmTime;
+        this.lmTime=lmTime;
     }
 }

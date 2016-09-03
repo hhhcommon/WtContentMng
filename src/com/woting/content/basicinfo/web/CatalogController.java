@@ -248,7 +248,7 @@ public class CatalogController {
                 return map;
             }
             try {
-                int validate=(data.get("Validate")==null?1:Integer.parseInt(data.get("Validate")+""));
+                int validate=(data.get("Validate")==null?0:Integer.parseInt(data.get("Validate")+""));
                 dd.setIsValidate(validate>2&&validate<1?1:validate); //默认是生效的
             } catch (Exception e) {
                 map.put("ReturnType", "0000");
