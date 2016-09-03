@@ -283,12 +283,24 @@ function modCatalog() {
     success: function(resultData){
       alert(allFields(resultData));
       if(resultData.ReturnType=="1001"){
-        if(modInfo.Data.Name!=treeNode.name) {
+        if(modInfo.Data.Name!=treeNode.name) {//名字改变
           var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
           treeNode.attributes.pathName=modPathName+"/"+$("#nodeNames").val();
           treeNode.name=$("#nodeNames").val();
         }
-        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) treeNode.attributes.parentId=$("#nodeParent").val();
+        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//父节点改变
+          treeNode.attributes.parentId=$("#nodeParent").val();
+          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
+          if(!treeNode.children){//选中的分类下面无其他分类
+            zTreeObj.moveNode(targetNode,treeNode,"inner");
+          }else{//选中的分类下面含有其他分类
+            for(var i=0;i<treeNode.children.length;i++){
+              zTreeObj.moveNode(treeNode,treeNode.children[i],"inner");
+            }
+            zTreeObj.moveNode(targetNode,treeNode,"inner");
+          }
+        }
+        //if(modInfo.Data.ParentId!=treeNode.attributes.parentId) treeNode.attributes.parentId=$("#nodeParent").val();
         if(modInfo.Data.Sort!=treeNode.attributes.sort) treeNode.attributes.sort=$("#sort").val();
         if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
         if(modInfo.Data.Descn!=treeNode.attributes.desc) treeNode.attributes.desc=$("#nodeDescn").val();
