@@ -301,8 +301,16 @@ function modCatalog() {
             zTreeObj.moveNode(targetNode,treeNode,"inner");
           }
         }
+        if(modInfo.Data.Sort!=treeNode.attributes.order) {//顺序改变
+          treeNode.attributes.order=$("#sort").val();
+          var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
+          console.log(sortNode.id);
+          var allSortNodes=zTreeObj.getNodesByParam("parentId",sortNode.id,null);//获取当前选中分类父分类下面的所有子分类
+          console.log(allSortNodes);
+        }
+        
         //if(modInfo.Data.ParentId!=treeNode.attributes.parentId) treeNode.attributes.parentId=$("#nodeParent").val();
-        if(modInfo.Data.Sort!=treeNode.attributes.order) treeNode.attributes.order=$("#sort").val();
+        //if(modInfo.Data.Sort!=treeNode.attributes.order) treeNode.attributes.order=$("#sort").val();
         if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
         if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
