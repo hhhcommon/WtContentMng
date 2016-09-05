@@ -83,11 +83,6 @@ h4{
 .modal-body tr td input{
   width:380px;
 }
-#nodePath{
-  top: 23px;
-  width: 380px;
-  position: absolute;
-}
 /*遮罩层样式*/
 #shade{
   width: 100%;

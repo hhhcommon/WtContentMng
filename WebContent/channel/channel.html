@@ -61,8 +61,8 @@
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
-            <span style="position:absolute;top:54px;left:320px;">分类属于：</span>
-            <span id="nodePath" style="display: inline-block;top:54px;left:294px;"></span>
+            <span style="position:absolute;top:76px;margin-left:346px;">分类属于：</span>
+            <span id="nodePath" style="width:162px;height:20px;display: inline-block;margin-top:0px;margin-left:438px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
           </div>
           <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
             <form id="verOperForm" enctype ="multipart/form-data">
@@ -139,7 +139,7 @@ $(function() {
     cleanDialog();
     oPeType=1;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
+    $("#addCata").find(".modal-header>h4").html("添加栏目");
     $("#addCata").find("tr:eq(2)").css({"display":"none"});
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
@@ -148,7 +148,7 @@ $(function() {
   $("#mod").on("click",function(){
     oPeType=2;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
+    $("#addCata").find(".modal-header>h4").html("修改栏目");
     $("#addCata").find("tr:eq(2)").show();
     $("#nodeNames").val(treeNode.name);
     $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
@@ -212,12 +212,13 @@ function getRootNode() {
   treeNode=nodes[0]; //当前选中的节点
   alert("当前选中节点的id："+treeNode.id);
   nodePathStr=treeNode.attributes.pathName+"";
-  if(nodePathStr.indexOf("/")>=0){
-    rootNode=nodePathStr.split("/")[0];
-  }else{
-    rootNode=treeNode.attributes.pathName;
-  }
-  $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+//if(nodePathStr.indexOf("/")>=0){
+//  rootNode=nodePathStr.split("/")[0];
+//}else{
+//  rootNode=treeNode.attributes.pathName;
+//}
+  var modPathNames=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
+  $("#addCata").find(".modal-header>span:eq(1)").html(modPathNames);
 }
 
 /*增加新分类的方法*/
@@ -284,8 +285,8 @@ function modCatalog() {
       alert(allFields(resultData));
       if(resultData.ReturnType=="1001"){
         if(modInfo.Data.Name!=treeNode.name) {//名字改变
-          var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
-          treeNode.attributes.pathName=modPathName+"/"+$("#nodeNames").val();
+          var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/')-1);
+          treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
         }
         if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//父节点改变
