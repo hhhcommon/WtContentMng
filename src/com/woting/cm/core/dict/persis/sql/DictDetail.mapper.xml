@@ -39,7 +39,7 @@
         <if test="id!=null">and id=#{id,jdbcType=VARCHAR}</if>
         <if test="MId!=null">and mId=#{MId,jdbcType=VARCHAR}</if>
         <if test="parentId!=null">and pId=#{parentId,jdbcType=VARCHAR}</if>
-        <if test="sort!=null and sort!=0">and sort=#{sort,jdbcType=INTEGER}</if>
+        <if test="sort!=null">and sort=#{sort,jdbcType=INTEGER}</if>
         <if test="isValidate!=null and isValidate!=0">and isValidate=#{isValidate,jdbcType=INTEGER}</if>
         <if test="ddName!=null">and ddName=#{ddName,jdbcType=VARCHAR}</if>
         <if test="NPy!=null">and nPy=#{NPy,jdbcType=VARCHAR}</if>
@@ -59,7 +59,7 @@
       <if test="id!=null">and a.id=#{id,jdbcType=VARCHAR}</if>
       <if test="MId!=null">and a.mId=#{MId,jdbcType=VARCHAR}</if>
       <if test="parentId!=null">and a.pId=#{parentId,jdbcType=VARCHAR}</if>
-      <if test="sort!=null and sort!=0">and a.sort=#{sort,jdbcType=INTEGER}</if>
+      <if test="sort!=null">and a.sort=#{sort,jdbcType=INTEGER}</if>
       <if test="isValidate!=null and isValidate!=0">and a.isValidate=#{isValidate,jdbcType=INTEGER}</if>
       <if test="ddName!=null">and a.ddName=#{ddName,jdbcType=VARCHAR}</if>
       <if test="NPy!=null">and a.nPy=#{NPy,jdbcType=VARCHAR}</if>
@@ -89,14 +89,7 @@
   <!-- 获得列表：按所有者 -->
   <select id="getListByOnwer" resultMap="baseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List_A"/> from plat_DictD a, plat_DictM b
-    where a.mId=b.id and b.ownerId=#{ownerId,jdbcType=VARCHAR} and b.ownerType=#{ownerType,jdbcType=INTEGER}
-    order by a.mId, a.pid, a.sort desc
-  </select>
-
-  <!-- 获得列表：按所有者 -->
-  <select id="getListByOnwerDemo" resultMap="baseResultMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List_A"/> from plat_DictD a, plat_DictM b
-    where a.mId=b.id and b.ownerId=#{ownerId,jdbcType=VARCHAR} and b.ownerType=#{ownerType,jdbcType=INTEGER} and (b.id!=6)
+    where a.mId=b.id and b.ownerId=#{ownerId,jdbcType=VARCHAR} and b.ownerType=#{ownerType,jdbcType=INTEGER} and (b.id=1)
     order by a.mId, a.pid, a.sort desc
   </select>
 
@@ -154,7 +147,7 @@
     <set>
       <if test="MId!=null">mId=#{MId,jdbcType=VARCHAR},</if>
       <if test="parentId!=null">pId=#{parentId,jdbcType=VARCHAR},</if>
-      <if test="sort!=null and sort!=0">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
       <if test="isValidate!=null and isValidate!=0">isValidate=#{isValidate,jdbcType=INTEGER},</if>
       <if test="ddName!=null">ddName=#{ddName,jdbcType=VARCHAR},</if>
       <if test="NPy!=null">nPy=#{NPy,jdbcType=VARCHAR},</if>

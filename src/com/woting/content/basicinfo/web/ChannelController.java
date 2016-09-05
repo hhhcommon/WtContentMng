@@ -42,17 +42,17 @@ public class ChannelController {
     public Map<String,Object> getChannelTree4View(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
         try {
-            //0-获取参数
             //权限管理，目前不做
+            //0-获取参数
+            String channelId=null;
+            String treeType="ZTREE";
+            int sizeLimit=0;
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
-            if (m==null||m.size()==0) {
-                map.put("ReturnType", "0000");
-                map.put("Message", "参数解释错误");
-                return map;
+            if (m!=null&&m.size()>0) {
+                channelId=(m.get("ChannelId")==null?null:m.get("ChannelId")+"");
+                treeType=(m.get("TreeViewType")==null?"ZTREE":(m.get("TreeViewType")+"").toUpperCase());
+                sizeLimit=(m.get("SizeLimit")==null?0:Integer.parseInt(m.get("SizeLimit")+""));
             }
-            String channelId=(m.get("ChannelId")==null?null:m.get("ChannelId")+"");
-            String treeType=(m.get("TreeViewType")==null?"ZTREE":(m.get("TreeViewType")+"").toUpperCase());
-            int sizeLimit=(m.get("SizeLimit")==null?0:Integer.parseInt(m.get("SizeLimit")+""));
 
             if (!(treeType.equals("ZTREE")||treeType.equals("EASYUITREE"))) {
                 map.put("ReturnType", "1003");
@@ -133,7 +133,7 @@ public class ChannelController {
             Map<String, Object> owner=(data.get("Owner")==null?null:(Map)data.get("Owner"));
             if (owner==null||owner.get("OwnerType")==null||owner.get("OwnerId")==null) {
                 map.put("ReturnType", "0000");
-                map.put("Message", "无法获取需要的参数[owner]");
+                map.put("Message", "无法获取需要的参数[Owner]");
                 return map;
             }
             try {
@@ -227,7 +227,7 @@ public class ChannelController {
                 }
             }
             try {
-                int validate=(data.get("Validate")==null?1:Integer.parseInt(data.get("Validate")+""));
+                int validate=(data.get("Validate")==null?0:Integer.parseInt(data.get("Validate")+""));
                 c.setIsValidate(validate>2&&validate<1?1:validate); //默认是生效的
             } catch (Exception e) {
                 map.put("ReturnType", "0000");
@@ -243,7 +243,7 @@ public class ChannelController {
                 map.put("ReturnType", "1001");
             } else if (ret==2) {
                 map.put("ReturnType", "1002");
-                map.put("Message", "未找到分类");
+                map.put("Message", "未找到栏目");
             } else if (ret==3) {
                 map.put("ReturnType", "1002");
                 map.put("Message", "未找到对应分类项");
