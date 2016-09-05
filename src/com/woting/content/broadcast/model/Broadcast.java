@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.spiritdata.framework.core.model.ModelSwapPo;
-import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
-import com.woting.content.broadcast.persistence.pojo.FrequncePo;
-import com.woting.content.broadcast.persistence.pojo.LiveFlowPo;
+import com.woting.content.broadcast.persis.pojo.BroadcastPo;
+import com.woting.content.broadcast.persis.pojo.FrequncePo;
+import com.woting.content.broadcast.persis.pojo.LiveFlowPo;
 
 public class Broadcast extends BroadcastPo implements Serializable, ModelSwapPo {
     private static final long serialVersionUID = 5200888821223517280L;

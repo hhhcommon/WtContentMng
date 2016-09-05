@@ -22,9 +22,9 @@ import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
-import com.woting.content.broadcast.persistence.pojo.BroadcastPo;
-import com.woting.content.broadcast.persistence.pojo.FrequncePo;
-import com.woting.content.broadcast.persistence.pojo.LiveFlowPo;
+import com.woting.content.broadcast.persis.pojo.BroadcastPo;
+import com.woting.content.broadcast.persis.pojo.FrequncePo;
+import com.woting.content.broadcast.persis.pojo.LiveFlowPo;
 import com.woting.content.publish.utils.CacheUtils;
 
 public class BroadcastService {
@@ -275,7 +275,7 @@ public class BroadcastService {
     @SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getBroadcastListInfo(int page, int pagesize) {
     	List<Map<String, Object>> bclist = new ArrayList<Map<String,Object>>();
-    	String bcliststr = CacheUtils.readFile("E:/wanjianceshi/FMInfo.txt");//"/opt/tomcat8_CM/webapps/CM/mweb/broadcast/FMInfo.txt"
+    	String bcliststr = CacheUtils.readFile("/opt/tomcat8_CM/webapps/CM/mweb/broadcast/FMInfo.txt");
     	List<Map<String, Object>> l = (List<Map<String, Object>>) JsonUtils.jsonToObj(bcliststr, List.class);
     	
     	if(page==0&&pagesize==0){

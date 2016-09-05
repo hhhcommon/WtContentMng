@@ -137,7 +137,7 @@ public class MediaService {
     
     public List<MediaAssetPo> getMaListBySmaId(String smaid) {
     	List<MediaAssetPo> malist = mediaAssetDao.queryForList("getMaInfoBySmaId", smaid);
-		return null;
+		return malist;
     }
     
     public List<SeqMaRefPo> getSmaListBySid(String sid) {
@@ -179,6 +179,18 @@ public class MediaService {
         param.put("assetIds", assetIds);
     	List<ChannelAssetPo> chapolist = channelAssetDao.queryForList("getListByAssetIds", param);
 		return chapolist;
+    }
+    
+    public List<Map<String, Object>> getCHAByAssetId(String assetIds, String assetType){
+    	Map<String, Object> param=new HashMap<String,Object>();
+    	param.put("assetType", assetType);
+    	param.put("assetIds", assetIds);
+    	List<ChannelAssetPo> chpolist = channelAssetDao.queryForList("getListByAssetIds", param);
+    	List<Map<String, Object>> chlist = new ArrayList<Map<String,Object>>();
+    	for (ChannelAssetPo chpo : chpolist) {
+			chlist.add(chpo.toHashMap());
+		}
+		return chlist;
     }
     
     //根据资源id得到资源字典项对应关系
