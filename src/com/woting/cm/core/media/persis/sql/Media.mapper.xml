@@ -17,7 +17,7 @@
     <result  column="keyWords"       property="keyWords"       jdbcType="VARCHAR"/>
     <result  column="langDid"        property="langDid"        jdbcType="VARCHAR"/>
     <result  column="language"       property="language"       jdbcType="VARCHAR"/>
-    <result  column="timeLong"       property="timeLong"       jdbcType="LONG"/>
+    <result  column="timeLong"       property="timeLong"       jdbcType="BIGINT"/>
     <result  column="descn"          property="descn"          jdbcType="VARCHAR"/>
     <result  column="pubCount"       property="pubCount"       jdbcType="INTEGER"/>
     <result  column="cTime"          property="CTime"          jdbcType="TIMESTAMP"/>
