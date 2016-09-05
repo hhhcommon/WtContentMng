@@ -19,7 +19,7 @@ import com.woting.content.manage.media.service.MediaContentService;
 public class MediaContentController {
 	@Resource
 	private MediaContentService mediaContentService;
-	private static String ip_address = "123.56.254.75";
+	private static String ip_address = "182.92.175.134";
 
 	/**
 	 * 得到主播单体节目列表
