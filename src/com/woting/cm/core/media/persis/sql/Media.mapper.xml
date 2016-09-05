@@ -68,7 +68,7 @@
       <if test="keyWords!=null">#{keyWords,jdbcType=VARCHAR},</if>
       <if test="langDid!=null">#{langDid,jdbcType=VARCHAR},</if>
       <if test="language!=null">#{language,jdbcType=VARCHAR},</if>
-      <if test="timeLong!=null and timeLong>0">#{timeLong,jdbcType=VARCHAR},</if>
+      <if test="timeLong!=null and timeLong>0">#{timeLong,jdbcType=BIGINT},</if>
       <if test="descn!=null">#{descn,jdbcType=VARCHAR},</if>
       <if test="pubCount!=null and pubCount>0">#{pubCount,jdbcType=VARCHAR},</if>
     </trim>

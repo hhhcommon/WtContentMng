@@ -33,7 +33,7 @@
         <if test="ownerType!=null"> and ownerType=#{ownerType,jdbcType=INTEGER}</if>
         <if test="dmName!=null"> and dmName=#{dmName,jdbcType=VARCHAR}</if>
         <if test="NPy!=null"> and nPy=#{NPy,jdbcType=VARCHAR}</if>
-        <if test="sort!=null and sort!=0"> and sort=#{sort,jdbcType=INTEGER}</if>
+        <if test="sort!=null"> and sort=#{sort,jdbcType=INTEGER}</if>
         <if test="isValidate!=null and isValidate!=0"> and isValidate=#{isValidate,jdbcType=INTEGER}</if>
         <if test="MType!=null and MType!=0"> and mType=#{MType,jdbcType=INTEGER}</if>
         <if test="MRef!=null"> and mRef=#{MRef,jdbcType=VARCHAR}</if>
@@ -75,7 +75,7 @@
       <if test="ownerType!=null and ownerType!=0">ownerType,</if>
       <if test="dmName!=null">dmName,</if>
       <if test="NPy!=null">nPy,</if>
-      <if test="sort!=null and sort!=0">sort,</if>
+      <if test="sort!=null">sort,</if>
       <if test="isValidate!=null and isValidate!=0">isValidate,</if>
       <if test="MType!=null and MType!=0">mType,</if>
       <if test="MRef!=null">mRef,</if>
@@ -87,7 +87,7 @@
       <if test="ownerType!=null and ownerType!=0">#{ownerType,jdbcType=VARCHAR},</if>
       <if test="dmName!=null">#{dmName,jdbcType=VARCHAR},</if>
       <if test="NPy!=null">#{NPy,jdbcType=VARCHAR},</if>
-      <if test="sort!=null and sort!=0">#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">#{sort,jdbcType=INTEGER},</if>
       <if test="isValidate!=null and isValidate!=0">#{isValidate,jdbcType=INTEGER},</if>
       <if test="MType!=null and MType!=0">#{MType,jdbcType=INTEGER},</if>
       <if test="MRef!=null">#{MRef,jdbcType=VARCHAR},</if>
@@ -119,7 +119,7 @@
       <if test="ownerType!=null and ownerType!=0">ownerType=#{ownerType,jdbcType=VARCHAR},</if>
       <if test="dmName!=null">dmName=#{dmName,jdbcType=VARCHAR},</if>
       <if test="NPy!=null">nPy=#{NPy,jdbcType=VARCHAR},</if>
-      <if test="sort!=null and sort!=0">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
       <if test="isValidate!=null and isValidate!=0">isValidate=#{isValidate,jdbcType=INTEGER},</if>
       <if test="MType!=null and MType!=0">mType=#{MType,jdbcType=INTEGER},</if>
       <if test="MRef!=null">mRef=#{MRef,jdbcType=VARCHAR},</if>

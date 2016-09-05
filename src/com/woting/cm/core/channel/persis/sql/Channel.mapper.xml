@@ -39,7 +39,7 @@
         <if test="ownerId!=null">and ownerId=#{ownerId,jdbcType=VARCHAR}</if>
         <if test="channelName!=null">and channelName=#{channelName,jdbcType=VARCHAR}</if>
         <if test="NPy!=null">and nPy=#{NPy,jdbcType=VARCHAR}</if>
-        <if test="sort!=null and sort!=0">and sort=#{sort,jdbcType=INTEGER}</if>
+        <if test="sort!=null">and sort=#{sort,jdbcType=INTEGER}</if>
         <if test="isValidate!=null and isValidate!=0">and isValidate=#{isValidate,jdbcType=INTEGER}</if>
         <if test="contentType!=null">and contentType=#{contentType,jdbcType=VARCHAR}</if>
         <if test="channelImg!=null">and channelImg=#{channelImg,jdbcType=VARCHAR}</if>
@@ -57,7 +57,7 @@
         <if test="ownerId!=null">and a.ownerId=#{ownerId,jdbcType=VARCHAR}</if>
         <if test="channelName!=null">and a.channelName=#{channelName,jdbcType=VARCHAR}</if>
         <if test="NPy!=null">and a.nPy=#{NPy,jdbcType=VARCHAR}</if>
-        <if test="sort!=null and sort!=0">and a.sort=#{sort,jdbcType=INTEGER}</if>
+        <if test="sort!=null">and a.sort=#{sort,jdbcType=INTEGER}</if>
         <if test="isValidate!=null and isValidate!=0">and a.isValidate=#{isValidate,jdbcType=INTEGER}</if>
         <if test="contentType!=null">and a.contentType=#{contentType,jdbcType=VARCHAR}</if>
         <if test="channelImg!=null">and a.channelImg=#{channelImg,jdbcType=VARCHAR}</if>
@@ -95,7 +95,7 @@
       <if test="ownerId!=null">ownerId,</if>
       <if test="channelName!=null">channelName,</if>
       <if test="NPy!=null">nPy,</if>
-      <if test="sort!=null and sort!=0">sort,</if>
+      <if test="sort!=null">sort,</if>
       <if test="isValidate!=null and isValidate!=0">isValidate,</if>
       <if test="contentType!=null">contentType,</if>
       <if test="channelImg!=null and DType!=0">channelImg,</if>
@@ -108,7 +108,7 @@
       <if test="ownerId!=null">#{ownerId,jdbcType=VARCHAR},</if>
       <if test="channelName!=null">#{channelName,jdbcType=VARCHAR},</if>
       <if test="NPy!=null">#{NPy,jdbcType=VARCHAR},</if>
-      <if test="sort!=null and sort!=0">#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">#{sort,jdbcType=INTEGER},</if>
       <if test="isValidate!=null and isValidate!=0">#{isValidate,jdbcType=INTEGER},</if>
       <if test="contentType!=null">#{contentType,jdbcType=VARCHAR},</if>
       <if test="channelImg!=null">#{channelImg,jdbcType=VARCHAR},</if>
@@ -125,11 +125,11 @@
       <if test="ownerId!=null">ownerId=#{ownerId,jdbcType=VARCHAR},</if>
       <if test="channelName!=null">channelName=#{channelName,jdbcType=VARCHAR},</if>
       <if test="NPy!=null">nPy=#{NPy,jdbcType=VARCHAR},</if>
-      <if test="sort!=null and sort!=0">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
       <if test="isValidate!=null and isValidate!=0">isValidate=#{isValidate,jdbcType=INTEGER},</if>
       <if test="contentType!=null">contentType=#{contentType,jdbcType=VARCHAR},</if>
       <if test="channelImg!=null">channelImg=#{channelImg,jdbcType=VARCHAR},</if>
-      <if test="desc!=null">descn=#{desc,jdbcType=VARCHAR},</if>
+      <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
       <if test="CTime!=null">cTime=#{CTime,jdbcType=TIMESTAMP},</if>
     </set>
     where id=#{id,jdbcType=VARCHAR}

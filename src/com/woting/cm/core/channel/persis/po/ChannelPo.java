@@ -66,7 +66,7 @@ public class ChannelPo extends BaseObject {
         return sort;
     }
     public void setSort(int sort) {
-        this.sort=sort;
+        this.sort=(sort<=0?0:sort);
     }
     public String getContentType() {
         return contentType;

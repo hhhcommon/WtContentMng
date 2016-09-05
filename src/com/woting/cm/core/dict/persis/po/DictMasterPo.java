@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import com.spiritdata.framework.core.model.BaseObject;
 
 public class DictMasterPo extends BaseObject {
-    private static final long serialVersionUID = -5935730569262158194L;
+    private static final long serialVersionUID=-5935730569262158194L;
 
     private String id; //字典组id
     private String ownerId; //所有者标识（可能是用户id，也可能是SessionID）
@@ -23,72 +23,72 @@ public class DictMasterPo extends BaseObject {
         return id;
     }
     public void setId(String id) {
-        this.id = id;
+        this.id=id;
     }
     public String getOwnerId() {
         return ownerId;
     }
     public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
+        this.ownerId=ownerId;
     }
     public int getOwnerType() {
         return ownerType;
     }
     public void setOwnerType(int ownerType) {
-        this.ownerType = ownerType;
+        this.ownerType=ownerType;
     }
     public String getDmName() {
         return dmName;
     }
     public void setDmName(String dmName) {
-        this.dmName = dmName;
+        this.dmName=dmName;
     }
     public String getNPy() {
         return NPy;
     }
     public void setNPy(String nPy) {
-        NPy = nPy;
+        NPy=nPy;
     }
     public int getSort() {
         return sort;
     }
     public void setSort(int sort) {
-        this.sort = sort;
+        this.sort=(sort<0?0:sort);
     }
     public int getIsValidate() {
         return isValidate;
     }
     public void setIsValidate(int isValidate) {
-        this.isValidate = isValidate;
+        this.isValidate=isValidate;
     }
     public String getDesc() {
         return desc;
     }
     public void setDesc(String desc) {
-        this.desc = desc;
+        this.desc=desc;
     }
     public int getMType() {
         return MType;
     }
     public void setMType(int mType) {
-        MType = mType;
+        MType=mType;
     }
     public String getMRef() {
         return MRef;
     }
     public void setMRef(String mRef) {
-        MRef = mRef;
+        MRef=mRef;
     }
     public Timestamp getCTime() {
         return CTime;
     }
     public void setCTime(Timestamp cTime) {
-        CTime = cTime;
+        CTime=cTime;
     }
     public Timestamp getLmTime() {
         return lmTime;
     }
     public void setLmTime(Timestamp lmTime) {
-        this.lmTime = lmTime;
+        this.lmTime=lmTime;
     }
 }

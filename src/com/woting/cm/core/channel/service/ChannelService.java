@@ -26,14 +26,12 @@ import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
 import com.woting.cm.core.common.model.Owner;
-import com.woting.cm.core.dict.mem._CacheDictionary;
-import com.woting.cm.core.dict.model.DictDetail;
-import com.woting.cm.core.dict.model.DictModel;
 import com.woting.exceptionC.Wtcm0201CException;
 import com.woting.exceptionC.Wtcm1000CException;
 
 @Service
 public class ChannelService {
+    private static final Object updateLock=new Object();
     @Resource(name="defaultDAO")
     private MybatisDAO<ChannelPo> channelDao;
     @Resource(name="defaultDAO")
@@ -199,66 +197,60 @@ public class ChannelService {
     public int updateChannel(Channel c) {
         CacheEle<_CacheChannel> cache=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL));
         _CacheChannel cc=cache.getContent();
-        if (cc==null||cc.channelTree==null) return 2;
+        synchronized (updateLock) {
+            if (cc==null||cc.channelTree==null) return 2;
 
-        TreeNode<Channel> myInTree=(TreeNode<Channel>)cc.channelTree.findNode(c.getId());
-        if (myInTree==null) return 2;
+            TreeNode<Channel> myInTree=(TreeNode<Channel>)cc.channelTree.findNode(c.getId());
+            if (myInTree==null) return 2;
 
-        if ((c.getNodeName()==null||(c.getNodeName()!=null&&c.getNodeName().equals(myInTree.getTnEntity().getNodeName())))
-          &&myInTree.getTnEntity().getOrder()==c.getOrder()
-          &&(c.getContentType()==null||(c.getContentType()!=null&&c.getContentType().equals(myInTree.getTnEntity().getContentType())))
-          &&myInTree.getTnEntity().getIsValidate()==c.getIsValidate()
-          &&(c.getOwner()==null||(c.getOwner()!=null&&c.getOwner().equals(myInTree.getTnEntity().getOwner())))
-          &&(c.getDescn()==null||(c.getDescn()!=null&&c.getDescn().equals(myInTree.getTnEntity().getDescn())))
-          &&(c.getParentId()==null||(c.getParentId()!=null&&c.getParentId().equals(myInTree.getTnEntity().getParentId())))
-          ) {
-          return 4;
-        }
-
-        boolean changeFather=false;
-        TreeNode<Channel> parentNode=cc.channelTree;
-        if (!StringUtils.isNullOrEmptyOrSpace(c.getParentId())) {//父节点为空
-            //看看是否要更换所属父节点
-            changeFather=!myInTree.getTnEntity().getParentId().equals(c.getParentId());
-            parentNode=(TreeNode<Channel>)parentNode.findNode(c.getParentId());
-        } else {
-            parentNode=(TreeNode<Channel>)myInTree.getParent();
-        }
-        String compareName=StringUtils.isNullOrEmptyOrSpace(c.getNodeName())?myInTree.getNodeName():c.getNodeName();
-        if (parentNode!=null&&!parentNode.isLeaf()) {
-            List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
-            for (TreeNode<? extends TreeNodeBean> cn: cl) {
-                if (cn.getNodeName().equals(compareName)&&!cn.getId().equals(c.getId())) return 3;
+            if ((c.getNodeName()==null||(c.getNodeName()!=null&&c.getNodeName().equals(myInTree.getTnEntity().getNodeName())))
+              &&myInTree.getTnEntity().getOrder()==c.getOrder()
+              &&(c.getContentType()==null||(c.getContentType()!=null&&c.getContentType().equals(myInTree.getTnEntity().getContentType())))
+              &&myInTree.getTnEntity().getIsValidate()==c.getIsValidate()
+              &&(c.getOwner()==null||(c.getOwner()!=null&&c.getOwner().equals(myInTree.getTnEntity().getOwner())))
+              &&(c.getDescn()==null||(c.getDescn()!=null&&c.getDescn().equals(myInTree.getTnEntity().getDescn())))
+              &&(c.getParentId()==null||(c.getParentId()!=null&&c.getParentId().equals(myInTree.getTnEntity().getParentId())))
+              ) {
+              return 4;
             }
-        }
 
-        //修改字典项
-        try {
-            //数据库
-            channelDao.update(c.convert2Po());
-            //缓存
-            if (changeFather) {
-                if (c.getNodeName()==null) c.setNodeName(myInTree.getTnEntity().getNodeName());
-                if (c.getOwner()==null) c.setOwner(myInTree.getTnEntity().getOwner());
-                if (c.getIsValidate()==0) c.setIsValidate(myInTree.getTnEntity().getIsValidate());
-                if (c.getOrder()==0) c.setOrder(myInTree.getTnEntity().getOrder());
-                if (c.getContentType()==null) c.setContentType(myInTree.getTnEntity().getContentType());
-                if (c.getDescn()==null) c.setDescn(myInTree.getTnEntity().getDescn());
-                TreeNode<Channel> nd=new TreeNode<Channel>(c);
-
-                myInTree.getParent().removeChild(myInTree.getId());
-                parentNode.addChild(nd);
+            boolean changeFather=false;
+            TreeNode<Channel> parentNode=cc.channelTree;
+            if (!StringUtils.isNullOrEmptyOrSpace(c.getParentId())) {//父节点不为空
+                //看看是否要更换所属父节点
+                if (!c.getParentId().equals("0")) parentNode=(TreeNode<Channel>)parentNode.findNode(c.getParentId());
+                if (parentNode!=null) changeFather=!myInTree.getTnEntity().getParentId().equals(c.getParentId());
             } else {
-                if (c.getNodeName()!=null&&!c.getNodeName().equals(myInTree.getTnEntity().getNodeName()))  myInTree.getTnEntity().setNodeName(c.getNodeName());
+                parentNode=(TreeNode<Channel>)myInTree.getParent();
+            }
+            if (!StringUtils.isNullOrEmptyOrSpace(c.getNodeName())) {
+                if (parentNode!=null&&!parentNode.isLeaf()) {
+                    List<TreeNode<? extends TreeNodeBean>> cl=parentNode.getChildren();
+                    for (TreeNode<? extends TreeNodeBean> cn: cl) {
+                        if (cn.getNodeName().equals(c.getNodeName())&&!cn.getId().equals(c.getId())) return 3;
+                    }
+                }
+            }
+
+            //修改字典项
+            try {
+                //数据库
+                channelDao.update(c.convert2Po());
+                //缓存
+                if (c.getNodeName()!=null&&!c.getNodeName().equals(myInTree.getTnEntity().getNodeName())) myInTree.getTnEntity().setNodeName(c.getNodeName());
                 if (c.getOwner()!=null&&!c.getOwner().equals(myInTree.getTnEntity().getOwner())) myInTree.getTnEntity().setOwner(c.getOwner());
                 if (myInTree.getTnEntity().getIsValidate()!=c.getIsValidate()) myInTree.getTnEntity().setIsValidate(c.getIsValidate());
                 if (myInTree.getTnEntity().getOrder()!=c.getOrder()) myInTree.getTnEntity().setOrder(c.getOrder());
                 if (c.getContentType()!=null&&!c.getContentType().equals(myInTree.getTnEntity().getContentType())) myInTree.getTnEntity().setContentType(c.getContentType());
                 if (c.getDescn()!=null&&!c.getDescn().equals(myInTree.getTnEntity().getDescn())) myInTree.getTnEntity().setDescn(c.getDescn());
+                if (changeFather) {
+                    TreeNode<? extends TreeNodeBean> delNode=myInTree.getParent().removeChild(myInTree.getId());
+                    parentNode.addChild(delNode);
+                }
+                return 1;
+            } catch(Exception e) {
+                throw new Wtcm0201CException("修改栏目", e);
             }
-            return 1;
-        } catch(Exception e) {
-            throw new Wtcm0201CException("修改栏目", e);
         }
     }
 
@@ -269,32 +261,34 @@ public class ChannelService {
      * @return "1"成功删除,"2"未找到相应的结点,"3::因为什么什么关联信息的存在而不能删除"
      */
     public String delChannel(Channel c, boolean force) {
-        CacheEle<_CacheChannel> cache=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+        CacheEle<_CacheChannel> cache=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL));
         _CacheChannel cc=cache.getContent();
-        if (cc==null||cc.channelTree==null) return "2";
-        TreeNode<Channel> myInTree=(TreeNode<Channel>)cc.channelTree.findNode(c.getId());
-        if (myInTree==null) return "2";
+        synchronized (updateLock) {
+            if (cc==null||cc.channelTree==null) return "2";
+            TreeNode<Channel> myInTree=(TreeNode<Channel>)cc.channelTree.findNode(c.getId());
+            if (myInTree==null) return "2";
 
-        List<TreeNodeBean> cl=myInTree.getAllBeansList();
-        //检查是否有相关信息，注意是递归查找
-        String inStr="";
-        String inStr2="";
-        for (TreeNodeBean _c:cl) {
-            inStr+=" or id='"+_c.getId()+"'";
-            inStr2+=" or channelId='"+_c.getId()+"')";
-        }
-        inStr=inStr.substring(4);
-        inStr2=inStr2.substring(4);
-        int count=channelAssetDao.getCount("existRefChannel", inStr2);
-        if (count>0&&!force) return "3::由于有关联信息存在，不能删除";
-        else {
-            //删除关联
-            channelAssetDao.execute("delByChannels", inStr2);
-            //删除本表
-            channelDao.delete("delByIds", inStr);
-            //处理缓存
-            myInTree.getParent().removeChild(myInTree.getId());
-            return "1";
+            List<TreeNodeBean> cl=myInTree.getAllBeansList();
+            //检查是否有相关信息，注意是递归查找
+            String inStr="";
+            String inStr2="";
+            for (TreeNodeBean _c:cl) {
+                inStr+=" or id='"+_c.getId()+"'";
+                inStr2+=" or channelId='"+_c.getId()+"'";
+            }
+            inStr=inStr.substring(4);
+            inStr2=inStr2.substring(4);
+            int count=channelAssetDao.getCount("existRefChannel", inStr2);
+            if (count>0&&!force) return "3::由于有关联信息存在，不能删除";
+            else {
+                //删除关联
+                channelAssetDao.execute("delByChannels", inStr2);
+                //删除本表
+                channelDao.delete("delByIds", inStr);
+                //处理缓存
+                myInTree.getParent().removeChild(myInTree.getId());
+                return "1";
+            }
         }
     }
 }

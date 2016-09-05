@@ -21,7 +21,7 @@ public class Channel extends TreeNodeBean implements Serializable, ModelSwapPo {
     //private String channelName;  //栏目名称，在TreeNodeBean中对应nodeName
     private String NPy;  //名称拼音
     private int isValidate;  //是否生效(1-生效,2-无效)
-    private int sort;  //栏目排序,从大到小排序，越大越靠前，根下同级别
+//    private int sort;  //栏目排序,从大到小排序，越大越靠前，根下同级别 在TreeNodeBean中对应order
     private String contentType;  //允许资源的类型，可以是多个，0所有；1电台；2单体媒体资源；3专辑资源；用逗号隔开，比如“1,2”，目前都是0
     private String channelImg;  //
     private String descn; //说明
@@ -47,12 +47,6 @@ public class Channel extends TreeNodeBean implements Serializable, ModelSwapPo {
     }
     public void setIsValidate(int isValidate) {
         this.isValidate=isValidate;
-    }
-    public int getSort() {
-        return sort;
-    }
-    public void setSort(int sort) {
-        this.sort=sort;
     }
     public String getContentType() {
         return contentType;
@@ -100,9 +94,11 @@ public class Channel extends TreeNodeBean implements Serializable, ModelSwapPo {
         else ret.setId(this.getId());
 
         ret.setPcId(getParentId());
-        ret.setOwnerId(owner.getOwnerId());
-        ret.setOwnerType(owner.getOwnerType());
-        ret.setSort(sort);
+        if (owner!=null) {
+            ret.setOwnerId(owner.getOwnerId());
+            ret.setOwnerType(owner.getOwnerType());
+        }
+        ret.setSort(this.getOrder());
         ret.setChannelName(getNodeName());
         ret.setIsValidate(isValidate);
         ret.setNPy(getNPy());
@@ -128,7 +124,7 @@ public class Channel extends TreeNodeBean implements Serializable, ModelSwapPo {
         setNodeName(_po.getChannelName());
         setParentId(_po.getPcId());
         isValidate=_po.getIsValidate();
-        sort=_po.getSort();
+        this.setOrder(_po.getSort());
         contentType=_po.getContentType();
         channelImg=_po.getChannelImg();
         descn=_po.getDescn();
