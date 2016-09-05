@@ -151,10 +151,10 @@ $(function() {
     $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
     $("#addCata").find("tr:eq(2)").show();
     $("#nodeNames").val(treeNode.name);
-    $("#sort").val((treeNode.attributes.sort)?(treeNode.attributes.sort):"");
+    $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
     $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");
     $("#contentType").val((treeNode.attributes.contentType)?(treeNode.attributes.contentType):"");
-    $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
+    $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   });
@@ -301,10 +301,11 @@ function modCatalog() {
           }
         }
         //if(modInfo.Data.ParentId!=treeNode.attributes.parentId) treeNode.attributes.parentId=$("#nodeParent").val();
-        if(modInfo.Data.Sort!=treeNode.attributes.sort) treeNode.attributes.sort=$("#sort").val();
+        if(modInfo.Data.Sort!=treeNode.attributes.order) treeNode.attributes.order=$("#sort").val();
         if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
-        if(modInfo.Data.Descn!=treeNode.attributes.desc) treeNode.attributes.desc=$("#nodeDescn").val();
+        if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
+        alert("over");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
