@@ -40,6 +40,14 @@
   overflow: hidden;
   padding-bottom: 30px;
 }
+.ztree{
+  width:290px;
+  height:430px;
+  margin-left:35px;
+  margin-top:35px;
+  border: 1px solid #3370b7;
+  overflow:auto;
+}
 /*内容详情*/
 .catDetailArea{
   position:absolute;
@@ -83,10 +91,23 @@ h4{
 .modal-body tr td input{
   width:380px;
 }
+#catalogBelong{
+  position:absolute;
+  top:70px;
+  margin-left:314px;
+  font-weight:bold;
+  font-size:17px;
+}
 #nodePath{
-  top: 23px;
-  width: 380px;
-  position: absolute;
+  width:162px;
+  height:20px;
+  display:inline-block;
+  margin-top:3px;
+  margin-left:409px;
+  text-align:left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 /*遮罩层样式*/
 #shade{

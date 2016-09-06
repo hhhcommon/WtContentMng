@@ -12,7 +12,6 @@
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
-  <link href="../resources/plugins/zTree/css/demo.css" rel="stylesheet"/>
   <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
   <link href="../resources/css/catalog.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
@@ -37,7 +36,7 @@
       <!--左侧列表-->
       <div id="catListArea" class="catListArea">
         <!--动态加载分类列表-->
-        <ul id="cataTree" class="ztree" style="width: 290px;height: 470px;margin-left:35px;margin-top:35px;"></ul>
+        <ul id="cataTree" class="ztree"></ul>
       </div>
       <!--右侧详情-->
       <div id="catDetailArea" class="catDetailArea">
@@ -61,32 +60,35 @@
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
-            <span style="position:absolute;top:54px;left:320px;">分类属于：</span>
-            <span id="nodePath" style="display: inline-block;top:54px;left:294px;"></span>
+            <span id="catalogBelong">分类属于：</span>
+            <span id="nodePath"></span>
           </div>
           <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
             <form id="verOperForm" enctype ="multipart/form-data">
               <table>
                 <tr>
                   <td class="th add-th">名称</td>
-                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="名称" aria-required="true"></td>
+                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="名称" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">别名</td>
-                  <td colspan="3"><input id="aliasName" name="aliasName" class="form-control" type="text" placeholder="别名" aria-required="true"></td>
+                  <td colspan="3"><input id="aliasName" name="aliasName" class="form-control" type="text" placeholder="别名" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">分类父亲</td>
-                  <td colspan="3"><input type="text" class="form-control" id="nodeParent" name="nodeParent" placeholder="分类父ID" aria-required="true"></td>
+                  <td colspan="3"><select class="form-control" id="nodeParent" placeholder="父ID" style="width:380px;margin-bottom:0px;"></select></td>
+                </tr>
+                <tr>
+                  <td class="th add-th">序号</td>
+                  <td colspan="3"><input type="text" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">业务编码</td>
-                  <td colspan="3"><input id="nodeCode" name="nodeCode" class="form-control" type="text" placeholder="业务编码" aria-required="true"></td>
+                  <td colspan="3"><input id="nodeCode" name="nodeCode" class="form-control" type="text" placeholder="业务编码" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
-                
                 <tr>
                   <td class="th add-th">详细信息</td>
-                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true"></textarea></td>
+                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;margin-top:13px;"></textarea></td>
                 </tr>
               </table>
             </form>
@@ -155,7 +157,8 @@ $(function() {
     $("#nodeNames").val(treeNode.name);
     $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
     $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
-    $("#nodeParent").val(treeNode.attributes.ParentId);
+    $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
+    $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");
     $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
@@ -212,13 +215,32 @@ function loadTree(loadData) {
 function getRootNode() {
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
+  alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
+  if(!treeNode)alert("请先选中分类在进行操作");
   nodePathStr=treeNode.attributes.pathName+"";
   if(nodePathStr.indexOf("/")>=0){
     rootNode=nodePathStr.split("/")[0];
   }else{
     rootNode=treeNode.attributes.pathName;
   }
-  $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+  var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
+  if(oPeType==1){
+    $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+  }else{
+    $("#addCata").find(".modal-header>span:eq(1)").html(modPathNames);
+    channelParentIdListLoad();//加载父id的方法
+  }
+}
+
+/*加载所有节点的ID*/
+function channelParentIdListLoad(){
+  var allNodes=zTreeObj.transformToArray(zTreeObj.getNodes());//获取树的所有节点
+  var opt;
+  for(var i=0;i<allNodes.length;i++){
+    opt=$("<option></option>");
+    opt.text(allNodes[i].id);
+    $("#nodeParent").append(opt);
+  }
 }
 
 /*增加新分类的方法*/
@@ -284,14 +306,37 @@ function modCatalog() {
     data:JSON.stringify(modInfo),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        if(modInfo.Data.Name!=treeNode.name) {
+        if(modInfo.Data.Name!=treeNode.name) { //名字改变
           var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
-          treeNode.attributes.pathName=modPathName+"/"+$("#nodeNames").val();
+          treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
         }
         if(modInfo.Data.AliasName!=treeNode.attributes.aliasName) treeNode.attributes.aliasName=$("#aliasName").val();
         if(modInfo.Data.BCode!=treeNode.attributes.bCode) treeNode.attributes.bCode=$("#nodeCode").val();
-        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) treeNode.attributes.parentId=$("#nodeParent").val();
+        if(modInfo.Data.Sort!=treeNode.attributes.order) {//顺序改变
+          treeNode.attributes.order=$("#sort").val();
+          var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
+          var sLength=sortNode.children.length;//当前选中分类的父分类的所有子分类
+          for(var i=0;i<sLength;i++){
+            for(var j=i;j<sLength;j++){
+              if(sortNode.children[i].attributes.order<sortNode.children[j].attributes.order){//降序排列（冒泡排序）
+                zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
+              }
+            }
+          }
+        }
+        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//父节点改变
+          treeNode.attributes.parentId=$("#nodeParent").val();
+          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
+          if(!treeNode.children){//选中的分类下面无其他分类
+            zTreeObj.moveNode(targetNode,treeNode,"inner");
+          }else{//选中的分类下面含有其他分类
+            for(var i=0;i<treeNode.children.length;i++){
+              zTreeObj.moveNode(treeNode,treeNode.children[i],"inner");
+            }
+            zTreeObj.moveNode(targetNode,treeNode,"inner");
+          }
+        }
         if(modInfo.Data.Descn!=treeNode.attributes.desc) treeNode.attributes.desc=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
       }else{
