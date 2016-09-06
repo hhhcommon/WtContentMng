@@ -40,6 +40,14 @@
   overflow: hidden;
   padding-bottom: 30px;
 }
+.ztree{
+  width:290px;
+  height:430px;
+  margin-left:35px;
+  margin-top:35px;
+  border: 1px solid #3370b7;
+  overflow:auto;
+}
 /*内容详情*/
 .catDetailArea{
   position:absolute;
@@ -82,11 +90,6 @@ h4{
 }
 .modal-body tr td input{
   width:380px;
-}
-#nodePath{
-  top: 23px;
-  width: 380px;
-  position: absolute;
 }
 /*遮罩层样式*/
 #shade{
