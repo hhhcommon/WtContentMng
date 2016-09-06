@@ -480,7 +480,7 @@ CREATE TABLE wt_Channel (
   cTime        timestamp        NOT NULL  DEFAULT CURRENT_TIMESTAMP  COMMENT '创建时间',
   PRIMARY KEY (id)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='029栏目表';
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='028栏目表';
 /**栏目的编辑等干系人信息在，干系人与资源关系表023**/
 
 /**029 栏目内容发布表[WT_CHANNELASSET]*/
@@ -506,7 +506,7 @@ CREATE TABLE wt_ChannelAsset (
   INDEX bizIdx (assetType, assetId, channelId) USING BTREE,
   PRIMARY KEY (id)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='027栏目内容发布';
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='029栏目内容发布';
 
 /**== 七、数据操作日志（这类表只增加，不减少，类似log文件） =============================================*/
 /**030 数据日志[WT_CONTENTTRACKLOG]*/
@@ -532,7 +532,7 @@ CREATE TABLE wt_ContentTrackLog (
   INDEX bizIdx (tableName, ownerType, ownerId, dataMd5) USING HASH,
   PRIMARY KEY (id)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='028数据日志';
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='030数据日志';
 
 /**== 八、资源与外部系统对照 =============================================*/
 /**031 资产与外部系统对照表[WT_RESORGASSET_Ref]*/
@@ -550,7 +550,7 @@ CREATE TABLE wt_ResOrgAsset_Ref (
   cTime         timestamp     NOT NULL  DEFAULT CURRENT_TIMESTAMP  COMMENT '创建时间',
   PRIMARY KEY (idxMd5)
 )
-ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='029资产与外部系统对照表';
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='031资产与外部系统对照表';
 
 
 /*****************************************/
