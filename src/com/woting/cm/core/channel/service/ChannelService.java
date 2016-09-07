@@ -179,12 +179,15 @@ public class ChannelService {
         c.setCTime(new Timestamp(System.currentTimeMillis()));
         try {
             //数据库
+            ChannelPo cpo=c.convert2Po();
+            if (cpo.getPcId()==null) cpo.setPcId("0");
             channelDao.insert(c.convert2Po());
             //缓存
             TreeNode<Channel> nd=new TreeNode<Channel>(c);
             parentNode.addChild(nd);
             return c.getId();
         } catch(Exception e) {
+            e.printStackTrace();
             return "err:"+e.getMessage();
         }
     }
