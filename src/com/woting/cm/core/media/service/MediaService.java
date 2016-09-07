@@ -136,7 +136,7 @@ public class MediaService {
 	}
     
     public List<MediaAssetPo> getMaListBySmaId(String smaid) {
-    	List<MediaAssetPo> malist = mediaAssetDao.queryForList("getMaInfoBySmaId", smaid);
+    	List<MediaAssetPo> malist = mediaAssetDao.queryForList("getMaListBySmaId", smaid);
 		return malist;
     }
     
