@@ -60,8 +60,8 @@
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
-            <span style="position:absolute;top:70px;margin-left:314px;font-weight:bold;font-size:17px;">分类属于：</span>
-            <span id="nodePath" style="width:162px;height:20px;display: inline-block;margin-top:3px;margin-left:409px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+            <span id="catalogBelong">分类属于：</span>
+            <span id="nodePath"></span>
           </div>
           <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
             <form id="verOperForm" enctype ="multipart/form-data">
@@ -84,7 +84,7 @@
                 </tr>
                 <tr>
                   <td class="th add-th">详细信息</td>
-                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;"></textarea></td>
+                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;margin-top:13px;"></textarea></td>
                 </tr>
               </table>
             </form>
@@ -207,21 +207,22 @@ function loadTree(loadData) {
 
 /*与选中节点有关的操作*/
 function getRootNode() {
-  channelParentIdListLoad();//加载父id的方法
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
-  alert("当前选中节点的id："+treeNode.id);
+  alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
+  if(!treeNode)alert("请先选中分类在进行操作");
   nodePathStr=treeNode.attributes.pathName+"";
   if(nodePathStr.indexOf("/")>=0){
     rootNode=nodePathStr.split("/")[0];
   }else{
     rootNode=treeNode.attributes.pathName;
   }
-  var modPathNames=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
+  var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
   if(oPeType==1){
     $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
   }else{
     $("#addCata").find(".modal-header>span:eq(1)").html(modPathNames);
+    channelParentIdListLoad();//加载父id的方法
   }
 }
 
@@ -297,10 +298,9 @@ function modCatalog() {
     dataType: "json",
     data:JSON.stringify(modInfo),
     success: function(resultData){
-      alert(allFields(resultData));
       if(resultData.ReturnType=="1001"){
         if(modInfo.Data.Name!=treeNode.name) {//名字改变
-          var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/')-1);
+          var modPathName=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
           treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
         }
@@ -319,11 +319,10 @@ function modCatalog() {
         if(modInfo.Data.Sort!=treeNode.attributes.order) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
           var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
-          console.log(sortNode.children.length);
-          var sLength=sortNode.children.length;
+          var sLength=sortNode.children.length;//当前选中分类的父分类的所有子分类
           for(var i=0;i<sLength;i++){
             for(var j=i;j<sLength;j++){
-              if(sortNode.children[i].attributes.order<sortNode.children[j].attributes.order){//降序排列
+              if(sortNode.children[i].attributes.order<sortNode.children[j].attributes.order){//降序排列（冒泡排序）
                 zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
               }
             }

@@ -91,6 +91,24 @@ h4{
 .modal-body tr td input{
   width:380px;
 }
+#catalogBelong{
+  position:absolute;
+  top:70px;
+  margin-left:314px;
+  font-weight:bold;
+  font-size:17px;
+}
+#nodePath{
+  width:162px;
+  height:20px;
+  display:inline-block;
+  margin-top:3px;
+  margin-left:409px;
+  text-align:left;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
 /*遮罩层样式*/
 #shade{
   width: 100%;
