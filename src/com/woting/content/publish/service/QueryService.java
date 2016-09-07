@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import org.springframework.context.annotation.Lazy;
+
 import org.springframework.stereotype.Service;
+
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
@@ -34,11 +35,9 @@ import com.woting.content.broadcast.persis.pojo.BroadcastPo;
 import com.woting.content.broadcast.service.BroadcastService;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.publish.utils.CacheUtils;
-
-@Lazy(true)
 @Service
 public class QueryService {
-	@Resource
+	@Resource(name="dataSource")
 	private DataSource DataSource;
 	@Resource
 	private MediaService mediaService;
