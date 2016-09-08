@@ -22,6 +22,7 @@ import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.dict.persis.po.DictDetailPo;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.service.MediaService;
 
 @Service
@@ -30,10 +31,13 @@ public class DictContentService {
 	private MediaService mediaService;
 	@Resource(name="defaultDAO")
     private MybatisDAO<DictDetailPo> dictdDao;
+	@Resource(name="defaultDAO")
+	private MybatisDAO<DictRefResPo> dictrefDao;
 	
 	@PostConstruct
     public void initParam() {
         dictdDao.setNamespace("A_DDETAIL");
+        dictrefDao.setNamespace("A_DREFRES");
     }
 	
 	@SuppressWarnings("unchecked")
@@ -103,4 +107,45 @@ public class DictContentService {
 		}
 		return l;
 	}
+	
+	public DictDetailPo getDictDetailInfo(String id) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", id);
+		DictDetailPo ddp = dictdDao.getInfoObject("getInfo", m);
+		return ddp;
+	}
+	
+	public boolean insertResDictRef(String refName, String refTableName, String resId, String dictMid, String dictDid) {
+		DictRefResPo dictRefRes = new DictRefResPo();
+		dictRefRes.setId(SequenceUUID.getPureUUID());
+		dictRefRes.setRefName(refName);
+		dictRefRes.setResTableName(refTableName);
+		dictRefRes.setResId(resId);
+		dictRefRes.setDictMid(dictMid);
+		dictRefRes.setDictDid(dictDid);
+		int num = dictrefDao.insert("insert", dictRefRes);
+		if(num>0)
+			return true;
+		return false;
+	}
+	
+	public List<DictRefResPo> getDictRefList(Map<String, Object> m) {
+		return dictrefDao.queryForList("getList", m);
+	}
+	
+	public DictRefResPo getDictRefResInfo(String id) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", id);
+		return dictrefDao.getInfoObject("getInfo", m);
+	}
+	
+	/**
+     * 删除字典关联表里的信息
+     * @param id
+     */
+    public void delDictRefRes(String id) {
+    	String values = "id='"+id+"'";
+    	dictrefDao.execute("delByDicts", values);
+    }
+    
 }

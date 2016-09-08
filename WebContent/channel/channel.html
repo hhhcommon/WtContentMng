@@ -304,7 +304,9 @@ function modCatalog() {
           treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
         }
+		var unparentId = 0;
         if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//父节点改变
+		  unparentId = 1;
           treeNode.attributes.parentId=$("#nodeParent").val();
           var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
           if(!treeNode.children){//选中的分类下面无其他分类
@@ -316,15 +318,21 @@ function modCatalog() {
             zTreeObj.moveNode(targetNode,treeNode,"inner");
           }
         }
-        if(modInfo.Data.Sort!=treeNode.attributes.order) {//顺序改变
+		alert(unparentId);
+		alert(treeNode.attributes.parentId);
+        if(modInfo.Data.Sort!=treeNode.attributes.order || unparentId!=0) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
           var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
           var sLength=sortNode.children.length;//当前选中分类的父分类的所有子分类
           for(var i=0;i<sLength;i++){
             for(var j=i;j<sLength;j++){
-              if(sortNode.children[i].attributes.order<sortNode.children[j].attributes.order){//降序排列（冒泡排序）
+			  alert("上一节点名称 "+sortNode.children[i].name+"  排序号 "+sortNode.children[i].attributes.order+"\n下一节点名称 "+sortNode.children[j].name+"  排序号 "+sortNode.children[j].attributes.order);
+              if(parseInt(sortNode.children[i].attributes.order)<parseInt(sortNode.children[j].attributes.order)){//降序排列（冒泡排序）
+			    alert("进行交换");
                 zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
-              }
+              } else{
+			      alert("未进行交换"); 
+				}
             }
           }
         }
