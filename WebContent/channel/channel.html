@@ -75,12 +75,26 @@
                   <td colspan="3"><input type="text" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
-                  <td class="th add-th">分类父亲</td>
-                  <td colspan="3"><select class="form-control" id="nodeParent" placeholder="父ID" style="width:380px;margin-bottom:0px;"></select></td>
+                  <td class="th add-th">父分类</td>
+                  <td colspan="3">
+                    <select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>
+                    <!--<div class="form-control" id="nodeParent" placeholder="父ID" style="width:450px;margin-bottom:0px;">
+                      <ul id="cataTree" class="ztree"></ul>
+                    </div>-->
+                  </td>
                 </tr>
                 <tr>
                   <td class="th add-th">资源类型</td>
-                  <td colspan="3"><input id="contentType" name="contentType" class="form-control" type="text" placeholder="资源类型" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3">
+                    <input type="text" class="form-control" id="contentType" name="contentType" placeholder="资源类型" aria-required="true" style="width:345px;margin-bottom:-34px;">
+                    <!--<select id="contentTypeSelect" name="contentTypeSelect" class="form-control" style="width:110px;margin-left:345px;margin-bottom:0px;">
+                      <option value="">请选择</option>
+                      <option value="0">所有</option>
+                      <option value="1">电台</option>
+                      <option value="2">单体媒体资源</option>
+                      <option value="3">专辑资源</option>
+                    </select>-->
+                  </td>
                 </tr>
                 <tr>
                   <td class="th add-th">详细信息</td>
@@ -207,6 +221,7 @@ function loadTree(loadData) {
 
 /*与选中节点有关的操作*/
 function getRootNode() {
+  channelParentIdListLoad();//加载父id的方法
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
   alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
@@ -269,6 +284,7 @@ function addCatalog() {
           }
         );
         cleanDialog();
+        alert("添加成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -318,9 +334,7 @@ function modCatalog() {
             zTreeObj.moveNode(targetNode,treeNode,"inner");
           }
         }
-		alert(unparentId);
-		alert(treeNode.attributes.parentId);
-        if(modInfo.Data.Sort!=treeNode.attributes.order || unparentId!=0) {//顺序改变
+        if(modInfo.Data.Sort!=treeNode.attributes.order||unparentId==1) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
           var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
           var sLength=sortNode.children.length;//当前选中分类的父分类的所有子分类
@@ -339,6 +353,7 @@ function modCatalog() {
         if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
         if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
+        alert("修改成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -360,6 +375,7 @@ function delCatalog() {
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         zTreeObj.removeNode(treeNode);
+        alert("删除成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
