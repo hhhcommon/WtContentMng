@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>映射管理</title>
+	<meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
+  <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/plugins/hplus/js/content.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+</head>
+<style>
+/*工具条区域样式*/
+.toobarArea{
+  height:40px;
+  width:20%;
+  line-height:30px;
+  position:absolute;
+  margin-left:39%;
+  margin-top:3%;
+  overflow:hidden;
+}
+/*按钮*/
+.toobarArea button{
+  width:60px;
+  height:24px;
+  background:#0077c7;
+  color:white;
+  text-align:center;
+  padding:2px;
+  font-size:12px;
+  border-radius:20px;
+}
+/*主区域*/
+.mainArea{
+  height: calc(100% - 10px);
+  width: 100%;
+  position: absolute;
+  overflow:hidden;
+}
+/*左区域*/
+.left{
+  height:100%;
+  width: 30%;
+  border:1px solid black;
+  float: left;
+  margin-left: 10px;
+}
+.left h4{
+  text-align: center;
+}
+#left_tree,#right_tree{
+  height:44%;
+  width: 100%;
+  padding:1px 1px 1px 1px;
+  border:1px solid royalblue;
+  overflow:auto;
+}
+.relation{
+  text-align: center;
+}
+.otherContent{
+  height:44%;
+  width: 100%;
+  padding:1px 1px 1px 1px;
+  border:1px solid green;
+  overflow:auto;
+}
+/*中间区域*/
+.center{
+  height: 84%;
+  width: 36%;
+  border: 1px solid black;
+  float: left;
+  margin-top: 84px;
+  margin-left: 10px;
+}
+.center h4{
+  text-align:center;
+}
+.correspondContent{
+  height: 92%;
+  width: 100%;
+  border: 1px solid red;
+  float: left;
+  margin-top: 6px;
+  margin-left: 0px;
+  overflow:auto;
+}
+/*右侧区域*/
+.right{
+  height:100%;
+  width: 30%;
+  border:1px solid black;
+  float: left;
+  margin-left:10px;
+}
+.right_header{
+  height:30px;
+  width:100%;
+  border:1px solid blue;
+  overflow: hidden;
+}
+.right_header h4{
+  width:50%;
+  text-align:center;
+  float:left;
+}
+.right_header select{
+  float: left;
+  margin-left: 15%;
+  margin-top: 3px;
+}
+.wotingContent{
+  height:44%;
+  width: 100%;
+  padding:1px 1px 1px 1px;
+  border:1px solid green;
+  overflow:auto;
+}
+</style>
+<body style="overflow:hidden;">
+  <div style='height:100%;'>
+  	<!--主区域-->
+    <div class="mainArea">
+      <!--菜单栏-->
+      <div class="toobarArea">
+        <button type="button" id="sear" opeType="claSear" class="btn" style="margin-right:3px;">查询</button>
+        <button type="button" id="add" opeType="claAdd" class="btn" style="margin-right:3px;">添加</button>
+        <button type="button" id="del" opeType="claDel" class="btn" style="margin-right:3px;">删除</button>
+      </div>
+    	<!--左侧区域-->
+    	<div class="left">
+    	  <h4>我听的分类</h4>
+    	  <ul id="left_tree" class="ztree"></ul>
+    	  <h5 class="relation">对应其他平台的分类</h5>
+    	  <div class="otherContent"></div>
+    	</div>
+    	<!--中间区域-->
+      <div class="center">
+        <h4>我听与其他平台的栏目映射</h4>
+        <div class="correspondContent"></div>
+      </div>
+      <!--右侧区域-->
+      <div class="right">
+        <div class="right_header">
+        	<h4>其他平台的的分类</h4>
+          <select class="selector" >
+            <option value="1">喜马拉雅</option>
+            <option value="2">考拉</option>
+            <option value="3">蜻蜓</option>
+          </select>
+        </div>
+        <ul id="right_tree" class="ztree"></ul>
+        <h5 class="relation">对应其他平台的分类</h5>
+        <div class="wotingContent"></div>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+var wtObj,otherObj,nodes,treeNode;
+var rootPath=getRootPath();
+var loadCorrespondData;
+/*初始化方法：页面加载完成后执行*/
+$(function(){
+  //0-初始化页面
+  //0.1-配置相关参数
+  var setting={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    }
+  };
+  
+  //1-树的节点
+//var left_zNodes =[
+//  { id:1, pId:0, name:"百家讲坛", isParent:true},
+//  { id:2, pId:0, name:"亲子教育", isParent:true},
+//  { id:3, pId:0, name:"佛经禅理", isParent:true},
+//  { id:4, pId:0, name:"公开课", isParent:true},
+//  { id:5, pId:0, name:"广播剧", isParent:true},
+//  { id:6, pId:0, name:"鬼故事", isParent:true},
+//  { id:7, pId:0, name:"健康养生", isParent:true},
+//  { id:8, pId:0, name:"历史人文", isParent:true},
+//  { id:9, pId:0, name:"商业财经", isParent:true}
+//];
+//var right_zNodes =[
+//  { id:1, pId:0, name:"名牌大家", isParent:true},
+//  { id:2, pId:0, name:"教育学习", isParent:true},
+//  { id:3, pId:0, name:"哲学宗教", isParent:true},
+//  { id:4, pId:0, name:"公开课堂", isParent:true},
+//  { id:5, pId:0, name:"广播剧院", isParent:true},
+//  { id:6, pId:0, name:"小说故事", isParent:true},
+//  { id:7, pId:0, name:"健康养生", isParent:true},
+//  { id:8, pId:0, name:"历史地理", isParent:true},
+//  { id:9, pId:0, name:"商业财经", isParent:true}
+//];
+  
+  //2-加载左右两边的树
+  wtObj=$.fn.zTree.init($("#left_tree"), setting);
+  otherObj=$.fn.zTree.init($("#right_tree"), setting);
+  
+  //3-初始化按钮
+  //3.1根据选择的平台加载对应的树
+  $('.selector').change(function(){
+    $("#right_tree").html("");//先清空right_tree
+    alert($(this).children('option:selected').val()); 
+    alert($(this).children('option:selected').text()); 
+    var optValue=$(this).children('option:selected').val();//这就是selected的value值
+    var optText=$(this).children('option:selected').text();//这就是selected的文本值
+    if(optValue=='1'){//对应喜马拉雅
+      loadCorrespondData=[{ChannelId:"1",TreeViewType:"zTree"}];
+    }
+    if(optValue=='3'){//对应蜻蜓
+      alert("test3")
+      loadCorrespondData=[{CDictMId:"3",IsValidate:"1",Publisher:optText}];
+      console.log(loadCorrespondData);
+    }
+    if(optValue=='2'){//对应考拉
+      loadCorrespondData=[{ChannelId:"2",TreeViewType:"zTree"}];
+    }
+  });
+   $("#sear").on("click",function(){
+//  getLeftTreeNode();
+//  alert(treeNode.name);
+  });
+  $("#add").on("click",function(){
+//  getLeftTreeNode();
+//  alert(treeNode.name);
+  });
+  $("#del").on("click",function(){
+    
+  });
+  
+});
+/**
+ * 1初始化完成后执行相关操作的方法
+*/
+//1.1加载我听的树
+loadWtTree();
+function loadWtTree(){
+  var _url=rootPath+"baseinfo/getChannelTree4View.do";
+  var loadWtData=[{ChannelId:"",TreeViewType:"zTree"}];
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data: loadWtData,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        wtObj.addNodes(null,jsonData.Data.children,false);
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+//1.2根据选择的平台加载对应的树
+loadCorrespondTree();
+function loadCorrespondTree(){
+  var _url=rootPath+"common/getCCategory.do";
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data: loadCorrespondData,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        otherObj.addNodes(null,jsonData.Data.children,false);
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+//1.3选中我听的分类，填充我听与当前选中平台的分类映射关系
+function getLeftTreeNode(event, treeId, treeNode){
+  nodes=wtObj.getSelectedNodes();//获取 left_tree当前被选中的节点数据集合
+  treeNode=nodes[0]; //当前选中的节点
+  alert(treeNode.name);
+  var _url=rootPath+"baseinfo/getChannelTree4View.do";
+  var _data;
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data:_data,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        loadMappingList();
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+
+
+</script>
+</html>
