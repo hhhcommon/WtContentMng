@@ -442,7 +442,9 @@ function modChannel() {
             for(var j=i;j<sLength;j++){
               if(parseInt(sortNode.children[i].attributes.order)<parseInt(sortNode.children[j].attributes.order)){//降序排列（冒泡排序）
                 zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
-              }
+              } else{
+			      alert("未进行交换"); 
+				}
             }
           }
         }
