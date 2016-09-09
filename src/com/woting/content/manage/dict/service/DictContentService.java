@@ -114,8 +114,9 @@ public class DictContentService {
 		return ddp;
 	}
 	
-	public boolean insertResDictRef(String id,String refName, String refTableName, String resId, String dictMid, String dictDid) {
+	public Map<String, Object> insertResDictRef(String refName, String refTableName, String resId, String dictMid, String dictDid) {
 		DictRefResPo dictRefRes = new DictRefResPo();
+		String id = SequenceUUID.getPureUUID();
 		dictRefRes.setId(id);
 		dictRefRes.setRefName(refName);
 		dictRefRes.setResTableName(refTableName);
@@ -123,9 +124,12 @@ public class DictContentService {
 		dictRefRes.setDictMid(dictMid);
 		dictRefRes.setDictDid(dictDid);
 		int num = dictrefDao.insert("insert", dictRefRes);
-		if(num>0)
-			return true;
-		return false;
+		if(num>0) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("Id", id);
+			return m;
+		}
+		return null;
 	}
 	
 	public List<DictRefResPo> getDictRefList(Map<String, Object> m) {

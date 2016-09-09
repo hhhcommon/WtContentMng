@@ -9,10 +9,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.woting.cm.core.dict.persis.po.DictDetailPo;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.manage.dict.service.DictContentService;
+import com.woting.content.publish.utils.CacheUtils;
 import com.woting.crawlerdb.dict.persis.po.CDictDPo;
 
 @Service
@@ -69,8 +72,9 @@ public class CDictService {
 	 * @param cdictdid
 	 * @return 0：创建成功   1：已存在  2：创建失败
 	 */
-	public int addCDDAndDDRef(String id,String dictmid, String dictdid, String cdictmid, String cdictdid) {
+	public Map<String, Object> addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
 		String refname = "";
+		Map<String, Object> map = new HashMap<>();
 		if (dictmid.equals("3") && cdictmid.equals("3"))
 			refname = "外部分类-内容分类";
 		Map<String, Object> m = new HashMap<>();
@@ -79,11 +83,22 @@ public class CDictService {
 		m.put("resId", cdictdid);
 		m.put("dictMid", dictmid);
 		m.put("dictDid", dictdid);
-		if(dictContentService.getDictRefResInfo(m)!=null) return 1;
-		boolean isok = dictContentService.insertResDictRef(id, refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
-		if (isok)
-			return 0;
-		return 2;
+		if(dictContentService.getDictRefResInfo(m)!=null) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "已存在");
+			return map;
+		}
+		map = dictContentService.insertResDictRef(refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
+		if (map!=null) {
+			CDictDPo cdd = cDictDDao.getInfoObject("getInfo", cdictdid);
+			map.put("ReturnType", "1001");
+			map.put("Message", "添加成功");
+			map.put("Publisher", cdd.getPublisher());
+			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			map.put("CTime", sd.format(System.currentTimeMillis()));
+			return map;
+		}
+		return null;
 	}
 
 	/**
@@ -190,5 +205,45 @@ public class CDictService {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean saveCrawlerFile() {
+		Map<String, Object> m = new HashMap<>();
+		List<Map<String, Object>> craw = new ArrayList<>();
+		m.put("refName", "外部分类-内容分类");
+		m.put("resTableName", "hotspot_DictD");
+		m.put("orderByClause", "cTime desc");
+		List<DictRefResPo> drfs = dictContentService.getDictRefList(m);
+		if(drfs!=null&&drfs.size()>0) {
+			for (DictRefResPo drf : drfs) {
+				DictDetailPo dd = dictContentService.getDictDetailInfo(drf.getDictDid());
+				if(dd!=null) {
+					CDictDPo cdd = getCDictDInfo(drf.getResId());
+					if(cdd!=null) {
+						Map<String, Object> mm = new HashMap<>();
+						mm.put("crawlerDictmId", cdd.getmId());
+						String crawlerDictmName = "";
+						if(cdd.getmId().equals("3"))
+							crawlerDictmName = "内容分类";
+						mm.put("crawlerDictmName",crawlerDictmName);
+						mm.put("crawlerDictdId", cdd.getId());
+						mm.put("crawlerDictdName", cdd.getDdName());
+						mm.put("publisher", cdd.getPublisher());
+						mm.put("dictmId", dd.getMId());
+						String dictmName = "";
+						if(dd.getMId().equals("3"))
+							dictmName = "内容分类";
+						mm.put("dictmName", dictmName);
+						mm.put("dictdId", drf.getDictDid());
+						mm.put("dictdName", dd.getDdName());
+						craw.add(mm);
+					}
+				}
+			}
+		}
+		if (craw.size()>0) {
+			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt");
+		}
+		return false;
 	}
 }

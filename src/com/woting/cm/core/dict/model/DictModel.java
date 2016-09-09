@@ -1,7 +1,5 @@
 package com.woting.cm.core.dict.model;
 
-import java.util.List;
-
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
 import com.spiritdata.framework.util.StringUtils;

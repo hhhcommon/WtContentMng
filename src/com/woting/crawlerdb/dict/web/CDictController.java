@@ -1,20 +1,14 @@
 package com.woting.crawlerdb.dict.web;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.spiritdata.framework.util.RequestUtils;
-import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.crawlerdb.dict.service.CDictService;
 
 /**
@@ -115,23 +109,13 @@ public class CDictController {
             map.put("Message", "CDictDId参数为空");
             return map;
 		}
-		String id = SequenceUUID.getPureUUID();
-		int isok = cDictService.addCDDAndDDRef(id, dictmid, dictdid, cdictmid, cdictdid);
-		if(isok==0) {
-			map.put("ReturnType", "1001");
-			map.put("Message", "添加成功");
-			map.put("Id", id);
-			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			map.put("CTime", sd.format(System.currentTimeMillis()));
+		map = cDictService.addCDDAndDDRef(dictmid, dictdid, cdictmid, cdictdid);
+		if(map!=null) {
+			return map;
 		}
-		if(isok==1){
-			map.put("ReturnType", "1012");
-			map.put("Message", "已存在");
-		}
-		if(isok==2){
-			map.put("ReturnType", "1013");
-			map.put("Message", "创建失败");
-		}
+		map = new HashMap<>();
+		map.put("ReturnType", "1013");
+		map.put("Message", "创建失败");
 		return map;
 	}
 	
@@ -203,6 +187,21 @@ public class CDictController {
             return map;
 		}
 		boolean isok = cDictService.delDictResRef(id);
+		if(isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "删除成功");
+		} else {
+			map.put("ReturnType", "1012");
+			map.put("Message", "删除失败");
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="saveCCateRefs.do")
+    @ResponseBody
+    public Map<String, Object> SaveCCateRefs(HttpServletRequest request) {
+		Map<String,Object> map=new HashMap<String, Object>();
+		boolean isok = cDictService.saveCrawlerFile();
 		if(isok) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
