@@ -124,6 +124,7 @@ public class CDictService {
 					mm.put("Title", ddp.getDdName());
 					mm.put("SrcId", cd.getId());
 					mm.put("SrcTitle", cd.getDdName());
+					mm.put("Publisher", cd.getPublisher());
 					DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					mm.put("CTime", sd.format(drr.getCTime()));
 					ms.add(mm);
@@ -151,6 +152,7 @@ public class CDictService {
 					mm.put("Title", cd.getDdName());
 					mm.put("SrcId", ddp.getId());
 					mm.put("SrcTitle", ddp.getDdName());
+					mm.put("Publisher", "我听");
 					DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					mm.put("CTime", sd.format(drr.getCTime()));
 					ms.add(mm);
