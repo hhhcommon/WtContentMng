@@ -69,8 +69,9 @@ public class CDictService {
 	 * @param cdictdid
 	 * @return 0：创建成功   1：已存在  2：创建失败
 	 */
-	public int addCDDAndDDRef(String id,String dictmid, String dictdid, String cdictmid, String cdictdid) {
+	public Map<String, Object> addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
 		String refname = "";
+		Map<String, Object> map = new HashMap<>();
 		if (dictmid.equals("3") && cdictmid.equals("3"))
 			refname = "外部分类-内容分类";
 		Map<String, Object> m = new HashMap<>();
@@ -79,11 +80,22 @@ public class CDictService {
 		m.put("resId", cdictdid);
 		m.put("dictMid", dictmid);
 		m.put("dictDid", dictdid);
-		if(dictContentService.getDictRefResInfo(m)!=null) return 1;
-		boolean isok = dictContentService.insertResDictRef(id, refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
-		if (isok)
-			return 0;
-		return 2;
+		if(dictContentService.getDictRefResInfo(m)!=null) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "已存在");
+			return map;
+		}
+		map = dictContentService.insertResDictRef(refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
+		if (m!=null) {
+			CDictDPo cdd = cDictDDao.getInfoObject("getInfo", cdictdid);
+			map.put("ReturnType", "1001");
+			map.put("Message", "添加成功");
+			map.put("Publisher", cdd.getPublisher());
+			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			map.put("CTime", sd.format(System.currentTimeMillis()));
+			return map;
+		}
+		return null;
 	}
 
 	/**
