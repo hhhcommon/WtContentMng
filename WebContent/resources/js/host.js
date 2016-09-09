@@ -113,7 +113,7 @@ function ContentListLoad(actList) {
  * */
     function getCatalogs(){
       $.ajax({
-        type: "POST",    
+        type: "POST",
         url:rootPath+"common/getCataTreeWithSelf.do",
         dataType: "json",
         data:{cataId: "3"},

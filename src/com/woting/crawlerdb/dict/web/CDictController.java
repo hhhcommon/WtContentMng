@@ -25,6 +25,11 @@ public class CDictController {
 	@Resource
 	CDictService cDictService;
 
+	/**
+	 * 获取抓取库的分类数据
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value="getCCategory.do")
     @ResponseBody
 	public Map<String, Object> getCDictD(HttpServletRequest request) {
@@ -118,6 +123,11 @@ public class CDictController {
 		return map;
 	}
 	
+	/**
+	 * 查询资源库与抓取库字典映射关系
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value="getCCateRefs.do")
     @ResponseBody
     public Map<String, Object> getCCateRefInfo(HttpServletRequest request) {
@@ -159,6 +169,11 @@ public class CDictController {
 		return map;
 	}
 	
+	/**
+	 * 删除资源库与抓取库字典映射关系
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value="removeCCateRefs.do")
     @ResponseBody
     public Map<String, Object> RemoveCCateRefs(HttpServletRequest request) {

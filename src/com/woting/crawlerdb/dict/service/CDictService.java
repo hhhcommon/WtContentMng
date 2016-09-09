@@ -26,7 +26,7 @@ public class CDictService {
 	}
 
 	/**
-	 * 得到抓取库的分类数据
+	 * 获取抓取库的分类数据
 	 * 
 	 * @param mId
 	 * @param isValidate
@@ -57,6 +57,14 @@ public class CDictService {
 		return cdd;
 	}
 
+	/**
+	 * 添加资源库与抓取库字典映射关系
+	 * @param dictmid
+	 * @param dictdid
+	 * @param cdictmid
+	 * @param cdictdid
+	 * @return
+	 */
 	public boolean addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
 		String refname = "";
 		if (dictmid.equals("3") && cdictmid.equals("3"))
@@ -67,6 +75,14 @@ public class CDictService {
 		return false;
 	}
 
+	/**
+	 * 查询资源库与抓取库字典映射关系
+	 * @param dictmid
+	 * @param dictdid
+	 * @param dictdname
+	 * @param sourcenum
+	 * @return
+	 */
 	public List<Map<String, Object>> getCCateResRef(String dictmid, String dictdid, String dictdname,String sourcenum) {
 		DictDetailPo ddp = new DictDetailPo();
 		CDictDPo cd = new CDictDPo();
@@ -131,6 +147,11 @@ public class CDictService {
 		return ms;
 	}
 
+	/**
+	 * 查询抓取库分类信息
+	 * @param id
+	 * @return
+	 */
 	public CDictDPo getCDictDInfo(String id) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("id", id);
@@ -141,6 +162,11 @@ public class CDictService {
 		return null;
 	}
 	
+	/**
+	 * 删除资源库与抓取库字典映射关系
+	 * @param id
+	 * @return
+	 */
 	public boolean delDictResRef(String id) {
 		dictContentService.delDictRefRes(id);;
 		if (dictContentService.getDictRefResInfo(id)!=null) {
