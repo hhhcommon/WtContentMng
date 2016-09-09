@@ -196,4 +196,19 @@ public class CDictController {
 		}
 		return map;
 	}
+	
+	@RequestMapping(value="saveCCateRefs.do")
+    @ResponseBody
+    public Map<String, Object> SaveCCateRefs(HttpServletRequest request) {
+		Map<String,Object> map=new HashMap<String, Object>();
+		boolean isok = cDictService.saveCrawlerFile();
+		if(isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "删除成功");
+		} else {
+			map.put("ReturnType", "1012");
+			map.put("Message", "删除失败");
+		}
+		return map;
+	}
 }

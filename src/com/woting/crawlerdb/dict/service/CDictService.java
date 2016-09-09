@@ -9,10 +9,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.util.JsonUtils;
 import com.woting.cm.core.dict.persis.po.DictDetailPo;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.manage.dict.service.DictContentService;
+import com.woting.content.publish.utils.CacheUtils;
 import com.woting.crawlerdb.dict.persis.po.CDictDPo;
 
 @Service
@@ -202,5 +205,45 @@ public class CDictService {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean saveCrawlerFile() {
+		Map<String, Object> m = new HashMap<>();
+		List<Map<String, Object>> craw = new ArrayList<>();
+		m.put("refName", "外部分类-内容分类");
+		m.put("resTableName", "hotspot_DictD");
+		m.put("orderByClause", "cTime desc");
+		List<DictRefResPo> drfs = dictContentService.getDictRefList(m);
+		if(drfs!=null&&drfs.size()>0) {
+			for (DictRefResPo drf : drfs) {
+				DictDetailPo dd = dictContentService.getDictDetailInfo(drf.getDictDid());
+				if(dd!=null) {
+					CDictDPo cdd = getCDictDInfo(drf.getResId());
+					if(cdd!=null) {
+						Map<String, Object> mm = new HashMap<>();
+						mm.put("crawlerDictmId", cdd.getmId());
+						String crawlerDictmName = "";
+						if(cdd.getmId().equals("3"))
+							crawlerDictmName = "内容分类";
+						mm.put("crawlerDictmName",crawlerDictmName);
+						mm.put("crawlerDictdId", cdd.getId());
+						mm.put("crawlerDictdName", cdd.getDdName());
+						mm.put("publisher", cdd.getPublisher());
+						mm.put("dictmId", dd.getMId());
+						String dictmName = "";
+						if(dd.getMId().equals("3"))
+							dictmName = "内容分类";
+						mm.put("dictmName", dictmName);
+						mm.put("dictdId", drf.getDictDid());
+						mm.put("dictdName", dd.getDdName());
+						craw.add(mm);
+					}
+				}
+			}
+		}
+		if (craw.size()>0) {
+			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt");
+		}
+		return false;
 	}
 }

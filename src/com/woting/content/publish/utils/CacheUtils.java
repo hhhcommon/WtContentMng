@@ -31,6 +31,7 @@ public abstract class CacheUtils {
 	 * 专辑静态文件发布(info.json,P*.json和content.html)
 	 * @param map
 	 */
+	@SuppressWarnings("unchecked")
 	public static void publishZJ(Map<String, Object> map) {
 		Map<String, Object> mapsequ = (Map<String, Object>) map.get("ContentDetail");
 		List<Map<String, Object>> listaudio = (List<Map<String, Object>>) map.get("SubList");
