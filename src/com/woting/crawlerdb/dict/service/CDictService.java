@@ -86,7 +86,7 @@ public class CDictService {
 			return map;
 		}
 		map = dictContentService.insertResDictRef(refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
-		if (m!=null) {
+		if (map!=null) {
 			CDictDPo cdd = cDictDDao.getInfoObject("getInfo", cdictdid);
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加成功");
