@@ -1,11 +1,14 @@
 package com.woting.content.publish.utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -140,13 +143,12 @@ public abstract class CacheUtils {
 	 */
 	public static boolean writeFile(String jsonstr, String path) {
 		File file = createFile(path);
-		FileWriter fileWriter = null;
 		try {
-			fileWriter = new FileWriter(file);
-			fileWriter.write(jsonstr);
-			fileWriter.flush();
-			fileWriter.close();
-		} catch (IOException e) {
+			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"GBK");
+			BufferedWriter writer = new BufferedWriter(write);
+			writer.write(jsonstr);
+			writer.close();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (file.exists())

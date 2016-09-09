@@ -128,6 +128,7 @@ public class CDictService {
 			}
 			m.put("dictMid", dictmid);
 			m.put("dictDid", dictdid);
+			m.put("orderByClause", "cTime desc");
 			drrs = dictContentService.getDictRefList(m);
 			if (drrs.size() > 0) {
 				for (DictRefResPo drr : drrs) {
@@ -156,6 +157,7 @@ public class CDictService {
 					return null;
 			}
 			m.put("resId", dictdid);
+			m.put("orderByClause", "cTime desc");
 			drrs = dictContentService.getDictRefList(m);
 			if (drrs.size()>0) {
 				for (DictRefResPo drr : drrs) {
@@ -243,6 +245,7 @@ public class CDictService {
 		}
 		if (craw.size()>0) {
 			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt");
+			return true;
 		}
 		return false;
 	}

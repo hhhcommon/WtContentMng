@@ -204,10 +204,10 @@ public class CDictController {
 		boolean isok = cDictService.saveCrawlerFile();
 		if(isok) {
 			map.put("ReturnType", "1001");
-			map.put("Message", "删除成功");
+			map.put("Message", "文件生成成功");
 		} else {
 			map.put("ReturnType", "1012");
-			map.put("Message", "删除失败");
+			map.put("Message", "文件生成失败");
 		}
 		return map;
 	}
