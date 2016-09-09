@@ -81,7 +81,7 @@
 }
 /*中间区域*/
 .center{
-  height: 84%;
+  height: 71%;
   width: 36%;
   border: 1px solid black;
   float: left;
@@ -92,7 +92,7 @@
   text-align:center;
 }
 .correspondContent{
-  height: 92%;
+  height: 84%;
   width: 100%;
   border: 1px solid red;
   float: left;
@@ -138,7 +138,12 @@
   height:30px;
   border:1px solid greenyellow;
 }
-.newDiv span:nth-child(3){
+.check{
+  position: relative;
+  top: 2px;
+  left: 2px;
+}
+.newDiv span:nth-child(4){
   margin-left: 5px;
   margin-right: 0px;
   color: red;
@@ -241,7 +246,7 @@ $(function(){
   });
   //0.33-删除映射关系
   $("#del").on("click",function(){
-    
+    delMapping();
   });
   $("#right_tree").delegate("li","click",function(event){
     //alert($(this).attr("id"));
@@ -313,16 +318,18 @@ function selectLeftTreeNode(event, treeId, treeNode){
     dataType: "json",
     data:_data,
     success: function(jsonData){
+      $(".otherContent").html("");//清空数据
       if(jsonData.ReturnType=="1001") {
         //加载和蜻蜓分类对应的栏目
-        for(var i=0; i<jsonData.ResultList.length;i++) {
-//          $(".otherContent").html("");
+        for(var i=0; i<jsonData.ResultList.length;i++) {          
           var newDiv=$("<div class='newDiv'></div>");
+          var newRadio=$("<input value="+jsonData.ResultList[i].Id+" type='radio' class='check' name='radio' value='0'>");
           var newSpan1=$("<span>【我听】</span>");
           var newSpan2=$("<span>"+"["+treeNode.name+"]"+"</span>");
           var newSpan3=$("<span>对应</span>");
           var newSpan4=$("<span>【蜻蜓】</span>");
           var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
+          newDiv.append(newRadio);
           newDiv.append(newSpan1);
           newDiv.append(newSpan2);
           newDiv.append(newSpan3);
@@ -345,22 +352,23 @@ function selectLeftTreeNode(event, treeId, treeNode){
 function selectRightTreeNode(){
   var _url=rootPath+"common/getCCateRefs.do";
   var _data={"DictMId":"3","DictDId":qtId,"SourceNum":"1"};
-  console.log(_data);
   $.ajax({
     type: "POST",    
     url: _url,
     dataType: "json",
     data:_data,
     success: function(jsonData){
-      $(".wtContent").html("");
+      $(".wtContent").html("");//清空数据
       if(jsonData.ReturnType=="1001") {
         for(var i=0;i<jsonData.ResultList.length;i++) {
+          var newRadio=$("<input value="+jsonData.ResultList[i].Id+" type='radio' class='check' name='radio' value='0'>");
           var newDiv=$("<div class='newDiv'></div>");
           var newSpan1=$("<span>【蜻蜓】</span>");
           var newSpan2=$("<span>"+"["+qtName+"]"+"</span>");
           var newSpan3=$("<span>对应</span>");
           var newSpan4=$("<span>【我听】</span>");
           var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
+          newDiv.append(newRadio);
           newDiv.append(newSpan1);
           newDiv.append(newSpan2);
           newDiv.append(newSpan3);
@@ -392,24 +400,24 @@ function addMapping(){
     success: function(jsonData){
       if(jsonData.ReturnType=="1001") {
         //加载和蜻蜓分类对应的栏目
-       
-//        $(".correspondContent").html("");
+          //$(".correspondContent").html("");
           var newDiv=$("<div class='newDiv'></div>");
+          var newRadio=$("<input type='radio' class='check' name='radio' >");//此处input无value，还要修改
           var newSpan1=$("<span>【我听】</span>");
           var newSpan2=$("<span>"+"["+treeNode.name+"]"+"</span>");
           var newSpan3=$("<span>对应</span>");
           var newSpan4=$("<span>【蜻蜓】</span>");
           var newSpan5=$("<span>"+"["+qtName+"]"+"</span>");
+          newDiv.append(newRadio);
           newDiv.append(newSpan1);
           newDiv.append(newSpan2);
           newDiv.append(newSpan3);
           newDiv.append(newSpan4);
           newDiv.append(newSpan5);
           $(".correspondContent").append(newDiv);
-        
-        alert("欢迎查看和其他平台对应的分类");
+          alert("添加成功，欢迎查看");
       }else{
-        alert("添加失败");
+        alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
       }
     },
     error:function(jqXHR){
@@ -418,7 +426,32 @@ function addMapping(){
   });
 }
 
-
+//1.6删除映射关系
+function delMapping(){
+  var checked=$("input[name='radio']:checked");
+  var checkdParent=checked.parent();
+  var _url=rootPath+"common/removeCCateRefs.do";
+  alert(checked.attr("value"));
+  var _data={"Id":checked.attr("value")};
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data:_data,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        alert("test11");
+//      $(".mainArea").remove(checkdParent);
+        alert("删除成功");
+      }else{
+        alert("发生错误：\n\t"+jsonData.ReturnType+"-"+jsonData.Message);
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
 
 </script>
 </html>
