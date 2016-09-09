@@ -69,7 +69,7 @@ public class CDictService {
 	 * @param cdictdid
 	 * @return 0：创建成功   1：已存在  2：创建失败
 	 */
-	public int addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
+	public int addCDDAndDDRef(String id,String dictmid, String dictdid, String cdictmid, String cdictdid) {
 		String refname = "";
 		if (dictmid.equals("3") && cdictmid.equals("3"))
 			refname = "外部分类-内容分类";
@@ -80,7 +80,7 @@ public class CDictService {
 		m.put("dictMid", dictmid);
 		m.put("dictDid", dictdid);
 		if(dictContentService.getDictRefResInfo(m)!=null) return 1;
-		boolean isok = dictContentService.insertResDictRef(refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
+		boolean isok = dictContentService.insertResDictRef(id, refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
 		if (isok)
 			return 0;
 		return 2;

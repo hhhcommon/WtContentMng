@@ -114,9 +114,9 @@ public class DictContentService {
 		return ddp;
 	}
 	
-	public boolean insertResDictRef(String refName, String refTableName, String resId, String dictMid, String dictDid) {
+	public boolean insertResDictRef(String id,String refName, String refTableName, String resId, String dictMid, String dictDid) {
 		DictRefResPo dictRefRes = new DictRefResPo();
-		dictRefRes.setId(SequenceUUID.getPureUUID());
+		dictRefRes.setId(id);
 		dictRefRes.setRefName(refName);
 		dictRefRes.setResTableName(refTableName);
 		dictRefRes.setResId(resId);

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spiritdata.framework.util.RequestUtils;
+import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.crawlerdb.dict.service.CDictService;
 
 /**
@@ -114,11 +115,12 @@ public class CDictController {
             map.put("Message", "CDictDId参数为空");
             return map;
 		}
-		
-		int isok = cDictService.addCDDAndDDRef(dictmid, dictdid, cdictmid, cdictdid);
+		String id = SequenceUUID.getPureUUID();
+		int isok = cDictService.addCDDAndDDRef(id, dictmid, dictdid, cdictmid, cdictdid);
 		if(isok==0) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加成功");
+			map.put("Id", id);
 			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			map.put("CTime", sd.format(System.currentTimeMillis()));
 		}
