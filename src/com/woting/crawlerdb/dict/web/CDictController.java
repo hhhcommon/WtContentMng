@@ -164,7 +164,7 @@ public class CDictController {
 			map.put("ResultList", res);
 		} else {
 			map.put("ReturnType", "1012");
-			map.put("Message", "添加失败");
+			map.put("Message", "数据为空");
 		}
 		return map;
 	}

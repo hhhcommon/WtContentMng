@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>映射管理</title>
+	<meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
+  <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/plugins/hplus/js/content.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/js/common.utils.js"></script> 
+</head>
+<style>
+/*工具条区域样式*/
+.toobarArea{
+  height:40px;
+  width:20%;
+  line-height:30px;
+  position:absolute;
+  margin-left:39%;
+  margin-top:3%;
+  overflow:hidden;
+}
+/*按钮*/
+.toobarArea button{
+  width:60px;
+  height:24px;
+  background:#0077c7;
+  color:white;
+  text-align:center;
+  padding:2px;
+  font-size:12px;
+  border-radius:20px;
+}
+/*主区域*/
+.mainArea{
+  height: calc(100% - 10px);
+  width: 100%;
+  position: absolute;
+  overflow:hidden;
+}
+/*左区域*/
+.left{
+  height:100%;
+  width: 30%;
+  border:1px solid black;
+  float: left;
+  margin-left: 10px;
+}
+.left h4{
+  text-align: center;
+}
+#left_tree,#right_tree{
+  height:60%;
+  width: 100%;
+  padding:1px 1px 1px 1px;
+  border:1px solid royalblue;
+  overflow:auto;
+}
+.relation{
+  text-align: center;
+}
+.otherContent,.wtContent{
+  height:29%;
+  width: 100%;
+  padding:1px 1px 1px 1px;
+  border:1px solid green;
+  overflow:auto;
+}
+/*中间区域*/
+.center{
+  height: 84%;
+  width: 36%;
+  border: 1px solid black;
+  float: left;
+  margin-top: 84px;
+  margin-left: 10px;
+}
+.center h4{
+  text-align:center;
+}
+.correspondContent{
+  height: 92%;
+  width: 100%;
+  border: 1px solid red;
+  float: left;
+  margin-top: 6px;
+  margin-left: 0px;
+  overflow:auto;
+}
+/*右侧区域*/
+.right{
+  height:100%;
+  width: 30%;
+  border:1px solid black;
+  float: left;
+  margin-left:10px;
+}
+.right_header{
+  height:30px;
+  width:100%;
+  border:1px solid blue;
+  overflow: hidden;
+}
+.right_header h4{
+  width:50%;
+  text-align:center;
+  float:left;
+}
+.right_header select{
+  float: left;
+  margin-left: 15%;
+  margin-top: 3px;
+}
+#right_tree .newli{
+  height:20px;
+  margin-top: 0px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 17px;
+  border-bottom: 1px solid black;
+  cursor:pointer;
+}
+.newDiv{
+  width: 100%;
+  height:30px;
+  border:1px solid greenyellow;
+}
+.newDiv span:nth-child(3){
+  margin-left: 5px;
+  margin-right: 0px;
+  color: red;
+}
+</style>
+<body style="overflow:hidden;">
+  <div style='height:100%;'>
+  	<!--主区域-->
+    <div class="mainArea">
+      <!--菜单栏-->
+      <div class="toobarArea">
+        <!--<button type="button" id="sear" opeType="claSear" class="btn" style="margin-right:3px;">查询</button>-->
+        <button type="button" id="add" opeType="claAdd" class="btn" style="margin-right:3px;">添加</button>
+        <button type="button" id="del" opeType="claDel" class="btn" style="margin-right:3px;">删除</button>
+      </div>
+    	<!--左侧区域-->
+    	<div class="left">
+    	  <h4>我听的分类</h4>
+    	  <ul id="left_tree" class="ztree"></ul>
+    	  <h5 class="relation">对应其他平台的分类</h5>
+    	  <div class="otherContent"></div>
+    	</div>
+    	<!--中间区域-->
+      <div class="center">
+        <h4>我听与其他平台的栏目映射</h4>
+        <div class="correspondContent"></div>
+      </div>
+      <!--右侧区域-->
+      <div class="right">
+        <div class="right_header">
+        	<h4>其他平台的的分类</h4>
+          <select class="selector" >
+            <option value="1">喜马拉雅</option>
+            <option value="2">考拉</option>
+            <option value="3">蜻蜓</option>
+          </select>
+        </div>
+        <ul id="right_tree" class="ztree"></ul>
+        <h5 class="relation">对应其他平台的分类</h5>
+        <div class="wtContent">
+          <!--<div class="newDiv">
+            <span>【我听】</span><span>[亲子教育]</span>
+            <span>对应</span>
+            <span>【蜻蜓】</span><span>[学习教育]</span>
+          </div>-->
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+var wtObj,otherObj,nodes,treeNode,newli,qtId,qtName;
+var rootPath=getRootPath();
+var loadCorrespondData;
+/*初始化方法：页面加载完成后执行*/
+$(function(){
+  //0-初始化页面
+  //0.1-配置相关参数
+  var setting={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:selectLeftTreeNode
+    }
+  };
+  
+  //0.2-加载左右两边的树
+  wtObj=$.fn.zTree.init($("#left_tree"), setting);
+//otherObj=$.fn.zTree.init($("#right_tree"), setting);
+  
+  //0.3-初始化按钮
+  //0.31-根据选择的平台加载对应的树
+  $('.selector').change(function(){
+    $("#right_tree").html("");//先清空right_tree
+//  alert($(this).children('option:selected').val()); 
+//  alert($(this).children('option:selected').text()); 
+    var optValue=$(this).children('option:selected').val();//这就是selected的value值
+    var optText=$(this).children('option:selected').text();//这就是selected的文本值
+    if(optValue=='1'){//对应喜马拉雅
+      loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
+    }
+    if(optValue=='3'){//对应蜻蜓
+      loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
+    }
+    if(optValue=='2'){//对应考拉
+       loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
+    }
+    loadCorrespondTree(loadCorrespondData);
+  });
+  //0.32-添加映射关系
+  $("#add").on("click",function(){
+    addMapping();
+  });
+  //0.33-删除映射关系
+  $("#del").on("click",function(){
+    
+  });
+  $("#right_tree").delegate("li","click",function(event){
+    //alert($(this).attr("id"));
+    //alert($(this).text());
+    qtId=$(this).attr("id");
+    qtName=$(this).text();
+    $("#right_tree li").css({"background":"white"});
+    $(this).css({"background":"rgba(216, 165, 129, 0.48)"});
+    selectRightTreeNode();
+    event.stopPropagation(); 
+  })
+});
+/**
+ * 1初始化完成后执行相关操作的方法
+*/
+//1.1加载我听的树
+loadWtTree();
+function loadWtTree(){
+  var _url=rootPath+"baseinfo/getChannelTree4View.do";
+  var loadWtData=[{ChannelId:"",TreeViewType:"zTree"}];
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data: loadWtData,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        wtObj.addNodes(null,jsonData.Data.children,false);
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+//1.2根据选择的平台加载对应的树
+function loadCorrespondTree(loadCorrespondData){
+  var _url=rootPath+"common/getCCategory.do";
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data: loadCorrespondData,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        for(var i=0;i<jsonData.AllCount;i++){
+          newli=$("<li class='newli' id="+jsonData.ResultList[i].Id+"></li>");
+          newli.html(jsonData.ResultList[i].Title);
+          $("#right_tree").append(newli);
+        }
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+//1.3选中我听的分类，填充我听与当前选中平台的分类映射关系
+function selectLeftTreeNode(event, treeId, treeNode){
+  nodes=wtObj.getSelectedNodes();//获取 left_tree当前被选中的节点数据集合
+  treeNode=nodes[0]; //当前选中的节点
+  var _url=rootPath+"common/getCCateRefs.do";
+  var _data={"DictMId":"3","DictDId":treeNode.id,"SourceNum":"0"};
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data:_data,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        //加载和蜻蜓分类对应的栏目
+        for(var i=0; i<jsonData.ResultList.length;i++) {
+//          $(".otherContent").html("");
+          var newDiv=$("<div class='newDiv'></div>");
+          var newSpan1=$("<span>【我听】</span>");
+          var newSpan2=$("<span>"+"["+treeNode.name+"]"+"</span>");
+          var newSpan3=$("<span>对应</span>");
+          var newSpan4=$("<span>【蜻蜓】</span>");
+          var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
+          newDiv.append(newSpan1);
+          newDiv.append(newSpan2);
+          newDiv.append(newSpan3);
+          newDiv.append(newSpan4);
+          newDiv.append(newSpan5);
+          $(".otherContent").append(newDiv);
+        }
+        alert("欢迎查看和其他平台对应的分类");
+      }else{
+        alert(treeNode.name+" 与其他平台无对应分类，欢迎自行添加");
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+//1.4选中蜻蜓的分类，填充当前选中平台与我听的分类映射关系
+function selectRightTreeNode(){
+  var _url=rootPath+"common/getCCateRefs.do";
+  var _data={"DictMId":"3","DictDId":qtId,"SourceNum":"1"};
+  console.log(_data);
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data:_data,
+    success: function(jsonData){
+      $(".wtContent").html("");
+      if(jsonData.ReturnType=="1001") {
+        for(var i=0;i<jsonData.ResultList.length;i++) {
+          var newDiv=$("<div class='newDiv'></div>");
+          var newSpan1=$("<span>【蜻蜓】</span>");
+          var newSpan2=$("<span>"+"["+qtName+"]"+"</span>");
+          var newSpan3=$("<span>对应</span>");
+          var newSpan4=$("<span>【我听】</span>");
+          var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
+          newDiv.append(newSpan1);
+          newDiv.append(newSpan2);
+          newDiv.append(newSpan3);
+          newDiv.append(newSpan4);
+          newDiv.append(newSpan5);
+          $(".wtContent").append(newDiv);
+        }
+        alert("欢迎查看和我听平台对应的分类");
+      }else{
+        alert(qtName+" 与我听无对应分类，欢迎自行添加");
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+//1.5添加映射关系
+function addMapping(){
+  nodes=wtObj.getSelectedNodes();//获取 left_tree当前被选中的节点数据集合
+  treeNode=nodes[0]; //当前选中的节点
+  var _url=rootPath+"common/addCCateRef.do";
+  var _data={"DictMId":"3","DictDId":treeNode.id,"CDictMId":"3","CDictDId":qtId};
+  $.ajax({
+    type: "POST",    
+    url: _url,
+    dataType: "json",
+    data:_data,
+    success: function(jsonData){
+      if(jsonData.ReturnType=="1001") {
+        //加载和蜻蜓分类对应的栏目
+       
+//        $(".correspondContent").html("");
+          var newDiv=$("<div class='newDiv'></div>");
+          var newSpan1=$("<span>【我听】</span>");
+          var newSpan2=$("<span>"+"["+treeNode.name+"]"+"</span>");
+          var newSpan3=$("<span>对应</span>");
+          var newSpan4=$("<span>【蜻蜓】</span>");
+          var newSpan5=$("<span>"+"["+qtName+"]"+"</span>");
+          newDiv.append(newSpan1);
+          newDiv.append(newSpan2);
+          newDiv.append(newSpan3);
+          newDiv.append(newSpan4);
+          newDiv.append(newSpan5);
+          $(".correspondContent").append(newDiv);
+        
+        alert("欢迎查看和其他平台对应的分类");
+      }else{
+        alert("添加失败");
+      }
+    },
+    error:function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+}
+
+
+
+</script>
+</html>
