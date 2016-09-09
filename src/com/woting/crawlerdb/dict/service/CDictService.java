@@ -1,5 +1,7 @@
 package com.woting.crawlerdb.dict.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,8 @@ public class CDictService {
 			mm.put("Title", cd.getDdName());
 			mm.put("VisitUrl", cd.getVisitUrl());
 			mm.put("Publisher", cd.getPublisher());
+			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			mm.put("CTime", sd.format(cd.getcTime()));
 			cdd.add(mm);
 		}
 		return cdd;
@@ -63,16 +67,23 @@ public class CDictService {
 	 * @param dictdid
 	 * @param cdictmid
 	 * @param cdictdid
-	 * @return
+	 * @return 0：创建成功   1：已存在  2：创建失败
 	 */
-	public boolean addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
+	public int addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
 		String refname = "";
 		if (dictmid.equals("3") && cdictmid.equals("3"))
 			refname = "外部分类-内容分类";
+		Map<String, Object> m = new HashMap<>();
+		m.put("refName", "外部分类-内容分类");
+		m.put("resTableName", "hotspot_DictD");
+		m.put("resId", cdictdid);
+		m.put("dictMid", dictmid);
+		m.put("dictDid", dictdid);
+		if(dictContentService.getDictRefResInfo(m)!=null) return 1;
 		boolean isok = dictContentService.insertResDictRef(refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
 		if (isok)
-			return true;
-		return false;
+			return 0;
+		return 2;
 	}
 
 	/**
@@ -113,7 +124,8 @@ public class CDictService {
 					mm.put("Title", ddp.getDdName());
 					mm.put("SrcId", cd.getId());
 					mm.put("SrcTitle", cd.getDdName());
-					mm.put("CTime", drr.getCTime());
+					DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					mm.put("CTime", sd.format(drr.getCTime()));
 					ms.add(mm);
 				}
 			}
@@ -139,7 +151,8 @@ public class CDictService {
 					mm.put("Title", cd.getDdName());
 					mm.put("SrcId", ddp.getId());
 					mm.put("SrcTitle", ddp.getDdName());
-					mm.put("CTime", drr.getCTime());
+					DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					mm.put("CTime", sd.format(drr.getCTime()));
 					ms.add(mm);
 				}
 			}
@@ -169,7 +182,9 @@ public class CDictService {
 	 */
 	public boolean delDictResRef(String id) {
 		dictContentService.delDictRefRes(id);;
-		if (dictContentService.getDictRefResInfo(id)!=null) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", id);
+		if (dictContentService.getDictRefResInfo(m)!=null) {
 			return false;
 		}
 		return true;

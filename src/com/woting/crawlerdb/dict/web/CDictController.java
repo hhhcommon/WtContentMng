@@ -1,5 +1,7 @@
 package com.woting.crawlerdb.dict.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,13 +114,21 @@ public class CDictController {
             map.put("Message", "CDictDId参数为空");
             return map;
 		}
-		boolean isok = cDictService.addCDDAndDDRef(dictmid, dictdid, cdictmid, cdictdid);
-		if(isok) {
+		
+		int isok = cDictService.addCDDAndDDRef(dictmid, dictdid, cdictmid, cdictdid);
+		if(isok==0) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加成功");
-		} else {
+			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			map.put("CTime", sd.format(System.currentTimeMillis()));
+		}
+		if(isok==1){
 			map.put("ReturnType", "1012");
-			map.put("Message", "添加失败");
+			map.put("Message", "已存在");
+		}
+		if(isok==2){
+			map.put("ReturnType", "1013");
+			map.put("Message", "创建失败");
 		}
 		return map;
 	}

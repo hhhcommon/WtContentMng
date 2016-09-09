@@ -44,8 +44,7 @@ public class DictContentService {
 	public void addCataLogs(String mid, String did, String mediatype, String assetid) {
 		// 保存专辑分类信息到wt_ResDict_Ref
 		try {
-			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT))
-					.getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			DictModel dm = _cd.getDictModelById(mid);
 			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
 			Map<String, Object> m = eu1.toTreeMap();
@@ -133,9 +132,7 @@ public class DictContentService {
 		return dictrefDao.queryForList("getList", m);
 	}
 	
-	public DictRefResPo getDictRefResInfo(String id) {
-		Map<String, Object> m = new HashMap<>();
-		m.put("id", id);
+	public DictRefResPo getDictRefResInfo(Map<String, Object> m) {
 		return dictrefDao.getInfoObject("getInfo", m);
 	}
 	
