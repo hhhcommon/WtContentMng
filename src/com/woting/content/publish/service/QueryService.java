@@ -23,6 +23,7 @@ import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
@@ -43,6 +44,8 @@ public class QueryService {
 	private MediaService mediaService;
 	@Resource
 	private ChannelContentService chaService;
+	@Resource
+	private ChannelService chService;
 	@Resource
 	private BroadcastService bcService;
 
@@ -88,7 +91,7 @@ public class QueryService {
 		m.put("begincTime", beginctime);
 		m.put("endcTime", endctime);
 		m.put("flowFlag", flowFlag);
-		m.put("beginNum", (page - 1) * pagesize);
+		m.put("beginNum", page * pagesize);
 		m.put("size", pagesize);
 		List<ChannelAssetPo> listchapo = mediaService.getContentsByFlowFlag(m);
 		for (ChannelAssetPo channelAssetPo : listchapo) {
@@ -424,6 +427,10 @@ public class QueryService {
 		map.put("Source", listorganize);
 		return map;
 	}
+	
+	public List<Map<String, Object>> getPublishedSeqList() {
+		return chService.getSeqPublishedList();
+	}
 
 	/**
 	 * 加载专辑id为zjId的专辑的下属的节目列表，注意是某一页page的列表
@@ -457,7 +464,7 @@ public class QueryService {
 		}
 		return map;
 	}
-
+	
 	/**
 	 * 关闭数据库连接
 	 * @param conn

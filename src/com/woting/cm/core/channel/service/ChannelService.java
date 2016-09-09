@@ -294,4 +294,20 @@ public class ChannelService {
             }
         }
     }
+    
+    public List<Map<String, Object>> getSeqPublishedList() {
+    	List<Map<String, Object>> ms = new ArrayList<>();
+    	Map<String, Object> m = new HashMap<>();
+    	m.put("assetType", "wt_SeqMediaAsset");
+    	m.put("flowFlag", 2);
+    	List<ChannelAssetPo> chas = channelAssetDao.queryForList("getInfo",m);
+    	if(chas!=null && chas.size()>0) {
+    		for (ChannelAssetPo cha : chas) {
+				Map<String, Object> mm = new HashMap<>();
+				mm.put("ContentId", cha.getAssetId());
+				ms.add(mm);
+			}
+    	}
+		return ms;
+    }
 }

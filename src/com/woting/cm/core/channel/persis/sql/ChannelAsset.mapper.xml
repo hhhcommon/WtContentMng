@@ -120,8 +120,8 @@
   </select>
   
   <select id="getListByFlowFlag" resultMap="channelAssetMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> 
-    order by sort desc,pubTime desc limit #{beginNum,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
+    select <include refid="Base_Column_List"/> from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> 
+    order by sort ,pubTime desc limit #{beginNum,jdbcType=INTEGER},#{size,jdbcType=INTEGER}
   </select>
   
   <select id="getListByAssetIds" resultMap="channelAssetMap" parameterType="java.util.Map">

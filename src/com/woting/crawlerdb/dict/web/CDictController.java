@@ -1,5 +1,7 @@
 package com.woting.crawlerdb.dict.web;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spiritdata.framework.util.RequestUtils;
+import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.crawlerdb.dict.service.CDictService;
 
 /**
@@ -25,6 +28,11 @@ public class CDictController {
 	@Resource
 	CDictService cDictService;
 
+	/**
+	 * 获取抓取库的分类数据
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value="getCCategory.do")
     @ResponseBody
 	public Map<String, Object> getCDictD(HttpServletRequest request) {
@@ -107,17 +115,31 @@ public class CDictController {
             map.put("Message", "CDictDId参数为空");
             return map;
 		}
-		boolean isok = cDictService.addCDDAndDDRef(dictmid, dictdid, cdictmid, cdictdid);
-		if(isok) {
+		String id = SequenceUUID.getPureUUID();
+		int isok = cDictService.addCDDAndDDRef(id, dictmid, dictdid, cdictmid, cdictdid);
+		if(isok==0) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加成功");
-		} else {
+			map.put("Id", id);
+			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			map.put("CTime", sd.format(System.currentTimeMillis()));
+		}
+		if(isok==1){
 			map.put("ReturnType", "1012");
-			map.put("Message", "添加失败");
+			map.put("Message", "已存在");
+		}
+		if(isok==2){
+			map.put("ReturnType", "1013");
+			map.put("Message", "创建失败");
 		}
 		return map;
 	}
 	
+	/**
+	 * 查询资源库与抓取库字典映射关系
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value="getCCateRefs.do")
     @ResponseBody
     public Map<String, Object> getCCateRefInfo(HttpServletRequest request) {
@@ -159,6 +181,11 @@ public class CDictController {
 		return map;
 	}
 	
+	/**
+	 * 删除资源库与抓取库字典映射关系
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value="removeCCateRefs.do")
     @ResponseBody
     public Map<String, Object> RemoveCCateRefs(HttpServletRequest request) {

@@ -170,21 +170,14 @@ public class QueryController {
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		System.out.println(m);
 		int flowFlag = 0;
-		// String userId = (String) m.get("UserId");
 		int page = 0;
 		int pagesize = 0;
-		if (m.containsKey("ContentFlowFlag"))
-			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		StringBuilder sb = new StringBuilder();
-		for (int i = 1; i < 675; i++) { //目前测试i循环参数固定
-			page = i;
-			pagesize = 10;
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, null, null, null, null, null, null);
-			List<Map<String, Object>> listsequs = (List<Map<String, Object>>) maplist.get("List");
+		List<Map<String, Object>> listsequs = queryService.getPublishedSeqList();
+		if(listsequs!=null && listsequs.size()>0) {
 			for (Map<String, Object> map2 : listsequs) {
-				String sequid = (String) map2.get("ContentId");
+			    String sequid = (String) map2.get("ContentId");
 				if (sb.indexOf(sequid) < 0) {
 					Map<String, Object> m2 = queryService.getContentInfo(page, pagesize, sequid, "wt_SeqMediaAsset");
 					if (m2.get("audio") != null) {
@@ -195,7 +188,7 @@ public class QueryController {
 					CacheUtils.publishZJ(map);
 				}
 			}
-		}
+		} 
 		return null;
 	}
 
