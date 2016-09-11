@@ -13,7 +13,8 @@
     <typeAlias alias="PVersion"     type="com.woting.version.core.model.Version"/>
     <typeAlias alias="PVerConfig"   type="com.woting.version.core.model.VersionConfig"/>
     <!-- 抓取资源管理 -->
-    <typeAlias alias="cDictD" type="com.woting.crawlerdb.dict.persis.po.CDictDPo"/>
+    <typeAlias alias="cDictD" type="com.woting.crawlerdb.dict.persis.po.CDictDetailPo"/>
+    <typeAlias alias="cDictM" type="com.woting.crawlerdb.dict.persis.po.CDictMasterPo"/>
   </typeAliases>
   <mappers>
     <!-- 电台相关 -->
@@ -25,6 +26,7 @@
     <!-- 版本管理 -->
     <mapper resource="com/woting/version/core/persis/sql/Version.mapper.xml"/>
     <!-- 抓取资源管理 -->
-    <mapper resource="com/woting/crawlerdb/dict/persis/sql/CDictD.mapper.xml"/>
+    <mapper resource="com/woting/crawlerdb/dict/persis/sql/CDictDetail.mapper.xml"/>
+    <mapper resource="com/woting/crawlerdb/dict/persis/sql/CDictMaster.mapper.xml"/>
   </mappers>
 </configuration>
