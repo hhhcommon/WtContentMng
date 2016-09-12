@@ -202,7 +202,6 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getZJSubPage(HttpServletRequest request) {
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		System.out.println(m);
 		String zjid = (String) m.get("ContentId");
 		String page = (String) m.get("Page");
 		Map<String, Object> map = new HashMap<String, Object>();

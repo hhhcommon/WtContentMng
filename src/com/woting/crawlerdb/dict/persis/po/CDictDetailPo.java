@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import com.spiritdata.framework.core.model.BaseObject;
 
-public class CDictDPo extends BaseObject {
+public class CDictDetailPo extends BaseObject {
 
 	private static final long serialVersionUID = -8654589382196177289L;
 	private String id;
