@@ -176,11 +176,11 @@
       <div class="right">
         <div class="right_header">
         	<h4>其他平台的的分类</h4>
-          <select class="selector" >
-            <option value="1" selected="selected">喜马拉雅</option>
-            <option value="2" >考拉</option>
-            <option value="3">蜻蜓</option>
-          </select>
+          <!--<select class="selector" >-->
+            <!--<option value="1" selected="selected">喜马拉雅</option>-->
+            <!--<option value="2" >考拉</option>-->
+            <!--<option value="3">蜻蜓</option>-->
+          <!--</select>-->
         </div>
         <ul id="right_tree" class="ztree"></ul>
         <h5 class="relation">对应其他平台的分类</h5>
@@ -196,7 +196,7 @@ var rootPath=getRootPath();
 $(function(){
   //0-初始化页面
   //0.1-配置相关参数
-  var setting={
+  var setting1={
     view:{
       selectedMulti:false//是否允许同时选中多个节点
     },
@@ -209,23 +209,36 @@ $(function(){
       onClick:selectLeftTreeNode
     }
   };
+  var setting2={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:selectRightTreeNode
+    }
+  };
   
   //0.2-加载左右两边的树
-  wtObj=$.fn.zTree.init($("#left_tree"), setting);
-//otherObj=$.fn.zTree.init($("#right_tree"), setting);
+  wtObj=$.fn.zTree.init($("#left_tree"), setting1);
+  otherObj=$.fn.zTree.init($("#right_tree"), setting2);
   
   //0.3-初始化option的选中值，页面加载出来的时候是喜马拉雅
-  optValue=$('.selector').children('option:selected').val();
-  changeOpt();
+//optValue=$('.selector').children('option:selected').val();
+//changeOpt();
   
   //0.4-初始化按钮
   //0.41-根据选择的平台加载对应的树
-  $('.selector').on("change",function(){
-    $("#right_tree").html("");//先清空right_tree
+//$('.selector').on("change",function(){
+//  $("#right_tree").html("");//先清空right_tree
     //alert($(this).children('option:selected').val()); 
     //alert($(this).children('option:selected').text()); 
-    changeOpt();
-  });
+//  changeOpt();
+//});
   
   //0.42-添加映射关系
   $("#add").on("click",function(){
@@ -243,16 +256,16 @@ $(function(){
   })
   
   //0.45-动态选中其他平台的分类
-  $("#right_tree").delegate("li","click",function(event){
+//$("#right_tree").delegate("li","click",function(event){
     //alert($(this).attr("id"));
     //alert($(this).text());
-    qtId=$(this).attr("id");
-    qtName=$(this).text();
-    $("#right_tree li").css({"background":"#f5f5f5"});
-    $(this).css({"background":"rgba(216, 165, 129, 0.48)"});
-    selectRightTreeNode();
-    event.stopPropagation(); 
-  });
+//  qtId=$(this).attr("id");
+//  qtName=$(this).text();
+//  $("#right_tree li").css({"background":"#f5f5f5"});
+//  $(this).css({"background":"rgba(216, 165, 129, 0.48)"});
+//  selectRightTreeNode();
+//  event.stopPropagation(); 
+//});
 });
 
 /**
@@ -281,24 +294,26 @@ function loadWtTree(){
 }
 
 //2.1改变option的选中值，对应加载不同平台的树
-function changeOpt(){
-  optValue=$('.selector').children('option:selected').val();//这就是selected的value值
-  optText=$('.selector').children('option:selected').text();//这就是selected的文本值
-  if(optValue=='1'){//对应喜马拉雅
-    loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
-  }
-  if(optValue=='2'){//对应考拉
-    loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
-  }
-  if(optValue=='3'){//对应蜻蜓
-    loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
-  }
-  loadCorrespondTree(loadCorrespondData);
-}
+//function changeOpt(){
+//optValue=$('.selector').children('option:selected').val();//这就是selected的value值
+//optText=$('.selector').children('option:selected').text();//这就是selected的文本值
+//if(optValue=='1'){//对应喜马拉雅
+//  loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
+//}
+//if(optValue=='2'){//对应考拉
+//  loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
+//}
+//if(optValue=='3'){//对应蜻蜓
+//  loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
+//}
+//loadCorrespondTree(loadCorrespondData);
+//}
 
 //2.2根据选择的平台加载对应的树
-function loadCorrespondTree(loadCorrespondData){
-  var _url=rootPath+"common/getCCategory.do";
+loadCorrespondTree();
+function loadCorrespondTree(){
+  var _url=rootPath+"/baseinfo/getCCatalogTree4View.do";
+  var loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
   $.ajax({
     type: "POST",    
     url: _url,
@@ -306,11 +321,12 @@ function loadCorrespondTree(loadCorrespondData){
     data: loadCorrespondData,
     success: function(jsonData){
       if(jsonData.ReturnType=="1001") {
-        for(var i=0;i<jsonData.AllCount;i++){
-          newli=$("<li class='newli' id="+jsonData.ResultList[i].Id+"></li>");
-          newli.html(jsonData.ResultList[i].Title);
-          $("#right_tree").append(newli);
-        }
+        otherObj.addNodes(null,jsonData.Data.children,false);
+//      for(var i=0;i<jsonData.AllCount;i++){
+//        newli=$("<li class='newli' id="+jsonData.ResultList[i].Id+"></li>");
+//        newli.html(jsonData.ResultList[i].Title);
+//        $("#right_tree").append(newli);
+//      }
       }
     },
     error:function(jqXHR){
@@ -355,9 +371,9 @@ function selectLeftTreeNode(event, treeId, treeNode){
 }
 
 //4选中其他平台的分类，查询当前选中平台与我听的分类映射关系
-function selectRightTreeNode(){
+function selectRightTreeNode(event, treeId, treeNode){
   var _url=rootPath+"common/getCCateRefs.do";
-  var _data={"DictMId":"3","DictDId":qtId,"SourceNum":"1"};
+  var _data={"DictMId":"3","DictDId":treeNode.id,"SourceNum":"1"};
   $.ajax({
     type: "POST",    
     url: _url,
@@ -366,18 +382,19 @@ function selectRightTreeNode(){
     success: function(jsonData){
       $(".wtContent").html("");//清空数据
       if(jsonData.ReturnType=="1001") {
-        for(var i=0;i<jsonData.ResultList.length;i++) {
-          var newRadio=$("<input value="+jsonData.ResultList[i].Id+" type='radio' class='check' name='radio' value='0'>");
-          var newDiv=$("<div class='newDiv'></div>");
-          var newSpan1=$("<span>"+"【"+optText+"】"+"</span>");
-          var newSpan2=$("<span>"+"["+qtName+"]"+"</span>");
-          var newSpan3=$("<span>对应</span>");
-          var newSpan4=$("<span>"+"【"+jsonData.ResultList[i].Publisher+"】"+"</span>");
-          var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
-          var newSpan6=$("<br /><span style='margin-left:19px;'>"+jsonData.ResultList[i].CTime+"</span>");
-          newDiv.append(newRadio).append(newSpan1).append(newSpan2).append(newSpan3).append(newSpan4).append(newSpan5).append(newSpan6);     
-          $(".wtContent").append(newDiv);
-        }
+        alert(treeNode.id);
+//      for(var i=0;i<jsonData.ResultList.length;i++) {
+//        var newRadio=$("<input value="+jsonData.ResultList[i].Id+" type='radio' class='check' name='radio' value='0'>");
+//        var newDiv=$("<div class='newDiv'></div>");
+//        var newSpan1=$("<span>"+"【"+optText+"】"+"</span>");
+//        var newSpan2=$("<span>"+"["+qtName+"]"+"</span>");
+//        var newSpan3=$("<span>对应</span>");
+//        var newSpan4=$("<span>"+"【"+jsonData.ResultList[i].Publisher+"】"+"</span>");
+//        var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
+//        var newSpan6=$("<br /><span style='margin-left:19px;'>"+jsonData.ResultList[i].CTime+"</span>");
+//        newDiv.append(newRadio).append(newSpan1).append(newSpan2).append(newSpan3).append(newSpan4).append(newSpan5).append(newSpan6);     
+//        $(".wtContent").append(newDiv);
+//      }
       }else{
         alert("无关联数据!");
       }
@@ -390,6 +407,7 @@ function selectRightTreeNode(){
 
 //5添加映射关系
 function addMapping(){
+  return;
   nodes=wtObj.getSelectedNodes();//获取 left_tree当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
   var _url=rootPath+"common/addCCateRef.do";
@@ -434,6 +452,7 @@ function beforeRemove(){
 
 //6.2删除映射关系
 function delMapping(){
+  return;
   var checked=$("input[name='radio']:checked");
   var _url=rootPath+"common/removeCCateRefs.do";
   var _data={"Id":checked.attr("value")};
@@ -458,6 +477,7 @@ function delMapping(){
 
 //7保存映射关系
 function saveMapping(){
+  return;
   var _url=rootPath+"common/saveCCateRefs.do";
   $.ajax({
     type: "POST",    
