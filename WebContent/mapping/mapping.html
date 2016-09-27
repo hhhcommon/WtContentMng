@@ -4,8 +4,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>映射管理</title>
-	<meta name="keywords" content="">
+  <title>映射管理</title>
+  <meta name="keywords" content="">
   <meta name="description" content="">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
@@ -176,11 +176,6 @@
       <div class="right">
         <div class="right_header">
         	<h4>其他平台的的分类</h4>
-          <select class="selector" >
-            <option value="1" selected="selected">喜马拉雅</option>
-            <option value="2" >考拉</option>
-            <option value="3">蜻蜓</option>
-          </select>
         </div>
         <ul id="right_tree" class="ztree"></ul>
         <h5 class="relation">对应其他平台的分类</h5>
@@ -190,13 +185,13 @@
   </div>
 </body>
 <script>
-var wtObj,otherObj,nodes,treeNode,newli,qtId,qtName,optText,optValue,loadCorrespondData;
+var wtObj,otherObj,nodes,treeNode,newli,lnodes,rnodes,lTreeNode,rTreeNode;
 var rootPath=getRootPath();
 /*初始化方法：页面加载完成后执行*/
 $(function(){
   //0-初始化页面
-  //0.1-配置相关参数
-  var setting={
+  //0.1-配置左边树相关参数
+  var settingLT={
     view:{
       selectedMulti:false//是否允许同时选中多个节点
     },
@@ -209,50 +204,40 @@ $(function(){
       onClick:selectLeftTreeNode
     }
   };
+  //0.2-配置右边树相关参数
+  var settingRT={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:selectRightTreeNode
+    }
+  };
   
-  //0.2-加载左右两边的树
-  wtObj=$.fn.zTree.init($("#left_tree"), setting);
-//otherObj=$.fn.zTree.init($("#right_tree"), setting);
+  //0.3-加载左右两边的树
+  wtObj=$.fn.zTree.init($("#left_tree"), settingLT);
+  otherObj=$.fn.zTree.init($("#right_tree"), settingRT);
   
-  //0.3-初始化option的选中值，页面加载出来的时候是喜马拉雅
-  optValue=$('.selector').children('option:selected').val();
-  changeOpt();
-  
-  //0.4-初始化按钮
-  //0.41-根据选择的平台加载对应的树
-  $('.selector').on("change",function(){
-    $("#right_tree").html("");//先清空right_tree
-    //alert($(this).children('option:selected').val()); 
-    //alert($(this).children('option:selected').text()); 
-    changeOpt();
-  });
-  
-  //0.42-添加映射关系
+  //0.41-添加映射关系
   $("#add").on("click",function(){
     addMapping();
   });
   
-  //0.43-删除映射关系
+  //0.42-删除映射关系
   $("#del").on("click",function(){
     beforeRemove();
   });
   
-  //0.44-保存映射关系
+  //0.43-保存映射关系
   $("#save").on("click",function(){
     saveMapping();
   })
   
-  //0.45-动态选中其他平台的分类
-  $("#right_tree").delegate("li","click",function(event){
-    //alert($(this).attr("id"));
-    //alert($(this).text());
-    qtId=$(this).attr("id");
-    qtName=$(this).text();
-    $("#right_tree li").css({"background":"#f5f5f5"});
-    $(this).css({"background":"rgba(216, 165, 129, 0.48)"});
-    selectRightTreeNode();
-    event.stopPropagation(); 
-  });
 });
 
 /**
@@ -280,37 +265,17 @@ function loadWtTree(){
   });
 }
 
-//2.1改变option的选中值，对应加载不同平台的树
-function changeOpt(){
-  optValue=$('.selector').children('option:selected').val();//这就是selected的value值
-  optText=$('.selector').children('option:selected').text();//这就是selected的文本值
-  if(optValue=='1'){//对应喜马拉雅
-    loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
-  }
-  if(optValue=='2'){//对应考拉
-    loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
-  }
-  if(optValue=='3'){//对应蜻蜓
-    loadCorrespondData={CDictMId:"3",IsValidate:"1",Publisher:optText};
-  }
-  loadCorrespondTree(loadCorrespondData);
-}
-
-//2.2根据选择的平台加载对应的树
-function loadCorrespondTree(loadCorrespondData){
-  var _url=rootPath+"common/getCCategory.do";
+//2加载其他平台的树
+loadCorrespondTree();
+function loadCorrespondTree(){
+  var _url=rootPath+"/baseinfo/getCCatalogTree4View.do";
   $.ajax({
     type: "POST",    
     url: _url,
     dataType: "json",
-    data: loadCorrespondData,
     success: function(jsonData){
       if(jsonData.ReturnType=="1001") {
-        for(var i=0;i<jsonData.AllCount;i++){
-          newli=$("<li class='newli' id="+jsonData.ResultList[i].Id+"></li>");
-          newli.html(jsonData.ResultList[i].Title);
-          $("#right_tree").append(newli);
-        }
+        otherObj.addNodes(null,jsonData.Data.children,false);
       }
     },
     error:function(jqXHR){
@@ -331,8 +296,8 @@ function selectLeftTreeNode(event, treeId, treeNode){
     success: function(jsonData){
       $(".otherContent").html("");//清空数据
       if(jsonData.ReturnType=="1001") {
-        //加载和蜻蜓分类对应的栏目
-        for(var i=0; i<jsonData.ResultList.length;i++) {          
+        //加载和对应平台的栏目
+        for(var i=0;i<jsonData.ResultList.length;i++) {          
           var newDiv=$("<div class='newDiv'></div>");
           var newRadio=$("<input value="+jsonData.ResultList[i].Id+" type='radio' class='check' name='radio' value='0'>");
           var newSpan1=$("<span>【我听】</span>");
@@ -355,9 +320,9 @@ function selectLeftTreeNode(event, treeId, treeNode){
 }
 
 //4选中其他平台的分类，查询当前选中平台与我听的分类映射关系
-function selectRightTreeNode(){
+function selectRightTreeNode(event, treeId, treeNode){
   var _url=rootPath+"common/getCCateRefs.do";
-  var _data={"DictMId":"3","DictDId":qtId,"SourceNum":"1"};
+  var _data={"DictMId":"3","DictDId":treeNode.id,"SourceNum":"1"};
   $.ajax({
     type: "POST",    
     url: _url,
@@ -366,11 +331,12 @@ function selectRightTreeNode(){
     success: function(jsonData){
       $(".wtContent").html("");//清空数据
       if(jsonData.ReturnType=="1001") {
+        var pNode=treeNode.getParentNode();//当前选中节点的父节点
         for(var i=0;i<jsonData.ResultList.length;i++) {
           var newRadio=$("<input value="+jsonData.ResultList[i].Id+" type='radio' class='check' name='radio' value='0'>");
           var newDiv=$("<div class='newDiv'></div>");
-          var newSpan1=$("<span>"+"【"+optText+"】"+"</span>");
-          var newSpan2=$("<span>"+"["+qtName+"]"+"</span>");
+          var newSpan1=$("<span>"+"【"+treeNode.name+"】"+"</span>");
+          var newSpan2=$("<span>"+"["+pNode.name+"]"+"</span>");
           var newSpan3=$("<span>对应</span>");
           var newSpan4=$("<span>"+"【"+jsonData.ResultList[i].Publisher+"】"+"</span>");
           var newSpan5=$("<span>"+"["+jsonData.ResultList[i].SrcTitle+"]"+"</span>");
@@ -390,10 +356,12 @@ function selectRightTreeNode(){
 
 //5添加映射关系
 function addMapping(){
-  nodes=wtObj.getSelectedNodes();//获取 left_tree当前被选中的节点数据集合
-  treeNode=nodes[0]; //当前选中的节点
+  lnodes=wtObj.getSelectedNodes();//获取 left_tree当前被选中的节点数据集合
+  ltreeNode=lnodes[0]; //当前选中的节点
+  rnodes=otherObj.getSelectedNodes();//获取 right_tree当前被选中的节点数据集合
+  rTreeNode=rnodes[0]; //当前选中的节点
   var _url=rootPath+"common/addCCateRef.do";
-  var _data={"DictMId":"3","DictDId":treeNode.id,"CDictMId":"3","CDictDId":qtId};
+  var _data={"DictMId":"3","DictDId":ltreeNode.id,"CDictMId":"3","CDictDId":rTreeNode.id};
   $.ajax({
     type: "POST",    
     url: _url,
@@ -406,11 +374,11 @@ function addMapping(){
         var newDiv=$("<div class='newDiv'></div>");
         var newRadio=$("<input value="+jsonData.Id+" type='radio' class='check' name='radio'>");
         var newSpan1=$("<span>【我听】</span>");
-        var newSpan2=$("<span>"+"["+treeNode.name+"]"+"</span>");
+        var newSpan2=$("<span>"+"["+ltreeNode.name+"]"+"</span>");
         var newSpan3=$("<span>对应</span>");
-        var newSpan4=$("<span>"+"【"+optText+"】"+"</span>");
-        var newSpan5=$("<span>"+"["+qtName+"]"+"</span>");
-        var newSpan6=$("<span style='margin-left:30px;'>"+jsonData.CTime+"</span>");
+        var newSpan4=$("<span>"+"【"+rTreeNode.getParentNode().name+"】"+"</span>");
+        var newSpan5=$("<span>"+"["+rTreeNode.name+"]"+"</span>");
+        var newSpan6=$("<span style='margin-left:6px;'>"+jsonData.CTime+"</span>");
         newDiv.append(newRadio).append(newSpan1).append(newSpan2).append(newSpan3).append(newSpan4).append(newSpan5).append(newSpan6);
         $(".correspondContent").append(newDiv);
       }else{
@@ -425,7 +393,7 @@ function addMapping(){
 
 //6.1确认是否删除映射关系
 function beforeRemove(){
-  if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
+  if(confirm("确认删除 节点 -- " + ltreeNode.name +"和"+ rTreeNode.name +" 的对应关系吗？")){
     delMapping();
   }else{
     alert("成功取消删除");
