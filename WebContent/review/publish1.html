@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title></title>
-        <meta name="keywords" content="">
-        <meta name="description" content="">
-        <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
-        <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
-       <!-- <link href="../resources/plugins/css_others/custom.css" rel="stylesheet"> -->
-        <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
-        <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
-        <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-        <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
-        <link href="../resources/css/publish.css" rel="stylesheet">
-        <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-        <script src="../resources/js/context.utils.js"></script>
-        <script src="../resources/js/publish.js"></script>
-        <script>
-			$(function(){
-				var flowFlag="1";//节目审核状态
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <!-- <link href="../resources/plugins/css_others/custom.css" rel="stylesheet"> -->
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
+  <link href="../resources/css/publish.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/js/publish.js"></script>
+  <script>
+		$(function(){
+			var flowFlag="1";//节目审核状态
 
-				//首次请求加载节目列表
-				getContentList(1,flowFlag,isSelect);
-				//获得查询条件
-				getConditions();
-				//翻页
-		        $(".pagination").on("click","span",{"flowFlag":flowFlag},fy);
-				//点击节目，获取详情及列表
-				$(".actList").on("click",".listBox",function(ev){
+		  //首次请求加载节目列表
+			getContentList(1,flowFlag,isSelect);
+		  //获得查询条件
+			getConditions();
+			//翻页
+		  $(".pagination").on("click","span",{"flowFlag":flowFlag},fy);
+			//点击节目，获取详情及列表
+		  $(".actList").on("click",".listBox",function(ev){
 				  var url=rootPath+"content/getContentInfo.do";
 				  var data={
 	                UserId: "zhangsan", 

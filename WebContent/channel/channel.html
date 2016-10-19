@@ -191,8 +191,8 @@ $(function() {
     getRootNode();
     $("#addCata").find(".modal-header>h4").html("添加栏目");
     $("#addCata").find("tr:eq(2)").css({"display":"none"});
-//  $("#shade").css({"display":"block"});
-//  $("#addCata").modal("show");
+    $("#shade").css({"display":"block"});
+    $("#addCata").modal("show");
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
@@ -336,8 +336,6 @@ function getRootNode() {
       $("#addCata").find(".modal-header>span:eq(0)").hide();
       $("#addCata").find(".modal-header>span:eq(1)").hide();
     }
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
   }
 }
 
