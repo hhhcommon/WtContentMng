@@ -55,11 +55,11 @@
 				$(window).on("resize",function(){
 					$(".conTable").css({"height":$(".mainShow").height()-$(".itemSortBox").height()-$(".conTitle").height()-150});
 				});
-                //复选框和排序号输入框获取焦点时，阻止向上冒泡触发li标签的click事件
-                $(".actList").on("click","input",function(ev){
-        	       //阻止事件向上级冒泡
-                   ev.stopPropagation();
-                });
+        //复选框和排序号输入框获取焦点时，阻止向上冒泡触发li标签的click事件
+        $(".actList").on("click","input",function(ev){
+        	//阻止事件向上级冒泡
+          ev.stopPropagation();
+        });
 		        
 				//修改排序号确定，然后再加载节目列表
 				$(document).on("click",".listBox .sortUpdateBtn",function(ev){
