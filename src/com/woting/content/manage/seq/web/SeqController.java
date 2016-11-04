@@ -28,7 +28,7 @@ public class SeqController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/seq/getHostSeqMediaList.do")
+	@RequestMapping(value = "/content/seq/getSeqMediaList.do")
 	@ResponseBody
 	public Map<String, Object> getSeqMediaList(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String,Object>();
@@ -39,10 +39,21 @@ public class SeqController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		
-		Map<String, Object> c = seqContentService.getHostSeqMediaContents(userid);
+		String flagflow = m.get("FlagFlow")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(flagflow)||flagflow.toLowerCase().equals("null")){
+			flagflow = "0";
+		}
+		String channelid = m.get("ChannelId")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(channelid)||channelid.toLowerCase().equals("null")){
+			channelid = "0";
+		}
+		String shortsearch = m.get("ShortSearch")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(shortsearch)||shortsearch.toLowerCase().equals("null")){
+			shortsearch = "false";
+		}
+		List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid,flagflow,channelid,shortsearch);
 		if(c!=null&&c.size()>0){
-			map.put("ReturnType", c.get("ReturnType"));
+			map.put("ReturnType", "1001");
 			c.remove("ReturnType");
 			map.put("ResultList", c);
 		}else{
