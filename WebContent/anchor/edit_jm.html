@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>编辑节目--新建</title>
+		<style>
+		 #navigation{
+		   display: none;
+		 }
+		</style>
+	</head>
+	<body>
+	  <ul > 
+      <li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"> 
+        <a href="#">栏目1</a> 
+        <ul id="navigation"> 
+          <li><a href="#">栏目1->菜单1</a><li> 
+          <li><a href="#">栏目1->菜单2</a><li> 
+          <li><a href="#">栏目1->菜单3</a><li> 
+          <li><a href="#">栏目1->菜单4</a><li> 
+        </ul> 
+      <li> 
+      <!--<li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"> 
+      <a href="#">栏目2</a> 
+      <ul> 
+      <li><a href="#">栏目2->菜单1</a><> 
+      <li><a href="#">栏目2->菜单2</a><> 
+      <li><a href="#">栏目2->菜单3</a><> 
+      <li><a href="#">栏目2->菜单4</a><> 
+      <li><a href="#">栏目2->菜单5</a><> 
+      </ul> 
+      <> -->
+<!--<li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"> 
+<a href="#">栏目3</a> 
+<ul> 
+<li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"> 
+<a href="#">栏目3->菜单1</a> 
+<ul> 
+<li><a href="#">菜单1->子菜单1</a><> 
+<li><a href="#">菜单1->子菜单2</a><> 
+<li><a href="#">菜单1->子菜单3</a><> 
+<li><a href="#">菜单1->子菜单4</a><> 
+</ul> 
+<> -->
+<!--<li><a href="#">栏目3->菜单2</a><> 
+<li onmouseover="displaySubMenu(this)" onmouseout="hideSubMenu(this)"> 
+<a href="#">栏目3->菜单3</a> 
+<ul> 
+<li><a href="#">菜单3->子菜单1</a><> 
+<li><a href="#">菜单3->子菜单2</a><> 
+<li><a href="#">菜单3->子菜单3</a><> 
+</ul> 
+<> 
+</ul> 
+<> -->
+</ul> 
+<script type="text/javascript"> 
+function displaySubMenu(li) { 
+var subMenu = li.getElementsByTagName("ul")[0]; 
+subMenu.style.display = "block"; 
+} 
+function hideSubMenu(li) { 
+var subMenu = li.getElementsByTagName("ul")[0]; 
+subMenu.style.display = "none"; 
+} 
+</script> 
+
+	</body>
+</html>

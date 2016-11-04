@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+	<title>主播页面--节目管理</title>
+	<meta name="keywords" content="我听，我享听,主播,主播平台,专业主播平台">
+  <meta name="description" content="我听，我享听">
+  <!--[if lt IE 8]>
+    <script>
+      alert('本系统已不支持IE6-8，请使用谷歌、火狐等浏览器\n或360、QQ等国产浏览器的极速模式浏览本页面！');
+    </script>
+  <![endif]-->
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/mainPage.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+.wrapper{
+  width:100%;
+  height:1633px;
+}
+/*头部样式*/
+.wrapper .navbar-default{
+  width:100%;
+  background: #ffa634;
+}
+.navbar .container-fluid{
+  width:100%;
+}
+.container-fluid .navbar-header{
+  position:relative;
+  height:80px;
+}
+.navbar-header .navbar-toggle{
+  margin-top:16px;
+}
+.navbar-default  .navbar-header .navbar-toggle:focus, 
+.navbar-default  .navbar-header .navbar-toggle:hover {
+  background-color: #fff;
+}
+.loginBtn{
+  height: 30px;
+  margin-top: 25px;
+  margin-right: -10px;
+  color:#fff;
+}
+.navbar-right .loginBtn .login_user{
+  color:#fff;
+  font-family: "微软雅黑";
+  margin:-12px 11px -11px 0;
+}
+.navbar-right .loginBtn .login_user:hover{
+  color:#fff;
+}
+/*中间左侧区域样式*/
+.content{
+  width:100%;
+  height:auto;
+  margin-top:100px;
+  border:1px solid red;
+}
+.con_left{
+  width:220px;
+  height:auto;
+  margin-left:30px;
+  border:1px solid #dedede;
+}
+.a_audio1{
+  position:absolute;
+  color:#000;
+  font-family: "微软雅黑";
+  height:40px;
+  font-size:18px;
+  line-height: 20px;
+  text-indent: 24px;
+  width:220px;
+  margin-left:-15px;
+}
+.a_fs{
+  font-size:16px;
+}
+.audio1{
+  width: 22px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 22px;
+  background-size: 100% 100%;
+}
+.audio2{
+  width: 17px;
+  position: absolute;
+  top: 0px;
+  left: 18px;
+  height: 38px;
+  background-size: 100% 100%;
+}
+.nav li .a_audio1{
+  border-bottom:1px solid #dedede;
+}
+.nav>li>a:focus, 
+.nav>li>a:hover {
+  text-decoration: none;
+  background-color: #ffa634;
+}
+/*中间右侧区域样式1*/
+.con_right{
+  margin-left:20px;
+  height:1090px;
+  border:1px solid #dedede;
+}
+.ri_top{
+  width:100%;
+  height:50px;
+  overflow: hidden;
+}
+.ri_top_li1{
+  width:156px;
+  height:30px;
+  color:#000;
+  font-size:14px;
+  margin-top:20px;
+  float: left;
+}
+.ri_top_li2{
+  float: left;
+  margin-top: 16px;
+  width: 180px;
+  height: 30px;
+}
+.ri_top_li2_inp{
+  width: 180px;
+  height: 30px;
+  font-size: 14px;
+  padding-left: 6px;
+}
+.ri_top_li2_img{
+  position: absolute;
+  top: 23px;
+  left: 324px;
+  width: 18px;
+  height: 18px;
+  background-size: 100% 100%;
+}
+.ri_top_li3{
+  width:86px;
+  height:30px;
+  float: left;
+  margin-left:10px;
+  margin-top:16px;
+}
+.ri_top_li4{
+  width: 80px;
+  height: 30px;
+  float: left;
+  background: #eaeaea;
+  position: absolute;
+  top:16px;
+  right:1.7%;
+}
+.ri_top_li4 span{
+  line-height: 30px;
+  margin-left:3px;
+}
+.ri_top_li4 img{
+  margin-left:6px;
+}
+/*中间右侧区域样式2*/
+.ri_top2{
+  width:100%;
+  height:auto;
+  border: 1px solid #dedede; 
+  overflow: hidden;
+  margin-top:15px;
+}
+.attr{
+  position: relative;
+  width:100%;
+  float: left;
+  border-style: solid solid dotted;
+  border-width: 0 0 1px;
+}
+.ri_top2 .attr:first-child{
+  border-top:none;
+}
+.ri_top2 .attr:last-child{
+  border-bottom:none;
+}
+.attrKey{
+  display: block;
+  overflow: hidden;
+  float: left;
+  width:110px;
+  height:30px;
+  line-height:30px;
+  color: rgb(91,90,90);
+  text-indent: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size:14px;
+  background: #f5f5f5;
+}
+.attrValues {
+  position:relative;
+  float: left;
+  background-color: #FFF;
+  width: 88%;
+  overflow: hidden;
+}
+.attrValues .av-collapse{
+  overflow: hidden;
+  position: relative;
+  margin-right: 180px;
+  margin-left: 5px;
+  height:30px;
+  line-height: 30px;
+}
+.trig_item{
+  display: block;
+  float: left;
+  margin-left:16px;
+  height:20px;
+  line-height: 20px;
+  margin-top:5px;
+  color: black; 
+  white-space: nowrap;
+}
+.border_none{
+  border:none;
+}
+.border_show{
+  border:1px solid #ff6600;
+}
+.trig_curr{
+  height:19px;
+  position:relative;
+  z-index:2;
+  border:1px solid #8e8e8e;
+  border-bottom:medium none;
+  background: #fff;
+  color:#f60;
+}
+.av-options{
+  position: absolute;
+  right:-4px;
+  top: 3px;
+  width: 130px;
+  z-index: 1;
+}
+.avo-more {
+  vertical-align: middle;
+  position: relative;
+  display: inline-block;
+  margin-top:5px;
+  margin-left:71px;
+  font-size:14px;
+  color: rgb(1,1,1);
+}
+.avo-more-img{
+  margin-top:8px;
+}
+.delLi{
+  margin-top: -5px;
+  height: 100%;
+  margin-left: 6px;
+  display: none;
+}
+.tab_cont_item{
+  width:100%;
+  height:30px;
+  border:1px solid #8e8e8e;
+  line-height: 30px;
+  position: relative;
+  top:-7px;
+  left:0px;
+  display: none;
+  overflow: hidden;
+}
+.tab_cont_item li{
+  float:left;
+  height:18px;
+  line-height:18px;
+  margin-left:20px;
+  margin-top:5px;
+}
+.con_right ul{
+  margin-bottom:0px;
+}
+/*列表展示区域*/
+.ri_top3{
+  width:100%;
+  height:auto;
+  border: 1px solid #green; 
+  overflow: hidden;
+  margin-top:15px;
+}
+.ri_top3_head{
+  width:100%;
+  height:40px;
+  background:#f5f5f5;
+  border:1px solid #dedede;
+  overflow: hidden;
+}
+.rth_al,.rth_op,.rth_st{
+  width:100px;
+  height:20px;
+  line-height:20px;
+  color:#000;
+  margin-top:10px;
+  font-size:16px;
+  font-family: "微软雅黑";
+  float: left;
+}
+.rth_al{
+  text-indent:20px;
+  line-height: 20px;
+}
+.rth_st{
+  position:absolute;
+  right:125px;
+  text-indent:20px;
+  border-left:2px solid #d8d8d8;
+}
+.rth_op{  
+  position:absolute;
+  right:20px;
+  text-indent:20px;
+  border-left:2px solid #d8d8d8;
+}
+.ri_top3_con{
+  width:100%;
+  position: absolute;
+  overflow: auto;
+}
+.rtc_listBox{
+  width:97%;
+  height:110px;
+  border-bottom:1px solid #dedede;
+  position:relative;
+  font-family: "微软雅黑";
+  font-size:14px ;
+  overflow: hidden;
+}
+.rtcl_img{
+  height:80px;
+  width:80px;
+  margin-top:15px;
+  margin-left:20px;
+  margin-right:10px;
+  border:1px solid #dedede;
+  float: left;
+}
+.rtcl_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.rtcl_con{
+  height:100%;
+  float: left;
+  color:rgb(173,172,172);
+}
+.rtcl_con h4{
+  margin-top:20px;
+  color:#000;
+}
+.jm_st{
+  float: right;
+  line-height: 110px;
+  margin-right:140px;
+  color:#000;
+}
+.op_type{
+  float: right;
+  margin-right:-140px;
+}
+.op_type p{
+  margin:5px 0px 0px 0px;
+  color: rgb(173,172,172);
+}
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button class="navbar-toggle collapsed" data-target="#collapse-test" data-toggle="collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/"><img alt="woting logo" class="logo" src="img/logo1.png"></a>
+        </div>
+        <div class="navbar-collapse collapse" id="collapse-test" aria-expanded="false" style="overflow: hidden;height:1px;">
+          <ul class="nav navbar-nav navbar-right desktop">
+            <li class="loginBtn">
+              <a  class="login_user" href="javascript:void(0)">
+                <img src="img/login1.png" alt="用户登陆" style="margin-right:3px;"/>用户登陆
+                <img src="img/login2.png" alt="用户登陆" />
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="javascript:void(0)">个人中心</a></li>
+                <li><a href="javascript:void(0)">修改密码</a></li>
+                <li class="divider"></li>
+                <li><a href="javascript:void(0)">退出登录</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3 con_left">
+            <ul id="main-nav" class="nav nav-tabs nav-stacked">
+              <li class="li_audio1 manage">
+                <a href="javascript:void(0)" class="a_audio1"><img class="audio1" src="img/audio1.png" alt="音频管理" />音频管理</a>
+                <ul class="nav nav-list collapse">
+                  <li><a href="javascript:void(0)" _href="" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />专辑管理</a></li>
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />节目管理</a></li>
+                </ul>
+              </li>
+              <li class="li_audio1 analysis">
+                <a href="javascript:void(0)" class="a_audio1"><img class="audio1" src="img/audio2.png" alt="音频管理" />数据分析</a>
+                <ul class="nav nav-list collapse">
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />播放数</a></li>
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />粉丝数</a></li>
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />下载数</a></li>
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />被赞数</a></li>
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />评论数</a></li>
+                  <li><a href="javascript:void(0)" class="a_audio1 a_fs"><img class="audio2" src="img/left-line.png" alt="" />分享数</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-9 con_right">
+            <ul class="ri_top">
+              <li class="ri_top_li1">音频管理 > 节目管理</li>
+              <li class="ri_top_li2">
+                <input class="ri_top_li2_inp" type="text" placeholder="搜索节目"/>
+                <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
+              </li>
+              <li class="ri_top_li3"><img src="img/upLoadJM.png" alt="上传节目" /></li>
+              <li class="ri_top_li4"><span>展开筛选</span><img src="img/filter2.png" alt="展开筛选" /></li>
+            </ul>
+            <div class="ri_top2">
+              <div class="attr" id="status">
+                <div class="attrKey">节目状态 :</div>
+                <div class="attrValues">
+                  <ul class="av-collapse av_ul">
+                    <li class="trig_item"><a  href="javascript:void(0)">已提交<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item"><a  href="javascript:void(0)">审核中<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item"><a  href="javascript:void(0)">已发布<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item"><a  href="javascript:void(0)">未通过<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item"><a  href="javascript:void(0)">已撤回<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item"><a  href="javascript:void(0)">待撤回<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                  </ul>
+                  <div class="av-options">
+                    <a class="avo-more" href="javascript:void(0)">更多</a>
+                    <img class="avo-more-img" src="img/filter2.png" alt="" />
+                  </div>
+                </div>
+              </div>
+              <div class="attr" id="channel">
+                <div class="attrKey">所属栏目 :</div>
+                <div class="attrValues">
+                  <ul class="av-collapse av_ul">
+                    <li class="trig_item" ><a  href="javascript:void(0)">电影电视<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">脱口秀<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">历史人文<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">商业财经<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">儿童科教<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                  </ul>
+                  <div class="av-options">
+                    <a class="avo-more" href="javascript:void(0)">更多</a>
+                    <img class="avo-more-img" src="img/filter2.png" alt="" />
+                  </div>
+                </div>
+                <div class="tab_cont">
+                  <ul class="tab_cont_item av_ul">
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目1<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目2<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a href="javascript:void(0)">二级栏目3<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                  </ul>
+                  <ul class="tab_cont_item av_ul">
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目4<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目5<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目6<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                  </ul>
+                  <ul class="tab_cont_item av_ul">
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目7<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目8<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目9<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                  </ul>
+                  <!--<ul class="tab_cont_item av_ul">-->
+                    <!--<li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目10<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目11<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目12<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>-->
+                  <!--</ul>-->
+                </div>
+              </div>
+              <div class="attr" id="album">
+                <div class="attrKey">所属专辑 :</div>
+                <div class="attrValues">
+                  <ul class="av-collapse av_ul">
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑1<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a href="javascript:void(0)">专辑2<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑3<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑4<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑5<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑6<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑7<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑8<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑9<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑10<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑11<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑12<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑13<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑14<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                    <li class="trig_item" ><a  href="javascript:void(0)">专辑15<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                  </ul>
+                  <div class="av-options">
+                    <a class="avo-more" href="javascript:void(0)">更多</a>
+                    <img class="avo-more-img" src="img/filter2.png" alt="" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="ri_top3">
+              <div class="ri_top3_head">
+                <span class="rth_al">全部节目</span>
+                <span class="rth_st">节目状态</span>
+                <span class="rth_op">相关操作</span>
+              </div>
+              <div class="ri_top3_con">
+                <div class="rtc_listBox">
+                  <div class="rtcl_img">
+                    <img src="" alt="节目图片" />
+                  </div>
+                  <div class="rtcl_con">
+                    <h4>敢不敢带上耳机听音乐</h4>
+                    <p class="zj_name">我是高冷女歌手</p>
+                    <p class="other">
+                      <span>时间 ：</span>
+                      <span>2016-10-08 10:47:35</span>
+                    </p>
+                  </div>
+                  <p class="jm_st">已发布</p>
+                  <div class="op_type">
+                    <p class="jm_edit">编辑</p>
+                    <p class="jm_pub">发布</p>
+                    <p class="jm_del">删除</p>
+                    <p class="jm_recal">撤回</p>
+                  </div>
+                </div>
+                <div class="rtc_listBox">
+                  <div class="rtcl_img">
+                    <img src="" alt="节目图片" />
+                  </div>
+                  <div class="rtcl_con">
+                    <h4>敢不敢带上耳机听音乐</h4>
+                    <p class="zj_name">我是高冷女歌手</p>
+                    <p class="other">
+                      <span>时间 ：</span>
+                      <span>2016-10-08 10:47:35</span>
+                    </p>
+                  </div>
+                  <p class="jm_st">已发布</p>
+                  <div class="op_type">
+                    <p class="jm_edit">编辑</p>
+                    <p class="jm_pub">发布</p>
+                    <p class="jm_del">删除</p>
+                    <p class="jm_recal">撤回</p>
+                  </div>
+                </div>
+                <div class="rtc_listBox">
+                  <div class="rtcl_img">
+                    <img src="" alt="节目图片" />
+                  </div>
+                  <div class="rtcl_con">
+                    <h4>敢不敢带上耳机听音乐</h4>
+                    <p class="zj_name">我是高冷女歌手</p>
+                    <p class="other">
+                      <span>时间 ：</span>
+                      <span>2016-10-08 10:47:35</span>
+                    </p>
+                  </div>
+                  <p class="jm_st">已发布</p>
+                  <div class="op_type">
+                    <p class="jm_edit">编辑</p>
+                    <p class="jm_pub">发布</p>
+                    <p class="jm_del">删除</p>
+                    <p class="jm_recal">撤回</p>
+                  </div>
+                </div>
+                <div class="rtc_listBox">
+                  <div class="rtcl_img">
+                    <img src="" alt="节目图片" />
+                  </div>
+                  <div class="rtcl_con">
+                    <h4>敢不敢带上耳机听音乐</h4>
+                    <p class="zj_name">我是高冷女歌手</p>
+                    <p class="other">
+                      <span>时间 ：</span>
+                      <span>2016-10-08 10:47:35</span>
+                    </p>
+                  </div>
+                  <p class="jm_st">已发布</p>
+                  <div class="op_type">
+                    <p class="jm_edit">编辑</p>
+                    <p class="jm_pub">发布</p>
+                    <p class="jm_del">删除</p>
+                    <p class="jm_recal">撤回</p>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+/*点击左侧*/
+$(".a_audio1").on("click",function(){
+  if($(this).siblings("ul").hasClass("in")) $(this).siblings("ul").removeClass("in").slideUp(200);
+  else $(this).siblings("ul").addClass("in").slideDown(200);
+});
+
+/*点击出现tab切换*/
+$(document).on("click",".trig_item",function(){
+  var ids=$(this).parents(".attr").attr('id');
+  console.log(ids);
+  debugger;
+  if(ids=="channel"){
+    if($(this).hasClass("trig_item_li")){
+      $(".trig_item_li").removeClass("border_show").addClass("border_none");
+      $(this).siblings().children("a").children("img").hide();
+      $(this).children("a").children("img").show();
+      $(this).removeClass("border_show").addClass("border_show");
+    }else{
+      $(this).siblings().removeClass("trig_curr");
+      $(this).siblings().children("a").children("img").hide();
+      $(this).siblings().removeClass("border_show").addClass("border_none");
+      $(this).children("a").children("img").show();
+      $(this).addClass("trig_curr");
+      $(this).removeClass("border_none").addClass("border_show");
+      $(".tab_cont_item .trig_item_li").children("a").children("img").hide();
+      $(".tab_cont_item .trig_item_li").removeClass("border_show").addClass("border_none");
+      $(".tab_cont_item").siblings().hide().eq($('#channel .trig_item').index(this)).show();
+    }
+  }else{
+    $("#"+ids+" .trig_item").removeClass("border_show").addClass("border_none");
+    $("#"+ids+" .trig_item").children("a").children("img").hide();
+    $(this).addClass("border_show");
+    $(this).children("a").children("img").show();
+  }
+});
+
+/*点击更多按钮*/
+$(document).on("click",".av-options",function(){
+  if($(this).children(".avo-more").text()=="更多"){
+    $(this).children(".avo-more").text("收起");
+    $(this).children(".avo-more-img").attr({"src":"img/filter1.png"});
+    $(this).siblings(".av-collapse").css({"height":"auto"});
+  }else{
+    $(this).children(".avo-more").text("更多");
+    $(this).children(".avo-more-img").attr({"src":"img/filter2.png"});
+    $(this).siblings(".av-collapse").css({"height":"30px"});
+  }
+});
+
+/*点击每个小分类下面的删除标签*/
+$(document).on("click",".delLi",function(event){
+  event.stopPropagation();
+  var i=$(this).parent().parent().index();
+  console.log(i);
+  debugger;
+  if($(this).parents(".attr").attr("id")=="channel"){
+    if($(this).parent().parent().parent().hasClass("tab_cont_item")){
+      $(this).parent().parent().addClass("border_none");;
+      $(this).hide();
+      $(".tab_cont_item").hide();
+      $(".av-collapse .trig_item").each(function(){
+        if($(this).hasClass("trig_curr")){
+          $(this).removeClass("trig_curr");
+          $(this).addClass("border_show");
+        }
+      })
+    }else{
+      $(this).parent().parent().addClass("border_none");
+      $(this).hide();
+      $(".tab_cont_item").hide();
+      $(".av-collapse .trig_item").removeClass("trig_curr");
+    }
+  }else{
+    $(this).parent().parent().addClass("border_none");
+    $(this).hide();
+  }
+});
+</script>
+</body>
+</html>

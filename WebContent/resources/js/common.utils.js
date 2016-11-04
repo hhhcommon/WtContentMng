@@ -51,6 +51,8 @@ function isUndefinedNullEmpty(obj) {
  * @returns {String} 在url中指定的paramName参数的值
  */
 function getUrlParam(url, paramName) {
+  var reg=/<script[^>]*>.*/gi;
+  if (url.match(reg)!=null) return null;
   if (!paramName&&!url) return null;
   var _url = url+"";
   if (_url.indexOf("?")==-1) return null;
