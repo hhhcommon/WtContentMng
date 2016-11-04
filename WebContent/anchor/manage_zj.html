@@ -15,6 +15,7 @@
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="js/add.js"></script>
+  <script src="js/manage_zj.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -139,7 +140,7 @@ body{overflow: auto;}
   width: 88%;
   overflow: hidden;
 }
-.attrValues .av-collapse{
+.attrValues .av-gather{
   overflow: hidden;
   position: relative;
   margin-right: 180px;
@@ -348,7 +349,7 @@ body{overflow: auto;}
           <div class="attr" id="status">
             <div class="attrKey">节目状态 :</div>
             <div class="attrValues">
-              <ul class="av-collapse av_ul">
+              <ul class="av-gather av_ul">
                 <li class="trig_item"><a  href="javascript:void(0)">已保存<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
                 <li class="trig_item"><a  href="javascript:void(0)">审核<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
                 <li class="trig_item"><a  href="javascript:void(0)">发布<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
@@ -363,7 +364,7 @@ body{overflow: auto;}
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
-              <ul class="av-collapse av_ul">
+              <ul class="av-gather av_ul">
                 <li class="trig_item" ><a  href="javascript:void(0)">电影电视<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
                 <li class="trig_item" ><a  href="javascript:void(0)">脱口秀<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
                 <li class="trig_item" ><a  href="javascript:void(0)">历史人文<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
@@ -639,7 +640,7 @@ $(document).on("click",".trig_item",function(){
       $(".trig_item_li").removeClass("border_show").addClass("border_none");
       $(this).siblings().children("a").children("img").hide();
       $(this).children("a").children("img").show();
-      $(this).removeClass("border_show").addClass("border_show");
+      $(this).removeClass("border_none").addClass("border_show");
     }else{
       $(this).siblings().removeClass("trig_curr");
       $(this).siblings().children("a").children("img").hide();
@@ -664,11 +665,11 @@ $(document).on("click",".av-options",function(){
   if($(this).children(".avo-more").text()=="更多"){
     $(this).children(".avo-more").text("收起");
     $(this).children(".avo-more-img").attr({"src":"img/filter1.png"});
-    $(this).siblings(".av-collapse").css({"height":"auto"});
+    $(this).siblings(".av-gather").css({"height":"auto"});
   }else{
     $(this).children(".avo-more").text("更多");
     $(this).children(".avo-more-img").attr({"src":"img/filter2.png"});
-    $(this).siblings(".av-collapse").css({"height":"30px"});
+    $(this).siblings(".av-gather").css({"height":"30px"});
   }
 });
 
@@ -681,20 +682,20 @@ $(document).on("click",".delLi",function(event){
       $(this).parent().parent().addClass("border_none");;
       $(this).hide();
       $(".tab_cont_item").hide();
-      $(".av-collapse .trig_item").each(function(){
+      $(".av-gather .trig_item").each(function(){
         if($(this).hasClass("trig_curr")){
           $(this).removeClass("trig_curr");
           $(this).addClass("border_show");
         }
       })
     }else{
-      $(this).parent().parent().addClass("border_none");
+      $(this).parent().parent().removeClass("border_show").addClass("border_none");
       $(this).hide();
       $(".tab_cont_item").hide();
-      $(".av-collapse .trig_item").removeClass("trig_curr");
+      $(".av-gather .trig_item").removeClass("trig_curr");
     }
   }else{
-    $(this).parent().parent().addClass("border_none");
+    $(this).parent().parent().removeClass("border_show").addClass("border_none");
     $(this).hide();
   }
 });
