@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
+import org.apache.ibatis.jdbc.Null;
+
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
@@ -84,6 +87,93 @@ public class MediaService {
 		return channelAssetDao.queryForList("getListByFlowFlag", m);
 	}
 
+	public List<Map<String, Object>> getMaListByPubId(String userid, String flowflag, String channelid,
+			String seqmediaid) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		Map<String, Object> m1 = new HashMap<>();
+		m1.put("publisherId", userid);
+		if (!flowflag.equals("0")) {
+			if (!flowflag.equals("5")) {
+				m1.put("flowFlag", "0");
+			} else {
+				m1.put("flowFlag", flowflag);
+			}
+		}
+		if (!channelid.equals("0")) {
+			Map<String, Object> chm = new HashMap<>();
+			chm.put("pcId", channelid);
+			List<ChannelPo> chs = channelDao.queryForList("getInfo", chm);
+			if (chs != null && chs.size() > 0) {
+				String chids = "";
+				for (ChannelPo ch : chs) {
+					chids += ",'" + ch.getId() + "'";
+				}
+				chids = chids.substring(1);
+				m1.put("channelIds", chids);
+			} else {
+				m1.put("channelIds", "'" + channelid + "'");
+			}
+		}
+		if (!seqmediaid.equals("0")) {
+			m1.put("assetId", seqmediaid);
+			m1.put("assetType", "wt_SeqMediaAsset");
+			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
+			if (chas != null && chas.size() > 0) {
+				String assetIds = "";
+				for (ChannelAssetPo cha : chas) {
+					assetIds += ",'" + cha.getAssetId() + "'";
+				}
+				assetIds = assetIds.substring(1);
+				Map<String, Object> m2 = new HashMap<>();
+				m2.put("ids", assetIds);
+				m2.put("smaPubId", userid);
+				List<SeqMediaAssetPo> smas = seqMediaAssetDao.queryForList("getSmaList", m2);
+				if (smas != null && smas.size() > 0) {
+					for (SeqMediaAssetPo sma : smas) {
+						List<MediaAssetPo> listpo = getMaListBySmaId(sma.getId());
+						if (listpo != null && listpo.size() > 0) {
+							for (MediaAssetPo mediaAssetPo : listpo) {
+								MediaAsset ma = new MediaAsset();
+								ma.buildFromPo(mediaAssetPo);
+								Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null);
+								SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId",
+										mediaAssetPo.getId());
+								m.put("ContentSeqId", seqMaRefPo == null ? null : seqMaRefPo.getSId());
+								list.add(m);
+							}
+						}
+					}
+				}
+				return list;
+			}
+		}
+		m1.put("assetType", "wt_MediaAsset");
+		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
+		if (chas != null && chas.size() > 0) {
+			String assetIds = "";
+			for (ChannelAssetPo cha : chas) {
+				assetIds += ",'" + cha.getAssetId() + "'";
+			}
+			assetIds = assetIds.substring(1);
+			Map<String, Object> m2 = new HashMap<>();
+			m2.put("ids", assetIds);
+			m2.put("maPubId", userid);
+			List<MediaAssetPo> mas = mediaAssetDao.queryForList("getMaList", m2);
+			if (mas != null && mas.size() > 0) {
+				for (MediaAssetPo mediaAssetPo : mas) {
+					MediaAsset ma = new MediaAsset();
+					ma.buildFromPo(mediaAssetPo);
+					Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, null, null);
+					SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
+					m.put("ContentSeqId", seqMaRefPo == null ? null : seqMaRefPo.getSId());
+					list.add(m);
+				}
+			}
+			return list;
+		}
+		return null;
+	}
+
 	// 根据主播id查询其所有单体资源
 	public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -154,7 +244,7 @@ public class MediaService {
 		m1.put("assetType", "wt_SeqMediaAsset");
 		if (!flowflag.equals("0")) {
 			if (flowflag.equals("5")) {
-				m1.put("flowFlag", "5"); //5用来查询待入库，其余编号与flowflag对应
+				m1.put("flowFlag", "5"); // 5用来查询待入库，其余编号与flowflag对应
 			} else {
 				m1.put("flowFlag", "5");
 			}
@@ -170,8 +260,8 @@ public class MediaService {
 				}
 				chids = chids.substring(1);
 				m1.put("channelIds", chids);
-			} else{
-				m1.put("channelIds", "'"+channelid+"'");
+			} else {
+				m1.put("channelIds", "'" + channelid + "'");
 			}
 		}
 		m1.put("publisherId", userid);
@@ -218,7 +308,7 @@ public class MediaService {
 				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 				if (smap.containsKey("ContentPubChannels")) {
 					List<Map<String, Object>> chas = (List<Map<String, Object>>) smap.get("ContentPubChannels");
-					if(chas!=null && chas.size()>0) {
+					if (chas != null && chas.size() > 0) {
 						for (Map<String, Object> map : chas) {
 							map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
 						}

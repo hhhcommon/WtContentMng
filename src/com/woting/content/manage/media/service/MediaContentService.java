@@ -33,10 +33,10 @@ public class MediaContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public Map<String, Object> getHostMediaContents(String userid) {
+	public Map<String, Object> getMediaContents(String userid, String flowflag, String channelid, String seqmediaid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		list = mediaService.getMaInfoByMaPubId(userid);
+		list = mediaService.getMaListByPubId(userid, flowflag, channelid, seqmediaid);
 		if (list != null && list.size() > 0) {
 			map.put("List", list);
 			map.put("AllCount", list.size());

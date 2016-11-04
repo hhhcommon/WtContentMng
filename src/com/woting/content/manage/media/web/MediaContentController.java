@@ -26,7 +26,7 @@ public class MediaContentController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/media/getHostMediaList.do")
+	@RequestMapping(value = "/content/media/getMediaList.do")
 	@ResponseBody
 	public Map<String, Object> getMediaList(HttpServletRequest request){
 		Map<String, Object> map = new HashMap<String,Object>();
@@ -37,7 +37,19 @@ public class MediaContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		Map<String, Object> c = mediaContentService.getHostMediaContents(userid);
+		String flagflow = m.get("FlagFlow")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(flagflow)||flagflow.toLowerCase().equals("null")){
+			flagflow = "0";
+		}
+		String channelid = m.get("ChannelId")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(channelid)||channelid.toLowerCase().equals("null")){
+			channelid = "0";
+		}
+		String seqmediaid = m.get("SeqMediaId")+"";
+		if(StringUtils.isNullOrEmptyOrSpace(seqmediaid)||seqmediaid.toLowerCase().equals("null")){
+			seqmediaid = "0";
+		}
+		Map<String, Object> c = mediaContentService.getMediaContents(userid,flagflow,channelid,seqmediaid);
 		if(c!=null&&c.size()>0){
 			map.put("ReturnType", c.get("ReturnType"));
 			c.remove("ReturnType");

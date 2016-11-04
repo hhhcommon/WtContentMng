@@ -29,6 +29,29 @@
     id, maTitle, maPubType, maPubId, maPublisher, maPublishTime, maImg, maURL, subjectWords, keyWords, langDid, language, timeLong, descn, pubCount, maStatus, cTime
   </sql>
   
+  <sql id="MediaAssetWhereClauseByEntiey">
+    <where>
+      <trim prefix="(" suffix=")" prefixOverrides="and">
+        <if test="id!=null">and id=#{id,jdbcType=VARCHAR}</if>
+        <if test="maTitle!=null">and maTitle=#{maTitle,jdbcType=VARCHAR}</if>
+        <if test="maPubType!=null and maPubType!=0">and maPubType=#{smaPubType,jdbcType=INTEGER}</if>
+        <if test="maPubId!=null">and maPubId=#{maPubId,jdbcType=VARCHAR}</if>
+        <if test="maPublisher!=null">and maPublisher=#{maPublisher,jdbcType=VARCHAR}</if>
+        <if test="maPublishTime!=null">and maPublishTime=#{maPublishTime,jdbcType=TIMESTAMP}</if>
+        <if test="maImg!=null">and maImg=#{maImg,jdbcType=VARCHAR}</if>
+        <if test="maURL!=null">and maURL=#{maURL,jdbcType=VARCHAR}</if>
+        <if test="subjectWords!=null">and subjectWords=#{subjectWords,jdbcType=VARCHAR}</if>
+        <if test="keyWords!=null">and keyWords=#{keyWords,jdbcType=VARCHAR}</if>
+        <if test="langDid!=null">and langDid=#{langDid,jdbcType=VARCHAR}</if>
+        <if test="language!=null">and language=#{language,jdbcType=VARCHAR}</if>
+        <if test="timeLong!=null">and timeLong=#{timeLong,jdbcType=VARCHAR}</if>
+        <if test="descn!=null">and descn=#{descn,jdbcType=VARCHAR}</if>
+        <if test="pubCount!=null and pubCount!=0">and pubCount=#{pubCount,jdbcType=INTEGER}</if>
+        <if test="maStatus!=null and maStatus!=0">and maStatus=#{maStatus,jdbcType=INTEGER}</if>
+        <if test="cTime!=null">and cTime=#{cTime,jdbcType=TIMESTAMP}</if>
+      </trim>
+    </where>
+  </sql>
 
   <!-- 单体节目播放源 -->
   <resultMap id="maSourceMap" type="maSource">
@@ -240,12 +263,17 @@
   </select>
   
   <!-- 根据主播id获取 -->
+  <select id="getMaList" parameterType="java.util.Map" resultMap="mediaAssetMap">
+    select <include refid="Base_Media_List"/>from wt_MediaAsset <if test="_parameter!=null"><include refid="MediaAssetWhereClauseByEntiey"/></if> <if test="ids!=null"> and id in (${ids})</if>
+    order by cTime desc
+  </select>
+  
   <select id="getMaListByMaPubId" parameterType="java.lang.String" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where maPubId=#{maPubId,jdbcType=VARCHAR} order by cTime desc
   </select>
   
   <select id="getSmaList" parameterType="java.util.Map" resultMap="seqMediaAssetMap">
-    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset <if test="_parameter!=null"><include refid="SeqMediaWhereClauseByEntiey"/></if> and id in (${ids})
+    select <include refid="Base_SequMedia_List"/>from wt_SeqMediaAsset <if test="_parameter!=null"><include refid="SeqMediaWhereClauseByEntiey"/></if><if test="ids!=null"> and id in (${ids})</if>
      order by cTime desc
   </select>
   

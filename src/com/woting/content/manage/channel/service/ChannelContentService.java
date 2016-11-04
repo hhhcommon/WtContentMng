@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.springframework.context.annotation.EnableLoadTimeWeaving;
+
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
@@ -61,7 +63,8 @@ public class ChannelContentService {
     		_CacheChannel _cd=channelService.loadCache();
     		ZTree<Channel> zc = new ZTree<>(_cd.channelTree);
     		Map<String, Object> rem = new HashMap<>();
-    		Map<String, Object> smam = new HashMap<>();
+    		List<Map<String, Object>> smam = new ArrayList<>();
+    		List<String> titles = new ArrayList<>();
     		for (ChannelAssetPo chaPo : l) {
     			Map<String, Object> mc = zc.findNode(chaPo.getChannelId()).toHashMap();
     			mc = ChannelUtils.buildChanelMap(mc);
@@ -72,6 +75,7 @@ public class ChannelContentService {
 						continue;
 					} else {
 						rem.put(mc.get("nodeName")+"", mc);
+						titles.add(mc.get("nodeName")+"");
 					}
 				} else {
 					if (rem.containsKey(mp.get("nodeName"))) {
@@ -90,6 +94,7 @@ public class ChannelContentService {
 						}
 					} else {
 						rem.put(mp.get("nodeName")+"", mp);
+						titles.add(mp.get("nodeName")+"");
 						List<Map<String, Object>> chils = new ArrayList<>();
 						chils.add(mc);
 						mp.put("children", chils);
@@ -101,12 +106,17 @@ public class ChannelContentService {
 					m3.put("FlowFlag", chaPo.getFlowFlag());
 					m3.put("PubId", chaPo.getAssetId());
 					m3.put("ChannelId", chaPo.getChannelId());
-					smam.put(chaPo.getPubName(), m3);
+					smam.add(m3);
 				}
 			}
     		Map<String, Object> map = new HashMap<>();
     		if (rem!=null && rem.size()>0) {
-				map.put("ChannelList", rem);
+    			List<Map<String, Object>> channels = new ArrayList<>();
+    			for (String str : titles) {
+					Map<String, Object> tm = (Map<String, Object>) rem.get(str);
+					channels.add(tm);
+				}
+				map.put("ChannelList", channels);
 			}
     		if (smam!=null && smam.size()>0) {
 				map.put("SeqMediaList", smam);
