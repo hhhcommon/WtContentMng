@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>专辑详情</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <!--日历插件-->
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;}
+.detail{
+  width:1090px;
+  min-width:850px;
+  height:620px;
+  margin:auto;
+  border:1px solid red;
+}
+.detail_title{
+  height: 30px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-left:20px;
+  float: left;
+}
+.my_title{
+  height: 30px;
+  float: right;
+  color: #000;
+  position:absolute;
+  font-size: 14px;
+  margin-top: 20px;
+  margin-left:786px;
+}
+.detail_content{
+  width:100%;
+  height:570px;
+  overflow: auto;
+}
+.dc_left{
+  position: relative;
+  width:710px;
+  height:calc(100% - 10px);
+  float: left;
+  margin-top:10px;
+}
+.dcl_zjcontent {
+  width:100%;
+  padding: 0px 0px 10px 20px;
+  position: relative;
+  border: 1px solid #dedede;
+  overflow: hidden;
+}
+.dcl_zjcontent1{
+  float: left;
+  width:180px;
+  height:180px;
+  position: absolute;
+}
+.dcl_zjcontent1 img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+  -ms-interpolation-mode:bicubic;  
+}
+.dcl_zjcontent2{
+  float:right;
+  overflow: hidden;
+  width:calc(100% - 205px);
+  height:auto;
+}
+.dcl_zjcontent2 h3{
+  width:auto;
+  display: inline-block;
+  font-size: 20px;
+  color:#000;
+  font-family: "微软雅黑";
+}
+.dcl_zjcontent2 h3 span{
+  color:#ffa634;
+  font-size:14px;
+  font-weight:100;
+}
+.dcl_zjcontent2 p{
+  font-size:14px;
+}
+.dcl_zjcontent2 p span{
+  font-size:15px;
+  color:#000;
+  font-weight: 800;
+  font-family: "微软雅黑";
+}
+.dcl_zjcontent2 .category{
+  color:#000;
+  font-size:14px;
+  font-weight:100;
+  display: inline-block;
+}
+.dcl_zjcontent2 ul{
+  overflow: hidden;
+}
+.dcl_zjcontent2 ul li{
+  height: 27px;
+  line-height: 27px;
+  background: url("img/auto.png");
+  background-position: 0 -118px;
+  padding:0px 0px 0px 15px;
+  float: left;
+  position: relative;
+  margin:10px 8px 0px 0px;
+  display: inline-block;
+  cursor: pointer;
+}
+.dcl_zjcontent2 ul li span{
+  background: url("img/auto.png");
+  background-position:right -118px;
+  padding-right:8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 27px;
+}
+.dcl_zjcontent3 {
+  width:100%;
+  margin-top:210px;
+}
+.dcl_zjcontent3_p1{
+  font-family: "微软雅黑";
+  color: #000;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 35px;
+}
+.dcl_zj_jmlist{
+  width:100%;
+  height:200px;
+  position: absolute;
+  float: left;
+  margin-top:10px;
+}
+.list_title{
+  height:30px;
+  border-bottom:1px dotted #000;
+  overflow: hidden;
+}
+.list_title h4{
+  color:#000;
+  float: left;
+  padding-left:20px;
+  height:30px;
+  font-size:15px;
+  line-height:30px;
+}
+.list_title span{
+  color:#0071CE;
+  float: right;
+  height:30px;
+  line-height:30px;
+  font-size:15px;
+  padding-right:10px;
+  cursor: pointer;
+}
+.zj_jmlist {
+  width: 100%;
+  position: absolute;
+  height: 200px;
+  border: 1px solid #00458A;
+}
+.list_content{
+  height:170px;
+  overflow-y: auto;
+}
+.list_content1{
+  height:25px;
+  line-height:25px;
+  border-bottom:1px solid #676a6c;
+  overflow: hidden;
+}
+.list_content1_a,.list_content1_span1,
+.list_content1_span2,
+.list_content1_span3,
+.list_content1_img{
+  float: left;
+  width:auto;
+  display: inline-block;
+  font-size:12px;
+  font-family: "微软雅黑";
+}
+.list_content1_a,.list_content1_a:hover{
+  color: #000;
+  font-family: "微软雅黑";
+  padding-left:20px;
+  width:290px;
+}
+.list_content1_img{
+  background: url("img/btn.png") repeat;
+  width: 25px;
+  height: 25px;
+  background-size: 100%;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  background-position: 0px -132px;
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  margin-left: 210px;
+}
+.list_content1_span1{
+  padding-left:0px;
+}
+.list_content1_span2,.list_content1_span3{
+  margin-left:25px;
+}
+.dc_right{
+  width:300px;
+  height:570px;
+  float: right;
+  margin-top:10px;
+  border:1px solid #dedede;
+}
+.dcr_zjlist{
+  overflow: auto;
+}
+.dcr_zjlist1{
+  margin: 10px 10px 0px 10px;
+  height: 100px;
+  border-bottom: 2px solid #dedede;
+}
+.list1_img{
+  width:80px;
+  height:80px;
+  float: left;
+  display: inline-block;
+  border:1px solid #dedede;
+}
+.list1_con{
+  width:195px;
+  float: left;
+  padding-left:10px;
+}
+</style>
+<body>
+<div class="detail">
+  <div class="containers">
+    <div class="detail_title">音频管理> 专辑管理> 专辑详情</div>
+    <div class="my_title">我的专辑</div>
+      <div class="detail_content">
+        <div class="dc_left">
+          <div class="dcl_zjcontent">
+            <div class="dcl_zjcontent1">
+              <img src="img/a5.jpg" alt="节目封面图片" />
+            </div>
+            <div class="dcl_zjcontent2">
+              <h3>双份的阳光<span>(8个节目)</span></h3>
+              <p>来自栏目<span>【两性情感】</span></p>
+              <span class="category">类别 ：两性情感</span>
+              <ul>
+                <li><span>标签一标签一</span></li>
+                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>
+              </ul>
+              <p>最近更新时间：2016-10-11 10:47:35</p>
+            </div>
+            <div class="dcl_zjcontent3">
+              <p class="dcl_zjcontent3_p1">论文专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
+                                                 专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑一个或几个特邀编辑     专辑是指期刊的某一期专门对某一个大
+                                                  家关注的领域、问题、事件进ues"，一个专辑一般会有一个或几个特邀编ues"，一个专辑一般会有一个或几个特邀编</p>
+            </div>
+          </div>
+          <div class="dcl_zj_jmlist">
+            <div class="list_title">
+              <h4>共8个节目</h4>
+              <span>更改排序</span>
+            </div>
+            <ul class="list_content">
+              <li class="list_content1" style="margin-top:15px;">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+              <li class="list_content1">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+              <li class="list_content1">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+              <li class="list_content1">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+              <li class="list_content1">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+              <li class="list_content1">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+              <li class="list_content1">
+                <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
+                <a class="list_content1_img" href="#"></a>
+                <span class="list_content1_span1">(0)</span>
+                <span class="list_content1_span2">已保存</span>
+                <span class="list_content1_span3">2016-10-18</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+          <div class="dc_right">
+            <div class="dcr_zjlist">
+              <div class="dcr_zjlist1">
+                <div class="list1_img">
+                  <img src="" alt="节目图片" />
+                </div>
+                <div class="list1_con">
+                  <p class="list1_con_name">
+                    <span>专辑名称 ：</span>
+                    <span>双份的阳光</span>
+                  </p>
+                  <p class="list1_con_num">
+                    <span>节目数量 ： </span>
+                    <span>8个</span>
+                  </p>
+                  <p class="list1_con_time">
+                    <span>时间 ：</span>
+                    <span>2016-10-08 10:47:35</span>
+                  </p>
+                </div>
+              </div>
+              <div class="dcr_zjlist1">
+                <div class="list1_img">
+                  <img src="" alt="节目图片" />
+                </div>
+                <div class="list1_con">
+                  <p class="list1_con_name">
+                    <span>专辑名称 ：</span>
+                    <span>双份的阳光</span>
+                  </p>
+                  <p class="list1_con_num">
+                    <span>节目数量 ： </span>
+                    <span>8个</span>
+                  </p>
+                  <p class="list1_con_time">
+                    <span>时间 ：</span>
+                    <span>2016-10-08 10:47:35</span>
+                  </p>
+                </div>
+              </div>
+              <div class="dcr_zjlist1">
+                <div class="list1_img">
+                  <img src="" alt="节目图片" />
+                </div>
+                <div class="list1_con">
+                  <p class="list1_con_name">
+                    <span>专辑名称 ：</span>
+                    <span>双份的阳光</span>
+                  </p>
+                  <p class="list1_con_num">
+                    <span>节目数量 ： </span>
+                    <span>8个</span>
+                  </p>
+                  <p class="list1_con_time">
+                    <span>时间 ：</span>
+                    <span>2016-10-08 10:47:35</span>
+                  </p>
+                </div>
+              </div>
+            </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

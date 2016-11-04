@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>节目详情</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <!--日历插件-->
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;}
+.detail{
+  width:1090px;
+  min-width:850px;
+  height:540px;
+  margin:auto;
+  border:1px solid red;
+}
+.detail_title{
+  width: 100%;
+  height: 30px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-left:20px;
+}
+.detail_content{
+  width:100%;
+  height:490px;
+  overflow: auto;
+}
+.dc_left{
+  width:250px;
+  height:calc(100% - 20px);
+  float: left;
+  margin-left:15px;
+}
+.dc_left .dcl_pic{
+  width:100%;
+  height:450px;
+  margin:10px auto;
+  background: url("img/phone.png") no-repeat;
+  background-size:100% 100%;
+}
+.dc_left .dcl_pic h6{
+  width:150px;
+  position: absolute;
+  top:150px;
+  margin-left:40px;
+  color:#000;
+  padding-left:20px;
+  white-space:nowrap; 
+  overflow:hidden; 
+  text-overflow:ellipsis;
+}
+.dc_left .dcl_pic .phone_pic1{
+  width:68px;
+  height:68px;
+  position: absolute;
+  top:195px;
+  margin-left:90px;
+  background-size:100% 100%;
+}
+.dc_left .dcl_pic .phone_pic2{
+  position: absolute;
+  top:220px;
+  margin-left:118px;
+  z-index:10;
+  cursor: pointer;
+}
+.dc_left .dcl_pic .phone_pic3{
+  position: absolute;
+  top:195px;
+  margin-left:90px;
+}
+.dc_right{
+  width:765px;
+  height:calc(100% - 30px);
+  float: right;
+  margin-top:10px;
+}
+.dcr_jmcontent{
+  position: relative;
+  overflow: hidden;
+}
+.dcr_jmcontent1{
+  float: left;
+  width:180px;
+  height:100%;
+  position: absolute;
+}
+.dcr_jmcontent1 img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+  -ms-interpolation-mode:bicubic;  
+}
+.dcr_jmcontent2{
+  float:right;
+  overflow: hidden;
+  width:calc(100% - 210px);
+  height:auto;
+}
+.dcr_jmcontent2 h3{
+  width:auto;
+  display: inline-block;
+  font-size: 20px;
+  color:#000;
+  font-family: "微软雅黑";
+}
+.dcr_jmcontent2 h3 span{
+  color:#ffa634;
+  font-size:14px;
+  font-weight:100;
+}
+.dcr_jmcontent2 p{
+  font-size:14px;
+  margin-top:20px;
+}
+.dcr_jmcontent2 p span{
+  font-size:15px;
+  color:#000;
+  font-weight: 800;
+  font-family: "微软雅黑";
+}
+.dcr_jmcontent2 ul{
+  overflow: hidden;
+}
+.dcr_jmcontent2 ul li{
+  height: 27px;
+  line-height: 27px;
+  background: url("img/auto.png");
+  background-position: 0 -118px;
+  padding:0px 0px 0px 15px;
+  float: left;
+  position: relative;
+  margin:10px 8px 0px 0px;
+  display: inline-block;
+  cursor: pointer;
+}
+.dcr_jmcontent2 ul li span{
+  background: url("img/auto.png");
+  background-position:right -118px;
+  padding-right:8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 27px;
+}
+.dcr_jmdesc p{
+  color:#000;
+  font-size:14px;
+}
+.dcr_jmdesc .dcr_jmdesc_p1{
+  margin-top:35px;
+}
+</style>
+<body>
+<div class="detail">
+  <div class="containers">
+    <div class="detail_title">音频管理> 节目管理> 节目详情</div>
+      <div class="detail_content">
+        <div class="dc_left">
+          <div class="dcl_pic">
+            <h6>Vol.71 你也是个纠结的个纠结的人吗？</h6>
+            <img class="phone_pic1" src="img/a5.jpg" alt="节目封面图片" />
+            <img class="phone_pic2" src="img/play.png" alt="播放按钮" />
+            <img class="phone_pic3" src="img/hexagon.png" alt="六边形" />
+          </div>
+        </div>
+        <div class="dc_right">
+          <div class="dcr_jmcontent">
+            <div class="dcr_jmcontent1">
+              <img src="img/a5.jpg" alt="节目封面图片" />
+            </div>
+            <div class="dcr_jmcontent2">
+              <h3>Vol.71 你也是个纠结的人吗？<span>(已保存)</span></h3>
+              <p>来自专辑<span>《双份De阳光》</span></p>
+              <ul>
+                <li><span>标签一标签一</span></li>
+                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>
+              </ul>
+              <p>2016-10-11 10:47:35</p>
+            </div>
+          </div>
+          <div class="dcr_jmdesc">
+            <p class="dcr_jmdesc_p1">论文专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
+                                                   专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
+             cial Theme Issues"，一个专辑一般会有一个或几个特邀编辑</p>
+            <p class="dcr_jmdesc_p2">感谢您的聆听~</p>
+            <p class="dcr_jmdesc_p3">原创节目欢迎评论，分享，打赏哦~</p>
+          </div>  
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
