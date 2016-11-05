@@ -1,7 +1,6 @@
 package com.woting.content.manage.seqmedia.web;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ public class SeqController {
 	private SeqContentService seqContentService;
 	@Resource(name = "redisSessionService")
 	private SessionService sessionService;
-	private static String ip_address = "182.92.175.134";
+	private static String ip_address = "www.wotingfm.com";
 
 	/**
 	 * 得到主播id下的专辑列表(包括发布和未发布的)
@@ -160,45 +159,106 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/addSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> addSeqMediaInfo(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("1.1.1-common/entryApp");
+		alPo.setObjType("000");// 一般信息
+		alPo.setDealFlag(1);// 处理成功
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId") + "";
-		String username = m.get("UserName") + "";
-		if (userid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
+		try {
+			// 0-获取参数
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "common/entryApp");
+					map.putAll(retM);
+				}
+				map.put("ServerStatus", "1"); // 服务器状态
+			}
+			// 数据收集处理==2
+			alPo.setOwnerType(201);
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+			String userid = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String contentname = m.get("ContentName") + "";
+			if (contentname.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无节目名称");
+				return map;
+			}
+			String channelId = m.get("ChannelId")+"";
+			List<Map<String, Object>> imgs = (List<Map<String, Object>>) m.get("ContentImg");
+			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
+			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
+//			String smaimg = m.get("ContentImg") + "";
+//			if (smaimg.equals("null"))
+//				smaimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+//			smaimg = smaimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			String contentdesc = m.get("ContentDesc") + "";
+			String pubTime = m.get("FixedPubTime")+"";
+			map = seqContentService.addSeqMediaInfo(userid, contentname, channelId, imgs, tags, contentdesc, pubTime);
 			return map;
-		}
-		String smaname = m.get("ContentName") + "";
-		if (smaname.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无节目名称");
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
 			return map;
-		}
-		String smastatus = m.get("ContentStatus") + "";
-		if (smastatus.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无资源状态");
-			return map;
-		}
-		String tags = m.get("ContentTags") + "";
-		List<String> tagslist = new ArrayList<String>();
-		if (!tags.equals("null")) {
-			String[] tagid = tags.split(",");
-			for (String str : tagid) {
-				tagslist.add(str);
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
 			}
 		}
-		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
-		String smaimg = m.get("ContentImg") + "";
-		if (smaimg.equals("null"))
-			smaimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-		smaimg = smaimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
-		String smadesc = m.get("ContentDesc") + "";
-		String did = m.get("ContentCatalogsId") + "";
-		String chid = m.get("ContentChannelId") + "";
-		map = seqContentService.addSeqInfo(userid, username, smaname, smaimg, smastatus, did, chid, smadesc, tagslist);
-		return map;
 	}
 
 	/**

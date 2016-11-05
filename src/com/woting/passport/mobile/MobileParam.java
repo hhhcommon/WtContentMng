@@ -115,7 +115,7 @@ public class MobileParam extends BaseObject implements GetUserDeviceKey {
         if (m==null||m.size()==0) return null;
         MobileParam mp=new MobileParam();
 
-        Object o=m.get("IMEI");
+        Object o=m.get("DeviceId");
         String __tmp=o==null?"":o+"";
         if (!StringUtils.isNullOrEmptyOrSpace(__tmp)) mp.setImei(__tmp);
         o=m.get("PCDType");

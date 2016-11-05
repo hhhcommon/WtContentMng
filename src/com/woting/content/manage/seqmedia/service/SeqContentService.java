@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.util.SequenceUUID;
-import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -20,6 +19,8 @@ import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.media.service.MediaContentService;
+import com.woting.passport.UGA.persis.pojo.UserPo;
+import com.woting.passport.UGA.service.UserService;
 
 @Service
 public class SeqContentService {
@@ -29,6 +30,8 @@ public class SeqContentService {
 	private DictContentService dictContentService;
 	@Resource
 	private MediaContentService mediaContentService;
+	@Resource
+	private UserService userService;
 
 	/**
 	 * 查询主播的资源列表
@@ -63,41 +66,37 @@ public class SeqContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSeqInfo(String userid, String username, String smaname, String smaimg, String smastatus,
-			String did, String chid, String smadesc, List<String> tagslist) {
+	public Map<String, Object> addSeqMediaInfo(String userid, String contentname, String channelId, List<Map<String, Object>> imgs, List<Map<String, Object>> tags,
+			String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 保存专辑信息到资源库
-		String smaid = SequenceUUID.getPureUUID();
 		SeqMediaAsset sma = new SeqMediaAsset();
-		sma.setId(smaid);
-		String smatitle = smaname;
-		if (StringUtils.isNullOrEmptyOrSpace(smatitle) || smatitle.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无专辑名称");
-			return map;
-		}
+		sma.setId(SequenceUUID.getPureUUID());
+		String smatitle = contentname;
 		sma.setSmaTitle(smatitle);
-		if (smaimg.toLowerCase().equals("null"))
-			smaimg = "http://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-		sma.setSmaImg(smaimg);
-		sma.setDescn(smadesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : smadesc);
-		sma.setSmaStatus(Integer.valueOf(smastatus));
+//		if (smaimg.toLowerCase().equals("null"))
+//			smaimg = "http://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+//		sma.setSmaImg(smaimg);
+		sma.setDescn(contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);
+		sma.setSmaStatus(1);
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(3);
 		sma.setSmaPubId(userid);
-		sma.setSmaPublisher(username);
+		UserPo user = userService.getUserById(userid);
+		if (user==null) {
+			return null;
+		}
+		sma.setSmaPublisher(user.getLoginName());
 		DictDetail detail = new DictDetail();
 		detail.setId("zho");
 		detail.setNodeName("中文");
 		sma.setLang(detail);
 		sma.setPubCount(0);
 		mediaService.saveSma(sma);
-		if(!did.toLowerCase().equals("null"))
-			dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", smaid);
-		if(!chid.equals("null"))
-			map = modifySeqStatus(userid, smaid, chid, 0);
-		if (mediaService.getSmaInfoById(smaid) != null) {
-			if(chid.equals("null")||map.get("ReturnType").equals("1001"))
+		if(!channelId.equals("null"))
+			map = modifySeqStatus(userid, sma.getId(), channelId, 0);
+		if (mediaService.getSmaInfoById(sma.getId()) != null) {
+			if(channelId.equals("null")||map.get("ReturnType").equals("1001"))
 				map.clear();
 			map.put("ReturnType", "1001");
 			map.put("Message", "添加专辑成功");
