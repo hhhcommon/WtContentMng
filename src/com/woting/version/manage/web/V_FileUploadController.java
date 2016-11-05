@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.context.annotation.Lazy;
@@ -25,9 +26,12 @@ public class V_FileUploadController extends AbstractFileUploadController {
     @Resource
     private VersionService verService;
 
+    
+    
     @Override
-    public void afterUploadAllFiles(Map<String, Object> retMap, Map<String, Object> a, Map<String, Object> p) {
-        if (this.verCfg==null) verCfg=verService.getVerConfig();
+	public void afterUploadAllFiles(Map<String, Object> retMap, Map<String, Object> a, Map<String, Object> p,
+			HttpSession session) {
+    	if (this.verCfg==null) verCfg=verService.getVerConfig();
         try {
             //1-获得参数
             //操作类型 
@@ -115,11 +119,12 @@ public class V_FileUploadController extends AbstractFileUploadController {
             retMap.put("TClass", e.getClass().getName());
             retMap.put("Message", e.getMessage());
         }
-    }
+	}
 
-    @Override
-    public Map<String, Object> beforeUploadFile(Map<String, Object> a, Map<String, Object> p) {
-        Map<String,Object> map=new HashMap<String, Object>();
+	@Override
+	public Map<String, Object> beforeUploadFile(Map<String, Object> a, Map<String, Object> p,
+			HttpSession session) {
+		Map<String,Object> map=new HashMap<String, Object>();
         try {
             //0-判断权限：目前没有这个功能
             //1-获得参数
@@ -176,13 +181,13 @@ public class V_FileUploadController extends AbstractFileUploadController {
             map.put("Message", e.getMessage());
             return map;
         }
-    }
+	}
 
-    @Override
-    public void setMySavePath(Map<String, Object> a, Map<String, Object> p) {
-        if (this.verCfg==null) verCfg=verService.getVerConfig();
+	@Override
+	public void setMySavePath(Map<String, Object> a, Map<String, Object> p, HttpSession session) {
+		if (this.verCfg==null) verCfg=verService.getVerConfig();
         String version=p.get("Version")==null?null:p.get("Version")+"";
         version=FileNameUtils.concatPath(verCfg.getVerGoodsStorePath(), version);
         if (version!=null) this.setSavePath(version);
-    }
+	}
 }

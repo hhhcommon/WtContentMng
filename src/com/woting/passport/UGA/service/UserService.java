@@ -12,7 +12,7 @@ import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.passport.UGA.persistence.pojo.UserPo;
+import com.woting.passport.UGA.persis.pojo.UserPo;
 import com.woting.passport.thirdlogin.ThirdLoginUtils;
 import com.woting.passport.thirdlogin.persis.po.ThirdUserPo;
 
