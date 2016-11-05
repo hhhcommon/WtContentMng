@@ -15,7 +15,7 @@ import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.content.manage.dict.service.DictContentService;
-import com.woting.content.manage.seq.service.SeqContentService;
+import com.woting.content.manage.seqmedia.service.SeqContentService;
 
 @Service
 public class MediaContentService {

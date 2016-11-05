@@ -1,4 +1,4 @@
-package com.woting.content.manage.seq.service;
+package com.woting.content.manage.seqmedia.service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

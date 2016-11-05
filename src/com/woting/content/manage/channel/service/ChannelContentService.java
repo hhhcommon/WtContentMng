@@ -7,21 +7,18 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
-
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.ui.tree.ZTree;
-import com.spiritdata.framework.util.JsonUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.mem._CacheChannel;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
 import com.woting.cm.core.channel.service.ChannelService;
+import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.content.manage.utils.ChannelUtils;
 
 public class ChannelContentService {
@@ -33,6 +30,7 @@ public class ChannelContentService {
 	@Resource
 	private ChannelService channelService;
 	
+	@SuppressWarnings("unchecked")
 	@PostConstruct 
     public void initParam() {
 		channelDao.setNamespace("A_CHANNEL");
@@ -40,6 +38,7 @@ public class ChannelContentService {
         _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
     }
 	
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getChannelAssetList(List<ChannelAssetPo> chapolist){
 		if(chapolist==null) return null;
 		 List<Map<String, Object>> ret=new ArrayList<Map<String, Object>>();
@@ -55,6 +54,7 @@ public class ChannelContentService {
 	    return ret;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getFiltrateByUserId(String userid, String mediatype) {
     	Map<String, Object> m = new HashMap<>();
     	m.put("publisherId", userid);
@@ -125,4 +125,16 @@ public class ChannelContentService {
 		}
     	return null;
     }
+	
+	public ChannelAssetPo getChannelAssetByAssetIdAndPubId(String assetId, String pubId, String assetType) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", assetId);
+		m.put("publisherId", pubId);
+		m.put("assetType", assetType);
+		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m);
+		if (chas!=null && chas.size()>0) {
+			return chas.get(0);
+		}
+		return null;
+	}
 }
