@@ -1,4 +1,4 @@
-package com.woting.content.manage.seq.web;
+package com.woting.content.manage.seqmedia.web;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +14,8 @@ import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.spiritdata.framework.util.RequestUtils;
-import com.woting.content.manage.seq.service.SeqContentService;
 
 @Controller
 public class SeqController {
