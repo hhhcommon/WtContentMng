@@ -1,4 +1,4 @@
-package com.woting.passport.UGA.persistence.pojo;
+package com.woting.passport.UGA.persis.pojo;
 
 import java.sql.Timestamp;
 import java.util.HashMap;

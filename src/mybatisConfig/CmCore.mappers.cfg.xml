@@ -16,7 +16,7 @@
     <typeAlias alias="channelAsset"  type="com.woting.cm.core.channel.persis.po.ChannelAssetPo"/>
     <typeAlias alias="keyword"       type="com.woting.cm.core.keyword.persis.po.KeyWordPo"/>
     <typeAlias alias="keywordres"    type="com.woting.cm.core.keyword.persis.po.KeyWordResPo"/>
-  </typeAliases>
+   </typeAliases>
   <!-- SQL文件设置 -->
   <mappers>
     <mapper resource="com/woting/cm/core/dict/persis/sql/DictMaster.mapper.xml"/>
