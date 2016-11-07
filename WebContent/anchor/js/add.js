@@ -27,6 +27,44 @@ $(function(){
     }
   });
   
+  //2.点击上传图片
+  $(".upl_pt_img").on("click",function(){
+    $(".upl_img").click();
+  });
+  $(".upl_img").change(function(){
+    //图片预览
+    if($(".defaultImg").css("display")!="none"){
+      $(".defaultImg").css({"display":"none"});
+    }
+    var fileReader = new FileReader();
+    fileReader.onload = function(evt){
+      if(FileReader.DONE==fileReader.readyState){
+        var newImg =  $("<img alt='front cover' />");
+        newImg.attr({"src":this.result});//是Base64的data url数据
+        if($(".previewImg").children().length>1){
+          $(".previewImg img:last").replaceWith(newImg);
+        }else{
+          $(".previewImg").append(newImg);
+        }
+      }
+    }
+    fileReader.readAsDataURL($(this)[0].files[0]);
+    var oMyForm = new FormData();
+    var filePath=$(this).val();
+    var _this=$(this);
+    var arr=filePath.split('\\');
+    var fileName=arr[arr.length-1];
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("UserId", "18d611784ae0");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
+    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
+      alert("图片过大，请选择合适的图片上传！");
+    }else{
+      requestUpload(_this,oMyForm);
+    }
+  });
+  
   //请求上传文件
   function requestUpload(_this,oMyForm){
     $.ajax({
@@ -52,27 +90,6 @@ $(function(){
     });
   };
   
-  //2.点击上传图片
-  $(".upl_pt_img").on("click",function(){
-    $(".upl_img").click();
-  });
-  $(".upl_img").change(function(){
-    var oMyForm = new FormData();
-    var filePath=$(this).val();
-    var _this=$(this);
-    var arr=filePath.split('\\');
-    var fileName=arr[arr.length-1];
-    oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("UserId", "18d611784ae0");
-    oMyForm.append("SrcType", "1");
-    oMyForm.append("Purpose", "2");
-    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
-      alert("图片过大，请选择合适的图片上传！");
-    }else{
-      requestUpload(_this,oMyForm);
-    }
-  });
-  
   //3.获取选择专辑列表
   $.ajax({
     type:"POST",
@@ -84,7 +101,7 @@ $(function(){
         getAlbumList(resultData); //得到专辑列表,上传节目时使用
       }
     },
-    error:function(XHR){
+    error:function(jqXHR){
       alert("发生错误："+ jqXHR.status);
     }
   });
@@ -139,7 +156,7 @@ $(function(){
         getArtMethodList(resultData); //得到创作方式列表
       }
     },
-    error:function(XHR){
+    error:function(jqXHR){
       alert("发生错误："+ jqXHR.status);
     }
   });
@@ -155,10 +172,9 @@ $(function(){
   $("#submitBtn").on("click",function(){
     var _data={};
     _data.UserId="18d611784ae0";
+    _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
-    _data.ContentImg={};
-    _data.ContentImg.ContentMaxImg=$(".upl_img").attr("value");
-    _data.ContentImg.ContentSmallImg=$(".upl_img").attr("value");
+    _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
@@ -193,7 +209,20 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    console.log(_data);
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/addMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("新增节目成功");
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
   });
   
   //对新添加的标签的样式改变

@@ -120,6 +120,11 @@ li{list-style: none;}
   float: left;
   border:1px solid #dedede;
 }
+.upl_pt .previewImg img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
 .upl_pt .upl_pt_img{
   margin-left:10px;
   margin-top:20px;
