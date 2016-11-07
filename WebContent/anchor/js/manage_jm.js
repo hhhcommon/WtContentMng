@@ -73,13 +73,13 @@ $(function(){
                         '</div>'+
                         '<div class="rtcl_con">'+
                           '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
-                          '<p class="zj_name">'+resultData.ResultList.List[i].ContentSeqId+'</p>'+
+                          '<p class="zj_name">'+resultData.ResultList.List[i].ContentSeqName+'</p>'+
                           '<p class="other">'+
                             '<span>时间 ：</span>'+
                             '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
                           '</p>'+
                         '</div>'+
-                        '<p class="jm_st">已发布</p>'+
+                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
                         '<div class="op_type">'+
                           '<p class="jm_edit">编辑</p>'+
                           '<p class="jm_pub">发布</p>'+
@@ -95,7 +95,7 @@ $(function(){
   * 
   * 上传节目页面
   * */
- //上传节目页面获取标签
+ //上传节目页面获取公共标签
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
@@ -103,7 +103,7 @@ $(function(){
     data:{"UserId":"123","MediaType":"1","SeqMediaId":"704df034185448e3b9ed0801351859fb","ChannelIds":"cn31","TagType":"1","TagSize":"20"},
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
-        getLabel(resultData);//得到上传节目页面标签元素
+        getPubLabel(resultData);//得到上传节目页面公共标签元素
       }
     },
     error:function(XHR){
@@ -111,18 +111,44 @@ $(function(){
     }
   });
   
-  //得到上传节目页面标签元素
-  function getLabel(resultData){
+  //得到上传节目页面公共标签元素
+  function getPubLabel(resultData){
     for(var i=0;i<resultData.AllCount;i++){
-      var label='<li class="gg_tag_con1" tagId='+resultData.ResultList[i].TagId+'>'+
+      var label='<li class="gg_tag_con1" tagType='+resultData.ResultList[i].TagOrg+' tagId='+resultData.ResultList[i].TagId+'>'+
                   '<input type="checkbox" class="gg_tag_con1_check" />'+
                   '<span class="gg_tag_con1_span">'+resultData.ResultList[i].TagName+'</span>'+
                 '</li>';
+      
       $(".gg_tag_con").append(label); 
     }
   }
   
-
+  //上传节目页面获取我的标签
+  $.ajax({
+    type:"POST",
+    url:rootPath+"content/getTags.do",
+    dataType:"json",
+    data:{"UserId":"123","MediaType":"1","SeqMediaId":"704df034185448e3b9ed0801351859fb","ChannelIds":"cn31","TagType":"2","TagSize":"20"},
+    success:function(resultData){
+      if(resultData.ReturnType == "1001"){
+        getMyLabel(resultData);//得到上传节目页面我的标签元素
+      }
+    },
+    error:function(XHR){
+      alert("发生错误："+ jqXHR.status);
+    }
+  });
+  
+  //得到上传节目页面我的标签元素
+  function getMyLabel(resultData){
+    for(var i=0;i<resultData.AllCount;i++){
+      var label='<li class="my_tag_con1" tagType='+resultData.ResultList[i].TagOrg+' tagId='+resultData.ResultList[i].TagId+'>'+
+                  '<input type="checkbox" class="my_tag_con1_check" />'+
+                  '<span class="my_tag_con1_span">'+resultData.ResultList[i].TagName+'</span>'+
+                '</li>';
+      $(".my_tag_con").append(label); 
+    }
+  }
 
 
 

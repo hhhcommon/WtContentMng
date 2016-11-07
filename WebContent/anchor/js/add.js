@@ -105,7 +105,7 @@ $(function(){
               $(".tag_txt").val("");
               return;
             }
-            var new_tag= '<li class="upl_bq_img bqImg">'+
+            var new_tag= '<li class="upl_bq_img bqImg" tagType="user_defined">'+
                               '<span>'+txt+'</span>'+
                               '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
                             '</li>';
@@ -123,13 +123,19 @@ $(function(){
   };
   
   //5.点击提交按钮，新增节目
-  $(".submitBtn").on("click",function(){
+  $("#submitBtn").on("click",function(){
     var _data={};
     _data.UserId="18d611784ae0";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg={};
     _data.ContentImg.ContentMaxImg=$(".upl_img").attr("value");
-    _data.ContentImg.ContentSmallImg=$(".upl_img").val();
+    _data.ContentImg.ContentSmallImg=$(".upl_img").attr("value");
+    _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    var taglist=[];
+    $(".upl_bq").find(".upl_bq_img").each(function(){
+      var myTag={};//我的标签
+      var pubTag={};//公共标签
+    });
     console.log(_data);
     
   });
@@ -154,12 +160,14 @@ $(function(){
   //对我的标签和公共标签进行添加操作
   $(document).on("click",".my_tag_con1_check, .gg_tag_con1_check",function(){
     var txt=$(this).siblings("span").html();
+    var tagId=$(this).parent("li").attr("tagid");
+    var tagType=$(this).parent("li").attr("tagType");
     var obj=$(this);
-    addTag(obj,txt);
+    addTag(obj,txt,tagId,tagType);
   });
   
   //添加标签的方法
-  function addTag(obj,txt){
+  function addTag(obj,txt,tagId,tagType){
     isExiste(txt);//调用函数判断即将添加的标签是否应经存在
     if(!isExisted){
       if(tag_sum>=5){
@@ -170,10 +178,10 @@ $(function(){
         obj.attr("checked",true);
         obj.attr("disabled",true);
       }
-      var new_tag= '<li class="upl_bq_img bqImg">'+
-                        '<span>'+txt+'</span>'+
-                        '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
-                      '</li>';
+      var new_tag= '<li class="upl_bq_img bqImg" tagId='+tagId+' tagType='+tagType+'>'+
+                      '<span>'+txt+'</span>'+
+                      '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+                    '</li>';
       $(".upl_bq").append(new_tag);
       tag_sum++;
     }else{
