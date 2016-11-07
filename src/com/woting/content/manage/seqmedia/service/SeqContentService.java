@@ -8,10 +8,14 @@ import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
-import com.woting.cm.core.dict.model.DictDetail;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
+import com.woting.cm.core.keyword.persis.po.KeyWordPo;
+import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
+import com.woting.cm.core.keyword.service.KeyWordBaseService;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
@@ -32,6 +36,8 @@ public class SeqContentService {
 	private MediaContentService mediaContentService;
 	@Resource
 	private UserService userService;
+	@Resource
+	private KeyWordBaseService keyWordBaseService;
 
 	/**
 	 * 查询主播的资源列表
@@ -66,17 +72,14 @@ public class SeqContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSeqMediaInfo(String userid, String contentname, String channelId, List<Map<String, Object>> imgs, List<Map<String, Object>> tags,
-			String contentdesc, String pubTime) {
+	public Map<String, Object> addSeqMediaInfo(String userid, String contentname, String channelId, String contentimg, List<Map<String, Object>> tags,
+			List<Map<String, Object>> memberType, String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 保存专辑信息到资源库
 		SeqMediaAsset sma = new SeqMediaAsset();
 		sma.setId(SequenceUUID.getPureUUID());
-		String smatitle = contentname;
-		sma.setSmaTitle(smatitle);
-//		if (smaimg.toLowerCase().equals("null"))
-//			smaimg = "http://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-//		sma.setSmaImg(smaimg);
+		sma.setSmaTitle(contentname);
+		sma.setSmaImg(contentimg);
 		sma.setDescn(contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);
 		sma.setSmaStatus(1);
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
@@ -87,12 +90,74 @@ public class SeqContentService {
 			return null;
 		}
 		sma.setSmaPublisher(user.getLoginName());
-		DictDetail detail = new DictDetail();
-		detail.setId("zho");
-		detail.setNodeName("中文");
-		sma.setLang(detail);
-		sma.setPubCount(0);
+//		DictDetail detail = new DictDetail();
+//		detail.setId("zho");
+//		detail.setNodeName("中文");
+//		sma.setLang(detail);
+//		sma.setPubCount(0);
 		mediaService.saveSma(sma);
+		if (tags!=null && tags.size()>0) {
+			List<KeyWordPo> lk = new ArrayList<>();
+			List<KeyWordResPo> ls = new ArrayList<>();
+			for (Map<String, Object> m : tags) {
+				KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName")+"");
+				if (kw!=null) {
+					KeyWordResPo kwres = new KeyWordResPo();
+					kwres.setId(SequenceUUID.getPureUUID());
+					kwres.setKwId(kw.getId());
+					kwres.setRefName("标签-专辑");
+					kwres.setResTableName("wt_SeqMediaAsset");
+					kwres.setResId(sma.getId());
+					kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+					ls.add(kwres);
+					if (m.get("TagOrg").equals("我的标签")) {
+						KeyWordResPo kwr = new KeyWordResPo();
+						kwr.setId(SequenceUUID.getPureUUID());
+						kwr.setKwId(kw.getId());
+						kwr.setRefName("标签-主播");
+						kwr.setResTableName("palt_User");
+						kwr.setResId(userid);
+						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwr);
+					}
+				} else {
+					kw = new KeyWordPo();
+					kw.setId(SequenceUUID.getPureUUID());
+					kw.setOwnerId(userid);
+					kw.setOwnerType(1);
+					kw.setSort(0);
+					kw.setIsValidate(1);
+					kw.setKwName(m.get("TagName")+"");
+					kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
+					kw.setDescn(userid+"主播创建");
+					kw.setcTime(new Timestamp(System.currentTimeMillis()));
+					lk.add(kw);
+					KeyWordResPo kwres = new KeyWordResPo();
+					kwres.setId(SequenceUUID.getPureUUID());
+					kwres.setKwId(kw.getId());
+					kwres.setRefName("标签-专辑");
+					kwres.setResTableName("wt_SeqMediaAsset");
+					kwres.setResId(sma.getId());
+					kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+					ls.add(kwres);
+					KeyWordResPo kwr = new KeyWordResPo();
+					kwr.setId(SequenceUUID.getPureUUID());
+					kwr.setKwId(kw.getId());
+					kwr.setRefName("标签-主播");
+					kwr.setResTableName("palt_User");
+					kwr.setResId(userid);
+					kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+					ls.add(kwr);
+				}
+			}
+			keyWordBaseService.insertKeyWords(lk);
+			keyWordBaseService.insertKwRefs(ls);
+		}
+		if (memberType!=null && memberType.size()>0) {
+			for (Map<String, Object> m : memberType) {
+				dictContentService.insertResDictRef("创作方式-"+m.get("TypeName"), "wt_SeqMediaAsset", sma.getId(), "4", m.get("TypeId")+"");
+			}
+		}
 		if(!channelId.equals("null"))
 			map = modifySeqStatus(userid, sma.getId(), channelId, 0);
 		if (mediaService.getSmaInfoById(sma.getId()) != null) {

@@ -175,9 +175,7 @@ public class MediaContentController {
 				map.put("Message", "无法获取需要的参数");
 			} else {
 				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei()) && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1 : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
 					mp.setImei(request.getSession().getId());
 				}
 				mUdk = mp.getUserDeviceKey();
