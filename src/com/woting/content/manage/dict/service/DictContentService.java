@@ -22,6 +22,7 @@ import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.dict.persis.po.DictDetailPo;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.service.MediaService;
 
 @Service
@@ -30,18 +31,20 @@ public class DictContentService {
 	private MediaService mediaService;
 	@Resource(name="defaultDAO")
     private MybatisDAO<DictDetailPo> dictdDao;
+	@Resource(name="defaultDAO")
+	private MybatisDAO<DictRefResPo> dictrefDao;
 	
 	@PostConstruct
     public void initParam() {
         dictdDao.setNamespace("A_DDETAIL");
+        dictrefDao.setNamespace("A_DREFRES");
     }
 	
 	@SuppressWarnings("unchecked")
 	public void addCataLogs(String mid, String did, String mediatype, String assetid) {
 		// 保存专辑分类信息到wt_ResDict_Ref
 		try {
-			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT))
-					.getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			DictModel dm = _cd.getDictModelById(mid);
 			EasyUiTree<DictDetail> eu1 = new EasyUiTree<DictDetail>(dm.dictTree);
 			Map<String, Object> m = eu1.toTreeMap();
@@ -103,4 +106,47 @@ public class DictContentService {
 		}
 		return l;
 	}
+	
+	public DictDetailPo getDictDetailInfo(String id) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", id);
+		DictDetailPo ddp = dictdDao.getInfoObject("getInfo", m);
+		return ddp;
+	}
+	
+	public Map<String, Object> insertResDictRef(String refName, String refTableName, String resId, String dictMid, String dictDid) {
+		DictRefResPo dictRefRes = new DictRefResPo();
+		String id = SequenceUUID.getPureUUID();
+		dictRefRes.setId(id);
+		dictRefRes.setRefName(refName);
+		dictRefRes.setResTableName(refTableName);
+		dictRefRes.setResId(resId);
+		dictRefRes.setDictMid(dictMid);
+		dictRefRes.setDictDid(dictDid);
+		int num = dictrefDao.insert("insert", dictRefRes);
+		if(num>0) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("Id", id);
+			return m;
+		}
+		return null;
+	}
+	
+	public List<DictRefResPo> getDictRefList(Map<String, Object> m) {
+		return dictrefDao.queryForList("getList", m);
+	}
+	
+	public DictRefResPo getDictRefResInfo(Map<String, Object> m) {
+		return dictrefDao.getInfoObject("getInfo", m);
+	}
+	
+	/**
+     * 删除字典关联表里的信息
+     * @param id
+     */
+    public void delDictRefRes(String id) {
+    	String values = "id='"+id+"'";
+    	dictrefDao.execute("delByDicts", values);
+    }
+    
 }

@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 
 import com.spiritdata.framework.core.model.BaseObject;
 import com.spiritdata.framework.core.model.ModelSwapPo;
-import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.exceptionC.Plat0006CException;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;

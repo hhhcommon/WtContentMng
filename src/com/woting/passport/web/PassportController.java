@@ -16,7 +16,7 @@ import com.spiritdata.framework.util.SpiritRandom;
 import com.spiritdata.framework.util.StringUtils;
 import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.utils.RedisUtils;
-import com.woting.passport.UGA.persistence.pojo.UserPo;
+import com.woting.passport.UGA.persis.pojo.UserPo;
 import com.woting.passport.UGA.service.UserService;
 import com.woting.plugins.sms.SendSMS;
 

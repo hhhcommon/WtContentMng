@@ -13,6 +13,8 @@ import com.woting.cm.core.channel.mem._CacheChannel;
 import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.service.DictService;
+import com.woting.crawlerdb.dict.mem._CacheCDictionary;
+import com.woting.crawlerdb.dict.service.CDictService;
 import com.woting.exceptionC.Wtcm1000CException;
 
 public class ContentCLU extends AbstractCacheLifecycleUnit {
@@ -22,6 +24,8 @@ public class ContentCLU extends AbstractCacheLifecycleUnit {
     private DictService dictService;
     @Resource
     private ChannelService channelService;
+    @Resource
+    private CDictService cdictService;
     
     @Override
     public void init() {
@@ -37,6 +41,11 @@ public class ContentCLU extends AbstractCacheLifecycleUnit {
         } catch (Exception e) {
             logger.info("启动时加载{Wt内容平台}缓存出错", e);
         }
+//       try {
+//    	    loadCDict();
+//	   } catch (Exception e) {
+//		    logger.info("启动时加载{抓取内容平台}缓存出错", e);
+//	   }
    }
 
     @Override
@@ -52,6 +61,17 @@ public class ContentCLU extends AbstractCacheLifecycleUnit {
         } catch(Exception e) {
             throw new Wtcm1000CException("缓存[系统字典]失败", e);
         }
+    }
+    
+    private void loadCDict() {
+    	try {
+			System.out.println("开始装载[抓取字典]缓存");
+			_CacheCDictionary _ccd = cdictService.loadCache();
+			SystemCache.remove(WtContentMngConstants.CACHE_CDICT);
+			SystemCache.setCache(new CacheEle<_CacheCDictionary>(WtContentMngConstants.CACHE_CDICT, "抓取字典结构", _ccd));
+		} catch (Exception e) {
+			throw new Wtcm1000CException("缓存[抓取字典]失败", e);
+		}
     }
 
     private void loadChannel() {

@@ -1,0 +1,61 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>进度条测试</title>
+		<script src="./resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+	</head>
+
+	<body>
+		<input type="file" id="file_upload" />
+		<input type="button" value="上传" id="upload" />
+		<div style="background:#848484;width:500px;height:10px;margin-top:5px">
+			<div id="progressNumber" style="background:#00FF99;width:0px;height:10px"></div>
+		</div>
+		<font id="percent">0%</font>
+	</body>
+	<script>
+		var file = null;
+		var xhr = new XMLHttpRequest();
+		$(function() {
+			$("#upload").click(function() {
+				upload();
+			});
+		});
+		var input = document.getElementById("file_upload"); //文件域选择文件时, 执行readFile函数  
+		input.addEventListener('change', readFile, false);
+
+		function readFile() {
+			file = this.files[0];
+		} 
+		//上传文件
+		function upload() {
+			var fd = new FormData();
+			fd.append("fileName", file); //监听事件   
+			xhr.upload.addEventListener("progress", uploadProgress, false); //发送文件和表单自定义参数   
+			xhr.open("POST", "http://123.56.254.75:908/CM/common/uploadCM.do", true);
+			xhr.upload.timeout = 2000;
+            xhr.upload.ontimeout = function (event){
+                alert("请求超时");
+            };
+            xhr.onload = function(event) {
+                console.log('upload success');
+                console.log(xhr.responseText);
+            };
+			xhr.send(fd);
+		}
+
+		function uploadProgress(evt) {
+			if(evt.lengthComputable) {
+				//evt.loaded：文件上传的大小 evt.total：文件总的大小      
+				var percentComplete = Math.round((evt.loaded) * 100 / evt.total); //加载进度条，同时显示信息     
+				$("#percent").html(percentComplete + '%')
+				$("#progressNumber").css("width", "" + percentComplete + "%");
+			}
+		}
+		
+		function getRes() {
+			console.log(xhr.responseText);
+		}
+	</script>
+</html>

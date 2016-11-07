@@ -15,7 +15,9 @@ import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.content.manage.dict.service.DictContentService;
-import com.woting.content.manage.seq.service.SeqContentService;
+import com.woting.content.manage.seqmedia.service.SeqContentService;
+import com.woting.passport.UGA.persis.pojo.UserPo;
+import com.woting.passport.UGA.service.UserService;
 
 @Service
 public class MediaContentService {
@@ -25,6 +27,8 @@ public class MediaContentService {
 	private DictContentService dictContentService;
 	@Resource
 	private SeqContentService seqContentService;
+	@Resource
+	private UserService userService;
 	
 	/**
 	 * 查询主播的资源列表
@@ -33,10 +37,10 @@ public class MediaContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public Map<String, Object> getHostMediaContents(String userid) {
+	public Map<String, Object> getMediaContents(String userid, String flowflag, String channelid, String seqmediaid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		list = mediaService.getMaInfoByMaPubId(userid);
+		list = mediaService.getMaListByPubId(userid, flowflag, channelid, seqmediaid);
 		if (list != null && list.size() > 0) {
 			map.put("List", list);
 			map.put("AllCount", list.size());
@@ -52,25 +56,26 @@ public class MediaContentService {
 	 * @param uploadmap
 	 * @return
 	 */
-	public Map<String, Object> addMediaInfo(String userid, String username, String maname, String maimg, String maurl, String mastatus,
-			String keywords, String madesc, String seqid) {
+	public Map<String, Object> addMediaAssetInfo(String userid,  String contentname, String contentimg, String seqid, String contenturi,
+			List<Map<String, Object>> tags, List<Map<String, Object>> membertypes,String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String maid = SequenceUUID.getPureUUID();
-		Timestamp ctime = new Timestamp(System.currentTimeMillis()); // 节目创建时间
-
 		MediaAsset ma = new MediaAsset();
-		ma.setId(maid);
-		ma.setMaTitle(maname);
-		ma.setMaImg(maimg);
-		ma.setMaURL(maurl);
-		ma.setKeyWords("上传文件测试用待删除");
-		ma.setMaPubType(3);
+		ma.setId(SequenceUUID.getPureUUID());
+		ma.setMaTitle(contentname);
+		ma.setMaImg(contentimg);
+		ma.setMaURL(contenturi);
+//		ma.setKeyWords("上传文件测试用待删除");
+		ma.setMaPubType(3);//主播
 		ma.setMaPubId(userid);
-		ma.setMaPublisher(username);
-		ma.setDescn(madesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : madesc);
+		UserPo user = userService.getUserById(userid);
+		if (user==null) {
+			return null;
+		}
+		ma.setMaPublisher(user.getLoginName());
+		ma.setDescn(contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);
 		ma.setPubCount(0);
-		ma.setMaStatus(Integer.valueOf(mastatus));
-		ma.setCTime(ctime);
+		ma.setMaStatus(1);
+		ma.setCTime(new Timestamp(System.currentTimeMillis()));
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
@@ -79,11 +84,6 @@ public class MediaContentService {
 		if (!seqid.toLowerCase().equals("null")) {
 			SeqMediaAsset sma = mediaService.getSmaInfoById(seqid);
 			mediaService.bindMa2Sma(ma, sma);
-			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'"+seqid+"'", "wt_SeqMediaAsset");
-			if(catalist!=null&&catalist.size()>0)
-				for (Map<String, Object> map2 : catalist) {
-					dictContentService.addCataLogs("3", map2.get("dictDid")+"", "wt_MediaAsset", maid);
-				}
 		}
 
 		// 保存资源来源表里
@@ -92,20 +92,20 @@ public class MediaContentService {
 		maSource.setId(SequenceUUID.getPureUUID());
 		maSource.setMaSrcType(3);
 		maSource.setMaSrcId(userid);
-		maSource.setMaSource(username);
+		maSource.setMaSource(user.getLoginName());
 		maSource.setSmType(1);
-		maSource.setPlayURI(maurl);
+		maSource.setPlayURI(contenturi);
 		maSource.setIsMain(1);
 		maSource.setDescn("上传文件测试用待删除");
-		maSource.setCTime(ctime);
+		maSource.setCTime(ma.getCTime());
 		mediaService.saveMas(maSource);
 		
 		// 获取专辑分类
 		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
 		if(chasma!=null) 
-			modifyMediaStatus(userid, maid, seqid, chasma.getFlowFlag());
+			modifyMediaStatus(userid, ma.getId(), seqid, chasma.getFlowFlag());
 		
-		if (mediaService.getMaInfoById(maid) != null) {
+		if (mediaService.getMaInfoById(ma.getId()) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "上传文件成功");
 		} else {
