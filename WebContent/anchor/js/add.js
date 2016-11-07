@@ -186,7 +186,7 @@ $(function(){
       var czfs_txt=czfs_t.split(":")[0];
       czfsObj.TypeName=czfs_txt;
       czfsObj.TypeId=$(this).attr("czfs_typeid");
-      czfsObj.TypeInfo=$(this).children(".czfs_tag_span2").html();
+      czfsObj.TypeInfo=$(this).children().children(".czfs_tag_span2").html();
       memberTypelist.push(czfsObj);
     });
     _data.MemberTypelist=memberTypelist;
