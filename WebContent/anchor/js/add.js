@@ -16,7 +16,7 @@ $(function(){
     var fileName=arr[arr.length-1];
     $(".yp_mz").val(fileName);
     oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("UserId", "18d611784ae0");
+    oMyForm.append("UserId", "123");
     oMyForm.append("SrcType", "2");
     oMyForm.append("Purpose", "1");
     if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
@@ -55,7 +55,7 @@ $(function(){
     var arr=filePath.split('\\');
     var fileName=arr[arr.length-1];
     oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("UserId", "18d611784ae0");
+    oMyForm.append("UserId", "123");
     oMyForm.append("SrcType", "1");
     oMyForm.append("Purpose", "2");
     if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
@@ -84,7 +84,7 @@ $(function(){
           alert(opeResult.err);
         }
       },
-      error: function(jqXHR){
+      error: function(XHR){
         alert("发生错误" + jqXHR.status);
       }
     });
@@ -101,7 +101,7 @@ $(function(){
         getAlbumList(resultData); //得到专辑列表,上传节目时使用
       }
     },
-    error:function(jqXHR){
+    error:function(XHR){
       alert("发生错误："+ jqXHR.status);
     }
   });
@@ -156,7 +156,7 @@ $(function(){
         getArtMethodList(resultData); //得到创作方式列表
       }
     },
-    error:function(jqXHR){
+    error:function(XHR){
       alert("发生错误："+ jqXHR.status);
     }
   });
@@ -171,7 +171,7 @@ $(function(){
   //6.点击提交按钮，新增节目
   $("#submitBtn").on("click",function(){
     var _data={};
-    _data.UserId="18d611784ae0";
+    _data.UserId="123";
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
@@ -213,13 +213,15 @@ $(function(){
       type:"POST",
       url:rootPath+"content/media/addMediaInfo.do",
       dataType:"json",
-      data:JSON.stringify(_data),
+      data:_data,
       success:function(resultData){
+        alert("sucess");
         if(resultData.ReturnType == "1001"){
           alert("新增节目成功");
         }
       },
-      error:function(jqXHR){
+      error:function(XHR){
+        alert("error");
         alert("发生错误："+ jqXHR.status);
       }
     });

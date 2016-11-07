@@ -1,5 +1,43 @@
 $(function(){
   var rootPath=getRootPath();
+  //获取栏目筛选条件
+  $.ajax({
+    type:"POST",
+    url:rootPath+"content/getFiltrates.do",
+    dataType:"json",
+    data:{"UserId":"123","MediaType":"MediaAsset"},
+    success:function(resultData){
+      if(resultData.ReturnType == "1001"){
+        getChannelLabel(resultData);//得到栏目的筛选标签
+      }
+    },
+    error:function(XHR){
+      alert("发生错误："+ jqXHR.status);
+    }
+  });
+  
+  //得到栏目的筛选标签
+  function getChannelLabel(resultData){
+    for(var i=0;i<resultData.ResultList.ChannelList.length;i++){
+      var filterChannel='<li class="trig_item" id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
+                          '<a  href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
+                        '</li>';
+      $("#channel .attrValues .av_ul").append(filterChannel); 
+      var fccg='<div class="tab_cont_item av_ul" parentId='+resultData.ResultList.ChannelList[i].id+'></div>';
+      $(".tab_cont").append(fccg);
+      if(resultData.ResultList.ChannelList[i].isParent=="true"){
+        for(var j=0;j<resultData.ResultList.ChannelList[i].children.length;j++){
+          var filterChannelChildren='<div class="trig_item trig_item_li" >'+
+                                      '<a  href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
+                                    '</div>';
+          $('div[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
+        }
+      }else{
+        $('div[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<span style='display:block;text-align:center;'>暂时没有二级栏目<span>");
+      }
+    }
+  }
+  
   //获取专辑列表
   $.ajax({
     type:"POST",
