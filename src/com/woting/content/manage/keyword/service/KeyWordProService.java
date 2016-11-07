@@ -30,6 +30,13 @@ public class KeyWordProService {
 				m.put("TagId", kw.getId());
 				m.put("Sort", kw.getSort());
 				m.put("CTime", kw.getcTime());
+				if (tagType.equals("1")) {
+					m.put("TagOrg", "公共标签");
+				} else {
+					if (tagType.equals("2")) {
+						m.put("TagOrg", "我的标签");
+					}
+				}
 				kwre.add(m);
 			}
 			if (kwre!=null && kwre.size()>0) {
