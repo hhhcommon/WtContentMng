@@ -7,9 +7,14 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
+import com.woting.cm.core.keyword.persis.po.KeyWordPo;
+import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
+import com.woting.cm.core.keyword.service.KeyWordBaseService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
@@ -29,6 +34,8 @@ public class MediaContentService {
 	private SeqContentService seqContentService;
 	@Resource
 	private UserService userService;
+	@Resource
+	private KeyWordBaseService keyWordBaseService;
 	
 	/**
 	 * 查询主播的资源列表
@@ -79,11 +86,67 @@ public class MediaContentService {
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
-
 		// 保存专辑与单体媒体对应表
 		if (!seqid.toLowerCase().equals("null")) {
 			SeqMediaAsset sma = mediaService.getSmaInfoById(seqid);
 			mediaService.bindMa2Sma(ma, sma);
+			if (tags!=null && tags.size()>0) {
+				List<KeyWordPo> lk = new ArrayList<>();
+				List<KeyWordResPo> ls = new ArrayList<>();
+				for (Map<String, Object> m : tags) {
+					KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName")+"");
+					if (kw!=null) {
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-专辑");
+						kwres.setResTableName("wt_SeqMediaAsset");
+						kwres.setResId(sma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
+						if (m.get("TagOrg").equals("我的标签")) {
+							KeyWordResPo kwr = new KeyWordResPo();
+							kwr.setId(SequenceUUID.getPureUUID());
+							kwr.setKwId(kw.getId());
+							kwr.setRefName("标签-主播");
+							kwr.setResTableName("palt_User");
+							kwr.setResId(userid);
+							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+							ls.add(kwr);
+						}
+					} else {
+						kw = new KeyWordPo();
+						kw.setId(SequenceUUID.getPureUUID());
+						kw.setOwnerId(userid);
+						kw.setOwnerType(1);
+						kw.setSort(0);
+						kw.setIsValidate(1);
+						kw.setKwName(m.get("TagName")+"");
+						kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
+						kw.setDescn(userid+"主播创建");
+						kw.setcTime(new Timestamp(System.currentTimeMillis()));
+						lk.add(kw);
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-专辑");
+						kwres.setResTableName("wt_SeqMediaAsset");
+						kwres.setResId(sma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
+						KeyWordResPo kwr = new KeyWordResPo();
+						kwr.setId(SequenceUUID.getPureUUID());
+						kwr.setKwId(kw.getId());
+						kwr.setRefName("标签-主播");
+						kwr.setResTableName("palt_User");
+						kwr.setResId(userid);
+						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwr);
+					}
+				}
+				keyWordBaseService.insertKeyWords(lk);
+				keyWordBaseService.insertKwRefs(ls);
+			}
 		}
 
 		// 保存资源来源表里

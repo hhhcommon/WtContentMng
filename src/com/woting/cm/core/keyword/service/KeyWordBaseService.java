@@ -25,6 +25,14 @@ public class KeyWordBaseService {
 		keyWordResDao.setNamespace("A_KEYWORDRES");
 	}
 	
+	public KeyWordPo getKeyWordInfoByName(String kwName) {
+		if (kwName!=null) {
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", kwName);
+			if (kws!=null && kws.size()>0) return kws.get(0);
+		}
+		return null;
+	}
+	
 	public boolean KeyWordIsNull(String kwName) {
 		if (kwName!=null) {
 			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", kwName);
