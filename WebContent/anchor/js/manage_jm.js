@@ -49,6 +49,52 @@ $(function(){
     }
   }
   
+  //获取节目列表
+  $.ajax({
+    type:"POST",
+    url:rootPath+"content/media/getMediaList.do",
+    dataType:"json",
+    data:{"UserId":"123","FlagFlow":"0","ChannelId":"0","SeqMediaId":"0"},
+    success:function(resultData){
+      if(resultData.ReturnType == "1001"){
+        getMediaList(resultData); //得到节目列表
+      }
+    },
+    error:function(XHR){
+      alert("发生错误："+ jqXHR.status);
+    }
+  });
+  //得到节目列表
+  function getMediaList(resultData){
+    for(var i=0;i<resultData.ResultList.AllCount;i++){
+      var programBox= '<div class="rtc_listBox">'+
+                        '<div class="rtcl_img">'+
+                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+                        '</div>'+
+                        '<div class="rtcl_con">'+
+                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                          '<p class="zj_name">'+resultData.ResultList.List[i].ContentSeqId+'</p>'+
+                          '<p class="other">'+
+                            '<span>时间 ：</span>'+
+                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                          '</p>'+
+                        '</div>'+
+                        '<p class="jm_st">已发布</p>'+
+                        '<div class="op_type">'+
+                          '<p class="jm_edit">编辑</p>'+
+                          '<p class="jm_pub">发布</p>'+
+                          '<p class="jm_del">删除</p>'+
+                          '<p class="jm_recal">撤回</p>'+
+                        '</div>'+
+                      '</div>';
+      $(".ri_top3_con").append(programBox);     
+    }
+  }
+  
+  /*
+  * 
+  * 上传节目页面
+  * */
  //上传节目页面获取标签
   $.ajax({
     type:"POST",
@@ -74,8 +120,6 @@ $(function(){
                 '</li>';
       $(".gg_tag_con").append(label); 
     }
-    
-              
   }
   
 

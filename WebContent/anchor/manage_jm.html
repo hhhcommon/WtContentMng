@@ -16,6 +16,7 @@
   <script src="../resources/js/context.utils.js"></script>
   <script src="js/add.js"></script>
   <script src="js/manage_jm.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -280,6 +281,7 @@ body{overflow: auto;}
   margin-right:10px;
   border:1px solid #dedede;
   float: left;
+  cursor: pointer;
 }
 .rtcl_img img{
   width:100%;
@@ -424,7 +426,7 @@ body{overflow: auto;}
             <span class="rth_op">相关操作</span>
           </div>
           <div class="ri_top3_con">
-            <div class="rtc_listBox">
+            <!--<div class="rtc_listBox">
               <div class="rtcl_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -443,8 +445,8 @@ body{overflow: auto;}
                 <p class="jm_del">删除</p>
                 <p class="jm_recal">撤回</p>
               </div>
-            </div>
-            <div class="rtc_listBox">
+            </div>-->
+            <!--<div class="rtc_listBox">
               <div class="rtcl_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -463,8 +465,8 @@ body{overflow: auto;}
                 <p class="jm_del">删除</p>
                 <p class="jm_recal">撤回</p>
               </div>
-            </div>
-            <div class="rtc_listBox">
+            </div>-->
+            <!--<div class="rtc_listBox">
               <div class="rtcl_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -483,8 +485,8 @@ body{overflow: auto;}
                 <p class="jm_del">删除</p>
                 <p class="jm_recal">撤回</p>
               </div>
-            </div>
-            <div class="rtc_listBox">
+            </div>-->
+            <!--<div class="rtc_listBox">
               <div class="rtcl_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -503,7 +505,7 @@ body{overflow: auto;}
                 <p class="jm_del">删除</p>
                 <p class="jm_recal">撤回</p>
               </div>
-            </div>
+            </div>-->
           </div>
         </div>  
       </div>
@@ -534,8 +536,9 @@ body{overflow: auto;}
                   <div class="upl_wj">
                     <img class="upl_wj_img" src="img/upl_img1.png" alt="" />
                   </div>
+                  <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a"/>
                   <div class="upl_yp">
-                    <input type="text" class="yp_mz">
+                    <input type="text" class="yp_mz" >
                     <progress value="22" max="100" ></progress>
                     <span>正在上传（43%）</span>
                     <img src="img/upl_img2.png" alt="" />
@@ -563,6 +566,7 @@ body{overflow: auto;}
                       <img src="" alt="font cover" />
                     </div>
                     <img class="upl_pt_img" src="img/upl_img3.png" alt="" />
+                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
                     <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
                   </div>
                 </div>
@@ -571,11 +575,11 @@ body{overflow: auto;}
                 <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <select name="" class="upl_zj">
-                    <option value="">专辑一</option>
+                    <!--<option value="">专辑一</option>
                     <option value="">专辑二</option>
                     <option value="">专辑三</option>
                     <option value="">专辑四</option>
-                    <option value="">专辑五</option>
+                    <option value="">专辑五</option>-->
                   </select> 
                 </div>
               </div>
@@ -644,11 +648,11 @@ body{overflow: auto;}
                 <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
                   <div class="upl_czfs">
                     <ul class="czfs_tag">
-                      <li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">郭德纲、于谦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>
+                      <!--<li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">郭德纲、于谦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>
                       <li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">于谦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>
-                      <li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">郭德纲、于谦、周杰伦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>
+                      <li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">郭德纲、于谦、周杰伦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>-->
                     </ul>
-                    <div class="czfs_tag_div">
+                    <div class="czfs_div">
                       <select name="" class="change_czfs">
                         <option value="">表演</option>
                         <option value="">演播</option>
@@ -763,6 +767,28 @@ $(document).on("click",".ri_top_li3",function(){
 $(".collapse-link,.cancel").on("click",function(){
   $(".mask,.add").hide();
   $("body").css({"overflow":"auto"});
+});
+
+/*底部footer显示/隐藏*/
+$(window).on("scroll", function(){ 
+  var sTop = $(window).scrollTop();  
+  var sTop = parseInt(sTop);  
+  if (sTop >= 130){ 
+    if(!$('.footer', parent.document).is(":visible")){ 
+      $('.wrapper', parent.document).css({"height":"64%"});
+      $('.footer', parent.document).show();
+    }  
+  }else{  
+    if($('.footer', parent.document).is(":visible")){  
+      $('.footer', parent.document).hide();
+      $('.wrapper', parent.document).css({"height":"84%"});
+    }  
+  }
+}); 
+//点击footer_hide，footer隐藏
+$('.footer_hide', parent.document).on("click",function(){
+	$('.wrapper', parent.document).css({"height":"84%"});
+	$('.footer', parent.document).hide();
 });
 </script>
 </body>

@@ -1,13 +1,102 @@
 $(function(){
+  var rootPath=getRootPath();
   var isExisted = true;//定义存在为true
   var tag_sum=0;//定义添加的标签数量,最大是5
-  //添加自定义标签
+  
+  //1.点击上传文件
+  $(".upl_wj").on("click",function(){
+    $(".yp_mz").val("");//清空放文件名的input框
+    $(".upl_file").click();
+  });
+  $(".upl_file").change(function(){
+    var oMyForm = new FormData();
+    var filePath=$(this).val();
+    var _this=$(this);
+    var arr=filePath.split('\\');
+    var fileName=arr[arr.length-1];
+    $(".yp_mz").val(fileName);
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
+      alert("文件过大，请选择合适的文件上传！");
+      $(".yp_mz").val("");
+    }else{
+      requestUpload(_this,oMyForm);//请求上传文件
+    }
+  });
+  
+  //请求上传文件
+  function requestUpload(_this,oMyForm){
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      //表单提交前进行验证
+      success: function (opeResult){
+        if(opeResult.ful[0].success=="FALSE"){//注意：此处有bug,true或false
+          alert("上传成功！");
+          _this.attr("value",opeResult.ful[0].storeFilename);
+        }else{
+          alert(opeResult.err);
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  };
+  
+  //2.点击上传图片
+  $(".upl_pt_img").on("click",function(){
+    $(".upl_img").click();
+  });
+  $(".upl_img").change(function(){
+    var oMyForm = new FormData();
+    var filePath=$(this).val();
+    var _this=$(this);
+    var arr=filePath.split('\\');
+    var fileName=arr[arr.length-1];
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
+      alert("图片过大，请选择合适的图片上传！");
+    }else{
+      requestUpload(_this,oMyForm);
+    }
+  });
+  
+  //3.获取选择专辑列表
+  $.ajax({
+    type:"POST",
+    url:rootPath+"content/seq/getSeqMediaList.do",
+    dataType:"json",
+    data:{"UserId":"123","FlagFlow":"0","ChannelId":"lmType1","ShortSearch":"false"},
+    success:function(resultData){
+      if(resultData.ReturnType == "1001"){
+        getAlbumList(resultData); //得到专辑列表,上传节目时使用
+      }
+    },
+    error:function(XHR){
+      alert("发生错误："+ jqXHR.status);
+    }
+  });
+  //得到专辑列表
+  function getAlbumList(resultData){
+    for(var i=0;i<resultData.ResultList.length;i++){
+      var option='<option value="" id='+resultData.ResultList[i].ContentId+'>'+resultData.ResultList[i].ContentName+'</option>';
+      $(".upl_zj").append(option);
+    }
+  }
+  
+  //4.添加自定义标签
   document.onkeydown = function(event){
+    if(event.keyCode == 32){return false;}//禁止输入空格
     if(event.keyCode == 13){//13是enter键，32是空格键
-      event.preventDefault();
-      if($(".tag_txt").val()!=""){
-        var count = $(".tag_txt").val().replace(/[^\x00-\xff]/g,"**").length;
-        var txt=$(".tag_txt").val();
+      var txt=$.trim($(".tag_txt").val());
+      if(txt!=""){
+        var count = txt.replace(/[^\x00-\xff]/g,"**").length;
         if(count<=12){
           isExiste(txt);//调用函数判断即将添加的标签是否应经存在
           if(!isExisted){
@@ -32,6 +121,18 @@ $(function(){
       }
     }
   };
+  
+  //5.点击提交按钮，新增节目
+  $(".submitBtn").on("click",function(){
+    var _data={};
+    _data.UserId="18d611784ae0";
+    _data.ContentName=$(".uplTitle").val();
+    _data.ContentImg={};
+    _data.ContentImg.ContentMaxImg=$(".upl_img").attr("value");
+    _data.ContentImg.ContentSmallImg=$(".upl_img").val();
+    console.log(_data);
+    
+  });
   
   //对新添加的标签的样式改变
   $(document).on("mouseenter",".bqImg",function(){
@@ -108,7 +209,6 @@ $(function(){
     }else{
       isExisted=false;
     }
-    
   }
   
   //点击换一批

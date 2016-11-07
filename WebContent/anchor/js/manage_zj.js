@@ -8,7 +8,7 @@ $(function(){
     data:{"UserId":"123","FlagFlow":"0","ChannelId":"lmType1","ShortSearch":"false"},
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
-        getAlbumList(resultData); //得到专辑列表
+        getSeqMediaList(resultData); //得到专辑列表
       }
     },
     error:function(XHR){
@@ -17,7 +17,7 @@ $(function(){
   });
   
   //得到专辑列表
-  function getAlbumList(resultData){
+  function getSeqMediaList(resultData){
     for(var i=0;i<resultData.ResultList.length;i++){
       var albumBox= '<div class="rtc_listBox">'+
                       '<div class="rtcl_img">'+
@@ -48,8 +48,4 @@ $(function(){
       $(".ri_top3_con").append(albumBox);              
     }
   }
-            
-  
-  
-  
 })
