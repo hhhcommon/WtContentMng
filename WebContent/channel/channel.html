@@ -194,7 +194,7 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-          zTreeObj.addNodes(null,jsonData.Data,false);
+          zTreeObj.addNodes(null,jsonData.Data.children,false);
         }
         loadRecursion(index);
       },
