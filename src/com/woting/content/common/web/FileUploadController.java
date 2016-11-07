@@ -25,21 +25,21 @@ public class FileUploadController extends AbstractFileUploadController{
 	public Map<String, Object> afterUploadOneFileOnSuccess(Map<String, Object> m, Map<String, Object> rqtAttrs, Map<String, Object> rqtParams, HttpSession session) {
 		Map<String, Object> map = new HashMap<>();
 		String srcType = rqtParams.get("SrcType") + "";
-		if (StringUtils.isNullOrEmptyOrSpace(srcType) || srcType.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无文件类型参数");
-			return map;
-		}
+//		if (StringUtils.isNullOrEmptyOrSpace(srcType) || srcType.toLowerCase().equals("null")) {
+//			map.put("ReturnType", "1011");
+//			map.put("Message", "无文件类型参数");
+//			return map;
+//		}
 		String purpose = rqtParams.get("Purpose") + "";
-		if (StringUtils.isNullOrEmptyOrSpace(purpose) || purpose.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无文件用途参数");
-			return map;
-		}
+//		if (StringUtils.isNullOrEmptyOrSpace(purpose) || purpose.toLowerCase().equals("null")) {
+//			map.put("ReturnType", "1011");
+//			map.put("Message", "无文件用途参数");
+//			return map;
+//		}
 		if (srcType.equals("1")) { //图片处理
 			String filepath = m.get("storeFilename")+""; //原始文件路径
 		    String path = FileNameUtils.getFilePath(filepath);
-            String filename = FileNameUtils.getFileName(filepath);
+//            String filename = FileNameUtils.getFileName(filepath);
             String newname = SequenceUUID.getPureUUID();
             String newfilepath = path + "/" + newname + ".png";
             FileUtils.copyFile(filepath, newfilepath); //复制原始文件
@@ -91,14 +91,9 @@ public class FileUploadController extends AbstractFileUploadController{
 		}
 		map.put("FileSize", m.get("size"));
 		map.put("TimeConsuming", m.get("timeConsuming"));
-//        String path = FileNameUtils.getFilePath(filepath);
-//        String newname = SequenceUUID.getPureUUID()+filename.substring(filename.lastIndexOf("."), filename.length());
-//        String newpath = path+"/"+newname;
-//        FileUtils.copyFile(filepath, newpath);
-//        FileUtils.deleteFile(new File(filepath));
-//        m.remove("warn");
-//        m.put("orglFilename", newname);
-//        m.put("storeFilename",newpath);
+		map.put("success", "true");
+		m.clear();
+		m.putAll(map);
         return m;
 	}
 	
@@ -112,7 +107,7 @@ public class FileUploadController extends AbstractFileUploadController{
         alPo.setApiName("1.1.4-common/uploadCM.do");
         alPo.setObjType("000");//不确定对象
         Map<String, Object> m=new HashMap<String, Object>();
-        m.putAll(rqtAttrs);
+//        m.putAll(rqtAttrs);
         m.putAll(rqtParams);
         alPo.setReqParam(JsonUtils.objToJson(m));
         alPo.setDealFlag(2);//处理失败
