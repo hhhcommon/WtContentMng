@@ -12,6 +12,7 @@ import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
@@ -21,7 +22,6 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
-import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.content.manage.media.service.MediaContentService;
 import com.woting.passport.UGA.persis.pojo.UserPo;
 import com.woting.passport.UGA.service.UserService;
@@ -73,7 +73,7 @@ public class SeqContentService {
 	 * @return
 	 */
 	public Map<String, Object> addSeqMediaInfo(String userid, String contentname, String channelId, String contentimg, List<Map<String, Object>> tags,
-			String contentdesc, String pubTime) {
+			List<Map<String, Object>> memberType, String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 保存专辑信息到资源库
 		SeqMediaAsset sma = new SeqMediaAsset();
@@ -152,6 +152,11 @@ public class SeqContentService {
 			}
 			keyWordBaseService.insertKeyWords(lk);
 			keyWordBaseService.insertKwRefs(ls);
+		}
+		if (memberType!=null && memberType.size()>0) {
+			for (Map<String, Object> m : memberType) {
+				dictContentService.insertResDictRef("创作方式-"+m.get("TypeName"), "wt_SeqMediaAsset", sma.getId(), "4", m.get("TypeId")+"");
+			}
 		}
 		if(!channelId.equals("null"))
 			map = modifySeqStatus(userid, sma.getId(), channelId, 0);

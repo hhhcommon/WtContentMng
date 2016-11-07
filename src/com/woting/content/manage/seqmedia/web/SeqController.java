@@ -233,6 +233,7 @@ public class SeqController {
 			}
 			String channelId = m.get("ChannelId")+"";
 			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
+			List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
 			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";
 			if (contentimg.equals("null"))
@@ -240,7 +241,7 @@ public class SeqController {
 			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime")+"";
-			map = seqContentService.addSeqMediaInfo(userid, contentname, channelId, contentimg, tags, contentdesc, pubTime);
+			map = seqContentService.addSeqMediaInfo(userid, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

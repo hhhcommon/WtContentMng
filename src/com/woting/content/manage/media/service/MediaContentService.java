@@ -64,7 +64,7 @@ public class MediaContentService {
 	 * @return
 	 */
 	public Map<String, Object> addMediaAssetInfo(String userid,  String contentname, String contentimg, String seqid, String contenturi,
-			List<Map<String, Object>> tags, List<Map<String, Object>> membertypes,String contentdesc, String pubTime) {
+			List<Map<String, Object>> tags, List<Map<String, Object>> memberType,String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = new MediaAsset();
 		ma.setId(SequenceUUID.getPureUUID());
@@ -162,6 +162,13 @@ public class MediaContentService {
 		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ma.getCTime());
 		mediaService.saveMas(maSource);
+		
+		// 保存创作方式信息
+		if (memberType!=null && memberType.size()>0) {
+			for (Map<String, Object> m : memberType) {
+				dictContentService.insertResDictRef("创作方式-"+m.get("TypeName"), "wt_MediaAsset", ma.getId(), "4", m.get("TypeId")+"");
+			}
+		}
 		
 		// 获取专辑分类
 		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
