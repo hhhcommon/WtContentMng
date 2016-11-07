@@ -52,12 +52,12 @@ public class KeyWordBaseService {
 	
 	public List<KeyWordPo> getRandKeyWordByOwner(String tagType, String userId, String resId, String tagsize) {
 		Map<String, Object> m = new HashMap<>();
-		m.put("resId", resId);
 		m.put("size", Integer.valueOf(tagsize));
 		m.put("isValidate", 1);
 		if (tagType.equals("1")) {
 			m.put("ownerId", "cm");
 			m.put("ownerType", 0);
+			m.put("resId", resId);
 			List<KeyWordPo> kwlist = keyWordDao.queryForList("getKeyWordRand", m);
 			if (kwlist!=null && kwlist.size()>0) {
 				return kwlist;
@@ -68,7 +68,7 @@ public class KeyWordBaseService {
 		if (tagType.equals("2")) {
 			m.put("ownerId", userId);
 			m.put("ownerType", 1);
-			List<KeyWordPo> kwlist = keyWordDao.queryForList("getKeyWordRand", m);
+			List<KeyWordPo> kwlist = keyWordDao.queryForList("getKeyWordByUserId", m);
 			if (kwlist!=null && kwlist.size()>0) {
 				return kwlist;
 			} else {
