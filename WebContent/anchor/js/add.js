@@ -16,6 +16,9 @@ $(function(){
     var fileName=arr[arr.length-1];
     $(".yp_mz").val(fileName);
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("UserId", "18d611784ae0");
+    oMyForm.append("SrcType", "2");
+    oMyForm.append("Purpose", "1");
     if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
       alert("文件过大，请选择合适的文件上传！");
       $(".yp_mz").val("");
@@ -36,9 +39,9 @@ $(function(){
       dataType:"json",
       //表单提交前进行验证
       success: function (opeResult){
-        if(opeResult.ful[0].success=="FALSE"){//注意：此处有bug,true或false
+        if(opeResult.ful[0].success=="TRUE"){
           alert("上传成功！");
-          _this.attr("value",opeResult.ful[0].storeFilename);
+          _this.attr("value",opeResult.ful[0].FilePath);
         }else{
           alert(opeResult.err);
         }
@@ -60,6 +63,9 @@ $(function(){
     var arr=filePath.split('\\');
     var fileName=arr[arr.length-1];
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("UserId", "18d611784ae0");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
     if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
       alert("图片过大，请选择合适的图片上传！");
     }else{
@@ -105,7 +111,7 @@ $(function(){
               $(".tag_txt").val("");
               return;
             }
-            var new_tag= '<li class="upl_bq_img bqImg" tagType="user_defined">'+
+            var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
                               '<span>'+txt+'</span>'+
                               '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
                             '</li>';
@@ -122,7 +128,30 @@ $(function(){
     }
   };
   
-  //5.点击提交按钮，新增节目
+  //5.获取创作方式列表
+  $.ajax({
+    type:"POST",
+    url:rootPath+"baseinfo/getCataTree4View.do",
+    dataType:"json",
+    data:{"CatalogType":"4","TreeViewType":"zTree"},
+    success:function(resultData){
+      if(resultData.ReturnType == "1001"){
+        getArtMethodList(resultData); //得到创作方式列表
+      }
+    },
+    error:function(XHR){
+      alert("发生错误："+ jqXHR.status);
+    }
+  });
+  //得到创作方式列表
+  function getArtMethodList(resultData){
+    for(var i=0;i<resultData.Data.children.length;i++){
+      var option='<option value="" id='+resultData.Data.children[i].id+'>'+resultData.Data.children[i].name+'</option>';
+      $(".change_czfs").append(option);
+    }
+  }
+  
+  //6.点击提交按钮，新增节目
   $("#submitBtn").on("click",function(){
     var _data={};
     _data.UserId="18d611784ae0";
@@ -133,11 +162,38 @@ $(function(){
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
-      var myTag={};//我的标签
-      var pubTag={};//公共标签
+      var tag={};//标签对象
+      if($(this).attr("tagType")=="我的标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="我的标签";
+      }
+      if($(this).attr("tagType")=="公共标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="公共标签";
+      }
+      if($(this).attr("tagType")=="自定义标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="自定义标签";
+      }
+      taglist.push(tag);
     });
+    _data.TagList=taglist;
+    _data.ContentDesc=$(".uplDecn").val();
+    var memberTypelist=[];
+    $(".czfs_tag").find(".czfs_tag_li").each(function(){
+      var czfsObj={};//创作方式对象
+      var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
+      var czfs_txt=czfs_t.split(":")[0];
+      czfsObj.TypeName=czfs_txt;
+      czfsObj.TypeId=$(this).attr("czfs_typeid");
+      czfsObj.TypeInfo=$(this).children(".czfs_tag_span2").html();
+      memberTypelist.push(czfsObj);
+    });
+    _data.MemberTypelist=memberTypelist;
+    var str_time=$(".layer-date").val();
+    var rst_strto_time=js_strto_time(str_time);
+    _data.FixedPubTime=rst_strto_time;
     console.log(_data);
-    
   });
   
   //对新添加的标签的样式改变
@@ -230,7 +286,7 @@ $(function(){
     if($(".czfs_author_ipt").val()==""||$(".czfs_author_ipt").val()==null){
       alert("作者名字不能为空");
     }else{
-      var new_czfs= '<li class="czfs_tag_li bqImg">'+
+      var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+$(".change_czfs option:selected").attr("id")+'>'+
                       '<div class="czfs_tag_div">'+
                       '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
                       '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
@@ -246,4 +302,13 @@ $(function(){
     $(this).parent(".bqImg").remove();
     $(".czfs_author_ipt").val("");
   });
+  
+  //定时发布的时间格式转换成时间戳
+  function js_strto_time(str_time){
+    var new_str = str_time.replace(/:/g,'-');
+    new_str = new_str.replace(/ /g,'-');
+    var arr = new_str.split("-");
+    var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
+    return strtotime = datum.getTime()/1000;
+  }
 });
