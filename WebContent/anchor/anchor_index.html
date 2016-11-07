@@ -80,8 +80,9 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 }
 /*中间内容区域*/
 .wrapper{
+	position: relative;
   margin-top:100px;
-  height:64%;
+  height:84%;
   border:1px solid red;
 }
 /*中间左侧导航*/
@@ -157,10 +158,6 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
   background-color: #ffa634;
   color:#000;
 }
-body.fixed-sidebar .navbar-static-side, 
-body.canvas-menu .navbar-static-side{
-  height:63.7% !important;
-}
 /*中间右侧内容*/
 .con_right{
   border:1px solid green;
@@ -182,6 +179,17 @@ body.canvas-menu .navbar-static-side{
   width: 360px;
   margin: auto;
   text-align: center;
+}
+.footer_hide{
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 17px;
+  border: 1px solid #dedede;
+  margin-top: -66px;
+  margin-right: 10px;
+  float: right;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -213,7 +221,7 @@ body.canvas-menu .navbar-static-side{
     </div>
     <div class="wrapper">
       <!--左侧导航开始-->
-      <nav class="navbar-default navbar-static-side" role="navigation">
+      <nav class="navbar-default navbar-static-side" role="navigation" style="position:absolute;">
         <div class="sidebar-collapse con_left">
           <ul class="nav" id="side-menu">
             <li class="manage">
@@ -267,6 +275,7 @@ body.canvas-menu .navbar-static-side{
       </div>
       <div class="ft3">Copyright &copy; 2014-2015 Woting. All Rights Reserved.</div>
       <div class="ft4">北京我听科技有限公司版权所有</div>
+      <div class="footer_hide">收起</div>
     </div>
   </div>
 <script>
