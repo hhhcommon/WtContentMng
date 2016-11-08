@@ -385,7 +385,7 @@ $(function(){
   }
   
   //11.点击发布按钮，发布节目
-  $("#pubBtn").("on","click",function(){
+  $("#pubBtn").on("click",function(){
     var _data={};
     _data.UserId="123";
     _data.ContentURI=$(".upl_file").attr("value");
