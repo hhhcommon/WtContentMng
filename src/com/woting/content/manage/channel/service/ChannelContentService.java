@@ -18,7 +18,6 @@ import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
 import com.woting.cm.core.channel.service.ChannelService;
-import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.content.manage.utils.ChannelUtils;
 
 public class ChannelContentService {

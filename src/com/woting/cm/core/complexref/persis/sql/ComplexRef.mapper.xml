@@ -41,6 +41,7 @@
   <!-- 获得列表 -->
   <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/>from wt_Complex_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select> 
 
   <!-- 新增数据 -->
