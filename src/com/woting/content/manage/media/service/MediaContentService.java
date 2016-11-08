@@ -13,6 +13,8 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
+import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
@@ -38,6 +40,8 @@ public class MediaContentService {
 	private UserService userService;
 	@Resource
 	private KeyWordBaseService keyWordBaseService;
+	@Resource
+	private ComplexRefService complexRefService;
 	
 	/**
 	 * 查询主播的资源列表
@@ -167,11 +171,22 @@ public class MediaContentService {
 		
 		// 保存创作方式信息
 		if (memberType!=null && memberType.size()>0) {
+			List<ComplexRefPo> cps = new ArrayList<>();
 			for (Map<String, Object> m : memberType) {
-				dictContentService.insertResDictRef("创作方式-"+m.get("TypeName"), "wt_MediaAsset", ma.getId(), "4", m.get("TypeId")+"");
+				ComplexRefPo cp = new ComplexRefPo();
+				cp.setId(SequenceUUID.getPureUUID());
+				cp.setAssetTableName("wt_SeqMediaAsset");
+				cp.setAssetId(ma.getId());
+				cp.setResId(m.get("TypeInfo")+"");
+				cp.setDictMId("4");
+				cp.setDictDId(m.get("TypeId")+"");
+				cps.add(cp);
+			}
+			if (cps!=null && cps.size()>0) {
+				complexRefService.insertComplexRef(cps);
 			}
 		}
-		
+
 		// 获取专辑分类
 		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
 		if(chasma!=null) 

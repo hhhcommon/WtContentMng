@@ -120,8 +120,7 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
-			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid,
-					shortsearch);
+			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid, shortsearch);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
 				c.remove("ReturnType");

@@ -16,6 +16,7 @@
     <typeAlias alias="channelAsset"  type="com.woting.cm.core.channel.persis.po.ChannelAssetPo"/>
     <typeAlias alias="keyword"       type="com.woting.cm.core.keyword.persis.po.KeyWordPo"/>
     <typeAlias alias="keywordres"    type="com.woting.cm.core.keyword.persis.po.KeyWordResPo"/>
+    <typeAlias alias="complexref"    type="com.woting.cm.core.complexref.persis.po.ComplexRefPo"/>
    </typeAliases>
   <!-- SQL文件设置 -->
   <mappers>
@@ -28,5 +29,6 @@
     <mapper resource="com/woting/cm/core/channel/persis/sql/ChannelAsset.mapper.xml"/>
     <mapper resource="com/woting/cm/core/keyword/persis/sql/KeyWord.mapper.xml"/>
     <mapper resource="com/woting/cm/core/keyword/persis/sql/KeyWordRes.mapper.xml"/>
+    <mapper resource="com/woting/cm/core/complexref/persis/sql/ComplexRef.mapper.xml"/>
   </mappers>
 </configuration>

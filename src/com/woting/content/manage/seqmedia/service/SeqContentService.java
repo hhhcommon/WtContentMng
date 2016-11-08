@@ -14,6 +14,8 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
+import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
@@ -40,6 +42,8 @@ public class SeqContentService {
 	private UserService userService;
 	@Resource
 	private KeyWordBaseService keyWordBaseService;
+	@Resource
+	private ComplexRefService complexRefService;
 
 	/**
 	 * 查询主播的资源列表
@@ -156,8 +160,19 @@ public class SeqContentService {
 			keyWordBaseService.insertKwRefs(ls);
 		}
 		if (memberType!=null && memberType.size()>0) {
+			List<ComplexRefPo> cps = new ArrayList<>();
 			for (Map<String, Object> m : memberType) {
-				dictContentService.insertResDictRef("创作方式-"+m.get("TypeName"), "wt_SeqMediaAsset", sma.getId(), "4", m.get("TypeId")+"");
+				ComplexRefPo cp = new ComplexRefPo();
+				cp.setId(SequenceUUID.getPureUUID());
+				cp.setAssetTableName("wt_SeqMediaAsset");
+				cp.setAssetId(sma.getId());
+				cp.setResId(m.get("TypeInfo")+"");
+				cp.setDictMId("4");
+				cp.setDictDId(m.get("TypeId")+"");
+				cps.add(cp);
+			}
+			if (cps!=null && cps.size()>0) {
+				complexRefService.insertComplexRef(cps);
 			}
 		}
 		if(!channelId.equals("null"))
@@ -293,10 +308,10 @@ public class SeqContentService {
 	public Map<String, Object> removeSeqMediaAsset(String contentid) {
 		Map<String, Object> map = new HashMap<String,Object>();
 		mediaService.removeSeqMedia(contentid);
-		if(mediaService.getSmaInfoById(contentid)!=null){
+		if(mediaService.getSmaInfoById(contentid)!=null) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "专辑删除失败");
-		}else{
+		} else {
 			map.put("ReturnType", "1001");
 			map.put("Message", "专辑删除成功");
 		}
