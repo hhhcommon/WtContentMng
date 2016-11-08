@@ -414,6 +414,10 @@ public class MediaService {
 			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
 			for (MediaAssetPo ma : listpo) {
 				Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), null, catalist, pubChannelList, null);
+				SeqMaRefPo smaref = getSeqMaRefByMId(ma.getId());
+				SeqMediaAsset sma = getSmaInfoById(smaref.getSId());
+				mam.put("ContentSeqId", sma.getId());
+				mam.put("ContentSeqName", sma.getSmaTitle());
 				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + ma.getId() + "'",
 						"wt_MediaAsset");
 				if (kws != null && kws.size() > 0) {
