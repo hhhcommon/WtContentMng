@@ -43,14 +43,14 @@ public class CommonController {
 	 * @param request
 	 * @return
 	 */
-    @RequestMapping(value="getCataTreeWithSelf.do")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="getCataTreeWithSelf.do")
     @ResponseBody
     public Map<String,Object> getCataTreeWithSelf(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
         Map<String, Object> m=RequestUtils.getDataFromRequest(request);
         String cataId=(String)m.get("cataId");
         if (!StringUtils.isNullOrEmptyOrSpace(cataId)&&!cataId.equals("null")) {
-            @SuppressWarnings("unchecked")
 			_CacheDictionary _cd=( (CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
             try {
                 DictModel dm=_cd.getDictModelById(cataId);
