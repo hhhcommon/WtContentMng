@@ -50,22 +50,28 @@ $(function(){
   }
   
   //获取节目列表
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/media/getMediaList.do",
-    dataType:"json",
-    data:{"UserId":"123","FlagFlow":"0","ChannelId":"0","SeqMediaId":"0"},
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getMediaList(resultData); //得到节目列表
+  var dataParam={"UserId":"123","FlagFlow":"0","ChannelId":"0","SeqMediaId":"0"};
+  getContentList(dataParam);
+  function getContentList(obj){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/getMediaList.do",
+      dataType:"json",
+      data:JSON.stringify(obj),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getMediaList(resultData); //得到节目列表
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
+  
   //得到节目列表
   function getMediaList(resultData){
+    $(".ri_top3_con").html("");//每次加载之前先清空
     for(var i=0;i<resultData.ResultList.AllCount;i++){
       var programBox= '<div class="rtc_listBox">'+
                         '<div class="rtcl_img">'+
@@ -332,13 +338,16 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
-        alert("sucess");
         if(resultData.ReturnType == "1001"){
           alert("新增节目成功");
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
+          getContentList(dataParam);//重新加载节目列表
+        }else{
+          alert(resultData.Message);
         }
       },
-      error:function(XHR){
-        alert("error");
+      error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
       }
     });
