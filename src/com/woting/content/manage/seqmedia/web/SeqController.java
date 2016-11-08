@@ -468,8 +468,16 @@ public class SeqController {
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			map = seqContentService.getSeqMediaAssetInfo(userId, contentid);
-			return map;
+			Map<String, Object> seqm = seqContentService.getSeqMediaAssetInfo(userId, contentid);
+			if (seqm!=null) {
+				map.put("ReturnType", "1001");
+				map.put("Result", seqm);
+				return map;
+			} else {
+				map.put("ReturnType", "1012");
+				map.put("Message", "获取失败");
+				return map;
+			}
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //			map.put("ReturnType", "T");

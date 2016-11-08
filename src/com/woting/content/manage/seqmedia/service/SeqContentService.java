@@ -311,7 +311,9 @@ public class SeqContentService {
 				List<SeqMediaAssetPo> smas = new ArrayList<>();
 				smas.add(sma.convert2Po());
 				List<Map<String, Object>> ls = mediaService.makeSmaListToReturn(smas);
-				System.out.println(JsonUtils.objToJson(ls));
+				if (ls!=null && ls.size()>0) {
+					return ls.get(0);
+				}
 			}
 		}
 		return null;
