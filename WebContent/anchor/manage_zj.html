@@ -14,8 +14,9 @@
   <link href="css/add.css" rel="stylesheet"  />
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
-  <script src="js/add.js"></script>
+  <script src="js/common_manage.js"></script>
   <script src="js/manage_zj.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -38,8 +39,8 @@ body{overflow: auto;}
   position: inherit;
 }
 .con_right{
-  height:1090px;
-  border:1px solid #dedede;
+  /*height:1090px;*/
+  /*border:1px solid #dedede;*/
 }
 .ri_top{
   width:100%;
@@ -529,25 +530,26 @@ body{overflow: auto;}
                 <div class="col-sm-10" style="padding-left:0px;">
                   <div class="upl_pt">
                     <div class="previewImg">
-                      <img src="" alt="font cover" />
+                      <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
                     </div>
                     <img class="upl_pt_img" src="img/upl_img3.png" alt="" />
+                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
                     <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
                   </div>
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">专辑分类<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:0px;">
-                  <select name="" class="upl_zj">
-                    <option value="">专辑分类一</option>
+              <!--<div class="form-group">-->
+                <!--<label class="col-sm-2 control-label">专辑分类<span class="ast">*</span>：</label>-->
+                <!--<div class="col-sm-10" style="padding-left:0px;">-->
+                  <!--<select name="" class="upl_zj">-->
+                    <!--<option value="">专辑分类一</option>
                     <option value="">专辑分类二</option>
                     <option value="">专辑分类三</option>
                     <option value="">专辑分类四</option>
-                    <option value="">专辑分类五</option>
-                  </select> 
-                </div>
-              </div>
+                    <option value="">专辑分类五</option>-->
+                  <!--</select>--> 
+                <!--</div>-->
+              <!--</div>-->
               <div class="form-group">
                 <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
@@ -565,7 +567,7 @@ body{overflow: auto;}
                     <h5>我的标签</h5>
                     <span class="hyp">换一批</span>
                     <ul class="my_tag_con">
-                      <li class="my_tag_con1">
+                      <!--<li class="my_tag_con1">
                         <input type="checkbox" class="my_tag_con1_check" />
                         <span class="my_tag_con1_span">自定义标签一</span>
                       </li>
@@ -576,14 +578,14 @@ body{overflow: auto;}
                       <li class="my_tag_con1">
                         <input type="checkbox" class="my_tag_con1_check" />
                         <span class="my_tag_con1_span">自定义标签三</span>
-                      </li>
+                      </li>-->
                     </ul>
                   </div>
                   <div class="gg_tag">
                     <h5>公共标签</h5>
                     <span class="hyp">换一批</span>
                     <ul class="gg_tag_con">
-                      <li class="gg_tag_con1">
+                      <!--<li class="gg_tag_con1">
                         <input type="checkbox" class="gg_tag_con1_check" />
                         <span class="gg_tag_con1_span">标签一</span>
                       </li>
@@ -594,7 +596,7 @@ body{overflow: auto;}
                       <li class="gg_tag_con1">
                         <input type="checkbox" class="gg_tag_con1_check" />
                         <span class="gg_tag_con1_span">标签三</span>
-                      </li>
+                      </li>-->
                     </ul>
                   </div>
                   <p>最多添加5个标签，单个标签最长6个汉字，按回车或空格确认</p>
@@ -603,8 +605,13 @@ body{overflow: auto;}
               <div class="form-group">
                 <label class="col-sm-2 control-label">发布栏目<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
-                  <input type="text" class="uplChannel" placeholder="栏目一">
-                </div>
+                  <select name="" class="upl_zj">
+                    <!--<option value="">专辑分类一</option>
+                    <option value="">专辑分类二</option>
+                    <option value="">专辑分类三</option>
+                    <option value="">专辑分类四</option>
+                    <option value="">专辑分类五</option>-->
+                  </select>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">专辑简介<span style="color:#fff;">*</span>：</label>
@@ -635,87 +642,5 @@ body{overflow: auto;}
     </div>
   </div> 
 </div>
-<script>
-/*点击一级栏目出现tab切换*/
-$(document).on("click",".trig_item",function(){
-  var ids=$(this).parents(".attr").attr('id');
-  if(ids=="channel"){
-    if($(this).hasClass("trig_item_li")){
-      $(".trig_item_li").removeClass("border_show").addClass("border_none");
-      $(this).siblings().children("a").children("img").hide();
-      $(this).children("a").children("img").show();
-      $(this).removeClass("border_none").addClass("border_show");
-    }else{
-      $(this).siblings().removeClass("trig_curr");
-      $(this).siblings().children("a").children("img").hide();
-      $(this).siblings().removeClass("border_show").addClass("border_none");
-      $(this).children("a").children("img").show();
-      $(this).addClass("trig_curr");
-      $(this).removeClass("border_none").addClass("border_show");
-      $(".tab_cont_item .trig_item_li").children("a").children("img").hide();
-      $(".tab_cont_item .trig_item_li").removeClass("border_show").addClass("border_none");
-      $(".tab_cont_item").siblings().hide().eq($('#channel .trig_item').index(this)).show();
-    }
-  }else{
-    $("#"+ids+" .trig_item").removeClass("border_show").addClass("border_none");
-    $("#"+ids+" .trig_item").children("a").children("img").hide();
-    $(this).addClass("border_show");
-    $(this).children("a").children("img").show();
-  }
-});
-
-/*点击更多按钮*/
-$(document).on("click",".av-options",function(){
-  if($(this).children(".avo-more").text()=="更多"){
-    $(this).children(".avo-more").text("收起");
-    $(this).children(".avo-more-img").attr({"src":"img/filter1.png"});
-    $(this).siblings(".av-gather").css({"height":"auto"});
-  }else{
-    $(this).children(".avo-more").text("更多");
-    $(this).children(".avo-more-img").attr({"src":"img/filter2.png"});
-    $(this).siblings(".av-gather").css({"height":"30px"});
-  }
-});
-
-/*点击每个小分类下面的删除标签*/
-$(document).on("click",".delLi",function(event){
-  event.stopPropagation();
-  var i=$(this).parent().parent().index();
-  if($(this).parents(".attr").attr("id")=="channel"){
-    if($(this).parent().parent().parent().hasClass("tab_cont_item")){
-      $(this).parent().parent().addClass("border_none");;
-      $(this).hide();
-      $(".tab_cont_item").hide();
-      $(".av-gather .trig_item").each(function(){
-        if($(this).hasClass("trig_curr")){
-          $(this).removeClass("trig_curr");
-          $(this).addClass("border_show");
-        }
-      })
-    }else{
-      $(this).parent().parent().removeClass("border_show").addClass("border_none");
-      $(this).hide();
-      $(".tab_cont_item").hide();
-      $(".av-gather .trig_item").removeClass("trig_curr");
-    }
-  }else{
-    $(this).parent().parent().removeClass("border_show").addClass("border_none");
-    $(this).hide();
-  }
-});
-
-/*点击上传节目，罩层和上传节目的页面出现*/
-$(document).on("click",".ri_top_li3",function(){
-  $(".mask,.add").show();
-  $("body").css({"overflow":"hidden"});
-});
-
-/*点击取消，罩层和上传节目的页面消失*/
-$(".collapse-link,.cancel").on("click",function(){
-  $(".mask,.add").hide();
-  $("body").css({"overflow":"auto"});
-});
-
-</script>
 </body>
 </html>
