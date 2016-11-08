@@ -41,4 +41,8 @@
       </foreach>
   </insert>
   
+  <delete id="deleteByEntity" parameterType="java.util.Map">
+    delete from wt_Kw_Res <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+  
 </mapper>

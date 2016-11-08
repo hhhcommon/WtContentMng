@@ -351,9 +351,9 @@ public class SeqController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/seq/removeSeqMediaInfo.do")
+	@RequestMapping(value = "/content/seq/removeSeqMedia.do")
 	@ResponseBody
-	public Map<String, Object> removeSeqMediaInfo(HttpServletRequest request) {
+	public Map<String, Object> removeSeqMedia(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userid = m.get("UserId") + "";

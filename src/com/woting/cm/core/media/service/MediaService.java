@@ -608,12 +608,17 @@ public class MediaService {
 	public void removeCha(String assetId) {
 		channelAssetDao.delete("deleteByAssetId", assetId);
 	}
+	
+	public void removeKeyWordRes(String assetId, String resTableName) {
+		keyWordProService.removeKeyWordByAssetId(assetId, resTableName);
+	}
 
 	public void removeMedia(String id) {
 		removeMa(id);
 		removeMas(id);
 		removeMa2SmaByMid(id);
 		removeResDictRef(id);
+		removeKeyWordRes(id, "wt_MediaAsset");
 		removeCha(id);
 	}
 
@@ -630,6 +635,7 @@ public class MediaService {
 				removeCha(seqMaRefPo.getMId());
 			}
 		}
+		removeKeyWordRes(id, "wt_SeqMediaAsset");
 		removeCha(id);
 		removeMa2SmaBySid(id);
 		removeSma(id);
