@@ -339,7 +339,7 @@ public class MediaService {
 		return null;
 	}
 
-	// 根据主播id查询其所有专辑
+	// 整理专辑返回结果
 	public List<Map<String, Object>> makeSmaListToReturn(List<SeqMediaAssetPo> listpo) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if (listpo != null && listpo.size() > 0) {
@@ -374,6 +374,38 @@ public class MediaService {
 		}
 		return list;
 	}
+	
+	// 整理专辑返回结果
+		public List<Map<String, Object>> makeMaListToReturn(List<MediaAssetPo> listpo) {
+			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+			if (listpo != null && listpo.size() > 0) {
+				String resids = "";
+				for (MediaAssetPo mediaAssetPo : listpo) {
+					resids += ",'" + mediaAssetPo.getId() + "'";
+				}
+				resids = resids.substring(1);
+				List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_MediaAsset");
+				List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
+				List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
+				for (MediaAssetPo ma : listpo) {
+					Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), null, catalist, pubChannelList, null);
+					List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'"+ma.getId()+"'", "wt_MediaAsset");
+					if (kws!=null && kws.size()>0) {
+						mam.put("ContentKeyWords", kws);
+					}
+					if (mam.containsKey("ContentPubChannels")) {
+						List<Map<String, Object>> chas = (List<Map<String, Object>>) mam.get("ContentPubChannels");
+						if (chas != null && chas.size() > 0) {
+							for (Map<String, Object> map : chas) {
+								map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
+							}
+						}
+					}
+					list.add(mam);
+				}
+			}
+			return list;
+		}
 
 	// 根据专辑id得到专辑
 	public SeqMediaAsset getSmaInfoById(String id) {

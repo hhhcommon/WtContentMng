@@ -305,7 +305,7 @@ public class SeqContentService {
 	
 	public Map<String, Object> getSeqMediaAssetInfo(String userId, String contentId) {
 		List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId);
-		if (chas!=null) {
+		if (chas!=null && chas.size()>0) {
 			SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
 			if (sma!=null) {
 				List<SeqMediaAssetPo> smas = new ArrayList<>();

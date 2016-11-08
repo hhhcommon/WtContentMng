@@ -12,12 +12,14 @@ import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
+import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
@@ -294,5 +296,21 @@ public class MediaContentService {
 			map.put("Message", "单体删除成功");
 		}
 		return map;
+	}
+	
+	public Map<String, Object> getMediaAssetInfo(String userId, String contentId) {
+		List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId);
+		if (chas!=null && chas.size()>0) {
+			MediaAsset ma = mediaService.getMaInfoById(contentId);
+			if (ma!=null) {
+				List<MediaAssetPo> mas = new ArrayList<>();
+				mas.add(ma.convert2Po());
+				List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
+				if (rem!=null && rem.size()>0) {
+					return rem.get(0);
+				}
+			}
+		}
+		return null;
 	}
 }

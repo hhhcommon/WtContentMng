@@ -374,4 +374,39 @@ public class MediaContentController {
 		map = mediaContentService.removeMediaAsset(contentid);
 		return map;
 	}
+	
+	/**
+	 * 获取单体节目信息
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/content/media/getMediaInfo.do")
+	@ResponseBody
+	public Map<String, Object> getMediaInfo(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String contentid = m.get("ContentId") + "";
+		if (contentid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无专辑信息");
+			return map;
+		}
+		Map<String, Object> rem = mediaContentService.getMediaAssetInfo(userid, contentid);
+		if (rem!=null) {
+			map.put("ReturnType", "1001");
+			map.put("Result", rem);
+			return map;
+		} else {
+			map.put("ReturnType", "1012");
+			map.put("Message", "获取信息失败");
+			return map;
+		}
+	}
 }
