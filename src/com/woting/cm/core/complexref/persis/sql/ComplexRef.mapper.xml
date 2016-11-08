@@ -68,7 +68,7 @@
   </insert>
   
   <insert id="insertComplexRefList" parameterType="map">
-    insert into wt_Complex_Ref s(id, assetTableName, assetId, resTableName, resId, dictMId, dictDId, cTime) values
+    insert into wt_Complex_Ref (id, assetTableName, assetId, resTableName, resId, dictMId, dictDId, cTime) values
       <foreach collection="list" item="list" index="index" separator=",">
        (#{list.id},#{list.assetTableName},#{list.assetId},#{list.resTableName},#{list.resId},#{list.dictMId},#{list.dictDId},#{list.cTime})
       </foreach>
