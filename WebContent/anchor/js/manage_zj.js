@@ -61,7 +61,7 @@ $(function(){
   //得到专辑列表
   function getSeqMediaList(resultData){
     for(var i=0;i<resultData.ResultList.length;i++){
-      var albumBox= '<div class="rtc_listBox">'+
+      var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
                       '</div>'+
@@ -81,7 +81,7 @@ $(function(){
                       '</div>'+
                       '<p class="jm_st">'+resultData.ResultList[i].MediaType+'</p>'+
                       '<div class="op_type">'+
-                        '<p class="jm_edit">编辑</p>'+
+                        '<p class="jm_edit" onclick="edit_zj(this)">编辑</p>'+
                         '<p class="jm_pub">发布</p>'+
                         '<p class="jm_del">删除</p>'+
                         '<p class="jm_recal">撤回</p>'+
@@ -294,7 +294,7 @@ $(function(){
     new_str = new_str.replace(/ /g,'-');
     var arr = new_str.split("-");
     var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
-    return strtotime = datum.getTime()/1000;
+    return strtotime = datum.getTime();
   }
   
 });

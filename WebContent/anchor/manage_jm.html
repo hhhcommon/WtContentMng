@@ -308,6 +308,7 @@ body{overflow: auto;}
   margin-right:-140px;
 }
 .op_type p{
+  cursor: pointer;
   margin:5px 0px 0px 0px;
   color: rgb(173,172,172);
 }
@@ -688,5 +689,28 @@ body{overflow: auto;}
     </div>
   </div> 
 </div>
+<script>
+  var rootPath=getRootPath();
+  function edit_jm(p){
+    var contentId=$(p).parents(".rtc_listBox").attr("contentid");
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/getMediaInfo.do",
+      dataType:"json",
+      data:{"UserId":"123","ContentId":contentId},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          $(".mask,.add").show();
+          $("body").css({"overflow":"hidden"});
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+</script>
 </body>
 </html>
