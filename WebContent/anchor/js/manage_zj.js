@@ -79,12 +79,12 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="jm_st">'+resultData.ResultList[i].MediaType+'</p>'+
+                      '<p class="zj_st">'+resultData.ResultList[i].MediaType+'</p>'+
                       '<div class="op_type">'+
-                        '<p class="jm_edit" onclick="edit_zj(this)">编辑</p>'+
-                        '<p class="jm_pub">发布</p>'+
-                        '<p class="jm_del">删除</p>'+
-                        '<p class="jm_recal">撤回</p>'+
+                        '<p class="zj_edit">编辑</p>'+
+                        '<p class="zj_pub">发布</p>'+
+                        '<p class="zj_del">删除</p>'+
+                        '<p class="zj_recal">撤回</p>'+
                       '</div>'+
                     '</div>';
       $(".ri_top3_con").append(albumBox);              
@@ -237,64 +237,6 @@ $(function(){
       var option='<option value="" id='+resultData.data.children[i].id+'>'+resultData.data.children[i].name+'</option>';
       $(".upl_zj").append(option);
     }
-  }
-  
-  //6.点击提交按钮，创建专辑
-  $("#submitBtn").on("click",function(){
-    var _data={};
-    _data.UserId="123";
-    _data.ContentName=$(".uplTitle").val();
-    _data.ContentImg=$(".upl_img").attr("value");
-    _data.ChannelId=$(".upl_zj option:selected").attr("id");
-    var taglist=[];
-    $(".upl_bq").find(".upl_bq_img").each(function(){
-      var tag={};//标签对象
-      if($(this).attr("tagType")=="我的标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="我的标签";
-      }
-      if($(this).attr("tagType")=="公共标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="公共标签";
-      }
-      if($(this).attr("tagType")=="自定义标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="自定义标签";
-      }
-      taglist.push(tag);
-    });
-    _data.TagList=taglist;
-    _data.ContentDesc=$(".uplDecn").val();
-    var str_time=$(".layer-date").val();
-    var rst_strto_time=js_strto_time(str_time);
-    _data.FixedPubTime=rst_strto_time;
-    console.log(_data);
-    $.ajax({
-      type:"POST",
-      url:rootPath+"content/seq/addSeqMediaInfo.do",
-      dataType:"json",
-      data:JSON.stringify(_data),
-      success:function(resultData){
-        if(resultData.ReturnType == "1001"){
-          alert("创建专辑成功");
-          $(".mask,.add").hide();
-          $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载专辑列表
-        }
-      },
-      error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
-      }
-    });
-  })
-  
-  //8.定时发布的时间格式转换成时间戳
-  function js_strto_time(str_time){
-    var new_str = str_time.replace(/:/g,'-');
-    new_str = new_str.replace(/ /g,'-');
-    var arr = new_str.split("-");
-    var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
-    return strtotime = datum.getTime();
   }
   
 });

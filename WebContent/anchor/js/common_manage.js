@@ -70,12 +70,6 @@ $(function(){
     }
   });
   
-  /*点击上传节目，罩层和上传节目的页面出现*/
-  $(document).on("click",".ri_top_li3",function(){
-    $(".mask,.add").show();
-    $("body").css({"overflow":"hidden"});
-  });
-  
   /*点击取消，罩层和上传节目的页面消失*/
   $(".collapse-link,.cancel").on("click",function(){
     $(".mask,.add").hide();
