@@ -42,7 +42,8 @@
 
   <!-- 获得记录条数-->
   <select id="getKeyWord" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select * from wt_KeyWord where kwName=#{kwName,jdbcType=VARCHAR}
+    select * from wt_KeyWord <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> <if test="ids!=null">and id in (${ids})</if>
+    <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
   
   <insert id="insertKeyWordList" parameterType="map">

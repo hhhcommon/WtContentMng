@@ -25,6 +25,7 @@ import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.exceptionC.Wtcm0101CException;
 
 public class MediaService {
@@ -44,6 +45,8 @@ public class MediaService {
 	private MybatisDAO<DictRefResPo> dictRefDao;
 	@Resource
 	private ChannelContentService channelContentService;
+	@Resource
+	private KeyWordProService keyWordProService;
 	private Map<String, Object> FlowFlagState = new HashMap<String, Object>(){{
 		put("0", "已提交");
 		put("1", "审核中");
@@ -298,9 +301,9 @@ public class MediaService {
 		m1.put("assetType", "wt_SeqMediaAsset");
 		if (!flowflag.equals("0")) {
 			if (flowflag.equals("5")) {
-				m1.put("flowFlag", "5"); // 5用来查询待入库，其余编号与flowflag对应
+				m1.put("flowFlag", "0"); // 5用来查询待入库，其余编号与flowflag对应
 			} else {
-				m1.put("flowFlag", "5");
+				m1.put("flowFlag", "0");
 			}
 		}
 		if (!channelid.equals("0")) {
@@ -352,6 +355,10 @@ public class MediaService {
 				SeqMediaAsset sma = new SeqMediaAsset();
 				sma.buildFromPo(seqMediaAssetPo);
 				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList, null);
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
+				if (kws!=null && kws.size()>0) {
+					smap.put("ContentKeyWords", kws);
+				}
 				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 				if (smap.containsKey("ContentPubChannels")) {
 					List<Map<String, Object>> chas = (List<Map<String, Object>>) smap.get("ContentPubChannels");
@@ -438,6 +445,17 @@ public class MediaService {
 			chlist.add(chpo.toHashMap());
 		}
 		return chlist;
+	}
+	
+	public List<ChannelAssetPo> getChaByAssetIdAndPubId (String pubId, String assetId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("publisherId", pubId);
+		m.put("assetId", assetId);
+		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m);
+		if (chas!=null && chas.size()>0) {
+			return chas;
+		}
+		return null;
 	}
 
 	// 根据资源id得到资源字典项对应关系

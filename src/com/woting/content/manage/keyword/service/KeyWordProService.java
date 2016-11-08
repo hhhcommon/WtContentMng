@@ -66,4 +66,22 @@ public class KeyWordProService {
 		}
 		return null;
 	}
+	
+	public List<Map<String, Object>> getKeyWordListByAssetId(String assetId, String resTableName) {
+		List<KeyWordPo> kws = keyWordBaseService.getKeyWordsByAssetId(assetId, resTableName);
+		if (kws!=null && kws.size()>0) {
+			List<Map<String, Object>> kwlist = new ArrayList<>();
+			for (KeyWordPo kw : kws) {
+				Map<String, Object> m = new HashMap<>();
+				m.put("TagId", kw.getId());
+				m.put("TagName", kw.getKwName());
+				m.put("TagSort", kw.getSort());
+				m.put("NamePy", kw.getnPy());
+				m.put("CTime", kw.getcTime());
+				kwlist.add(m);
+			}
+			return kwlist;
+		}
+		return null;
+	}
 }
