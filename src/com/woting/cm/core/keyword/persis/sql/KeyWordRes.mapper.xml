@@ -30,6 +30,10 @@
     </where>
   </sql>
   
+  <select id="getKeyWordResByResId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    SELECT * from wt_Kw_Res <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> <if test="resIds!=null">and resId in (${resIds})</if>
+  </select>
+  
   <insert id="insertKwResList" parameterType="map">
     insert into wt_Kw_Res(id, refName, kwId, resTableName, resId, cTime) values
       <foreach collection="list" item="list" index="index" separator=",">

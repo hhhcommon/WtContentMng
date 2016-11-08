@@ -9,10 +9,11 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.util.ChineseCharactersUtils;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
-import com.woting.cm.core.dict.persis.po.DictRefResPo;
+import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
@@ -20,6 +21,7 @@ import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
+import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.media.service.MediaContentService;
@@ -299,5 +301,19 @@ public class SeqContentService {
 			map.put("Message", "专辑删除成功");
 		}
 		return map;
+	}
+	
+	public Map<String, Object> getSeqMediaAssetInfo(String userId, String contentId) {
+		List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId);
+		if (chas!=null) {
+			SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
+			if (sma!=null) {
+				List<SeqMediaAssetPo> smas = new ArrayList<>();
+				smas.add(sma.convert2Po());
+				List<Map<String, Object>> ls = mediaService.makeSmaListToReturn(smas);
+				System.out.println(JsonUtils.objToJson(ls));
+			}
+		}
+		return null;
 	}
 }

@@ -84,5 +84,28 @@ public class KeyWordBaseService {
 			}
 		}
 		return null;
-	}	
+	}
+	
+	public List<KeyWordPo> getKeyWordsByAssetId (String assetId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resIds", assetId);
+		m.put("resTableName", resTableName);
+		List<KeyWordResPo> kwres = keyWordResDao.queryForList("getKeyWordResByResId", m);
+		if (kwres!=null && kwres.size()>0) {
+			String ks = "";
+			for (KeyWordResPo keyWordResPo : kwres) {
+				ks += ",'"+keyWordResPo.getKwId()+"'";
+			}
+			ks = ks.substring(1);
+			m.clear();
+			m.put("ids", ks);
+			m.put("isValidate", 1);
+			m.put("orderByClause", "sort desc, cTime desc");
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", m);
+			if (kws!=null && kws.size()>0) {
+				return kws;
+			}
+		}
+		return null;
+	}
 }
