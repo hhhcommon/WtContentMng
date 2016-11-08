@@ -120,8 +120,7 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
-			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid,
-					shortsearch);
+			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid, shortsearch);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
 				c.remove("ReturnType");
@@ -351,9 +350,9 @@ public class SeqController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/seq/removeSeqMediaInfo.do")
+	@RequestMapping(value = "/content/seq/removeSeqMedia.do")
 	@ResponseBody
-	public Map<String, Object> removeSeqMediaInfo(HttpServletRequest request) {
+	public Map<String, Object> removeSeqMedia(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userid = m.get("UserId") + "";

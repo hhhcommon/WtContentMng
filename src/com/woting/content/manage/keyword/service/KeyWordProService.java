@@ -84,4 +84,8 @@ public class KeyWordProService {
 		}
 		return null;
 	}
+	
+	public void removeKeyWordByAssetId(String assetId, String resTableName) {
+		keyWordBaseService.deleteKeyWordRes(assetId, resTableName);
+	}
 }

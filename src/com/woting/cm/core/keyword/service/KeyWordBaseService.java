@@ -108,4 +108,11 @@ public class KeyWordBaseService {
 		}
 		return null;
 	}
+	
+	public void deleteKeyWordRes(String assetId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resId", assetId);
+		m.put("resTableName", resTableName);
+		keyWordResDao.delete("deleteByEntity", m);
+	}
 }

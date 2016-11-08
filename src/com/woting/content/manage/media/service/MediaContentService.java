@@ -12,12 +12,16 @@ import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
+import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
+import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
 import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
@@ -36,6 +40,8 @@ public class MediaContentService {
 	private UserService userService;
 	@Resource
 	private KeyWordBaseService keyWordBaseService;
+	@Resource
+	private ComplexRefService complexRefService;
 	
 	/**
 	 * 查询主播的资源列表
@@ -165,11 +171,22 @@ public class MediaContentService {
 		
 		// 保存创作方式信息
 		if (memberType!=null && memberType.size()>0) {
+			List<ComplexRefPo> cps = new ArrayList<>();
 			for (Map<String, Object> m : memberType) {
-				dictContentService.insertResDictRef("创作方式-"+m.get("TypeName"), "wt_MediaAsset", ma.getId(), "4", m.get("TypeId")+"");
+				ComplexRefPo cp = new ComplexRefPo();
+				cp.setId(SequenceUUID.getPureUUID());
+				cp.setAssetTableName("wt_SeqMediaAsset");
+				cp.setAssetId(ma.getId());
+				cp.setResId(m.get("TypeInfo")+"");
+				cp.setDictMId("4");
+				cp.setDictDId(m.get("TypeId")+"");
+				cps.add(cp);
+			}
+			if (cps!=null && cps.size()>0) {
+				complexRefService.insertComplexRef(cps);
 			}
 		}
-		
+
 		// 获取专辑分类
 		ChannelAsset chasma = mediaService.getCHAInfoByAssetId(seqid);
 		if(chasma!=null) 
@@ -294,5 +311,21 @@ public class MediaContentService {
 			map.put("Message", "单体删除成功");
 		}
 		return map;
+	}
+	
+	public Map<String, Object> getMediaAssetInfo(String userId, String contentId) {
+		List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId);
+		if (chas!=null && chas.size()>0) {
+			MediaAsset ma = mediaService.getMaInfoById(contentId);
+			if (ma!=null) {
+				List<MediaAssetPo> mas = new ArrayList<>();
+				mas.add(ma.convert2Po());
+				List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
+				if (rem!=null && rem.size()>0) {
+					return rem.get(0);
+				}
+			}
+		}
+		return null;
 	}
 }
