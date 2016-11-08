@@ -210,15 +210,86 @@ public class SeqContentService {
 		SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
 		if (sma != null) {
 			sma.setSmaTitle(contentname);
-			if (contentimg!=null & !contentimg.toLowerCase().equals("null")) {
+			if (contentimg != null & !contentimg.toLowerCase().equals("null")) {
 				sma.setSmaImg(contentimg);
 			}
-			if (contentdesc!=null & !contentdesc.toLowerCase().equals("null")) {
+			if (contentdesc != null & !contentdesc.toLowerCase().equals("null")) {
 				sma.setDescn(contentdesc);
 			}
-			if (tags!=null && tags.size()>0) {
+			if (tags != null && tags.size() > 0) {
 				keyWordBaseService.deleteKeyWordRes(channelId, "wt_SeqMediaAsset");
-				
+				List<KeyWordPo> lk = new ArrayList<>();
+				List<KeyWordResPo> ls = new ArrayList<>();
+				for (Map<String, Object> m : tags) {
+					KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
+					if (kw != null) {
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-专辑");
+						kwres.setResTableName("wt_SeqMediaAsset");
+						kwres.setResId(sma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
+						if (m.get("TagOrg").equals("我的标签")) {
+							KeyWordResPo kwr = new KeyWordResPo();
+							kwr.setId(SequenceUUID.getPureUUID());
+							kwr.setKwId(kw.getId());
+							kwr.setRefName("标签-主播");
+							kwr.setResTableName("palt_User");
+							kwr.setResId(userid);
+							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+							ls.add(kwr);
+						}
+					} else {
+						kw = new KeyWordPo();
+						kw.setId(SequenceUUID.getPureUUID());
+						kw.setOwnerId(userid);
+						kw.setOwnerType(1);
+						kw.setSort(0);
+						kw.setIsValidate(1);
+						kw.setKwName(m.get("TagName") + "");
+						kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
+						kw.setDescn(userid + "主播创建");
+						kw.setcTime(new Timestamp(System.currentTimeMillis()));
+						lk.add(kw);
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-专辑");
+						kwres.setResTableName("wt_SeqMediaAsset");
+						kwres.setResId(sma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
+						KeyWordResPo kwr = new KeyWordResPo();
+						kwr.setId(SequenceUUID.getPureUUID());
+						kwr.setKwId(kw.getId());
+						kwr.setRefName("标签-主播");
+						kwr.setResTableName("palt_User");
+						kwr.setResId(userid);
+						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwr);
+					}
+				}
+				keyWordBaseService.insertKeyWords(lk);
+				keyWordBaseService.insertKwRefs(ls);
+			}
+			if (memberType != null && memberType.size() > 0) {
+				complexRefService.deleteComplexRef("wt_SeqMediaAsset", contentid, "4");
+				List<ComplexRefPo> cps = new ArrayList<>();
+				for (Map<String, Object> m : memberType) {
+					ComplexRefPo cp = new ComplexRefPo();
+					cp.setId(SequenceUUID.getPureUUID());
+					cp.setAssetTableName("wt_SeqMediaAsset");
+					cp.setAssetId(sma.getId());
+					cp.setResId(m.get("TypeInfo") + "");
+					cp.setDictMId("4");
+					cp.setDictDId(m.get("TypeId") + "");
+					cps.add(cp);
+				}
+				if (cps != null && cps.size() > 0) {
+					complexRefService.insertComplexRef(cps);
+				}
 			}
 			if (channelId != null & !channelId.toLowerCase().equals("null")) {
 				ChannelAsset cha = mediaService.getCHAInfoByAssetId(sma.getId());
@@ -228,43 +299,12 @@ public class SeqContentService {
 					modifySeqStatus(userid, sma.getId(), channelId, flowflag);
 				}
 			}
-			
+			map.put("ReturnType", "1001");
+			map.put("Message", "修改成功");
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
 		}
-		// mediaService.updateSma(sma);
-		// if(malist!=null&&malist.size()>0){
-		// for (MediaAssetPo mapo : malist) {
-		// MediaAsset ma = new MediaAsset();
-		// ma.buildFromPo(mapo);
-		// mediaService.bindMa2Sma(ma, sma);
-		// }
-		// }
-		// List<SeqMaRefPo> l = mediaService.getSmaListBySid(sma.getId());
-		// if(!did.toLowerCase().equals("null")){
-		// mediaService.removeResDictRef(sma.getId());
-		// dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset",
-		// sma.getId());
-		// if(l!=null&&l.size()>0)
-		// for (SeqMaRefPo seqMaRefPo : l) { //
-		// 查询专辑下级信息，删除下级单体的内容分类数据信息，重新写入wt_ResDict_Ref表内
-		// mediaService.removeResDictRef(seqMaRefPo.getMId());
-		// dictContentService.addCataLogs("3", did, "wt_MediaAsset",
-		// seqMaRefPo.getMId());
-		// }
-		// }
-		// if(!chid.toLowerCase().equals("null")){
-		// ChannelAsset cha = mediaService.getCHAInfoByAssetId(sma.getId());
-		// if(cha!=null){
-		// int flowflag = cha.getFlowFlag();
-		// mediaService.removeCha(sma.getId());
-		// modifySeqStatus(userid, sma.getId(), chid, flowflag);
-		// }
-		// }
-		// map.put("ReturnType", "1001");
-		// map.put("Message", "修改成功");
-		// }else{
-		// map.put("ReturnType", "1011");
-		// map.put("Message", "修改失败");
-		// }
 		return map;
 	}
 
