@@ -197,42 +197,42 @@ public class SeqContentService {
 	 * @param sma
 	 * @return
 	 */
-	public Map<String, Object> updateSeqInfo(String userid, SeqMediaAsset sma, String did, String chid) {
+	public Map<String, Object> updateSeqInfo(String userid,String contentid,String contentname,String channelId,String contentimg,List<Map<String, Object>> tags,List<Map<String, Object>> memberType,String contentdesc,String pubTime) {
 		Map<String, Object> map = new HashMap<String,Object>();
-		List<MediaAssetPo> malist = mediaService.getMaListBySmaId(sma.getId());
-		if(mediaService.getSmaInfoById(sma.getId())!=null) {
-			mediaService.updateSma(sma);
-			if(malist!=null&&malist.size()>0){
-				for (MediaAssetPo mapo : malist) {
-					MediaAsset ma = new MediaAsset();
-					ma.buildFromPo(mapo);
-					mediaService.bindMa2Sma(ma, sma);
-				}
-			}
-			List<SeqMaRefPo> l = mediaService.getSmaListBySid(sma.getId());
-			if(!did.toLowerCase().equals("null")){
-				mediaService.removeResDictRef(sma.getId());
-				dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
-				if(l!=null&&l.size()>0)
-				    for (SeqMaRefPo seqMaRefPo : l) { // 查询专辑下级信息，删除下级单体的内容分类数据信息，重新写入wt_ResDict_Ref表内
-					    mediaService.removeResDictRef(seqMaRefPo.getMId());
-					    dictContentService.addCataLogs("3", did, "wt_MediaAsset", seqMaRefPo.getMId());
-				    }
-			}
-			if(!chid.toLowerCase().equals("null")){
-				ChannelAsset cha = mediaService.getCHAInfoByAssetId(sma.getId());
-				if(cha!=null){
-					int flowflag = cha.getFlowFlag();
-					mediaService.removeCha(sma.getId());
-					modifySeqStatus(userid, sma.getId(), chid, flowflag);
-				}
-			}
-			map.put("ReturnType", "1001");
-		    map.put("Message", "修改成功");
-		}else{
-			map.put("ReturnType", "1011");
-		    map.put("Message", "修改失败");
-		}
+//		List<MediaAssetPo> malist = mediaService.getMaListBySmaId(sma.getId());
+//		if(mediaService.getSmaInfoById(sma.getId())!=null) {
+//			mediaService.updateSma(sma);
+//			if(malist!=null&&malist.size()>0){
+//				for (MediaAssetPo mapo : malist) {
+//					MediaAsset ma = new MediaAsset();
+//					ma.buildFromPo(mapo);
+//					mediaService.bindMa2Sma(ma, sma);
+//				}
+//			}
+//			List<SeqMaRefPo> l = mediaService.getSmaListBySid(sma.getId());
+//			if(!did.toLowerCase().equals("null")){
+//				mediaService.removeResDictRef(sma.getId());
+//				dictContentService.addCataLogs("3", did, "wt_SeqMediaAsset", sma.getId());
+//				if(l!=null&&l.size()>0)
+//				    for (SeqMaRefPo seqMaRefPo : l) { // 查询专辑下级信息，删除下级单体的内容分类数据信息，重新写入wt_ResDict_Ref表内
+//					    mediaService.removeResDictRef(seqMaRefPo.getMId());
+//					    dictContentService.addCataLogs("3", did, "wt_MediaAsset", seqMaRefPo.getMId());
+//				    }
+//			}
+//			if(!chid.toLowerCase().equals("null")){
+//				ChannelAsset cha = mediaService.getCHAInfoByAssetId(sma.getId());
+//				if(cha!=null){
+//					int flowflag = cha.getFlowFlag();
+//					mediaService.removeCha(sma.getId());
+//					modifySeqStatus(userid, sma.getId(), chid, flowflag);
+//				}
+//			}
+//			map.put("ReturnType", "1001");
+//		    map.put("Message", "修改成功");
+//		}else{
+//			map.put("ReturnType", "1011");
+//		    map.put("Message", "修改失败");
+//		}
 		return map;
 	}
 	

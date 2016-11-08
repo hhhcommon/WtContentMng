@@ -269,39 +269,37 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request) {
-		SeqMediaAsset sma = new SeqMediaAsset();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String userid = m.get("UserId") + "";
-		if (userid.toLowerCase().equals("null")) {
+		if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		String smaid = m.get("ContentId") + "";
-		if (smaid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "修改失败");
+		String contentid = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无专辑Id");
 			return map;
 		}
-		sma.setId(smaid);
-		String smaname = m.get("ContentName") + "";
-		if (!smaname.toLowerCase().equals("null"))
-			sma.setSmaTitle(smaname);
+		String contentname = m.get("ContentName") + "";
+		if (contentname.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1013");
+			map.put("Message", "无节目名称");
+			return map;
+		}
+		String channelId = m.get("ChannelId") + "";
+		List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
+		List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
 		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
-		String smaimg = m.get("ContentImg") + "";
-		smaimg = smaimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
-		if (!smaimg.toLowerCase().equals("null"))
-			sma.setSmaImg(smaimg);
-		String smadesc = m.get("ContentDesc") + "";
-		if (!smadesc.toLowerCase().equals("null"))
-			sma.setDescn(smadesc);
-		String smastatus = m.get("ContentStatus") + "";
-		if (!smastatus.toLowerCase().equals("null"))
-			sma.setSmaStatus(Integer.valueOf(smastatus));
-		String did = m.get("ContentCatalogsId") + ""; // 更改专辑的内容分类
-		String chid = m.get("ContentChannelId") + ""; // 更改专辑的栏目
-		map = seqContentService.updateSeqInfo(userid, sma, did, chid);
+		String contentimg = m.get("ContentImg") + "";
+		if (contentimg.equals("null"))
+			contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+		contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+		String contentdesc = m.get("ContentDesc") + "";
+		String pubTime = m.get("FixedPubTime") + "";
+		map = seqContentService.updateSeqInfo(userid, contentid, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
 		return map;
 	}
 

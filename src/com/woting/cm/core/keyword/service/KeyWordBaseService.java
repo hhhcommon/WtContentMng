@@ -27,7 +27,9 @@ public class KeyWordBaseService {
 	
 	public KeyWordPo getKeyWordInfoByName(String kwName) {
 		if (kwName!=null) {
-			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", kwName);
+			Map<String, Object> m = new HashMap<>();
+			m.put("kwName", kwName);
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", m);
 			if (kws!=null && kws.size()>0) return kws.get(0);
 		}
 		return null;
@@ -35,7 +37,9 @@ public class KeyWordBaseService {
 	
 	public boolean KeyWordIsNull(String kwName) {
 		if (kwName!=null) {
-			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", kwName);
+			Map<String, Object> m = new HashMap<>();
+			m.put("kwName", kwName);
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", m);
 			if (kws!=null && kws.size()>0) return false;
 			else return true;
 		}
