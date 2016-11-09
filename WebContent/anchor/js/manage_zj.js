@@ -1,7 +1,7 @@
 $(function(){
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在创建专辑页面提交,subType=2代表在修改专辑页面提交
-  
+  var pubType=1;//pubType=1代表在创建专辑页面提交,pubType=2代表在修改专辑页面提交
   
   //00-1获取栏目筛选条件
   $.ajax({
@@ -83,7 +83,7 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st">'+resultData.ResultList[i].MediaType+'</p>'+
+                      '<p class="zj_st">'+resultData.ResultList[i].ContentPubChannels[0].FlowFlagState+'</p>'+
                       '<div class="op_type">'+
                         '<p class="zj_edit">编辑</p>'+
                         '<p class="zj_pub">发布</p>'+
@@ -99,19 +99,21 @@ $(function(){
   $(document).on("click",".ri_top_li3",function(){
     clear();//清空数据
     subType=1;
+    pubType=1;
   });
   
   //22-1点击编辑专辑按钮
    $(document).on("click",".zj_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     subType=2;
+    pubType=2;
     edit_zj(contentId);
   })
    
   //33-1点击提交按钮，创建专辑/修改专辑
   $("#submitBtn").on("click",function(){
     if(subType=="1")  add_zj();
-    if(subType=="2")  sava_edit_zj();
+    if(subType=="2")  save_edit_zj();
   })
   
   //33-1.1创建专辑方法
@@ -164,7 +166,7 @@ $(function(){
   }
   
   //33-1.2保存编辑后的信息
-  function sava_edit_zj(){
+  function save_edit_zj(){
     var _data={};
     _data.UserId="123";
     _data.ContentName=$(".uplTitle").val();

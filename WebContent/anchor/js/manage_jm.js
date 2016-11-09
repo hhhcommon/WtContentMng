@@ -1,7 +1,7 @@
 $(function(){
   var rootPath=getRootPath();
-  var subType=1;//subType=1代表在创建专辑页面提交,subType=2代表在修改专辑页面提交
-  var pubType=1;//pubType=1代表在创建专辑页面提交,pubType=2代表在修改专辑页面提交
+  var subType=1;//subType=1代表在上传节目页面提交,subType=2代表在修改节目页面提交
+  var pubType=1;//pubType=1代表在上传节目页面提交,pubType=2代表在修改节目页面提交
   
   //00-1获取栏目筛选条件
   $.ajax({
@@ -697,14 +697,27 @@ $(function(){
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
-      if($(this).attr("tagType")=="我的标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="我的标签";
-      }
-      if($(this).attr("tagType")=="公共标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="公共标签";
-      }
+      var tagTxt=$(this).children("span").html();
+      $(".my_tag_con1").each(function(){
+        if($(this).children(".my_tag_con1_span").html()==tagTxt){
+          $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
+          $(this).children(".my_tag_con1_check").prop("checked",true);
+          $(this).children(".my_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".my_tag_con1_span").html();
+          tag.TagOrg="我的标签";
+        }
+      })
+      $(".gg_tag_con1").each(function(){
+        if($(this).children(".gg_tag_con1_span").html()==tagTxt){
+          $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
+          $(this).children(".gg_tag_con1_check").prop("checked",true);
+          $(this).children(".gg_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".gg_tag_con1_span").html();
+          tag.TagOrg="公共标签";
+        }
+      })
       if($(this).attr("tagType")=="自定义标签"){
         tag.TagName=$(this).children("span").html();
         tag.TagOrg="自定义标签";
