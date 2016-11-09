@@ -116,6 +116,12 @@ $(function(){
     if(subType=="2")  save_edit_zj();
   })
   
+  //55-1点击发布按钮，创建专辑/修改专辑
+  $("#pubBtn").on("click",function(){
+    if(pubType=="1") pub_add_zj();
+    if(pubType=="2") pub_edit_zj();
+  })
+  
   //33-1.1创建专辑方法
   function add_zj(){
     var _data={};
@@ -313,6 +319,33 @@ $(function(){
     });
   }
   
+  //55-1点击发布节目按钮
+  $(document).on("click",".zj_pub",function(){
+    $('.shade', parent.document).show();
+    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+    pub_zj(contentId);
+  })
+  function pub_zj(contentId){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/updateSeqMediaStatus.do",
+      dataType:"json",
+      data:{"UserId":"123","ContentId":contentId},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("专辑发布成功");
+          $('.shade', parent.document).hide();
+          getContentList(dataParam);//重新加载专辑列表
+        }else{
+          alert(resultData.Message);
+          $('.shade', parent.document).hide();
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
   
   
   /*
@@ -470,6 +503,140 @@ $(function(){
     var arr = new_str.split("-");
     var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
     return strtotime = datum.getTime();
+  }
+
+  //7.点击创建专辑页面上的发布按钮，发布专辑
+  function pub_add_zj(){
+    var _data={};
+    _data.UserId="123";
+    _data.ContentName=$(".uplTitle").val();
+    _data.ContentImg=$(".upl_img").attr("value");
+    _data.ContentId=$(".upl_zj option:selected").attr("id");
+    var taglist=[];
+    $(".upl_bq").find(".upl_bq_img").each(function(){
+      var tag={};//标签对象
+      if($(this).attr("tagType")=="我的标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="我的标签";
+      }
+      if($(this).attr("tagType")=="公共标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="公共标签";
+      }
+      if($(this).attr("tagType")=="自定义标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="自定义标签";
+      }
+      taglist.push(tag);
+    });
+    _data.TagList=taglist;
+    _data.ContentDesc=$(".uplDecn").val();
+    var str_time=$(".layer-date").val();
+    var rst_strto_time=js_strto_time(str_time);
+    _data.FixedPubTime=rst_strto_time;
+    _data.FlowFlag="2";
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/updateSeqMediaStatus.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("专辑发布成功");
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
+          getContentList(dataParam);//重新加载专辑列表
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+
+  //8.点击修改专辑页面上的发布按钮，发布专辑
+  function pub_edit_zj(){
+    var _data={};
+    _data.UserId="123";
+    _data.ContentName=$(".uplTitle").val();
+    _data.ContentImg=$(".upl_img").attr("value");
+    _data.ContentId=$(".zjId").attr("value");
+    var taglist=[];
+    $(".upl_bq").find(".upl_bq_img").each(function(){
+      var tag={};//标签对象
+      var tagTxt=$(this).children("span").html();
+      $(".my_tag_con1").each(function(){
+        if($(this).children(".my_tag_con1_span").html()==tagTxt){
+          $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
+          $(this).children(".my_tag_con1_check").prop("checked",true);
+          $(this).children(".my_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".my_tag_con1_span").html();
+          tag.TagOrg="我的标签";
+        }
+      })
+      $(".gg_tag_con1").each(function(){
+        if($(this).children(".gg_tag_con1_span").html()==tagTxt){
+          $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
+          $(this).children(".gg_tag_con1_check").prop("checked",true);
+          $(this).children(".gg_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".gg_tag_con1_span").html();
+          tag.TagOrg="公共标签";
+        }
+      })
+      if($(this).attr("tagType")=="自定义标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="自定义标签";
+      }
+      taglist.push(tag);
+    });
+    _data.TagList=taglist;
+    _data.ContentDesc=$(".uplDecn").val();
+    var str_time=$(".layer-date").val();
+    var rst_strto_time=js_strto_time(str_time);
+    _data.FixedPubTime=rst_strto_time;
+    _data.FlowFlag="2";
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/addSeqMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          pubEditZj(_data);
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  function pubEditZj(_data){
+    var contentId=$(".zjId").attr("value");
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/updateSeqMediaStatus.do",
+      dataType:"json",
+      data:{"UserId":"123","ContentId":contentId},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("专辑发布成功");
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
+          getContentList(dataParam);//重新加载专辑列表
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
   }
 
   //点击上传修改之前的清空

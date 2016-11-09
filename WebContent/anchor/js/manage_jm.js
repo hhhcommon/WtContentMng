@@ -771,6 +771,7 @@ $(function(){
           alert("节目发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
+          getContentList(dataParam);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
