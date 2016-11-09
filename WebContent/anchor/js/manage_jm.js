@@ -189,6 +189,7 @@ $(function(){
   function sava_edit_jm(){
     var _data={};
     _data.UserId="123";
+    _data.ContentId=$(".jmId").val();
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
@@ -196,14 +197,27 @@ $(function(){
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
-      if($(this).attr("tagType")=="我的标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="我的标签";
-      }
-      if($(this).attr("tagType")=="公共标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="公共标签";
-      }
+      var tagTxt=$(this).children("span").html();
+      $(".my_tag_con1").each(function(){
+        if($(this).children(".my_tag_con1_span").html()==tagTxt){
+          $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
+          $(this).children(".my_tag_con1_check").prop("checked",true);
+          $(this).children(".my_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".my_tag_con1_span").html();
+          tag.TagOrg="我的标签";
+        }
+      })
+      $(".gg_tag_con1").each(function(){
+        if($(this).children(".gg_tag_con1_span").html()==tagTxt){
+          $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
+          $(this).children(".gg_tag_con1_check").prop("checked",true);
+          $(this).children(".gg_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".gg_tag_con1_span").html();
+          tag.TagOrg="公共标签";
+        }
+      })
       if($(this).attr("tagType")=="自定义标签"){
         tag.TagName=$(this).children("span").html();
         tag.TagOrg="自定义标签";
@@ -635,6 +649,7 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
+    _data.FlowFlag="2";
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/addMediaInfo.do",
@@ -642,7 +657,7 @@ $(function(){
       data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
-          pubAddJm(resultData,_data);//在上传或者修改节目时发布节目
+          alert("节目发布成功");
         }else{
           alert(resultData.Message);
         }
@@ -652,27 +667,6 @@ $(function(){
       }
     });
   }
-  //9.1在上传或者修改节目时发布节目
-  function pubAddJm(resultData,_data){
-    _data.ContentId=resultData.ContentId;//上传节目成功后返回给我的节目id
-    $.ajax({
-      type:"POST",
-      url:rootPath+"发布接口",
-      dataType:"json",
-      data:JSON.stringify(_data),
-      success:function(resultData){
-        if(resultData.ReturnType == "1001"){
-          alert("节目成功发布");
-        }else{
-          alert(resultData.Message);
-        }
-      },
-      error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
-      }
-    });
-  }
-  
   
   //点击上传修改之前的清空
   function clear(){
