@@ -177,9 +177,9 @@ $(function(){
       var tagTxt=$(this).children("span").html();
       $(".my_tag_con1").each(function(){
         if($(this).children(".my_tag_con1_span").html()==tagTxt){
-          $(".my_tag_con1").children(".my_tag_con1_check").attr("checked",true);
-          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",true);
-          $(this).children(".my_tag_con1_check").attr("checked",true);
+          $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
+          $(this).children(".my_tag_con1_check").prop("checked",true);
           $(this).children(".my_tag_con1_check").attr("disabled",true);
           tag.TagName=$(this).children(".my_tag_con1_span").html();
           tag.TagOrg="我的标签";
@@ -187,9 +187,9 @@ $(function(){
       })
       $(".gg_tag_con1").each(function(){
         if($(this).children(".gg_tag_con1_span").html()==tagTxt){
-          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("checked",true);
-          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",true);
-          $(this).children(".gg_tag_con1_check").attr("checked",true);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
+          $(this).children(".gg_tag_con1_check").prop("checked",true);
           $(this).children(".gg_tag_con1_check").attr("disabled",true);
           tag.TagName=$(this).children(".gg_tag_con1_span").html();
           tag.TagOrg="公共标签";
@@ -264,13 +264,13 @@ $(function(){
         var tagId=resultData.Result.ContentKeyWords[i].TagId;
         $(".my_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
-            $(this).children("input[type='checkbox']").attr("checked",true);
+            $(this).children("input[type='checkbox']").prop("checked",true);
             $(this).children("input[type='checkbox']").attr("disabled",true);
           }
         })
         $(".gg_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
-            $(this).children("input").attr("checked",true);
+            $(this).children("input").prop("checked",true);
             $(this).children("input").attr("disabled",true);
           }
         })
@@ -288,6 +288,7 @@ $(function(){
   
   //44-1点击删除专辑按钮
   $(document).on("click",".zj_del",function(){
+    $('.shade', parent.document).show();
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     del_zj(contentId);
   })
@@ -300,9 +301,8 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功删除专辑");
-          alert(11);
+          $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载专辑列表
-          alert(22);
         }
       },
       error:function(XHR){
@@ -478,7 +478,7 @@ $(function(){
     $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
     $(".my_tag_con1,.gg_tag_con1").each(function(){
-      $(this).children("input[type='checkbox']").removeAttr("checked");
+      $(this).children("input[type='checkbox']").prop("checked",false);
       $(this).children("input[type='checkbox']").attr("disabled",false);
     })
     $(".upl_zj option").each(function(){
