@@ -356,6 +356,7 @@ public class MediaContentService {
 								macha.setAssetType("wt_MediaAsset");
 								macha.setFlowFlag(flowflag);
 								macha.setSort(0);
+								macha.setPubName(ma.getMaTitle());
 								macha.setPubImg(ma.getMaImg());
 								macha.setCheckRuleIds("0");
 								macha.setCTime(new Timestamp(System.currentTimeMillis()));
