@@ -370,7 +370,7 @@ public class MediaContentController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/media/removeMediaInfo.do")
+	@RequestMapping(value = "/content/media/removeMedia.do")
 	@ResponseBody
 	public Map<String, Object> removeMediaInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
