@@ -63,9 +63,6 @@ $(function(){
   
   //00-3.1得到专辑列表
   function getSeqMediaList(resultData){
-  	alert(js_strto_time('2016-11-23 00:00:01'));
-  	console.log(js_strto_time('2016-11-23 00:00:01'));
-  	debugger
     for(var i=0;i<resultData.ResultList.length;i++){
       var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
                       '<div class="rtcl_img">'+
