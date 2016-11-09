@@ -358,7 +358,7 @@ public class MediaContentController {
 			map.put("Message", "无节目id信息");
 			return map;
 		}
-		String seqMediaId = m.get("ContentSeqId") + "";
+		String seqMediaId = m.get("SeqMediaId") + "";
 		if (seqMediaId.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无专辑id信息");
