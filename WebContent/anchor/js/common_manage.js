@@ -70,12 +70,6 @@ $(function(){
     }
   });
   
-  /*点击上传节目，罩层和上传节目的页面出现*/
-  $(document).on("click",".ri_top_li3",function(){
-    $(".mask,.add").show();
-    $("body").css({"overflow":"hidden"});
-  });
-  
   /*点击取消，罩层和上传节目的页面消失*/
   $(".collapse-link,.cancel").on("click",function(){
     $(".mask,.add").hide();
@@ -127,6 +121,11 @@ $(function(){
   
   //2.对我的标签和公共标签进行添加操作
   $(document).on("click",".my_tag_con1_check, .gg_tag_con1_check",function(){
+    if($(".upl_bq").children("li")){
+      tag_sum=$(".upl_bq").children("li").length;
+    }else{
+      tag_sum=0;
+    }
     var txt=$(this).siblings("span").html();
     var tagId=$(this).parent("li").attr("tagid");
     var tagType=$(this).parent("li").attr("tagType");
