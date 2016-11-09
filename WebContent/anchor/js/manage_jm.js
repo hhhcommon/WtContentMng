@@ -297,7 +297,7 @@ $(function(){
     $(".uplTitle").val(resultData.Result.ContentName);
     $(".defaultImg").attr("src",resultData.Result.ContentImg);
     $(".upl_zj option").each(function(){
-      if($(this).attr("id")==resultData.Result.ContentPubChannels[0].ChannelId){
+      if($(this).attr("id")==resultData.Result.ContentSeqId){
         $(".upl_zj option").attr("selected",false);
         $(this).attr("selected",true); 
       }

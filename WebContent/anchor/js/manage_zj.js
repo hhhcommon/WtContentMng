@@ -65,6 +65,10 @@ $(function(){
   function getSeqMediaList(resultData){
     $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
+      var chas = resultData.ResultList[i].ContentPubChannels;
+      var status = '';
+      if(!chas) status ='不存在';
+      else status = chas[0].FlowFlagState;
       var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
@@ -83,7 +87,7 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st">'+resultData.ResultList[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                      '<p class="zj_st">'+status+'</p>'+
                       '<div class="op_type">'+
                         '<p class="zj_edit">编辑</p>'+
                         '<p class="zj_pub">发布</p>'+
