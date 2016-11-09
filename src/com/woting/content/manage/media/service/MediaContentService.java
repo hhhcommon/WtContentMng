@@ -114,17 +114,47 @@ public class MediaContentService {
 			List<KeyWordPo> lk = new ArrayList<>();
 			List<KeyWordResPo> ls = new ArrayList<>();
 			for (Map<String, Object> m : tags) {
-				KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
-				if (kw != null) {
-					KeyWordResPo kwres = new KeyWordResPo();
-					kwres.setId(SequenceUUID.getPureUUID());
-					kwres.setKwId(kw.getId());
-					kwres.setRefName("标签-节目");
-					kwres.setResTableName("wt_MediaAsset");
-					kwres.setResId(ma.getId());
-					kwres.setcTime(new Timestamp(System.currentTimeMillis()));
-					ls.add(kwres);
-					if (m.get("TagOrg").equals("我的标签")) {
+				if (m.containsKey("TagName") && m.containsKey("TagOrg")) {
+					KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
+					if (kw != null) {
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-节目");
+						kwres.setResTableName("wt_MediaAsset");
+						kwres.setResId(ma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
+						if (m.get("TagOrg").equals("我的标签")) {
+							KeyWordResPo kwr = new KeyWordResPo();
+							kwr.setId(SequenceUUID.getPureUUID());
+							kwr.setKwId(kw.getId());
+							kwr.setRefName("标签-主播");
+							kwr.setResTableName("palt_User");
+							kwr.setResId(userid);
+							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+							ls.add(kwr);
+						}
+					} else {
+						kw = new KeyWordPo();
+						kw.setId(SequenceUUID.getPureUUID());
+						kw.setOwnerId(userid);
+						kw.setOwnerType(1);
+						kw.setSort(0);
+						kw.setIsValidate(1);
+						kw.setKwName(m.get("TagName") + "");
+						kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
+						kw.setDescn(userid + "主播创建");
+						kw.setcTime(new Timestamp(System.currentTimeMillis()));
+						lk.add(kw);
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-节目");
+						kwres.setResTableName("wt_MediaAsset");
+						kwres.setResId(ma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
 						KeyWordResPo kwr = new KeyWordResPo();
 						kwr.setId(SequenceUUID.getPureUUID());
 						kwr.setKwId(kw.getId());
@@ -134,38 +164,14 @@ public class MediaContentService {
 						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 						ls.add(kwr);
 					}
-				} else {
-					kw = new KeyWordPo();
-					kw.setId(SequenceUUID.getPureUUID());
-					kw.setOwnerId(userid);
-					kw.setOwnerType(1);
-					kw.setSort(0);
-					kw.setIsValidate(1);
-					kw.setKwName(m.get("TagName") + "");
-					kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
-					kw.setDescn(userid + "主播创建");
-					kw.setcTime(new Timestamp(System.currentTimeMillis()));
-					lk.add(kw);
-					KeyWordResPo kwres = new KeyWordResPo();
-					kwres.setId(SequenceUUID.getPureUUID());
-					kwres.setKwId(kw.getId());
-					kwres.setRefName("标签-节目");
-					kwres.setResTableName("wt_MediaAsset");
-					kwres.setResId(ma.getId());
-					kwres.setcTime(new Timestamp(System.currentTimeMillis()));
-					ls.add(kwres);
-					KeyWordResPo kwr = new KeyWordResPo();
-					kwr.setId(SequenceUUID.getPureUUID());
-					kwr.setKwId(kw.getId());
-					kwr.setRefName("标签-主播");
-					kwr.setResTableName("palt_User");
-					kwr.setResId(userid);
-					kwr.setcTime(new Timestamp(System.currentTimeMillis()));
-					ls.add(kwr);
 				}
 			}
-			keyWordBaseService.insertKeyWords(lk);
-			keyWordBaseService.insertKwRefs(ls);
+			if (lk.size() > 0) {
+				keyWordBaseService.insertKeyWords(lk);
+			}
+			if (ls.size() > 0) {
+				keyWordBaseService.insertKwRefs(ls);
+			}
 		}
 
 		// 保存创作方式信息
@@ -241,17 +247,47 @@ public class MediaContentService {
 				List<KeyWordPo> lk = new ArrayList<>();
 				List<KeyWordResPo> ls = new ArrayList<>();
 				for (Map<String, Object> m : tags) {
-					KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
-					if (kw != null) {
-						KeyWordResPo kwres = new KeyWordResPo();
-						kwres.setId(SequenceUUID.getPureUUID());
-						kwres.setKwId(kw.getId());
-						kwres.setRefName("标签-节目");
-						kwres.setResTableName("wt_MediaAsset");
-						kwres.setResId(ma.getId());
-						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
-						ls.add(kwres);
-						if (m.get("TagOrg").equals("我的标签")) {
+					if (m.containsKey("TagName") && m.containsKey("TagOrg")) {
+						KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
+						if (kw != null) {
+							KeyWordResPo kwres = new KeyWordResPo();
+							kwres.setId(SequenceUUID.getPureUUID());
+							kwres.setKwId(kw.getId());
+							kwres.setRefName("标签-节目");
+							kwres.setResTableName("wt_MediaAsset");
+							kwres.setResId(ma.getId());
+							kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+							ls.add(kwres);
+							if (m.get("TagOrg").equals("我的标签")) {
+								KeyWordResPo kwr = new KeyWordResPo();
+								kwr.setId(SequenceUUID.getPureUUID());
+								kwr.setKwId(kw.getId());
+								kwr.setRefName("标签-主播");
+								kwr.setResTableName("palt_User");
+								kwr.setResId(userid);
+								kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+								ls.add(kwr);
+							}
+						} else {
+							kw = new KeyWordPo();
+							kw.setId(SequenceUUID.getPureUUID());
+							kw.setOwnerId(userid);
+							kw.setOwnerType(1);
+							kw.setSort(0);
+							kw.setIsValidate(1);
+							kw.setKwName(m.get("TagName") + "");
+							kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
+							kw.setDescn(userid + "主播创建");
+							kw.setcTime(new Timestamp(System.currentTimeMillis()));
+							lk.add(kw);
+							KeyWordResPo kwres = new KeyWordResPo();
+							kwres.setId(SequenceUUID.getPureUUID());
+							kwres.setKwId(kw.getId());
+							kwres.setRefName("标签-节目");
+							kwres.setResTableName("wt_MediaAsset");
+							kwres.setResId(ma.getId());
+							kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+							ls.add(kwres);
 							KeyWordResPo kwr = new KeyWordResPo();
 							kwr.setId(SequenceUUID.getPureUUID());
 							kwr.setKwId(kw.getId());
@@ -261,38 +297,14 @@ public class MediaContentService {
 							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 							ls.add(kwr);
 						}
-					} else {
-						kw = new KeyWordPo();
-						kw.setId(SequenceUUID.getPureUUID());
-						kw.setOwnerId(userid);
-						kw.setOwnerType(1);
-						kw.setSort(0);
-						kw.setIsValidate(1);
-						kw.setKwName(m.get("TagName") + "");
-						kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
-						kw.setDescn(userid + "主播创建");
-						kw.setcTime(new Timestamp(System.currentTimeMillis()));
-						lk.add(kw);
-						KeyWordResPo kwres = new KeyWordResPo();
-						kwres.setId(SequenceUUID.getPureUUID());
-						kwres.setKwId(kw.getId());
-						kwres.setRefName("标签-节目");
-						kwres.setResTableName("wt_MediaAsset");
-						kwres.setResId(ma.getId());
-						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
-						ls.add(kwres);
-						KeyWordResPo kwr = new KeyWordResPo();
-						kwr.setId(SequenceUUID.getPureUUID());
-						kwr.setKwId(kw.getId());
-						kwr.setRefName("标签-主播");
-						kwr.setResTableName("palt_User");
-						kwr.setResId(userid);
-						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
-						ls.add(kwr);
 					}
 				}
-				keyWordBaseService.insertKeyWords(lk);
-				keyWordBaseService.insertKwRefs(ls);
+				if (lk.size() > 0) {
+					keyWordBaseService.insertKeyWords(lk);
+				}
+				if (ls.size() > 0) {
+					keyWordBaseService.insertKwRefs(ls);
+				}
 			}
 
 			// 删除创作方式
@@ -313,7 +325,6 @@ public class MediaContentService {
 				if (cps != null && cps.size() > 0) {
 					complexRefService.insertComplexRef(cps);
 				}
-
 			}
 			return true;
 		} else {
@@ -382,9 +393,10 @@ public class MediaContentService {
 						}
 					}
 				} else {
-					if (flowflag == 2) { //发布节目
-						List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'", "wt_SeqMediaAsset");
-						if (smachas != null && smachas.size() > 0) { //判断节目绑定专辑是否发布
+					if (flowflag == 2) { // 发布节目
+						List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
+								"wt_SeqMediaAsset");
+						if (smachas != null && smachas.size() > 0) { // 判断节目绑定专辑是否发布
 							for (ChannelAssetPo cha : smachas) {
 								if (cha.getFlowFlag() != flowflag) {
 									cha.setFlowFlag(flowflag);
@@ -394,9 +406,11 @@ public class MediaContentService {
 									mediaService.updateCha(cha);
 								}
 							}
-						} else return false;
-						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
-						if (machas != null && machas.size() > 0) { //修改栏目发布表里节目发布信息
+						} else
+							return false;
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'",
+								"wt_MediaAsset");
+						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
 							for (ChannelAssetPo cha : machas) {
 								if (cha.getFlowFlag() != flowflag) {
 									cha.setFlowFlag(flowflag);
@@ -406,7 +420,8 @@ public class MediaContentService {
 									mediaService.updateCha(cha);
 								}
 							}
-						} else return false;
+						} else
+							return false;
 						return true;
 					}
 				}

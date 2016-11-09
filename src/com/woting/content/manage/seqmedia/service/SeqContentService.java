@@ -102,17 +102,47 @@ public class SeqContentService {
 			List<KeyWordPo> lk = new ArrayList<>();
 			List<KeyWordResPo> ls = new ArrayList<>();
 			for (Map<String, Object> m : tags) {
-				KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
-				if (kw != null) {
-					KeyWordResPo kwres = new KeyWordResPo();
-					kwres.setId(SequenceUUID.getPureUUID());
-					kwres.setKwId(kw.getId());
-					kwres.setRefName("标签-专辑");
-					kwres.setResTableName("wt_SeqMediaAsset");
-					kwres.setResId(sma.getId());
-					kwres.setcTime(new Timestamp(System.currentTimeMillis()));
-					ls.add(kwres);
-					if (m.get("TagOrg").equals("我的标签")) {
+				if (m.containsKey("TagName") && m.containsKey("TagOrg")) {
+					KeyWordPo kw = keyWordBaseService.getKeyWordInfoByName(m.get("TagName") + "");
+					if (kw != null) {
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-专辑");
+						kwres.setResTableName("wt_SeqMediaAsset");
+						kwres.setResId(sma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
+						if (m.get("TagOrg").equals("我的标签")) {
+							KeyWordResPo kwr = new KeyWordResPo();
+							kwr.setId(SequenceUUID.getPureUUID());
+							kwr.setKwId(kw.getId());
+							kwr.setRefName("标签-主播");
+							kwr.setResTableName("palt_User");
+							kwr.setResId(userid);
+							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
+							ls.add(kwr);
+						}
+					} else {
+						kw = new KeyWordPo();
+						kw.setId(SequenceUUID.getPureUUID());
+						kw.setOwnerId(userid);
+						kw.setOwnerType(1);
+						kw.setSort(0);
+						kw.setIsValidate(1);
+						kw.setKwName(m.get("TagName") + "");
+						kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
+						kw.setDescn(userid + "主播创建");
+						kw.setcTime(new Timestamp(System.currentTimeMillis()));
+						lk.add(kw);
+						KeyWordResPo kwres = new KeyWordResPo();
+						kwres.setId(SequenceUUID.getPureUUID());
+						kwres.setKwId(kw.getId());
+						kwres.setRefName("标签-专辑");
+						kwres.setResTableName("wt_SeqMediaAsset");
+						kwres.setResId(sma.getId());
+						kwres.setcTime(new Timestamp(System.currentTimeMillis()));
+						ls.add(kwres);
 						KeyWordResPo kwr = new KeyWordResPo();
 						kwr.setId(SequenceUUID.getPureUUID());
 						kwr.setKwId(kw.getId());
@@ -122,38 +152,14 @@ public class SeqContentService {
 						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 						ls.add(kwr);
 					}
-				} else {
-					kw = new KeyWordPo();
-					kw.setId(SequenceUUID.getPureUUID());
-					kw.setOwnerId(userid);
-					kw.setOwnerType(1);
-					kw.setSort(0);
-					kw.setIsValidate(1);
-					kw.setKwName(m.get("TagName") + "");
-					kw.setnPy(ChineseCharactersUtils.getFullSpellFirstUp(kw.getKwName()));
-					kw.setDescn(userid + "主播创建");
-					kw.setcTime(new Timestamp(System.currentTimeMillis()));
-					lk.add(kw);
-					KeyWordResPo kwres = new KeyWordResPo();
-					kwres.setId(SequenceUUID.getPureUUID());
-					kwres.setKwId(kw.getId());
-					kwres.setRefName("标签-专辑");
-					kwres.setResTableName("wt_SeqMediaAsset");
-					kwres.setResId(sma.getId());
-					kwres.setcTime(new Timestamp(System.currentTimeMillis()));
-					ls.add(kwres);
-					KeyWordResPo kwr = new KeyWordResPo();
-					kwr.setId(SequenceUUID.getPureUUID());
-					kwr.setKwId(kw.getId());
-					kwr.setRefName("标签-主播");
-					kwr.setResTableName("palt_User");
-					kwr.setResId(userid);
-					kwr.setcTime(new Timestamp(System.currentTimeMillis()));
-					ls.add(kwr);
 				}
 			}
-			keyWordBaseService.insertKeyWords(lk);
-			keyWordBaseService.insertKwRefs(ls);
+			if (lk.size()>0) {
+				keyWordBaseService.insertKeyWords(lk);
+			}
+			if (ls.size()>0) {
+				keyWordBaseService.insertKwRefs(ls);
+			}
 		}
 		if (memberType != null && memberType.size() > 0) {
 			List<ComplexRefPo> cps = new ArrayList<>();
@@ -313,8 +319,10 @@ public class SeqContentService {
 	 * 
 	 * @param userid
 	 * @param contentId
-	 * @param channelId 创建专辑使用
-	 * @param flowflag 0为创建专辑，2为发布专辑
+	 * @param channelId
+	 *            创建专辑使用
+	 * @param flowflag
+	 *            0为创建专辑，2为发布专辑
 	 * @return
 	 */
 	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag) {
