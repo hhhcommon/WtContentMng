@@ -63,6 +63,7 @@ $(function(){
   
   //00-3.1得到专辑列表
   function getSeqMediaList(resultData){
+    $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
       var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
                       '<div class="rtcl_img">'+
@@ -277,7 +278,7 @@ $(function(){
     }
     $(".upl_zj option").each(function(){
       if($(this).attr("id")==resultData.Result.ContentPubChannels[0].ChannelId){
-        $(".upl_zj option").attr("selected");
+        $(".upl_zj option").attr("selected",false);
         $(this).attr("selected",true); 
       }
     })
@@ -477,7 +478,7 @@ $(function(){
     $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
     $(".my_tag_con1,.gg_tag_con1").each(function(){
-      $(this).children("input[type='checkbox']").attr("checked",false);
+      $(this).children("input[type='checkbox']").removeAttr("checked");
       $(this).children("input[type='checkbox']").attr("disabled",false);
     })
     $(".upl_zj option").each(function(){

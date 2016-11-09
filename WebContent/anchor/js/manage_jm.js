@@ -109,7 +109,6 @@ $(function(){
   
   //22-1点击编辑节目按钮
    $(document).on("click",".jm_edit",function(){
-    clear();//清空数据
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     subType=2;
     pubType=2;
@@ -276,6 +275,8 @@ $(function(){
   
   //22-1.2填充节目信息
   function fillJmContent(resultData){
+    clear();//填充前清空数据
+    $(".jmId").attr("value",resultData.Result.ContentId);
     $(".iboxtitle h4").html("修改节目");
     $(".yp_mz").val("aa.mp3");//数据库没有存这一字段，因为有需要，我自己加上的
     $(".upl_file").attr("value",resultData.Result.ContentPlay);
@@ -283,7 +284,7 @@ $(function(){
     $(".defaultImg").attr("src",resultData.Result.ContentImg);
     $(".upl_zj option").each(function(){
       if($(this).attr("id")==resultData.Result.ContentPubChannels[0].ChannelId){
-        $(".upl_zj option").attr("selected");
+        $(".upl_zj option").attr("selected",false);
         $(this).attr("selected",true); 
       }
     })
@@ -645,7 +646,7 @@ $(function(){
   function clear(){
     $(".mask,.add").show();
     $("body").css({"overflow":"hidden"});
-    $(".upl_file,.upl_img").attr("value","");
+    $(".jmId,.upl_file,.upl_img").attr("value","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");
     $(".my_tag_con1,.gg_tag_con1").each(function(){
