@@ -102,12 +102,8 @@ public class SeqContentService {
 			return null;
 		}
 		sma.setSmaPublisher(user.getLoginName());
-		// DictDetail detail = new DictDetail();
-		// detail.setId("zho");
-		// detail.setNodeName("中文");
-		// sma.setLang(detail);
-		// sma.setPubCount(0);
 		mediaService.saveSma(sma);
+		
 		if (tags != null && tags.size() > 0) {
 			List<KeyWordPo> lk = new ArrayList<>();
 			List<KeyWordResPo> ls = new ArrayList<>();
@@ -182,7 +178,7 @@ public class SeqContentService {
 			}
 		}
 		if (!channelId.equals("null"))
-			map = modifySeqStatus(userid, sma.getId(), channelId, 0);
+			map = modifySeqStatus(userid, sma.getId() , 0);
 		if (mediaService.getSmaInfoById(sma.getId()) != null) {
 			if (channelId.equals("null") || map.get("ReturnType").equals("1001"))
 				map.clear();
@@ -298,7 +294,7 @@ public class SeqContentService {
 				if (cha != null) {
 					int flowflag = cha.getFlowFlag();
 					mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
-					modifySeqStatus(userid, sma.getId(), channelId, flowflag);
+					modifySeqStatus(userid, sma.getId(), flowflag);
 				}
 			}
 			map.put("ReturnType", "1001");
@@ -310,67 +306,37 @@ public class SeqContentService {
 		return map;
 	}
 
-	public Map<String, Object> modifySeqStatus(String userid, String smaid, String chid, int flowflag) {
+	public Map<String, Object> modifySeqStatus(String userid, String contentId, int flowflag) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		SeqMediaAsset sma = mediaService.getSmaInfoById(smaid);
+		SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
 		if (sma == null) {
-			map.put("ReturnType", "1011");
+			map.put("ReturnType", "1013");
 			map.put("Message", "专辑不存在");
 			return map;
 		}
-		Channel ch = mediaService.getChInfoById(chid);
-		if (ch == null) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "栏目不存在");
-			return map;
-		}
-		List<MediaAssetPo> malist = mediaService.getMaListBySmaId(smaid);
-		if (flowflag != 0 && (malist == null || malist.size() == 0)) {
-			map.put("ReturnType", "1011");
+		List<MediaAssetPo> malist = mediaService.getMaListBySmaId(contentId);
+		if (flowflag == 2 && (malist == null || malist.size() == 0)) {
+			map.put("ReturnType", "1014");
 			map.put("Message", "专辑无下级单体");
 			return map;
 		}
-		ChannelAsset cha = mediaService.getCHAInfoByAssetId(smaid);
-		if (cha != null) {
-			cha.setFlowFlag(flowflag);
-			cha.setCh(ch);
-			if (flowflag == 2)
-				cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-			mediaService.updateCha(cha);
-		} else {
-			cha = new ChannelAsset();
-			String chaid = SequenceUUID.getPureUUID();
-			cha.setId(chaid);
-			cha.setCh(ch);
-			cha.setPubObj(sma);
-			cha.setPublisherId(userid);
-			cha.setCheckerId("1");
-			cha.setFlowFlag(flowflag);
-			cha.setSort(0);
-			cha.setCheckRuleIds("0");
-			cha.setCTime(new Timestamp(System.currentTimeMillis()));
-			if (flowflag == 2) {
-				cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId(contentId, "wt_SeqMediaAsset");
+		if (chas!=null && chas.size()>0) {
+			for (ChannelAssetPo cha : chas) {
+				cha.setFlowFlag(flowflag);
+				if (flowflag==2) {
+					cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+				}
+				// 发布专辑
+				mediaService.updateCha(cha);
 			}
-			cha.setIsValidate(1);
-			cha.setInRuleIds("elt");
-			cha.setCheckRuleIds("elt");
-			// 发布专辑
-			mediaService.saveCha(cha);
-		}
-
-		// 发布专辑下级节目
-		for (MediaAssetPo mediaAssetPo : malist) {
-			mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), smaid, flowflag);
-		}
-
-		if (mediaService.getCHAInfoById(cha.getId()) != null) {
+			
+			// 发布专辑下级节目
+			for (MediaAssetPo mediaAssetPo : malist) {
+				mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag);
+			}
 			map.put("ReturnType", "1001");
 			map.put("Message", "专辑发布成功");
-			SeqMediaAsset sma2 = new SeqMediaAsset();
-			sma2.setId(smaid);
-			sma2.setPubCount(sma.getPubCount() + 1);
-			mediaService.updateSma(sma2);
 		} else {
 			map.put("ReturnType", "1011");
 			map.put("Message", "专辑发布失败");
