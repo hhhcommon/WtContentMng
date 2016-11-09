@@ -326,7 +326,7 @@ public class SeqController {
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		map = seqContentService.modifySeqStatus(userid, smaid, 2);
+		map = seqContentService.modifySeqStatus(userid, smaid, null, 2);
 		if (map!=null) {
 			return map;
 		} else {

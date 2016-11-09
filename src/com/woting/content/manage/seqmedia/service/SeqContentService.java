@@ -177,8 +177,9 @@ public class SeqContentService {
 				complexRefService.insertComplexRef(cps);
 			}
 		}
-		if (!channelId.equals("null"))
-			map = modifySeqStatus(userid, sma.getId() , 0);
+		if (!channelId.equals("null")) {
+			map = modifySeqStatus(userid, sma.getId(), channelId, 0);
+		}
 		if (mediaService.getSmaInfoById(sma.getId()) != null) {
 			if (channelId.equals("null") || map.get("ReturnType").equals("1001"))
 				map.clear();
@@ -212,8 +213,9 @@ public class SeqContentService {
 			if (contentdesc != null & !contentdesc.toLowerCase().equals("null")) {
 				sma.setDescn(contentdesc);
 			}
+			mediaService.updateSma(sma);
 			if (tags != null && tags.size() > 0) {
-				keyWordBaseService.deleteKeyWordRes(channelId, "wt_SeqMediaAsset");
+				keyWordBaseService.deleteKeyWordRes(sma.getId(), "wt_SeqMediaAsset");
 				List<KeyWordPo> lk = new ArrayList<>();
 				List<KeyWordResPo> ls = new ArrayList<>();
 				for (Map<String, Object> m : tags) {
@@ -267,9 +269,13 @@ public class SeqContentService {
 							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 							ls.add(kwr);
 						}
-						keyWordBaseService.insertKeyWords(lk);
-					    keyWordBaseService.insertKwRefs(ls);
 					}
+				}
+				if (lk.size()>0) {
+					keyWordBaseService.insertKeyWords(lk);
+				}
+				if (ls.size()>0) {
+					keyWordBaseService.insertKwRefs(ls);
 				}
 			}
 			if (memberType != null && memberType.size() > 0) {
@@ -293,8 +299,11 @@ public class SeqContentService {
 				ChannelAsset cha = mediaService.getCHAInfoByAssetId(sma.getId());
 				if (cha != null) {
 					int flowflag = cha.getFlowFlag();
-					mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
-					modifySeqStatus(userid, sma.getId(), flowflag);
+					if (!cha.getCh().getId().equals(channelId)) {
+						mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
+					    modifySeqStatus(userid, sma.getId(), channelId, flowflag);
+					}
+					
 				}
 			}
 			map.put("ReturnType", "1001");
@@ -306,7 +315,7 @@ public class SeqContentService {
 		return map;
 	}
 
-	public Map<String, Object> modifySeqStatus(String userid, String contentId, int flowflag) {
+	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
 		if (sma == null) {
@@ -320,26 +329,45 @@ public class SeqContentService {
 			map.put("Message", "专辑无下级单体");
 			return map;
 		}
-		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId(contentId, "wt_SeqMediaAsset");
-		if (chas!=null && chas.size()>0) {
-			for (ChannelAssetPo cha : chas) {
-				cha.setFlowFlag(flowflag);
-				if (flowflag==2) {
-					cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-				}
-				// 发布专辑
-				mediaService.updateCha(cha);
-			}
-			
-			// 发布专辑下级节目
-			for (MediaAssetPo mediaAssetPo : malist) {
-				mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag);
-			}
+		if (flowflag == 0 && channelId!=null) {
+			ChannelAssetPo cha = new ChannelAssetPo();
+			cha.setId(SequenceUUID.getPureUUID());
+			cha.setChannelId(channelId);
+			cha.setAssetId(contentId);
+			cha.setAssetType("wt_SeqMediaAsset");
+			cha.setFlowFlag(0);
+			cha.setIsValidate(1);
+			cha.setPubImg(sma.getSmaImg());
+			cha.setPubName(sma.getSmaTitle());
+			cha.setPublisherId("123");
+			cha.setCheckerId("1");
+			cha.setSort(0);
+			cha.setInRuleIds("etl");
+			cha.setCheckRuleIds("etl");
+			mediaService.saveCha(cha);
 			map.put("ReturnType", "1001");
-			map.put("Message", "专辑发布成功");
+			map.put("Message", "添加成功");
 		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "专辑发布失败");
+			List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentId+"'", "wt_SeqMediaAsset");
+		    if (chas!=null && chas.size()>0) {
+			    for (ChannelAssetPo cha : chas) {
+				    cha.setFlowFlag(flowflag);
+				    if (flowflag==2) {
+					    cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+				    }
+				    // 发布专辑
+				    mediaService.updateCha(cha);
+			    }
+			    // 发布专辑下级节目
+			    for (MediaAssetPo mediaAssetPo : malist) {
+				    mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag);
+			    }
+			   map.put("ReturnType", "1001");
+			   map.put("Message", "专辑发布成功");
+		    } else {
+			    map.put("ReturnType", "1011");
+			    map.put("Message", "专辑发布失败");
+		    }
 		}
 		return map;
 	}

@@ -185,9 +185,7 @@ public class MediaContentService {
 				cp.setDictDId(m.get("TypeId") + "");
 				cps.add(cp);
 			}
-			if (cps != null && cps.size() > 0) {
-				complexRefService.insertComplexRef(cps);
-			}
+			complexRefService.insertComplexRef(cps);
 		}
 
 		// 获取专辑分类
@@ -233,7 +231,7 @@ public class MediaContentService {
 				mediaService.updateMas(mas);
 			}
 			mediaService.updateMa(ma);
-			
+
 			// 修改节目绑定栏目信息
 			modifyMediaStatus(userid, ma.getId(), seqmediaId, 0);
 
@@ -328,10 +326,8 @@ public class MediaContentService {
 		if (sma != null) {
 			SeqMaRefPo seqmapo = mediaService.getSeqMaRefByMId(mediaId);
 			if (seqmapo != null) {
-				if (!seqmapo.getSId().equals(seqMediaId)) {
-					mediaService.removeMa2SmaByMid(mediaId);
-					mediaService.bindMa2Sma(ma, sma);
-					List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId(sma.getId(), "wt_SeqMediaAsset");
+				if (flowflag == 0) {
+					List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
 					if (chas != null && chas.size() > 0) {
 						mediaService.removeCha(ma.getId(), "wt_MediaAsset");
 						for (ChannelAssetPo cha : chas) {
@@ -341,6 +337,8 @@ public class MediaContentService {
 							macha.setPublisherId(userid);
 							macha.setCheckerId("1");
 							macha.setFlowFlag(flowflag);
+							macha.setAssetId(ma.getId());
+							macha.setAssetType("wt_MediaAsset");
 							macha.setSort(0);
 							macha.setPubImg(ma.getMaImg());
 							macha.setCheckRuleIds("0");
@@ -349,36 +347,65 @@ public class MediaContentService {
 							macha.setInRuleIds("elt");
 							macha.setCheckRuleIds("elt");
 							mediaService.saveCha(macha);
-							;
 						}
 						return true;
 					}
 				} else {
-					List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId(sma.getId(), "wt_SeqMediaAsset");
-					if (smachas!=null && smachas.size()>0) {
-						for (ChannelAssetPo cha : smachas) {
-							if (cha.getFlowFlag()!=flowflag) {
-								cha.setFlowFlag(flowflag);
-								if (flowflag==2) {
-									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-								}
-								mediaService.updateCha(cha);
+					if (!seqmapo.getSId().equals(seqMediaId)) {
+						mediaService.removeMa2SmaByMid(mediaId);
+						mediaService.bindMa2Sma(ma, sma);
+						List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
+						if (chas != null && chas.size() > 0) {
+							mediaService.removeCha(ma.getId(), "wt_MediaAsset");
+							for (ChannelAssetPo cha : chas) {
+								ChannelAssetPo macha = new ChannelAssetPo();
+								macha.setId(SequenceUUID.getPureUUID());
+								macha.setChannelId(cha.getChannelId());
+								macha.setPublisherId(userid);
+								macha.setCheckerId("1");
+								macha.setAssetId(ma.getId());
+								macha.setAssetType("wt_MediaAsset");
+								macha.setFlowFlag(flowflag);
+								macha.setSort(0);
+								macha.setPubImg(ma.getMaImg());
+								macha.setCheckRuleIds("0");
+								macha.setCTime(new Timestamp(System.currentTimeMillis()));
+								macha.setIsValidate(1);
+								macha.setInRuleIds("elt");
+								macha.setCheckRuleIds("elt");
+								mediaService.saveCha(macha);
 							}
+							return true;
 						}
-					} else return false;
-					List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId(mediaId, "wt_MediaAsset");
-					if (machas!=null && machas.size()>0) {
-						for (ChannelAssetPo cha : machas) {
-							if (cha.getFlowFlag()!=flowflag) {
-								cha.setFlowFlag(flowflag);
-								if (flowflag==2) {
-									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+					} else {
+						List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
+								"wt_SeqMediaAsset");
+						if (smachas != null && smachas.size() > 0) {
+							for (ChannelAssetPo cha : smachas) {
+								if (cha.getFlowFlag() != flowflag) {
+									cha.setFlowFlag(flowflag);
+									if (flowflag == 2) {
+										cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+									}
+									mediaService.updateCha(cha);
 								}
-								mediaService.updateCha(cha);
 							}
-						}
-					} else return false;
-					return true;
+						} else return false;
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'",
+								"wt_MediaAsset");
+						if (machas != null && machas.size() > 0) {
+							for (ChannelAssetPo cha : machas) {
+								if (cha.getFlowFlag() != flowflag) {
+									cha.setFlowFlag(flowflag);
+									if (flowflag == 2) {
+										cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+									}
+									mediaService.updateCha(cha);
+								}
+							}
+						} else return false;
+						return true;
+					}
 				}
 			}
 		}
