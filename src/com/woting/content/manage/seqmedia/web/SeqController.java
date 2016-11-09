@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.woting.dataanal.gather.API.ApiGatherUtils;
 import com.woting.dataanal.gather.API.mem.ApiGatherMemory;
@@ -266,6 +265,7 @@ public class SeqController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request) {
@@ -322,24 +322,19 @@ public class SeqController {
 		}
 		String smaid = m.get("ContentId") + "";
 		if (smaid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
+			map.put("ReturnType", "1012");
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		String chid = m.get("ContentChannelId") + "";
-		if (chid.toLowerCase().equals("null")) {
+		map = seqContentService.modifySeqStatus(userid, smaid, 2);
+		if (map!=null) {
+			return map;
+		} else {
+			map = new HashMap<>();
 			map.put("ReturnType", "1011");
-			map.put("Message", "无栏目id信息");
+			map.put("Message", "专辑发布失败");
 			return map;
 		}
-		String subcount = m.get("SubCount") + "";
-		if (subcount.equals("null") || (!subcount.equals("null") && Integer.valueOf(subcount) == 0)) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "专辑无下级单体");
-			return map;
-		}
-		map = seqContentService.modifySeqStatus(userid, smaid, chid, 2);
-		return map;
 	}
 
 	/**
