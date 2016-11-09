@@ -343,7 +343,7 @@ public class SeqContentService {
 			cha.setIsValidate(1);
 			cha.setPubImg(sma.getSmaImg());
 			cha.setPubName(sma.getSmaTitle());
-			cha.setPublisherId("123");
+			cha.setPublisherId(userid);
 			cha.setCheckerId("1");
 			cha.setSort(0);
 			cha.setInRuleIds("etl");
