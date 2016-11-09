@@ -572,6 +572,16 @@ public class MediaService {
 			ma.buildFromPo(mapo);
 		return ma;
 	}
+	
+	public MaSourcePo getMasInfoByMaId(String maId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("maId", maId);
+		MaSourcePo mas = maSourceDao.getInfoObject("getMas", m);
+		if (mas!=null) {
+			return mas;
+		}
+		return null;
+	}
 
 	public MaSource getSameMas(MaSource mas) {
 		MaSourcePo masPo = maSourceDao.getInfoObject("getSameSam", mas);
@@ -604,8 +614,11 @@ public class MediaService {
 	}
 
 	public void saveCha(ChannelAsset cha) {
-		System.out.println(JsonUtils.objToJson(cha.convert2Po()));
 		channelAssetDao.insert("insert", cha.convert2Po());
+	}
+	
+	public void saveCha(ChannelAssetPo cha) {
+		channelAssetDao.insert("insert", cha);
 	}
 
 	public void saveSma(SeqMediaAsset sma) {
@@ -623,6 +636,10 @@ public class MediaService {
 	public void updateMas(MaSource mas) {
 		mediaAssetDao.update("updateMas", mas.convert2Po());
 	}
+	
+	public void updateMas(MaSourcePo mas) {
+		mediaAssetDao.update("updateMas", mas);
+	}
 
 	public void updateMa(MediaAsset ma) {
 		mediaAssetDao.update("updateMa", ma.convert2Po());
@@ -633,7 +650,11 @@ public class MediaService {
 	}
 
 	public int updateCha(ChannelAsset cha) {
-		return channelAssetDao.update("update", cha.convert2Po());
+		 return channelAssetDao.update("update", cha.convert2Po());
+	}
+	
+	public int updateCha(ChannelAssetPo cha) {
+		return channelAssetDao.update("update", cha);
 	}
 
 	public void removeMa(String id) {
@@ -660,8 +681,11 @@ public class MediaService {
 		dictRefDao.delete("multiDelByResId", id);
 	}
 
-	public void removeCha(String assetId) {
-		channelAssetDao.delete("deleteByAssetId", assetId);
+	public void removeCha(String assetId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", assetId);
+		m.put("resTableName", resTableName);
+		channelAssetDao.delete("deleteByEntity", m);
 	}
 
 	public void removeKeyWordRes(String assetId, String resTableName) {
@@ -674,7 +698,7 @@ public class MediaService {
 		removeMa2SmaByMid(id);
 		removeResDictRef(id);
 		removeKeyWordRes(id, "wt_MediaAsset");
-		removeCha(id);
+		removeCha(id, "wt_MediaAsset");
 	}
 
 	public void removeSeqMedia(String id) {
@@ -687,11 +711,11 @@ public class MediaService {
 		removeResDictRef(id);
 		if (getCHAInfoByAssetId(id) != null) { // 删除与专辑绑定的下级节目栏目信息
 			for (SeqMaRefPo seqMaRefPo : l) {
-				removeCha(seqMaRefPo.getMId());
+				removeCha(seqMaRefPo.getMId(), "wt_SeqMediaAsset");
 			}
 		}
 		removeKeyWordRes(id, "wt_SeqMediaAsset");
-		removeCha(id);
+		removeCha(id, "wt_SeqMediaAsset");
 		removeMa2SmaBySid(id);
 		removeSma(id);
 	}
