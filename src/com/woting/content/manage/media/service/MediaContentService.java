@@ -353,11 +353,36 @@ public class MediaContentService {
 						}
 						return true;
 					}
+				} else {
+					List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId(sma.getId(), "wt_SeqMediaAsset");
+					if (smachas!=null && smachas.size()>0) {
+						for (ChannelAssetPo cha : smachas) {
+							if (cha.getFlowFlag()!=flowflag) {
+								cha.setFlowFlag(flowflag);
+								if (flowflag==2) {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+								}
+								mediaService.updateCha(cha);
+							}
+						}
+					} else return false;
+					List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId(mediaId, "wt_MediaAsset");
+					if (machas!=null && machas.size()>0) {
+						for (ChannelAssetPo cha : machas) {
+							if (cha.getFlowFlag()!=flowflag) {
+								cha.setFlowFlag(flowflag);
+								if (flowflag==2) {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+								}
+								mediaService.updateCha(cha);
+							}
+						}
+					} else return false;
+					return true;
 				}
 			}
 		}
 		return false;
-
 	}
 
 	public Map<String, Object> removeMediaAsset(String contentid) {
