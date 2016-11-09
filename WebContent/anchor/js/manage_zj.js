@@ -102,7 +102,6 @@ $(function(){
   
   //22-1点击编辑专辑按钮
    $(document).on("click",".zj_edit",function(){
-    clear();//清空数据
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     subType=2;
     edit_zj(contentId);
@@ -168,19 +167,33 @@ $(function(){
     var _data={};
     _data.UserId="123";
     _data.ContentName=$(".uplTitle").val();
+    _data.ContentId=$(".zjId").attr("value");
     _data.ContentImg=$(".upl_img").attr("value");
     _data.ChannelId=$(".upl_zj option:selected").attr("id");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
-      if($(this).attr("tagType")=="我的标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="我的标签";
-      }
-      if($(this).attr("tagType")=="公共标签"){
-        tag.TagName=$(this).children("span").html();
-        tag.TagOrg="公共标签";
-      }
+      var tagTxt=$(this).children("span").html();
+      $(".my_tag_con1").each(function(){
+        if($(this).children(".my_tag_con1_span").html()==tagTxt){
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("checked",true);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",true);
+          $(this).children(".my_tag_con1_check").attr("checked",true);
+          $(this).children(".my_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".my_tag_con1_span").html();
+          tag.TagOrg="我的标签";
+        }
+      })
+      $(".gg_tag_con1").each(function(){
+        if($(this).children(".gg_tag_con1_span").html()==tagTxt){
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("checked",true);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",true);
+          $(this).children(".gg_tag_con1_check").attr("checked",true);
+          $(this).children(".gg_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".gg_tag_con1_span").html();
+          tag.TagOrg="公共标签";
+        }
+      })
       if($(this).attr("tagType")=="自定义标签"){
         tag.TagName=$(this).children("span").html();
         tag.TagOrg="自定义标签";
@@ -192,7 +205,6 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    console.log(_data);
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaInfo.do",
@@ -236,7 +248,9 @@ $(function(){
   
   //22-1.2填充专辑信息
   function fillZjContent(resultData){
+    clear();//填充前清空数据
     $(".iboxtitle h4").html("修改专辑");
+    $(".zjId").attr("value",resultData.Result.ContentId);
     $(".uplTitle").val(resultData.Result.ContentName);
     $(".defaultImg").attr("src",resultData.Result.ContentImg);
     if(resultData.Result.ContentKeyWords!=null){
@@ -247,16 +261,16 @@ $(function(){
                     '</li>';
         $(".upl_bq").append(new_tag);
         var tagId=resultData.Result.ContentKeyWords[i].TagId;
-        $(".my_tag_con").find(".my_tag_con1").each(function(){
+        $(".my_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
-            $(this).children("input").attr("checked",true);
-            $(this).children("input").attr("disabled",true)
+            $(this).children("input[type='checkbox']").attr("checked",true);
+            $(this).children("input[type='checkbox']").attr("disabled",true);
           }
         })
-        $(".gg_tag_con").find(".gg_tag_con1").each(function(){
+        $(".gg_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input").attr("checked",true);
-            $(this).children("input").attr("disabled",true)
+            $(this).children("input").attr("disabled",true);
           }
         })
       }
@@ -460,7 +474,7 @@ $(function(){
     $(".mask,.add").show();
     $("body").css({"overflow":"hidden"});
     $(".upl_img").attr("value","");
-    $(".uplTitle,.uplDecn,.layer-date").val("");
+    $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
     $(".my_tag_con1,.gg_tag_con1").each(function(){
       $(this).children("input[type='checkbox']").attr("checked",false);

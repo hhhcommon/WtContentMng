@@ -121,6 +121,11 @@ $(function(){
   
   //2.对我的标签和公共标签进行添加操作
   $(document).on("click",".my_tag_con1_check, .gg_tag_con1_check",function(){
+    if($(".upl_bq").children("li")){
+      tag_sum=$(".upl_bq").children("li").length;
+    }else{
+      tag_sum=0;
+    }
     var txt=$(this).siblings("span").html();
     var tagId=$(this).parent("li").attr("tagid");
     var tagType=$(this).parent("li").attr("tagType");
