@@ -73,7 +73,7 @@ public class MediaContentService {
 	 */
 	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid,
 			String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType, String contentdesc,
-			String pubTime) {
+			String pubTime, String flowFlag) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = new MediaAsset();
 		ma.setId(SequenceUUID.getPureUUID());
@@ -188,9 +188,13 @@ public class MediaContentService {
 			complexRefService.insertComplexRef(cps);
 		}
 
-		// 获取专辑分类
+		// 新增栏目
 		modifyMediaStatus(userid, ma.getId(), sma.getId(), 0);
-
+		
+		if (flowFlag.equals("2")) {
+			modifyMediaStatus(userid, ma.getId(), seqid, 2);
+		}
+		
 		if (mediaService.getMaInfoById(ma.getId()) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "上传文件成功");
