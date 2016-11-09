@@ -7,12 +7,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
-
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
-import com.woting.cm.core.channel.model.Channel;
-import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
@@ -190,11 +186,11 @@ public class MediaContentService {
 
 		// 新增栏目
 		modifyMediaStatus(userid, ma.getId(), sma.getId(), 0);
-		
+
 		if (flowFlag.equals("2")) {
 			modifyMediaStatus(userid, ma.getId(), seqid, 2);
 		}
-		
+
 		if (mediaService.getMaInfoById(ma.getId()) != null) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "上传文件成功");
@@ -215,7 +211,6 @@ public class MediaContentService {
 	public boolean updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
 			String seqmediaId, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
 			String contentdesc, String pubTime) {
-		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = mediaService.getMaInfoById(contentId);
 		if (ma != null) {
 			if (contentname != null && !contentname.toLowerCase().equals("null")) { // 修改节目名称
@@ -332,35 +327,12 @@ public class MediaContentService {
 		if (sma != null) {
 			SeqMaRefPo seqmapo = mediaService.getSeqMaRefByMId(mediaId);
 			if (seqmapo != null) {
-				if (flowflag == 0) {
-					List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
-					if (chas != null && chas.size() > 0) {
-						mediaService.removeCha(ma.getId(), "wt_MediaAsset");
-						for (ChannelAssetPo cha : chas) {
-							ChannelAssetPo macha = new ChannelAssetPo();
-							macha.setId(SequenceUUID.getPureUUID());
-							macha.setChannelId(cha.getChannelId());
-							macha.setPublisherId(userid);
-							macha.setCheckerId("1");
-							macha.setFlowFlag(flowflag);
-							macha.setAssetId(ma.getId());
-							macha.setAssetType("wt_MediaAsset");
-							macha.setSort(0);
-							macha.setPubImg(ma.getMaImg());
-							macha.setCheckRuleIds("0");
-							macha.setCTime(new Timestamp(System.currentTimeMillis()));
-							macha.setIsValidate(1);
-							macha.setInRuleIds("elt");
-							macha.setCheckRuleIds("elt");
-							mediaService.saveCha(macha);
-						}
-						return true;
-					}
-				} else {
-					if (!seqmapo.getSId().equals(seqMediaId)) {
+				if (flowflag == 0) { // 创建节目和修改节目使用
+					if (!seqmapo.getSId().equals(seqMediaId)) { // 修改节目对应专辑
 						mediaService.removeMa2SmaByMid(mediaId);
 						mediaService.bindMa2Sma(ma, sma);
-						List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
+						List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
+								"wt_SeqMediaAsset");
 						if (chas != null && chas.size() > 0) {
 							mediaService.removeCha(ma.getId(), "wt_MediaAsset");
 							for (ChannelAssetPo cha : chas) {
@@ -383,10 +355,36 @@ public class MediaContentService {
 							}
 							return true;
 						}
-					} else {
-						List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
+					} else { // 创建节目
+						List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
 								"wt_SeqMediaAsset");
-						if (smachas != null && smachas.size() > 0) {
+						if (chas != null && chas.size() > 0) {
+							mediaService.removeCha(ma.getId(), "wt_MediaAsset");
+							for (ChannelAssetPo cha : chas) {
+								ChannelAssetPo macha = new ChannelAssetPo();
+								macha.setId(SequenceUUID.getPureUUID());
+								macha.setChannelId(cha.getChannelId());
+								macha.setPublisherId(userid);
+								macha.setCheckerId("1");
+								macha.setFlowFlag(flowflag);
+								macha.setAssetId(ma.getId());
+								macha.setAssetType("wt_MediaAsset");
+								macha.setSort(0);
+								macha.setPubImg(ma.getMaImg());
+								macha.setCheckRuleIds("0");
+								macha.setCTime(new Timestamp(System.currentTimeMillis()));
+								macha.setIsValidate(1);
+								macha.setInRuleIds("elt");
+								macha.setCheckRuleIds("elt");
+								mediaService.saveCha(macha);
+							}
+							return true;
+						}
+					}
+				} else {
+					if (flowflag == 2) { //发布节目
+						List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'", "wt_SeqMediaAsset");
+						if (smachas != null && smachas.size() > 0) { //判断节目绑定专辑是否发布
 							for (ChannelAssetPo cha : smachas) {
 								if (cha.getFlowFlag() != flowflag) {
 									cha.setFlowFlag(flowflag);
@@ -397,9 +395,8 @@ public class MediaContentService {
 								}
 							}
 						} else return false;
-						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'",
-								"wt_MediaAsset");
-						if (machas != null && machas.size() > 0) {
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
+						if (machas != null && machas.size() > 0) { //修改栏目发布表里节目发布信息
 							for (ChannelAssetPo cha : machas) {
 								if (cha.getFlowFlag() != flowflag) {
 									cha.setFlowFlag(flowflag);
