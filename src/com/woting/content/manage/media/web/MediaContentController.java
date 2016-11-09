@@ -247,7 +247,11 @@ public class MediaContentController {
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime")+"";
-			map = mediaContentService.addMediaAssetInfo(userid, contentname, contentimg, seqmediaId, contenturi, tags, membertypes, contentdesc, pubTime);
+			String flowFlag = m.get("FlowFlag")+"";
+			if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
+				flowFlag = "1";
+			}
+			map = mediaContentService.addMediaAssetInfo(userid, contentname, contentimg, seqmediaId, contenturi, tags, membertypes, contentdesc, pubTime,flowFlag);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
