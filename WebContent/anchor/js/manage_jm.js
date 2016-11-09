@@ -178,7 +178,7 @@ $(function(){
           alert("新增节目成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getMediaList(dataParam);//重新加载节目列表
+          getContentList(dataParam);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
@@ -254,7 +254,7 @@ $(function(){
           alert("修改节目成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getMediaList(dataParam);//重新加载节目列表
+          getContentList(dataParam);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
@@ -325,10 +325,21 @@ $(function(){
       }
     }
     $(".uplDecn").val(resultData.Result.ContentDesc);
-    //注：没有创作方式
+    if(resultData.Result.ContentMemberTypes!=null){
+      for(var i=0;i<resultData.Result.ContentMemberTypes.length;i++){
+        var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+resultData.Result.ContentMemberTypes[i].TypeId+'>'+
+                        '<div class="czfs_tag_div">'+
+                        '<span class="czfs_tag_span1">'+resultData.Result.ContentMemberTypes[i].TypeName+' : </span>'+
+                        '<span class="czfs_tag_span2">'+resultData.Result.ContentMemberTypes[i].TypeInfo+'</span>'+
+                        '</div>'+
+                        '<img class="cancelImg" src="img/upl_img2.png" alt="" />'+
+                      '</li>';
+        $(".czfs_tag").append(new_czfs); 
+      }
+    }
     $(".layer-date").val(resultData.Result.CTime);
   }
-  
+ 
   //44-1点击删除节目按钮
   $(document).on("click",".jm_del",function(){
     $('.shade', parent.document).show();
@@ -664,6 +675,7 @@ $(function(){
           alert("节目发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
+          getContentList(dataParam);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
