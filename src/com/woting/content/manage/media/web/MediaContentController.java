@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.media.model.MediaAsset;
-import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.media.service.MediaContentService;
@@ -342,19 +340,19 @@ public class MediaContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		String maid = m.get("ContentId") + "";
-		if (maid.toLowerCase().equals("null")) {
+		String contentId = m.get("ContentId") + "";
+		if (contentId.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无节目id信息");
 			return map;
 		}
-		String smaid = m.get("ContentSeqId") + "";
-		if (smaid.toLowerCase().equals("null")) {
+		String seqMediaId = m.get("ContentSeqId") + "";
+		if (seqMediaId.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		boolean isok = mediaContentService.modifyMediaStatus(userid, maid, smaid, 2);
+		boolean isok = mediaContentService.modifyMediaStatus(userid, contentId, seqMediaId, 2);
 		if (isok) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "修改成功");

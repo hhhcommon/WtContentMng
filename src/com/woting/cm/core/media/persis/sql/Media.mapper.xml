@@ -290,7 +290,7 @@
   </select>
   
   <select id="getMas" parameterType="java.util.Map" resultMap="maSourceMap">
-    select <include refid="Base_MaSource_List"/>from wt_MaSource <if test="_parameter!=null"><include refid="MaSourceWhereClauseByEntiey"/>
+    select <include refid="Base_MaSource_List"/>from wt_MaSource <if test="_parameter!=null"><include refid="MaSourceWhereClauseByEntiey"/></if>
   </select>
   
   <select id="getSmaList" parameterType="java.util.Map" resultMap="seqMediaAssetMap">
