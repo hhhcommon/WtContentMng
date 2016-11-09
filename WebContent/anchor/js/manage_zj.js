@@ -96,13 +96,13 @@ $(function(){
   
   //11-1点击创建专辑按钮
   $(document).on("click",".ri_top_li3",function(){
-    $(".mask,.add").show();
-    $("body").css({"overflow":"hidden"});
+    clear();//清空数据
     subType=1;
   });
   
   //22-1点击编辑专辑按钮
    $(document).on("click",".zj_edit",function(){
+    clear();//清空数据
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     subType=2;
     edit_zj(contentId);
@@ -453,5 +453,21 @@ $(function(){
     var arr = new_str.split("-");
     var datum = new Date(Date.UTC(arr[0],arr[1]-1,arr[2],arr[3]-8,arr[4],arr[5]));
     return strtotime = datum.getTime();
+  }
+
+  //点击上传修改之前的清空
+  function clear(){
+    $(".mask,.add").show();
+    $("body").css({"overflow":"hidden"});
+    $(".upl_img").attr("value","");
+    $(".uplTitle,.uplDecn,.layer-date").val("");
+    $(".upl_bq").html("");
+    $(".my_tag_con1,.gg_tag_con1").each(function(){
+      $(this).children("input[type='checkbox']").attr("checked",false);
+      $(this).children("input[type='checkbox']").attr("disabled",false);
+    })
+    $(".upl_zj option").each(function(){
+      $(this).attr("selected",false);
+    })
   }
 });
