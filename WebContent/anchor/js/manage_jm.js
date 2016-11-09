@@ -1,6 +1,7 @@
 $(function(){
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在创建专辑页面提交,subType=2代表在修改专辑页面提交
+  var pubType=1;//pubType=1代表在创建专辑页面提交,pubType=2代表在修改专辑页面提交
   
   //00-1获取栏目筛选条件
   $.ajax({
@@ -103,24 +104,27 @@ $(function(){
   $(document).on("click",".ri_top_li3",function(){
     clear();//清空数据
     subType=1;
+    pubType=1;
   });
   
   //22-1点击编辑节目按钮
    $(document).on("click",".jm_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     subType=2;
+    pubType=2;
     edit_jm(contentId);
   })
   
   //33-1点击提交按钮，上传节目/修改节目
   $("#submitBtn").on("click",function(){
     if(subType=="1")  add_jm();
-    if(subType=="2")  sava_edit_jm();
+    if(subType=="2")  save_edit_jm();
   })
   
   //55-1点击发布按钮，上传节目/修改节目
   $("#pubBtn").on("click",function(){
-    pub_add_jm();
+    if(pubType=="1") pub_add_jm();
+    if(pubType=="2") pub_edit_jm();
   })
   
   //33-1.1上传节目方法
@@ -186,7 +190,7 @@ $(function(){
   }
   
   //33-1.2保存编辑后的信息
-  function sava_edit_jm(){
+  function save_edit_jm(){
     var _data={};
     _data.UserId="123";
     _data.ContentId=$(".jmId").val();
@@ -608,7 +612,7 @@ $(function(){
     return strtotime = datum.getTime();
   }
   
-  //9.点击发布按钮，发布节目
+  //9.点击上传节目页面上的发布按钮，发布节目
   function pub_add_jm(){
     var _data={};
     _data.UserId="123";
@@ -658,11 +662,95 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
         }else{
           alert(resultData.Message);
         }
       },
       error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  //10.点击修改节目页面上的发布按钮，发布节目
+  function pub_edit_jm(){
+    var _data={};
+    _data.UserId="123";
+    _data.ContentURI=$(".upl_file").attr("value");
+    _data.ContentName=$(".uplTitle").val();
+    _data.ContentImg=$(".upl_img").attr("value");
+    _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    var taglist=[];
+    $(".upl_bq").find(".upl_bq_img").each(function(){
+      var tag={};//标签对象
+      if($(this).attr("tagType")=="我的标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="我的标签";
+      }
+      if($(this).attr("tagType")=="公共标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="公共标签";
+      }
+      if($(this).attr("tagType")=="自定义标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="自定义标签";
+      }
+      taglist.push(tag);
+    });
+    _data.TagList=taglist;
+    _data.ContentDesc=$(".uplDecn").val();
+    var memberTypelist=[];
+    $(".czfs_tag").find(".czfs_tag_li").each(function(){
+      var czfsObj={};//创作方式对象
+      var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
+      var czfs_txt=czfs_t.split(":")[0];
+      czfsObj.TypeName=czfs_txt;
+      czfsObj.TypeId=$(this).attr("czfs_typeid");
+      czfsObj.TypeInfo=$(this).children().children(".czfs_tag_span2").html();
+      memberTypelist.push(czfsObj);
+    });
+    _data.MemberType=memberTypelist;
+    var str_time=$(".layer-date").val();
+    var rst_strto_time=js_strto_time(str_time);
+    _data.FixedPubTime=rst_strto_time;
+    _data.FlowFlag="2";
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/addMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          pubEditJm(_data);
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  function pubEditJm(_data){
+    var contentId=$(".jmId").val();
+    var contentSeqId=_data.SeqMediaId
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/updateMediaStatus.do",
+      dataType:"json",
+      data:{"UserId":"123","ContentId":contentId,"SeqMediaId":contentSeqId},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("节目发布成功");
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
         alert("发生错误："+ jqXHR.status);
       }
     });
