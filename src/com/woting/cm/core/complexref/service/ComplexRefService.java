@@ -45,4 +45,12 @@ public class ComplexRefService {
 		}
 		return null;
 	}
+	
+	public void deleteComplexRef(String assetTableName, String assetId, String dictDId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetTableName", assetTableName);
+		m.put("assetId", assetId);
+		m.put("dictDId", dictDId);
+		complexRefDao.delete("deleteByEntity", m);
+	}
 }
