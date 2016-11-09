@@ -212,7 +212,7 @@ public class MediaContentService {
 	 * @param sma
 	 * @return
 	 */
-	public Map<String, Object> updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
+	public boolean updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
 			String seqmediaId, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
 			String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -320,8 +320,10 @@ public class MediaContentService {
 				}
 
 			}
+			return true;
+		} else {
+			return false;
 		}
-		return map;
 	}
 
 	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag) {
