@@ -107,6 +107,7 @@ public class MediaService {
 		return channelAssetDao.queryForList("getListByFlowFlag", m);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getMaListByPubId(String userid, String flowflag, String channelid,
 			String seqmediaid) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -168,8 +169,7 @@ public class MediaService {
 								m.put("ContentSeqId", sma.getId());
 								m.put("ContentSeqName", sma.getSmaTitle());
 								if (m.containsKey("ContentPubChannels")) {
-									List<Map<String, Object>> chass = (List<Map<String, Object>>) m
-											.get("ContentPubChannels");
+									List<Map<String, Object>> chass = (List<Map<String, Object>>) m.get("ContentPubChannels");
 									if (chass != null && chass.size() > 0) {
 										for (Map<String, Object> map : chass) {
 											map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
@@ -292,24 +292,33 @@ public class MediaService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
 		listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", userid);
-		if (listpo != null && listpo.size() > 0) {
-			String resids = "";
-			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-				resids += ",'" + seqMediaAssetPo.getId() + "'";
-			}
-			resids = resids.substring(1);
-			List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_SeqMediaAsset");
-			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
-			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-				SeqMediaAsset sma = new SeqMediaAsset();
-				sma.buildFromPo(seqMediaAssetPo);
-				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList, null);
-				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
-				smap.put("SubCount", l.size());
-				list.add(smap);
-			}
-		}
+		list = makeSmaListToReturn(listpo);
+//		if (listpo != null && listpo.size() > 0) {
+//			String resids = "";
+//			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+//				resids += ",'" + seqMediaAssetPo.getId() + "'";
+//			}
+//			resids = resids.substring(1);
+//			List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
+//			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_SeqMediaAsset");
+//			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
+//			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+//				SeqMediaAsset sma = new SeqMediaAsset();
+//				sma.buildFromPo(seqMediaAssetPo);
+//				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList, null);
+//				if (smap.containsKey("ContentPubChannels")) {
+//					List<Map<String, Object>> chass = (List<Map<String, Object>>) smap.get("ContentPubChannels");
+//					if (chass != null && chass.size() > 0) {
+//						for (Map<String, Object> map : chass) {
+//							map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
+//						}
+//					}
+//				}
+//				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
+//				smap.put("SubCount", l.size());
+//				list.add(smap);
+//			}
+//		}
 		return list;
 	}
 
