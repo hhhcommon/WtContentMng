@@ -11,9 +11,9 @@ import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 
 @Service
-public class BroadcastService {
+public class BroadcastBaseService {
 
-	@Resource(name="defaultDAO_CM")
+	@Resource(name="defaultDAO")
 	private MybatisDAO<BroadcastPo> bcDao;
 	
 	@PostConstruct

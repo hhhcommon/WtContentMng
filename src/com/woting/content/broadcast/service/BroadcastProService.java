@@ -27,7 +27,7 @@ import com.woting.content.broadcast.persis.pojo.FrequncePo;
 import com.woting.content.broadcast.persis.pojo.LiveFlowPo;
 import com.woting.content.publish.utils.CacheUtils;
 
-public class BroadcastService {
+public class BroadcastProService {
     @Resource(name="defaultDAO")
     private MybatisDAO<BroadcastPo> broadcastDao;
     @Resource(name="defaultDAO")

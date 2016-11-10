@@ -26,13 +26,13 @@ import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
-import com.woting.content.broadcast.service.BroadcastService;
+import com.woting.content.broadcast.service.BroadcastProService;
 
 @Controller
 @RequestMapping(value="/content/bc/")
 public class BroadcastController {
     @Resource
-    private BroadcastService bcService;
+    private BroadcastProService bcService;
 
     @RequestMapping(value="add.do")
     @ResponseBody
