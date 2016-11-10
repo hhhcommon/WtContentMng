@@ -2,6 +2,7 @@ $(function(){
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在上传节目页面提交,subType=2代表在修改节目页面提交
   var pubType=1;//pubType=1代表在上传节目页面提交,pubType=2代表在修改节目页面提交
+  var uploadType=1;//uploadType=1代表上传文件,uploadType=2代表上传图片
   
   //00-1获取栏目筛选条件
   $.ajax({
@@ -76,7 +77,8 @@ $(function(){
   function getMediaList(resultData){
     $(".ri_top3_con").html("");//每次加载之前先清空
     for(var i=0;i<resultData.ResultList.AllCount;i++){
-      var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+      if(resultData.ResultList.List[i].ContentSeqName){
+        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
                         '<div class="rtcl_img">'+
                           '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
                         '</div>'+
@@ -96,6 +98,29 @@ $(function(){
                           '<p class="jm_recal">撤回</p>'+
                         '</div>'+
                       '</div>';
+      }else{
+        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+                        '<div class="rtcl_img">'+
+                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+                        '</div>'+
+                        '<div class="rtcl_con">'+
+                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                          '<p class="zj_name">暂未绑定专辑</p>'+
+                          '<p class="other">'+
+                            '<span>时间 ：</span>'+
+                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                          '</p>'+
+                        '</div>'+
+                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<div class="op_type">'+
+                          '<p class="jm_edit">编辑</p>'+
+                          '<p class="jm_pub">发布</p>'+
+                          '<p class="jm_del">删除</p>'+
+                          '<p class="jm_recal">撤回</p>'+
+                        '</div>'+
+                      '</div>';
+      }
+      
       $(".ri_top3_con").append(programBox);     
     }
   }
@@ -463,12 +488,15 @@ $(function(){
     $(".upl_file").click();
   });
   $(".upl_file").change(function(){
+    uploadType=1;
     var oMyForm = new FormData();
     var filePath=$(this).val();
     var _this=$(this);
     var arr=filePath.split('\\');
     var fileName=arr[arr.length-1];
     $(".yp_mz").val(fileName);
+    $(".sonProgress,.parentProgress").show();
+    $(".cancelUpload").show();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
     oMyForm.append("UserId", "123");
     oMyForm.append("SrcType", "2");
@@ -477,7 +505,7 @@ $(function(){
       alert("文件过大，请选择合适的文件上传！");
       $(".yp_mz").val("");
     }else{
-      requestUpload(_this,oMyForm);//请求上传文件
+      requestUpload(_this,oMyForm,uploadType);//请求上传文件
     }
   });
   
@@ -486,6 +514,7 @@ $(function(){
     $(".upl_img").click();
   });
   $(".upl_img").change(function(){
+    uploadType=2;
     //图片预览
     if($(".defaultImg").css("display")!="none"){
       $(".defaultImg").css({"display":"none"});
@@ -515,12 +544,12 @@ $(function(){
     if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
       alert("图片过大，请选择合适的图片上传！");
     }else{
-      requestUpload(_this,oMyForm);
+      requestUpload(_this,oMyForm,uploadType);
     }
   });
   
   //5.请求上传文件
-  function requestUpload(_this,oMyForm){
+  function requestUpload(_this,oMyForm,uploadType){
     $.ajax({
       url:rootPath+"common/uploadCM.do",
       type:"POST",
@@ -529,11 +558,20 @@ $(function(){
       processData: false,
       contentType: false,
       dataType:"json",
+      xhr: function(){
+        var xhr = $.ajaxSettings.xhr();
+        if(onprogress && xhr.upload) {
+         xhr.upload.addEventListener("progress" , onprogress, false);
+         return xhr;
+        }  
+      },
       //表单提交前进行验证
       success: function (opeResult){
         if(opeResult.ful[0].success=="TRUE"){
-          alert("上传成功！");
           _this.attr("value",opeResult.ful[0].FilePath);
+          $(".cancelUpload").hide();
+          if(uploadType=="1") $(".uploadStatus").show();
+          if(uploadType=="2") $(".img_uploadStatus").show();
         }else{
           alert(opeResult.err);
         }
@@ -543,6 +581,25 @@ $(function(){
       }
     });
   };
+  //侦查文件上传情况,,这个方法大概0.05-0.1秒执行一次
+  function onprogress(evt){
+    var loaded = evt.loaded;     //已经上传大小情况 
+    var tot = evt.total;      //文件总大小 
+    var per = Math.floor(100*loaded/tot);  //已经上传的百分比 
+    $(".sonProgress").html( per +"%" );
+    $(".sonProgress").css("width" , per +"%");
+  }
+  //因网速较慢，取消正在上传的文件
+  /*注：关于取消此时正在请求的ajax的问题未解决，暂时先不做*/
+  $(document).on("click",".cancelUpload",function(){
+    var gnl=confirm("你确定要取消正在上传的文件吗?");
+    if (gnl==true){
+      $(".sonProgress,.parentProgresshide,.cancelUpload").hide();
+      $(".upl_file").attr("value","");
+    }else{
+      return false;
+    }
+  })
   
   //6.获取选择专辑列表
   $.ajax({
@@ -785,6 +842,8 @@ $(function(){
   //点击上传修改之前的清空
   function clear(){
     $(".mask,.add").show();
+    $(".sonProgress").html(" ");
+    $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"hidden"});
     $(".jmId,.upl_file,.upl_img").attr("value","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");

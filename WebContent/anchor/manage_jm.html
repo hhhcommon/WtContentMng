@@ -537,12 +537,14 @@ body{overflow: auto;}
                   <div class="upl_wj">
                     <img class="upl_wj_img" src="img/upl_img1.png" alt="" />
                   </div>
-                  <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a"/>
+                  <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
                   <div class="upl_yp">
                     <input type="text" class="yp_mz" >
-                    <progress value="22" max="100" ></progress>
-                    <span>正在上传（43%）</span>
-                    <img src="img/upl_img2.png" alt="" />
+                    <div class="parentProgress">
+                      <div class="sonProgress"></div>
+                    </div>
+                    <span class="uploadStatus">上传成功</span>
+                    <img class="cancelUpload" src="img/upl_img2.png" alt="" />
                   </div>
                   <div class="upl_wj_p1">
                     <span>支持 MP3、M4A的文件格式，文件≤100兆。</span>
@@ -567,6 +569,7 @@ body{overflow: auto;}
                       <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
                     </div>
                     <img class="upl_pt_img" src="img/upl_img3.png" alt="" />
+                    <span class="img_uploadStatus">上传成功</span>
                     <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
                     <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
                   </div>
