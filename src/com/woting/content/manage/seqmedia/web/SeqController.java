@@ -363,6 +363,41 @@ public class SeqController {
 		map = seqContentService.removeSeqMediaAsset(contentid);
 		return map;
 	}
+	
+	/**
+	 * 删除专辑
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/content/seq/removeMediassToSeqMediaRef.do")
+	@ResponseBody
+	public Map<String, Object> removeMaToSmaRef(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId") + "";
+		if (userid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String seqMediaId = m.get("SeqMediaId") + "";
+		if (seqMediaId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无专辑Id");
+			return map;
+		}
+		String mediaAssetId = m.get("MediaAssetId") + "";
+		if (mediaAssetId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1013");
+			map.put("Message", "无节目Id");
+			return map;
+		}
+		seqContentService.removeMaToSmaRefInfo(userid, seqMediaId, mediaAssetId);
+		map.put("ReturnType", "1001");
+		map.put("Message", "处理成功");
+		return map;
+	}
 
 	/**
 	 * 获取专辑信息
