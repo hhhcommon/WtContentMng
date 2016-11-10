@@ -297,7 +297,7 @@ $(function(){
     $(".uplTitle").val(resultData.Result.ContentName);
     $(".defaultImg").attr("src",resultData.Result.ContentImg);
     $(".upl_zj option").each(function(){
-      if($(this).attr("id")==resultData.Result.ContentPubChannels[0].ChannelId){
+      if($(this).attr("id")==resultData.Result.ContentSeqId){
         $(".upl_zj option").attr("selected",false);
         $(this).attr("selected",true); 
       }
@@ -690,6 +690,7 @@ $(function(){
   function pub_edit_jm(){
     var _data={};
     _data.UserId="123";
+    _data.ContentId=$(".jmId").val();
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
@@ -740,10 +741,9 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    _data.FlowFlag="2";
     $.ajax({
       type:"POST",
-      url:rootPath+"content/media/addMediaInfo.do",
+      url:rootPath+"content/media/updateMediaInfo.do",
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){

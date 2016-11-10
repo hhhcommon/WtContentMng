@@ -65,6 +65,10 @@ $(function(){
   function getSeqMediaList(resultData){
     $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
+      var chas = resultData.ResultList[i].ContentPubChannels;
+      var status = '';
+      if(!chas) status ='不存在';
+      else status = chas[0].FlowFlagState;
       var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
@@ -83,7 +87,7 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st">'+resultData.ResultList[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                      '<p class="zj_st">'+status+'</p>'+
                       '<div class="op_type">'+
                         '<p class="zj_edit">编辑</p>'+
                         '<p class="zj_pub">发布</p>'+
@@ -511,7 +515,7 @@ $(function(){
     _data.UserId="123";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
-    _data.ContentId=$(".upl_zj option:selected").attr("id");
+    _data.ChannelId=$(".upl_zj option:selected").attr("id");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
@@ -534,18 +538,14 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    _data.FlowFlag="2";
     $.ajax({
       type:"POST",
-      url:rootPath+"content/seq/updateSeqMediaStatus.do",
+      url:rootPath+"content/seq/addSeqMediaInfo.do",
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
-          alert("专辑发布成功");
-          $(".mask,.add").hide();
-          $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载专辑列表
+          pubAddOrEditZj(_data);
         }else{
           alert(resultData.Message);
         }
@@ -555,7 +555,7 @@ $(function(){
       }
     });
   }
-
+  
   //8.点击修改专辑页面上的发布按钮，发布专辑
   function pub_edit_zj(){
     var _data={};
@@ -598,15 +598,14 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    _data.FlowFlag="2";
     $.ajax({
       type:"POST",
-      url:rootPath+"content/seq/addSeqMediaInfo.do",
+      url:rootPath+"content/seq/updateSeqMediaInfo.do",
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
-          pubEditZj(_data);
+          pubAddOrEditZj(_data);
         }else{
           alert(resultData.Message);
         }
@@ -616,7 +615,7 @@ $(function(){
       }
     });
   }
-  function pubEditZj(_data){
+  function pubAddOrEditZj(_data){
     var contentId=$(".zjId").attr("value");
     $.ajax({
       type:"POST",
@@ -631,6 +630,8 @@ $(function(){
           getContentList(dataParam);//重新加载专辑列表
         }else{
           alert(resultData.Message);
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
         }
       },
       error:function(XHR){

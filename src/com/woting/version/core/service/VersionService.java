@@ -1,8 +1,5 @@
 package com.woting.version.core.service;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,9 +57,6 @@ public class VersionService {
             ;
         if (!changed) return 2;
 
-        Connection conn=null;
-        Statement st=null;
-        ResultSet rs=null;
         return verCfgDao.update("updateCfg", vfg);
     }
     //版本配置End======================================================================================================
