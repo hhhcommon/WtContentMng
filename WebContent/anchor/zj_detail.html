@@ -299,55 +299,55 @@ body{overflow: auto;}
               <span>更改排序</span>
             </div>
             <ul class="list_content">
-              <li class="list_content1" style="margin-top:15px;">
+              <!--<li class="list_content1" style="margin-top:15px;">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
-              <li class="list_content1">
+              </li>-->
+              <!--<li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
-              <li class="list_content1">
+              </li>-->
+              <!--<li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
-              <li class="list_content1">
+              </li>-->
+              <!--<li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
-              <li class="list_content1">
+              </li>-->
+              <!--<li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
-              <li class="list_content1">
+              </li>-->
+              <!--<li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
-              <li class="list_content1">
+              </li>-->
+              <!--<li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
+              </li>-->
             </ul>
           </div>
         </div>
@@ -457,7 +457,18 @@ $(function(){
     $(".ctime").html(resultData.Result.CTime);
     $(".dcl_zjcontent3_p1").html(resultData.Result.ContentDesc);
     $(".list_title h4").html("共"+resultData.Result.SubCount+"个节目");
-    //专辑里面没有节目的信息，所以下面的数据还没有填充
+    if(resultData.Result.MediaAssetList!=null){
+      for(var i=0;i<resultData.Result.MediaAssetList.length;i++){
+        var newjiList='<li class="list_content1" style="margin-top:15px;">'+
+                        '<a class="list_content1_a" href="#">'+resultData.Result.MediaAssetList[0].ContentName+'</a>'+
+                        '<a class="list_content1_img" href="#"></a>'+
+                        '<span class="list_content1_span1">('+resultData.Result.MediaAssetList[0].PlayCount+')</span>'+
+                        '<span class="list_content1_span2">'+resultData.Result.MediaAssetList[0].ContentPubChannels[0].FlowFlagState+'</span>'+
+                        '<span class="list_content1_span3">'+resultData.Result.MediaAssetList[0].CTime+'</span>'+
+                      '</li>';
+        $(".list_content").append(newjiList);             
+      }
+    }
   }
   
   getMyZjDetail();//得到我的所有专辑信息
