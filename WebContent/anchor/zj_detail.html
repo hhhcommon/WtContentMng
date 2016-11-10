@@ -91,7 +91,7 @@ body{overflow: auto;}
   color:#000;
   font-family: "微软雅黑";
 }
-.dcl_zjcontent2 h3 span{
+.h3span{
   color:#ffa634;
   font-size:14px;
   font-weight:100;
@@ -230,7 +230,7 @@ body{overflow: auto;}
 }
 .dc_right{
   width:300px;
-  height:570px;
+  height:auto;
   float: right;
   margin-top:10px;
   border:1px solid #dedede;
@@ -249,6 +249,12 @@ body{overflow: auto;}
   float: left;
   display: inline-block;
   border:1px solid #dedede;
+  cursor: pointer;
+}
+.list1_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
 }
 .list1_con{
   width:195px;
@@ -265,30 +271,31 @@ body{overflow: auto;}
         <div class="dc_left">
           <div class="dcl_zjcontent">
             <div class="dcl_zjcontent1">
-              <img src="img/a5.jpg" alt="节目封面图片" />
+              <img src="" alt="节目封面图片" />
             </div>
             <div class="dcl_zjcontent2">
-              <h3>双份的阳光<span>(8个节目)</span></h3>
-              <p>来自栏目<span>【两性情感】</span></p>
-              <span class="category">类别 ：两性情感</span>
+              <div class="title">
+                <h3>fsdf</h3>
+                <span class="h3span"></span>
+              </div>
+              <p>来自栏目<span></span></p>
+              <!--<span class="category">类别 ：两性情感</span>-->
               <ul>
-                <li><span>标签一标签一</span></li>
+                <!--<li><span>标签一标签一</span></li>
                 <li><span>自定义标签一</span></li>
                 <li><span>自定义标签一</span></li>
                 <li><span>自定义标签一</span></li>
-                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>-->
               </ul>
-              <p>最近更新时间：2016-10-11 10:47:35</p>
+              <p class="ctime"></p>
             </div>
             <div class="dcl_zjcontent3">
-              <p class="dcl_zjcontent3_p1">论文专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
-                                                 专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑一个或几个特邀编辑     专辑是指期刊的某一期专门对某一个大
-                                                  家关注的领域、问题、事件进ues"，一个专辑一般会有一个或几个特邀编ues"，一个专辑一般会有一个或几个特邀编</p>
+              <p class="dcl_zjcontent3_p1"></p>
             </div>
           </div>
           <div class="dcl_zj_jmlist">
             <div class="list_title">
-              <h4>共8个节目</h4>
+              <h4></h4>
               <span>更改排序</span>
             </div>
             <ul class="list_content">
@@ -346,7 +353,7 @@ body{overflow: auto;}
         </div>
           <div class="dc_right">
             <div class="dcr_zjlist">
-              <div class="dcr_zjlist1">
+              <!--<div class="dcr_zjlist1">
                 <div class="list1_img">
                   <img src="" alt="节目图片" />
                 </div>
@@ -364,8 +371,8 @@ body{overflow: auto;}
                     <span>2016-10-08 10:47:35</span>
                   </p>
                 </div>
-              </div>
-              <div class="dcr_zjlist1">
+              </div>-->
+              <!--<div class="dcr_zjlist1">
                 <div class="list1_img">
                   <img src="" alt="节目图片" />
                 </div>
@@ -383,8 +390,8 @@ body{overflow: auto;}
                     <span>2016-10-08 10:47:35</span>
                   </p>
                 </div>
-              </div>
-              <div class="dcr_zjlist1">
+              </div>-->
+              <!--<div class="dcr_zjlist1">
                 <div class="list1_img">
                   <img src="" alt="节目图片" />
                 </div>
@@ -402,11 +409,110 @@ body{overflow: auto;}
                     <span>2016-10-08 10:47:35</span>
                   </p>
                 </div>
-              </div>
+              </div>-->
             </div> 
         </div>
       </div>
     </div>
   </div>
 </body>
+<script>
+$(function(){
+  var href=$("#newIframe", parent.document).attr("src");
+  var contentId=href.split('?')[1].split("=")[1];
+  var rootPath=getRootPath();
+  
+  getZjDetail(contentId);//得到专辑信息
+  function getZjDetail(contentId){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/getSeqMediaInfo.do",
+      dataType:"json",
+      data:{"UserId":"123","ContentId":contentId},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillZjDetail(resultData);//填充专辑数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  //填充专辑数据
+  function fillZjDetail(resultData){
+    $(".dcl_zjcontent2 h3").html(resultData.Result.ContentName);
+    $(".dcl_zjcontent2 .h3span").html("("+resultData.Result.SubCount+"个节目)");
+    $(".dcl_zjcontent1 img").attr("src",resultData.Result.ContentImg);
+    $(".dcl_zjcontent2 p span").html("【"+resultData.Result.ContentPubChannels[0].ChannelName+"】");
+    if(resultData.Result.ContentKeyWords!=null){
+      for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
+        var newli='<li><span>'+resultData.Result.ContentKeyWords[i].TagName+'</span></li>';
+        $(".dcl_zjcontent2 ul").append(newli);
+      }
+    }
+    $(".ctime").html(resultData.Result.CTime);
+    $(".dcl_zjcontent3_p1").html(resultData.Result.ContentDesc);
+    $(".list_title h4").html("共"+resultData.Result.SubCount+"个节目");
+    //专辑里面没有节目的信息，所以下面的数据还没有填充
+  }
+  
+  getMyZjDetail();//得到我的所有专辑信息
+  function getMyZjDetail(){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/getSeqMediaList.do",
+      dataType:"json",
+      data:{"UserId":"123","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillMyZjDetail(resultData);//填充我的所有专辑的数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  //填充我的所有专辑的数据
+  function fillMyZjDetail(resultData){
+    for(var i=0;i<resultData.ResultList.length;i++){
+      var newzj='<div class="dcr_zjlist1" contentId='+resultData.ResultList[i].ContentId+'>'+
+                '<div class="list1_img">'+
+                  '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
+                '</div>'+
+                '<div class="list1_con">'+
+                  '<p class="list1_con_name">'+
+                    '<span>专辑名称 ：</span>'+
+                    '<span>'+resultData.ResultList[i].ContentName+'</span>'+
+                  '</p>'+
+                  '<p class="list1_con_num">'+
+                    '<span>节目数量 ： </span>'+
+                    '<span>'+resultData.ResultList[i].SubCount+'个</span>'+
+                  '</p>'+
+                  '<p class="list1_con_time">'+
+                    '<span>时间 ：</span>'+
+                    '<span>'+resultData.ResultList[i].CTime+'</span>'+
+                  '</p>'+
+                '</div>'+
+              '</div>';
+      $(".dcr_zjlist").append(newzj);
+    }
+  }
+  
+  //点击右侧我的所有专辑列表，调到对应的详情页
+  $(document).on("click",".list1_img",function(){
+    var contentId=$(this).parent(".dcr_zjlist1").attr("contentId");
+    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
+    getZjDetail(contentId);
+  })
+  
+});
+</script>
 </html>

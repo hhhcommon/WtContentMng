@@ -80,7 +80,7 @@ $(function(){
   $(window).on("scroll", function(){ 
     var sTop = $(window).scrollTop();  
     var sTop = parseInt(sTop);  
-    if (sTop >= 130){ 
+    if (sTop >= 200){ 
       if(!$('.footer', parent.document).is(":visible")){ 
         $('.wrapper', parent.document).css({"height":"64%"});
         $('.footer', parent.document).show();

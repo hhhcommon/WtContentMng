@@ -95,12 +95,13 @@ body{overflow: auto;}
 }
 .dcr_jmcontent{
   position: relative;
-  overflow: hidden;
+  overflow: auto;
+  height:180px;
 }
 .dcr_jmcontent1{
   float: left;
   width:180px;
-  height:100%;
+  height:180px;
   position: absolute;
 }
 .dcr_jmcontent1 img{
@@ -122,7 +123,7 @@ body{overflow: auto;}
   color:#000;
   font-family: "微软雅黑";
 }
-.dcr_jmcontent2 h3 span{
+.h3span{
   color:#ffa634;
   font-size:14px;
   font-weight:100;
@@ -176,8 +177,8 @@ body{overflow: auto;}
       <div class="detail_content">
         <div class="dc_left">
           <div class="dcl_pic">
-            <h6>Vol.71 你也是个纠结的个纠结的人吗？</h6>
-            <img class="phone_pic1" src="img/a5.jpg" alt="节目封面图片" />
+            <h6></h6>
+            <img class="phone_pic1" src="" alt="节目封面图片" />
             <img class="phone_pic2" src="img/play.png" alt="播放按钮" />
             <img class="phone_pic3" src="img/hexagon.png" alt="六边形" />
           </div>
@@ -185,25 +186,27 @@ body{overflow: auto;}
         <div class="dc_right">
           <div class="dcr_jmcontent">
             <div class="dcr_jmcontent1">
-              <img src="img/a5.jpg" alt="节目封面图片" />
+              <img src="" alt="节目封面图片" />
             </div>
             <div class="dcr_jmcontent2">
-              <h3>Vol.71 你也是个纠结的人吗？<span>(已保存)</span></h3>
-              <p>来自专辑<span>《双份De阳光》</span></p>
+              <div class="title">
+                <h3></h3>
+                <span class="h3span"></span>
+              </div>
+              
+              <p>来自专辑<span class="comZj"></span></p>
               <ul>
-                <li><span>标签一标签一</span></li>
+                
+                <!--<li><span>自定义标签一</span></li>
                 <li><span>自定义标签一</span></li>
                 <li><span>自定义标签一</span></li>
-                <li><span>自定义标签一</span></li>
-                <li><span>自定义标签一</span></li>
+                <li><span>自定义标签一</span></li>-->
               </ul>
-              <p>2016-10-11 10:47:35</p>
+              <p class="ctime"></p>
             </div>
           </div>
           <div class="dcr_jmdesc">
-            <p class="dcr_jmdesc_p1">论文专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
-                                                   专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
-             cial Theme Issues"，一个专辑一般会有一个或几个特邀编辑</p>
+            <p class="dcr_jmdesc_p1"></p>
             <p class="dcr_jmdesc_p2">感谢您的聆听~</p>
             <p class="dcr_jmdesc_p3">原创节目欢迎评论，分享，打赏哦~</p>
           </div>  
@@ -212,4 +215,51 @@ body{overflow: auto;}
     </div>
   </div>
 </body>
+<script>
+$(function(){
+  var href=$("#newIframe", parent.document).attr("src");
+  var contentId=href.split('?')[1].split("=")[1];
+  var rootPath=getRootPath();
+  
+  getJmDetail(contentId);//得到节目信息
+  function getJmDetail(contentId){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/getMediaInfo.do",
+      dataType:"json",
+      data:{"UserId":"123","ContentId":contentId},
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillJmDetail(resultData);//填充节目数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  //填充节目数据
+  function fillJmDetail(resultData){
+    $(".dcl_pic h6").html(resultData.Result.ContentName);
+    $(".phone_pic1").attr("src",resultData.Result.ContentImg);
+    $(".dcr_jmcontent1 img").attr("src",resultData.Result.ContentImg);
+    $(".dcr_jmcontent2 h3").html(resultData.Result.ContentName);
+    if(resultData.Result.ContentPubChannels!=null){
+      $(".h3span").html("("+resultData.Result.ContentPubChannels[0].FlowFlagState+")");
+    }
+    $(".comZj").html("《"+resultData.Result.ContentSeqName+"》");
+    if(resultData.Result.ContentKeyWords!=null){
+      for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
+        var newli='<li><span>'+resultData.Result.ContentKeyWords[i].TagName+'</span></li>';
+        $(".dcr_jmcontent2 ul").append(newli);
+      }
+    }
+    $(".ctime").html(resultData.Result.CTime);
+    $(".dcr_jmdesc .dcr_jmdesc_p1").html(resultData.Result.ContentDesc);
+  }
+});
+</script>
 </html>

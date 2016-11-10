@@ -800,4 +800,12 @@ $(function(){
       $(this).attr("selected",false);
     })
   }
+  
+  //点击节目的封面图片，跳到这个节目的详情页
+  $(document).on("click",".rtcl_img",function(){
+    var contentId=$(this).parent(".rtc_listBox").attr("contentId");
+    $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+""});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show();
+  });
 });
