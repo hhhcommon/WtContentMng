@@ -224,6 +224,7 @@ public class QueryService {
 	 * @param acttype
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();

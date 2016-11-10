@@ -4,9 +4,7 @@ package com.woting.cm.core.broadcast.service;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 

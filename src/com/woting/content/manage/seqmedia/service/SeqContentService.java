@@ -399,6 +399,10 @@ public class SeqContentService {
 		}
 		return map;
 	}
+	
+	public void removeMaToSmaRefInfo(String userId, String seqMediaId, String mediaAssetId) {
+		mediaService.removeMa2SmaByMid(mediaAssetId);
+	}
 
 	public Map<String, Object> getSeqMediaAssetInfo(String userId, String contentId) {
 		List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId);
