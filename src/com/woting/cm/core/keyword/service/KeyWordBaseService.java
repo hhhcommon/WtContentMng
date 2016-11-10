@@ -25,9 +25,21 @@ public class KeyWordBaseService {
 		keyWordResDao.setNamespace("A_KEYWORDRES");
 	}
 	
+	public KeyWordPo getKeyWordInfoByName(String kwName) {
+		if (kwName!=null) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("kwName", kwName);
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", m);
+			if (kws!=null && kws.size()>0) return kws.get(0);
+		}
+		return null;
+	}
+	
 	public boolean KeyWordIsNull(String kwName) {
 		if (kwName!=null) {
-			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", kwName);
+			Map<String, Object> m = new HashMap<>();
+			m.put("kwName", kwName);
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", m);
 			if (kws!=null && kws.size()>0) return false;
 			else return true;
 		}
@@ -76,5 +88,35 @@ public class KeyWordBaseService {
 			}
 		}
 		return null;
-	}	
+	}
+	
+	public List<KeyWordPo> getKeyWordsByAssetId (String assetId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resIds", assetId);
+		m.put("resTableName", resTableName);
+		List<KeyWordResPo> kwres = keyWordResDao.queryForList("getKeyWordResByResId", m);
+		if (kwres!=null && kwres.size()>0) {
+			String ks = "";
+			for (KeyWordResPo keyWordResPo : kwres) {
+				ks += ",'"+keyWordResPo.getKwId()+"'";
+			}
+			ks = ks.substring(1);
+			m.clear();
+			m.put("ids", ks);
+			m.put("isValidate", 1);
+			m.put("orderByClause", "sort desc, cTime desc");
+			List<KeyWordPo> kws = keyWordDao.queryForList("getKeyWord", m);
+			if (kws!=null && kws.size()>0) {
+				return kws;
+			}
+		}
+		return null;
+	}
+	
+	public void deleteKeyWordRes(String assetId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resId", assetId);
+		m.put("resTableName", resTableName);
+		keyWordResDao.delete("deleteByEntity", m);
+	}
 }

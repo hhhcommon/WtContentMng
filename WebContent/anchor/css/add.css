@@ -1,4 +1,4 @@
-*{margin:0;padding: 0;}
+﻿*{margin:0;padding: 0;}
 li{list-style: none;}
 .add{
   height:auto;
@@ -47,8 +47,9 @@ li{list-style: none;}
   color: #ffa634;
 }
 .upl_wj{
-  width:13%;
+  width:100px;
   float: left;
+  cursor: pointer;
 }
 .upl_wj_p1{
   float: left;
@@ -61,9 +62,9 @@ li{list-style: none;}
   color:#000;
 }
 .upl_yp{
-  width:81%;
+  width:calc(100% - 110px);
   height:30px;
-  margin-left:6%;
+  margin-left:10px;
   float: left;
   border:1px solid #dedede;
   overflow: hidden;
@@ -71,7 +72,7 @@ li{list-style: none;}
 .upl_yp .yp_mz{
   width:120px;
   height:30px;
-  background:red;
+  border: transparent;
   float:left;
   line-height:30px;
 }
@@ -81,7 +82,7 @@ li{list-style: none;}
   border: 1px solid transparent;
   margin-left: 10px;
   background: #ffa634;
-  width:200px;
+  width:170px;
   height:18px;
   float: left;
 }
@@ -90,13 +91,15 @@ li{list-style: none;}
   line-height: 30px;
   float: left;
   margin-left: 16px;
-  display: block;
+  font-size: 12px;;
+  display: inline-block;
 }
 .upl_yp img{
-  width: 18px;
-  height: 18px;
-  margin-top: 6px;
+  width: 15px;
+  height: 15px;
+  margin-top: 9px;
   margin-left: 10px;
+  display: inline-block;
 }
 .upl_mc input{
   width: 100%;
@@ -117,10 +120,16 @@ li{list-style: none;}
   float: left;
   border:1px solid #dedede;
 }
+.upl_pt .previewImg img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
 .upl_pt .upl_pt_img{
   margin-left:10px;
   margin-top:20px;
   float: left;
+  cursor: pointer;
 }
 .upl_pt p{
   position: absolute;
@@ -152,23 +161,25 @@ li{list-style: none;}
   overflow: hidden;
 }
 .upl_bq .upl_bq_img{
-  height: 20px;
-  background: url("../img/upl_img5.png");
-  background-size:100% 100%;
-  padding:0px 15px 0px 15px;
+  height: 27px;
+  line-height: 27px;
+  background: url("../img/auto.png");
+  background-position: 0 -118px;
+  padding: 0px 0px 0px 15px;
   float: left;
   position: relative;
-  margin:15px 15px 0px 7px;
+  margin: 10px 8px 0px 0px;
   display: inline-block;
   cursor: pointer;
 }
 .upl_bq .upl_bq_img span{
- padding-right:8px;
- padding-left: 1px;
- display: inline-block;
- vertical-align: top !important;
- white-space: nowrap;
- line-height: 20px;
+  background: url("../img/auto.png");
+  background-position: right -118px;
+  padding-right: 8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 27px;
 }
 .cancelImg{
   position: absolute;
@@ -203,6 +214,7 @@ li{list-style: none;}
 .my_tag_con1,.gg_tag_con1{
   float: left;
   margin-left:15px;
+  padding-top:5px;
 }
 .my_tag_con1_check,.gg_tag_con1_check{
   width:13px;
@@ -231,8 +243,8 @@ li{list-style: none;}
   color:#ffa634 !important;
 }
 .laydate_body .laydate_top {
-  border-top: 1px solid #ffa634;
-  background-color: #ffa634;
+  border-top: 1px solid #ffa634 !important;
+  background-color: #ffa634 !important;
 }
 .laydate_body .laydate_ym {
   border: 1px solid #ffa634 !important;
@@ -252,7 +264,7 @@ li{list-style: none;}
 .laydate_body .laydate_time .laydate_hmsno span:hover, 
 .laydate_body .laydate_y .laydate_yms ul li:hover, 
 .laydate_body .laydate_table td:hover,
-.laydate_body .laydate_click {
+.laydate_body .laydate_click :active{
   background-color: #ffa634 !important;
 }
 .laydate_body .laydate_table td {
@@ -274,6 +286,10 @@ li{list-style: none;}
 .laydate_body .laydate_choose:hover, 
 .laydate_body .laydate_y .laydate_yms a:hover {
   background-color: #ffaf34 !important;
+}
+#laydate_box .laydate_click {
+  background-color: #ffaf34 !important;
+  color: #fff!important;
 }
 .laydate-icon{
   width:34px;
@@ -303,27 +319,25 @@ li{list-style: none;}
 }
 .upl_czfs{
   width:100%;
-  height:150px;
+  height:auto;
   border:1px solid #dedede;
 }
 .upl_czfs .czfs_tag{
   width:100%;
   height:auto;
-  border:1px solid #dedede;
+  border-bottom:1px solid #dedede;
   overflow: hidden;
 }
 .upl_czfs .czfs_tag .czfs_tag_li{
+  height: 27px;
+  line-height: 27px;
+  background: url("../img/auto.png");
+  background-position: 0 -118px;
+  padding: 0px 0px 0px 15px;
   float: left;
   position: relative;
-  height:25px;
-  border:1px solid #000;
-  border-radius:9px;
+  margin: 9px 8px 3px 0px;
   display: inline-block;
-  margin-left:10px;
-  margin-top:10px;
-  margin-bottom:5px;
-  line-height:25px;
-  padding:0px 5px 0px 5px;
   cursor: pointer;
 }
 .upl_czfs .czfs_tag li img{
@@ -333,6 +347,15 @@ li{list-style: none;}
   cursor: pointer;
 }
 .czfs_tag_div{
+  background: url("../img/auto.png");
+  background-position: right -118px;
+  padding-right: 8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 27px; 
+}
+.czfs_div{
   overflow: hidden;
   height:35px;
 }
@@ -351,7 +374,7 @@ li{list-style: none;}
   float: left;
 }
 .czfs_author_ipt{
-  width:330px;
+  width:37%;
   height:30px;
   border: 1px solid #dedede;
   padding-left:5px;

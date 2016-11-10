@@ -281,12 +281,6 @@ public class PassportController {
             upo.setUserId(userid);
             String userimg = m.get("UserImg")+"";
             if(!userimg.toLowerCase().equals("null")) upo.setPortraitBig(userimg);
-            String userage = m.get("Age")+"";
-            if(!userage.toLowerCase().equals("null")) upo.setAge(userage);
-            String userbirgth = m.get("Birthday")+"";
-            if(!userbirgth.toLowerCase().equals("null")) upo.setBirthday(userbirgth);
-            String usersex = m.get("Sex")+"";
-            if(!usersex.toLowerCase().equals("null")) upo.setSex(usersex);
             String descn = m.get("Descn")+"";
             if (!descn.toLowerCase().equals("null")) upo.setDescn(descn);
             if(userService.updateUser(upo)==1) {

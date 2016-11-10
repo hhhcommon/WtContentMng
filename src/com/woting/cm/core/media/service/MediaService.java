@@ -6,14 +6,24 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.ui.tree.ZTree;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
+import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
+import com.woting.cm.core.complexref.service.ComplexRefService;
+import com.woting.cm.core.dict.mem._CacheDictionary;
+import com.woting.cm.core.dict.model.DictDetail;
+import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MaSource;
@@ -25,6 +35,7 @@ import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.exceptionC.Wtcm0101CException;
 
 public class MediaService {
@@ -44,13 +55,19 @@ public class MediaService {
 	private MybatisDAO<DictRefResPo> dictRefDao;
 	@Resource
 	private ChannelContentService channelContentService;
-	private Map<String, Object> FlowFlagState = new HashMap<String, Object>(){{
-		put("0", "已提交");
-		put("1", "审核中");
-		put("2", "已发布");
-		put("3", "已撤回");
-		put("4", "未通过");
-	}};
+	@Resource
+	private KeyWordProService keyWordProService;
+	@Resource
+	private ComplexRefService complexRefService;
+	private Map<String, Object> FlowFlagState = new HashMap<String, Object>() {
+		{
+			put("0", "已提交");
+			put("1", "审核中");
+			put("2", "已发布");
+			put("3", "已撤回");
+			put("4", "未通过");
+		}
+	};
 
 	@PostConstruct
 	public void initParam() {
@@ -90,6 +107,7 @@ public class MediaService {
 		return channelAssetDao.queryForList("getListByFlowFlag", m);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getMaListByPubId(String userid, String flowflag, String channelid,
 			String seqmediaid) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
@@ -137,19 +155,22 @@ public class MediaService {
 						if (listpo != null && listpo.size() > 0) {
 							String resids = "";
 							for (MediaAssetPo mediaAssetPo : listpo) {
-								resids += ",'"+mediaAssetPo.getId()+"'";
+								resids += ",'" + mediaAssetPo.getId() + "'";
 							}
 							resids = resids.substring(1);
 							List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
-							List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
+							List<Map<String, Object>> pubChannelList = channelContentService
+									.getChannelAssetList(chapolist);
 							for (MediaAssetPo mediaAssetPo : listpo) {
 								MediaAsset ma = new MediaAsset();
 								ma.buildFromPo(mediaAssetPo);
-								Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, pubChannelList, null);
+								Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null,
+										pubChannelList, null);
 								m.put("ContentSeqId", sma.getId());
 								m.put("ContentSeqName", sma.getSmaTitle());
 								if (m.containsKey("ContentPubChannels")) {
-									List<Map<String, Object>> chass = (List<Map<String, Object>>) m.get("ContentPubChannels");
+									List<Map<String, Object>> chass = (List<Map<String, Object>>) m
+											.get("ContentPubChannels");
 									if (chass != null && chass.size() > 0) {
 										for (Map<String, Object> map : chass) {
 											map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
@@ -179,7 +200,7 @@ public class MediaService {
 			if (mas != null && mas.size() > 0) {
 				String resids = "";
 				for (MediaAssetPo mediaAssetPo : mas) {
-					resids += ",'"+mediaAssetPo.getId()+"'";
+					resids += ",'" + mediaAssetPo.getId() + "'";
 				}
 				resids = resids.substring(1);
 				List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
@@ -197,10 +218,12 @@ public class MediaService {
 						}
 					}
 					SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
-					m.put("ContentSeqId", seqMaRefPo == null ? null : seqMaRefPo.getSId());
-					SeqMediaAsset sma = getSmaInfoById(seqMaRefPo.getSId());
-					if (sma!=null) {
-						m.put("ContentSeqName", sma.getSmaTitle());
+					if (seqMaRefPo != null) {
+						m.put("ContentSeqId", seqMaRefPo.getSId());
+						SeqMediaAsset sma = getSmaInfoById(seqMaRefPo.getSId());
+						if (sma != null) {
+							m.put("ContentSeqName", sma.getSmaTitle());
+						}
 					}
 					list.add(m);
 				}
@@ -218,7 +241,7 @@ public class MediaService {
 		if (listpo != null && listpo.size() > 0) {
 			String resids = "";
 			for (MediaAssetPo mediaAssetPo : listpo) {
-				resids += ",'"+mediaAssetPo.getId()+"'";
+				resids += ",'" + mediaAssetPo.getId() + "'";
 			}
 			resids = resids.substring(1);
 			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
@@ -238,7 +261,7 @@ public class MediaService {
 				SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
 				m.put("ContentSeqId", seqMaRefPo == null ? null : seqMaRefPo.getSId());
 				SeqMediaAsset sma = getSmaInfoById(seqMaRefPo.getSId());
-				if (sma!=null) {
+				if (sma != null) {
 					m.put("ContentSeqName", sma.getSmaTitle());
 				}
 				list.add(m);
@@ -272,24 +295,39 @@ public class MediaService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
 		listpo = seqMediaAssetDao.queryForList("getSmaListBySmaPubId", userid);
-		if (listpo != null && listpo.size() > 0) {
-			String resids = "";
-			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-				resids += ",'" + seqMediaAssetPo.getId() + "'";
-			}
-			resids = resids.substring(1);
-			List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_SeqMediaAsset");
-			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_SeqMediaAsset");
-			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
-			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
-				SeqMediaAsset sma = new SeqMediaAsset();
-				sma.buildFromPo(seqMediaAssetPo);
-				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList, null);
-				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
-				smap.put("SubCount", l.size());
-				list.add(smap);
-			}
-		}
+		list = makeSmaListToReturn(listpo);
+		// if (listpo != null && listpo.size() > 0) {
+		// String resids = "";
+		// for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+		// resids += ",'" + seqMediaAssetPo.getId() + "'";
+		// }
+		// resids = resids.substring(1);
+		// List<Map<String, Object>> catalist = getResDictRefByResId(resids,
+		// "wt_SeqMediaAsset");
+		// List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids,
+		// "wt_SeqMediaAsset");
+		// List<Map<String, Object>> pubChannelList =
+		// channelContentService.getChannelAssetList(chapolist);
+		// for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
+		// SeqMediaAsset sma = new SeqMediaAsset();
+		// sma.buildFromPo(seqMediaAssetPo);
+		// Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(),
+		// null, catalist, pubChannelList, null);
+		// if (smap.containsKey("ContentPubChannels")) {
+		// List<Map<String, Object>> chass = (List<Map<String, Object>>)
+		// smap.get("ContentPubChannels");
+		// if (chass != null && chass.size() > 0) {
+		// for (Map<String, Object> map : chass) {
+		// map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
+		// }
+		// }
+		// }
+		// List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId",
+		// sma.getId());
+		// smap.put("SubCount", l.size());
+		// list.add(smap);
+		// }
+		// }
 		return list;
 	}
 
@@ -298,9 +336,9 @@ public class MediaService {
 		m1.put("assetType", "wt_SeqMediaAsset");
 		if (!flowflag.equals("0")) {
 			if (flowflag.equals("5")) {
-				m1.put("flowFlag", "5"); // 5用来查询待入库，其余编号与flowflag对应
+				m1.put("flowFlag", "0"); // 5用来查询待入库，其余编号与flowflag对应
 			} else {
-				m1.put("flowFlag", "5");
+				m1.put("flowFlag", "0");
 			}
 		}
 		if (!channelid.equals("0")) {
@@ -336,7 +374,7 @@ public class MediaService {
 		return null;
 	}
 
-	// 根据主播id查询其所有专辑
+	// 整理专辑返回结果
 	public List<Map<String, Object>> makeSmaListToReturn(List<SeqMediaAssetPo> listpo) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if (listpo != null && listpo.size() > 0) {
@@ -351,7 +389,19 @@ public class MediaService {
 			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 				SeqMediaAsset sma = new SeqMediaAsset();
 				sma.buildFromPo(seqMediaAssetPo);
-				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList, null);
+				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList,
+						null);
+				// 标签处理
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + sma.getId() + "'",
+						"wt_SeqMediaAsset");
+				if (kws != null && kws.size() > 0) {
+					smap.put("ContentKeyWords", kws);
+				}
+				// 创作方式处理
+				List<Map<String, Object>> cps = makeComplexRefList("wt_SeqMediaAsset", sma.getId(), "4", null);
+				if (cps != null && cps.size() > 0) {
+					smap.put("ContentMemberTypes", cps);
+				}
 				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
 				if (smap.containsKey("ContentPubChannels")) {
 					List<Map<String, Object>> chas = (List<Map<String, Object>>) smap.get("ContentPubChannels");
@@ -366,6 +416,71 @@ public class MediaService {
 			}
 		}
 		return list;
+	}
+
+	// 整理专辑返回结果
+	public List<Map<String, Object>> makeMaListToReturn(List<MediaAssetPo> listpo) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (listpo != null && listpo.size() > 0) {
+			String resids = "";
+			for (MediaAssetPo mediaAssetPo : listpo) {
+				resids += ",'" + mediaAssetPo.getId() + "'";
+			}
+			resids = resids.substring(1);
+			List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_MediaAsset");
+			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
+			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
+			for (MediaAssetPo ma : listpo) {
+				Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), null, catalist, pubChannelList, null);
+				SeqMaRefPo smaref = getSeqMaRefByMId(ma.getId());
+				SeqMediaAsset sma = getSmaInfoById(smaref.getSId());
+				mam.put("ContentSeqId", sma.getId());
+				mam.put("ContentSeqName", sma.getSmaTitle());
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + ma.getId() + "'",
+						"wt_MediaAsset");
+				if (kws != null && kws.size() > 0) {
+					mam.put("ContentKeyWords", kws);
+				}
+				List<Map<String, Object>> cps = makeComplexRefList("wt_MediaAsset", ma.getId(), "4", null);
+				if (cps != null && cps.size() > 0) {
+					mam.put("ContentMemberTypes", cps);
+				}
+				if (mam.containsKey("ContentPubChannels")) {
+					List<Map<String, Object>> chas = (List<Map<String, Object>>) mam.get("ContentPubChannels");
+					if (chas != null && chas.size() > 0) {
+						for (Map<String, Object> map : chas) {
+							map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
+						}
+					}
+				}
+				list.add(mam);
+			}
+		}
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Map<String, Object>> makeComplexRefList(String assetTableName, String assetId, String dictMID,
+			String dictDId) {
+		List<ComplexRefPo> cps = complexRefService.getComplexRefList(assetTableName, assetId, dictMID, dictDId);
+		if (cps != null && cps.size() > 0) {
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT))
+					.getContent();
+			DictModel dm = _cd.getDictModelById("4");
+			ZTree<DictDetail> eu1 = new ZTree<DictDetail>(dm.dictTree);
+			List<Map<String, Object>> rel = new ArrayList<>();
+			for (ComplexRefPo complexRefPo : cps) {
+				Map<String, Object> m = new HashMap<>();
+				m.put("TypeName", eu1.findNode(complexRefPo.getDictDId()).getNodeName());
+				m.put("TypeId", complexRefPo.getDictDId());
+				m.put("TypeInfo", complexRefPo.getResId());
+				rel.add(m);
+			}
+			if (rel != null && rel.size() > 0) {
+				return rel;
+			}
+		}
+		return null;
 	}
 
 	// 根据专辑id得到专辑
@@ -440,6 +555,17 @@ public class MediaService {
 		return chlist;
 	}
 
+	public List<ChannelAssetPo> getChaByAssetIdAndPubId(String pubId, String assetId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("publisherId", pubId);
+		m.put("assetId", assetId);
+		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m);
+		if (chas != null && chas.size() > 0) {
+			return chas;
+		}
+		return null;
+	}
+
 	// 根据资源id得到资源字典项对应关系
 	public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName) {
 		Map<String, String> param = new HashMap<String, String>();
@@ -466,6 +592,16 @@ public class MediaService {
 		else
 			ma.buildFromPo(mapo);
 		return ma;
+	}
+
+	public MaSourcePo getMasInfoByMaId(String maId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("maId", maId);
+		MaSourcePo mas = maSourceDao.getInfoObject("getMas", m);
+		if (mas != null) {
+			return mas;
+		}
+		return null;
 	}
 
 	public MaSource getSameMas(MaSource mas) {
@@ -499,8 +635,11 @@ public class MediaService {
 	}
 
 	public void saveCha(ChannelAsset cha) {
-		System.out.println(JsonUtils.objToJson(cha.convert2Po()));
 		channelAssetDao.insert("insert", cha.convert2Po());
+	}
+
+	public void saveCha(ChannelAssetPo cha) {
+		channelAssetDao.insert("insert", cha);
 	}
 
 	public void saveSma(SeqMediaAsset sma) {
@@ -519,6 +658,10 @@ public class MediaService {
 		mediaAssetDao.update("updateMas", mas.convert2Po());
 	}
 
+	public void updateMas(MaSourcePo mas) {
+		mediaAssetDao.update("updateMas", mas);
+	}
+
 	public void updateMa(MediaAsset ma) {
 		mediaAssetDao.update("updateMa", ma.convert2Po());
 	}
@@ -529,6 +672,10 @@ public class MediaService {
 
 	public int updateCha(ChannelAsset cha) {
 		return channelAssetDao.update("update", cha.convert2Po());
+	}
+
+	public int updateCha(ChannelAssetPo cha) {
+		return channelAssetDao.update("update", cha);
 	}
 
 	public void removeMa(String id) {
@@ -555,8 +702,15 @@ public class MediaService {
 		dictRefDao.delete("multiDelByResId", id);
 	}
 
-	public void removeCha(String assetId) {
-		channelAssetDao.delete("deleteByAssetId", assetId);
+	public void removeCha(String assetId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", assetId);
+		m.put("resTableName", resTableName);
+		channelAssetDao.delete("deleteByEntity", m);
+	}
+
+	public void removeKeyWordRes(String assetId, String resTableName) {
+		keyWordProService.removeKeyWordByAssetId(assetId, resTableName);
 	}
 
 	public void removeMedia(String id) {
@@ -564,7 +718,8 @@ public class MediaService {
 		removeMas(id);
 		removeMa2SmaByMid(id);
 		removeResDictRef(id);
-		removeCha(id);
+		removeKeyWordRes(id, "wt_MediaAsset");
+		removeCha(id, "wt_MediaAsset");
 	}
 
 	public void removeSeqMedia(String id) {
@@ -577,10 +732,11 @@ public class MediaService {
 		removeResDictRef(id);
 		if (getCHAInfoByAssetId(id) != null) { // 删除与专辑绑定的下级节目栏目信息
 			for (SeqMaRefPo seqMaRefPo : l) {
-				removeCha(seqMaRefPo.getMId());
+				removeCha(seqMaRefPo.getMId(), "wt_SeqMediaAsset");
 			}
 		}
-		removeCha(id);
+		removeKeyWordRes(id, "wt_SeqMediaAsset");
+		removeCha(id, "wt_SeqMediaAsset");
 		removeMa2SmaBySid(id);
 		removeSma(id);
 	}

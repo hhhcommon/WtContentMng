@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.core.media.model.MediaAsset;
-import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.media.service.MediaContentService;
@@ -175,9 +173,7 @@ public class MediaContentController {
 				map.put("Message", "无法获取需要的参数");
 			} else {
 				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei()) && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1 : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
 					mp.setImei(request.getSession().getId());
 				}
 				mUdk = mp.getUserDeviceKey();
@@ -251,7 +247,11 @@ public class MediaContentController {
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime")+"";
-			map = mediaContentService.addMediaAssetInfo(userid, contentname, contentimg, seqmediaId, contenturi, tags, membertypes, contentdesc, pubTime);
+			String flowFlag = m.get("FlowFlag")+"";
+			if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
+				flowFlag = "1";
+			}
+			map = mediaContentService.addMediaAssetInfo(userid, contentname, contentimg, seqmediaId, contenturi, tags, membertypes, contentdesc, pubTime,flowFlag);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -277,44 +277,62 @@ public class MediaContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/media/updateMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateMediaInfo(HttpServletRequest request) {
-		MediaAsset ma = new MediaAsset();
-		SeqMediaAsset sma = new SeqMediaAsset();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String maid = m.get("ContentId") + "";
-		ma.setId(maid);
-		String maname = m.get("ContentName") + "";
-		if (!maname.toLowerCase().equals("null"))
-			ma.setMaTitle(maname);
-		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
-		String maimg = m.get("ContentImg") + "";
-		if (maimg.equals("null"))
-			maimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-		maimg = maimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
-		if (!maimg.toLowerCase().equals("null"))
-			ma.setMaImg(maimg);
-		String mauri = m.get("ContentURI") + "";
-		if (!mauri.toLowerCase().equals("null")) {
-			mauri = mauri.replace(rootpath, "http://" + ip_address + ":908/CM/");
-			ma.setMaURL(mauri);
+		String userid = m.get("UserId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
 		}
-		String seqid = m.get("ContentSeqId") + "";
-		if (!seqid.toLowerCase().equals("null"))
-			sma.setId(seqid);
-		String madesc = m.get("ContentDesc") + "";
-		if (!madesc.toLowerCase().equals("null"))
-			ma.setDescn(madesc);
-		String mastatus = m.get("ContentStatus") + "";
-		if (!mastatus.toLowerCase().equals("null"))
-			ma.setMaStatus(Integer.valueOf(mastatus));
-		if (seqid.toLowerCase().equals("null"))
-			map = mediaContentService.updateMediaInfo(ma, null);
-		else
-			map = mediaContentService.updateMediaInfo(ma, sma);
-		return map;
+		String contentId = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无节目Id");
+			return map;
+		}
+		String contentname = m.get("ContentName") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentname) || contentname.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1013");
+			map.put("Message", "无节目名称");
+			return map;
+		}
+		String seqmediaId = m.get("SeqMediaId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(seqmediaId) || seqmediaId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1014");
+			map.put("Message", "无专辑Id");
+			return map;
+		}
+		String contenturi = m.get("ContentURI") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contenturi) || contenturi.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1014");
+			map.put("Message", "无播放资源");
+			return map;
+		}
+		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
+		String contentimg = m.get("ContentImg")+"";
+		if (contentimg.toLowerCase().equals("null"))
+			contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+		contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+		contenturi = contenturi.replace(rootpath, "http://" + ip_address + ":908/CM/");
+		List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
+		List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
+		String contentdesc = m.get("ContentDesc") + "";
+		String pubTime = m.get("FixedPubTime")+"";
+		boolean isok = mediaContentService.updateMediaInfo(userid, contentId, contentname, contentimg, seqmediaId, contenturi, tags, membertypes, contentdesc, pubTime);
+		if (isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "修改成功");
+			return map;
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
+			return map;
+		}
 	}
 
 	/**
@@ -334,20 +352,28 @@ public class MediaContentController {
 			map.put("Message", "无用户信息");
 			return map;
 		}
-		String maid = m.get("ContentId") + "";
-		if (maid.toLowerCase().equals("null")) {
+		String contentId = m.get("ContentId") + "";
+		if (contentId.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无节目id信息");
 			return map;
 		}
-		String smaid = m.get("ContentSeqId") + "";
-		if (smaid.toLowerCase().equals("null")) {
+		String seqMediaId = m.get("SeqMediaId") + "";
+		if (seqMediaId.toLowerCase().equals("null")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无专辑id信息");
 			return map;
 		}
-		map = mediaContentService.modifyMediaStatus(userid, maid, smaid, 2);
-		return map;
+		boolean isok = mediaContentService.modifyMediaStatus(userid, contentId, seqMediaId, 2);
+		if (isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "修改成功");
+			return map;
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
+			return map;
+		}
 	}
 
 	/**
@@ -356,7 +382,7 @@ public class MediaContentController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/media/removeMediaInfo.do")
+	@RequestMapping(value = "/content/media/removeMedia.do")
 	@ResponseBody
 	public Map<String, Object> removeMediaInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -375,5 +401,40 @@ public class MediaContentController {
 		}
 		map = mediaContentService.removeMediaAsset(contentid);
 		return map;
+	}
+	
+	/**
+	 * 获取单体节目信息
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/content/media/getMediaInfo.do")
+	@ResponseBody
+	public Map<String, Object> getMediaInfo(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无用户信息");
+			return map;
+		}
+		String contentid = m.get("ContentId") + "";
+		if (contentid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无专辑信息");
+			return map;
+		}
+		Map<String, Object> rem = mediaContentService.getMediaAssetInfo(userid, contentid);
+		if (rem!=null) {
+			map.put("ReturnType", "1001");
+			map.put("Result", rem);
+			return map;
+		} else {
+			map.put("ReturnType", "1012");
+			map.put("Message", "获取信息失败");
+			return map;
+		}
 	}
 }

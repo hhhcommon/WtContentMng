@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  栏目
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="A_COMPLEXREF">
+  <!-- 对象定义:栏目 -->
+  <resultMap id="BaseResultMap" type="complexref">
+    <id     column="id"              property="id"             jdbcType="VARCHAR"/>
+    <result column="assetTableName"  property="assetTableName" jdbcType="VARCHAR"/>
+    <result column="assetId"         property="assetId"        jdbcType="INTEGER"/>
+    <result column="resTableName"    property="resTableName"   jdbcType="VARCHAR"/>
+    <result column="resId"           property="resId"          jdbcType="VARCHAR"/>
+    <result column="dictMId"         property="dictMId"        jdbcType="VARCHAR"/>
+    <result column="dictDId"         property="dictDId"        jdbcType="VARCHAR"/>
+    <result column="cTime"           property="cTime"          jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <!-- 所有列 -->
+  <sql id="Base_Column_List">
+    id, assetTableName, assetId, resTableName, resId, dictMId, dictDId, cTime
+  </sql>
+
+  <!-- 条件子句 -->
+  <sql id="WhereClauseByEntiey">
+    <where>
+      <trim prefix="(" suffix=")" prefixOverrides="and">
+        <if test="id!=null">and id=#{id,jdbcType=VARCHAR}</if>
+        <if test="assetTableName!=null">and assetTableName=#{assetTableName,jdbcType=VARCHAR}</if>
+        <if test="assetId!=null">and assetId=#{assetId,jdbcType=VARCHAR}</if>
+        <if test="resTableName!=null">and resTableName=#{resTableName,jdbcType=VARCHAR}</if>
+        <if test="resId!=null">and resId=#{resId,jdbcType=VARCHAR}</if>
+        <if test="dictMId!=null">and dictMId=#{dictMId,jdbcType=VARCHAR}</if>
+        <if test="dictDId!=null">and dictDId=#{dictDId,jdbcType=VARCHAR}</if>
+        <if test="CTime!=null">and cTime=#{CTime,jdbcType=TIMESTAMP}</if>
+      </trim>
+    </where>
+  </sql>
+
+  <!-- 获得列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/>from wt_Complex_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="orderByClause!=null">order by ${orderByClause}</if>
+  </select> 
+
+  <!-- 新增数据 -->
+  <insert id="insert" parameterType="java.util.Map">
+    insert into wt_Complex_Ref
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="assetTableName!=null">assetTableName,</if>
+      <if test="assetId!=null">assetId,</if>
+      <if test="resTableName!=null">resTableName,</if>
+      <if test="resId!=null">resId,</if>
+      <if test="dictMId!=null">dictMId,</if>
+      <if test="dictDId!=null">dictDId,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="assetTableName!=null">#{assetTableName,jdbcType=VARCHAR},</if>
+      <if test="assetId!=null">#{assetId,jdbcType=VARCHAR},</if>
+      <if test="resTableName!=null">#{resTableName,jdbcType=VARCHAR},</if>
+      <if test="resId!=null">#{resId,jdbcType=VARCHAR},</if>
+      <if test="dictMId!=null">#{dictMId,jdbcType=VARCHAR},</if>
+      <if test="dictDId!=null">#{dictDId,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+  
+  <insert id="insertComplexRefList" parameterType="map">
+    insert into wt_Complex_Ref (id, assetTableName, assetId, resTableName, resId, dictMId, dictDId, cTime) values
+      <foreach collection="list" item="list" index="index" separator=",">
+       (#{list.id},#{list.assetTableName},#{list.assetId},#{list.resTableName},#{list.resId},#{list.dictMId},#{list.dictDId},#{list.cTime})
+      </foreach>
+  </insert>
+
+  <!-- 修改 根据主键-->
+  <update id="update" parameterType="java.util.Map">
+    update wt_Complex_Ref
+    <set>
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="assetTableName!=null">#{assetTableName,jdbcType=VARCHAR},</if>
+      <if test="assetId!=null">#{assetId,jdbcType=VARCHAR},</if>
+      <if test="resTableName!=null">#{resTableName,jdbcType=VARCHAR},</if>
+      <if test="resId!=null">#{resId,jdbcType=VARCHAR},</if>
+      <if test="dictMId!=null">#{dictMId,jdbcType=VARCHAR},</if>
+      <if test="dictDId!=null">#{dictDId,jdbcType=VARCHAR},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 删除数据 -->
+  <delete id="delete" parameterType="java.lang.String">
+    delete from wt_Complex_Ref where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delByIds" parameterType="java.lang.String">
+    delete from wt_Complex_Ref where ${value}
+  </delete>
+  <delete id="deleteByEntity" parameterType="java.util.Map">
+    delete from wt_Complex_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+</mapper>
