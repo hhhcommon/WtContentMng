@@ -515,7 +515,7 @@ $(function(){
     _data.UserId="123";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
-    _data.ContentId=$(".upl_zj option:selected").attr("id");
+    _data.ChannelId=$(".upl_zj option:selected").attr("id");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
@@ -538,18 +538,14 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    _data.FlowFlag="2";
     $.ajax({
       type:"POST",
-      url:rootPath+"content/seq/updateSeqMediaStatus.do",
+      url:rootPath+"content/seq/addSeqMediaInfo.do",
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
-          alert("专辑发布成功");
-          $(".mask,.add").hide();
-          $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载专辑列表
+          pubAddOrEditZj(_data);
         }else{
           alert(resultData.Message);
         }
@@ -559,7 +555,7 @@ $(function(){
       }
     });
   }
-
+  
   //8.点击修改专辑页面上的发布按钮，发布专辑
   function pub_edit_zj(){
     var _data={};
@@ -602,15 +598,14 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    _data.FlowFlag="2";
     $.ajax({
       type:"POST",
-      url:rootPath+"content/seq/addSeqMediaInfo.do",
+      url:rootPath+"content/seq/updateSeqMediaInfo.do",
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
-          pubEditZj(_data);
+          pubAddOrEditZj(_data);
         }else{
           alert(resultData.Message);
         }
@@ -620,7 +615,7 @@ $(function(){
       }
     });
   }
-  function pubEditZj(_data){
+  function pubAddOrEditZj(_data){
     var contentId=$(".zjId").attr("value");
     $.ajax({
       type:"POST",
@@ -635,6 +630,8 @@ $(function(){
           getContentList(dataParam);//重新加载专辑列表
         }else{
           alert(resultData.Message);
+          $(".mask,.add").hide();
+          $("body").css({"overflow":"auto"});
         }
       },
       error:function(XHR){
