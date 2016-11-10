@@ -33,7 +33,7 @@ import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.persis.pojo.BroadcastPo;
-import com.woting.content.broadcast.service.BroadcastService;
+import com.woting.content.broadcast.service.BroadcastProService;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.publish.utils.CacheUtils;
 @Service
@@ -47,7 +47,7 @@ public class QueryService {
 	@Resource
 	private ChannelService chService;
 	@Resource
-	private BroadcastService bcService;
+	private BroadcastProService bcService;
 
 	/**
 	 * 查询列表

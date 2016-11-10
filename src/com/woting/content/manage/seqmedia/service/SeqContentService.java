@@ -409,7 +409,12 @@ public class SeqContentService {
 				smas.add(sma.convert2Po());
 				List<Map<String, Object>> ls = mediaService.makeSmaListToReturn(smas);
 				if (ls != null && ls.size() > 0) {
-					return ls.get(0);
+					List<MediaAssetPo> mas = mediaService.getMaListBySmaId(contentId);
+					if (mas!=null && mas.size()>0) {
+						List<Map<String, Object>> mam = mediaService.makeMaListToReturn(mas);
+						ls.get(0).put("MediaAssetList", mam);
+						return ls.get(0);
+					}
 				}
 			}
 		}
