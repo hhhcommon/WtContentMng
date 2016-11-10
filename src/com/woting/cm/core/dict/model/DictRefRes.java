@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 
 import com.spiritdata.framework.core.model.BaseObject;
 import com.spiritdata.framework.core.model.ModelSwapPo;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.exceptionC.Plat0006CException;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
@@ -18,7 +19,7 @@ public class DictRefRes extends BaseObject implements Serializable, ModelSwapPo 
     private String resTableName; //资源类型Id：1电台；2单体媒体资源；3专辑资源
     private String resId; //资源Id
     private DictModel dm;
-    private DictDetail dd;
+    private TreeNode<DictDetail> dd;
     private Timestamp CTime; //创建时间
 
     public String getId() {
@@ -49,15 +50,21 @@ public class DictRefRes extends BaseObject implements Serializable, ModelSwapPo 
         return dm;
     }
     public void setDm(DictModel dm) {
-        if (dd!=null&&!dd.getMId().equals(dm.getId())) return;
+        if (dd!=null&&!dd.getTnEntity().getMId().equals(dm.getId())) return;
         this.dm=dm;
     }
-    public DictDetail getDd() {
+    public TreeNode<DictDetail> getDd() {
         return dd;
+    }
+    public void setDd(TreeNode<DictDetail> dd) {
+        if (dm!=null&&!dm.getId().equals(dd.getTnEntity().getMId())) return;
+        this.dd=dd;
     }
     public void setDd(DictDetail dd) {
         if (dm!=null&&!dm.getId().equals(dd.getMId())) return;
-        this.dd=dd;
+        TreeNode<DictDetail> tn=new TreeNode<DictDetail>();
+        tn.setTnEntity(dd);
+        this.dd=tn;
     }
     public Timestamp getCTime() {
         return CTime;
@@ -97,8 +104,29 @@ public class DictRefRes extends BaseObject implements Serializable, ModelSwapPo 
         DictModel dm=new DictModel();
         dm.setId(_po.getDictMid());
         this.dm=dm;
-        DictDetail dd=new DictDetail();
-        dd.setId(_po.getDictDid());
-        this.dd=dd;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId()==null?0:this.getId().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o==null) return false;
+        if (!(o instanceof DictRefRes)) return false;
+        DictRefRes _other=(DictRefRes)o;
+        try {
+            if (this.getResId()==null&&_other.getResId()==null&&this.getResTableName()==null&&_other.getResTableName()==null
+              &&this.getRefName()==null&&_other.getRefName()==null&&this.getDm()==null&&_other.getDm()==null
+              &&this.getDd()==null&&_other.getDd()==null) return true;
+            if (this.getResId()!=null&&this.getResId().equals(_other.getResId())
+              &&this.getResTableName()!=null&&this.getResTableName().equals(_other.getResTableName())
+              &&this.getRefName()!=null&&this.getRefName().equals(_other.getRefName())
+              &&this.getDm()!=null&&this.getDm().getId().equals(_other.getDm()==null?null:_other.getDm().getId())
+              &&this.getDd()!=null&&this.getDd().getId().equals(_other.getDd()==null?null:_other.getDd().getId())
+              ) return true;
+        } catch(Exception e) {}
+        return false;
     }
 }

@@ -51,6 +51,7 @@ public class DictService {
     /**
      * 加载字典信息
      */
+    @SuppressWarnings("unchecked")
     public _CacheDictionary loadCache() {
         _CacheDictionary _cd=new _CacheDictionary();
 
@@ -92,13 +93,13 @@ public class DictService {
                 param.put("ownerId", "cm");
                 param.put("ownerType", "100");
                 int i=1;
-                Page<DictDetailPo> ddPage=dictDDao.pageQuery("getListByOnwer", param, i++, 10000);
+                Page<DictDetailPo> ddPage=dictDDao.pageQuery("getListByOnwerDemo", param, i++, 10000);
                 List<DictDetailPo> ddpol=new ArrayList<DictDetailPo>();
                 boolean hasDD=!ddPage.getResult().isEmpty();
                 //分页处理
                 while (hasDD) {
                     ddpol.addAll(ddPage.getResult());
-                    ddPage=dictDDao.pageQuery("getListByOnwer", param, i++,10000);
+                    ddPage=dictDDao.pageQuery("getListByOnwerDemo", param, i++,10000);
                     hasDD=!ddPage.getResult().isEmpty();
                 }
                 if (ddpol==null||ddpol.size()==0) return _cd;
@@ -137,6 +138,7 @@ public class DictService {
      * @param ddList 同一字典组的所有字典项的列表
      * @param od 所有者字典数据
      */
+    @SuppressWarnings("unchecked")
     private void buildDictTree(List<DictDetail> ddList, _CacheDictionary cd) {
         if (ddList.size()>0) {//组成树
             DictModel dModel=cd.dictModelMap.get(ddList.get(0).getMId());
@@ -163,14 +165,83 @@ public class DictService {
 
     /**
      * 绑定字典与资源的关系
-     * @param dd 字典项信息
+     * @param drr 字典资源关系
+     * @param type 0=可多个;1=唯一
+     * @return 新增的字典项Id；1-成功；2-未找到字典组；3-未找到父亲结点；4-已存在，不用插入；0-不存在
      */
-    public void bindDictRef(DictRefRes drr) {
+    @SuppressWarnings("unchecked")
+    public int bindDictRef(DictRefRes drr, int type) {
         try {
+            CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+            _CacheDictionary cd=cache.getContent();
             DictRefResPo newDrrPo=drr.convert2Po();
-            dictRefDao.insert(newDrrPo);
+            DictModel dm=cd.dictModelMap.get(newDrrPo.getDictMid());
+            if (dm==null||dm.dictTree==null) return 2;
+            TreeNode<DictDetail> dd=(TreeNode<DictDetail>)dm.dictTree.findNode(newDrrPo.getDictDid());
+            if (dd==null) return 3;
+
+            List<DictRefRes> drrl=this.getDictRefs(drr.getResTableName(), drr.getResId());
+            boolean exist=false;
+            if (drrl!=null&&!drrl.isEmpty()) {
+                for (DictRefRes _drr: drrl) {
+                    exist=_drr.equals(drr);
+                    if (exist) break;
+                }
+                if (exist) return 4;
+                exist=false;//是否已有相同的内容
+                for (DictRefRes _drr: drrl) {
+                    if (_drr.getResId()!=null&&_drr.getResId().equals(drr.getResId())
+                      &&_drr.getResTableName()!=null&&_drr.getResTableName().equals(drr.getResTableName())
+                      &&_drr.getRefName()!=null&&_drr.getRefName().equals(drr.getRefName())
+                      &&_drr.getDm()!=null&&_drr.getDm().getId().equals(drr.getDm()==null?null:drr.getDm().getId())
+                      ) {
+                        newDrrPo.setId(_drr.getId());
+                        exist=true;
+                    }
+                    if (exist) break;
+                }
+            }
+            if (exist) {//update
+                return dictRefDao.update(newDrrPo);
+            } else {//insert
+                return dictRefDao.insert(newDrrPo);//可以重复
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * 获得字典资源关系
+     * @param resTableName 资源分类(资源表名称)
+     * @param resId 资源Id
+     * @return 资源关系列表
+     */
+    @SuppressWarnings("unchecked")
+    public List<DictRefRes> getDictRefs(String resTableName, String resId) {
+        List<DictRefRes> ret=new ArrayList<DictRefRes>();
+        try {
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("resTableName", resTableName);
+            param.put("resId", resId);
+            List<DictRefResPo> l=dictRefDao.queryForList(param);
+            if (l==null||l.isEmpty()) return null;
+
+            CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
+            _CacheDictionary cd=cache.getContent();
+            for (DictRefResPo drrPo: l) {
+                DictRefRes drr=new DictRefRes();
+                drr.buildFromPo(drrPo);
+                DictModel dm=cd.dictModelMap.get(drrPo.getDictMid());
+                drr.setDm(dm);
+                TreeNode<DictDetail> dd=(TreeNode<DictDetail>)dm.dictTree.findNode(drrPo.getDictDid());
+                drr.setDd(dd);
+                ret.add(drr);
+            }
         } catch(Exception e) {
         }
+        return ret.isEmpty()?null:ret;
     }
 
     /**
@@ -178,6 +249,7 @@ public class DictService {
      * @param dd 字典项信息
      * @return 新增的字典项Id；2-未找到字典组；3-未找到父亲结点；4-名称重复，同级重复；5-bCode重复，某分类下重复
      */
+    @SuppressWarnings("unchecked")
     public String insertDictDetail(DictDetail dd) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
@@ -218,6 +290,7 @@ public class DictService {
      * @param dd 字典项信息
      * @return 1-修改成功；2-未找到字典组；3-对应的结点未找到；4-名称重复，同级重复；5-bCode重复，某分类下重复；6-与原信息相同，不必修改
      */
+    @SuppressWarnings("unchecked")
     public int updateDictDetail(DictDetail dd) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
@@ -286,6 +359,7 @@ public class DictService {
      * @param force 是否强制删除
      * @return "1"成功删除,"2"未找到相应的结点,"3::因为什么什么关联信息的存在而不能删除"
      */
+    @SuppressWarnings("unchecked")
     public String delDictDetail(DictDetail dd, boolean force) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
