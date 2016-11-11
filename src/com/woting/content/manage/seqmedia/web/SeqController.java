@@ -158,6 +158,7 @@ public class SeqController {
 			try {
 				ApiGatherMemory.getInstance().put2Queue(alPo);
 			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -283,6 +284,7 @@ public class SeqController {
 			try {
 				ApiGatherMemory.getInstance().put2Queue(alPo);
 			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}
