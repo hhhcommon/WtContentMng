@@ -252,7 +252,7 @@ public class SeqController {
 				return map;
 			}
 			String contentname = m.get("ContentName") + "";
-			if (contentname.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentname) || contentname.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无节目名称");
 				return map;
@@ -267,8 +267,7 @@ public class SeqController {
 			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = seqContentService.addSeqMediaInfo(userId, contentname, channelId, contentimg, tags, memberType,
-					contentdesc, pubTime);
+			map = seqContentService.addSeqMediaInfo(userId, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -385,7 +384,7 @@ public class SeqController {
 				return map;
 			}
 			String contentname = m.get("ContentName") + "";
-			if (contentname.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentname) || contentname.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1013");
 				map.put("Message", "无节目名称");
 				return map;
@@ -506,13 +505,13 @@ public class SeqController {
 
 			// 数据采集
 			userId = m.get("UserId") + "";
-			if (userId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
 			}
 			String smaid = m.get("ContentId") + "";
-			if (smaid.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(smaid) || smaid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1012");
 				map.put("Message", "无专辑id信息");
 				return map;
@@ -629,13 +628,13 @@ public class SeqController {
 
 			// 数据采集
 			userId = m.get("UserId") + "";
-			if (userId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
 			}
 			String contentid = m.get("ContentId") + "";
-			if (contentid.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑信息");
 				return map;
@@ -742,19 +741,19 @@ public class SeqController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
-			if (userId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
 			}
 			String seqMediaId = m.get("SeqMediaId") + "";
-			if (seqMediaId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(seqMediaId) || seqMediaId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1012");
 				map.put("Message", "无专辑Id");
 				return map;
 			}
 			String mediaAssetId = m.get("MediaAssetId") + "";
-			if (mediaAssetId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(mediaAssetId) || mediaAssetId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1013");
 				map.put("Message", "无节目Id");
 				return map;
@@ -866,13 +865,13 @@ public class SeqController {
 
 			// 1.开始采集数据
 			userId = m.get("UserId") + "";
-			if (userId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
 			}
 			String contentid = m.get("ContentId") + "";
-			if (contentid.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑信息");
 				return map;
