@@ -72,6 +72,7 @@ $(function(){
   
   /*点击取消，罩层和上传节目的页面消失*/
   $(".collapse-link,.cancel").on("click",function(){
+    $("form")[0].reset();
     $(".mask,.add").hide();
     $("body").css({"overflow":"auto"});
   });
