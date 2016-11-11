@@ -543,19 +543,19 @@ public class MediaContentController {
 
 			// 数据采集
 			userId = m.get("UserId") + "";
-			if (userId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
 			}
 			String contentId = m.get("ContentId") + "";
-			if (contentId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无节目id信息");
 				return map;
 			}
 			String seqMediaId = m.get("SeqMediaId") + "";
-			if (seqMediaId.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(seqMediaId) || seqMediaId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑id信息");
 				return map;
@@ -679,7 +679,7 @@ public class MediaContentController {
 				return map;
 			}
 			String contentid = m.get("ContentId") + "";
-			if (contentid.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑信息");
 				return map;
@@ -795,7 +795,7 @@ public class MediaContentController {
 				return map;
 			}
 			String contentid = m.get("ContentId") + "";
-			if (contentid.toLowerCase().equals("null")) {
+			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑信息");
 				return map;
