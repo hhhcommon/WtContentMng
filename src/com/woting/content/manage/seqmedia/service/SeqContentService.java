@@ -420,6 +420,7 @@ public class SeqContentService {
 						return ls.get(0);
 					}
 				}
+				return ls.get(0);
 			}
 		}
 		return null;
