@@ -114,8 +114,8 @@ public class MediaContentController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -132,7 +132,7 @@ public class MediaContentController {
 			if (StringUtils.isNullOrEmptyOrSpace(seqmediaid) || seqmediaid.toLowerCase().equals("null")) {
 				seqmediaid = "0";
 			}
-			Map<String, Object> c = mediaContentService.getMediaContents(userid, flagflow, channelid, seqmediaid);
+			Map<String, Object> c = mediaContentService.getMediaContents(userId, flagflow, channelid, seqmediaid);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", c.get("ReturnType"));
 				c.remove("ReturnType");
@@ -245,8 +245,8 @@ public class MediaContentController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -283,7 +283,7 @@ public class MediaContentController {
 			if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
 				flowFlag = "1";
 			}
-			map = mediaContentService.addMediaAssetInfo(userid, contentname, contentimg, seqmediaId, contenturi, tags,
+			map = mediaContentService.addMediaAssetInfo(userId, contentname, contentimg, seqmediaId, contenturi, tags,
 					membertypes, contentdesc, pubTime, flowFlag);
 			return map;
 		} catch (Exception e) {
@@ -389,8 +389,8 @@ public class MediaContentController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -429,7 +429,7 @@ public class MediaContentController {
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			boolean isok = mediaContentService.updateMediaInfo(userid, contentId, contentname, contentimg, seqmediaId,
+			boolean isok = mediaContentService.updateMediaInfo(userId, contentId, contentname, contentimg, seqmediaId,
 					contenturi, tags, membertypes, contentdesc, pubTime);
 			if (isok) {
 				map.put("ReturnType", "1001");
@@ -542,8 +542,8 @@ public class MediaContentController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -560,7 +560,7 @@ public class MediaContentController {
 				map.put("Message", "无专辑id信息");
 				return map;
 			}
-			boolean isok = mediaContentService.modifyMediaStatus(userid, contentId, seqMediaId, 2);
+			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, 2);
 			if (isok) {
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
@@ -672,8 +672,8 @@ public class MediaContentController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -788,8 +788,8 @@ public class MediaContentController {
 				return map;
 			
 			//数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -800,7 +800,7 @@ public class MediaContentController {
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			Map<String, Object> rem = mediaContentService.getMediaAssetInfo(userid, contentid);
+			Map<String, Object> rem = mediaContentService.getMediaAssetInfo(userId, contentid);
 			if (rem != null) {
 				map.put("ReturnType", "1001");
 				map.put("Result", rem);

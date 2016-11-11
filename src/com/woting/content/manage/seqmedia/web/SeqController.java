@@ -115,8 +115,8 @@ public class SeqController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -133,7 +133,7 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
-			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid,
+			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userId, flagflow, channelid,
 					shortsearch);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
@@ -245,8 +245,8 @@ public class SeqController {
 			if (map.get("ReturnType") != null)
 				return map;
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -267,7 +267,7 @@ public class SeqController {
 			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = seqContentService.addSeqMediaInfo(userid, contentname, channelId, contentimg, tags, memberType,
+			map = seqContentService.addSeqMediaInfo(userId, contentname, channelId, contentimg, tags, memberType,
 					contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
@@ -372,8 +372,8 @@ public class SeqController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -400,7 +400,7 @@ public class SeqController {
 			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = seqContentService.updateSeqInfo(userid, contentid, contentname, channelId, contentimg, tags,
+			map = seqContentService.updateSeqInfo(userId, contentid, contentname, channelId, contentimg, tags,
 					memberType, contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
@@ -505,8 +505,8 @@ public class SeqController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
@@ -517,7 +517,7 @@ public class SeqController {
 				map.put("Message", "无专辑id信息");
 				return map;
 			}
-			map = seqContentService.modifySeqStatus(userid, smaid, null, 2);
+			map = seqContentService.modifySeqStatus(userId, smaid, null, 2);
 			if (map != null) {
 				return map;
 			} else {
@@ -628,8 +628,8 @@ public class SeqController {
 				return map;
 
 			// 数据采集
-			String userid = m.get("UserId") + "";
-			if (userid.toLowerCase().equals("null")) {
+			userId = m.get("UserId") + "";
+			if (userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
 				return map;
