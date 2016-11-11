@@ -25,9 +25,9 @@ import com.woting.passport.session.SessionService;
 public class FiltrateController {
 	@Resource
 	private FiltrateService filtrateService;
-	@Resource(name="redisSessionService")
-    private SessionService sessionService;
-	
+	@Resource(name = "redisSessionService")
+	private SessionService sessionService;
+
 	/**
 	 * 得到主播管理页面的筛选条件
 	 * 
@@ -39,13 +39,16 @@ public class FiltrateController {
 	public Map<String, Object> getFiltrates(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("1.1.1-common/entryApp");
-		alPo.setObjType("000");// 一般信息
+		alPo.setApiName("5.2.6--/content/media/getMediaInfo.do");
+		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			// 0-获取参数
+			String userId = "";
 			MobileUDKey mUdk = null;
 			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 			alPo.setReqParam(JsonUtils.objToJson(m));
@@ -61,13 +64,22 @@ public class FiltrateController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "common/entryApp");
-					map.putAll(retM);
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/getMediaInfo");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
 				}
-				map.put("ServerStatus", "1"); // 服务器状态
 			}
 			// 数据收集处理==2
-			alPo.setOwnerType(201);
 			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
 				alPo.setOwnerId(map.get("UserId") + "");
 			} else {
@@ -97,6 +109,8 @@ public class FiltrateController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
+
+			// 数据采集
 			String userid = m.get("UserId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
