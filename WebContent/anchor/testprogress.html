@@ -20,15 +20,15 @@
  <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
  <script type="text/javascript">
  var rootPath=getRootPath();
- function showPic(){
-  var pic = $("#pic").get(0).files[0];
-  $("img").prop("src" , window.URL.createObjectURL(pic) );
-  uploadFile();
- }
+// function showPic(){
+//var pic = $("#pic_file").get(0).files[0];
+//$("img").prop("src" , window.URL.createObjectURL(pic) );
+//uploadFile();
+//}
  function uploadFile(){
-  var pic = $("#pic").get(0).files[0];
+  var ppfile = $("#pic_file").get(0).files[0];
   var formData = new FormData();
-  formData.append("file" , pic);
+  formData.append("file" , ppfile);
   /** 
    * 必须false才会避开jQuery对 formdata 的默认处理 
    * XMLHttpRequest会对 formdata 进行正确的处理 
@@ -62,8 +62,8 @@
  </script>
  </head>
  <body>
- <img width="400" height="250"/><br /> 
- <input type="file" id="pic" name="pic" accept="mp3" onchange="showPic()"/>
+ <!--<img width="400" height="250"/><br />--> 
+ <input type="file" id="pic_file" name="pic" accept="mp3" />
  <input type="button" value="上传图片" onclick="uploadFile()" /><br /> 
  <div id="parent">
   <div id="son"></div>
