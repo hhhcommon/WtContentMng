@@ -8,7 +8,12 @@ $(function(){
     type:"POST",
     url:rootPath+"content/getFiltrates.do",
     dataType:"json",
-    data:{"UserId":"123","MediaType":"MediaAsset"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "UserId":"123",
+          "PCDType":"3",
+          "MediaType":"MediaAsset"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getChannelLabel(resultData);//得到栏目的筛选标签
@@ -42,7 +47,7 @@ $(function(){
   }
   
   //00-3获取专辑列表
-  var dataParam={"url":rootPath+"content/seq/getSeqMediaList.do","data":{"UserId":"123","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"}};
+  var dataParam={"url":rootPath+"content/seq/getSeqMediaList.do","data":{"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","UserId":"123","PCDType":"3","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"}};
   getContentList(dataParam);
   function getContentList(obj){
     $.ajax({
@@ -130,6 +135,9 @@ $(function(){
   function add_zj(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.ChannelId=$(".upl_zj option:selected").attr("id");
@@ -179,6 +187,9 @@ $(function(){
   function save_edit_zj(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentId=$(".zjId").attr("value");
     _data.ContentImg=$(".upl_img").attr("value");
@@ -243,7 +254,12 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaInfo.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           $(".mask,.add").show();
@@ -309,7 +325,12 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/removeSeqMedia.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功删除专辑");
@@ -334,7 +355,12 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaStatus.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
@@ -360,7 +386,16 @@ $(function(){
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"UserId":"123","MediaType":"1","SeqMediaId":"704df034185448e3b9ed0801351859fb","ChannelIds":"cn31","TagType":"1","TagSize":"20"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "PCDType":"3",
+          "UserId":"123",
+          "MediaType":"1",
+          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+          "ChannelIds":"cn31",
+          "TagType":"1",
+          "TagSize":"20"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getPubLabel(resultData);//得到创建专辑页面公共标签元素
@@ -388,7 +423,16 @@ $(function(){
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"UserId":"123","MediaType":"1","SeqMediaId":"704df034185448e3b9ed0801351859fb","ChannelIds":"cn31","TagType":"2","TagSize":"20"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "PCDType":"3",
+          "UserId":"123",
+          "MediaType":"1",
+          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+          "ChannelIds":"cn31",
+          "TagType":"2",
+          "TagSize":"20"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getMyLabel(resultData);//得到创建专辑页面我的标签元素
@@ -415,23 +459,25 @@ $(function(){
     $(".upl_img").click();
   });
   $(".upl_img").change(function(){
-    //图片预览
-    if($(".defaultImg").css("display")!="none"){
-      $(".defaultImg").css({"display":"none"});
-    }
-    var fileReader = new FileReader();
-    fileReader.onload = function(evt){
-      if(FileReader.DONE==fileReader.readyState){
-        var newImg =  $("<img alt='front cover' />");
-        newImg.attr({"src":this.result});//是Base64的data url数据
-        if($(".previewImg").children().length>1){
-          $(".previewImg img:last").replaceWith(newImg);
-        }else{
-          $(".previewImg").append(newImg);
+    if($(this).attr("name")=="upl_img"){
+      //图片预览
+      if($(".defaultImg").css("display")!="none"){
+        $(".defaultImg").css({"display":"none"});
+      }
+      var fileReader = new FileReader();
+      fileReader.onload = function(evt){
+        if(FileReader.DONE==fileReader.readyState){
+          var newImg =  $("<img class='newImg' alt='front cover' />");
+          newImg.attr({"src":this.result});//是Base64的data url数据
+          if($(".previewImg").children().length>1){
+            $(".previewImg img:last").replaceWith(newImg);
+          }else{
+            $(".previewImg").append(newImg);
+          }
         }
       }
+      fileReader.readAsDataURL($(this)[0].files[0]);
     }
-    fileReader.readAsDataURL($(this)[0].files[0]);
     var oMyForm = new FormData();
     var filePath=$(this).val();
     var _this=$(this);
@@ -439,6 +485,9 @@ $(function(){
     var fileName=arr[arr.length-1];
     oMyForm.append("ContentFile", $(this)[0].files[0]);
     oMyForm.append("UserId", "123");
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
     oMyForm.append("SrcType", "1");
     oMyForm.append("Purpose", "2");
     if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
@@ -513,6 +562,9 @@ $(function(){
   function pub_add_zj(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.ChannelId=$(".upl_zj option:selected").attr("id");
@@ -560,6 +612,9 @@ $(function(){
   function pub_edit_zj(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.ContentId=$(".zjId").attr("value");
@@ -621,7 +676,12 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaStatus.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
@@ -647,6 +707,9 @@ $(function(){
     $(".upl_img").attr("value","");
     $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
+    $(".newImg").hide();
+    $(".defaultImg").show();
+    $(".img_uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){
       $(this).children("input[type='checkbox']").prop("checked",false);
       $(this).children("input[type='checkbox']").attr("disabled",false);
