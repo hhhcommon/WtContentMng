@@ -43,13 +43,16 @@ public class SeqController {
 	public Map<String, Object> getSeqMediaList(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("1.1.1-common/entryApp");
-		alPo.setObjType("000");// 一般信息
+		alPo.setApiName("5.3.1--/content/seq/getSeqMediaList.do");
+		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			// 0-获取参数
+			String userId = "";
 			MobileUDKey mUdk = null;
 			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 			alPo.setReqParam(JsonUtils.objToJson(m));
@@ -65,13 +68,22 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "common/entryApp");
-					map.putAll(retM);
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/getSeqMediaList");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
 				}
-				map.put("ServerStatus", "1"); // 服务器状态
 			}
 			// 数据收集处理==2
-			alPo.setOwnerType(201);
 			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
 				alPo.setOwnerId(map.get("UserId") + "");
 			} else {
@@ -101,6 +113,8 @@ public class SeqController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
+
+			// 数据采集
 			String userid = m.get("UserId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
@@ -119,7 +133,8 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
-			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid, shortsearch);
+			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userid, flagflow, channelid,
+					shortsearch);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
 				c.remove("ReturnType");
@@ -159,13 +174,16 @@ public class SeqController {
 	public Map<String, Object> addSeqMediaInfo(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("1.1.1-common/entryApp");
-		alPo.setObjType("000");// 一般信息
+		alPo.setApiName("5.3.2--/content/seq/addSeqMediaInfo.do");
+		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			// 0-获取参数
+			String userId = "";
 			MobileUDKey mUdk = null;
 			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 			alPo.setReqParam(JsonUtils.objToJson(m));
@@ -181,13 +199,22 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "common/entryApp");
-					map.putAll(retM);
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/addSeqMediaInfo");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
 				}
-				map.put("ServerStatus", "1"); // 服务器状态
 			}
 			// 数据收集处理==2
-			alPo.setOwnerType(201);
 			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
 				alPo.setOwnerId(map.get("UserId") + "");
 			} else {
@@ -217,6 +244,7 @@ public class SeqController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
+			// 数据采集
 			String userid = m.get("UserId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
@@ -239,7 +267,8 @@ public class SeqController {
 			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = seqContentService.addSeqMediaInfo(userid, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
+			map = seqContentService.addSeqMediaInfo(userid, contentname, channelId, contentimg, tags, memberType,
+					contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -269,38 +298,128 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/updateSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaInfo(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.3.3--/content/seq/updateSeqMediaInfo.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId") + "";
-		if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/updateSeqMediaInfo");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 数据采集
+			String userid = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userid) || userid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String contentid = m.get("ContentId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无专辑Id");
+				return map;
+			}
+			String contentname = m.get("ContentName") + "";
+			if (contentname.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1013");
+				map.put("Message", "无节目名称");
+				return map;
+			}
+			String channelId = m.get("ChannelId") + "";
+			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
+			List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
+			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
+			String contentimg = m.get("ContentImg") + "";
+			if (contentimg.equals("null"))
+				contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
+			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			String contentdesc = m.get("ContentDesc") + "";
+			String pubTime = m.get("FixedPubTime") + "";
+			map = seqContentService.updateSeqInfo(userid, contentid, contentname, channelId, contentimg, tags,
+					memberType, contentdesc, pubTime);
 			return map;
-		}
-		String contentid = m.get("ContentId") + "";
-		if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1012");
-			map.put("Message", "无专辑Id");
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
 			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		String contentname = m.get("ContentName") + "";
-		if (contentname.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1013");
-			map.put("Message", "无节目名称");
-			return map;
-		}
-		String channelId = m.get("ChannelId") + "";
-		List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
-		List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
-		String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
-		String contentimg = m.get("ContentImg") + "";
-		if (contentimg.equals("null"))
-			contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-		contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
-		String contentdesc = m.get("ContentDesc") + "";
-		String pubTime = m.get("FixedPubTime") + "";
-		map = seqContentService.updateSeqInfo(userid, contentid, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
-		return map;
 	}
 
 	/**
@@ -312,28 +431,117 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/updateSeqMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.3.4--/content/seq/updateSeqMediaStatus.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId") + "";
-		if (userid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/updateSeqMediaStatus");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 数据采集
+			String userid = m.get("UserId") + "";
+			if (userid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String smaid = m.get("ContentId") + "";
+			if (smaid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无专辑id信息");
+				return map;
+			}
+			map = seqContentService.modifySeqStatus(userid, smaid, null, 2);
+			if (map != null) {
+				return map;
+			} else {
+				map = new HashMap<>();
+				map.put("ReturnType", "1011");
+				map.put("Message", "专辑发布失败");
+				return map;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
 			return map;
-		}
-		String smaid = m.get("ContentId") + "";
-		if (smaid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1012");
-			map.put("Message", "无专辑id信息");
-			return map;
-		}
-		map = seqContentService.modifySeqStatus(userid, smaid, null, 2);
-		if (map!=null) {
-			return map;
-		} else {
-			map = new HashMap<>();
-			map.put("ReturnType", "1011");
-			map.put("Message", "专辑发布失败");
-			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -346,24 +554,113 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/removeSeqMedia.do")
 	@ResponseBody
 	public Map<String, Object> removeSeqMedia(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.3.5--/content/seq/removeSeqMedia.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId") + "";
-		if (userid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/removeSeqMedia");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 数据采集
+			String userid = m.get("UserId") + "";
+			if (userid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String contentid = m.get("ContentId") + "";
+			if (contentid.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无专辑信息");
+				return map;
+			}
+			map = seqContentService.removeSeqMediaAsset(contentid);
 			return map;
-		}
-		String contentid = m.get("ContentId") + "";
-		if (contentid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无专辑信息");
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
 			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		map = seqContentService.removeSeqMediaAsset(contentid);
-		return map;
 	}
-	
+
 	/**
 	 * 删除专辑
 	 * 
@@ -373,30 +670,116 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/removeMediassToSeqMediaRef.do")
 	@ResponseBody
 	public Map<String, Object> removeMaToSmaRef(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.3.6--/content/seq/removeMediassToSeqMediaRef.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId") + "";
-		if (userid.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无用户信息");
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/removeMediassToSeqMediaRef");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+			if (userId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String seqMediaId = m.get("SeqMediaId") + "";
+			if (seqMediaId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无专辑Id");
+				return map;
+			}
+			String mediaAssetId = m.get("MediaAssetId") + "";
+			if (mediaAssetId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1013");
+				map.put("Message", "无节目Id");
+				return map;
+			}
+			seqContentService.removeMaToSmaRefInfo(userId, seqMediaId, mediaAssetId);
+			map.put("ReturnType", "1001");
+			map.put("Message", "处理成功");
 			return map;
-		}
-		String seqMediaId = m.get("SeqMediaId") + "";
-		if (seqMediaId.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1012");
-			map.put("Message", "无专辑Id");
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
 			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		String mediaAssetId = m.get("MediaAssetId") + "";
-		if (mediaAssetId.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1013");
-			map.put("Message", "无节目Id");
-			return map;
-		}
-		seqContentService.removeMaToSmaRefInfo(userid, seqMediaId, mediaAssetId);
-		map.put("ReturnType", "1001");
-		map.put("Message", "处理成功");
-		return map;
 	}
 
 	/**
@@ -408,82 +791,81 @@ public class SeqController {
 	@RequestMapping(value = "/content/seq/getSeqMediaInfo.do")
 	@ResponseBody
 	public Map<String, Object> getSeqMediaInfo(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.3.7--/content/seq/getSeqMediaInfo.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-//		// 数据收集处理==1
-//		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-//		alPo.setApiName("5.3.6--/content/seq/getSeqMediaInfo.do");
-//		alPo.setObjType("005");// 用户组对象
-//		alPo.setDealFlag(1);// 处理成功
-//		alPo.setOwnerType(201);
-//		alPo.setOwnerId("--");
-//
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		try {
-//			// 0-获取参数
-//			String userId = "";
-//			MobileUDKey mUdk = null;
-//			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-//			alPo.setReqParam(JsonUtils.objToJson(m));
-//			if (m == null || m.size() == 0) {
-//				map.put("ReturnType", "0000");
-//				map.put("Message", "无法获取需要的参数");
-//			} else {
-//				MobileParam mp = MobileParam.build(m);
-//				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-//						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-//								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
-//					mp.setImei(request.getSession().getId());
-//				}
-//				mUdk = mp.getUserDeviceKey();
-//				if (mUdk != null) {
-//					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "passport/group/buildGroup");
-//					if ((retM.get("ReturnType") + "").equals("2003")) {
-//						map.put("ReturnType", "200");
-//						map.put("Message", "需要登录");
-//					} else {
-//						map.putAll(retM);
-//						if ((retM.get("ReturnType") + "").equals("1001"))
-//							map.remove("ReturnType");
-//					}
-//					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
-//				} else {
-//					map.put("ReturnType", "0000");
-//					map.put("Message", "无法获取需要的参数");
-//				}
-//			}
-//			// 数据收集处理==2
-//			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
-//				alPo.setOwnerId(map.get("UserId") + "");
-//			} else {
-//				// 过客
-//				if (mUdk != null)
-//					alPo.setOwnerId(mUdk.getDeviceId());
-//				else
-//					alPo.setOwnerId("0");
-//			}
-//			if (mUdk != null) {
-//				alPo.setDeviceType(mUdk.getPCDType());
-//				alPo.setDeviceId(mUdk.getDeviceId());
-//			}
-//			if (m != null) {
-//				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
-//					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
-//						alPo.setExploreVer(m.get("MobileClass") + "");
-//					}
-//					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
-//						alPo.setExploreName(m.get("exploreName") + "");
-//					}
-//				} else {
-//					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
-//						alPo.setDeviceClass(m.get("MobileClass") + "");
-//					}
-//				}
-//			}
-//			if (map.get("ReturnType") != null) return map;
-			
-			//1.开始采集数据
-		    String userId = m.get("UserId")+"";
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/getSeqMediaInfo");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 1.开始采集数据
+			userId = m.get("UserId") + "";
 			if (userId.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无用户信息");
@@ -496,7 +878,7 @@ public class SeqController {
 				return map;
 			}
 			Map<String, Object> seqm = seqContentService.getSeqMediaAssetInfo(userId, contentid);
-			if (seqm!=null) {
+			if (seqm != null) {
 				map.put("ReturnType", "1001");
 				map.put("Result", seqm);
 				return map;
@@ -505,22 +887,22 @@ public class SeqController {
 				map.put("Message", "获取失败");
 				return map;
 			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			map.put("ReturnType", "T");
-//			map.put("TClass", e.getClass().getName());
-//			map.put("Message", StringUtils.getAllMessage(e));
-//			alPo.setDealFlag(2);
-//			return map;
-//		} finally {
-//			// 数据收集处理=3
-//			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
-//			alPo.setReturnData(JsonUtils.objToJson(map));
-//			try {
-//				ApiGatherMemory.getInstance().put2Queue(alPo);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
+			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
