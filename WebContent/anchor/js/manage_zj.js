@@ -461,7 +461,7 @@ $(function(){
       //表单提交前进行验证
       success: function (opeResult){
         if(opeResult.ful[0].success=="TRUE"){
-          alert("上传成功！");
+          $(".img_uploadStatus").show();
           _this.attr("value",opeResult.ful[0].FilePath);
         }else{
           alert(opeResult.err);
@@ -655,4 +655,12 @@ $(function(){
       $(this).attr("selected",false);
     })
   }
+  
+  //点击专辑的封面图片，跳到这个专辑的详情页
+  $(document).on("click",".rtcl_img",function(){
+    var contentId=$(this).parent(".rtc_listBox").attr("contentId");
+    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show();
+  });
 });
