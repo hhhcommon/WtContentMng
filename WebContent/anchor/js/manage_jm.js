@@ -9,7 +9,12 @@ $(function(){
     type:"POST",
     url:rootPath+"content/getFiltrates.do",
     dataType:"json",
-    data:{"UserId":"123","MediaType":"MediaAsset"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "UserId":"123",
+          "PCDType":"3",
+          "MediaType":"MediaAsset"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getChannelLabel(resultData);//得到栏目的筛选标签
@@ -54,7 +59,7 @@ $(function(){
   }
   
   //00-4获取节目列表
-  var dataParam={"UserId":"123","FlagFlow":"0","ChannelId":"0","SeqMediaId":"0"};
+  var dataParam={"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","PCDType":"3","UserId":"123","FlagFlow":"0","ChannelId":"0","SeqMediaId":"0"};
   getContentList(dataParam);
   function getContentList(obj){
     $.ajax({
@@ -156,6 +161,9 @@ $(function(){
   function add_jm(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
@@ -218,6 +226,9 @@ $(function(){
   function save_edit_jm(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentId=$(".jmId").val();
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
@@ -296,7 +307,12 @@ $(function(){
       type:"POST",
       url:rootPath+"content/media/getMediaInfo.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           $(".mask,.add").show();
@@ -377,7 +393,13 @@ $(function(){
       type:"POST",
       url:rootPath+"content/media/removeMedia.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId,"SeqMediaId":contentSeqId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId,
+            "SeqMediaId":contentSeqId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功删除节目");
@@ -406,7 +428,13 @@ $(function(){
       type:"POST",
       url:rootPath+"content/media/updateMediaStatus.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId,"SeqMediaId":contentSeqId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId,
+            "SeqMediaId":contentSeqId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
@@ -432,7 +460,16 @@ $(function(){
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"UserId":"123","MediaType":"1","SeqMediaId":"704df034185448e3b9ed0801351859fb","ChannelIds":"cn31","TagType":"1","TagSize":"20"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "PCDType":"3",
+          "UserId":"123",
+          "MediaType":"1",
+          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+          "ChannelIds":"cn31",
+          "TagType":"1",
+          "TagSize":"20"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getPubLabel(resultData);//得到上传节目页面公共标签元素
@@ -460,7 +497,16 @@ $(function(){
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"UserId":"123","MediaType":"1","SeqMediaId":"704df034185448e3b9ed0801351859fb","ChannelIds":"cn31","TagType":"2","TagSize":"20"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "PCDType":"3",
+          "UserId":"123",
+          "MediaType":"1",
+          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+          "ChannelIds":"cn31",
+          "TagType":"2",
+          "TagSize":"20"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getMyLabel(resultData);//得到上传节目页面我的标签元素
@@ -489,6 +535,7 @@ $(function(){
   });
   $(".upl_file").change(function(){
     uploadType=1;
+    $(".uploadStatus").hide();
     var oMyForm = new FormData();
     var filePath=$(this).val();
     var _this=$(this);
@@ -498,6 +545,9 @@ $(function(){
     $(".sonProgress,.parentProgress").show();
     $(".cancelUpload").show();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
     oMyForm.append("UserId", "123");
     oMyForm.append("SrcType", "2");
     oMyForm.append("Purpose", "1");
@@ -515,6 +565,7 @@ $(function(){
   });
   $(".upl_img").change(function(){
     uploadType=2;
+    $(".img_uploadStatus").hide();
     //图片预览
     if($(".defaultImg").css("display")!="none"){
       $(".defaultImg").css({"display":"none"});
@@ -522,7 +573,7 @@ $(function(){
     var fileReader = new FileReader();
     fileReader.onload = function(evt){
       if(FileReader.DONE==fileReader.readyState){
-        var newImg =  $("<img alt='front cover' />");
+        var newImg =  $("<img class='newImg' alt='front cover' />");
         newImg.attr({"src":this.result});//是Base64的data url数据
         if($(".previewImg").children().length>1){
           $(".previewImg img:last").replaceWith(newImg);
@@ -538,6 +589,9 @@ $(function(){
     var arr=filePath.split('\\');
     var fileName=arr[arr.length-1];
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
     oMyForm.append("UserId", "123");
     oMyForm.append("SrcType", "1");
     oMyForm.append("Purpose", "2");
@@ -606,7 +660,14 @@ $(function(){
     type:"POST",
     url:rootPath+"content/seq/getSeqMediaList.do",
     dataType:"json",
-    data:{"UserId":"123","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "PCDType":"3",
+          "UserId":"123",
+          "FlagFlow":"0",
+          "ChannelId":"0",
+          "ShortSearch":"false"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getAlbumList(resultData); //得到专辑列表,上传节目时使用
@@ -630,7 +691,13 @@ $(function(){
     type:"POST",
     url:rootPath+"baseinfo/getCataTree4View.do",
     dataType:"json",
-    data:{"CatalogType":"4","TreeViewType":"zTree"},
+    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+          "MobileClass":"Chrome",
+          "PCDType":"3",
+          "UserId":"123",
+          "CatalogType":"4",
+          "TreeViewType":"zTree"
+    },
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getArtMethodList(resultData); //得到创作方式列表
@@ -684,6 +751,9 @@ $(function(){
   function pub_add_jm(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
@@ -747,6 +817,9 @@ $(function(){
   function pub_edit_jm(){
     var _data={};
     _data.UserId="123";
+    _data.DeviceId="3279A27149B24719991812E6ADBA5584";
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
     _data.ContentId=$(".jmId").val();
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
@@ -822,7 +895,13 @@ $(function(){
       type:"POST",
       url:rootPath+"content/media/updateMediaStatus.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId,"SeqMediaId":contentSeqId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "PCDType":"3",
+            "UserId":"123",
+            "ContentId":contentId,
+            "SeqMediaId":contentSeqId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
@@ -848,6 +927,9 @@ $(function(){
     $(".jmId,.upl_file,.upl_img").attr("value","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");
+    $(".newImg").remove();
+    $(".defaultImg").show();
+    $(".img_uploadStatus,.uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){
       $(this).children("input[type='checkbox']").prop("checked",false);
       $(this).children("input[type='checkbox']").attr("disabled",false);
