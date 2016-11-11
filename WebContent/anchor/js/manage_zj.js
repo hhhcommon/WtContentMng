@@ -459,25 +459,23 @@ $(function(){
     $(".upl_img").click();
   });
   $(".upl_img").change(function(){
-    if($(this).attr("name")=="upl_img"){
-      //图片预览
-      if($(".defaultImg").css("display")!="none"){
-        $(".defaultImg").css({"display":"none"});
-      }
-      var fileReader = new FileReader();
-      fileReader.onload = function(evt){
-        if(FileReader.DONE==fileReader.readyState){
-          var newImg =  $("<img class='newImg' alt='front cover' />");
-          newImg.attr({"src":this.result});//是Base64的data url数据
-          if($(".previewImg").children().length>1){
-            $(".previewImg img:last").replaceWith(newImg);
-          }else{
-            $(".previewImg").append(newImg);
-          }
+    //图片预览
+    if($(".defaultImg").css("display")!="none"){
+      $(".defaultImg").css({"display":"none"});
+    }
+    var fileReader = new FileReader();
+    fileReader.onload = function(evt){
+      if(FileReader.DONE==fileReader.readyState){
+        var newImg =  $("<img class='newImg' alt='front cover' />");
+        newImg.attr({"src":this.result});//是Base64的data url数据
+        if($(".previewImg").children().length>1){
+          $(".previewImg img:last").replaceWith(newImg);
+        }else{
+          $(".previewImg").append(newImg);
         }
       }
-      fileReader.readAsDataURL($(this)[0].files[0]);
     }
+    fileReader.readAsDataURL($(this)[0].files[0]);
     var oMyForm = new FormData();
     var filePath=$(this).val();
     var _this=$(this);
@@ -707,7 +705,7 @@ $(function(){
     $(".upl_img").attr("value","");
     $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
-    $(".newImg").hide();
+    $(".newImg").remove();
     $(".defaultImg").show();
     $(".img_uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){

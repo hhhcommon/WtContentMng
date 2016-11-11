@@ -535,6 +535,7 @@ $(function(){
   });
   $(".upl_file").change(function(){
     uploadType=1;
+    $(".uploadStatus").hide();
     var oMyForm = new FormData();
     var filePath=$(this).val();
     var _this=$(this);
@@ -564,6 +565,7 @@ $(function(){
   });
   $(".upl_img").change(function(){
     uploadType=2;
+    $(".img_uploadStatus").hide();
     //图片预览
     if($(".defaultImg").css("display")!="none"){
       $(".defaultImg").css({"display":"none"});
@@ -925,7 +927,7 @@ $(function(){
     $(".jmId,.upl_file,.upl_img").attr("value","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");
-    $(".newImg").hide();
+    $(".newImg").remove();
     $(".defaultImg").show();
     $(".img_uploadStatus,.uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){
