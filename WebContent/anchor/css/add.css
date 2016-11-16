@@ -178,6 +178,7 @@ li{list-style: none;}
 .upl_bq{
   width:100%;
   height:auto;
+  margin-bottom:0;
   overflow: hidden;
 }
 .upl_bq .upl_bq_img{
@@ -311,13 +312,6 @@ li{list-style: none;}
   background-color: #ffaf34 !important;
   color: #fff!important;
 }
-.laydate-icon{
-  width:34px;
-  height:34px;
-  border:1px solid #dedede !important;
-  background-image: url("../img/upl_img7.png") !important;
-  background-size:100% 100%;
-}
 .form-group .btn_group{
   overflow: hidden;
   width:300px;
@@ -417,4 +411,7 @@ li{list-style: none;}
   padding: 5px;
   float: left;
   cursor: pointer;
+}
+.input_tag{
+  margin-top:1px;
 }

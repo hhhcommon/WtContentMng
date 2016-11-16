@@ -166,6 +166,7 @@ li{list-style: none;}
 .upl_bq{
   width:100%;
   height:auto;
+  margin-bottom:0;
   overflow: hidden;
 }
 .upl_bq .upl_bq_img{
@@ -292,9 +293,12 @@ li{list-style: none;}
 .laydate_body .laydate_y .laydate_yms a:hover {
   background-color: #ffaf34 !important;
 }
-.laydate-icon{
+.replace_img{
+  position: absolute;
+  left:206px;
   width:34px;
-  height:34px;
+  height:32px;
+  margin-top:1px;
   border:1px solid #dedede !important;
   background-image: url("img/upl_img7.png") !important;
   background-size:100% 100%;
@@ -521,8 +525,7 @@ li{list-style: none;}
               <div class="form-group">
                 <label class="col-sm-2 control-label">定时发布<span style="color:#fff;">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
-                  <input class="form-control layer-date" style="max-width:240px;float:left;" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                  <label class="laydate-icon"></label>
+                  <input id="hello" class="form-control layer-date laydate-icon" style="max-width:240px;float:left;" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
                 </div>
               </div>
               <div class="form-group" style="margin-bottom:20px;">
