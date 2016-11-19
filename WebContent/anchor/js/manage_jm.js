@@ -29,21 +29,21 @@ $(function(){
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
     for(var i=0;i<resultData.ResultList.ChannelList.length;i++){
-      var filterChannel='<li class="trig_item" id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
-                          '<a  href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
+      var filterChannel='<li class="trig_item chnel" data_idx='+i+' id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
+                          '<a  class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'</a>'+
                         '</li>';
       $("#channel .attrValues .av_ul").append(filterChannel); 
-      var fccg='<div class="tab_cont_item av_ul" parentId='+resultData.ResultList.ChannelList[i].id+'></div>';
-      $(".tab_cont").append(fccg);
+      var fccg='<ul class="tab_cont_item chnels" data_idx='+i+' data_name='+resultData.ResultList.ChannelList[i].nodeName+' parentId='+resultData.ResultList.ChannelList[i].id+'></ul>';
+      $("#channel").append(fccg);
       if(resultData.ResultList.ChannelList[i].isParent=="true"){
         for(var j=0;j<resultData.ResultList.ChannelList[i].children.length;j++){
-          var filterChannelChildren='<div class="trig_item trig_item_li" >'+
-                                      '<a  href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
-                                    '</div>';
-          $('div[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
+          var filterChannelChildren='<li class="trig_item_li">'+
+                                      '<a class="ss1" href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'</a>'+
+                                    '</li>';
+          $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
         }
       }else{
-        $('div[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<span style='display:block;text-align:center;'>暂时没有二级栏目<span>");
+        $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<li style='display:block;text-align:center;float:none;margin:0px auto;'>暂时没有二级栏目</li>");
       }
     }
   }
@@ -52,7 +52,8 @@ $(function(){
   function getAlbumLabel(resultData){
     for(var i=0;i<resultData.ResultList.SeqMediaList.length;i++){
       var filterAlbum='<li class="trig_item" id='+resultData.ResultList.SeqMediaList[i].PubId+'>'+
-                        '<a href="javascript:void(0)">'+resultData.ResultList.SeqMediaList[i].PubName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
+                        '<div class="check_cate"></div>'+
+                        '<a class="ss1" href="javascript:void(0)">'+resultData.ResultList.SeqMediaList[i].PubName+'</a>'+
                       '</li>';
       $("#album .attrValues .av_ul").append(filterAlbum);                
     }
@@ -561,46 +562,50 @@ $(function(){
   
   //4.点击上传图片
   $(".upl_pt_img").on("click",function(){
-    $(".upl_img").click();
-  });
-  $(".upl_img").change(function(){
-    uploadType=2;
-    $(".img_uploadStatus").hide();
-    //图片预览
-    if($(".defaultImg").css("display")!="none"){
-      $(".defaultImg").css({"display":"none"});
-    }
-    var fileReader = new FileReader();
-    fileReader.onload = function(evt){
-      if(FileReader.DONE==fileReader.readyState){
-        var newImg =  $("<img class='newImg' alt='front cover' />");
-        newImg.attr({"src":this.result});//是Base64的data url数据
-        if($(".previewImg").children().length>1){
-          $(".previewImg img:last").replaceWith(newImg);
-        }else{
-          $(".previewImg").append(newImg);
-        }
-      }
-    }
-    fileReader.readAsDataURL($(this)[0].files[0]);
-    var oMyForm = new FormData();
-    var filePath=$(this).val();
-    var _this=$(this);
-    var arr=filePath.split('\\');
-    var fileName=arr[arr.length-1];
-    oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-    oMyForm.append("MobileClass", "Chrome");
-    oMyForm.append("PCDType", "3");
-    oMyForm.append("UserId", "123");
-    oMyForm.append("SrcType", "1");
-    oMyForm.append("Purpose", "2");
-    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
-      alert("图片过大，请选择合适的图片上传！");
-    }else{
-      requestUpload(_this,oMyForm,uploadType);
-    }
-  });
+    $(".mask_clip,.container_clipmodal").show();
+    
+  })
+//$(".upl_pt_img").on("click",function(){
+//  $(".upl_img").click();
+//});
+//$(".upl_img").change(function(){
+//  uploadType=2;
+//  $(".img_uploadStatus").hide();
+//  //图片预览
+//  if($(".defaultImg").css("display")!="none"){
+//    $(".defaultImg").css({"display":"none"});
+//  }
+//  var fileReader = new FileReader();
+//  fileReader.onload = function(evt){
+//    if(FileReader.DONE==fileReader.readyState){
+//      var newImg =  $("<img class='newImg' alt='front cover' />");
+//      newImg.attr({"src":this.result});//是Base64的data url数据
+//      if($(".previewImg").children().length>1){
+//        $(".previewImg img:last").replaceWith(newImg);
+//      }else{
+//        $(".previewImg").append(newImg);
+//      }
+//    }
+//  }
+//  fileReader.readAsDataURL($(this)[0].files[0]);
+//  var oMyForm = new FormData();
+//  var filePath=$(this).val();
+//  var _this=$(this);
+//  var arr=filePath.split('\\');
+//  var fileName=arr[arr.length-1];
+//  oMyForm.append("ContentFile", $(this)[0].files[0]);
+//  oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+//  oMyForm.append("MobileClass", "Chrome");
+//  oMyForm.append("PCDType", "3");
+//  oMyForm.append("UserId", "123");
+//  oMyForm.append("SrcType", "1");
+//  oMyForm.append("Purpose", "2");
+//  if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
+//    alert("图片过大，请选择合适的图片上传！");
+//  }else{
+//    requestUpload(_this,oMyForm,uploadType);
+//  }
+//});
   
   //5.请求上传文件
   function requestUpload(_this,oMyForm,uploadType){

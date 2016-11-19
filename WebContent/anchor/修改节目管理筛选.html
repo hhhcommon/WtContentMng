@@ -22,6 +22,7 @@
 *{margin: 0;padding: 0;}
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+a:hover{color:#ffa634;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;}
@@ -91,6 +92,7 @@ body{overflow: auto;}
   position: absolute;
   top:16px;
   right:1.7%;
+  cursor: pointer;
 }
 .ri_top_li4 span{
   line-height: 30px;
@@ -124,12 +126,11 @@ body{overflow: auto;}
   display: block;
   overflow: hidden;
   float: left;
-  width:12%;
-  height:30px;
-  line-height:30px;
+  width:88px;
+  height:40px;
+  line-height:40px;
   color: rgb(91,90,90);
   text-indent: 20px;
-  /*white-space: nowrap;*/
   text-overflow: ellipsis;
   font-size:14px;
   background: #f5f5f5;
@@ -138,205 +139,64 @@ body{overflow: auto;}
   position:relative;
   float: left;
   background-color: #FFF;
-  padding:0px 100px 0px 5px;
   overflow: hidden;
 }
 .attrValues .av-gather{
   overflow: hidden;
   position: relative;
-  margin-right: 180px;
-  height:30px;
-  line-height: 30px;
+  height:40px;
+  margin-bottom:0px;
 }
 .trig_item{
   display: block;
   float: left;
   margin-left:16px;
-  height:20px;
-  line-height: 20px;
-  color: black; 
+  height:40px;
+  line-height: 40px;
   white-space: nowrap;
   cursor: pointer;
 }
-.border_none{
-  border:none;
-}
-.border_show{
-  border:1px solid #ffa634;
-}
 .trig_curr{
-  height:19px;
+  height:41px;
   position:relative;
   z-index:2;
   border:1px solid #8e8e8e;
   border-bottom:medium none;
-  background: #fff;
+  background: #8e8e8e;
   color:#f60;
-}
-.av-options{
-  position: absolute;
-  right:-4px;
-  top: 3px;
-  width: 130px;
-  z-index: 1;
-}
-.avo-more {
-  vertical-align: middle;
-  position: relative;
-  display: inline-block;
-  margin-top:5px;
-  margin-left:71px;
-  font-size:14px;
-  color: rgb(1,1,1);
-}
-.avo-more-img{
-  margin-top:8px;
-}
-.delLi{
-  margin-top: -5px;
-  height: 100%;
-  margin-left: 6px;
-  display: none;
 }
 .tab_cont_item{
   width:100%;
-  height:30px;
   border:1px solid #8e8e8e;
-  line-height: 30px;
   position: relative;
-  top:-7px;
   left:0px;
   display: none;
   overflow: hidden;
 }
 .tab_cont_item li{
   float:left;
-  height:18px;
-  line-height:18px;
+  height:40px;
+  line-height:40px;
   margin-left:20px;
-  margin-top:5px;
 }
 .con_right ul{
   margin-bottom:0px;
 }
-/*列表展示区域*/
-.ri_top3{
-  width:100%;
-  height:auto;
-  overflow: hidden;
-  margin-top:15px;
-}
-.ri_top3_head{
-  width:100%;
-  height:40px;
-  background:#f5f5f5;
-  border:1px solid #dedede;
-  overflow: hidden;
-}
-.rth_al,.rth_op,.rth_st{
-  width:100px;
-  height:20px;
-  line-height:20px;
-  color:#000;
-  margin-top:10px;
-  font-size:16px;
-  font-family: "微软雅黑";
-  float: left;
-}
-.rth_al{
-  text-indent:20px;
-  line-height: 20px;
-}
-.rth_st{
-  position:absolute;
-  right:125px;
-  text-indent:20px;
-  border-left:2px solid #d8d8d8;
-}
-.rth_op{  
-  position:absolute;
-  right:20px;
-  text-indent:20px;
-  border-left:2px solid #d8d8d8;
-}
-.ri_top3_con{
-  width:100%;
-  position: absolute;
-  overflow: auto;
-}
-.rtc_listBox{
-  width:97%;
-  height:110px;
-  border-bottom:1px solid #dedede;
-  position:relative;
-  font-family: "微软雅黑";
-  font-size:14px ;
-  overflow: hidden;
-}
-.rtcl_img{
-  height:80px;
-  width:80px;
-  margin-top:15px;
-  margin-left:20px;
-  margin-right:10px;
-  border:1px solid #dedede;
-  float: left;
-  cursor: pointer;
-}
-.rtcl_img img{
-  width:100%;
-  height:100%;
-  background-size:100% 100%;
-}
-.rtcl_con{
-  height:100%;
-  float: left;
-  color:rgb(173,172,172);
-}
-.rtcl_con h4{
-  margin-top:20px;
-  color:#000;
-}
-.jm_st{
-  float: right;
-  line-height: 110px;
-  margin-right:140px;
-  color:#000;
-}
-.op_type{
-  float: right;
-  margin-right:-140px;
-}
-.op_type p{
-  cursor: pointer;
-  margin:5px 0px 0px 0px;
-  color: rgb(173,172,172);
-}
-/*遮罩层*/
-.mask{
-  width:100%;
-  height:1100px;
-  position: absolute;
-  top:0px;
-  left:0px;
-  z-index:10;
-  background:rgba(0,0,0,0.5);
-  display: none;
-}
-
 /*所有分类*/
 .all{
   width:100%;
-  height:100px;
-  border:1px solid red;
+  height:auto;
+  border:1px solid #dedede;
   overflow: hidden;
+  padding:0px 0px 10px 0px;
+  display: none;
 }
 .all_cate{
   width:70px;
   height:25px;
   line-height:25px;
   float: left;
-  margin-top: 5px;
+  margin-top:10px;
   color:#000;
 }
 .new_cate{
@@ -382,6 +242,7 @@ body{overflow: auto;}
   width:20px;
   height:20px;
   float: left;
+  margin-top:5px;
   background: url(img/sprite.png);
   background-repeat:no-repeat ;
   background-position: -41px -414px;
@@ -392,9 +253,10 @@ body{overflow: auto;}
   float: right;
   margin-right: 40px;
   height: 22px;
-  margin-top:4px;
+  margin-top:8px;
+  margin-bottom:8px;
   line-height: 22px;
-  border: 1px solid #DDD;
+  border: 1px solid #ddd;
   padding: 0px 5px 0px 5px;
   position: relative;
   background: #fff;
@@ -402,8 +264,7 @@ body{overflow: auto;}
   cursor: pointer;
 }
 .ss1{
-  float: left;
-  margin-top:5px;
+  float:left;
 }
 .btns{
   width: 100%;
@@ -452,15 +313,15 @@ body{overflow: auto;}
             <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
           </li>
           <li class="ri_top_li3"><img src="img/upLoadJM.png" alt="上传节目" /></li>
-          <li class="ri_top_li4"><span class="filter">展开筛选</span><img src="img/filter2.png" alt="展开筛选" /></li>
+          <li class="ri_top_li4"><span class="filter">收起筛选</span><img src="img/filter1.png" alt="收起筛选" /></li>
         </ul>
         <div class="all">
           <div class="all_cate">所有分类 > </div>
           <ul class="new_cate">
-            <li class="cate"><span class="cate_desc">所属专辑：专辑一,专辑二,专辑三</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc">所属栏目：电影电视</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc">节目状态：发布</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc">所属栏目：脱口秀</span><span class="cate_img">×</span></li>
+            <!--<li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>专辑一,专辑二,专辑三</span><span class="cate_img">×</span></li>
+            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>电影电视</span><span class="cate_img">×</span></li>
+            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">节目状态：</span>发布</span><span class="cate_img">×</span></li>
+            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>脱口秀</span><span class="cate_img">×</span></li>-->
           </ul>
         </div>
         <div class="ri_top2">
@@ -480,59 +341,27 @@ body{overflow: auto;}
             </div>
             <span class="check_more">多选</span>
           </div>
-          <div class="attr" id="channel">
-            <div class="attrKey">所属栏目 :</div>
-            <div class="attrValues">
-              <ul class="av-gather av_ul">
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">电影电视</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">脱口秀</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">历史人文</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">商业财经</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">儿童科教</a></li>
-              </ul>
-            </div>
-            <div class="tab_cont">
-              <ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目1</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目2</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目3</a></li>
-              </ul>
-              <ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目4</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目5</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目6</a></li>
-              </ul>
-              <ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目7</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目8</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目9</a></li>
-              </ul>
-              <ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目10</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目11</a></li>
-                <li class="trig_item trig_item_li" ><div class="check_cate"></div><a  href="javascript:void(0)">二级栏目12</a></li>
-              </ul>
-            </div>
-          </div>
           <div class="attr" id="album">
             <div class="attrKey">所属专辑 :</div>
             <div class="attrValues">
               <ul class="av-gather av_ul">
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑1</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑2</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑3</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑4</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑5</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑6</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑7</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑8</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑9</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑10</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑11</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑12</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑13</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑14</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a  href="javascript:void(0)">专辑15</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑1</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑2</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑3</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑4</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑5</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑6</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑7</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑8</a></li>
+              </ul>
+              <ul class="av-gather av_ul">
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑9</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑10</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑11</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑12</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑13</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑14</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑15</a></li>
               </ul>
             </div>
             <div class="btns">
@@ -541,6 +370,38 @@ body{overflow: auto;}
             </div>
             <span class="check_more">多选</span>
           </div>
+          <div class="attr" id="channel">
+            <div class="attrKey">所属栏目 :</div>
+            <div class="attrValues">
+              <ul class="av-gather av_ul">
+                <li class="trig_item chnel" data_idx="0"><a  class="ss1" href="javascript:void(0)">电影电视</a></li>
+                <li class="trig_item chnel" data_idx="1"><a  class="ss1" href="javascript:void(0)">脱口秀</a></li>
+                <li class="trig_item chnel" data_idx="2"><a  class="ss1" href="javascript:void(0)">历史人文</a></li>
+                <li class="trig_item chnel" data_idx="3"><a  class="ss1" href="javascript:void(0)">商业财经</a></li>
+                <li class="trig_item chnel" data_idx="4"><a  class="ss1" href="javascript:void(0)">儿童科教</a></li>
+              </ul>
+            </div>
+            <ul class="tab_cont_item chnels" data_idx="0" data_name="电影电视">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+            </ul>
+            <ul class="tab_cont_item chnels" data_idx="1" data_name="脱口秀">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+            </ul>
+            <ul class="tab_cont_item chnels" data_idx="2" data_name="历史人文">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+            </ul>
+            <ul class="tab_cont_item chnels" data_idx="3" data_name="商业财经">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
+            </ul>
+          </div>
         </div> 
       </div>
     </div>
@@ -548,22 +409,62 @@ body{overflow: auto;}
 </div> 
 </body>
 <script>
+var type=2;//type=1点击多选,type=2未点击多选
+var overChannel=false;
+
 $(document).on("click",".check_more",function(){
+  type=1;
 //console.log($(this).siblings(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate"));
   $(this).siblings(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").show();
   $(this).hide();
   $(this).siblings(".btns").show();
 });
 $(document).on("click",".trig_item",function(){
-  if($(this).children(".check_cate").css("background-position")=="-62px -414px"){
-    $(this).children(".check_cate").css({"background-position":"-41px -414px"});
-     $(this).removeAttr("selected");
-  }else{
-    $(this).children(".check_cate").css({"background-position":"-62px -414px"});
+  if($(".all").is(':hidden')) $(".all").show();
+  var pId=$(this).parents(".attr").attr("id");
+  var pTitle='';
+  if(pId=="status"){
+    pTitle="节目状态：";
+  }
+  if(pId=="album"){
+    pTitle="所属专辑：";
+  }
+  if(pId=="channel"){
+    pTitle="所属栏目：";
+  }
+  if(type=="1"){//点击多选后选中某一项
+    if($(this).children(".check_cate").css("background-position")=="-62px -414px"){
+      $(this).children(".check_cate").css({"background-position":"-41px -414px"});
+      $(this).removeAttr("selected");
+    }else{
+      $(this).children(".check_cate").css({"background-position":"-62px -414px"});
+      $(this).attr({"selected":"selected"});
+    }
+  }
+  if(type=="2"){//没有点击多选直接选中某一项
     $(this).attr({"selected":"selected"});
+    var newFilter='<li class="cate" pId='+pId+'>'+
+                  '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+$(this).children(".ss1").text()+'</span>'+
+                  '<span class="cate_img">×</span>'+
+                '</li>';
+    $(".new_cate").append(newFilter);
+    $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
+    $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
+    $("#"+pId).hide();
   }
 });
 $(document).on("click",".btns_sub",function(){
+  var pId=$(this).parents(".attr").attr("id");
+  var pTitle='';
+  if(pId=="status"){
+    pTitle="节目状态：";
+  }
+  if(pId=="album"){
+    pTitle="所属栏目：";
+  }
+  if(pId=="channel"){
+    pTitle="所属专辑：";
+  }
   var str=" ";
   $(this).parent().siblings(".attrValues").children(".av_ul").children(".trig_item").each(function(){
     if(typeof($(this).attr("selected"))!="undefined"){
@@ -574,99 +475,95 @@ $(document).on("click",".btns_sub",function(){
         str+=","+txt;
       }
     }
-    
   })
   console.log(str);
-  var newFilter='<li class="cate">'+
-                  '<span class="cate_desc">所属栏目：'+str+'</span>'+
+  var newFilter='<li class="cate" pId='+pId+'>'+
+                  '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+str+'</span>'+
                   '<span class="cate_img">×</span>'+
                 '</li>';
   $(".new_cate").append(newFilter);
-  $("#status").children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"});
-  $("#status").children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
-  $("#status").hide();
+  $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
+  $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
+  $("#"+pId).hide();
 });
 $(document).on("click",".btns_can",function(){
-  $("#status").children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"});
-  $("#status").children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
+  var pId=$(this).parents(".attr").attr("id"); 
+  $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
+  $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
   $(this).parent(".btns").hide();
   $(this).parent(".btns").siblings(".check_more").show();
-})
-
-
-//$(document).on("click",".trig_item",function(){
-//var ids=$(this).parents(".attr").attr('id');
-//if(ids=="channel"){
-//  if($(this).hasClass("trig_item_li")){
-//    $(".trig_item_li").removeClass("border_show").addClass("border_none");
-//    $(this).siblings().children("a").children("img").hide();
-//    $(this).children("a").children("img").show();
-//    $(this).removeClass("border_none").addClass("border_show");
-//  }else{
-//    $(this).siblings().removeClass("trig_curr");
-//    $(this).siblings().children("a").children("img").hide();
-//    $(this).siblings().removeClass("border_show").addClass("border_none");
-//    $(this).children("a").children("img").show();
-//    $(this).addClass("trig_curr");
-//    $(this).removeClass("border_none").addClass("border_show");
-//    $(".tab_cont_item .trig_item_li").children("a").children("img").hide();
-//    $(".tab_cont_item .trig_item_li").removeClass("border_show").addClass("border_none");
-//    $(".tab_cont_item").siblings().hide().eq($('#channel .trig_item').index(this)).show();
-//  }
-//}else{
-//  $("#"+ids+" .trig_item").removeClass("border_show").addClass("border_none");
-//  $("#"+ids+" .trig_item").children("a").children("img").hide();
-//  $(this).addClass("border_show");
-//  $(this).children("a").children("img").show();
-//}
-//});
-  
-///*点击更多按钮*/
-//$(document).on("click",".av-options",function(){
-//  if($(this).children(".avo-more").text()=="更多"){
-//    $(this).children(".avo-more").text("收起");
-//    $(this).children(".avo-more-img").attr({"src":"img/filter1.png"});
-//    $(this).siblings(".av-gather").css({"height":"auto"});
-//  }else{
-//    $(this).children(".avo-more").text("更多");
-//    $(this).children(".avo-more-img").attr({"src":"img/filter2.png"});
-//    $(this).siblings(".av-gather").css({"height":"30px"});
-//  }
-//});
-  
-  /*点击每个小分类下面的删除标签*/
-//$(document).on("click",".delLi",function(event){
-//  event.stopPropagation();
-//  var i=$(this).parent().parent().index();
-//  if($(this).parents(".attr").attr("id")=="channel"){
-//    if($(this).parent().parent().parent().hasClass("tab_cont_item")){
-//      $(this).parent().parent().addClass("border_none");;
-//      $(this).hide();
-//      $(".tab_cont_item").hide();
-//      $(".av-gather .trig_item").each(function(){
-//        if($(this).hasClass("trig_curr")){
-//          $(this).removeClass("trig_curr");
-//          $(this).addClass("border_show");
-//        }
-//      })
-//    }else{
-//      $(this).parent().parent().removeClass("border_show").addClass("border_none");
-//      $(this).hide();
-//      $(".tab_cont_item").hide();
-//      $(".av-gather .trig_item").removeClass("trig_curr");
-//    }
-//  }else{
-//    $(this).parent().parent().removeClass("border_show").addClass("border_none");
-//    $(this).hide();
-//  }
-//});
-//$(".cate").on("mouseenter",function(){
-//  $(this).css({"border":"1px solid #FFA634"});
-//  $(this).children(".cate_img").css({"color":"#ffa634"});
-//})
-//$(".cate").on("mouseleave",function(){
-//  $(this).css({"border":"1px solid #dedede"});
-//  $(this).children(".cate_img").css({"color":"#676a6c"});;
-//})
+});
+$(document).on("click",".cate_img",function(){
+  $(this).parent(".cate").remove();
+  var pId=$(this).parent(".cate").attr("pId");
+  $("#"+pId).children(".btns").hide();
+  $("#"+pId).show();
+  if($(".all").children(".new_cate").children("li").length<=0){
+    $(".all").hide();
+  }
+});
+$(document).on("mouseenter","#channel .chnel",function(){
+  overChannel=true;
+  var pid=$(this).attr("data_idx");
+  $(".chnels").each(function(){
+    if(pid==$(this).attr("data_idx")){
+      $(".chnels").hide();
+      $("#channel .chnel").removeClass("trig_curr");
+      $("#channel .chnel[data_idx="+pid+"]").addClass("trig_curr");
+      $(this).show();
+    }
+  })
+});
+$(document).on("mouseleave","#channel .chnel",function(){
+  overChannel=false;
+  setTimeout(function(){
+    if(overChannel) return;
+    $("#channel .chnel").removeClass("trig_curr");
+    $(".chnels").hide();
+  },200)
+});
+$(document).on("mouseenter","#channel .chnels",function(){
+  overChannel=true;
+  var pid=$(this).attr("data_idx");
+  $(".chnel").each(function(){
+    if(pid==$(this).attr("data_idx")){
+      $("#channel .chnel").removeClass("trig_curr");
+      $(this).addClass("trig_curr");
+      $("#channel .chnels").hide();
+      $("#channel .chnels[data_idx="+pid+"]").show();
+    }
+  })
+});
+$(document).on("mouseleave","#channel .chnels",function(){
+  overChannel=false;
+  setTimeout(function(){
+    if(overChannel) return;
+    $("#channel .chnel").removeClass("trig_curr");
+    $("#channel .chnels").hide();
+  },200)
+});
+$(document).on("click",".trig_item_li",function(){
+  if($(".all").is(':hidden')) $(".all").show();
+  var pname=$(this).parent(".chnels").attr("data_name");
+  var newFilter='<li class="cate" pId="channel">'+
+                  '<span class="cate_desc"><span class="cate_desc_title">所属栏目&gt;'+pname+'</span>'+"&gt;"+$(this).children(".ss1").text()+'</span>'+
+                  '<span class="cate_img">×</span>'+
+                '</li>';
+  $(".new_cate").append(newFilter);
+  $("#channel").children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
+  $("#channel").children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
+  $("#channel").hide();
+});
+$(document).on("click",".ri_top_li4",function(){
+  if($(this).children(".filter").text()=="收起筛选"){
+    $(this).children("img").attr({"src":"img/filter2.png"});
+    $(this).children(".filter").text("展开筛选");
+    $(".ri_top2").hide();
+  }else{
+    $(this).children("img").attr({"src":"img/filter1.png"});
+    $(this).children(".filter").text("收起筛选");
+    $(".ri_top2").show();
+  }
+});
 </script>
 </html>

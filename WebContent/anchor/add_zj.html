@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>创建专辑</title>
+  <title>创建专辑--修改日历插件</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="">
@@ -18,10 +18,13 @@
 <style>
 *{margin:0;padding: 0;}
 li{list-style: none;}
+html,body{
+  height: auto;
+}
 .add{
   height:auto;
   font-family: "微软雅黑";
-  position: fixed;
+  position: relative;
   z-index:1000;
   top:0px;
   left:0px;
@@ -405,9 +408,13 @@ li{list-style: none;}
   padding-left: 7px;
   border: 1px solid #dedede;
 }
+.gray-bg {
+  background-color: #f3f3f4;
+}
+
 </style>
 </head>
-<body>
+<body class="gray-bg laydate_body">
 <div class="add">
   <div class="container">
     <div class="row">
@@ -677,6 +684,19 @@ $(document).on("click",".cancelImg",function(){
   $(this).parent(".bqImg").remove();
   $(".czfs_author_ipt").val("");
 });
+
+
+window.onresize=function(){
+  laydate.reset(); 
+}
+$("#add").scroll(function () {
+  alert(22);
+  if ($(window).scrollTop()>=0) {
+    alert('bottom!!');
+  }
+ });
+
+
 </script>  
 </body>
 </html>
