@@ -175,6 +175,8 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+        }else{
+          alert(resultData.Message);
         }
       },
       error:function(jqXHR){
@@ -459,6 +461,7 @@ $(function(){
     $(".upl_img").click();
   });
   $(".upl_img").change(function(){
+    $(".img_uploadStatus").hide();
     //图片预览
     if($(".defaultImg").css("display")!="none"){
       $(".defaultImg").css({"display":"none"});
@@ -466,7 +469,7 @@ $(function(){
     var fileReader = new FileReader();
     fileReader.onload = function(evt){
       if(FileReader.DONE==fileReader.readyState){
-        var newImg =  $("<img class='newImg' alt='front cover' />");
+        var newImg =  $("<img  class='newImg' alt='front cover' />");
         newImg.attr({"src":this.result});//是Base64的data url数据
         if($(".previewImg").children().length>1){
           $(".previewImg img:last").replaceWith(newImg);

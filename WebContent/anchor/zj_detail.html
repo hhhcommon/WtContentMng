@@ -40,17 +40,18 @@ body{overflow: auto;}
 }
 .my_title{
   height: 30px;
-  float: right;
   color: #000;
-  position:absolute;
   font-size: 14px;
   margin-top: 20px;
-  margin-left:786px;
 }
 .detail_content{
   width:100%;
   height:570px;
   overflow: auto;
+}
+.dc_left1{
+  width:710px;
+  float: left;
 }
 .dc_left{
   position: relative;
@@ -71,6 +72,10 @@ body{overflow: auto;}
   width:180px;
   height:180px;
   position: absolute;
+  margin-top:20px;
+}
+.dcr_zjlist1:first-child{
+  margin-top:20px;
 }
 .dcl_zjcontent1 img{
   width:100%;
@@ -83,10 +88,12 @@ body{overflow: auto;}
   overflow: hidden;
   width:calc(100% - 205px);
   height:auto;
+  margin-top:20px;
 }
 .dcl_zjcontent2 h3{
   width:auto;
   display: inline-block;
+  margin-left:-10px;
   font-size: 20px;
   color:#000;
   font-family: "微软雅黑";
@@ -182,7 +189,7 @@ body{overflow: auto;}
   border: 1px solid #00458A;
 }
 .list_content{
-  height:170px;
+  height:360px;
   overflow-y: auto;
 }
 .list_content1{
@@ -228,11 +235,16 @@ body{overflow: auto;}
 .list_content1_span2,.list_content1_span3{
   margin-left:25px;
 }
+.dc_right1{
+  width:300px;
+  float: left;
+  margin-left:36px;
+}
 .dc_right{
   width:300px;
-  height:auto;
-  float: right;
+  height:670px;
   margin-top:10px;
+  overflow: auto;
   border:1px solid #dedede;
 }
 .dcr_zjlist{
@@ -242,6 +254,9 @@ body{overflow: auto;}
   margin: 10px 10px 0px 10px;
   height: 100px;
   border-bottom: 2px solid #dedede;
+}
+.dcr_zjlist1:last-child{
+  border-bottom: none;
 }
 .list1_img{
   width:80px;
@@ -261,13 +276,21 @@ body{overflow: auto;}
   float: left;
   padding-left:10px;
 }
+.zjname{
+  margin-bottom: -4px;
+  width: 113px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
 <body>
 <div class="detail">
   <div class="containers">
-    <div class="detail_title">音频管理> 专辑管理> 专辑详情</div>
-    <div class="my_title">我的专辑</div>
-      <div class="detail_content">
+    <div class="detail_content">
+      <div class="dc_left1">
+        <div class="detail_title">音频管理> 专辑管理> 专辑详情</div>
         <div class="dc_left">
           <div class="dcl_zjcontent">
             <div class="dcl_zjcontent1">
@@ -351,70 +374,74 @@ body{overflow: auto;}
             </ul>
           </div>
         </div>
-          <div class="dc_right">
-            <div class="dcr_zjlist">
-              <!--<div class="dcr_zjlist1">
-                <div class="list1_img">
-                  <img src="" alt="节目图片" />
-                </div>
-                <div class="list1_con">
-                  <p class="list1_con_name">
-                    <span>专辑名称 ：</span>
-                    <span>双份的阳光</span>
-                  </p>
-                  <p class="list1_con_num">
-                    <span>节目数量 ： </span>
-                    <span>8个</span>
-                  </p>
-                  <p class="list1_con_time">
-                    <span>时间 ：</span>
-                    <span>2016-10-08 10:47:35</span>
-                  </p>
-                </div>
-              </div>-->
-              <!--<div class="dcr_zjlist1">
-                <div class="list1_img">
-                  <img src="" alt="节目图片" />
-                </div>
-                <div class="list1_con">
-                  <p class="list1_con_name">
-                    <span>专辑名称 ：</span>
-                    <span>双份的阳光</span>
-                  </p>
-                  <p class="list1_con_num">
-                    <span>节目数量 ： </span>
-                    <span>8个</span>
-                  </p>
-                  <p class="list1_con_time">
-                    <span>时间 ：</span>
-                    <span>2016-10-08 10:47:35</span>
-                  </p>
-                </div>
-              </div>-->
-              <!--<div class="dcr_zjlist1">
-                <div class="list1_img">
-                  <img src="" alt="节目图片" />
-                </div>
-                <div class="list1_con">
-                  <p class="list1_con_name">
-                    <span>专辑名称 ：</span>
-                    <span>双份的阳光</span>
-                  </p>
-                  <p class="list1_con_num">
-                    <span>节目数量 ： </span>
-                    <span>8个</span>
-                  </p>
-                  <p class="list1_con_time">
-                    <span>时间 ：</span>
-                    <span>2016-10-08 10:47:35</span>
-                  </p>
-                </div>
-              </div>-->
-            </div> 
+      </div>
+      <div class="dc_right1">
+        <div class="my_title">我的专辑</div>
+        <div class="dc_right">
+          <div class="dcr_zjlist">
+            <!--<div class="dcr_zjlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name">
+                  <span>专辑名称 ：</span>
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num">
+                  <span>节目数量 ： </span>
+                  <span>8个</span>
+                </p>
+                <p class="list1_con_time">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+            <!--<div class="dcr_zjlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name">
+                  <span>专辑名称 ：</span>
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num">
+                  <span>节目数量 ： </span>
+                  <span>8个</span>
+                </p>
+                <p class="list1_con_time">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+            <!--<div class="dcr_zjlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name">
+                  <span>专辑名称 ：</span>
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num">
+                  <span>节目数量 ： </span>
+                  <span>8个</span>
+                </p>
+                <p class="list1_con_time">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+          </div> 
         </div>
       </div>
     </div>
   </div>
+</div>
 </body>
 <script>
 $(function(){
@@ -428,7 +455,12 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaInfo.do",
       dataType:"json",
-      data:{"UserId":"123","ContentId":contentId},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "UserId":"123",
+            "PCDType":"3",
+            "ContentId":contentId
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           fillZjDetail(resultData);//填充专辑数据
@@ -477,7 +509,14 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaList.do",
       dataType:"json",
-      data:{"UserId":"123","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"},
+      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+           "MobileClass":"Chrome",
+           "UserId":"123",
+           "PCDType":"3",
+           "FlagFlow":"0",
+           "ChannelId":"0",
+           "ShortSearch":"false"
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           fillMyZjDetail(resultData);//填充我的所有专辑的数据
@@ -501,7 +540,7 @@ $(function(){
                 '<div class="list1_con">'+
                   '<p class="list1_con_name">'+
                     '<span>专辑名称 ：</span>'+
-                    '<span>'+resultData.ResultList[i].ContentName+'</span>'+
+                    '<span class="zjname">'+resultData.ResultList[i].ContentName+'</span>'+
                   '</p>'+
                   '<p class="list1_con_num">'+
                     '<span>节目数量 ： </span>'+

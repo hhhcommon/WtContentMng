@@ -1,0 +1,34 @@
+<HTML>  
+  <meta charset="UTF-8">
+  <title>获得计算机唯一标识mac地址（只能在ie上使用）</title>
+  <meta name="Generator" content="EditPlus">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">  
+<SCRIPT language="JavaScript"> 
+  function MacInfo(){
+    var locator =new ActiveXObject("WbemScripting.SWbemLocator");
+    var service = locator.ConnectServer(".");
+    var properties = service.ExecQuery("Select * from Win32_NetworkAdapterConfiguration Where IPEnabled =True");
+    var e =new Enumerator (properties);
+    {
+      var p = e.item();
+      var mac = p.MACAddress;
+      alert(mac);
+    }
+  }
+  
+  /*
+   * 在ie下有ActiveX控件支持获取客户端硬件信息
+  activeX是微软的，只针对IE且客户端的IE允许AcitiveX运行
+       运行的前提是要修改浏览器安全设置，“允许对未标记为可安全执行的ActiveX脚本的运行”
+       
+  Google和ff下得不到mac地址     
+   
+   * 
+   * */
+</SCRIPT>
+<body>
+ <input type="button" onclick="MacInfo()"/> 
+</body>
+</HTML>
