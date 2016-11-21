@@ -1,5 +1,6 @@
 package com.woting.content.manage.filtrate.service;
 
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,17 @@ public class FiltrateService {
 	private MediaService mediaService;
 	@Resource
 	private ChannelContentService channeContentlService;
-	
-	public Map<String, Object> getFiltrateByMediaType(String userid,String mediatype) {
-		Map<String, Object> m = channeContentlService.getFiltrateByUserId(userid,mediatype);
+
+	public Map<String, Object> getFiltrateByMediaType(String userid, String mediatype,
+			List<Map<String, Object>> flowflags, List<Map<String, Object>> channelIds,
+			List<Map<String, Object>> seqMediaIds) {
+		Map<String, Object> m = null;
+		if (flowflags!=null || channelIds!=null || seqMediaIds!=null) {
+			m = channeContentlService.getFiltrateByUserId(userid, mediatype, flowflags, channelIds, seqMediaIds);
+		} else {
+			m = channeContentlService.getFiltrateByUserId(userid, mediatype);
+		}
+		 
 		return m;
 	}
 }

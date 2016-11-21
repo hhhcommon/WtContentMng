@@ -2,6 +2,7 @@ package com.woting.content.manage.filtrate.web;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,7 @@ public class FiltrateController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/getFiltrates.do")
 	@ResponseBody
 	public Map<String, Object> getFiltrates(HttpServletRequest request) {
@@ -123,8 +125,20 @@ public class FiltrateController {
 				map.put("Message", "无资源类型信息");
 				return map;
 			}
+			List<Map<String, Object>> flowflags = (List<Map<String, Object>>) m.get("FlowFlags");
+			if (flowflags==null || flowflags.size()==0) {
+				flowflags=null;
+			}
+			List<Map<String, Object>> channelIds = (List<Map<String, Object>>) m.get("ChannelIds");
+			if (channelIds==null || channelIds.size()==0) {
+				channelIds=null;
+			}
+			List<Map<String, Object>> seqMediaIds = (List<Map<String, Object>>) m.get("SeqMediaIds");
+			if (seqMediaIds==null || seqMediaIds.size()==0) {
+				seqMediaIds=null;
+			}
 			Map<String, Object> ms = null;
-			ms = filtrateService.getFiltrateByMediaType(userid, mediatype);
+			ms = filtrateService.getFiltrateByMediaType(userid, mediatype, flowflags, channelIds, seqMediaIds);
 			if (ms != null) {
 				map.put("ReturnType", "1001");
 				map.put("ResultList", ms);
