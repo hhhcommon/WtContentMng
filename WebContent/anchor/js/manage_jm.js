@@ -60,14 +60,21 @@ $(function(){
   }
   
   //00-4获取节目列表
-  var dataParam={"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","PCDType":"3","UserId":"123","FlagFlow":"0","ChannelId":"0","SeqMediaId":"0"};
+  var dataParam={};
+  dataParam.DeviceId="3279A27149B24719991812E6ADBA5584";
+  dataParam.MobileClass="Chrome";
+  dataParam.PCDType="3";
+  dataParam.UserId="123";
+  dataParam.SeqMediaId="0";
+  dataParam.ChannelId="0";
+  dataParam.FlowFlag="0";
   getContentList(dataParam);
   function getContentList(obj){
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/getMediaList.do",
       dataType:"json",
-      data:JSON.stringify(obj),
+      data:obj,
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           getMediaList(resultData); //得到节目列表
@@ -562,7 +569,7 @@ $(function(){
   
   //4.点击上传图片
   $(".upl_pt_img").on("click",function(){
-    var bb=$(window.parent.document).find("#myIframe").attr({"src":"photoClip.html"});
+    $(".mask_clip,.container_clip").show();
   });
 //$(".upl_pt_img").on("click",function(){
 //  $(".upl_img").click();
@@ -952,5 +959,33 @@ $(function(){
     $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+""});
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
+  });
+  
+  //根据不同的筛选条件得到不同的节目列表
+  var jmData={};
+  jmData.DeviceId="3279A27149B24719991812E6ADBA5584";
+  jmData.MobileClass="Chrome";
+  jmData.PCDType="3";
+  jmData.UserId="123";
+  jmData.SeqMediaId="0";
+  jmData.ChannelId="0";
+  $(document).on("click",".trig_item",function(){
+    debugger;
+    var pId=$(this).parents(".attr").attr("id");
+    if((pId=="status")&&($(this).parents(".attr").attr("ids")=="jmstatus")){
+      if($(this).children(".ss1").text()=="已保存") {
+        jmData.FlowFlag='5';
+      }
+      if($(this).children(".ss1").text()=="审核") {
+        jmData.FlowFlag='1';
+      }
+      if($(this).children(".ss1").text()=="发布") {
+        jmData.FlowFlag='2';
+      }
+      if($(this).children(".ss1").text()=="撤回") {
+        jmData.FlowFlag='3';
+      }
+      getContentList(jmData);
+    }
   });
 });
