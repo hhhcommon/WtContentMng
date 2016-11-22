@@ -46,7 +46,7 @@
         <if test="sort!=null and sort!=0">and sort=#{sort,jdbcType=INTEGER}</if>
         <if test="pubName!=null">and pubName=#{pubName,jdbcType=VARCHAR}</if>
         <if test="pubImg!=null">and pubImg=#{pubImg,jdbcType=VARCHAR}</if>
-        <if test="flowFlag!=null and flowFlag!=0">and flowFlag=#{flowFlag,jdbcType=VARCHAR}</if>
+        <if test="flowFlag!=null">and flowFlag=#{flowFlag,jdbcType=VARCHAR}</if>
         <if test="inRuleIds!=null">and inRuleIds=#{inRuleIds,jdbcType=VARCHAR}</if>
         <if test="checkRuleIds!=null">and checkRuleIds=#{checkRuleIds,jdbcType=VARCHAR}</if>
         <if test="pubTime!=null">and pubTime=#{pubTime,jdbcType=TIMESTAMP}</if>

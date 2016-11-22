@@ -17,13 +17,7 @@ public class FiltrateService {
 	public Map<String, Object> getFiltrateByMediaType(String userid, String mediatype,
 			List<Map<String, Object>> flowflags, List<Map<String, Object>> channelIds,
 			List<Map<String, Object>> seqMediaIds) {
-		Map<String, Object> m = null;
-		if (flowflags!=null || channelIds!=null || seqMediaIds!=null) {
-			m = channeContentlService.getFiltrateByUserId(userid, mediatype, flowflags, channelIds, seqMediaIds);
-		} else {
-			m = channeContentlService.getFiltrateByUserId(userid, mediatype);
-		}
-		 
+		Map<String, Object> m = channeContentlService.getFiltrateByUserId(userid, mediatype, flowflags, channelIds, seqMediaIds);
 		return m;
 	}
 }
