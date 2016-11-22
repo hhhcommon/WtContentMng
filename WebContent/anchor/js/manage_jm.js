@@ -176,6 +176,7 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
@@ -242,6 +243,7 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
@@ -634,8 +636,8 @@ $(function(){
       success: function (opeResult){
         if(opeResult.ful[0].success=="TRUE"){
           _this.attr("value",opeResult.ful[0].FilePath);
-          $("audio").attr("src",opeResult.ful[0].FilePath);
-          console.log($("audio")[0].duration);
+          $(".audio").attr("src",opeResult.ful[0].FilePath);
+          getTime();
           $(".cancelUpload").hide();
           if(uploadType=="1") $(".uploadStatus").show();
           if(uploadType=="2") $(".img_uploadStatus").show();
@@ -648,6 +650,21 @@ $(function(){
       }
     });
   };
+  
+  function getTime() {
+    setTimeout(function () {
+      var duration = $(".audio")[0].duration;
+      if(isNaN(duration)){//检查参数是否是非数字
+        getTime();
+      }else{
+        console.info("该歌曲的总时间为："+$(".audio")[0].duration+"秒");
+        var time=$(".audio")[0].duration;
+        var timeLong=parseInt(time);
+        $(".timeLong").attr("value",timeLong);
+      }
+    }, 10);
+  }
+  
   //侦查文件上传情况,,这个方法大概0.05-0.1秒执行一次
   function onprogress(evt){
     var loaded = evt.loaded;     //已经上传大小情况 
@@ -771,6 +788,7 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
@@ -838,6 +856,7 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
@@ -937,8 +956,8 @@ $(function(){
     $(".sonProgress").html(" ");
     $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"hidden"});
-    $(".jmId,.upl_file,.upl_img").attr("value","");
-    $("audio").attr("src","");
+    $(".jmId,.upl_file,.upl_img,.timeLong").attr("value","");
+    $(".audio").attr("src","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");
     $(".newImg").remove();
@@ -973,7 +992,6 @@ $(function(){
   jmData.SeqMediaId="0";
   jmData.ChannelId="0";
   $(document).on("click",".trig_item",function(){
-    debugger;
     var pId=$(this).parents(".attr").attr("id");
     if((pId=="status")&&($(this).parents(".attr").attr("ids")=="jmstatus")){
       if($(this).children(".ss1").text()=="已保存") {
