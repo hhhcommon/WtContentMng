@@ -120,9 +120,9 @@ public class MediaContentController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String flagflow = m.get("FlagFlow") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(flagflow) || flagflow.toLowerCase().equals("null")) {
-				flagflow = "0";
+			String flowflag = m.get("FlowFlag") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(flowflag) || flowflag.toLowerCase().equals("null")) {
+				flowflag = "0";
 			}
 			String channelid = m.get("ChannelId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(channelid) || channelid.toLowerCase().equals("null")) {
@@ -132,7 +132,7 @@ public class MediaContentController {
 			if (StringUtils.isNullOrEmptyOrSpace(seqmediaid) || seqmediaid.toLowerCase().equals("null")) {
 				seqmediaid = "0";
 			}
-			Map<String, Object> c = mediaContentService.getMediaContents(userId, flagflow, channelid, seqmediaid);
+			Map<String, Object> c = mediaContentService.getMediaContents(userId, flowflag, channelid, seqmediaid);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", c.get("ReturnType"));
 				c.remove("ReturnType");

@@ -113,7 +113,7 @@ public class MediaService {
 		Map<String, Object> m1 = new HashMap<>();
 		m1.put("publisherId", userid);
 		if (!flowflag.equals("0")) {
-			if (!flowflag.equals("5")) {
+			if (flowflag.equals("5")) {
 				m1.put("flowFlag", "0");
 			} else {
 				m1.put("flowFlag", flowflag);
