@@ -47,13 +47,13 @@ public class SeqContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public List<Map<String, Object>> getHostSeqMediaContents(String userid, String flagflow, String channelid,
+	public List<Map<String, Object>> getHostSeqMediaContents(String userid, String flowflag, String channelid,
 			String shortsearch) {
 		if (shortsearch.equals("true")) {
 			List<Map<String, Object>> l = mediaService.getShortSmaListByPubId(userid);
 			return l;
 		} else {
-			if (flagflow.equals("0") && channelid.equals("0")) {
+			if (flowflag.equals("0") && channelid.equals("0")) {
 				List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 				list = mediaService.getSmaListByPubId(userid);
 				if (list != null && list.size() > 0)
@@ -62,7 +62,7 @@ public class SeqContentService {
 					return null;
 			} else {
 				List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-				list = mediaService.getSmaListByPubId(userid, flagflow, channelid);
+				list = mediaService.getSmaListByPubId(userid, flowflag, channelid);
 				if (list != null && list.size() > 0)
 					return list;
 				else

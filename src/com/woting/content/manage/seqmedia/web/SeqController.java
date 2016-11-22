@@ -121,9 +121,9 @@ public class SeqController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String flagflow = m.get("FlagFlow") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(flagflow) || flagflow.toLowerCase().equals("null")) {
-				flagflow = "0";
+			String flowflag = m.get("FlowFlag") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(flowflag) || flowflag.toLowerCase().equals("null")) {
+				flowflag = "0";
 			}
 			String channelid = m.get("ChannelId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(channelid) || channelid.toLowerCase().equals("null")) {
@@ -133,7 +133,7 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
-			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userId, flagflow, channelid,
+			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userId, flowflag, channelid,
 					shortsearch);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");

@@ -67,7 +67,7 @@ public class MediaContentService {
 	 * @param uploadmap
 	 * @return
 	 */
-	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid,
+	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid, String timelong,
 			String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType, String contentdesc,
 			String pubTime, String flowFlag) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -76,6 +76,7 @@ public class MediaContentService {
 		ma.setMaTitle(contentname);
 		ma.setMaImg(contentimg);
 		ma.setMaURL(contenturi);
+		ma.setTimeLong(Long.valueOf(timelong));
 		// ma.setKeyWords("上传文件测试用待删除");
 		ma.setMaPubType(3);// 主播
 		ma.setMaPubId(userid);
@@ -105,6 +106,7 @@ public class MediaContentService {
 		maSource.setSmType(1);
 		maSource.setPlayURI(contenturi);
 		maSource.setIsMain(1);
+		
 		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ma.getCTime());
 		mediaService.saveMas(maSource);
@@ -215,7 +217,7 @@ public class MediaContentService {
 	 * @return
 	 */
 	public boolean updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
-			String seqmediaId, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
+			String seqmediaId,String timelong, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
 			String contentdesc, String pubTime) {
 		MediaAsset ma = mediaService.getMaInfoById(contentId);
 		if (ma != null) {
@@ -227,6 +229,9 @@ public class MediaContentService {
 			}
 			if (contentdesc != null && !contentdesc.toLowerCase().equals("null")) { // 修改题图地址
 				ma.setDescn(contentdesc);
+			}
+			if (timelong != null && !timelong.toLowerCase().equals("null")) { // 修改题图地址
+				ma.setTimeLong(Long.valueOf(timelong));
 			}
 			if (contenturi != null && !contenturi.toLowerCase().equals("null")) { // 修改播放地址
 				ma.setMaURL(contenturi);
