@@ -316,18 +316,19 @@ body{overflow: auto;}
               </div>
             </div>
             <div class="dcr_jmdesc">
-              <p class="dcr_jmdesc_p1">谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆谢您的聆</p>
+              <p class="dcr_jmdesc_p1"></p>
               <p class="dcr_jmdesc_p2">感谢您的聆听~</p>
               <p class="dcr_jmdesc_p3">原创节目欢迎评论，分享，打赏哦~</p>
             </div>  
           </div>
           <div class="dc_right_bottom">
+            <audio id="audio" src="" style="display: none;"></audio>
             <img class="dctb1" src="img/act6.png" alt="" />
-            <span class="dctb2">35:47</span>
+            <span class="dctb2">0:0</span>
             <div class="line1"></div>
             <div class="line2"></div>
             <div class="circle"></div>
-            <span class="dctb3">53:47</span>
+            <span class="dctb3"></span>
           </div>
         </div>
         
@@ -395,7 +396,44 @@ $(function(){
     }
     $(".ctime").html(resultData.Result.CTime);
     $(".dcr_jmdesc .dcr_jmdesc_p1").html(resultData.Result.ContentDesc);
+    getTime();//得到音频的时间
+    $("#audio").attr({"src":resultData.Result.ContentPlay});
+    
   }
+  
+  //点击节目详情页播放按钮
+    $(document).on("click",".dctb1",function(){
+      
+//    if($(this).hasClass("fa-youtube-play")){//处于播放状态
+//      $.each($(".table span"), function(i,val){
+//        if($(val).hasClass("fa-pause")){
+//           $(val).removeClass("fa-pause").addClass("fa-youtube-play");
+//        }
+//      });
+//      $(this).removeClass("fa-youtube-play").addClass("fa-pause");
+//      audio.src=$(this).parent().parent("tr").attr("contentURI");
+//      audio.play();
+//    }else if($(this).hasClass("fa-pause")){//处于暂停状态
+//      $(this).removeClass("fa-pause").addClass("fa-youtube-play");
+//      audio.pause();
+//    } 
+    });
+  
+  <!--获取mp3文件的时间 兼容浏览器-->
+    function getTime() {
+      setTimeout(function () {
+        var duration = $("#audio")[0].duration;
+        if(isNaN(duration)){//检查参数是否是非数字
+          getTime();
+        }else{
+          console.log("该歌曲的总时间为："+$("#audio")[0].duration+"秒");
+          var time=$("#audio")[0].duration;
+          
+          $(document).find(".dctb3").html(time+"秒");
+        }
+      }, 10);
+    }
+  
 });
 </script>
 </html>

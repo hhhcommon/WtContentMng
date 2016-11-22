@@ -634,6 +634,8 @@ $(function(){
       success: function (opeResult){
         if(opeResult.ful[0].success=="TRUE"){
           _this.attr("value",opeResult.ful[0].FilePath);
+          $("audio").attr("src",opeResult.ful[0].FilePath);
+          console.log($("audio")[0].duration);
           $(".cancelUpload").hide();
           if(uploadType=="1") $(".uploadStatus").show();
           if(uploadType=="2") $(".img_uploadStatus").show();
@@ -936,6 +938,7 @@ $(function(){
     $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"hidden"});
     $(".jmId,.upl_file,.upl_img").attr("value","");
+    $("audio").attr("src","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");
     $(".newImg").remove();
