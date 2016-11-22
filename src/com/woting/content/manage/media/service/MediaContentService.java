@@ -217,7 +217,7 @@ public class MediaContentService {
 	 * @return
 	 */
 	public boolean updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
-			String seqmediaId, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
+			String seqmediaId,String timelong, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
 			String contentdesc, String pubTime) {
 		MediaAsset ma = mediaService.getMaInfoById(contentId);
 		if (ma != null) {
@@ -229,6 +229,9 @@ public class MediaContentService {
 			}
 			if (contentdesc != null && !contentdesc.toLowerCase().equals("null")) { // 修改题图地址
 				ma.setDescn(contentdesc);
+			}
+			if (timelong != null && !timelong.toLowerCase().equals("null")) { // 修改题图地址
+				ma.setTimeLong(Long.valueOf(timelong));
 			}
 			if (contenturi != null && !contenturi.toLowerCase().equals("null")) { // 修改播放地址
 				ma.setMaURL(contenturi);

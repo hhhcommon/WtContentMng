@@ -419,6 +419,12 @@ public class MediaContentController {
 				map.put("Message", "无专辑Id");
 				return map;
 			}
+			String timelong = m.get("TimeLong") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(timelong) || timelong.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1013");
+				map.put("Message", "无节目时长");
+				return map;
+			}
 			String contenturi = m.get("ContentURI") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(contenturi) || contenturi.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1014");
@@ -436,7 +442,7 @@ public class MediaContentController {
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
 			boolean isok = mediaContentService.updateMediaInfo(userId, contentId, contentname, contentimg, seqmediaId,
-					contenturi, tags, membertypes, contentdesc, pubTime);
+					timelong, contenturi, tags, membertypes, contentdesc, pubTime);
 			if (isok) {
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
