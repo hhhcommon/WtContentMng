@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>反馈建议</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <!--日历插件-->
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <script src="js/common_manage.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;}
+.detail{
+  width:100%;
+  min-width:500px;
+  height:100%;
+  overflow: auto;
+}
+.detail_title{
+  width: 100%;
+  height: 30px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-left:20px;
+}
+.containers{
+  height:auto;
+  width:860px;
+  margin-left:20px;
+  border:1px solid #dedede;
+}
+.form-horizontal .form-group{
+  margin-left:0;
+  margin-right:0;
+  overflow: hidden;
+}
+.form-horizontal .form-group:last-child{
+  margin-top:40px;
+}
+.form-horizontal{
+  width:700px;
+  height:auto;
+  margin:40px auto;
+}
+.label_div{
+  width:105px;
+  height:30px;
+  line-height:30px;
+  font-weight:600;
+  padding-left:0px;
+  padding-right:0px;
+  font-size: 14px;
+  color: #000;
+  font-family: "微软雅黑";
+  float: left;
+}
+.feedBack_ipt{
+  width:595px;
+  height:35px;
+  float: left;
+}
+.feedBack_ipt1{
+  width:595px;
+  height:120px;
+  float: left;
+}
+.ipt_title,.ipt_email{
+  width:100%;
+  height:35px;
+  border:1px solid #dedede;
+  padding-left:5px;
+}
+.ipt_desc{
+  width:595px;
+  height:120px;
+  resize: none;
+  border:1px solid #dedede;
+  padding-left:5px;
+}
+.confirm,.cancel{
+  width:90px;
+  height:35px;
+  border: none;
+  color:#fff;
+  font-size:16px;
+  font-family: "微软雅黑";
+  font-weight:500;
+  float: left;
+}
+.confirm{
+  margin-left:165px;
+  background: #ffa634;
+}
+.cancel{
+  background: #000;
+  margin-left:100px;
+}
+</style>
+<body>
+   <div class="detail">
+     <div class="detail_title">首页> 反馈建议</div>
+     <div class="containers">
+      <form class="form-horizontal">
+        <div class="form-group">
+          <div class="label_div">反馈建议标题：</div>
+          <div class="feedBack_ipt">
+            <input type="text" class="ipt_title" placeholder="标题"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="label_div">反馈建议描述：</div>
+          <div class="feedBack_ipt1">
+           <textarea class="ipt_desc" name="" rows="" cols="" placeholder="欢迎提出您在使用过程中遇到的问题或宝贵建议，感谢您的支持。"></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="label_div">我的邮箱地址：</div>
+          <div class="feedBack_ipt">
+            <input type="text" class="ipt_email" placeholder="请留下您的联系方式，以便我们及时回复您。"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <input  class="confirm" type="button" value="提交反馈" />
+          <input  class="cancel" type="button" value="取消" />
+        </div>
+      </form> 
+    </div>
+  </div>   
+</body>
+<script>
+ 
+</script>
+</html>

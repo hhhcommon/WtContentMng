@@ -17,6 +17,8 @@
   <script src="js/common_manage.js"></script>
   <script src="js/manage_jm.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <!--裁剪图片的插件-->
+  <script src="js/photoClip/cropbox.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -26,21 +28,25 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;}
 .content{
+  position: relative;
   width:100%;
   min-width:780px;
-  height:auto;
+  height:100%;
 }
 .content .container{
   position: relative;
+  height:100%;
 }
 .content .container .row{
+  position: absolute;
+  height: 100%;
   margin-left:0px;
   margin-right:0px;
   position: inherit;
 }
 .con_right{
-  /*height:1090px;*/
-  /*border:1px solid #dedede;*/
+  position: absolute;
+  height: 100%;
 }
 .ri_top{
   width:100%;
@@ -91,6 +97,7 @@ body{overflow: auto;}
   position: absolute;
   top:16px;
   right:1.7%;
+  cursor: pointer;
 }
 .ri_top_li4 span{
   line-height: 30px;
@@ -103,33 +110,33 @@ body{overflow: auto;}
 .ri_top2{
   width:100%;
   height:auto;
-  border: 1px solid #dedede; 
   overflow: hidden;
   margin-top:15px;
+}
+.border1{
+  border: 1px solid #dedede; 
+}
+.border2{
+  border: 1px solid transparent; 
+}
+.attr:last-child{
+  border-bottom:none;
 }
 .attr{
   position: relative;
   width:100%;
   float: left;
-  border-style: solid solid dotted;
-  border-width: 0 0 1px;
-}
-.ri_top2 .attr:first-child{
-  border-top:none;
-}
-.ri_top2 .attr:last-child{
-  border-bottom:none;
+  border-bottom:1px solid #dedede;
 }
 .attrKey{
   display: block;
   overflow: hidden;
   float: left;
-  width:12%;
-  height:30px;
-  line-height:30px;
+  width:88px;
+  height:40px;
+  line-height:40px;
   color: rgb(91,90,90);
   text-indent: 20px;
-  /*white-space: nowrap;*/
   text-overflow: ellipsis;
   font-size:14px;
   background: #f5f5f5;
@@ -137,84 +144,45 @@ body{overflow: auto;}
 .attrValues {
   position:relative;
   float: left;
-  background-color: #FFF;
-  width: 88%;
   overflow: hidden;
 }
 .attrValues .av-gather{
   overflow: hidden;
   position: relative;
-  margin-right: 180px;
-  height:30px;
-  line-height: 30px;
+  height:40px;
+  margin-bottom:0px;
 }
 .trig_item{
   display: block;
   float: left;
   margin-left:16px;
-  height:20px;
-  line-height: 20px;
-  margin-top:5px;
-  color: black; 
+  height:40px;
+  line-height: 40px;
   white-space: nowrap;
-}
-.border_none{
-  border:none;
-}
-.border_show{
-  border:1px solid #ffa634;
+  cursor: pointer;
 }
 .trig_curr{
-  height:19px;
+  height:41px;
   position:relative;
   z-index:2;
-  border:1px solid #8e8e8e;
+  border:1px solid #dedede;
   border-bottom:medium none;
-  background: #fff;
+  background: #dedede;
   color:#f60;
-}
-.av-options{
-  position: absolute;
-  right:-4px;
-  top: 3px;
-  width: 130px;
-  z-index: 1;
-}
-.avo-more {
-  vertical-align: middle;
-  position: relative;
-  display: inline-block;
-  margin-top:5px;
-  margin-left:71px;
-  font-size:14px;
-  color: rgb(1,1,1);
-}
-.avo-more-img{
-  margin-top:8px;
-}
-.delLi{
-  margin-top: -5px;
-  height: 100%;
-  margin-left: 6px;
-  display: none;
 }
 .tab_cont_item{
   width:100%;
-  height:30px;
-  border:1px solid #8e8e8e;
-  line-height: 30px;
+  border:1px solid #dedede;
   position: relative;
-  top:-7px;
   left:0px;
   display: none;
   overflow: hidden;
 }
 .tab_cont_item li{
   float:left;
-  height:18px;
-  line-height:18px;
+  height:40px;
+  line-height:40px;
   margin-left:20px;
-  margin-top:5px;
 }
 .con_right ul{
   margin-bottom:0px;
@@ -222,8 +190,8 @@ body{overflow: auto;}
 /*列表展示区域*/
 .ri_top3{
   width:100%;
-  height:auto;
-  overflow: hidden;
+  height:100%;
+/*  overflow: hidden;*/
   margin-top:15px;
 }
 .ri_top3_head{
@@ -262,7 +230,7 @@ body{overflow: auto;}
 .ri_top3_con{
   width:100%;
   position: absolute;
-  overflow: auto;
+  overflow:hidden;
 }
 .rtc_listBox{
   width:97%;
@@ -323,8 +291,308 @@ body{overflow: auto;}
   background:rgba(0,0,0,0.5);
   display: none;
 }
+/*所有分类*/
+.all{
+  width:100%;
+  height:auto;
+  border:1px solid #dedede;
+  overflow: hidden;
+  margin-top:15px;
+  padding:0px 0px 10px 0px;
+  display: none;
+}
+.all_cate{
+  width:70px;
+  height:25px;
+  line-height:25px;
+  float: left;
+  margin-top:10px;
+  color:#000;
+}
+.new_cate{
+  width:calc(100% - 100px);
+  height:auto;
+  float: left;
+  color:#000;
+}
+.cate{
+  width: auto;
+  height: 25px;
+  line-height: 22px;
+  padding:0 1px 0 6px;
+  float: left;
+  margin-left:10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-top:10px;
+}
+.cate:hover{
+  border: 1px solid #FFA634;
+}
+.cate:hover .cate_img{
+  color:#FFA634;
+}
+.cate_desc{
+  width:auto;
+  height:20px;
+  line-height:20px;
+}
+.cate_img{
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 8px;
+  color:#dedede;
+}
+.check_cate{
+  width:20px;
+  height:20px;
+  float: left;
+  margin-top:5px;
+  background: url(img/sprite.png);
+  background-repeat:no-repeat ;
+  background-position: -41px -414px;
+  display: none;
+}
+.check_more {
+  display: inline-block;
+  float: right;
+  margin-right: 40px;
+  height: 22px;
+  margin-top:8px;
+  margin-bottom:8px;
+  line-height: 22px;
+  border: 1px solid #ddd;
+  padding: 0px 5px 0px 5px;
+  position: relative;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+}
+.ss1{
+  float:left;
+}
+.btns{
+  width: 100%;
+  height: 30px;
+  float: left;
+  margin-top: 10px;
+  display: none; 
+  text-align: center;
+}
+.btns_sub{
+  color: #fff;
+  background: #ffa634;
+  border: 1px solid #ffa634;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 2px;
+  height: 20px;
+  width: 42px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+.btns_can{
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 2px;
+  height: 20px;
+  width: 42px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+/*裁剪图片时的遮罩层*/
+.mask_clip{
+  width:100%;
+  height:1100px;
+  position: absolute;
+  top:0px;
+  left:0px;
+  z-index:1020;
+  background:rgba(0,0,0,0.5);
+  display: none;
+}
+/*裁剪图片时的弹出层*/
+.container_clip{
+  width: 100%;
+  height:100%;
+  position: absolute;
+  font-family: 微软雅黑;
+  top:0px;
+  left:0px;
+  z-index:1050;
+  background: #fff;
+  display: none;
+}
+.cc_title{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  padding: 5px 0px 5px 20px;
+  font-family: "微软雅黑";
+}
+.container_clip p {
+  line-height: 12px;
+  line-height: 0px;
+  height: 0px;
+  margin: 20px;
+  color: #bbb
+}
+.imgAction{
+  width:402px;
+  height:500px;
+  margin-left:20px;
+  position: relative;
+  float: left;
+}
+.action {
+  width: 400px;
+  height: 40px;
+  position: relative;
+}
+.cropped {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  border: 1px #ddd solid;
+  text-align: center;
+}
+.imageBox {
+  position: relative;
+  height: 400px;
+  width: 400px;
+  border: 1px solid #aaa;
+  background: #fff;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  cursor: move;
+}
+.imageBox .thumbBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  box-sizing: border-box;
+  border: 1px solid rgb(102, 102, 102);
+  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.1);
+  background: none repeat scroll 0% 0% transparent;
+}
+.imageBox .spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  text-align: center;
+  line-height: 400px;
+  background: rgba(0,0,0,0.7);
+}
+.Btnsty_peyton{ 
+  float: right;
+  width: 66px;
+  display: inline-block;
+  height:40px;
+  line-height: 40px;
+  font-size: 20px;
+  color: #FFFFFF;
+  margin:0px 2px;
+  background-color: #ffa634;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0px 0px 5px #B0B0B0;
+  border: 0px #fff solid;
+  cursor: pointer;
+}
+/*选择文件上传*/
+.new-contentarea {
+  width: 140px;
+  overflow:hidden;
+  margin: 0 auto;
+  position:relative;
+  float:left;
+  cursor: pointer;
+}
+.new-contentarea label {
+  width:100%;
+  height:100%;
+  display:block;
+}
+.new-contentarea input[type=file] {
+  width:140px;
+  height:40px;
+  background:#333;
+  margin: 0 auto;
+  position:absolute;
+  right:50%;
+  margin-right:-70px;
+  top:0;
+  opacity:0;
+  filter:alpha(opacity=0);
+  z-index:2;
+  cursor: pointer;
+}
+a.upload-img{
+  width:140px;
+  display: inline-block;
+  height:40px;
+  line-height: 40px;
+  font-size: 20px;
+  color: #FFFFFF;
+  background-color: #ffa634;
+  border-radius: 3px;
+  text-decoration:none;
+  cursor:pointer;
+  border: 0px #fff solid;
+  cursor: pointer;
+}
+a.upload-img:hover{
+  background-color: #ec7e70;
+}
+.tc{text-align:center;}
+.clipOver{
+  width:200px;
+  height:240px;
+  position: relative;
+  top:0px;
+  left:0px;
+  float: left;
+  margin-left:20px;
+}
+.action1{
+  position: absolute;
+  bottom:-35px;
+  width:200px;
+  height:35px;
+  overflow: hidden;
+}
+#btnSave,#btnCancel{
+  width: 80px;
+  height: 35px;
+  color: #fff;
+  float: left;
+  margin-left: 10px;
+  background: #ffa634;
+  border: 0px solid transparent;
+  border-radius: 3px;
+  font-size: 20px;
+  cursor: pointer;
+}
 </style>
-<body>
+<body class="laydate_body">
 <div class="content">
   <div class="container">
     <div class="row">
@@ -336,89 +604,96 @@ body{overflow: auto;}
             <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
           </li>
           <li class="ri_top_li3"><img src="img/upLoadJM.png" alt="上传节目" /></li>
-          <li class="ri_top_li4"><span>展开筛选</span><img src="img/filter2.png" alt="展开筛选" /></li>
+          <li class="ri_top_li4"><span class="filter">收起筛选</span><img src="img/filter1.png" alt="收起筛选" /></li>
         </ul>
-        <div class="ri_top2">
-          <div class="attr" id="status">
+        <div class="all">
+          <div class="all_cate">所有分类 > </div>
+          <ul class="new_cate">
+            <!--<li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>专辑一,专辑二,专辑三</span><span class="cate_img">×</span></li>
+            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>电影电视</span><span class="cate_img">×</span></li>
+            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">节目状态：</span>发布</span><span class="cate_img">×</span></li>
+            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>脱口秀</span><span class="cate_img">×</span></li>-->
+          </ul>
+        </div>
+        <div class="ri_top2 border1">
+          <div class="attr" id="status" ids="jmstatus">
             <div class="attrKey">节目状态 :</div>
             <div class="attrValues">
               <ul class="av-gather av_ul">
-                <li class="trig_item"><a  href="javascript:void(0)">已保存<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item"><a  href="javascript:void(0)">审核<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item"><a  href="javascript:void(0)">发布<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item"><a  href="javascript:void(0)">撤回<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
+                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
+                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
+                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
+                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
               </ul>
-              <!--<div class="av-options">
-                <a class="avo-more" href="javascript:void(0)">更多</a>
-                <img class="avo-more-img" src="img/filter2.png" alt="" />
-              </div>-->
             </div>
+            <div class="btns">
+              <span class="btns_sub">确定</span>
+              <span class="btns_can">取消</span>
+            </div>
+            <span class="check_more">多选</span>
+          </div>
+          <div class="attr" id="album">
+            <div class="attrKey">所属专辑 :</div>
+            <div class="attrValues">
+              <!--<ul class="av-gather av_ul">
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑1</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑2</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑3</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑4</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑5</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑6</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑7</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑8</a></li>
+              </ul>-->
+              <ul class="av-gather av_ul">
+                <!--<li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑9</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑10</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑11</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑12</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑13</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑14</a></li>
+                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑15</a></li>-->
+              </ul>
+            </div>
+            <div class="btns">
+              <span class="btns_sub">确定</span>
+              <span class="btns_can">取消</span>
+            </div>
+            <span class="check_more">多选</span>
           </div>
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
               <ul class="av-gather av_ul">
-                <!--<li class="trig_item" ><a  href="javascript:void(0)">电影电视<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">脱口秀<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">历史人文<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">商业财经<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">儿童科教<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>-->
+                <!--<li class="trig_item chnel" data_idx="0"><a  class="ss1" href="javascript:void(0)">电影电视</a></li>
+                <li class="trig_item chnel" data_idx="1"><a  class="ss1" href="javascript:void(0)">脱口秀</a></li>
+                <li class="trig_item chnel" data_idx="2"><a  class="ss1" href="javascript:void(0)">历史人文</a></li>
+                <li class="trig_item chnel" data_idx="3"><a  class="ss1" href="javascript:void(0)">商业财经</a></li>
+                <li class="trig_item chnel" data_idx="4"><a  class="ss1" href="javascript:void(0)">儿童科教</a></li>-->
               </ul>
-              <div class="av-options">
-                <a class="avo-more" href="javascript:void(0)">更多</a>
-                <img class="avo-more-img" src="img/filter2.png" alt="" />
-              </div>
             </div>
-            <div class="tab_cont">
-              <!--<ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目1<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目2<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目3<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-              </ul>-->
-              <!--<ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目4<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目5<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目6<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-              </ul>-->
-              <!--<ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目7<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目8<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目9<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-              </ul>-->
-              <!--<ul class="tab_cont_item av_ul">
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目10<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目11<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item trig_item_li" ><a  href="javascript:void(0)">二级栏目12<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-              </ul>-->
-            </div>
+            <!--<ul class="tab_cont_item chnels" data_idx="0" data_name="电影电视">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+            </ul>-->
+            <!--<ul class="tab_cont_item chnels" data_idx="1" data_name="脱口秀">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+            </ul>-->
+            <!--<ul class="tab_cont_item chnels" data_idx="2" data_name="历史人文">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+            </ul>-->
+            <!--<ul class="tab_cont_item chnels" data_idx="3" data_name="商业财经">
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
+              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
+            </ul>-->
           </div>
-          <div class="attr" id="album">
-            <div class="attrKey">所属专辑 :</div>
-            <div class="attrValues">
-              <ul class="av-gather av_ul">
-                <!--<li class="trig_item" ><a  href="javascript:void(0)">专辑1<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a href="javascript:void(0)">专辑2<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑3<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑4<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑5<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑6<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑7<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑8<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑9<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑10<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑11<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑12<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑13<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑14<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>
-                <li class="trig_item" ><a  href="javascript:void(0)">专辑15<img src="img/del1.png" alt="取消操作" class="delLi"/></a></li>-->
-              </ul>
-              <div class="av-options">
-                <a class="avo-more" href="javascript:void(0)">更多</a>
-                <img class="avo-more-img" src="img/filter2.png" alt="" />
-              </div>
-            </div>
-          </div>
-        </div>
+        </div> 
         <div class="ri_top3">
           <div class="ri_top3_head">
             <span class="rth_al">全部节目</span>
@@ -691,5 +966,122 @@ body{overflow: auto;}
     </div>
   </div> 
 </div>
+<!--裁剪图片时需要的遮罩层-->
+<div class="mask_clip"></div>
+<!--裁剪图片时需要的弹出层-->
+<div class="container_clip">
+  <div class="cc_title">节目管理 > 上传节目 > 裁剪图片</div>
+  <div class="imgAction">
+    <div class="imageBox">
+      <div class="thumbBox"></div>
+      <div class="spinner" style="display: none">Loading...</div>
+    </div>
+    <div class="action"> 
+      <div class="new-contentarea tc"> <a href="javascript:void(0)" class="upload-img">
+        <label for="upload-file">上传图像</label>
+        </a>
+        <input type="file" class="" name="upload-file" id="upload-file" />
+      </div>
+      <input type="button" id="btnCrop"  class="Btnsty_peyton" value="裁切">
+      <input type="button" id="btnZoomIn" class="Btnsty_peyton" value="+"  >
+      <input type="button" id="btnZoomOut" class="Btnsty_peyton" value="-" >
+    </div>
+  </div>
+  <div class="clipOver">
+    <div class="cropped"></div>
+    <div class="action1">
+      <input type="button" id="btnSave"  class="" value="保存">
+      <input type="button" id="btnCancel"  class="" value="取消">
+    </div>
+  </div>
+</div>
 </body>
+<script>
+  var rootPath=getRootPath();
+  var options =
+  {
+    thumbBox: '.thumbBox',
+    spinner: '.spinner',
+    imgSrc: 'http://wotingfm.com:908/CM/resources/images/default.png'
+  }
+  var cropper = $('.imageBox').cropbox(options);
+  $('#upload-file').on('change', function(){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      options.imgSrc = e.target.result;
+      cropper = $('.imageBox').cropbox(options);
+    }
+    reader.readAsDataURL(this.files[0]);
+    var files=$(this)[0].files[0];
+    saveClip(files);
+  })
+  $('#btnCrop').on('click', function(){
+    var img = cropper.getDataURL();
+    $('.cropped').html('');
+    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
+    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
+    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
+  })
+  $('#btnZoomIn').on('click', function(){
+    cropper.zoomIn();
+  })
+  $('#btnZoomOut').on('click', function(){
+    cropper.zoomOut();
+  })
+  
+  function saveClip(files){
+    var oMyForm = new FormData();
+//  console.log(files);
+    oMyForm.append("ContentFile", files);
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("UserId", "123");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
+    $('#btnSave').on('click', function(){
+      var imgbase64=$(".cropped img").attr("src");
+      var _this=$(this).parent(".action1").siblings(".cropped").children("img");
+//    console.log(oMyForm);
+      $.ajax({
+        url:rootPath+"common/uploadCM.do",
+        type:"POST",
+        data:oMyForm,
+        cache: false,
+        processData: false,
+        contentType: false,
+        dataType:"json",
+        //表单提交前进行验证
+        success: function (opeResult){
+          if(opeResult.ful[0].success=="TRUE"){
+            alert("文件裁剪上传成功");
+            if($(".defaultImg").css("display")!="none"){
+              $(".defaultImg").css({"display":"none"});
+            }
+            var fileReader = new FileReader();
+            fileReader.onload = function(evt){
+              var newImg =  $("<img class='newImg' alt='front cover' />");
+              newImg.attr({"src":this.result});//是Base64的data url数据
+              if($(".previewImg").children().length>1){
+                $(".previewImg img:last").replaceWith(newImg);
+              }else{
+                $(".previewImg").append(newImg);
+              }
+            }
+            fileReader.readAsDataURL(files);
+            $(".container_clip,.mask_clip").hide();
+          }else{
+            alert(opeResult.err);
+          }
+        },
+        error: function(XHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      });
+    })
+  }
+  $("#btnCancel").on("click",function(){
+    $(".container_clip,.mask_clip").hide();
+  })
+</script>
 </html>

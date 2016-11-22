@@ -27,21 +27,21 @@ $(function(){
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
     for(var i=0;i<resultData.ResultList.ChannelList.length;i++){
-      var filterChannel='<li class="trig_item" id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
-                          '<a  href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
+      var filterChannel='<li class="trig_item chnel" data_idx='+i+' id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
+                          '<a  class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'</a>'+
                         '</li>';
       $("#channel .attrValues .av_ul").append(filterChannel); 
-      var fccg='<div class="tab_cont_item av_ul" parentId='+resultData.ResultList.ChannelList[i].id+'></div>';
-      $(".tab_cont").append(fccg);
+      var fccg='<ul class="tab_cont_item chnels" data_idx='+i+' data_name='+resultData.ResultList.ChannelList[i].nodeName+' parentId='+resultData.ResultList.ChannelList[i].id+'></ul>';
+      $("#channel").append(fccg);
       if(resultData.ResultList.ChannelList[i].isParent=="true"){
         for(var j=0;j<resultData.ResultList.ChannelList[i].children.length;j++){
-          var filterChannelChildren='<div class="trig_item trig_item_li" >'+
-                                      '<a  href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'<img src="img/del1.png" alt="取消操作" class="delLi"/></a>'+
-                                    '</div>';
-          $('div[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
+          var filterChannelChildren='<li class="trig_item_li">'+
+                                      '<a class="ss1" href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'</a>'+
+                                    '</li>';
+          $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
         }
       }else{
-        $('div[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<span style='display:block;text-align:center;'>暂时没有二级栏目<span>");
+        $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<li style='display:block;text-align:center;float:none;margin:0px auto;'>暂时没有二级栏目</li>");
       }
     }
   }
@@ -485,6 +485,7 @@ $(function(){
     var arr=filePath.split('\\');
     var fileName=arr[arr.length-1];
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+    console.log($(this)[0].files[0]);
     oMyForm.append("UserId", "123");
     oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
     oMyForm.append("MobileClass", "Chrome");
