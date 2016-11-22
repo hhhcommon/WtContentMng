@@ -108,9 +108,6 @@ public class ChannelContentService {
     	if (wheresql.length()>3) {
 			m.put("wheresql", wheresql);
 		}
-    	if (mediatype.equals("MediaAsset")) {
-			m.put("assetType", "wt_MediaAsset");
-		}
     	if (mediatype.equals("SeqMedia")) {
 			m.put("assetType", "wt_SeqMediaAsset");
 		}
