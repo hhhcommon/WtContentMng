@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>头像裁切预览</title>
+<!--<link rel="stylesheet" href="css/style.css" type="text/css" />-->
+<script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+<script src="js/photoClip/cropbox.js"></script>
+<script src="../resources/js/context.utils.js"></script>
+<script src="js/manage_jm.js"></script>
+<style>
+*{margin:0;padding:0;}
+li{list-style: none;}
+/*裁剪图片时的遮罩层*/
+.mask_clip{
+  width:100%;
+  height:1100px;
+  position: absolute;
+  top:0px;
+  left:0px;
+  z-index:1020;
+  background:rgba(0,0,0,0.5);
+  display: none;
+}
+/*裁剪图片时的弹出层*/
+.container_clip {
+  width: 100%;
+  height:100%;
+  position: relative;
+  font-family: 微软雅黑;
+}
+.cc_title{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  padding: 5px 0px 5px 20px;
+  font-family: "微软雅黑";
+}
+.container_clip p {
+  line-height: 12px;
+  line-height: 0px;
+  height: 0px;
+  margin: 20px;
+  color: #bbb
+}
+.imgAction{
+  width:402px;
+  height:500px;
+  border:1px solid red;
+  margin-left:20px;
+  position: relative;
+  float: left;
+}
+.action {
+  width: 400px;
+  height: 40px;
+  position: relative;
+  border: 1px solid red;
+}
+.cropped {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  border: 1px #ddd solid;
+  text-align: center;
+}
+.imageBox {
+  position: relative;
+  height: 400px;
+  width: 400px;
+  border: 1px solid #aaa;
+  background: #fff;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  cursor: move;
+}
+.imageBox .thumbBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  box-sizing: border-box;
+  border: 1px solid rgb(102, 102, 102);
+  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.1);
+  background: none repeat scroll 0% 0% transparent;
+}
+.imageBox .spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  text-align: center;
+  line-height: 400px;
+  background: rgba(0,0,0,0.7);
+}
+.Btnsty_peyton{ 
+  float: right;
+  width: 66px;
+  display: inline-block;
+  height:40px;
+  line-height: 40px;
+  font-size: 20px;
+  color: #FFFFFF;
+  margin:0px 2px;
+  background-color: #ffa634;
+  border-radius: 3px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0px 0px 5px #B0B0B0;
+  border: 0px #fff solid;
+  cursor: pointer;
+}
+/*选择文件上传*/
+.new-contentarea {
+  width: 140px;
+  overflow:hidden;
+  margin: 0 auto;
+  position:relative;
+  float:left;
+  cursor: pointer;
+}
+.new-contentarea label {
+  width:100%;
+  height:100%;
+  display:block;
+}
+.new-contentarea input[type=file] {
+  width:140px;
+  height:40px;
+  background:#333;
+  margin: 0 auto;
+  position:absolute;
+  right:50%;
+  margin-right:-70px;
+  top:0;
+  opacity:0;
+  filter:alpha(opacity=0);
+  z-index:2;
+  cursor: pointer;
+}
+a.upload-img{
+  width:140px;
+  display: inline-block;
+  height:40px;
+  line-height: 40px;
+  font-size: 20px;
+  color: #FFFFFF;
+  background-color: #ffa634;
+  border-radius: 3px;
+  text-decoration:none;
+  cursor:pointer;
+  border: 0px #fff solid;
+  cursor: pointer;
+}
+a.upload-img:hover{
+  background-color: #ec7e70;
+}
+.tc{text-align:center;}
+.clipOver{
+  width:200px;
+  height:240px;
+  position: relative;
+  top:0px;
+  left:0px;
+  float: left;
+  margin-left:20px;
+}
+.action1{
+  position: absolute;
+  bottom:-35px;
+  width:200px;
+  height:35px;
+  overflow: hidden;
+}
+#btnSave,#btnCancel{
+  width: 80px;
+  height: 35px;
+  color: #fff;
+  float: left;
+  margin-left: 10px;
+  background: #ffa634;
+  border: 0px solid transparent;
+  border-radius: 3px;
+  font-size: 20px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+<!--裁剪图片时需要的遮罩层-->
+<!--<div class="mask_clip"></div>-->
+<!--裁剪图片时需要的弹出层-->
+<div class="container_clip">
+  <div class="cc_title">节目管理 > 上传节目 > 裁剪图片</div>
+  <div class="imgAction">
+    <div class="imageBox">
+      <div class="thumbBox"></div>
+      <div class="spinner" style="display: none">Loading...</div>
+    </div>
+    <div class="action"> 
+      <div class="new-contentarea tc"> <a href="javascript:void(0)" class="upload-img">
+        <label for="upload-file">上传图像</label>
+        </a>
+        <input type="file" class="" name="upload-file" id="upload-file" />
+      </div>
+      <input type="button" id="btnCrop"  class="Btnsty_peyton" value="裁切">
+      <input type="button" id="btnZoomIn" class="Btnsty_peyton" value="+"  >
+      <input type="button" id="btnZoomOut" class="Btnsty_peyton" value="-" >
+    </div>
+  </div>
+  <div class="clipOver">
+    <div class="cropped"></div>
+    <div class="action1">
+      <input type="button" id="btnSave"  class="" value="保存">
+      <input type="button" id="btnCancel"  class="" value="取消">
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript">
+$(function(){
+  var rootPath=getRootPath();
+  var options =
+  {
+    thumbBox: '.thumbBox',
+    spinner: '.spinner',
+    imgSrc: 'img/a5.jpg'
+  }
+  var cropper = $('.imageBox').cropbox(options);
+  $('#upload-file').on('change', function(){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      options.imgSrc = e.target.result;
+      cropper = $('.imageBox').cropbox(options);
+    }
+    reader.readAsDataURL(this.files[0]);
+  })
+  $('#btnCrop').on('click', function(){
+    var img = cropper.getDataURL();
+    $('.cropped').html('');
+    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
+    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
+    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
+  })
+  $('#btnZoomIn').on('click', function(){
+    cropper.zoomIn();
+  })
+  $('#btnZoomOut').on('click', function(){
+    cropper.zoomOut();
+  })
+  $("#upload-file").change(function(){
+//  console.log($(this)[0].files[0]);
+    var files=$(this)[0].files[0];
+    saveClip(files);
+  });
+  function saveClip(files){
+    var oMyForm = new FormData();
+//  console.log(files);
+    oMyForm.append("ContentFile", files);
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("UserId", "123");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
+    $('#btnSave').on('click', function(){
+      debugger;
+      var imgbase64=$(".cropped img").attr("src");
+      var _this=$(this).parent(".action1").siblings(".cropped").children("img");
+//    console.log(oMyForm);
+      $.ajax({
+        url:rootPath+"common/uploadCM.do",
+        type:"POST",
+        data:oMyForm,
+        cache: false,
+        processData: false,
+        contentType: false,
+        dataType:"json",
+        //表单提交前进行验证
+        success: function (opeResult){
+          if(opeResult.ful[0].success=="TRUE"){
+            alert("文件裁剪上传成功");
+            var bb=$(window.parent.document).find("#myIframe").attr({"src":"manage_jm.html"});
+          }else{
+            alert(opeResult.err);
+          }
+        },
+        error: function(XHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      });
+    })
+  }
+  
+});
+</script>
+</html>

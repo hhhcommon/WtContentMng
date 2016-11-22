@@ -224,6 +224,7 @@ body{overflow: auto;}
   height:48px;
   background-size:100% 100%;
   float: left;
+  cursor: pointer;
 }
 .dctb2,.dctb3{
   width:48px;
@@ -241,16 +242,16 @@ body{overflow: auto;}
 .line1{
   width:600px;
   height:5px;
-  position: relative;
-  top:24px;
+  position: absolute;
+  margin-top:20px;
   left:115px;
   background:rgba(248,193,89,0.54);
 }
 .line2{
-  width:325px;
+  /*width:325px;*/
   height:5px;
-  position: relative;
-  top:19px;
+  position: absolute;
+  margin-top:20px;
   left:115px;
   background:#FFA634;
 }
@@ -259,9 +260,9 @@ body{overflow: auto;}
   height: 20px;
   background: #ffa634;
   float: left;
-  position: relative;
-  top: 6px;
-  left: 320px;
+  position: absolute;
+  margin-top:15px;
+  left: 100px;
   border-radius: 20px;
 }
 
@@ -322,7 +323,7 @@ body{overflow: auto;}
             </div>  
           </div>
           <div class="dc_right_bottom">
-            <audio id="audio" src="" style="display: none;"></audio>
+            <audio id="audio"  controls src="" style=""></audio>
             <img class="dctb1" src="img/act6.png" alt="" />
             <span class="dctb2">0:0</span>
             <div class="line1"></div>
@@ -403,23 +404,33 @@ $(function(){
   
   //点击节目详情页播放按钮
     $(document).on("click",".dctb1",function(){
-      
-//    if($(this).hasClass("fa-youtube-play")){//处于播放状态
-//      $.each($(".table span"), function(i,val){
-//        if($(val).hasClass("fa-pause")){
-//           $(val).removeClass("fa-pause").addClass("fa-youtube-play");
-//        }
-//      });
-//      $(this).removeClass("fa-youtube-play").addClass("fa-pause");
-//      audio.src=$(this).parent().parent("tr").attr("contentURI");
-//      audio.play();
-//    }else if($(this).hasClass("fa-pause")){//处于暂停状态
-//      $(this).removeClass("fa-pause").addClass("fa-youtube-play");
-//      audio.pause();
-//    } 
+      if(audio.paused){
+        audio.play();
+        $(this).attr({"src":"img/act7.png"});
+      }else{
+        audio.pause();
+        $(this).attr({"src":"img/act6.png"});
+      }
     });
-  
-  <!--获取mp3文件的时间 兼容浏览器-->
+    $("audio").ontimeupdate = function(){//当目前的播放位置已更改时
+      var crtTime = $(this).currentTime;//让视频的当前时间给range的值，为了保持自定义的控制跟随本身视频播放器自身的当前时间同步
+      console.log(crtTime);
+      var line1_length=$(".line1").css("width");
+      var maxTime=$(".dctb3").html();
+      var line2_length=crtTime/maxTime*line1_length;
+      $(".line2").css("width",line2_length +"px");
+      $(".circle").css("left",line2_length+100+"px");
+      $(".dctb2").innerHTML = Math.ceil(videos.currentTime);//为了取当前时间通过ceil取整
+    }
+    $(".circle").onchange = function(){
+      var line1_length=$(".line1").css("width");
+      var line2_length=$(".line2").css("width");
+      var maxTime=$(".dctb3").html();
+      var crtTime =(line2_length)/(line1_length)*maxTime; 
+       $("#audio").currentTime=crtTime;
+      //当自定义时间控制条发生变化时，让控制条的值给视频播放器本身 的目前时间同步
+    }
+  <!--获取音频文件的时间 兼容浏览器-->
     function getTime() {
       setTimeout(function () {
         var duration = $("#audio")[0].duration;
@@ -427,13 +438,21 @@ $(function(){
           getTime();
         }else{
           console.log("该歌曲的总时间为："+$("#audio")[0].duration+"秒");
-          var time=$("#audio")[0].duration;
-          
-          $(document).find(".dctb3").html(time+"秒");
+          var time=parseInt(duration);
+          timeDispose(time)
         }
       }, 10);
     }
-  
+    //对音频时间的处理
+    function timeDispose(number) {
+      var minute = parseInt(number / 60);
+      var second = parseInt(number % 60);
+      minute = minute >= 10 ? minute : "0" + minute;
+      second = second >= 10 ? second : "0" + second;
+      var tt=minute + ":" + second;
+      $(document).find(".dctb3").html(tt);
+      return  tt;
+    }
 });
 </script>
 </html>
