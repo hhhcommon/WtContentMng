@@ -19,14 +19,14 @@ $(function(){
   });
   
   $(document).on("click",".trig_item",function(){
-    debugger;
+//  debugger;
     var pId=$(this).parents(".attr").attr("id");
     var pTitle='';
     if((pId=="status")&&($(this).parents(".attr").attr("ids")=="jmstatus")){
-      pTitle="专辑状态：";
+      pTitle="节目状态：";
     }
     if((pId=="status")&&($(this).parents(".attr").attr("ids")=="zjstatus")){
-      pTitle="节目状态：";
+      pTitle="专辑状态：";
     }
     if(pId=="album"){
       pTitle="所属专辑：";
@@ -71,7 +71,7 @@ $(function(){
     }
   });
   $(document).on("click",".btns_sub",function(){
-    debugger;
+//  debugger;
     type=2;
     var pId=$(this).parents(".attr").attr("id");
     var pTitle='';
@@ -79,10 +79,10 @@ $(function(){
       pTitle="节目状态：";
     }
     if(pId=="album"){
-      pTitle="所属栏目：";
+      pTitle="所属专辑：";
     }
     if(pId=="channel"){
-      pTitle="所属专辑：";
+      pTitle="所属栏目：";
     }
     var str=" ";
     $(this).parent().siblings(".attrValues").children(".av_ul").children(".trig_item").each(function(){
@@ -128,7 +128,7 @@ $(function(){
     $(this).parent(".btns").siblings(".check_more").show();
   });
   $(document).on("click",".cate_img",function(){
-    debugger;
+//  debugger;
     $(this).parent(".cate").remove();
     var pId=$(this).parent(".cate").attr("pId");
     $("#"+pId).children(".btns").hide();

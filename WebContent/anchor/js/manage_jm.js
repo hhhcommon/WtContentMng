@@ -562,9 +562,8 @@ $(function(){
   
   //4.点击上传图片
   $(".upl_pt_img").on("click",function(){
-    $(".mask_clip,.container_clipmodal").show();
-    
-  })
+    var bb=$(window.parent.document).find("#myIframe").attr({"src":"photoClip.html"});
+  });
 //$(".upl_pt_img").on("click",function(){
 //  $(".upl_img").click();
 //});

@@ -485,6 +485,7 @@ $(function(){
     var arr=filePath.split('\\');
     var fileName=arr[arr.length-1];
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+//  console.log($(this)[0].files[0]);
     oMyForm.append("UserId", "123");
     oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
     oMyForm.append("MobileClass", "Chrome");
