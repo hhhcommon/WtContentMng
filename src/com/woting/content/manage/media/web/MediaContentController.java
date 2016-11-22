@@ -257,9 +257,15 @@ public class MediaContentController {
 				map.put("Message", "无节目名称");
 				return map;
 			}
+			String timelong = m.get("TimeLong") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(timelong) || timelong.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1013");
+				map.put("Message", "无节目时长");
+				return map;
+			}
 			String seqmediaId = m.get("SeqMediaId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(seqmediaId) || seqmediaId.toLowerCase().equals("null")) {
-				map.put("ReturnType", "1013");
+				map.put("ReturnType", "1014");
 				map.put("Message", "无专辑Id");
 				return map;
 			}
@@ -283,7 +289,7 @@ public class MediaContentController {
 			if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
 				flowFlag = "1";
 			}
-			map = mediaContentService.addMediaAssetInfo(userId, contentname, contentimg, seqmediaId, contenturi, tags,
+			map = mediaContentService.addMediaAssetInfo(userId, contentname, contentimg, seqmediaId, timelong, contenturi, tags,
 					membertypes, contentdesc, pubTime, flowFlag);
 			return map;
 		} catch (Exception e) {

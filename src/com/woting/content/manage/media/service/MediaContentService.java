@@ -67,7 +67,7 @@ public class MediaContentService {
 	 * @param uploadmap
 	 * @return
 	 */
-	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid,
+	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid, String timelong,
 			String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType, String contentdesc,
 			String pubTime, String flowFlag) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -76,6 +76,7 @@ public class MediaContentService {
 		ma.setMaTitle(contentname);
 		ma.setMaImg(contentimg);
 		ma.setMaURL(contenturi);
+		ma.setTimeLong(Long.valueOf(timelong));
 		// ma.setKeyWords("上传文件测试用待删除");
 		ma.setMaPubType(3);// 主播
 		ma.setMaPubId(userid);
@@ -105,6 +106,7 @@ public class MediaContentService {
 		maSource.setSmType(1);
 		maSource.setPlayURI(contenturi);
 		maSource.setIsMain(1);
+		
 		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ma.getCTime());
 		mediaService.saveMas(maSource);
