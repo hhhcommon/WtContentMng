@@ -76,7 +76,7 @@ public class FileUploadController extends AbstractFileUploadController{
 				}
 			}
 			FileUtils.deleteFile(new File(filepath));
-			map.put("FilePath", newfilepath);
+			map.put("FilePath", newfilepath.replace("/opt/tomcat8_CM/webapps/", "http://www.wotingfm.com:908/"));
 		} else {
 			if(srcType.equals("2")) {
 				String filepath = m.get("storeFilename")+""; //原始文件路径
@@ -86,7 +86,7 @@ public class FileUploadController extends AbstractFileUploadController{
 	            String newfilepath = path + "/" + newname;
 	            FileUtils.copyFile(filepath, newfilepath); //复制原始文件
 	            FileUtils.deleteFile(new File(filepath));
-	            map.put("FilePath", newfilepath);
+	            map.put("FilePath", newfilepath.replace("/opt/tomcat8_CM/webapps/", "http://www.wotingfm.com:908/"));
 			}
 		}
 		map.put("FileSize", m.get("size"));
