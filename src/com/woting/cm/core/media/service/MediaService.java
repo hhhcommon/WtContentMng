@@ -337,7 +337,7 @@ public class MediaService {
 			if (flowflag.equals("5")) {
 				m1.put("flowFlag", "0"); // 5用来查询待入库，其余编号与flowflag对应
 			} else {
-				m1.put("flowFlag", "0");
+				m1.put("flowFlag", flowflag);
 			}
 		}
 		if (!channelid.equals("0")) {

@@ -108,6 +108,12 @@ public class ChannelContentService {
     	if (wheresql.length()>3) {
 			m.put("wheresql", wheresql);
 		}
+    	if (mediatype.equals("MediaAsset")) {
+			m.put("assetType", "wt_MediaAsset");
+		}
+    	if (mediatype.equals("SeqMedia")) {
+			m.put("assetType", "wt_SeqMediaAsset");
+		}
     	m.put("sortByClause", " cTime desc,pubTime desc");
     	List<ChannelAssetPo> l = channelAssetDao.queryForList("getListBy", m);
     	if (l!=null && l.size()>0) {
