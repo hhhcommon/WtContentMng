@@ -216,7 +216,7 @@ $(function(){
 		}
 		audio.play();
     }
-//毫秒转时分秒格式
+//秒转时分秒格式
 function formatTime(longTime){
 	var time=parseFloat(longTime);
 	if(time!=null && time !=""){
