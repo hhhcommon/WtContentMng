@@ -44,7 +44,69 @@ public class BroadcastProService {
         bc_frequnceDao.setNamespace("BC_F");
         dictRefResDao.setNamespace("A_DREFRES");
     }
-
+    
+    public void addBroadcast(String userId, String bcTitle, String bcImg, String bcAreaId, String bcTypeId, String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
+    	BroadcastPo bPo = new BroadcastPo();
+        bPo.setId(SequenceUUID.getUUIDSubSegment(4));
+        bPo.setBcTitle(bcTitle);
+        bPo.setBcPubType(2);
+        bPo.setBcImg(bcImg);
+        bPo.setBcPublisher(bcPublisher);
+        if (bcDescn!=null) {
+			bPo.setDesc(bcDescn);
+		}
+        broadcastDao.insert(bPo);
+        
+      //字典
+        com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+        //字典--地区
+        DictModel tempDictM = null;
+        tempDictM=_cd.getDictModelById("2");
+        TreeNode<DictDetail> tempNode = null;
+        tempNode=(TreeNode<DictDetail>)tempDictM.dictTree.findNode(bcAreaId);
+        if (tempNode==null) {
+			tempDictM=_cd.getDictModelById("9");
+			tempNode=(TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
+		}
+        
+        if (tempNode!=null) {
+            DictRefResPo drrPo = new DictRefResPo();
+            drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+            drrPo.setRefName("电台所属地区");
+            drrPo.setResTableName("wt_Broadcast");
+            drrPo.setResId(bPo.getId());
+            drrPo.setDictMid(tempDictM.getId());
+            drrPo.setDictDid(bcAreaId);
+            dictRefResDao.insert(drrPo);
+        }
+        //字典--分类
+        String ids[]=bcTypeId.split(",");
+        tempDictM=_cd.getDictModelById("1");
+        for (int i=0; i<ids.length; i++) {
+            tempNode = (TreeNode<DictDetail>)tempDictM.dictTree.findNode(ids[i]);
+            if (tempNode!=null) {
+                DictRefResPo drrPo = new DictRefResPo();
+                drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+                drrPo.setRefName("电台分类");
+                drrPo.setResTableName("wt_Broadcast");
+                drrPo.setResId(bPo.getId());
+                drrPo.setDictMid(tempDictM.getId());
+                drrPo.setDictDid(ids[i]);
+                dictRefResDao.insert(drrPo);
+            }
+        }
+        
+      //直播流
+        LiveFlowPo lfp = new LiveFlowPo();
+        lfp.setId(SequenceUUID.getUUIDSubSegment(4));
+        lfp.setBcId(bPo.getId());
+        lfp.setBcSrcType(2);
+        lfp.setBcSource("管理端录入");
+        lfp.setFlowURI(bcPlayPath);
+        lfp.setIsMain(Integer.valueOf(isMain));
+        bc_liveflowDao.insert(lfp);
+    }
+    
     /**
      * 新增内容
      * @param m

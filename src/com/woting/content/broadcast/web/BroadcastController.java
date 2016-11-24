@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -13,13 +12,12 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spiritdata.framework.util.RequestUtils;
-import com.hp.hpl.sparta.Document;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.Page;
@@ -52,12 +50,163 @@ public class BroadcastController {
 
 	@RequestMapping(value = "add.do")
 	@ResponseBody
-	public Map<String, Object> addBroadcast(HttpServletRequest request) {
+	public Map<String, Object> addBc(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		bcService.add(m);
 		map.put("returnType", "1001");
 		return map;
+	}
+
+	@RequestMapping(value = "addBroadcast.do")
+	@ResponseBody
+	public Map<String, Object> addBroadcast(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.2.5--/content/media/removeMedia.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/removeMedia");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 数据采集
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String bcTitle = m.get("BcTitle") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcTitle) || bcTitle.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无电台名称");
+				return map;
+			}
+			String bcImg = m.get("BcImg") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcImg) || bcImg.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1013");
+				map.put("Message", "无电台图片");
+				return map;
+			}
+			String bcAreaId = m.get("BcAreaId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcAreaId) || bcAreaId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1014");
+				map.put("Message", "无电台地区Id");
+				return map;
+			}
+			String bcTypeId = m.get("BcTypeId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcTypeId) || bcTypeId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1015");
+				map.put("Message", "无电台分类Id");
+				return map;
+			}
+			String bcPlayPath = m.get("BcPlayPath") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) || bcPlayPath.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1016");
+				map.put("Message", "无电台直播流");
+				return map;
+			}
+			String bcPublisher = m.get("BcPublisher") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcPublisher) || bcPublisher.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1017");
+				map.put("Message", "无电台发布者");
+				return map;
+			}
+			String isMain = m.get("IsMain") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(isMain) || isMain.toLowerCase().equals("null")) {
+				isMain = "0";
+			}
+			String bcDescn = m.get("BcDescn") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcDescn) || bcDescn.toLowerCase().equals("null")) {
+				bcDescn = null;
+			}
+			bcService.addBroadcast(userId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPath, bcPublisher, isMain,
+					bcDescn);
+			map.put("ReturnType", "1001");
+			map.put("Message", "电台添加成功");
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
+			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@RequestMapping(value = "update.do")
@@ -121,10 +270,100 @@ public class BroadcastController {
 	@RequestMapping(value = "delBc.do")
 	@ResponseBody
 	public Map<String, Object> delBc(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.2.5--/content/media/removeMedia.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		bcService.del(m.get("ids") + "");
-		return map;
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/removeMedia");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+			//
+			bcService.del(m.get("ids") + "");
+			map.put("ReturnType", "1001");
+			map.put("Message", "删除成功");
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
+			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@RequestMapping(value = "getCataTrees4View.do")
@@ -228,9 +467,10 @@ public class BroadcastController {
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String datastr = JsonUtils.objToJson(m);
 		Map<String, String> datas = (Map<String, String>) JsonUtils.jsonToObj(datastr, Map.class);
-		org.jsoup.nodes.Document doc = null;
+		Document doc = null;
 		try {
-			doc = Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true).data(datas).post();
+			doc = Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true)
+					.data(datas).post();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
