@@ -228,23 +228,9 @@ public class BroadcastController {
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String datastr = JsonUtils.objToJson(m);
 		Map<String, String> datas = (Map<String, String>) JsonUtils.jsonToObj(datastr, Map.class);
-//		datas.put("IMEI", m.get("IMEI")+"");
-//		datas.put("PCDType", m.get("PCDType")+"");
-//		datas.put("CatalogType", m.get("CatalogType")+"");
-//		datas.put("ResultType", m.get("ResultType")+"");
-//		datas.put("RelLevel", m.get("RelLevel")+"");
-//		datas.put("Page", m.get("Page")+"");
-//		Iterator it = m.keySet().iterator();
-//		String url = "http://123.56.254.75:808/wt/getCatalogInfo.do?";
-//		String data = "";
-//		while(it.hasNext()){
-//			String key = it.next().toString();
-//			data+="&"+key+"="+m.get(key);
-//		}
-//		url += data.substring(1); 
 		org.jsoup.nodes.Document doc = null;
 		try {
-			doc = Jsoup.connect("http://123.56.254.75:808/wt/getCatalogInfo.do").ignoreContentType(true).data(datas).post();
+			doc = Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true).data(datas).post();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -254,6 +240,5 @@ public class BroadcastController {
 			map = (Map<String, Object>) JsonUtils.jsonToObj(elem, Map.class);
 		}
 		return map;
-
 	}
 }
