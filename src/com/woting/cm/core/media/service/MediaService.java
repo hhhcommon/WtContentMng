@@ -10,10 +10,13 @@ import javax.annotation.Resource;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.ui.tree.ZTree;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo;
+import com.woting.cm.core.broadcast.service.BcLiveFlowService;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -33,6 +36,7 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.utils.ContentUtils;
+import com.woting.content.broadcast.persis.pojo.BroadcastPo;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.exceptionC.Wtcm0101CException;
@@ -56,6 +60,8 @@ public class MediaService {
 	private ChannelContentService channelContentService;
 	@Resource
 	private KeyWordProService keyWordProService;
+	@Resource
+	private BcLiveFlowService bcLiveFlowService;
 	@Resource
 	private ComplexRefService complexRefService;
 	private Map<String, Object> FlowFlagState = new HashMap<String, Object>() {
@@ -458,6 +464,35 @@ public class MediaService {
 		return list;
 	}
 
+	// 整理专辑返回结果
+	public List<Map<String, Object>> makeBcListToReturn(List<BroadcastPo> listpo) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (listpo != null && listpo.size() > 0) {
+			String resids = "";
+			for (BroadcastPo bcPo : listpo) {
+				resids += ",'" + bcPo.getId() + "'";
+			}
+			resids = resids.substring(1);
+			List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_Broadcast");
+			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_Broadcast");
+			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
+			for (BroadcastPo bc : listpo) {
+				List<BCLiveFlowPo> ls = bcLiveFlowService.getBcLiveFlowsByBcId(bc.getId());
+				Map<String, Object> bcm = bc.toHashMap();
+				if (ls != null) {
+					for (BCLiveFlowPo bcLiveFlowPo : ls) {
+						if (bcLiveFlowPo.getIsMain() == 1) {
+							bcm.put("flowURI", bcLiveFlowPo.getFlowURI());
+						}
+					}
+				}
+				Map<String, Object> mam = ContentUtils.convert2Bc(bcm, null, catalist, pubChannelList, null);
+				list.add(mam);
+			}
+		}
+		return list;
+	}
+
 	@SuppressWarnings("unchecked")
 	private List<Map<String, Object>> makeComplexRefList(String assetTableName, String assetId, String dictMID,
 			String dictDId) {
@@ -572,8 +607,16 @@ public class MediaService {
 		param.put("resIds", resids);
 		List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResIds", param);
 		List<Map<String, Object>> catalist = new ArrayList<Map<String, Object>>();
-		for (DictRefResPo dictRefResPo : rcrpL) {
-			catalist.add(dictRefResPo.toHashMap());
+		if (rcrpL != null && rcrpL.size() > 0) {
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+			for (DictRefResPo dictRefResPo : rcrpL) {
+				Map<String, Object> dictrefm = dictRefResPo.toHashMap();
+				DictModel dm = _cd.getDictModelById(dictrefm.get("dictMid")+"");
+				dictrefm.put("dictMName", dm.getDmName());
+				TreeNode<DictDetail> root = (TreeNode<DictDetail>) dm.dictTree.findNode(dictrefm.get("dictDid")+"");
+				dictrefm.put("pathNames",root.getNodeName());
+				catalist.add(dictrefm);
+			}
 		}
 		return catalist;
 	}

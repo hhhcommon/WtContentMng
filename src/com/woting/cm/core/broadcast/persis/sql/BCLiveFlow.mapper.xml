@@ -35,6 +35,11 @@
   </sql>
   
   <!-- 获得列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_BCLiveFlow 
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+  
   <select id="getBCLiveFolwByBcSource" resultMap="BaseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/> from wt_BCLiveFlow where bcSource=#{bcSource,jdbcType=VARCHAR}
   </select>
