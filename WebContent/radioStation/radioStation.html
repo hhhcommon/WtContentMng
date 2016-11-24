@@ -22,9 +22,147 @@
   <script src="../resources/plugins/hplus/js/content.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/js/common.utils.js"></script>
+<style type="text/css">
+.detail{
+  width: 100%;
+  min-width: 500px;
+  height: 400px;
+  border: 1px solid red;
+  overflow: auto;
+}
+.listBox {
+  width: 100%;
+  height: 100px;
+  padding: 6px;
+  border-bottom: 2px solid #f3f3f4;
+  background: white;
+  position: relative;
+  cursor: pointer;
+}
+.listBox .listCheck {
+  width: 6%;
+  text-align: center;
+  height: 78px;
+  line-height: 78px;
+}
+.listBox .listImg, .listBox .listCon, .listBox .listCheck {
+  float: left;
+}
+.listBox .listImg {
+  height: 80px;
+  width: 80px;
+  margin-right: 15px;
+  margin-left: 6px;
+}
+.listBox .listImg img {
+  height: 100%;
+  width: 100%;
+}
+.listBox .listCon {
+  width: 70%;
+  height: 100%;
+}
+
+.listBox .listCon h3 {
+  font-size: 12px;
+  margin-top: 0;
+  margin-bottom: 2px;
+  color: #636363;
+  position: relative;
+  display: inline-block;
+  max-width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listBox .secTitle,.listBox .playUrl {
+  font-size: 12px;
+  color: #ccc;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listBox p {
+  margin: 0 0 2px;
+}
+.listBox .other {
+  font-size: 12px;
+  color: #3871a6;
+}
+.listBox .other span {
+  padding-right: 12px;
+}
+.detail .listBox .sortUpdate {
+  width: 100px;
+  height: 20px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
+}
+.detail .listBox .sortUpdate .sortNum {
+  width: 60px;
+  height: 20px;
+  background-color: #f3f3f4;
+  color: black;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  outline: 0px;
+}
+.detail .listBox .sortUpdate .sortUpdateBtn {
+  height: 20px;
+  line-heihgt: 20px;
+  width: 24px;
+  margin: 0;
+  padding: 0;
+  border-radius: 20px;
+  border: none;
+}
+.upl_pt{
+  padding: 15px 0px 15px 0px;
+}
+.previewImg{
+  width: 100px;
+  height: 100px;
+  border: 1px solid #dedede;
+}
+.previewImg img{
+  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
+}
+.upfile{
+  width: 10px !important;
+  height: 10px;
+  display: none !important;
+}
+#cataTrees{
+  margin-top: 0px !important;
+}
+#cataTreess{
+  width:450px;
+  height: 145px;
+  margin-left: 2px;
+  margin-top: 0px !important;
+  float: left;
+  display: none;
+}
+#chooseParent1 ,#chooseParent2{
+  width: 100px;
+  height: 32px;
+  margin-left:20px;
+  font-size: 12px;
+  line-height: 32px;
+  float: left;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #e5e6e7;
+}
+</style>
 </head>
 <body style="overflow:hidden;">
-  <div style="height:100%">
+  <div style="height:100%;background: white;">
     <!--菜单栏-->
     <div class="toobarArea">
       <button type="button" id="add" opeType="claAdd" class="btn" style="margin-right:3px;">添加</button>
@@ -46,7 +184,23 @@
           <div class="ibox float-e-margins">
             <h5>电台分类详情</h5>
             <div class="ibox-content">
-              <ul class="detail"></ul>
+              <div class="detail">
+                <!--<div class="listBox" actid="" acttype="" columnid="">
+                  <div class="listCheck"><input type="checkBox" name=""></div>
+                  <div class="listImg">
+                    <img alt="mage" src="http://pic.qingting.fm/2015/1221/20151221144845770.jpg!400">
+                  </div>
+                  <div class="listCon">
+                    <h3>巴黎清理一地铁站难民营地 移送超1000名难民</h3>
+                    <p class="secTitle">暂无</p>
+                    <p class="other"><span>来源：null</span><span>2016年11月5日 </span></p>
+                  </div>
+                  <div class="sortUpdate">
+                    <input type="text" class="sortNum" value="0">
+                    <button class="sortUpdateBtn">OK</button>
+                  </div>
+                </div>-->
+              </div>
             </div>
           </div>
         </div>
@@ -68,48 +222,50 @@
             <form id="verOperForm" enctype ="multipart/form-data">
               <table>
                 <tr>
-                  <td class="th add-th">名称</td>
-                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="名称" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td class="th add-th">电台名称</td>
+                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="电台名称" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
-                  <td class="th add-th">序号</td>
-                  <td colspan="3"><input type="text" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
-                </tr>
-                <tr>
-                  <td class="th add-th" style="position:absolute;top:139px;left:2px;">父分类</td>
+                  <td class="th add-th">电台图片</td>
                   <td colspan="3">
-                    <!--<select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>-->
-                    <div style="width:450px;height:36px;">
-                      <input type="text" class="form-control" id="nodeParent" name="nodeParent" placeholder="父分类id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;">
-                      <input type="text" class="form-control" id="nodeParents" name="nodeParents" placeholder="父分类名字" aria-required="true" style="width:330px;margin-bottom:0px;">
-                      <div id='chooseParent'>选择父分类</div>
+                    <div class="upl_pt">
+                      <input class="upfile" type="file" />
+                      <div class="previewImg">
+                        <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="th add-th">播放地址</td>
+                  <td colspan="3"><input type="text" class="form-control" id="url" name="url" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"></td>
+                </tr>
+                <tr>
+                  <td class="th add-th">发布者</td>
+                  <td colspan="3"><input type="text" class="form-control" id="publisher" name="publisher" placeholder="发布者" aria-required="true" style="margin-bottom:0px;"></td>
+                </tr>
+                <tr>
+                  <td class="th add-th">电台区域</td>
+                  <td colspan="3">
+                    <div style="width:450px;overflow: hidden;">
+                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent" placeholder="父区域分类id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float: left;">
+                      <input type="text" class="form-control" id="nodeParents1" name="nodeParents" placeholder="父区域名字" aria-required="true" style="width:330px;margin-bottom:0px;float: left;">
+                      <div id='chooseParent1'>选择区域</div>
                     </div>
                     <ul id="cataTrees" class="ztree"></ul>
                   </td>  
                 </tr>
                 <tr>
-                  <td class="th add-th">资源类型</td>
+                  <td class="th add-th">父类电台</td>
                   <td colspan="3">
-                    <input type="text" class="form-control" id="contentType" name="contentType" placeholder="资源类型" aria-required="true" style="width:450px;margin-bottom:-34px;display:none;">
-                    <ul id="sourceType">
-                      <li>
-                        <input id="all" type="checkbox" class="form-control" name="checkbox" value="0">
-                        <span class="all">所有</span>
-                      </li>
-                      <li>
-                        <input id="radio" type="checkbox" class="form-control" name="checkbox" value="1">
-                        <span class="radio">电台</span>
-                      </li>
-                      <li>
-                        <input id="jm" type="checkbox" class="form-control" name="checkbox" value="2">
-                        <span class="jm">节目</span>
-                      </li>
-                      <li>
-                        <input id="zj" type="checkbox" class="form-control" name="checkbox" value="3">
-                        <span class="zj">专辑</span>
-                      </li>
-                    </ul>
-                  </td>
+                    <!--<select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>-->
+                    <div style="width:450px;overflow: hidden;">
+                      <input type="text" class="form-control" id="nodeParent2" name="nodeParent" placeholder="父电台id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
+                      <input type="text" class="form-control" id="nodeParents2" name="nodeParents" placeholder="父电台名字" aria-required="true" style="width:330px;margin-bottom:0px;float:left;">
+                      <div id='chooseParent2'>选择电台</div>
+                    </div>
+                    <ul id="cataTreess" class="ztree"></ul>
+                  </td>  
                 </tr>
                 <tr>
                   <td class="th add-th">详细信息</td>
@@ -133,46 +289,8 @@ var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 //需要加载的分类树的数据，以list方式给出
-var loadTreeData=[
-  {
-    "MobileClass":"Redmi Note 2::Xiaomi",
-    "ScreenSize":"1080x1920",
-    "IMEI":"46BEA3E454EF2A7EACA873F0F30A1F1A",
-    "GPS-longitude":"116.520986",
-    "GPS-latitude ":"39.923882",
-    "PCDType":1,
-    "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
-    "CatalogType":"2",
-    "ResultType":"1",
-    "RelLevel":"2",
-    "Page":"1"
-  },
-  {
-    "MobileClass":"Redmi Note 2::Xiaomi",
-    "ScreenSize":"1080x1920",
-    "IMEI":"46BEA3E454EF2A7EACA873F0F30A1F1A",
-    "GPS-longitude":"116.520986",
-    "GPS-latitude ":"39.923882",
-    "PCDType":1,
-    "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
-    "CatalogType":"9",
-    "ResultType":"1",
-    "RelLevel":"2",
-    "Page":"1"
-  },
-  {
-    "MobileClass":"Redmi Note 2::Xiaomi",
-    "ScreenSize":"1080x1920",
-    "IMEI":"46BEA3E454EF2A7EACA873F0F30A1F1A",
-    "GPS-longitude":"116.520986",
-    "GPS-latitude ":"39.923882",
-    "PCDType":1,
-    "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
-    "CatalogType":"1",
-    "ResultType":"1",
-    "RelLevel":"2",
-    "Page":"1"
-  }];
+var loadTreeData=[{CatalogType:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
+//var loadModalTreeData=[{CatalogType:"1",TreeViewType:"zTree"}];
 
 //初始化方法：页面加载完成后执行
 $(function() {
@@ -194,9 +312,12 @@ $(function() {
       simpleData:{
         enable: true
       }
+    },
+    callback:{
+      onClick:reqDetailList
     }
   });
-  //0.2--初始化弹出框的树
+  //0.2--初始化弹出框的树(行政区划和电台分类2)
   zTreeObjs=$.fn.zTree.init($("#cataTrees"), {
     view:{
       selectedMulti: false//是否允许同时选中多个节点
@@ -219,20 +340,40 @@ $(function() {
     }
   });
   
+  //0.3--初始化弹出框的树(电台分类)
+  zTreeObjss=$.fn.zTree.init($("#cataTreess"), {
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:onClick1
+    }
+  });
+  
   //1-加载数据
   //1.1-加载树
-  loadTree(loadTreeData);
-
+  loadTree(zTreeObj,loadTreeData);
+//loadTree(zTreeObjs,loadModalTreeData);
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
     cleanDialog();
     oPeType=1;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("添加栏目");
-    $("#addCata").find("tr:eq(2)").css({"display":"none"});
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
+    $("#addCata").find(".modal-header>h4").html("添加分类");
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
@@ -273,7 +414,7 @@ $(function() {
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
     if(oPeType==1){
-      addChannel();
+      addBroadcast();
     }else{
       modChannel();
     }
@@ -283,9 +424,64 @@ $(function() {
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
   });
-  //2.6-点击选择父分类，弹出的修改界面出现树形分类
-  $("#chooseParent").on("click",function(){
+   //2.7-点击上传图片
+   $(".previewImg").on("click",function(){
+    alert(123);
+    $(".upfile").click();
+  }); 
+  $(".upfile").change(function(){
+    if($(".defaultImg").css("display")!="none"){
+      $(".defaultImg").css({"display":"none"});
+    }
+    var _this=$(this);
+    var fileReader = new FileReader();
+    fileReader.onload = function(evt){
+      if(FileReader.DONE==fileReader.readyState){
+        var newImg =  $("<img  class='newImg' alt='front cover' />");
+        newImg.attr({"src":this.result});//是Base64的data url数据
+        if($(".previewImg").children().length>1){
+          $(".previewImg img:last").replaceWith(newImg);
+        }else{
+          $(".previewImg").append(newImg);
+        }
+      }
+    }
+    fileReader.readAsDataURL($(this)[0].files[0]);
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("UserId", "123");
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      //表单提交前进行验证
+      success: function (opeResult){
+        if(opeResult.ful[0].success=="TRUE"){
+          _this.attr("value",opeResult.ful[0].FilePath);
+        }else{
+          alert(opeResult.err);
+        }
+      },
+      error: function(XHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  //2.6-点击选择区域，弹出树形分类
+  $("#chooseParent1").on("click",function(){
     $("#cataTrees").slideDown("slow");
+  });
+  $("#chooseParent2").on("click",function(){
+    $("#cataTreess").slideDown("slow");
   });
   //2.8-点击all，checkbox实现全选、全不选
   $("#all").on("click",function(){
@@ -326,13 +522,13 @@ $(function() {
 /**
  * 加载树
  */
-function loadTree(loadData) {
-  var _url="http://123.56.254.75:808/wt/getCatalogInfo.do";
+function loadTree(obj,loadData) {
+  var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
   loadRecursion(0);
 
   function loadRecursion(index) {
-    if (index==loadTreeData.length) return;
+    if (index==loadData.length) return;
     $.ajax({
       type: "POST",    
       url: _url,
@@ -340,8 +536,12 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-          zTreeObj.addNodes(null,jsonData.Data,false);
-          zTreeObjs.addNodes(null,jsonData.Data,false);
+//        if(obj=="zTreeObj"){
+            zTreeObj.addNodes(null,jsonData.Data,false);
+//        }else{
+            zTreeObjs.addNodes(null,jsonData.Data,false);
+            zTreeObjss.addNodes(null,jsonData.Data,false);
+//        }      
         }
         loadRecursion(index);
       },
@@ -360,7 +560,6 @@ function getRootNode() {
     alert("请先选中分类在进行操作");
     $("#shade").css({"display":"none"});
     $("#addCata").modal("hide");
-//  $("#addCata").find(".modal-header>span:eq(1)").html("栏目");
   }else{
     alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
     nodePathStr=treeNode.attributes.pathName+"";
@@ -376,42 +575,129 @@ function getRootNode() {
       $("#addCata").find(".modal-header>span:eq(0)").hide();
       $("#addCata").find(".modal-header>span:eq(1)").hide();
     }
+    $("#shade").css({"display":"block"});
+    $("#addCata").modal("show");
   }
 }
 
-/*增加新分类的方法*/
-function addChannel() {
-  var addInfo={
-    "Data":{
-      "Name":$("#nodeNames").val(),
-      "Owner":{"OwnerType":"100","OwnerId":"cm"},
-      "Sort":$("#sort").val(),
-      "ContentType":$("#contentType").val(),
-      "Descn":$("#nodeDescn").val()
-    }
+/*选中某一分类，加载对应的列表详情*/
+function reqDetailList(event, treeId, treeNode){
+  var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
+  treeNode=nodes[0]; //当前选中的节点
+  //alert("加载详情选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name+"当前选中节点的根节点:"+treeNode.attributes.mId);
+  var _data={
+    "IMEI":"3279A27149B24719991812E6ADBA5583",
+    "PCDType":"3",
+    "MobileClass":"Redmi Note 2::Xiaomi",
+    "ScreenSize":"1080x1920",
+    "GPS-longitude":"116.52098",
+    "GPS-latitude":"39.923882",
+    "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
+    "CatalogType":treeNode.attributes.mId,
+    "CatalogId":treeNode.id,
+    "ResultType":"1",
+    "RelLevel":"2",
+    "PageSize":"100",
+    "Page":"1"
   };
-  if(treeNode.attributes.parentId) addInfo.ChannelId=treeNode.id;
   $.ajax({
     type: "POST",    
-    url:rootPath+"baseinfo/addChannel.do",
+    url:rootPath+"content/bc/getBroadcastList.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        loadDetailList(resultData);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  })
+}
+function loadDetailList(resultData){
+  $(".detail").html("");
+  for(var i=0;i<resultData.ResultList.List.length;i++){
+    if(!resultData.ResultList.List[i].List){
+      var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].ContentId+'>'+
+                '<div class="listCheck"><input type="checkBox" name=""></div>'+
+                '<div class="listImg">'+
+                  '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
+                '</div>'+
+                '<div class="listCon">'+
+                  '<h3>'+resultData.ResultList.List[i].ContentName+'</h3>'+
+                  '<p class="secTitle">'+resultData.ResultList.List[i].ContentPub+'</p>'+
+                  '<p class="playUrl">'+resultData.ResultList.List[i].ContentPlay+'</p>'+
+                  '<p class="other"><span>来源：'+resultData.ResultList.List[i].ContentSource+'</span></p>'+
+                '</div>'+
+                '<div class="sortUpdate">'+
+                  '<input type="text" class="sortNum" value="0">'+
+                  '<button class="sortUpdateBtn">OK</button>'+
+                '</div>'+
+              '</div>'
+      $(".detail").append(dl);         
+    }else{
+      for(var j=0;j<resultData.ResultList.List[i].List.length;j++){
+        var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].List[j].ContentId+'>'+
+                  '<div class="listCheck"><input type="checkBox" name=""></div>'+
+                  '<div class="listImg">'+
+                    '<img alt="mage" src='+resultData.ResultList.List[i].List[j].ContentImg+'>'+
+                  '</div>'+
+                  '<div class="listCon">'+
+                    '<h3>'+resultData.ResultList.List[i].List[j].ContentName+'</h3>'+
+                    '<p class="secTitle">'+resultData.ResultList.List[i].List[j].ContentPub+'</p>'+
+                    '<p class="playUrl">'+resultData.ResultList.List[i].List[j].ContentPlay+'</p>'+
+                    '<p class="other"><span>来源：'+resultData.ResultList.List[i].List[j].ContentSource+'</span></p>'+
+                  '</div>'+
+                  '<div class="sortUpdate">'+
+                    '<input type="text" class="sortNum" value="0">'+
+                    '<button class="sortUpdateBtn">OK</button>'+
+                  '</div>'+
+                '</div>'
+        $(".detail").append(dl);         
+      }
+    }
+  }
+}
+  
+/*增加新分类的方法*/
+function addBroadcast() {
+  var addInfo={
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "MobileClass":"Redmi Note 2::Xiaomi",
+      "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
+      "BcTitle":$("#nodeNames").val(),
+      "BcImg":$(".file").attr("value"),
+      "BcAreaId":$("#nodeParent1").val(),
+      "BcTypeId":$("#nodeParent2").val(),
+      "BcPlayPath":$("#url").val(),
+      "IsMain":"1",
+      "BcPubsher":$("#publisher").val(),
+      "Descn":$("#nodeDescn").val()
+    
+  };
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/addBroadcast.do",
     dataType: "json",
     data:JSON.stringify(addInfo),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        zTreeObj.addNodes(treeNode,
-          {
-            id:resultData.CatagoryId,
-            name:$("#nodeNames").val(),
-            attributes:{
-              sort:$("#sort").val(),
-              parentId:treeNode.id,
-              contentType:$("#contentType").val(),
-              pathName:treeNode.attributes.pathName+"/"+$("#nodeNames").val()
-            }
-          }
-        );
-        cleanDialog();
-        alert("添加成功!");
+//      zTreeObj.addNodes(treeNode,
+//        {
+//          id:resultData.CatagoryId,
+//          name:$("#nodeNames").val(),
+//          attributes:{
+//            sort:$("#sort").val(),
+//            parentId:treeNode.id,
+//            contentType:$("#contentType").val(),
+//            pathName:treeNode.attributes.pathName+"/"+$("#nodeNames").val()
+//          }
+//        }
+//      );
+//      cleanDialog();
+//      alert("添加成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -426,13 +712,17 @@ function addChannel() {
 function onClick(event, treeId, treeNode) {
   var node=zTreeObjs.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
   modalNode=node[0]; //当前选中的节点
-  var sortNode=modalNode.getParentNode();//获取当前选中分类的父分类
-  alert("修改后"+"\n目前父分类的名字："+sortNode.name+"\n修改后父分类的id："+modalNode.id+"\n修改后父分类的名字："+modalNode.name);
-  $("#nodeParent").val(modalNode.id);
-  $("#nodeParents").val(modalNode.name);
+  $("#nodeParent1").val(modalNode.id);
+  $("#nodeParents1").val(modalNode.name);
   $("#cataTrees").slideUp("slow");
 };
-
+function onClick1(event, treeId, treeNode) {
+  var node=zTreeObjss.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+  modalNode=node[0]; //当前选中的节点
+  $("#nodeParent2").val(modalNode.id);
+  $("#nodeParents2").val(modalNode.name);
+  $("#cataTreess").slideUp("slow");
+};
 /*修改已有分类的方法*/
 function modChannel() {
   var modInfo={
