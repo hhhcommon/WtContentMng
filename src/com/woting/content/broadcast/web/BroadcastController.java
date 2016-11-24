@@ -63,7 +63,7 @@ public class BroadcastController {
 	public Map<String, Object> addBroadcast(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("5.2.5--/content/media/removeMedia.do");
+		alPo.setApiName("5.4.4--/content/bc/addBroadcast.do");
 		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
 		alPo.setOwnerType(201);
@@ -88,7 +88,7 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/removeMedia");
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/addBroadcast.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
 						map.put("Message", "需要登录");
@@ -214,7 +214,7 @@ public class BroadcastController {
 	public Map<String, Object> updateBroadcast(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("5.2.5--/content/media/removeMedia.do");
+		alPo.setApiName("5.4.5--/content/bc/updateBroadcast.do");
 		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
 		alPo.setOwnerType(201);
@@ -239,7 +239,7 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/removeMedia");
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/updateBroadcast.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
 						map.put("Message", "需要登录");
@@ -419,7 +419,7 @@ public class BroadcastController {
 	public Map<String, Object> delBc(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("5.2.5--/content/media/removeMedia.do");
+		alPo.setApiName("5.4.6--/content/bc/delBc.do");
 		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
 		alPo.setOwnerType(201);
@@ -444,7 +444,7 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/removeMedia");
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/delBc.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
 						map.put("Message", "需要登录");
@@ -558,7 +558,7 @@ public class BroadcastController {
 	public Map<String, Object> getBcInfo(HttpServletRequest request) {
 		// 数据收集处理==1
 		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("5.2.5--/content/media/removeMedia.do");
+		alPo.setApiName("5.4.3--/content/bc/getBcInfo.do");
 		alPo.setObjType("005");// 用户组对象
 		alPo.setDealFlag(1);// 处理成功
 		alPo.setOwnerType(201);
@@ -583,7 +583,7 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/media/removeMedia");
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/getBcInfo.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
 						map.put("Message", "需要登录");
