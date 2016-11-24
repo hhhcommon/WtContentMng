@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.print.attribute.standard.Media;
 
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
@@ -22,6 +23,7 @@ import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
+import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.broadcast.persis.pojo.BroadcastPo;
 import com.woting.content.broadcast.persis.pojo.FrequncePo;
 import com.woting.content.broadcast.persis.pojo.LiveFlowPo;
@@ -36,6 +38,8 @@ public class BroadcastProService {
 	private MybatisDAO<FrequncePo> bc_frequnceDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<DictRefResPo> dictRefResDao;
+	@Resource
+	private MediaService mediaService;
 
 	@PostConstruct
 	public void initParam() {
@@ -383,29 +387,14 @@ public class BroadcastProService {
 	 * @param bcId
 	 * @return
 	 */
-	public Map<String, Object> getBroadcastInfo(String bcId) {
+	public List<Map<String, Object>> getBroadcastInfo(String bcId) {
 		Map<String, Object> ret = new HashMap<String, Object>();
 		// 基本信息
 		BroadcastPo bp = broadcastDao.getInfoObject("getInfoById", bcId);
-		if (bp != null)
-			ret.put("bcBaseInfo", bp);
-		else
-			return null;
-		// 直播流
-		Map<String, String> param = new HashMap<String, String>();
-		param.put("bcId", bcId);
-		List<LiveFlowPo> lfpL = bc_liveflowDao.queryForList(param);
-		if (lfpL != null && lfpL.size() > 0)
-			ret.put("liveflows", lfpL);
-		// 分类
-		param = new HashMap<String, String>();
-		param.put("resTableName", "wt_Broadcast");
-		param.put("resId", bcId);
-		param.put("orderByClause", "dictMid, bCode");
-		List<DictRefResPo> rcrpL = dictRefResDao.queryForList(param);
-		if (rcrpL != null && rcrpL.size() > 0)
-			ret.put("cataList", rcrpL);
-		return ret;
+		List<BroadcastPo> listpo = new ArrayList<>();
+		listpo.add(bp);
+		List<Map<String, Object>> l = mediaService.makeBcListToReturn(listpo);
+		return l;
 	}
 
 	public List<DictRefResPo> getCataRefList(String ids) {

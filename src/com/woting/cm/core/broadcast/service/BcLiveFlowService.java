@@ -37,6 +37,17 @@ public class BcLiveFlowService {
 		return m;
 	}
 	
+	public List<BCLiveFlowPo> getBcLiveFlowsByBcId(String bcId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("bcId", bcId);
+		m.put("isMain", "1");
+		List<BCLiveFlowPo> ls = bclfDao.queryForList("getList", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
 	public void insertBCLiveFlowList(List<BCLiveFlowPo> bclflist) {
 		bclfDao.insert("insertList", bclflist);
 	}

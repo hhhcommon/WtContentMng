@@ -7,6 +7,8 @@
     <typeAlias alias="broadcast" type="com.woting.content.broadcast.persis.pojo.BroadcastPo"/>
     <typeAlias alias="bc_liveflow" type="com.woting.content.broadcast.persis.pojo.LiveFlowPo"/>
     <typeAlias alias="bc_frequnce" type="com.woting.content.broadcast.persis.pojo.FrequncePo"/>
+    <typeAlias alias="bcliveflow" type="com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo"/>
+    <typeAlias alias="bcprogramme" type="com.woting.cm.core.broadcast.persis.po.BCProgrammePo"/>
     <!-- 公共关系
     <typeAlias alias="ref_catalog" type="com.woting.content.pubref.persistence.pojo.ResCataRefPo"/> -->
     <!-- 版本管理 -->
@@ -21,6 +23,9 @@
     <mapper resource="com/woting/content/broadcast/persis/sql/Broadcast.mapper.xml"/>
     <mapper resource="com/woting/content/broadcast/persis/sql/Frequnce.mapper.xml"/>
     <mapper resource="com/woting/content/broadcast/persis/sql/LiveFlow.mapper.xml"/>
+    
+    <mapper resource="com/woting/cm/core/broadcast/persis/sql/BCProgramme.mapper.xml"/>
+    <mapper resource="com/woting/cm/core/broadcast/persis/sql/BCLiveFlow.mapper.xml"/>
     <!-- 公共关系
     <mapper resource="com/woting/content/pubref/persistence/sql/ResCataRef.mapper.xml"/> -->
     <!-- 版本管理 -->
