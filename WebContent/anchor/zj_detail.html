@@ -22,13 +22,12 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{overflow: auto;}
+body{overflow: auto;background: #fff;}
 .detail{
   width:1090px;
   min-width:850px;
-  height:620px;
+  height:520px;
   margin:auto;
-  border:1px solid red;
 }
 .detail_title{
   height: 30px;
@@ -93,7 +92,6 @@ body{overflow: auto;}
 .dcl_zjcontent2 h3{
   width:auto;
   display: inline-block;
-  margin-left:-10px;
   font-size: 20px;
   color:#000;
   font-family: "微软雅黑";
@@ -222,7 +220,7 @@ body{overflow: auto;}
   cursor: pointer;
   display: inline-block;
   overflow: hidden;
-  background-position: 0px -132px;
+  background-position: 0px -154px;
   vertical-align: middle;
   user-select: none;
   -webkit-user-select: none;
@@ -298,7 +296,7 @@ body{overflow: auto;}
             </div>
             <div class="dcl_zjcontent2">
               <div class="title">
-                <h3>fsdf</h3>
+                <h3></h3>
                 <span class="h3span"></span>
               </div>
               <p>来自栏目<span></span></p>
@@ -321,6 +319,7 @@ body{overflow: auto;}
               <h4></h4>
               <span>更改排序</span>
             </div>
+            <audio src="" controls class="audio" style="display:none;"></audio>
             <ul class="list_content">
               <!--<li class="list_content1" style="margin-top:15px;">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
@@ -491,12 +490,12 @@ $(function(){
     $(".list_title h4").html("共"+resultData.Result.SubCount+"个节目");
     if(resultData.Result.MediaAssetList!=null){
       for(var i=0;i<resultData.Result.MediaAssetList.length;i++){
-        var newjiList='<li class="list_content1" style="margin-top:15px;">'+
-                        '<a class="list_content1_a" href="#">'+resultData.Result.MediaAssetList[0].ContentName+'</a>'+
-                        '<a class="list_content1_img" href="#"></a>'+
-                        '<span class="list_content1_span1">('+resultData.Result.MediaAssetList[0].PlayCount+')</span>'+
-                        '<span class="list_content1_span2">'+resultData.Result.MediaAssetList[0].ContentPubChannels[0].FlowFlagState+'</span>'+
-                        '<span class="list_content1_span3">'+resultData.Result.MediaAssetList[0].CTime+'</span>'+
+        var newjiList='<li class="list_content1" contentSeqId='+resultData.Result.MediaAssetList[i].ContentSeqId+' style="margin-top:15px;">'+
+                        '<span class="list_content1_a" href="#">'+resultData.Result.MediaAssetList[i].ContentName+'</span>'+
+                        '<span class="list_content1_img play_pause" href="javascrript:" contentPlay='+resultData.Result.MediaAssetList[i].ContentPlay+'></span>'+
+                        '<span class="list_content1_span1">('+resultData.Result.MediaAssetList[i].PlayCount+')</span>'+
+                        '<span class="list_content1_span2">'+resultData.Result.ContentPubChannels[0].FlowFlagState+'</span>'+
+                        '<span class="list_content1_span3">'+resultData.Result.MediaAssetList[i].CTime+'</span>'+
                       '</li>';
         $(".list_content").append(newjiList);             
       }
@@ -562,6 +561,27 @@ $(function(){
     $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
     getZjDetail(contentId);
   })
+  
+  //点击专辑的节目列表的播放按钮
+  $(document).on("click",".list_content1_img",function(){
+    var audios=$(".audio")[0];//定义播放器的容器
+    var contentPlay=$(this).attr("contentPlay");
+    if($(this).hasClass("play_pause")){
+      $(this).parent().siblings(".list_content1").children(".list_content1_img").removeClass("playing").addClass("play_pause");
+      $(this).parent().siblings(".list_content1").children(".list_content1_img").css({"background-position":"0px -154px"});
+      $(this).removeClass("play_pause").addClass("playing");
+      $(".audio").attr({"src":contentPlay});
+      audios.play();
+      $(this).css({"background-position":"0px -324px"});
+    }else{
+      $(this).parent().siblings(".list_content1").children(".list_content1_img").removeClass("playing").addClass("play_pause");
+      $(this).parent().siblings(".list_content1").children(".list_content1_img").css({"background-position":"0px -324px"});
+      $(this).removeClass("playing").addClass("play_pause");
+      $(".audio").removeAttr("src");
+      audios.pause();
+      $(this).css({"background-position":"0px -154px"});
+    }
+  });
   
 });
 </script>
