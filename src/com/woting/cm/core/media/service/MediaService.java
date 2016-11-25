@@ -16,6 +16,7 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo;
+import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.broadcast.service.BcLiveFlowService;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
@@ -36,7 +37,6 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.utils.ContentUtils;
-import com.woting.content.broadcast.persis.pojo.BroadcastPo;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.exceptionC.Wtcm0101CException;
@@ -483,6 +483,7 @@ public class MediaService {
 					for (BCLiveFlowPo bcLiveFlowPo : ls) {
 						if (bcLiveFlowPo.getIsMain() == 1) {
 							bcm.put("flowURI", bcLiveFlowPo.getFlowURI());
+							bcm.put("bcSource",bcLiveFlowPo.getBcSource());
 						}
 					}
 				}

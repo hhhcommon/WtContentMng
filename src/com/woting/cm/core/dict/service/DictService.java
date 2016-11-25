@@ -369,7 +369,7 @@ public class DictService {
             TreeNode<DictDetail> myInTree=(TreeNode<DictDetail>)dm.dictTree.findNode(dd.getId());
             if (myInTree==null) return "2";
 
-            List<TreeNodeBean> ddl=myInTree.getAllBeansList();
+            List<DictDetail> ddl=(List<DictDetail>)myInTree.getAllBeansList();
             //检查是否有相关信息，注意是递归查找
             String inStr="";
             String inStr2="";

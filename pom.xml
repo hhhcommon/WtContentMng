@@ -8,7 +8,7 @@
   <!-- D:\workIDE\projects\WtContentMng || D:\workIDE\work\WtContentMng || D:\WBWorkDir\WtContentMng -->
 
   <properties>
-    <projectDir>D:\workIDE\work\WtContentMng</projectDir>
+     <projectDir>D:\workIDE\work\WtContentMng</projectDir>
   </properties>
 
   <parent>
@@ -29,7 +29,7 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>4.4</version>
-    </dependency>  
+    </dependency>
     <!-- dbcp连接池 -->
     <dependency>
       <groupId>commons-dbcp</groupId>

@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.model.tree.TreeNode;
+import com.spiritdata.framework.core.model.tree.TreeNodeBean;
 import com.spiritdata.framework.ui.tree.EasyUiTree;
 import com.spiritdata.framework.ui.tree.UiTree;
 import com.spiritdata.framework.ui.tree.ZTree;
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
+import com.spiritdata.framework.util.TreeUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -53,6 +55,7 @@ public class CatalogController {
             String catalogType=(m.get("CatalogType")==null?null:m.get("CatalogType")+"");
             String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
             String treeType=(m.get("TreeViewType")==null?"ZTREE":(m.get("TreeViewType")+"").toUpperCase());
+            int relLevel = (m.get("RelLevel")==null?0:Integer.parseInt(m.get("RelLevel")+""));
             int sizeLimit=(m.get("SizeLimit")==null?0:Integer.parseInt(m.get("SizeLimit")+""));
 
             if (StringUtils.isNullOrEmptyOrSpace(catalogType)) {
@@ -69,10 +72,11 @@ public class CatalogController {
             _CacheDictionary _cd=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
             try {
                 DictModel dm=_cd.getDictModelById(catalogType);
-                TreeNode<DictDetail> root=dm.dictTree;
+                TreeNode<? extends TreeNodeBean> root=dm.dictTree;
                 if (!StringUtils.isNullOrEmptyOrSpace(catalogId)) {
-                    root=(TreeNode<DictDetail>)root.findNode(catalogId);
+                    root=root.findNode(catalogId);
                 }
+                if (root!=null&&relLevel>0) root=TreeUtils.cutLevelClone(root, relLevel);
                 if (root==null) {
                     map.put("ReturnType", "1002");
                     map.put("Message", "未找到分类");

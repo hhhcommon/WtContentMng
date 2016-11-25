@@ -67,7 +67,7 @@
   font-size: 12px;
   margin-top: 0;
   margin-bottom: 2px;
-  color: #636363;
+  color: #0071CE;
   position: relative;
   display: inline-block;
   max-width: 180px;
@@ -75,9 +75,9 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.listBox .secTitle,.listBox .playUrl {
+.listBox .secTitle,.listBox .playUrl,.listBox .other,.listBox .desc {
   font-size: 12px;
-  color: #ccc;
+  color: #333;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -85,11 +85,7 @@
 .listBox p {
   margin: 0 0 2px;
 }
-.listBox .other {
-  font-size: 12px;
-  color: #3871a6;
-}
-.listBox .other span {
+.listBox .other span,.listBox .desc span {
   padding-right: 12px;
 }
 .detail .listBox .sortUpdate {
@@ -159,6 +155,9 @@
   cursor: pointer;
   border: 1px solid #e5e6e7;
 }
+.area{
+  display: none;
+}
 </style>
 </head>
 <body style="overflow:hidden;">
@@ -212,6 +211,7 @@
     <div id="addCata" class="modal inmodal" data-backdrop="static">
       <div class="modal-dialog" style="width:660px; margin:10px auto 0 auto">
         <div class="modal-content">
+          <input type="text" class="bcAreaId" style="display: none;" value=""/>
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
@@ -223,7 +223,7 @@
               <table>
                 <tr>
                   <td class="th add-th">电台名称</td>
-                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="电台名称" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="电台名称" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">电台图片</td>
@@ -238,21 +238,20 @@
                 </tr>
                 <tr>
                   <td class="th add-th">播放地址</td>
-                  <td colspan="3"><input type="text" class="form-control" id="url" name="url" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="text" class="form-control" id="url" name="url" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">发布者</td>
-                  <td colspan="3"><input type="text" class="form-control" id="publisher" name="publisher" placeholder="发布者" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="text" class="form-control" id="publisher" name="publisher" placeholder="发布者" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>
                 </tr>
-                <tr>
-                  <td class="th add-th">电台区域</td>
+                <tr class="area">
+                  <td class="th add-th">行政区域</td>
                   <td colspan="3">
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent" placeholder="父区域分类id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float: left;">
-                      <input type="text" class="form-control" id="nodeParents1" name="nodeParents" placeholder="父区域名字" aria-required="true" style="width:330px;margin-bottom:0px;float: left;">
+                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent1" placeholder="行政区域id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float: left;">
+                      <input type="text" class="form-control" id="nodeParents1" name="nodeParents1" placeholder="行政区域名字" aria-required="true" style="width:330px;margin-bottom:0px;float: left;">
                       <div id='chooseParent1'>选择区域</div>
                     </div>
-                    <ul id="cataTrees" class="ztree"></ul>
                   </td>  
                 </tr>
                 <tr>
@@ -260,8 +259,8 @@
                   <td colspan="3">
                     <!--<select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>-->
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent2" name="nodeParent" placeholder="父电台id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
-                      <input type="text" class="form-control" id="nodeParents2" name="nodeParents" placeholder="父电台名字" aria-required="true" style="width:330px;margin-bottom:0px;float:left;">
+                      <input type="text" class="form-control" id="nodeParent2" name="nodeParent2" placeholder="父电台id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
+                      <input type="text" class="form-control" id="nodeParents2" name="nodeParents2" placeholder="父电台名字" aria-required="true" style="width:330px;margin-bottom:0px;float:left;">
                       <div id='chooseParent2'>选择电台</div>
                     </div>
                     <ul id="cataTreess" class="ztree"></ul>
@@ -296,7 +295,7 @@ var loadTreeData=[{CatalogType:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeV
 $(function() {
   //0-初始化页面
   //0.1-初始化页面树样式
-  zTreeObj=$.fn.zTree.init($("#cataTree"), {
+  zTreeObj=$.fn.zTree.init($("#cataTree"),{
     view:{
       selectedMulti: false//是否允许同时选中多个节点
     },
@@ -317,8 +316,9 @@ $(function() {
       onClick:reqDetailList
     }
   });
-  //0.2--初始化弹出框的树(行政区划和电台分类2)
-  zTreeObjs=$.fn.zTree.init($("#cataTrees"), {
+  
+  //0.2--初始化弹出框的树(电台分类)
+  zTreeObjss=$.fn.zTree.init($("#cataTreess"),{
     view:{
       selectedMulti: false//是否允许同时选中多个节点
     },
@@ -340,93 +340,115 @@ $(function() {
     }
   });
   
-  //0.3--初始化弹出框的树(电台分类)
-  zTreeObjss=$.fn.zTree.init($("#cataTreess"), {
-    view:{
-      selectedMulti: false//是否允许同时选中多个节点
-    },
-    edit:{
-      enable: true,//是否开启异步模式
-      showRemoveBtn: false,//是否显示删除按钮
-      showRenameBtn: false//是否显示编辑名称按钮
-    },
-    check:{
-      enable: false//设置 zTree的节点上是否显示 checkbox / radio
-    },
-    data:{
-      simpleData:{
-        enable: true
-      }
-    },
-    callback:{
-      onClick:onClick1
-    }
-  });
-  
   //1-加载数据
   //1.1-加载树
-  loadTree(zTreeObj,loadTreeData);
-//loadTree(zTreeObjs,loadModalTreeData);
+  loadTree(loadTreeData);
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
     cleanDialog();
     oPeType=1;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("添加分类");
+    $("#addCata").find(".modal-header>h4").html("添加电台分类");
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
+    cleanDialog();
     oPeType=2;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("修改栏目");
-    $("#addCata").find("tr:eq(2)").show();
-    $("#nodeNames").val(treeNode.name);
-    $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
-    $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//父节点的Id
-    $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//父节点的名字
-    $("#contentType").val((treeNode.attributes.contentType)?(treeNode.attributes.contentType):"");//资源类型value
-    //资源类型对应的checkbox的选中状态  
-    if(treeNode.attributes.contentType){
-      $("input[name='checkbox']").slice(0,4).prop("checked",false).prop("disabled",false);
-      $("input[name='checkbox']").each(function(){
-        if(treeNode.attributes.contentType.indexOf('0')>-1){
-          $("input[name='checkbox']").slice(0,4).prop("checked",true);
-          $("input[name='checkbox']").slice(1,4).prop("disabled",true);
-        }else{
-          for (var i=1;i<4;i++){
-            if(treeNode.attributes.contentType.indexOf(i)>-1){
-              $("input[name='checkbox']:eq("+i+")").prop("checked",true);
+    $("#addCata").find(".modal-header>h4").html("修改电台分类");
+    $(document).find("input[type='checkbox']").each(function(){
+      if($(this).is(':checked')){
+        var bcId=$(this).parent().parent(".listBox").attr("contentid");
+        $(".bcAreaId").val(bcId);
+        var na=$(this).parent().siblings(".listCon").children("h3").text();
+        $("#nodeNames").val(na);
+        var img=$(this).parent().siblings(".listImg").children("img").attr("src");
+        $(".defaultImg").attr({"src":img});
+        var ul=$(this).parent().siblings(".listCon").children(".playUrl").text();
+        $("#url").val(ul);
+        var pub=$(this).parent().siblings(".listCon").children(".secTitle").text();
+        $("#publisher").val(pub);
+        var strid=$(this).parent().parent(".listBox").attr("strid");
+        var strids=strid.split(",");
+        var strmid=$(this).parent().parent(".listBox").attr("strmid");
+        var strmids=strmid.split(",");
+        var strtitle=$(this).parent().parent(".listBox").attr("strtitle");
+        var strtitles=strtitle.split(",");
+        var pna1="";
+        var pid1="";
+        var pna2="";
+        var pid2="";
+        for(var i=0;i<strmids.length;i++){
+          if(strmids[i]=="2"||strmids[i]=="9"){
+            if(pna1==""||pid1==""){
+              var index=strtitles[i].lastIndexOf("\/");
+              pna1=strtitles[i].substring(index + 1, strtitles[i].length);
+              pid1=strtitles[i];
+            }else{
+              var index=strtitles[i].lastIndexOf("\/");
+              var pnaa1=strtitles[i].substring(index + 1, strtitles[i].length);
+              var pidd1=strtitles[i];
+              pna1+=","+pnaa1;
+              pid1+=","+pidd1;
+            }
+          }
+          if(strmids[i]=="1"){
+            if(pna2==""||pid2==""){
+              var index=strtitles[i].lastIndexOf("\/");
+              pna2=strtitles[i].substring(index + 1, strtitles[i].length);
+              pid2=strtitles[i];
+            }else{
+              var index=strtitles[i].lastIndexOf("\/");
+              var pnaa2=strtitles[i].substring(index + 1, strtitles[i].length);
+              var pidd2=strtitles[i];
+              pna2+=","+pnaa2;
+              pid2+=","+pidd2;
             }
           }
         }
-      });
-    }
-    $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
+        $("#nodeParent1").val(pid1);
+        $("#nodeParents1").val(pna1);
+        $("#nodeParent2").val(pid2);
+        $("#nodeParents2").val(pna2);
+        var des=$(this).parent().siblings(".listCon").children(".desc").children(".descspan").text();
+        $("#nodeDescn").val((dec=="null")?"":des);
+      }
+    })
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   });
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
-    getRootNode();
-    beforeRemove();
+    var check="";
+    $(document).find("input[type='checkbox']").each(function(){
+      if($(this).is(':checked')){
+        var  contentid=$(this).parent().parent(".listBox").attr("contentid");
+        if(check==""){
+          check=contentid;
+        }else{
+          check+=","+contentid;
+        }
+      }
+    });
+    beforeRemove(check);
   });
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
-    if(oPeType==1){
+    if(oPeType=="1"){
       addBroadcast();
     }else{
-      modChannel();
+      modBroadcast();
     }
   })
   //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
-  $("#save,.close,#shade,.cancel").on("click",function(){
+  $(".close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
+    $(document).find("input[type='checkbox']").removeAttr("checked");
   });
-   //2.7-点击上传图片
-   $(".previewImg").on("click",function(){
-    alert(123);
+  //2.6-点击上传图片
+  $(".previewImg").on("click",function(){
     $(".upfile").click();
   }); 
   $(".upfile").change(function(){
@@ -476,53 +498,19 @@ $(function() {
       }
     });
   });
-  //2.6-点击选择区域，弹出树形分类
-  $("#chooseParent1").on("click",function(){
-    $("#cataTrees").slideDown("slow");
-  });
-  $("#chooseParent2").on("click",function(){
+  //2.7-点击选择区域，弹出树形分类
+  $("#chooseParent1,#chooseParent2").on("click",function(){
     $("#cataTreess").slideDown("slow");
   });
-  //2.8-点击all，checkbox实现全选、全不选
-  $("#all").on("click",function(){
-    if(this.checked){
-      $("input[name='checkbox']").each(function(){
-        this.checked=true;
-        for(var i=1;i<4;i++){
-          $("input[name='checkbox']:eq("+i+")").attr("disabled",true);
-        }
-      });
-      $("#contentType").val("0");
-    }else{
-      $("#contentType").val("");
-      $("input[name='checkbox']").each(function(){
-        this.checked=false;
-        for(var i=1;i<4;i++){
-          $("input[name='checkbox']:eq("+i+")").attr("disabled",false);
-        }
-      });
-    }
-  });
-  //2.9-点击其他checkbox实现选择
-  $("#radio,#jm,#zj").on("click",function(){
-    values = '';//点击之前清空values的值
-    var checked=$("input[name='checkbox']:checked");
-    for(var i=0;i<checked.length;i++){
-      if(i<checked.length-1){
-        values+=checked[i].value+',';
-      }else{
-        values+=checked[i].value;
-      }
-    }
-    $("#contentType").val(values);
-  });
+  
+ 
   
 });  
 
 /**
  * 加载树
  */
-function loadTree(obj,loadData) {
+function loadTree(loadData) {
   var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
   loadRecursion(0);
@@ -536,12 +524,8 @@ function loadTree(obj,loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-//        if(obj=="zTreeObj"){
             zTreeObj.addNodes(null,jsonData.Data,false);
-//        }else{
-            zTreeObjs.addNodes(null,jsonData.Data,false);
-            zTreeObjss.addNodes(null,jsonData.Data,false);
-//        }      
+            zTreeObjss.addNodes(null,jsonData.Data,false);  
         }
         loadRecursion(index);
       },
@@ -571,10 +555,13 @@ function getRootNode() {
     var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
     if(oPeType==1){
       $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+      $(".area").hide();
     }else{
       $("#addCata").find(".modal-header>span:eq(0)").hide();
       $("#addCata").find(".modal-header>span:eq(1)").hide();
+      $(".area").show();
     }
+    $(".bcAreaId").attr({"value":treeNode.id});
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   }
@@ -588,15 +575,11 @@ function reqDetailList(event, treeId, treeNode){
   var _data={
     "IMEI":"3279A27149B24719991812E6ADBA5583",
     "PCDType":"3",
-    "MobileClass":"Redmi Note 2::Xiaomi",
-    "ScreenSize":"1080x1920",
-    "GPS-longitude":"116.52098",
-    "GPS-latitude":"39.923882",
     "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
     "CatalogType":treeNode.attributes.mId,
     "CatalogId":treeNode.id,
-    "ResultType":"1",
-    "RelLevel":"2",
+    "MediaType":"RADIO",
+    "ResultType":"3",
     "PageSize":"100",
     "Page":"1"
   };
@@ -607,6 +590,7 @@ function reqDetailList(event, treeId, treeNode){
     data:JSON.stringify(_data),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
+        $(".detail").html("");
         loadDetailList(resultData);
       }
     },
@@ -616,10 +600,26 @@ function reqDetailList(event, treeId, treeNode){
   })
 }
 function loadDetailList(resultData){
-  $(".detail").html("");
   for(var i=0;i<resultData.ResultList.List.length;i++){
     if(!resultData.ResultList.List[i].List){
-      var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].ContentId+'>'+
+      var strId="",strTitle="",strMId="";
+      if(resultData.ResultList.List[i].ContentCatalogs){
+        for(var k=0;k<resultData.ResultList.List[i].ContentCatalogs.length;k++){
+          var ssId=resultData.ResultList.List[i].ContentCatalogs[k].CataDid;
+          var ssTitle=resultData.ResultList.List[i].ContentCatalogs[k].CataTitle;
+          var ssMId=resultData.ResultList.List[i].ContentCatalogs[k].CataMId;
+          if(strId==""){
+            strId=ssId;
+            strTitle=ssTitle;
+            strMId=ssMId;
+          }else{
+            strId+=","+ssId;
+            strTitle+=","+ssTitle;
+            strMId+=","+ssMId;
+          }
+        }
+      }
+      var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
                 '<div class="listCheck"><input type="checkBox" name=""></div>'+
                 '<div class="listImg">'+
                   '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
@@ -629,6 +629,7 @@ function loadDetailList(resultData){
                   '<p class="secTitle">'+resultData.ResultList.List[i].ContentPub+'</p>'+
                   '<p class="playUrl">'+resultData.ResultList.List[i].ContentPlay+'</p>'+
                   '<p class="other"><span>来源：'+resultData.ResultList.List[i].ContentSource+'</span></p>'+
+                  '<p class="desc"><span>描述：</span><span class="descspan">'+resultData.ResultList.List[i].ContentDescn+'</span></p>'+
                 '</div>'+
                 '<div class="sortUpdate">'+
                   '<input type="text" class="sortNum" value="0">'+
@@ -638,7 +639,24 @@ function loadDetailList(resultData){
       $(".detail").append(dl);         
     }else{
       for(var j=0;j<resultData.ResultList.List[i].List.length;j++){
-        var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].List[j].ContentId+'>'+
+        var strId="",strTitle="",strMId="";
+        if(resultData.ResultList.List[i].ContentCatalogs){
+          for(var k=0;k<resultData.ResultList.List[i].ContentCatalogs.length;k++){
+            var ssId=resultData.ResultList.List[i].ContentCatalogs[k].CataDid;
+            var ssTitle=resultData.ResultList.List[i].ContentCatalogs[k].CataTitle;
+            var ssMId=resultData.ResultList.List[i].ContentCatalogs[k].CataMId;
+            if(strId==""){
+              strId=ssId;
+              strTitle=ssTitle;
+              strMId=ssMId;
+            }else{
+              strId+=","+ssId;
+              strTitle+=","+ssTitle;
+              strMId+=","+ssMId;
+            }
+          }
+        }
+        var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].List[j].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
                   '<div class="listCheck"><input type="checkBox" name=""></div>'+
                   '<div class="listImg">'+
                     '<img alt="mage" src='+resultData.ResultList.List[i].List[j].ContentImg+'>'+
@@ -648,6 +666,7 @@ function loadDetailList(resultData){
                     '<p class="secTitle">'+resultData.ResultList.List[i].List[j].ContentPub+'</p>'+
                     '<p class="playUrl">'+resultData.ResultList.List[i].List[j].ContentPlay+'</p>'+
                     '<p class="other"><span>来源：'+resultData.ResultList.List[i].List[j].ContentSource+'</span></p>'+
+                    '<p class="desc"><span>描述：</span><span class="descspan">'+resultData.ResultList.List[i].ContentDescn+'</span></p>'+
                   '</div>'+
                   '<div class="sortUpdate">'+
                     '<input type="text" class="sortNum" value="0">'+
@@ -665,17 +684,15 @@ function addBroadcast() {
   var addInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
-      "MobileClass":"Redmi Note 2::Xiaomi",
-      "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
+      "UserId":"123",
       "BcTitle":$("#nodeNames").val(),
-      "BcImg":$(".file").attr("value"),
-      "BcAreaId":$("#nodeParent1").val(),
+      "BcImg":$(".upfile").attr("value"),
+      "BcAreaId":$(".bcAreaId").attr("value"),
       "BcTypeId":$("#nodeParent2").val(),
       "BcPlayPath":$("#url").val(),
       "IsMain":"1",
-      "BcPubsher":$("#publisher").val(),
+      "BcPublisher":$("#publisher").val(),
       "Descn":$("#nodeDescn").val()
-    
   };
   $.ajax({
     type: "POST",    
@@ -684,20 +701,10 @@ function addBroadcast() {
     data:JSON.stringify(addInfo),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-//      zTreeObj.addNodes(treeNode,
-//        {
-//          id:resultData.CatagoryId,
-//          name:$("#nodeNames").val(),
-//          attributes:{
-//            sort:$("#sort").val(),
-//            parentId:treeNode.id,
-//            contentType:$("#contentType").val(),
-//            pathName:treeNode.attributes.pathName+"/"+$("#nodeNames").val()
-//          }
-//        }
-//      );
-//      cleanDialog();
-//      alert("添加成功!");
+        cleanDialog();
+        alert("添加成功!");
+        $("#addCata").modal("hide");
+        $("#shade").css({"display":"none"});
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -710,78 +717,45 @@ function addBroadcast() {
 
 /*点击弹出窗里面的树上的节点*/
 function onClick(event, treeId, treeNode) {
-  var node=zTreeObjs.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
-  modalNode=node[0]; //当前选中的节点
-  $("#nodeParent1").val(modalNode.id);
-  $("#nodeParents1").val(modalNode.name);
-  $("#cataTrees").slideUp("slow");
-};
-function onClick1(event, treeId, treeNode) {
   var node=zTreeObjss.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
   modalNode=node[0]; //当前选中的节点
-  $("#nodeParent2").val(modalNode.id);
-  $("#nodeParents2").val(modalNode.name);
+  if(modalNode.attributes.mId=="1"){
+    $("#nodeParent2").val(modalNode.id);
+    $("#nodeParents2").val(modalNode.name);
+  }else{
+    $("#nodeParent1").val(modalNode.id);
+    $("#nodeParents1").val(modalNode.name);
+  }
   $("#cataTreess").slideUp("slow");
 };
 /*修改已有分类的方法*/
-function modChannel() {
+function modBroadcast() {
   var modInfo={
-    "ChannelId":treeNode.id,
-    "Data":{
-      "Name":$("#nodeNames").val(),
-      "ParentId":$("#nodeParent").val(),
-      "Owner":{"OwnerType":"100","OwnerId":"cm"},
-      "Sort":$("#sort").val(),
-      "ContentType":$("#contentType").val(),
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "UserId":"123",
+      "BcId":$(".bcAreaId").val(),
+      "BcTitle":$("#nodeNames").val(),
+      "BcImg":$(".upfile").attr("value"),
+      "BcAreaId":$("#nodeParent1").val(),
+      "BcTypeId":$("#nodeParent2").val(),
+      "BcPlayPath":$("#url").val(),
+      "IsMain":"1",
+      "BcPublisher":$("#publisher").val(),
       "Descn":$("#nodeDescn").val()
-    }
   };
   $.ajax({
     type: "POST",    
-    url:rootPath+"baseinfo/updateChannel.do",
+    url:rootPath+"content/bc/updateBroadcast.do",
     dataType: "json",
     data:JSON.stringify(modInfo),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        if(modInfo.Data.Name!=treeNode.name) {//名字改变
-          var modPathName=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
-          treeNode.attributes.pathName=modPathName;
-          treeNode.name=$("#nodeNames").val();
-        }
-        var parentChanged=0;
-        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//父节点改变
-          parentChanged=1;
-          treeNode.attributes.parentId=$("#nodeParent").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
-          if(!treeNode.children){//选中的分类下面无其他分类
-            zTreeObj.moveNode(targetNode,treeNode,"inner");
-          }else{//选中的分类下面含有其他分类
-            for(var i=0;i<treeNode.children.length;i++){
-              zTreeObj.moveNode(treeNode,treeNode.children[i],"inner");
-            }
-            zTreeObj.moveNode(targetNode,treeNode,"inner");
-          }
-        }
-        if(modInfo.Data.Sort!=treeNode.attributes.order||parentChanged==1) {//顺序改变
-          treeNode.attributes.order=$("#sort").val();
-          var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
-          var sLength=sortNode.children.length;//当前选中分类的父分类的所有子分类
-          for(var i=0;i<sLength;i++){
-            for(var j=i;j<sLength;j++){
-              if(parseInt(sortNode.children[i].attributes.order)<parseInt(sortNode.children[j].attributes.order)){//降序排列（冒泡排序）
-                zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
-              } else{
-            alert("未进行交换"); 
-        }
-            }
-          }
-        }
-        if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
-        if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
-        zTreeObj.updateNode(treeNode);
-        alert("修改成功!");
-      }else{
-        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+        cleanDialog();
+        alert("修改成功");
+        $(document).find("input[type='checkbox']").removeAttr("checked");
+        $("#addCata").modal("hide");
+        $("#shade").css({"display":"none"});
       }
     },
     error: function(jqXHR){
@@ -791,25 +765,29 @@ function modChannel() {
 };
 
 //删除节点的时候验证是否删除
-function beforeRemove(){
-  if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
-    delChannel();
+function beforeRemove(check){
+  if(confirm("确认删除这些电台 吗？")){
+    delBroadcast(check);
   }else{
     alert("成功取消删除");
   }
 }
 
 /*删除已有分类的方法*/
-function delChannel() {
-  var delInfo={"ChannelId":treeNode.id,"Force":"1"};
+function delBroadcast(check) {
+  var delInfo={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "UserId":"123",
+    "Ids":check
+  };
   $.ajax({
     type: "POST",    
-    url:rootPath+"baseinfo/delChannel.do",
+    url:rootPath+"content/bc/delBc.do",
     dataType: "json",
     data:JSON.stringify(delInfo),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        zTreeObj.removeNode(treeNode);
         alert("删除成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
@@ -823,9 +801,9 @@ function delChannel() {
 
 /*清空分类界面方法*/
 function cleanDialog() {
-  $("#verOperForm .form-control").each(function(){
-    $(this).val("");
-  });
+  $("form")[0].reset();
+  $(".newImg").remove();
+  $(".defaultImg").show();
 }
 </script>
 </html>

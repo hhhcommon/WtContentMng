@@ -34,15 +34,58 @@
     </where>
   </sql>
   
+  <!-- 获得记录条数-->
+  <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(*) from wt_BCLiveFlow <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+  
   <!-- 获得列表 -->
   <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List"/> from wt_BCLiveFlow 
-    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    select <include refid="Base_Column_List"/> from wt_BCLiveFlow
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+    <if test="orderByClause!=null">order by ${orderByClause}</if>
+    </if>
   </select>
   
   <select id="getBCLiveFolwByBcSource" resultMap="BaseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"/> from wt_BCLiveFlow where bcSource=#{bcSource,jdbcType=VARCHAR}
   </select>
+  
+  <!-- 获得一条数据 -->
+  <select id="getInfo" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_BCLiveFlow <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+  <select id="getInfoById" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/> from wt_BCLiveFlow where id=#{id,jdbcType=VARCHAR}
+  </select>
+  <select id="getInfoByBcId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"/> from wt_BCLiveFlow where bcId=#{bcId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 新增数据 -->
+  <insert id="insert" parameterType="java.util.Map">
+    insert into wt_BCLiveFlow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="bcId!=null">bcId,</if>
+      <if test="bcSrcType!=null and bcSrcType!=0">bcSrcType,</if>
+      <if test="bcSrcId!=null">bcSrcId,</if>
+      <if test="bcSource!=null">bcSource,</if>
+      <if test="flowURI!=null">flowURI,</if>
+      <if test="isMain!=null">isMain,</if>
+      <if test="descn!=null">descn,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="bcId!=null">#{bcId,jdbcType=VARCHAR},</if>
+      <if test="bcSrcType!=null and bcSrcType!=0">#{bcSrcType,jdbcType=VARCHAR},</if>
+      <if test="bcSrcId!=null">#{bcSrcId,jdbcType=VARCHAR},</if>
+      <if test="bcSource!=null">#{bcSource,jdbcType=VARCHAR},</if>
+      <if test="flowURI!=null">#{flowURI,jdbcType=INTEGER},</if>
+      <if test="isMain!=null">#{isMain,jdbcType=INTEGER},</if>
+      <if test="descn!=null">#{descn,jdbcType=INTEGER},</if>
+    </trim>
+  </insert>
   
   <insert id="insertList" parameterType="java.util.List">
     insert into wt_BCLiveFlow(id,bcId,bcSrcType,bcSrcId,bcSource,flowURI,inMain,descn,cTime) values
@@ -50,6 +93,22 @@
      (#{list.id},#{list.bcId},#{list.bcSrcType},#{list.bcSrcId},#{list.bcSource},#{list.flowURI},#{list.inMain},#{list.descn},#{list.cTime})
     </foreach>
   </insert>
+  
+  <!-- 修改 根据主键-->
+  <update id="update" parameterType="java.util.Map">
+    update wt_BCLiveFlow
+    <set>
+      <if test="bcId!=null">bcId=#{bcId,jdbcType=VARCHAR},</if>
+      <if test="bcSrcType!=null and bcSrcType!=0">bcSrcType=#{bcSrcType,jdbcType=VARCHAR},</if>
+      <if test="bcSrcId!=null">bcSrcId=#{bcSrcId,jdbcType=VARCHAR},</if>
+      <if test="bcSource!=null">bcSource=#{bcSource,jdbcType=VARCHAR},</if>
+      <if test="flowURI!=null">flowURI=#{flowURI,jdbcType=VARCHAR},</if>
+      <if test="isMain!=null">isMain=#{isMain,jdbcType=VARCHAR},</if>
+      <if test="descn!=null">descn=#{descn,jdbcType=VARCHAR},</if>
+      <if test="cTime=null">cTime=#{cTime,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
   
   <update id="updateList" parameterType="java.util.List">
       <foreach collection="list" item="list" index="index" open="" close="" separator=";">  
@@ -60,4 +119,15 @@
         where bcId = ${list.bcId} and bcSource = ${list.bcSource}
       </foreach>
   </update>
+  
+  <!-- 删除数据 -->
+  <delete id="delete" parameterType="java.lang.String">
+    delete from wt_BCLiveFlow where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByEntity" parameterType="java.util.Map">
+    delete from wt_BCLiveFlow <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+  <delete id="multiDelBc" parameterType="java.lang.String">
+    delete from wt_BCLiveFlow where bcId in (${value})
+  </delete>
 </mapper>

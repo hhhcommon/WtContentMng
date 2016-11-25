@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>节目详情</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <!--日历插件-->
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+.detail{
+  width:100%;
+  min-width:850px ;
+  height:540px;
+  border:1px solid red;
+}
+.detail .container{
+  position: relative;
+}
+.detail .container .row{
+  margin-left:0px;
+  margin-right:0px;
+  position: inherit;
+}
+.detail_title{
+  width: 100%;
+  height: 30px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+}
+.detail_content{
+  width:100%;
+  height:490px;
+  overflow: auto;
+  border:1px solid green;
+}
+.dc_left{
+  width:100%;
+  height:calc(100% - 20px);
+  border:1px solid black;
+  float: left;
+}
+.dc_left .dcl_pic{
+  width:90%;
+  height:450px;
+  margin:10px auto;
+  border:1px solid #dedede;
+  border-radius:10px;
+}
+.dc_right{
+  width:100%;
+  height:calc(100% - 20px);
+  border:1px solid black;
+  float: right;
+  margin-top:10px;
+}
+.dcr_jmcontent{
+  position: relative;
+  overflow: hidden;
+}
+.dcr_jmcontent1{
+  float: left;
+  width:180px;
+  height:100%;
+  position: absolute;
+  border:1px solid #00458A;
+}
+.dcr_jmcontent1 img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+  -ms-interpolation-mode:bicubic;  
+}
+.dcr_jmcontent2{
+  float:right;
+  overflow: hidden;
+  width:calc(100% - 210px);
+  height:auto;
+  border:1px solid #00625A;
+}
+.dcr_jmcontent2 h3{
+  width:auto;
+  display: inline-block;
+  font-size: 20px;
+  color:#000;
+  font-family: "微软雅黑";
+}
+.dcr_jmcontent2 h3 span{
+  color:#ffa634;
+  font-size:14px;
+  font-weight:100;
+}
+.dcr_jmcontent2 p{
+  font-size:14px;
+  margin-top:20px;
+}
+.dcr_jmcontent2 p span{
+  font-size:15px;
+  color:#000;
+  font-weight: 800;
+  font-family: "微软雅黑";
+}
+.dcr_jmcontent2 ul{
+  overflow: hidden;
+}
+.dcr_jmcontent2 ul li{
+  height: 27px;
+  line-height: 27px;
+  background: url("img/auto.png");
+  background-position: 0 -118px;
+  padding:0px 0px 0px 15px;
+  float: left;
+  position: relative;
+  margin:10px 8px 0px 0px;
+  display: inline-block;
+  cursor: pointer;
+}
+.dcr_jmcontent2 ul li span{
+  background: url("img/auto.png");
+  background-position:right -118px;
+  padding-right:8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 27px;
+}
+.dcr_jmdesc p{
+  color:#000;
+  font-size:14px;
+}
+.dcr_jmdesc .dcr_jmdesc_p1{
+  margin-top:35px;
+}
+</style>
+<body>
+<div class="detail">
+  <div class="container">
+    <div class="detail_title">音频管理> 节目管理> 节目详情</div>
+      <div class="row detail_content">
+        <div class="col-sm-3">
+          <div class="dc_left">
+            <div class="dcl_pic">手机预览图片</div>
+          </div>
+        </div>
+        <div class="col-sm-9">
+          <div class="dc_right">
+            <div class="dcr_jmcontent">
+              <div class="dcr_jmcontent1">
+                <img src="img/a5.jpg" alt="节目封面图片" />
+              </div>
+              <div class="dcr_jmcontent2">
+                <h3>Vol.71 你也是个纠结的人吗？<span>(已保存)</span></h3>
+                <p>来自专辑<span>《双份De阳光》</span></p>
+                <ul>
+                  <li><span>标签一标签一</span></li>
+                  <li><span>自定义标签一</span></li>
+                  <li><span>自定义标签一</span></li>
+                  <li><span>自定义标签一</span></li>
+                  <li><span>自定义标签一</span></li>
+                </ul>
+                <p>2016-10-11 10:47:35</p>
+              </div>
+            </div>
+          <div class="dcr_jmdesc">
+            <p class="dcr_jmdesc_p1">论文专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
+                                                     专辑是指期刊的某一期专门对某一个大家关注的领域、问题、事件进行集中报道、讨论。专辑
+               cial Theme Issues"，一个专辑一般会有一个或几个特邀编辑</p>
+            <p class="dcr_jmdesc_p2">感谢您的聆听~</p>
+            <p class="dcr_jmdesc_p3">原创节目欢迎评论，分享，打赏哦~</p>
+          </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -271,7 +271,7 @@ public class ChannelService {
             TreeNode<Channel> myInTree=(TreeNode<Channel>)cc.channelTree.findNode(c.getId());
             if (myInTree==null) return "2";
 
-            List<TreeNodeBean> cl=myInTree.getAllBeansList();
+            List<Channel> cl=(List<Channel>)myInTree.getAllBeansList();
             //检查是否有相关信息，注意是递归查找
             String inStr="";
             String inStr2="";

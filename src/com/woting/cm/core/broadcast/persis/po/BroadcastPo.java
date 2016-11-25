@@ -16,7 +16,7 @@ public class BroadcastPo extends BaseObject {
 	private String bcURL;
 	private String descn;
 	private int pubCount;
-	private Timestamp cTime;
+	private Timestamp CTime;
 	
 	public String getId() {
 		return id;
@@ -73,9 +73,9 @@ public class BroadcastPo extends BaseObject {
 		this.pubCount = pubCount;
 	}
 	public Timestamp getcTime() {
-		return cTime;
+		return CTime;
 	}
-	public void setcTime(Timestamp cTime) {
-		this.cTime = cTime;
+	public void setcTime(Timestamp CTime) {
+		this.CTime = CTime;
 	}
 }
