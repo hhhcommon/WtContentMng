@@ -211,6 +211,7 @@
     <div id="addCata" class="modal inmodal" data-backdrop="static">
       <div class="modal-dialog" style="width:660px; margin:10px auto 0 auto">
         <div class="modal-content">
+          <input type="text" class="treeId" style="display: none;" value="" obj="" />
           <input type="text" class="bcAreaId" style="display: none;" value=""/>
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -288,7 +289,7 @@ var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 //需要加载的分类树的数据，以list方式给出
-var loadTreeData=[{CatalogType:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
+var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
 //var loadModalTreeData=[{CatalogType:"1",TreeViewType:"zTree"}];
 
 //初始化方法：页面加载完成后执行
@@ -562,8 +563,11 @@ function getRootNode() {
       $(".area").show();
     }
     $(".bcAreaId").attr({"value":treeNode.id});
+    $(".treeId").attr({"value":treeNode.id});
+    $(".treeId").attr({"obj":treeNode});
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
+    console.log($(".treeId").attr("obj"),$(".treeId").attr("value"));
   }
 }
 
@@ -705,6 +709,7 @@ function addBroadcast() {
         alert("添加成功!");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
+        reqDetailList(event,$(".treeId").attr("value"),$(".treeId").attr("obj"));
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
