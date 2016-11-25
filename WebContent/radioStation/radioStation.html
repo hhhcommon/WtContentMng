@@ -249,7 +249,7 @@
                   <td class="th add-th">行政区域</td>
                   <td colspan="3">
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent1" placeholder="行政区域id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float: left;">
+                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent1" value="" obj="" placeholder="行政区域id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float: left;">
                       <input type="text" class="form-control" id="nodeParents1" name="nodeParents1" placeholder="行政区域名字" aria-required="true" style="width:330px;margin-bottom:0px;float: left;">
                       <div id='chooseParent1'>选择区域</div>
                     </div>
@@ -260,7 +260,7 @@
                   <td colspan="3">
                     <!--<select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>-->
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent2" name="nodeParent2" placeholder="父电台id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
+                      <input type="text" class="form-control" id="nodeParent2" name="nodeParent2" value="" obj="" placeholder="父电台id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
                       <input type="text" class="form-control" id="nodeParents2" name="nodeParents2" placeholder="父电台名字" aria-required="true" style="width:330px;margin-bottom:0px;float:left;">
                       <div id='chooseParent2'>选择电台</div>
                     </div>
@@ -289,8 +289,8 @@ var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 //需要加载的分类树的数据，以list方式给出
-var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
-//var loadModalTreeData=[{CatalogType:"1",TreeViewType:"zTree"}];
+var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
+var loadModalTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
 
 //初始化方法：页面加载完成后执行
 $(function() {
@@ -344,6 +344,7 @@ $(function() {
   //1-加载数据
   //1.1-加载树
   loadTree(loadTreeData);
+  loadModalTree(loadModalTreeData);
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
@@ -413,7 +414,7 @@ $(function() {
         $("#nodeParent2").val(pid2);
         $("#nodeParents2").val(pna2);
         var des=$(this).parent().siblings(".listCon").children(".desc").children(".descspan").text();
-        $("#nodeDescn").val((dec=="null")?"":des);
+        $("#nodeDescn").val((des=="null")?"":des);
       }
     })
     $("#shade").css({"display":"block"});
@@ -503,14 +504,12 @@ $(function() {
   $("#chooseParent1,#chooseParent2").on("click",function(){
     $("#cataTreess").slideDown("slow");
   });
-  
- 
-  
 });  
 
 /**
  * 加载树
  */
+//加载页面上的树
 function loadTree(loadData) {
   var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
@@ -525,8 +524,7 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-            zTreeObj.addNodes(null,jsonData.Data,false);
-            zTreeObjss.addNodes(null,jsonData.Data,false);  
+          zTreeObj.addNodes(null,jsonData.Data,false);
         }
         loadRecursion(index);
       },
@@ -536,7 +534,31 @@ function loadTree(loadData) {
     });
   }
 }
+//加载模态框上的树
+function loadModalTree(loadData) {
+  var _url=rootPath+"baseinfo/getCataTree4View.do";
+  var i=0;
+  loadRecursion(0);
 
+  function loadRecursion(index) {
+    if (index==loadData.length) return;
+    $.ajax({
+      type: "POST",    
+      url: _url,
+      dataType: "json",
+      data: loadData[index++],
+      success: function(jsonData){
+        if(jsonData.ReturnType=="1001") {
+          zTreeObjss.addNodes(null,jsonData.Data,false);  
+        }
+        loadRecursion(index);
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+}
 /*与选中节点有关的操作*/
 function getRootNode() {
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
@@ -564,10 +586,10 @@ function getRootNode() {
     }
     $(".bcAreaId").attr({"value":treeNode.id});
     $(".treeId").attr({"value":treeNode.id});
-    $(".treeId").attr({"obj":treeNode});
+    $(".treeId").attr({"obj":treeNode.attributes.mId});
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
-    console.log($(".treeId").attr("obj"),$(".treeId").attr("value"));
+//  console.log($(".treeId").attr("obj"),$(".treeId").attr("value"));
   }
 }
 
@@ -727,9 +749,13 @@ function onClick(event, treeId, treeNode) {
   if(modalNode.attributes.mId=="1"){
     $("#nodeParent2").val(modalNode.id);
     $("#nodeParents2").val(modalNode.name);
+    $("#nodeParent2").attr({"value":modalNode.id});
+    $("#nodeParent2").attr({"obj":treeNode.attributes.mId});
   }else{
     $("#nodeParent1").val(modalNode.id);
     $("#nodeParents1").val(modalNode.name);
+    $("#nodeParent2").attr({"value":modalNode.id});
+    $("#nodeParent2").attr({"obj":treeNode.attributes.mId});
   }
   $("#cataTreess").slideUp("slow");
 };
@@ -761,6 +787,8 @@ function modBroadcast() {
         $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
+        reqDetailList(event,$("#nodeParent1").attr("value"),$("#nodeParent1").attr("obj"));
+        reqDetailList(event,$("#nodeParent2").attr("value"),$("#nodeParent1").attr("obj"));
       }
     },
     error: function(jqXHR){
@@ -794,6 +822,7 @@ function delBroadcast(check) {
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("删除成功!");
+        removing(check);//删除成功后从页面上移走
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -803,7 +832,18 @@ function delBroadcast(check) {
     }
   })
 };
-
+//删除成功后从页面上移走
+function removing(check){
+  var checks=check.split(",");
+  for(var i=0;i<checks.length;i++){
+    $(document).find(".detail .listBox").each(function(){
+      var contentId=$(this).attr("contentid");
+      if(checks[i]==contentId){
+        $(this).remove();
+      }
+    })
+  }
+}
 /*清空分类界面方法*/
 function cleanDialog() {
   $("form")[0].reset();
