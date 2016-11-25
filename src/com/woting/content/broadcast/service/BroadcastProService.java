@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.print.attribute.standard.Media;
 
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
@@ -19,23 +18,20 @@ import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
 import com.woting.WtContentMngConstants;
+import com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo;
+import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.service.MediaService;
-import com.woting.content.broadcast.persis.pojo.BroadcastPo;
-import com.woting.content.broadcast.persis.pojo.FrequncePo;
-import com.woting.content.broadcast.persis.pojo.LiveFlowPo;
 import com.woting.content.publish.utils.CacheUtils;
 
 public class BroadcastProService {
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<BroadcastPo> broadcastDao;
 	@Resource(name = "defaultDAO")
-	private MybatisDAO<LiveFlowPo> bc_liveflowDao;
-	@Resource(name = "defaultDAO")
-	private MybatisDAO<FrequncePo> bc_frequnceDao;
+	private MybatisDAO<BCLiveFlowPo> bcLiveFlowDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<DictRefResPo> dictRefResDao;
 	@Resource
@@ -43,12 +39,12 @@ public class BroadcastProService {
 
 	@PostConstruct
 	public void initParam() {
-		broadcastDao.setNamespace("BROADCAST");
-		bc_liveflowDao.setNamespace("BC_LF");
-		bc_frequnceDao.setNamespace("BC_F");
+		broadcastDao.setNamespace("A_BROADCAST");
+		bcLiveFlowDao.setNamespace("A_BCLIVEFLOW");
 		dictRefResDao.setNamespace("A_DREFRES");
 	}
 
+	@SuppressWarnings("unchecked")
 	public void addBroadcast(String userId, String bcTitle, String bcImg, String bcAreaId, String bcTypeId,
 			String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
 		BroadcastPo bPo = new BroadcastPo();
@@ -58,7 +54,7 @@ public class BroadcastProService {
 		bPo.setBcImg(bcImg);
 		bPo.setBcPublisher(bcPublisher);
 		if (bcDescn != null) {
-			bPo.setDesc(bcDescn);
+			bPo.setDescn(bcDescn);
 		}
 		broadcastDao.insert(bPo);
 
@@ -103,14 +99,14 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		LiveFlowPo lfp = new LiveFlowPo();
+		BCLiveFlowPo lfp = new BCLiveFlowPo();
 		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 		lfp.setBcId(bPo.getId());
 		lfp.setBcSrcType(2);
 		lfp.setBcSource("管理端录入");
 		lfp.setFlowURI(bcPlayPath);
 		lfp.setIsMain(Integer.valueOf(isMain));
-		bc_liveflowDao.insert(lfp);
+		bcLiveFlowDao.insert(lfp);
 	}
 
 	/**
@@ -125,8 +121,8 @@ public class BroadcastProService {
 		bPo.setBcTitle(m.get("bcTitle") + "");
 		bPo.setBcPubType(2);
 		bPo.setBcPublisher(m.get("bcPublisher") + "");
-		bPo.setBcUrl(m.get("bcUrl") + "");
-		bPo.setDesc(m.get("descn") + "");
+		bPo.setBcURL(m.get("bcUrl") + "");
+		bPo.setDescn(m.get("descn") + "");
 		broadcastDao.insert(bPo);
 
 		// 字典
@@ -170,7 +166,7 @@ public class BroadcastProService {
 		boolean hasMain = false;
 		for (int i = 0; i < fla.length; i++) {
 			String[] _s = fla[i].split("::");
-			LiveFlowPo lfp = new LiveFlowPo();
+			BCLiveFlowPo lfp = new BCLiveFlowPo();
 			lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 			lfp.setBcId(bPo.getId());
 			lfp.setBcSrcType(Integer.parseInt(_s[2]));
@@ -181,7 +177,7 @@ public class BroadcastProService {
 				hasMain = true;
 				lfp.setIsMain(1);
 			}
-			bc_liveflowDao.insert(lfp);
+			bcLiveFlowDao.insert(lfp);
 		}
 	}
 
@@ -208,7 +204,7 @@ public class BroadcastProService {
 		bPo.setBcImg(bcImg);
 		bPo.setBcPublisher(bcPublisher);
 		if (bcDescn != null) {
-			bPo.setDesc(bcDescn);
+			bPo.setDescn(bcDescn);
 		}
 		broadcastDao.update(bPo);
 
@@ -254,15 +250,15 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		bc_liveflowDao.delete("multiDelBc", "'" + bcId + "'");// 先删除
-		LiveFlowPo lfp = new LiveFlowPo();
+		bcLiveFlowDao.delete("multiDelBc", "'" + bcId + "'");// 先删除
+		BCLiveFlowPo lfp = new BCLiveFlowPo();
 		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 		lfp.setBcId(bPo.getId());
 		lfp.setBcSrcType(2);
 		lfp.setBcSource("管理端录入");
 		lfp.setFlowURI(bcPlayPath);
 		lfp.setIsMain(Integer.valueOf(isMain));
-		bc_liveflowDao.insert(lfp);
+		bcLiveFlowDao.insert(lfp);
 	}
 
 	/**
@@ -277,8 +273,8 @@ public class BroadcastProService {
 		bPo.setBcTitle(m.get("bcTitle") + "");
 		bPo.setBcPubType(2);
 		bPo.setBcPublisher(m.get("bcPublisher") + "");
-		bPo.setBcUrl(m.get("bcUrl") + "");
-		bPo.setDesc(m.get("descn") + "");
+		bPo.setBcURL(m.get("bcUrl") + "");
+		bPo.setDescn(m.get("descn") + "");
 		broadcastDao.update(bPo);
 
 		// 字典
@@ -318,13 +314,13 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		bc_liveflowDao.delete("multiDelBc", "'" + id + "'");// 先删除
+		bcLiveFlowDao.delete("multiDelBc", "'" + id + "'");// 先删除
 		String lfs = m.get("bcLiveFlows") + "";
 		String[] fla = lfs.split(";;");
 		boolean hasMain = false;
 		for (int i = 0; i < fla.length; i++) {
 			String[] _s = fla[i].split("::");
-			LiveFlowPo lfp = new LiveFlowPo();
+			BCLiveFlowPo lfp = new BCLiveFlowPo();
 			lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 			lfp.setBcId(bPo.getId());
 			lfp.setBcSrcType(Integer.parseInt(_s[2]));
@@ -335,7 +331,7 @@ public class BroadcastProService {
 				hasMain = true;
 				lfp.setIsMain(1);
 			}
-			bc_liveflowDao.insert(lfp);
+			bcLiveFlowDao.insert(lfp);
 		}
 	}
 
@@ -378,7 +374,7 @@ public class BroadcastProService {
 		ids = ids.replaceAll(",", "','");
 		ids = "'" + ids + "'";
 		broadcastDao.delete("multiDelBc", ids);
-		bc_liveflowDao.delete("multiDelBc", ids);
+		bcLiveFlowDao.delete("multiDelBc", ids);
 		dictRefResDao.delete("multiDelBc", ids);
 	}
 
@@ -388,7 +384,6 @@ public class BroadcastProService {
 	 * @return
 	 */
 	public List<Map<String, Object>> getBroadcastInfo(String bcId) {
-		Map<String, Object> ret = new HashMap<String, Object>();
 		// 基本信息
 		BroadcastPo bp = broadcastDao.getInfoObject("getInfoById", bcId);
 		List<BroadcastPo> listpo = new ArrayList<>();

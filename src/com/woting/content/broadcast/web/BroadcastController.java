@@ -490,7 +490,7 @@ public class BroadcastController {
 			if (map.get("ReturnType") != null)
 				return map;
 			//
-			bcService.del(m.get("ids") + "");
+			bcService.del(m.get("Ids") + "");
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 			return map;
