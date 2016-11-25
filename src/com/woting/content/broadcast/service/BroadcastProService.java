@@ -195,6 +195,7 @@ public class BroadcastProService {
 	 * @param isMain
 	 * @param bcDescn
 	 */
+	@SuppressWarnings("unchecked")
 	public void updateBroadcast(String userId, String bcId, String bcTitle, String bcImg, String bcAreaId,
 			String bcTypeId, String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
 		BroadcastPo bPo = new BroadcastPo();
@@ -360,7 +361,6 @@ public class BroadcastProService {
 				}
 			}
 			param.put("rId", orSql);
-
 		}
 
 		Page<Map<String, Object>> retP = broadcastDao.pageQueryAutoTranform(null, "query4ViewTemp", param, pageIndex,
