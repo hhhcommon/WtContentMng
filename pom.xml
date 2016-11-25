@@ -29,7 +29,7 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>4.4</version>
-    </dependency>  
+    </dependency>
     <!-- dbcp连接池 -->
     <dependency>
       <groupId>commons-dbcp</groupId>
