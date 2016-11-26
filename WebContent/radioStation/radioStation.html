@@ -289,8 +289,7 @@ var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 //需要加载的分类树的数据，以list方式给出
-var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
-var loadModalTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
+var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
 
 //初始化方法：页面加载完成后执行
 $(function() {
@@ -344,7 +343,6 @@ $(function() {
   //1-加载数据
   //1.1-加载树
   loadTree(loadTreeData);
-  loadModalTree(loadModalTreeData);
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
@@ -509,7 +507,6 @@ $(function() {
 /**
  * 加载树
  */
-//加载页面上的树
 function loadTree(loadData) {
   var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
@@ -525,6 +522,7 @@ function loadTree(loadData) {
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
           zTreeObj.addNodes(null,jsonData.Data,false);
+          zTreeObjss.addNodes(null,jsonData.Data,false);
         }
         loadRecursion(index);
       },
@@ -534,31 +532,7 @@ function loadTree(loadData) {
     });
   }
 }
-//加载模态框上的树
-function loadModalTree(loadData) {
-  var _url=rootPath+"baseinfo/getCataTree4View.do";
-  var i=0;
-  loadRecursion(0);
 
-  function loadRecursion(index) {
-    if (index==loadData.length) return;
-    $.ajax({
-      type: "POST",    
-      url: _url,
-      dataType: "json",
-      data: loadData[index++],
-      success: function(jsonData){
-        if(jsonData.ReturnType=="1001") {
-          zTreeObjss.addNodes(null,jsonData.Data,false);  
-        }
-        loadRecursion(index);
-      },
-      error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  }
-}
 /*与选中节点有关的操作*/
 function getRootNode() {
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
