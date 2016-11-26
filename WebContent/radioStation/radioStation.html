@@ -645,6 +645,7 @@ function reqDetailList(event, treeId, treeNode){
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         $(".detail,.radio_tit,.radio_sum").html("");
+        getZtreeRootPath(treeNode);//得到当前选中节点的根路径
         loadDetailList(resultData);
       }else{
         $(".radio_tit,.radio_sum").html("");
@@ -657,6 +658,7 @@ function reqDetailList(event, treeId, treeNode){
   })
 }
 function loadDetailList(resultData){
+  $(".radio_sum").html("共有"+resultData.ResultList.AllCount+"个电台");
   for(var i=0;i<resultData.ResultList.List.length;i++){
     if(!resultData.ResultList.List[i].List){
       var strId="",strTitle="",strMId="";
@@ -735,7 +737,14 @@ function loadDetailList(resultData){
     }
   }
 }
-  
+
+//得到当前选中节点的根路径 
+function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲节点，根节点再次调用getParentNode得到null终止循环
+  var s=treeNode.name;
+  while(treeNode=treeNode.getParentNode()) s=treeNode.name+'/'+s;
+  $(".radio_tit").text(s);
+} 
+ 
 /*增加新分类的方法*/
 function addBroadcast() {
   var addInfo={
