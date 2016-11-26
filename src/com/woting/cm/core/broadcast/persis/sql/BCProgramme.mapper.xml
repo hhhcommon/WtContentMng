@@ -41,4 +41,9 @@
 	<delete id="deleteById" parameterType="java.lang.String">
 	    delete from wt_BCProgramme where id=#{id,jdbcType=VARCHAR}
 	</delete>
+	
+	<!-- 删除数据 -->
+	<delete id="multiDelBc" parameterType="java.lang.String">
+    delete from wt_BCProgramme where bcId in (${value})
+    </delete>
 </mapper>

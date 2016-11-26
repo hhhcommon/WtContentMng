@@ -19,6 +19,7 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo;
+import com.woting.cm.core.broadcast.persis.po.BCProgrammePo;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -34,6 +35,8 @@ public class BroadcastProService {
 	private MybatisDAO<BCLiveFlowPo> bcLiveFlowDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<DictRefResPo> dictRefResDao;
+	@Resource(name = "defaultDAO")
+	private MybatisDAO<BCProgrammePo> bcProDao;
 	@Resource
 	private MediaService mediaService;
 
@@ -42,6 +45,7 @@ public class BroadcastProService {
 		broadcastDao.setNamespace("A_BROADCAST");
 		bcLiveFlowDao.setNamespace("A_BCLIVEFLOW");
 		dictRefResDao.setNamespace("A_DREFRES");
+		bcProDao.setNamespace("A_BCPROGRAMME");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -256,7 +260,7 @@ public class BroadcastProService {
 		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 		lfp.setBcId(bPo.getId());
 		lfp.setBcSrcType(2);
-		lfp.setBcSource("管理端录入");
+		lfp.setBcSource(bcPublisher);
 		lfp.setFlowURI(bcPlayPath);
 		lfp.setIsMain(Integer.valueOf(isMain));
 		bcLiveFlowDao.insert(lfp);
@@ -376,6 +380,7 @@ public class BroadcastProService {
 		broadcastDao.delete("multiDelBc", ids);
 		bcLiveFlowDao.delete("multiDelBc", ids);
 		dictRefResDao.delete("multiDelBc", ids);
+		bcProDao.delete("multiDelBc", ids);
 	}
 
 	/**
