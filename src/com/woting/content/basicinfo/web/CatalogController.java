@@ -39,7 +39,8 @@ public class CatalogController {
     /**
      * 为前台显示获取分类(字典树)
      */
-    @RequestMapping(value="getCataTree4View.do")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="getCataTree4View.do")
     @ResponseBody
     public Map<String,Object> getCataTree4View(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
@@ -116,7 +117,8 @@ public class CatalogController {
     /**
      * 添加一个分类
      */
-    @RequestMapping(value="addCatalog.do")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="addCatalog.do")
     @ResponseBody
     public Map<String,Object> addCatalog(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
@@ -205,7 +207,8 @@ public class CatalogController {
     /**
      * 修改一个分类
      */
-    @RequestMapping(value="updateCatalog.do")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="updateCatalog.do")
     @ResponseBody
     public Map<String,Object> updateCatalog(HttpServletRequest request) {
         Map<String,Object> map=new HashMap<String, Object>();
