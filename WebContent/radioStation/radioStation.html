@@ -27,8 +27,11 @@
   width: 100%;
   min-width: 500px;
   height: 400px;
-  border: 1px solid red;
+  border: 1px solid #3370b7;
   overflow: auto;
+}
+#cataTree{
+  height:400px;
 }
 .listBox {
   width: 100%;
@@ -158,6 +161,23 @@
 .area{
   display: none;
 }
+.title_radio{
+  height: 30px;
+}
+.title_radio h5{
+  width: auto;
+  padding: 1px 10px 1px 20px;
+  float: left;
+  font-size: 16px;
+}
+.radio_tit{
+  float: left;
+  padding: 6px 10px 10px 10px;
+}
+.radio_sum{
+  float: left;
+  padding: 6px 10px 10px 10px;
+}
 </style>
 </head>
 <body style="overflow:hidden;">
@@ -181,7 +201,12 @@
         <!--动态加载电台分类详情-->
         <div class="col-sm-12">
           <div class="ibox float-e-margins">
-            <h5>电台分类详情</h5>
+            <div class="title_radio">
+              <h5>电台分类详情</h5>
+              <span class="radio_tit"></span>
+              <span class="radio_sum"></span>
+            </div>
+            
             <div class="ibox-content">
               <div class="detail">
                 <!--<div class="listBox" actid="" acttype="" columnid="">
@@ -212,7 +237,7 @@
       <div class="modal-dialog" style="width:660px; margin:10px auto 0 auto">
         <div class="modal-content">
           <input type="text" class="treeId" style="display: none;" value="" obj="" />
-          <input type="text" class="bcAreaId" style="display: none;" value=""/>
+          <input type="text" class="bcAreaId" style="display: none;" value="" obj=""/>
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
@@ -249,7 +274,7 @@
                   <td class="th add-th">行政区域</td>
                   <td colspan="3">
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent1" value="" obj="" placeholder="行政区域id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float: left;">
+                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent1" value="" obj="" placeholder="行政区域id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
                       <input type="text" class="form-control" id="nodeParents1" name="nodeParents1" placeholder="行政区域名字" aria-required="true" style="width:330px;margin-bottom:0px;float: left;">
                       <div id='chooseParent1'>选择区域</div>
                     </div>
@@ -289,8 +314,7 @@ var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 //需要加载的分类树的数据，以list方式给出
-var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"}, {CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"9",TreeViewType:"zTree"}];
-
+var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
 //初始化方法：页面加载完成后执行
 $(function() {
   //0-初始化页面
@@ -350,6 +374,8 @@ $(function() {
     oPeType=1;
     getRootNode();
     $("#addCata").find(".modal-header>h4").html("添加电台分类");
+    var loadModalAddTreeData=[{CatalogType:"1",TreeViewType:"zTree"}];
+    loadModalTree(loadModalAddTreeData);
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
@@ -380,30 +406,27 @@ $(function() {
         var pna2="";
         var pid2="";
         for(var i=0;i<strmids.length;i++){
+          var index=strtitles[i].lastIndexOf("\/");
+          var indexs=strids[i].lastIndexOf("\/");
           if(strmids[i]=="2"||strmids[i]=="9"){
-            if(pna1==""||pid1==""){
-              var index=strtitles[i].lastIndexOf("\/");
-              pna1=strtitles[i].substring(index + 1, strtitles[i].length);
-              pid1=strtitles[i];
-            }else{
-              var index=strtitles[i].lastIndexOf("\/");
+            if(pna1!=""&&pid1!=""){
               var pnaa1=strtitles[i].substring(index + 1, strtitles[i].length);
-              var pidd1=strtitles[i];
+              var pidd1=strids[i].substring(indexs + 1, strids[i].length);
               pna1+=","+pnaa1;
               pid1+=","+pidd1;
-            }
-          }
-          if(strmids[i]=="1"){
-            if(pna2==""||pid2==""){
-              var index=strtitles[i].lastIndexOf("\/");
-              pna2=strtitles[i].substring(index + 1, strtitles[i].length);
-              pid2=strtitles[i];
             }else{
-              var index=strtitles[i].lastIndexOf("\/");
+              pna1=strtitles[i].substring(index + 1, strtitles[i].length);
+              pid1=strids[i].substring(indexs + 1, strids[i].length);
+            }
+          }else{//strmids[i]=="1"
+            if(pna2!=""&&pid2!=""){
               var pnaa2=strtitles[i].substring(index + 1, strtitles[i].length);
-              var pidd2=strtitles[i];
+              var pidd2=strids[i].substring(indexs + 1, strids[i].length);
               pna2+=","+pnaa2;
               pid2+=","+pidd2;
+            }else{
+              pna2=strtitles[i].substring(index + 1, strtitles[i].length);
+              pid2=strids[i].substring(indexs + 1, strids[i].length);
             }
           }
         }
@@ -415,6 +438,8 @@ $(function() {
         $("#nodeDescn").val((des=="null")?"":des);
       }
     })
+    var loadModalAddTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
+    loadModalTree(loadModalAddTreeData);
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   });
@@ -507,6 +532,7 @@ $(function() {
 /**
  * 加载树
  */
+/*加载页面上的树*/
 function loadTree(loadData) {
   var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
@@ -522,6 +548,36 @@ function loadTree(loadData) {
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
           zTreeObj.addNodes(null,jsonData.Data,false);
+        }
+        loadRecursion(index);
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+}
+
+/*加载弹出页面上的树*/
+function loadModalTree(loadData) {
+  //每次加载树之前先清空模态框里面树的数据
+  var nodes = zTreeObjss.getNodes();
+  for (var i = nodes.length-1; i >= 0; i--) {
+    zTreeObjss.removeNode(nodes[i]);
+  }
+  var _url=rootPath+"baseinfo/getCataTree4View.do";
+  var i=0;
+  loadRecursion(0);
+
+  function loadRecursion(index) {
+    if (index==loadData.length) return;
+    $.ajax({
+      type: "POST",    
+      url: _url,
+      dataType: "json",
+      data: loadData[index++],
+      success: function(jsonData){
+        if(jsonData.ReturnType=="1001") {
           zTreeObjss.addNodes(null,jsonData.Data,false);
         }
         loadRecursion(index);
@@ -559,11 +615,9 @@ function getRootNode() {
       $(".area").show();
     }
     $(".bcAreaId").attr({"value":treeNode.id});
-    $(".treeId").attr({"value":treeNode.id});
-    $(".treeId").attr({"obj":treeNode.attributes.mId});
+    $(".bcAreaId").attr({"obj":treeNode.attributes.mId});
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
-//  console.log($(".treeId").attr("obj"),$(".treeId").attr("value"));
   }
 }
 
@@ -590,8 +644,12 @@ function reqDetailList(event, treeId, treeNode){
     data:JSON.stringify(_data),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        $(".detail").html("");
+        $(".detail,.radio_tit,.radio_sum").html("");
+        getZtreeRootPath(treeNode);//得到当前选中节点的根路径
         loadDetailList(resultData);
+      }else{
+        $(".radio_tit,.radio_sum").html("");
+        $(".detail").html('<p style="font-size:20px;text-align:center;">暂时没有电台</p>');
       }
     },
     error: function(jqXHR){
@@ -600,6 +658,7 @@ function reqDetailList(event, treeId, treeNode){
   })
 }
 function loadDetailList(resultData){
+  $(".radio_sum").html("共有"+resultData.ResultList.AllCount+"个电台");
   for(var i=0;i<resultData.ResultList.List.length;i++){
     if(!resultData.ResultList.List[i].List){
       var strId="",strTitle="",strMId="";
@@ -678,7 +737,14 @@ function loadDetailList(resultData){
     }
   }
 }
-  
+
+//得到当前选中节点的根路径 
+function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲节点，根节点再次调用getParentNode得到null终止循环
+  var s=treeNode.name;
+  while(treeNode=treeNode.getParentNode()) s=treeNode.name+'/'+s;
+  $(".radio_tit").text(s);
+} 
+ 
 /*增加新分类的方法*/
 function addBroadcast() {
   var addInfo={
@@ -694,6 +760,7 @@ function addBroadcast() {
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
+//console.log(addInfo);
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/addBroadcast.do",
@@ -705,7 +772,7 @@ function addBroadcast() {
         alert("添加成功!");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
-        reqDetailList(event,$(".treeId").attr("value"),$(".treeId").attr("obj"));
+        reqDetailList(event,$(".bcAreaId").attr("value"),$(".bcAreaId").attr("obj"));
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -749,6 +816,7 @@ function modBroadcast() {
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
+//console.log(modInfo);
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/updateBroadcast.do",
@@ -756,13 +824,15 @@ function modBroadcast() {
     data:JSON.stringify(modInfo),
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        cleanDialog();
         alert("修改成功");
+        reqDetailList(event,$("#nodeParent1").val(),$("#nodeParent1").attr("obj"));
+        reqDetailList(event,$("#nodeParent2").val(),$("#nodeParent2").attr("obj"));
+        cleanDialog();
         $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
-        reqDetailList(event,$("#nodeParent1").attr("value"),$("#nodeParent1").attr("obj"));
-        reqDetailList(event,$("#nodeParent2").attr("value"),$("#nodeParent2").attr("obj"));
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
     },
     error: function(jqXHR){
@@ -823,6 +893,9 @@ function cleanDialog() {
   $("form")[0].reset();
   $(".newImg").remove();
   $(".defaultImg").show();
+  $("#cataTreess").hide();
+  $(".treeId,.bcAreaId").attr({"value":""});
+  $(".treeId,.bcAreaId").attr({"obj":""});
 }
 </script>
 </html>
