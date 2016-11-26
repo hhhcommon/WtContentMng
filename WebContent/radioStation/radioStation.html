@@ -85,7 +85,7 @@
 .listBox p {
   margin: 0 0 2px;
 }
-.listBox .other span,.listBox .desc span {
+.listBox .other span{
   padding-right: 12px;
 }
 .detail .listBox .sortUpdate {
@@ -692,7 +692,7 @@ function addBroadcast() {
       "BcPlayPath":$("#url").val(),
       "IsMain":"1",
       "BcPublisher":$("#publisher").val(),
-      "Descn":$("#nodeDescn").val()
+      "BcDescn":$("#nodeDescn").val()
   };
   $.ajax({
     type: "POST",    
@@ -720,16 +720,16 @@ function addBroadcast() {
 function onClick(event, treeId, treeNode) {
   var node=zTreeObjss.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
   modalNode=node[0]; //当前选中的节点
-  if(modalNode.attributes.mId=="1"){
+  if(modalNode.attributes.mId=="1"){//点击电台分类
     $("#nodeParent2").val(modalNode.id);
     $("#nodeParents2").val(modalNode.name);
     $("#nodeParent2").attr({"value":modalNode.id});
-    $("#nodeParent2").attr({"obj":treeNode.attributes.mId});
-  }else{
+    $("#nodeParent2").attr({"obj":modalNode.attributes.mId});
+  }else{//点击行政区划
     $("#nodeParent1").val(modalNode.id);
     $("#nodeParents1").val(modalNode.name);
-    $("#nodeParent2").attr({"value":modalNode.id});
-    $("#nodeParent2").attr({"obj":treeNode.attributes.mId});
+    $("#nodeParent1").attr({"value":modalNode.id});
+    $("#nodeParent1").attr({"obj":modalNode.attributes.mId});
   }
   $("#cataTreess").slideUp("slow");
 };
@@ -747,7 +747,7 @@ function modBroadcast() {
       "BcPlayPath":$("#url").val(),
       "IsMain":"1",
       "BcPublisher":$("#publisher").val(),
-      "Descn":$("#nodeDescn").val()
+      "BcDescn":$("#nodeDescn").val()
   };
   $.ajax({
     type: "POST",    
@@ -762,7 +762,7 @@ function modBroadcast() {
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
         reqDetailList(event,$("#nodeParent1").attr("value"),$("#nodeParent1").attr("obj"));
-        reqDetailList(event,$("#nodeParent2").attr("value"),$("#nodeParent1").attr("obj"));
+        reqDetailList(event,$("#nodeParent2").attr("value"),$("#nodeParent2").attr("obj"));
       }
     },
     error: function(jqXHR){
