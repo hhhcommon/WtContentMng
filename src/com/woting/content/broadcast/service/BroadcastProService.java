@@ -501,4 +501,23 @@ public class BroadcastProService {
 		}
 		return null;
 	}
+
+	public void updateBcProgrammes(String userId, String bcId, List<Map<String, Object>> programmes) {
+		List<BCProgrammePo> bcps = new ArrayList<>();
+		for (Map<String, Object> m : programmes) {
+			BCProgrammePo bcp = new BCProgrammePo();
+			bcp.setId(SequenceUUID.getPureUUID());
+			bcp.setBcId(bcId);
+			bcp.setTitle(m.get("Title")+"");
+			bcp.setWeekDay(Integer.valueOf(m.get("WeekDay")+""));
+			bcp.setBeginTime(m.get("BeginTime")+"");
+			bcp.setEndTime(m.get("EndTime")+"");
+			bcp.setSort(0);
+			bcps.add(bcp);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("bcId", bcId);
+		bcProDao.update("updateSort", map);
+		bcProDao.insert("insertList", bcps);
+	}
 }

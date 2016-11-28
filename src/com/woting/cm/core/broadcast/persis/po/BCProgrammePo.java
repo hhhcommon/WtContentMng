@@ -11,6 +11,7 @@ public class BCProgrammePo extends BaseObject {
 	private String bcId;
 	private String title;
 	private int weekDay;
+	private int sort;
 	private String beginTime;
 	private String endTime;
 	private Timestamp cTime;
@@ -44,6 +45,12 @@ public class BCProgrammePo extends BaseObject {
 	}
 	public void setWeekDay(int weekDay) {
 		this.weekDay = weekDay;
+	}
+	public int getSort() {
+		return sort;
+	}
+	public void setSort(int sort) {
+		this.sort = sort;
 	}
 	public String getBeginTime() {
 		return beginTime;
