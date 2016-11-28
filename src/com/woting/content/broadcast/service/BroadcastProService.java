@@ -39,7 +39,19 @@ public class BroadcastProService {
 	private MybatisDAO<BCProgrammePo> bcProDao;
 	@Resource
 	private MediaService mediaService;
-
+	private Map<String, Object> WeekDay = new HashMap<String, Object>() {
+		{
+			put("1", "星期一");
+			put("2", "星期二");
+			put("3", "星期三");
+			put("4", "星期四");
+			put("5", "星期五");
+			put("6", "星期六");
+			put("7", "星期日");
+		}
+	};
+	
+	
 	@PostConstruct
 	public void initParam() {
 		broadcastDao.setNamespace("A_BROADCAST");
@@ -468,19 +480,25 @@ public class BroadcastProService {
 		return bclist;
 	}
 
-	// public List<Map<String, Object>> getSqlList(){
-	// List<BroadcastPo> listbp = broadcastDao.queryForList();
-	// for (BroadcastPo broadcastPo : listbp) {
-	// LiveFlowPo liveFlowPo = bc_liveflowDao.getInfoObject("getInfoByBcId",
-	// broadcastPo.getId());
-	// if(liveFlowPo!=null){
-	// Map<String, Object> m = new HashMap<String,Object>();
-	// m.put("channelName", broadcastPo.getBcTitle());
-	// List<Map<String, Object>> l = new ArrayList<Map<String,Object>>();
-	// Map<String, Object> m2 = new HashMap<String,Object>();
-	// m2.put("streamName", "蜻蜓资源");
-	// }
-	// }
-	// return null;
-	// }
+	public List<Map<String, Object>> getBcProgrammes(String bcId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("bcId", bcId);
+		m.put("orderByClause", "weekDay,BeginTime");
+		List<BCProgrammePo> bcps = bcProDao.queryForList("getList", m);
+		if (bcps!=null && bcps.size()>0) {
+			List<Map<String, Object>> bcms = new ArrayList<>();
+			for (BCProgrammePo bcProgrammePo : bcps) {
+				Map<String, Object> bcm = new HashMap<>();
+				bcm.put("BcId", bcProgrammePo.getBcId());
+				bcm.put("Title", bcProgrammePo.getTitle());
+				bcm.put("BeginTime", bcProgrammePo.getBeginTime());
+				bcm.put("EndTime", bcProgrammePo.getEndTime());
+				bcm.put("CTime", bcProgrammePo.getcTime());
+				bcm.put("WeekDay", bcProgrammePo.getWeekDay());
+				bcms.add(bcm);
+			}
+			return bcms;
+		}
+		return null;
+	}
 }
