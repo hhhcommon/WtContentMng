@@ -373,6 +373,12 @@ $(function() {
     cleanDialog();
     oPeType=1;
     getRootNode();
+    if(rootNode=="电台分类"){
+      alert("您不能选择电台分类进行添加操作");
+      $("#addCata").modal("hide");
+      $("#shade").css({"display":"none"});
+      return;
+    }
     $("#addCata").find(".modal-header>h4").html("添加电台分类");
     var loadModalAddTreeData=[{CatalogType:"1",TreeViewType:"zTree"}];
     loadModalTree(loadModalAddTreeData);
@@ -598,7 +604,7 @@ function getRootNode() {
     $("#shade").css({"display":"none"});
     $("#addCata").modal("hide");
   }else{
-    alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
+//  alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
     nodePathStr=treeNode.attributes.pathName+"";
     if(nodePathStr.indexOf("/")>=0){
       rootNode=nodePathStr.split("/")[0];
