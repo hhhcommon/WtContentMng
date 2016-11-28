@@ -67,24 +67,27 @@ public class BroadcastProService {
 				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
 		DictModel tempDictM = null;
-		tempDictM = _cd.getDictModelById("2");
 		TreeNode<DictDetail> tempNode = null;
-		tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		if (tempNode == null) {
-			tempDictM = _cd.getDictModelById("9");
-			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
+		String areaids[] = bcAreaId.split(",");
+		for (String arid : areaids) {
+			tempDictM = _cd.getDictModelById("2");
+			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			if (tempNode == null) {
+				tempDictM = _cd.getDictModelById("9");
+				tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			}
+			if (tempNode != null) {
+				DictRefResPo drrPo = new DictRefResPo();
+				drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+				drrPo.setRefName("电台所属地区");
+				drrPo.setResTableName("wt_Broadcast");
+				drrPo.setResId(bPo.getId());
+				drrPo.setDictMid(tempDictM.getId());
+				drrPo.setDictDid(arid);
+				dictRefResDao.insert(drrPo);
+			}
 		}
 
-		if (tempNode != null) {
-			DictRefResPo drrPo = new DictRefResPo();
-			drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
-			drrPo.setRefName("电台所属地区");
-			drrPo.setResTableName("wt_Broadcast");
-			drrPo.setResId(bPo.getId());
-			drrPo.setDictMid(tempDictM.getId());
-			drrPo.setDictDid(bcAreaId);
-			dictRefResDao.insert(drrPo);
-		}
 		// 字典--分类
 		String ids[] = bcTypeId.split(",");
 		tempDictM = _cd.getDictModelById("1");
