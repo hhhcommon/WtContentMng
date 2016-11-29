@@ -65,7 +65,6 @@
   width: 70%;
   height: 100%;
 }
-
 .listBox .listCon h3 {
   font-size: 12px;
   margin-top: 0;
@@ -136,10 +135,10 @@
   height: 10px;
   display: none !important;
 }
-#cataTrees{
+#areaTree,#radioTree{
   margin-top: 0px !important;
 }
-#cataTreess{
+#areaTree,#radioTree{
   width:450px;
   height: 145px;
   margin-left: 2px;
@@ -147,7 +146,7 @@
   float: left;
   display: none;
 }
-#chooseParent1 ,#chooseParent2{
+#chooseArea ,#chooseRadio{
   width: 100px;
   height: 32px;
   margin-left:20px;
@@ -157,9 +156,6 @@
   text-align: center;
   cursor: pointer;
   border: 1px solid #e5e6e7;
-}
-.area{
-  display: none;
 }
 .title_radio{
   height: 30px;
@@ -178,16 +174,50 @@
   float: left;
   padding: 6px 10px 10px 10px;
 }
+#nodeArea,#nodeRadio{
+  width:330px;
+  margin-bottom:0px;
+  display:none;
+  float:left;
+}
+.area_ul,.radio_ul{
+  width:330px;
+  min-height: 30px;
+  height:auto;
+  float: left;
+  border:1px solid #dedede;
+  padding-left:0px;
+}
+._li{
+  position: relative;
+  width:60px;
+  height:30px;
+  line-height:30px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border:1px solid #333;
+  float: left;
+  margin:3px 0px 3px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+._img{
+  position: absolute;
+  top:-4px;
+  right:-4px;
+  display: none;
+}
 </style>
 </head>
 <body style="overflow:hidden;">
   <div style="height:100%;background: white;">
     <!--菜单栏-->
     <div class="toobarArea">
-      <button type="button" id="add" opeType="claAdd" class="btn" style="margin-right:3px;">添加</button>
-      <button type="button" id="mod" opeType="claMod" class="btn" style="margin-right:3px;">修改</button>
-      <button type="button" id="del" opeType="claDel" class="btn" style="margin-right:3px;">删除</button>
-      <button type="button" id="sear" opeType="claSear" class="btn" style="margin-right:3px;">搜索</button>
+      <button type="button" id="add" class="btn" style="margin-right:3px;">添加</button>
+      <button type="button" id="mod" class="btn" style="margin-right:3px;" >修改</button>
+      <button type="button" id="del" class="btn" style="margin-right:3px;" >删除</button>
+      <button type="button" id="sear" class="btn" style="margin-right:3px;">搜索</button>
     </div>
     <!--显示主区域-->
     <div class="mainArea">
@@ -206,7 +236,6 @@
               <span class="radio_tit"></span>
               <span class="radio_sum"></span>
             </div>
-            
             <div class="ibox-content">
               <div class="detail">
                 <!--<div class="listBox" actid="" acttype="" columnid="">
@@ -236,13 +265,12 @@
     <div id="addCata" class="modal inmodal" data-backdrop="static">
       <div class="modal-dialog" style="width:660px; margin:10px auto 0 auto">
         <div class="modal-content">
-          <input type="text" class="treeId" style="display: none;" value="" obj="" />
-          <input type="text" class="bcAreaId" style="display: none;" value="" obj=""/>
+          <input type="text" class="bcId" style="display:none;" value="" obj=""/>
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
-            <span id="catalogBelong">分类属于：</span>
-            <span id="nodePath"></span>
+            <!--<span id="catalogBelong">分类属于：</span>-->
+            <!--<span id="nodePath"></span>-->
           </div>
           <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
             <form id="verOperForm" enctype ="multipart/form-data">
@@ -274,22 +302,22 @@
                   <td class="th add-th">行政区域</td>
                   <td colspan="3">
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent1" name="nodeParent1" value="" obj="" placeholder="行政区域id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
-                      <input type="text" class="form-control" id="nodeParents1" name="nodeParents1" placeholder="行政区域名字" aria-required="true" style="width:330px;margin-bottom:0px;float: left;">
-                      <div id='chooseParent1'>选择区域</div>
+                      <input type="text" class="form-control" id="nodeArea" name="nodeArea" value="" obj="" placeholder="行政区域id" aria-required="true">
+                      <ul class="area_ul"></ul>
+                      <div id='chooseArea'>选择区域</div>
                     </div>
+                    <ul id="areaTree" class="ztree"></ul>
                   </td>  
                 </tr>
                 <tr>
                   <td class="th add-th">父类电台</td>
                   <td colspan="3">
-                    <!--<select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>-->
                     <div style="width:450px;overflow: hidden;">
-                      <input type="text" class="form-control" id="nodeParent2" name="nodeParent2" value="" obj="" placeholder="父电台id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;float:left;">
-                      <input type="text" class="form-control" id="nodeParents2" name="nodeParents2" placeholder="父电台名字" aria-required="true" style="width:330px;margin-bottom:0px;float:left;">
-                      <div id='chooseParent2'>选择电台</div>
+                      <input type="text" class="form-control" id="nodeRadio" name="nodeRadio" value="" obj="" placeholder="父电台id" aria-required="true">
+                      <ul class="radio_ul"></ul>
+                      <div id='chooseRadio'>选择分类</div>
                     </div>
-                    <ul id="cataTreess" class="ztree"></ul>
+                    <ul id="radioTree" class="ztree"></ul>
                   </td>  
                 </tr>
                 <tr>
@@ -310,11 +338,10 @@
 </body>
 <script >
 var zTreeObj,zTreeObjs,treeNode,rootNode,nodePathStr,modalNode;
-var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
-//需要加载的分类树的数据，以list方式给出
-var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
+var clickName="";//area点击行政区划，radio点击电台分类
+
 //初始化方法：页面加载完成后执行
 $(function() {
   //0-初始化页面
@@ -341,8 +368,31 @@ $(function() {
     }
   });
   
-  //0.2--初始化弹出框的树(电台分类)
-  zTreeObjss=$.fn.zTree.init($("#cataTreess"),{
+  //0.2--初始化弹出框的树(行政区划)
+  areaObj=$.fn.zTree.init($("#areaTree"),{
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:onClick
+    }
+  });
+  
+  //0.3--初始化弹出框的树(电台分类)
+  radioObj=$.fn.zTree.init($("#radioTree"),{
     view:{
       selectedMulti: false//是否允许同时选中多个节点
     },
@@ -365,34 +415,42 @@ $(function() {
   });
   
   //1-加载数据
-  //1.1-加载树
-  loadTree(loadTreeData);
+  //1.1-加载页面上的树
+  var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
+  loadTree(zTreeObj,loadTreeData);
+  //1.2-加载弹出页面上电台分类的树
+  var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
+  loadTree(radioObj,loadRadioData);
+  //1.3-加载弹出页面上行政区划的树
+  var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+  loadTree(areaObj,loadAreaData);
+  
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
     cleanDialog();
     oPeType=1;
-    getRootNode();
-    if(rootNode=="电台分类"){
-      alert("您不能选择电台分类进行添加操作");
-      $("#addCata").modal("hide");
-      $("#shade").css({"display":"none"});
-      return;
-    }
     $("#addCata").find(".modal-header>h4").html("添加电台分类");
-    var loadModalAddTreeData=[{CatalogType:"1",TreeViewType:"zTree"}];
-    loadModalTree(loadModalAddTreeData);
+    $("#shade").css({"display":"block"});
+    $("#addCata").modal("show");
   });
+  
+  //2.21--修改的时候选中勾选框(只能选择一个checkbox)
+//$(document).on("click","input[name='chk']",function(){
+//  $("input[name='chk']").prop({"checked":false});
+//  $(this).prop({"checked":true});
+//  console.log($(this).parent().parent(".listBox").attr("contentid"));
+//});
+  
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
-    cleanDialog();
-    oPeType=2;
-    getRootNode();
-    $("#addCata").find(".modal-header>h4").html("修改电台分类");
     $(document).find("input[type='checkbox']").each(function(){
       if($(this).is(':checked')){
+        cleanDialog();
+        oPeType=2;
+        $("#addCata").find(".modal-header>h4").html("修改电台分类");
         var bcId=$(this).parent().parent(".listBox").attr("contentid");
-        $(".bcAreaId").val(bcId);
+        $(".bcId").attr({"value":bcId});
         var na=$(this).parent().siblings(".listCon").children("h3").text();
         $("#nodeNames").val(na);
         var img=$(this).parent().siblings(".listImg").children("img").attr("src");
@@ -407,48 +465,29 @@ $(function() {
         var strmids=strmid.split(",");
         var strtitle=$(this).parent().parent(".listBox").attr("strtitle");
         var strtitles=strtitle.split(",");
-        var pna1="";
-        var pid1="";
-        var pna2="";
-        var pid2="";
         for(var i=0;i<strmids.length;i++){
           var index=strtitles[i].lastIndexOf("\/");
           var indexs=strids[i].lastIndexOf("\/");
-          if(strmids[i]=="2"||strmids[i]=="9"){
-            if(pna1!=""&&pid1!=""){
-              var pnaa1=strtitles[i].substring(index + 1, strtitles[i].length);
-              var pidd1=strids[i].substring(indexs + 1, strids[i].length);
-              pna1+=","+pnaa1;
-              pid1+=","+pidd1;
-            }else{
-              pna1=strtitles[i].substring(index + 1, strtitles[i].length);
-              pid1=strids[i].substring(indexs + 1, strids[i].length);
-            }
-          }else{//strmids[i]=="1"
-            if(pna2!=""&&pid2!=""){
-              var pnaa2=strtitles[i].substring(index + 1, strtitles[i].length);
-              var pidd2=strids[i].substring(indexs + 1, strids[i].length);
-              pna2+=","+pnaa2;
-              pid2+=","+pidd2;
-            }else{
-              pna2=strtitles[i].substring(index + 1, strtitles[i].length);
-              pid2=strids[i].substring(indexs + 1, strids[i].length);
-            }
+          var str=strtitles[i].substring(index + 1, strtitles[i].length);
+          var id=strids[i].substring(indexs + 1, strids[i].length);
+          var newli= '<li class="_li" id='+id+'>'+
+                        '<span>'+str+'</span>'+
+                        '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                      '</li>';
+          if(strmids[i]=="2"||strmids[i]=="9"){//行政区划
+            $(".area_ul").append(newli); 
+          }else{//strmids[i]=="1"  电台分类
+            $(".radio_ul").append(newli); 
           }
         }
-        $("#nodeParent1").val(pid1);
-        $("#nodeParents1").val(pna1);
-        $("#nodeParent2").val(pid2);
-        $("#nodeParents2").val(pna2);
         var des=$(this).parent().siblings(".listCon").children(".desc").children(".descspan").text();
         $("#nodeDescn").val((des=="null")?"":des);
+        $("#shade").css({"display":"block"});
+        $("#addCata").modal("show"); 
       }
     })
-    var loadModalAddTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
-    loadModalTree(loadModalAddTreeData);
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
   });
+  
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
     var check="";
@@ -464,6 +503,7 @@ $(function() {
     });
     beforeRemove(check);
   });
+  
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
     if(oPeType=="1"){
@@ -472,12 +512,14 @@ $(function() {
       modBroadcast();
     }
   })
+  
   //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
   $(".close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
     $(document).find("input[type='checkbox']").removeAttr("checked");
   });
+  
   //2.6-点击上传图片
   $(".previewImg").on("click",function(){
     $(".upfile").click();
@@ -529,9 +571,29 @@ $(function() {
       }
     });
   });
-  //2.7-点击选择区域，弹出树形分类
-  $("#chooseParent1,#chooseParent2").on("click",function(){
-    $("#cataTreess").slideDown("slow");
+  
+  //2.7-点击选择行政区域，弹出树形分类
+  $("#chooseArea").on("click",function(){
+    if($(this).text()=="选择区域"){
+      $(this).text("收起区域");
+      $("#areaTree").slideDown("slow");
+    }else{
+      $(this).text("选择区域");
+      $("#areaTree").slideUp("slow");
+    }
+    clickName="area";
+  });
+  
+  //2.8-点击电台分类，弹出树形分类
+  $("#chooseRadio").on("click",function(){
+    if($(this).text()=="选择分类"){
+      $(this).text("收起分类");
+      $("#radioTree").slideDown("slow");
+    }else{
+      $(this).text("选择分类");
+      $("#radioTree").slideUp("slow");
+    }
+    clickName="radio";
   });
 });  
 
@@ -539,7 +601,7 @@ $(function() {
  * 加载树
  */
 /*加载页面上的树*/
-function loadTree(loadData) {
+function loadTree(obj,loadData) {
   var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
   loadRecursion(0);
@@ -553,7 +615,7 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-          zTreeObj.addNodes(null,jsonData.Data,false);
+          obj.addNodes(null,jsonData.Data,false);
         }
         loadRecursion(index);
       },
@@ -561,69 +623,6 @@ function loadTree(loadData) {
         alert("发生错误" + jqXHR.status);
       }
     });
-  }
-}
-
-/*加载弹出页面上的树*/
-function loadModalTree(loadData) {
-  //每次加载树之前先清空模态框里面树的数据
-  var nodes = zTreeObjss.getNodes();
-  for (var i = nodes.length-1; i >= 0; i--) {
-    zTreeObjss.removeNode(nodes[i]);
-  }
-  var _url=rootPath+"baseinfo/getCataTree4View.do";
-  var i=0;
-  loadRecursion(0);
-
-  function loadRecursion(index) {
-    if (index==loadData.length) return;
-    $.ajax({
-      type: "POST",    
-      url: _url,
-      dataType: "json",
-      data: loadData[index++],
-      success: function(jsonData){
-        if(jsonData.ReturnType=="1001") {
-          zTreeObjss.addNodes(null,jsonData.Data,false);
-        }
-        loadRecursion(index);
-      },
-      error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  }
-}
-
-/*与选中节点有关的操作*/
-function getRootNode() {
-  var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
-  treeNode=nodes[0]; //当前选中的节点
-  if(!treeNode){
-    alert("请先选中分类在进行操作");
-    $("#shade").css({"display":"none"});
-    $("#addCata").modal("hide");
-  }else{
-//  alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
-    nodePathStr=treeNode.attributes.pathName+"";
-    if(nodePathStr.indexOf("/")>=0){
-      rootNode=nodePathStr.split("/")[0];
-    }else{
-      rootNode=treeNode.attributes.pathName;
-    }
-    var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
-    if(oPeType==1){
-      $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
-      $(".area").hide();
-    }else{
-      $("#addCata").find(".modal-header>span:eq(0)").hide();
-      $("#addCata").find(".modal-header>span:eq(1)").hide();
-      $(".area").show();
-    }
-    $(".bcAreaId").attr({"value":treeNode.id});
-    $(".bcAreaId").attr({"obj":treeNode.attributes.mId});
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
   }
 }
 
@@ -684,8 +683,8 @@ function loadDetailList(resultData){
           }
         }
       }
-      var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
-                '<div class="listCheck"><input type="checkBox" name=""></div>'+
+      var dl= '<div class="listBox" selectNodeId='+resultData.ResultList.selectId+' selectNodeMid='+resultData.ResultList.selectMid+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
+                '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
                 '<div class="listImg">'+
                   '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
                 '</div>'+
@@ -722,7 +721,7 @@ function loadDetailList(resultData){
           }
         }
         var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].List[j].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
-                  '<div class="listCheck"><input type="checkBox" name=""></div>'+
+                  '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
                   '<div class="listImg">'+
                     '<img alt="mage" src='+resultData.ResultList.List[i].List[j].ContentImg+'>'+
                   '</div>'+
@@ -744,7 +743,7 @@ function loadDetailList(resultData){
   }
 }
 
-//得到当前选中节点的根路径 
+/*得到当前选中节点的根路径 */
 function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲节点，根节点再次调用getParentNode得到null终止循环
   var s=treeNode.name;
   while(treeNode=treeNode.getParentNode()) s=treeNode.name+'/'+s;
@@ -752,21 +751,22 @@ function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲�
 } 
  
 /*增加新分类的方法*/
-function addBroadcast() {
+function addBroadcast(){
+  ids();
   var addInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
       "UserId":"123",
       "BcTitle":$("#nodeNames").val(),
       "BcImg":$(".upfile").attr("value"),
-      "BcAreaId":$(".bcAreaId").attr("value"),
-      "BcTypeId":$("#nodeParent2").val(),
+      "BcAreaId":$("#nodeArea").attr("value"),
+      "BcTypeId":$("#nodeRadio").attr("value"),
       "BcPlayPath":$("#url").val(),
       "IsMain":"1",
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
-//console.log(addInfo);
+  console.log(addInfo);
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/addBroadcast.do",
@@ -778,7 +778,7 @@ function addBroadcast() {
         alert("添加成功!");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
-        reqDetailList(event,$(".bcAreaId").attr("value"),$(".bcAreaId").attr("obj"));
+//      reqDetailList(event,$(".bcAreaId").attr("value"),$(".bcAreaId").attr("obj"));
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -788,41 +788,83 @@ function addBroadcast() {
     }
   })
 }
+/*遍历弹出页面上树的id的集合*/
+function ids(){
+  if($(".area_ul li").length>0){
+    var areastr="";
+    $(".area_ul li").each(function(){
+      var ids=$(this).attr("id");
+      if(areastr==""){
+        areastr=ids;
+      }else{
+        areastr += ","+ids;
+      }
+    })
+  }else{
+    alert("请选择行政区域");
+  }
+  $("#nodeArea").attr({"value":areastr});
+  if($(".radio_ul li").length>0){
+    var radiostr="";
+    $(".radio_ul li").each(function(){
+      var ids=$(this).attr("id");
+      if(radiostr==""){
+        radiostr=ids;
+      }else{
+        radiostr += ","+ids;
+      }
+    })
+  }else{
+    alert("请选择电台分类");
+  }
+  $("#nodeRadio").attr({"value":radiostr});
+}
 
 /*点击弹出窗里面的树上的节点*/
-function onClick(event, treeId, treeNode) {
-  var node=zTreeObjss.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
-  modalNode=node[0]; //当前选中的节点
-  if(modalNode.attributes.mId=="1"){//点击电台分类
-    $("#nodeParent2").val(modalNode.id);
-    $("#nodeParents2").val(modalNode.name);
-    $("#nodeParent2").attr({"value":modalNode.id});
-    $("#nodeParent2").attr({"obj":modalNode.attributes.mId});
-  }else{//点击行政区划
-    $("#nodeParent1").val(modalNode.id);
-    $("#nodeParents1").val(modalNode.name);
-    $("#nodeParent1").attr({"value":modalNode.id});
-    $("#nodeParent1").attr({"obj":modalNode.attributes.mId});
+function onClick(event, treeId, treeNode){
+  if(clickName=="radio"){//点击电台分类
+    var node=radioObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    modalNode=node[0]; //当前选中的节点
+    alert("电台分类")
+    var radioLi='<li class="_li" id='+modalNode.id+'>'+
+                  '<span>'+modalNode.name+'</span>'+
+                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                '</li>';
+    $(".radio_ul").append(radioLi); 
+    $("#chooseRadio").text("选择分类");
+    $("#radioTree").slideUp("slow");
+  }else{
+    var node=areaObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    modalNode=node[0]; //当前选中的节点
+    alert("行政区划");
+    var areaLi='<li class="_li" id='+modalNode.id+'>'+
+                  '<span>'+modalNode.name+'</span>'+
+                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                '</li>';
+    $(".area_ul").append(areaLi);
+    $("#chooseArea").text("选择区域");
+    $("#areaTree").slideUp("slow");
   }
-  $("#cataTreess").slideUp("slow");
 };
+
 /*修改已有分类的方法*/
-function modBroadcast() {
+function modBroadcast(){
+  ids();
   var modInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
       "UserId":"123",
-      "BcId":$(".bcAreaId").val(),
+      "BcId":$(".bcId").attr("value"),
       "BcTitle":$("#nodeNames").val(),
       "BcImg":$(".upfile").attr("value"),
-      "BcAreaId":$("#nodeParent1").val(),
-      "BcTypeId":$("#nodeParent2").val(),
+      "BcAreaId":$("#nodeArea").attr("value"),
+      "BcTypeId":$("#nodeRadio").attr("value"),
       "BcPlayPath":$("#url").val(),
       "IsMain":"1",
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
-//console.log(modInfo);
+  console.log(modInfo);
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/updateBroadcast.do",
@@ -831,8 +873,8 @@ function modBroadcast() {
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("修改成功");
-        reqDetailList(event,$("#nodeParent1").val(),$("#nodeParent1").attr("obj"));
-        reqDetailList(event,$("#nodeParent2").val(),$("#nodeParent2").attr("obj"));
+//      reqDetailList(event,$("#nodeParent1").val(),$("#nodeParent1").attr("obj"));
+//      reqDetailList(event,$("#nodeParent2").val(),$("#nodeParent2").attr("obj"));
         cleanDialog();
         $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#addCata").modal("hide");
@@ -862,7 +904,8 @@ function delBroadcast(check) {
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
     "UserId":"123",
-    "Ids":check
+    "Ids":check,
+    "CatalogType":
   };
   $.ajax({
     type: "POST",    
@@ -882,7 +925,8 @@ function delBroadcast(check) {
     }
   })
 };
-//删除成功后从页面上移走
+
+/*删除成功后从页面上移走*/
 function removing(check){
   var checks=check.split(",");
   for(var i=0;i<checks.length;i++){
@@ -894,14 +938,34 @@ function removing(check){
     })
   }
 }
+
 /*清空分类界面方法*/
-function cleanDialog() {
+function cleanDialog(){
   $("form")[0].reset();
   $(".newImg").remove();
   $(".defaultImg").show();
   $("#cataTreess").hide();
-  $(".treeId,.bcAreaId").attr({"value":""});
-  $(".treeId,.bcAreaId").attr({"obj":""});
+  $("#nodeArea,#nodeRadio").attr({"value":""});
+  $(".area_ul,.radio_ul").children("._li").remove();
 }
+
+/*鼠标放在弹出页面的树上，取消按钮出现*/
+$(document).on("mouseenter","._li",function(){
+  $(this).children("._img").show();
+});
+$(document).on("mouseleave","._li",function(){
+  $(this).children("._img").hide();
+});
+$(document).on("mouseenter","._img",function(){
+  event.stopPropagation();
+  $(this).attr({"src":"../anchor/img/upl_img6.png"});
+});
+$(document).on("mouseleave","._img",function(){
+  event.stopPropagation();
+  $(this).attr({"src":"../anchor/img/upl_img2.png"});
+});
+$(document).on("click","._img",function(){
+  $(this).parent().remove();
+});
 </script>
 </html>
