@@ -36,6 +36,7 @@
         <if test="nPy!=null">and nPy=#{nPy,jdbcType=VARCHAR}</if>
         <if test="descn!=null">and descn=#{descn,jdbcType=VARCHAR}</if>
         <if test="cTime!=null">and cTime=#{cTime,jdbcType=TIMESTAMP}</if>
+        <if test="resId!=null">and id IN (SELECT kwId from wt_Kw_Res where resId=#{resId,jdbcType=VARCHAR})</if>
       </trim>
     </where>
   </sql>
@@ -56,11 +57,14 @@
   <select id="getKeyWordRand" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT * from wt_KeyWord
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
-    and id IN (SELECT kwId from wt_Kw_Res where resId=#{resId,jdbcType=VARCHAR}) ORDER BY RAND() LIMIT #{size,jdbcType=INTEGER}
+    ORDER BY RAND()
+    <if test="size!=null and size!=0"> LIMIT #{size,jdbcType=INTEGER}</if>
   </select>
   
   <select id="getKeyWordByUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT * from wt_KeyWord <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    ORDER BY RAND()
+    <if test="size!=null and size!=0"> LIMIT #{size,jdbcType=INTEGER}</if>
   </select>
   
 </mapper>

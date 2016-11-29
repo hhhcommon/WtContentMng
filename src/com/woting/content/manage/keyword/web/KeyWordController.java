@@ -119,12 +119,7 @@ public class KeyWordController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String mediatype = m.get("MediaType") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(mediatype) || mediatype.toLowerCase().equals("null")) {
-				map.put("ReturnType", "1012");
-				map.put("Message", "无内容类型信息");
-				return map;
-			}
+			
 			String tagType = m.get("TagType") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(tagType) || tagType.toLowerCase().equals("null")) {
 				tagType = "1";
@@ -134,6 +129,10 @@ public class KeyWordController {
 				tagsize = "10";
 			}
 			List<Map<String, Object>> ls = new ArrayList<>();
+			String mediatype = m.get("MediaType") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(mediatype) || mediatype.toLowerCase().equals("null")) {
+				ls = keyWordProService.getKeyWordList(tagType, userid, tagsize);
+			}
 			if (mediatype.equals("1")) {
 				String channelId = m.get("ChannelIds") + "";
 				if (StringUtils.isNullOrEmptyOrSpace(channelId) || channelId.toLowerCase().equals("null")) {
