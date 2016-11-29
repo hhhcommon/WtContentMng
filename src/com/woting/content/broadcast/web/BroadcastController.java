@@ -488,7 +488,7 @@ public class BroadcastController {
 			if (map.get("ReturnType") != null)
 				return map;
 			
-			String cataId = m.get("CataLogId")+"";
+			String cataId = m.get("CatalogId")+"";
 			if (StringUtils.isNullOrEmptyOrSpace(cataId) || cataId.toLowerCase().equals("null")) {
 				cataId = null;
 			}
