@@ -487,8 +487,19 @@ public class BroadcastController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
+			
+			String cataIds = m.get("cataIds")+"";
+			if (StringUtils.isNullOrEmptyOrSpace(cataIds) || cataIds.toLowerCase().equals("null")) {
+				cataIds = null;
+			}
+			String ids = m.get("Ids") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(ids) || ids.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无电台Id");
+				return map;
+			}
 			//
-			bcService.del(m.get("Ids") + "");
+			bcService.del(ids,cataIds);
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 			return map;
