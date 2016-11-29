@@ -7,6 +7,7 @@
 		<result column="bcId"      property="bcId"      jdbcType="VARCHAR" />
 		<result column="title"     property="title"     jdbcType="VARCHAR" />
 		<result column="weekDay"   property="weekDay"   jdbcType="INTEGER" />
+		<result column="sort"      property="sort"      jdbcType="INTEGER" />
 		<result column="beginTime" property="beginTime" jdbcType="VARCHAR" />
 		<result column="endTime"   property="endTime"   jdbcType="VARCHAR" />
 		<result column="cTime"     property="cTime"     jdbcType="TIMESTAMP" />
@@ -23,18 +24,56 @@
 				<if test="bcId!=null"> and bcId=#{bcId,jdbcType=VARCHAR}</if>
 				<if test="title!=null"> and title=#{title,jdbcType=VARCHAR}</if>
 				<if test="weekDay!=null and weekDay!=0"> and weekDay=#{weekDay,jdbcType=INTEGER}</if>
+				<if test="sort!=null"> and sort=#{sort,jdbcType=INTEGER}</if>
 				<if test="beginTime!=null"> and beginTime=#{beginTime,jdbcType=VARCHAR}</if>
 				<if test="endTime!=null"> and endTime=#{endTime,jdbcType=VARCHAR}</if>
 				<if test="cTime!=null"> and cTime=#{cTime,jdbcType=TIMESTAMP}</if>
 			</trim>
 		</where>
 	</sql>
+	
+	<!-- 修改 根据主键-->
+  <update id="update" parameterType="java.util.Map">
+    update wt_BCProgramme
+    <set>
+      <if test="bcId!=null">bcId=#{bcId,jdbcType=VARCHAR},</if>
+      <if test="title!=null">title=#{title,jdbcType=VARCHAR},</if>
+      <if test="weekDay!=null and weekDay!=0">weekDay=#{weekDay,jdbcType=INTEGER},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="beginTime!=null">beginTime=#{beginTime,jdbcType=VARCHAR},</if>
+      <if test="endTime!=null">endTime=#{endTime,jdbcType=VARCHAR},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateList" parameterType="java.util.List">
+      <foreach collection="list" item="list" index="index" open="" close="" separator=";">
+        update wt_BCProgramme
+        <set>
+        bcId=${list.bcId},title=${list.title},weekDay=${list.weekDay},sort=${list.sort},beginTime=${list.beginTime},endTime=${list.endTime}
+        </set>
+        where id = ${list.id}
+      </foreach>
+  </update>
+	
+	<update id="updateSort" parameterType="java.util.Map">
+	  update wt_BCProgramme set sort=sort+1 <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+	</update>
+	
+	<!-- 获得列表 -->
+    <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
+      select <include refid="Base_Column_List"/> from wt_BCProgramme
+      <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+      <if test="orderByClause!=null">order by ${orderByClause}</if>
+      </if>
+    </select>
+	
 	<insert id="insertList" parameterType="java.util.List">
 		insert into
 		wt_BCProgramme(id,bcId,title,weekDay,beginTime,endTime,cTime) values
 		<foreach collection="list" item="list" index="index"
 			separator=",">
-			(#{list.id},#{list.bcId},#{list.title},#{list.weekDay},#{list.beginTime},#{list.endTime},#{list.cTime})
+			(#{list.id},#{list.bcId},#{list.title},#{list.weekDay},#{list.sort},#{list.beginTime},#{list.endTime})
 		</foreach>
 	</insert>
 	

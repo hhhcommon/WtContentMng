@@ -39,7 +39,19 @@ public class BroadcastProService {
 	private MybatisDAO<BCProgrammePo> bcProDao;
 	@Resource
 	private MediaService mediaService;
-
+	private Map<String, Object> WeekDay = new HashMap<String, Object>() {
+		{
+			put("1", "星期一");
+			put("2", "星期二");
+			put("3", "星期三");
+			put("4", "星期四");
+			put("5", "星期五");
+			put("6", "星期六");
+			put("7", "星期日");
+		}
+	};
+	
+	
 	@PostConstruct
 	public void initParam() {
 		broadcastDao.setNamespace("A_BROADCAST");
@@ -67,24 +79,27 @@ public class BroadcastProService {
 				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
 		DictModel tempDictM = null;
-		tempDictM = _cd.getDictModelById("2");
 		TreeNode<DictDetail> tempNode = null;
-		tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		if (tempNode == null) {
-			tempDictM = _cd.getDictModelById("9");
-			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
+		String areaids[] = bcAreaId.split(",");
+		for (String arid : areaids) {
+			tempDictM = _cd.getDictModelById("2");
+			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			if (tempNode == null) {
+				tempDictM = _cd.getDictModelById("9");
+				tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			}
+			if (tempNode != null) {
+				DictRefResPo drrPo = new DictRefResPo();
+				drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+				drrPo.setRefName("电台所属地区");
+				drrPo.setResTableName("wt_Broadcast");
+				drrPo.setResId(bPo.getId());
+				drrPo.setDictMid(tempDictM.getId());
+				drrPo.setDictDid(arid);
+				dictRefResDao.insert(drrPo);
+			}
 		}
 
-		if (tempNode != null) {
-			DictRefResPo drrPo = new DictRefResPo();
-			drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
-			drrPo.setRefName("电台所属地区");
-			drrPo.setResTableName("wt_Broadcast");
-			drrPo.setResId(bPo.getId());
-			drrPo.setDictMid(tempDictM.getId());
-			drrPo.setDictDid(bcAreaId);
-			dictRefResDao.insert(drrPo);
-		}
 		// 字典--分类
 		String ids[] = bcTypeId.split(",");
 		tempDictM = _cd.getDictModelById("1");
@@ -219,23 +234,25 @@ public class BroadcastProService {
 				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
 		DictModel tempDictM = null;
-		tempDictM = _cd.getDictModelById("2");
 		TreeNode<DictDetail> tempNode = null;
-		tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		if (tempNode == null) {
-			tempDictM = _cd.getDictModelById("9");
-			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		}
-
-		if (tempNode != null) {
-			DictRefResPo drrPo = new DictRefResPo();
-			drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
-			drrPo.setRefName("电台所属地区");
-			drrPo.setResTableName("wt_Broadcast");
-			drrPo.setResId(bPo.getId());
-			drrPo.setDictMid(tempDictM.getId());
-			drrPo.setDictDid(bcAreaId);
-			dictRefResDao.insert(drrPo);
+		String areaids[] = bcAreaId.split(",");
+		for (String arid : areaids) {
+			tempDictM = _cd.getDictModelById("2");
+			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			if (tempNode == null) {
+				tempDictM = _cd.getDictModelById("9");
+				tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			}
+			if (tempNode != null) {
+				DictRefResPo drrPo = new DictRefResPo();
+				drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+				drrPo.setRefName("电台所属地区");
+				drrPo.setResTableName("wt_Broadcast");
+				drrPo.setResId(bPo.getId());
+				drrPo.setDictMid(tempDictM.getId());
+				drrPo.setDictDid(arid);
+				dictRefResDao.insert(drrPo);
+			}
 		}
 		// 字典--分类
 		String ids[] = bcTypeId.split(",");
@@ -463,19 +480,44 @@ public class BroadcastProService {
 		return bclist;
 	}
 
-	// public List<Map<String, Object>> getSqlList(){
-	// List<BroadcastPo> listbp = broadcastDao.queryForList();
-	// for (BroadcastPo broadcastPo : listbp) {
-	// LiveFlowPo liveFlowPo = bc_liveflowDao.getInfoObject("getInfoByBcId",
-	// broadcastPo.getId());
-	// if(liveFlowPo!=null){
-	// Map<String, Object> m = new HashMap<String,Object>();
-	// m.put("channelName", broadcastPo.getBcTitle());
-	// List<Map<String, Object>> l = new ArrayList<Map<String,Object>>();
-	// Map<String, Object> m2 = new HashMap<String,Object>();
-	// m2.put("streamName", "蜻蜓资源");
-	// }
-	// }
-	// return null;
-	// }
+	public List<Map<String, Object>> getBcProgrammes(String bcId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("bcId", bcId);
+		m.put("orderByClause", "weekDay,BeginTime");
+		List<BCProgrammePo> bcps = bcProDao.queryForList("getList", m);
+		if (bcps!=null && bcps.size()>0) {
+			List<Map<String, Object>> bcms = new ArrayList<>();
+			for (BCProgrammePo bcProgrammePo : bcps) {
+				Map<String, Object> bcm = new HashMap<>();
+				bcm.put("BcId", bcProgrammePo.getBcId());
+				bcm.put("Title", bcProgrammePo.getTitle());
+				bcm.put("BeginTime", bcProgrammePo.getBeginTime());
+				bcm.put("EndTime", bcProgrammePo.getEndTime());
+				bcm.put("CTime", bcProgrammePo.getcTime());
+				bcm.put("WeekDay", bcProgrammePo.getWeekDay());
+				bcms.add(bcm);
+			}
+			return bcms;
+		}
+		return null;
+	}
+
+	public void updateBcProgrammes(String userId, String bcId, List<Map<String, Object>> programmes) {
+		List<BCProgrammePo> bcps = new ArrayList<>();
+		for (Map<String, Object> m : programmes) {
+			BCProgrammePo bcp = new BCProgrammePo();
+			bcp.setId(SequenceUUID.getPureUUID());
+			bcp.setBcId(bcId);
+			bcp.setTitle(m.get("Title")+"");
+			bcp.setWeekDay(Integer.valueOf(m.get("WeekDay")+""));
+			bcp.setBeginTime(m.get("BeginTime")+"");
+			bcp.setEndTime(m.get("EndTime")+"");
+			bcp.setSort(0);
+			bcps.add(bcp);
+		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("bcId", bcId);
+		bcProDao.update("updateSort", map);
+		bcProDao.insert("insertList", bcps);
+	}
 }
