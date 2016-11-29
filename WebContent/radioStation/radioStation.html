@@ -491,6 +491,8 @@ $(function() {
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
     var check="";
+    var catalogType="";
+    var catalogId="";
     $(document).find("input[type='checkbox']").each(function(){
       if($(this).is(':checked')){
         var  contentid=$(this).parent().parent(".listBox").attr("contentid");
@@ -499,9 +501,11 @@ $(function() {
         }else{
           check+=","+contentid;
         }
+        catalogType=$(this).parent().parent(".listBox").attr("selectnodemid");
+        catalogId=$(this).parent().parent(".listBox").attr("selectnodeid");
       }
     });
-    beforeRemove(check);
+    beforeRemove(check,catalogType,catalogId);
   });
   
   //2.4-点击提交按钮，提交表单
@@ -651,7 +655,7 @@ function reqDetailList(event, treeId, treeNode){
       if(resultData.ReturnType=="1001"){
         $(".detail,.radio_tit,.radio_sum").html("");
         getZtreeRootPath(treeNode);//得到当前选中节点的根路径
-        loadDetailList(resultData);
+        loadDetailList(treeNode,resultData);
       }else{
         $(".radio_tit,.radio_sum").html("");
         $(".detail").html('<p style="font-size:20px;text-align:center;">暂时没有电台</p>');
@@ -662,7 +666,7 @@ function reqDetailList(event, treeId, treeNode){
     }
   })
 }
-function loadDetailList(resultData){
+function loadDetailList(treeNode,resultData){
   $(".radio_sum").html("共有"+resultData.ResultList.AllCount+"个电台");
   for(var i=0;i<resultData.ResultList.List.length;i++){
     if(!resultData.ResultList.List[i].List){
@@ -683,7 +687,7 @@ function loadDetailList(resultData){
           }
         }
       }
-      var dl= '<div class="listBox" selectNodeId='+resultData.ResultList.selectId+' selectNodeMid='+resultData.ResultList.selectMid+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
+      var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
                 '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
                 '<div class="listImg">'+
                   '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
@@ -720,7 +724,7 @@ function loadDetailList(resultData){
             }
           }
         }
-        var dl= '<div class="listBox" contentId='+resultData.ResultList.List[i].List[j].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
+        var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].List[j].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
                   '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
                   '<div class="listImg">'+
                     '<img alt="mage" src='+resultData.ResultList.List[i].List[j].ContentImg+'>'+
@@ -778,7 +782,7 @@ function addBroadcast(){
         alert("添加成功!");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
-//      reqDetailList(event,$(".bcAreaId").attr("value"),$(".bcAreaId").attr("obj"));
+        reqDetailList(event,$("#nodeArea").attr("value"));
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -825,25 +829,31 @@ function onClick(event, treeId, treeNode){
   if(clickName=="radio"){//点击电台分类
     var node=radioObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
     modalNode=node[0]; //当前选中的节点
-    alert("电台分类")
-    var radioLi='<li class="_li" id='+modalNode.id+'>'+
+    if(modalNode.id=="1"){
+      alert("请在当前分类下的子分类进行操作");
+    }else{
+      var radioLi='<li class="_li" id='+modalNode.id+'>'+
                   '<span>'+modalNode.name+'</span>'+
                   '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
                 '</li>';
-    $(".radio_ul").append(radioLi); 
-    $("#chooseRadio").text("选择分类");
-    $("#radioTree").slideUp("slow");
+      $(".radio_ul").append(radioLi); 
+      $("#chooseRadio").text("选择分类");
+      $("#radioTree").slideUp("slow");
+    }
   }else{
     var node=areaObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
     modalNode=node[0]; //当前选中的节点
-    alert("行政区划");
-    var areaLi='<li class="_li" id='+modalNode.id+'>'+
-                  '<span>'+modalNode.name+'</span>'+
-                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
-                '</li>';
-    $(".area_ul").append(areaLi);
-    $("#chooseArea").text("选择区域");
-    $("#areaTree").slideUp("slow");
+    if((modalNode.id!="2")&&(modalNode.id!="9")){
+      var areaLi='<li class="_li" id='+modalNode.id+'>'+
+                    '<span>'+modalNode.name+'</span>'+
+                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                  '</li>';
+      $(".area_ul").append(areaLi);
+      $("#chooseArea").text("选择区域");
+      $("#areaTree").slideUp("slow");
+    }else{
+      alert("请在当前分类下的子分类进行操作");
+    }
   }
 };
 
@@ -873,8 +883,7 @@ function modBroadcast(){
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("修改成功");
-//      reqDetailList(event,$("#nodeParent1").val(),$("#nodeParent1").attr("obj"));
-//      reqDetailList(event,$("#nodeParent2").val(),$("#nodeParent2").attr("obj"));
+        reqDetailList(event,$("#nodeArea").attr("value"));
         cleanDialog();
         $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#addCata").modal("hide");
@@ -890,22 +899,23 @@ function modBroadcast(){
 };
 
 //删除节点的时候验证是否删除
-function beforeRemove(check){
+function beforeRemove(check,catalogType,catalogId){
   if(confirm("确认删除这些电台 吗？")){
-    delBroadcast(check);
+    delBroadcast(check,catalogType,catalogId);
   }else{
     alert("成功取消删除");
   }
 }
 
 /*删除已有分类的方法*/
-function delBroadcast(check) {
+function delBroadcast(check,catalogType,catalogId){
   var delInfo={
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
     "UserId":"123",
     "Ids":check,
-    "CatalogType":
+    "CatalogType":catalogType,
+    "CatalogId":catalogId
   };
   $.ajax({
     type: "POST",    
@@ -915,7 +925,7 @@ function delBroadcast(check) {
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("删除成功!");
-        removing(check);//删除成功后从页面上移走
+        removing(check,catalogType,catalogId);//删除成功后从页面上移走
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
