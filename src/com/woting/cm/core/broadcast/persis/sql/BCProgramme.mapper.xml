@@ -57,15 +57,14 @@
   </update>
 	
 	<update id="updateSort" parameterType="java.util.Map">
-	  update wt_BCProgramme set sort=sort+1 <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+	  update wt_BCProgramme set sort=sort+1 <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
 	</update>
 	
 	<!-- 获得列表 -->
     <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
       select <include refid="Base_Column_List"/> from wt_BCProgramme
-      <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+      <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
       <if test="orderByClause!=null">order by ${orderByClause}</if>
-      </if>
     </select>
 	
 	<insert id="insertList" parameterType="java.util.List">
