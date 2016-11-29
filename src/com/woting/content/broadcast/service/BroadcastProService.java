@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.commons.io.filefilter.AndFileFilter;
+
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
@@ -391,13 +393,11 @@ public class BroadcastProService {
 		return retP;
 	}
 
-	public void del(String ids, String cataIds) {
+	public void del(String ids, String cataType, String cataId) {
 		ids = ids.replaceAll(",", "','");
 		ids = "'" + ids + "'";
-		if (cataIds!=null) {
-			cataIds = cataIds.replaceAll(",", "','");
-		    cataIds = "'" + cataIds + "'";
-		    String sql = " resId in ("+ids+")"+" and dictDid in ("+cataIds+")";
+		if (cataId!=null && cataType!=null) {
+		    String sql = " resId in ("+ids+")"+" and dictDid = '"+cataId+"' and dictMid = '" +cataType+"'";
 		    dictRefResDao.delete("delByDicts", sql);
 		} else {
 			broadcastDao.delete("multiDelBc", ids);

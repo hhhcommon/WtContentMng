@@ -488,9 +488,13 @@ public class BroadcastController {
 			if (map.get("ReturnType") != null)
 				return map;
 			
-			String cataIds = m.get("cataIds")+"";
-			if (StringUtils.isNullOrEmptyOrSpace(cataIds) || cataIds.toLowerCase().equals("null")) {
-				cataIds = null;
+			String cataId = m.get("CataLogId")+"";
+			if (StringUtils.isNullOrEmptyOrSpace(cataId) || cataId.toLowerCase().equals("null")) {
+				cataId = null;
+			}
+			String cataType = m.get("CatalogType")+"";
+			if (StringUtils.isNullOrEmptyOrSpace(cataType) || cataType.toLowerCase().equals("null")) {
+				cataType = null;
 			}
 			String ids = m.get("Ids") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(ids) || ids.toLowerCase().equals("null")) {
@@ -499,7 +503,7 @@ public class BroadcastController {
 				return map;
 			}
 			//
-			bcService.del(ids,cataIds);
+			bcService.del(ids,cataType,cataId);
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 			return map;
