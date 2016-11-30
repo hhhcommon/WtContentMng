@@ -69,6 +69,7 @@ public class BroadcastProService {
 		for (Map<String, Object> map : bcPlayPaths) {
 			if (map.get("IsMain").equals("1") && isok==true) {
 				isok = false;
+				continue;
 			}
 			if (map.get("IsMain").equals("1") && isok==false) {
 				return false;
@@ -238,6 +239,7 @@ public class BroadcastProService {
 		for (Map<String, Object> map : bcPlayPaths) {
 			if (map.get("IsMain").equals("1") && isok==true) {
 				isok = false;
+				continue;
 			}
 			if (map.get("IsMain").equals("1") && isok==false) {
 				return false;
