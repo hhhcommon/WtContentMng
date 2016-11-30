@@ -74,6 +74,9 @@ public class BroadcastProService {
 				return false;
 			}
 		}
+		if (isok) {
+			return false;
+		}
 		BroadcastPo bPo = new BroadcastPo();
 		bPo.setId(SequenceUUID.getUUIDSubSegment(4));
 		bPo.setBcTitle(bcTitle);
@@ -239,6 +242,9 @@ public class BroadcastProService {
 			if (map.get("IsMain").equals("1") && isok==false) {
 				return false;
 			}
+		}
+		if (isok) {
+			return false;
 		}
 		BroadcastPo bPo = new BroadcastPo();
 		bPo.setId(bcId);
