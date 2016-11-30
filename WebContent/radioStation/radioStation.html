@@ -353,7 +353,7 @@
                       <div class="playPathList">
                         <input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">
                         <input type="text" class="bcSource" placeholder="地址所属平台"/>
-                        <input type="checkbox" class="isMain" />
+                        <input type="checkbox" name="isMain" class="isMain" />
                         <span class="note">是否设为主播放地址</span>
                         <div class="addplayPath">添加播放地址</div>
                       </div>
@@ -508,13 +508,6 @@ $(function() {
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   });
-  
-  //2.21--修改的时候选中勾选框(只能选择一个checkbox)
-//$(document).on("click","input[name='chk']",function(){
-//  $("input[name='chk']").prop({"checked":false});
-//  $(this).prop({"checked":true});
-//  console.log($(this).parent().parent(".listBox").attr("contentid"));
-//});
   
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
@@ -679,13 +672,18 @@ $(function() {
     var newPath='<div class="playPathList">'+
                   '<input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">'+
                   '<input type="text" class="bcSource" placeholder="地址所属平台"/>'+
-                  '<input type="checkbox" class="isMain" />'+
+                  '<input type="checkbox" name="isMain" class="isMain" />'+
                   '<span class="note">是否设为主播放地址</span>'+
                   '<div class="delplayPath">删除播放地址</div>'+
                 '</div>';
     $(".playPaths").append(newPath);
   });
   
+  //2.91--设为主播放地址的时候选中勾选框(只能选择一个checkbox)
+  $(document).on("click","input[name='isMain']",function(){
+    $("input[name='isMain']").prop({"checked":false});
+    $(this).prop({"checked":true});
+  });
   //2.10-点击删除播放地址，删除刚才添加的播放地址
   $(document).on("click",".delplayPath",function(){
     $(this).parent().remove();
@@ -848,7 +846,17 @@ function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲�
 /*增加新分类的方法*/
 function addBroadcast(){
   ids();
-  var addInfo={
+  var num=0;//计数  判断是否存在主播放地址
+  for(var i=0;i<BcPlayPaths.length;i++){
+    if(BcPlayPaths[i].IsMain=="0"){
+      num++;
+    }
+  }
+  if(num==BcPlayPaths.length){
+    alert("请选择一个并且只能选择一个主播放地址");
+    return;
+  }else{
+    var addInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
       "UserId":"123",
@@ -859,7 +867,8 @@ function addBroadcast(){
       "BcPlayPaths":BcPlayPaths,
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
-  };
+    };
+  }
   console.log(addInfo);
   $.ajax({
     type: "POST",    
