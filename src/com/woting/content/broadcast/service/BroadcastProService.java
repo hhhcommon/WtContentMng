@@ -63,8 +63,20 @@ public class BroadcastProService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addBroadcast(String userId, String bcTitle, String bcImg, String bcAreaId, String bcTypeId,
-			String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
+	public boolean addBroadcast(String userId, String bcTitle, String bcImg, String bcAreaId, String bcTypeId,
+			List<Map<String, Object>> bcPlayPaths, String bcPublisher, String bcDescn) {
+		boolean isok = true;
+		for (Map<String, Object> map : bcPlayPaths) {
+			if (map.get("IsMain").equals("1") && isok==true) {
+				isok = false;
+			}
+			if (map.get("IsMain").equals("1") && isok==false) {
+				return false;
+			}
+		}
+		if (isok) {
+			return false;
+		}
 		BroadcastPo bPo = new BroadcastPo();
 		bPo.setId(SequenceUUID.getUUIDSubSegment(4));
 		bPo.setBcTitle(bcTitle);
@@ -120,14 +132,17 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		BCLiveFlowPo lfp = new BCLiveFlowPo();
-		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
-		lfp.setBcId(bPo.getId());
-		lfp.setBcSrcType(2);
-		lfp.setBcSource("管理端录入");
-		lfp.setFlowURI(bcPlayPath);
-		lfp.setIsMain(Integer.valueOf(isMain));
-		bcLiveFlowDao.insert(lfp);
+		for (Map<String, Object> ps : bcPlayPaths) {
+			BCLiveFlowPo lfp = new BCLiveFlowPo();
+		    lfp.setId(SequenceUUID.getUUIDSubSegment(4));
+		    lfp.setBcId(bPo.getId());
+		    lfp.setBcSrcType(2);
+		    lfp.setBcSource(ps.get("BcSource")+"");
+		    lfp.setFlowURI(ps.get("BcPlayPath")+"");
+		    lfp.setIsMain(Integer.valueOf(ps.get("IsMain")+""));
+		    bcLiveFlowDao.insert(lfp);
+		}
+		return true;
 	}
 
 	/**
@@ -217,8 +232,20 @@ public class BroadcastProService {
 	 * @param bcDescn
 	 */
 	@SuppressWarnings("unchecked")
-	public void updateBroadcast(String userId, String bcId, String bcTitle, String bcImg, String bcAreaId,
-			String bcTypeId, String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
+	public boolean updateBroadcast(String userId, String bcId, String bcTitle, String bcImg, String bcAreaId,
+			String bcTypeId, List<Map<String, Object>> bcPlayPaths, String bcPublisher, String bcDescn) {
+		boolean isok = true;
+		for (Map<String, Object> map : bcPlayPaths) {
+			if (map.get("IsMain").equals("1") && isok==true) {
+				isok = false;
+			}
+			if (map.get("IsMain").equals("1") && isok==false) {
+				return false;
+			}
+		}
+		if (isok) {
+			return false;
+		}
 		BroadcastPo bPo = new BroadcastPo();
 		bPo.setId(bcId);
 		bPo.setBcTitle(bcTitle);
@@ -274,15 +301,18 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		bcLiveFlowDao.delete("multiDelBc", "'" + bcId + "'");// 先删除
-		BCLiveFlowPo lfp = new BCLiveFlowPo();
-		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
-		lfp.setBcId(bPo.getId());
-		lfp.setBcSrcType(2);
-		lfp.setBcSource(bcPublisher);
-		lfp.setFlowURI(bcPlayPath);
-		lfp.setIsMain(Integer.valueOf(isMain));
-		bcLiveFlowDao.insert(lfp);
+		bcLiveFlowDao.delete("multiDelBc", "'"+bcId+"'");
+		for (Map<String, Object> ps : bcPlayPaths) {
+			BCLiveFlowPo lfp = new BCLiveFlowPo();
+		    lfp.setId(SequenceUUID.getUUIDSubSegment(4));
+			lfp.setBcId(bPo.getId());
+			lfp.setBcSrcType(2);
+			lfp.setBcSource(ps.get("BcSource")+"");
+			lfp.setFlowURI(ps.get("BcPlayPath")+"");
+			lfp.setIsMain(Integer.valueOf(ps.get("IsMain")+""));
+			bcLiveFlowDao.insert(lfp);
+		}
+		return true;
 	}
 
 	/**

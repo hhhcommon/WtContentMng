@@ -165,8 +165,14 @@ public class BroadcastController {
 				map.put("Message", "无电台分类Id");
 				return map;
 			}
-			String bcPlayPath = m.get("BcPlayPath") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) || bcPlayPath.toLowerCase().equals("null")) {
+//			String bcPlayPath = m.get("BcPlayPath") + "";
+//			if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) || bcPlayPath.toLowerCase().equals("null")) {
+//				map.put("ReturnType", "1016");
+//				map.put("Message", "无电台直播流");
+//				return map;
+//			}
+			List<Map<String, Object>> bcPlayPaths = (List<Map<String, Object>>) m.get("BcPlayPaths");
+			if (bcPlayPaths==null || bcPlayPaths.size()==0) {
 				map.put("ReturnType", "1016");
 				map.put("Message", "无电台直播流");
 				return map;
@@ -177,18 +183,18 @@ public class BroadcastController {
 				map.put("Message", "无电台发布者");
 				return map;
 			}
-			String isMain = m.get("IsMain") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(isMain) || isMain.toLowerCase().equals("null")) {
-				isMain = "0";
-			}
 			String bcDescn = m.get("BcDescn") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(bcDescn) || bcDescn.toLowerCase().equals("null")) {
 				bcDescn = null;
 			}
-			bcService.addBroadcast(userId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPath, bcPublisher, isMain,
-					bcDescn);
-			map.put("ReturnType", "1001");
-			map.put("Message", "电台添加成功");
+			boolean isok = bcService.addBroadcast(userId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPaths, bcPublisher, bcDescn);
+			if (isok) {
+				map.put("ReturnType", "1001");
+			    map.put("Message", "电台添加成功");
+			} else {
+				map.put("ReturnType", "1011");
+			    map.put("Message", "电台添加失败");
+			}
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -320,8 +326,8 @@ public class BroadcastController {
 				map.put("Message", "无电台分类Id");
 				return map;
 			}
-			String bcPlayPath = m.get("BcPlayPath") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) || bcPlayPath.toLowerCase().equals("null")) {
+			List<Map<String, Object>> bcPlayPaths = (List<Map<String, Object>>) m.get("BcPlayPaths");
+			if (bcPlayPaths==null || bcPlayPaths.size()==0) {
 				map.put("ReturnType", "1016");
 				map.put("Message", "无电台直播流");
 				return map;
@@ -340,10 +346,14 @@ public class BroadcastController {
 			if (StringUtils.isNullOrEmptyOrSpace(bcDescn) || bcDescn.toLowerCase().equals("null")) {
 				bcDescn = null;
 			}
-			bcService.updateBroadcast(userId, bcId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPath, bcPublisher, isMain,
-					bcDescn);
-			map.put("ReturnType", "1001");
-			map.put("Message", "修改成功");
+			boolean isok = bcService.updateBroadcast(userId, bcId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPaths, bcPublisher, bcDescn);
+			if (isok) {
+				map.put("ReturnType", "1001");
+			    map.put("Message", "电台添加成功");
+			} else {
+				map.put("ReturnType", "1011");
+			    map.put("Message", "电台添加失败");
+			}
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
