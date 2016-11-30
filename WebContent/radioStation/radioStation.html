@@ -136,12 +136,10 @@
   display: none !important;
 }
 #areaTree,#radioTree{
-  margin-top: 0px !important;
-}
-#areaTree,#radioTree{
   width:450px;
   height: 145px;
-  margin-left: 2px;
+  margin-left: 0px;
+  border: 1px solid #dedede;
   margin-top: 0px !important;
   float: left;
   display: none;
@@ -207,6 +205,63 @@
   top:-4px;
   right:-4px;
   display: none;
+}
+.playPaths{
+  width: 450px;
+  min-height: 80px;
+  border: 1px solid #dedede;
+}
+.playPathList{
+  width: 448px;
+  height: 80px;
+  border: 1px solid #333;
+  margin: 10px 0px;
+  overflow: hidden;
+  position: relative;
+}
+.playPath{
+  width:450px;
+  height:30px;
+  float: left;
+  margin-top:4px;
+  margin-bottom:0px !important;
+  padding: 4px 6px;
+  border: 1px solid #dedede;
+}
+.isMain{
+  width: 20px !important;
+  height: 20px;
+  float: left;
+  position: relative;
+  top: 10px;
+  left: 20px;
+}
+.note{
+  display: inline-block;
+  float: left;
+  position: relative;
+  top: 17px;
+  left: 25px;
+}
+.bcSource{
+  width:170px !important;
+  height:30px;
+  margin-top:10px;
+  float: left;
+  padding: 4px 6px;
+  border: 1px solid #dedede;
+}
+.addplayPath,.delplayPath{
+  width: 80px;
+  position: relative;
+  top: 10px;
+  left: 55px;
+  height: 30px;
+  line-height: 30px;
+  float: left;
+  border: 1px solid #dedede;
+  background: #eee;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -292,7 +347,25 @@
                 </tr>
                 <tr>
                   <td class="th add-th">播放地址</td>
-                  <td colspan="3"><input type="text" class="form-control" id="url" name="url" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>
+                  <!--<td colspan="3"><input type="text" class="form-control" id="url" name="url" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>-->
+                  <td colspan="3">
+                    <div class="playPaths">
+                      <div class="playPathList">
+                        <input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">
+                        <input type="text" class="bcSource" placeholder="地址所属平台"/>
+                        <input type="checkbox" class="isMain" />
+                        <span class="note">是否设为主播放地址</span>
+                        <div class="addplayPath">添加播放地址</div>
+                      </div>
+                      <!--<div class="playPathList">
+                        <input type="text" class="playPath" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"  autocomplete="off">
+                        <input type="text" class="bcSource" placeholder="地址所属平台"/>
+                        <input type="checkbox" class="isMain" />
+                        <span class="note">是否设为主播放地址</span>
+                        <div class="addplayPath">添加播放地址</div>
+                      </div>-->
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td class="th add-th">发布者</td>
@@ -341,6 +414,7 @@ var zTreeObj,zTreeObjs,treeNode,rootNode,nodePathStr,modalNode;
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 var clickName="";//area点击行政区划，radio点击电台分类
+var BcPlayPaths=[];//播放地址
 
 //初始化方法：页面加载完成后执行
 $(function() {
@@ -599,6 +673,23 @@ $(function() {
     }
     clickName="radio";
   });
+  
+  //2.9-点击添加播放地址，增加新的播放地址
+  $(".addplayPath").on("click",function(){
+    var newPath='<div class="playPathList">'+
+                  '<input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">'+
+                  '<input type="text" class="bcSource" placeholder="地址所属平台"/>'+
+                  '<input type="checkbox" class="isMain" />'+
+                  '<span class="note">是否设为主播放地址</span>'+
+                  '<div class="delplayPath">删除播放地址</div>'+
+                '</div>';
+    $(".playPaths").append(newPath);
+  });
+  
+  //2.10-点击删除播放地址，删除刚才添加的播放地址
+  $(document).on("click",".delplayPath",function(){
+    $(this).parent().remove();
+  });
 });  
 
 /**
@@ -765,8 +856,7 @@ function addBroadcast(){
       "BcImg":$(".upfile").attr("value"),
       "BcAreaId":$("#nodeArea").attr("value"),
       "BcTypeId":$("#nodeRadio").attr("value"),
-      "BcPlayPath":$("#url").val(),
-      "IsMain":"1",
+      "BcPlayPaths":BcPlayPaths,
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
@@ -794,6 +884,18 @@ function addBroadcast(){
 }
 /*遍历弹出页面上树的id的集合*/
 function ids(){
+  BcPlayPaths=[];
+  $(document).find(".playPathList").each(function(){
+    var newObj={};
+    newObj.BcPlayPath=$(this).children(".playPath").val();
+    newObj.BcSource=$(this).children(".bcSource").val();
+    if($(this).children(".isMain").is(":checked")){
+      newObj.IsMain="1";
+    }else{
+      newObj.IsMain="0";
+    }
+    BcPlayPaths.push(newObj);
+  });
   if($(".area_ul li").length>0){
     var areastr="";
     $(".area_ul li").each(function(){
@@ -869,12 +971,12 @@ function modBroadcast(){
       "BcImg":$(".upfile").attr("value"),
       "BcAreaId":$("#nodeArea").attr("value"),
       "BcTypeId":$("#nodeRadio").attr("value"),
-      "BcPlayPath":$("#url").val(),
-      "IsMain":"1",
+      "BcPlayPath":BcPlayPaths,
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
   console.log(modInfo);
+  return;
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/updateBroadcast.do",
