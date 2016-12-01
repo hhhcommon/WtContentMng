@@ -25,21 +25,10 @@ public class FileUploadController extends AbstractFileUploadController{
 	public Map<String, Object> afterUploadOneFileOnSuccess(Map<String, Object> m, Map<String, Object> rqtAttrs, Map<String, Object> rqtParams, HttpSession session) {
 		Map<String, Object> map = new HashMap<>();
 		String srcType = rqtParams.get("SrcType") + "";
-//		if (StringUtils.isNullOrEmptyOrSpace(srcType) || srcType.toLowerCase().equals("null")) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无文件类型参数");
-//			return map;
-//		}
 		String purpose = rqtParams.get("Purpose") + "";
-//		if (StringUtils.isNullOrEmptyOrSpace(purpose) || purpose.toLowerCase().equals("null")) {
-//			map.put("ReturnType", "1011");
-//			map.put("Message", "无文件用途参数");
-//			return map;
-//		}
 		if (srcType.equals("1")) { //图片处理
 			String filepath = m.get("storeFilename")+""; //原始文件路径
 		    String path = FileNameUtils.getFilePath(filepath);
-//            String filename = FileNameUtils.getFileName(filepath);
             String newname = SequenceUUID.getPureUUID();
             String newfilepath = path + "/" + newname + ".png";
             FileUtils.copyFile(filepath, newfilepath); //复制原始文件
