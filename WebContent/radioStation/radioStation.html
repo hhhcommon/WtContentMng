@@ -515,40 +515,8 @@ $(function() {
       if($(this).is(':checked')){
         cleanDialog();
         oPeType=2;
-        $("#addCata").find(".modal-header>h4").html("修改电台分类");
         var bcId=$(this).parent().parent(".listBox").attr("contentid");
-        $(".bcId").attr({"value":bcId});
-        var na=$(this).parent().siblings(".listCon").children("h3").text();
-        $("#nodeNames").val(na);
-        var img=$(this).parent().siblings(".listImg").children("img").attr("src");
-        $(".defaultImg").attr({"src":img});
-        var ul=$(this).parent().siblings(".listCon").children(".playUrl").text();
-        $("#url").val(ul);
-        var pub=$(this).parent().siblings(".listCon").children(".secTitle").text();
-        $("#publisher").val(pub);
-        var strid=$(this).parent().parent(".listBox").attr("strid");
-        var strids=strid.split(",");
-        var strmid=$(this).parent().parent(".listBox").attr("strmid");
-        var strmids=strmid.split(",");
-        var strtitle=$(this).parent().parent(".listBox").attr("strtitle");
-        var strtitles=strtitle.split(",");
-        for(var i=0;i<strmids.length;i++){
-          var index=strtitles[i].lastIndexOf("\/");
-          var indexs=strids[i].lastIndexOf("\/");
-          var str=strtitles[i].substring(index + 1, strtitles[i].length);
-          var id=strids[i].substring(indexs + 1, strids[i].length);
-          var newli= '<li class="_li" id='+id+'>'+
-                        '<span>'+str+'</span>'+
-                        '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
-                      '</li>';
-          if(strmids[i]=="2"||strmids[i]=="9"){//行政区划
-            $(".area_ul").append(newli); 
-          }else{//strmids[i]=="1"  电台分类
-            $(".radio_ul").append(newli); 
-          }
-        }
-        var des=$(this).parent().siblings(".listCon").children(".desc").children(".descspan").text();
-        $("#nodeDescn").val((des=="null")?"":des);
+        getBcInfoForMod(bcId);//为修改得到详细的电台信息
         $("#shade").css({"display":"block"});
         $("#addCata").modal("show"); 
       }
@@ -684,6 +652,7 @@ $(function() {
     $("input[name='isMain']").prop({"checked":false});
     $(this).prop({"checked":true});
   });
+  
   //2.10-点击删除播放地址，删除刚才添加的播放地址
   $(document).on("click",".delplayPath",function(){
     $(this).parent().remove();
@@ -719,7 +688,7 @@ function loadTree(obj,loadData) {
   }
 }
 
-/*选中某一分类，加载对应的列表详情*/
+/*选中页面上某一分类，加载对应的列表详情*/
 function reqDetailList(event, treeId, treeNode){
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
@@ -758,91 +727,128 @@ function reqDetailList(event, treeId, treeNode){
 function loadDetailList(treeNode,resultData){
   $(".radio_sum").html("共有"+resultData.ResultList.AllCount+"个电台");
   for(var i=0;i<resultData.ResultList.List.length;i++){
-    if(!resultData.ResultList.List[i].List){
-      var strId="",strTitle="",strMId="";
-      if(resultData.ResultList.List[i].ContentCatalogs){
-        for(var k=0;k<resultData.ResultList.List[i].ContentCatalogs.length;k++){
-          var ssId=resultData.ResultList.List[i].ContentCatalogs[k].CataDid;
-          var ssTitle=resultData.ResultList.List[i].ContentCatalogs[k].CataTitle;
-          var ssMId=resultData.ResultList.List[i].ContentCatalogs[k].CataMId;
-          if(strId==""){
-            strId=ssId;
-            strTitle=ssTitle;
-            strMId=ssMId;
-          }else{
-            strId+=","+ssId;
-            strTitle+=","+ssTitle;
-            strMId+=","+ssMId;
-          }
+    var strId="",strTitle="",strMId="";
+    if(resultData.ResultList.List[i].ContentCatalogs){
+      for(var k=0;k<resultData.ResultList.List[i].ContentCatalogs.length;k++){
+        var ssId=resultData.ResultList.List[i].ContentCatalogs[k].CataDid;
+        var ssTitle=resultData.ResultList.List[i].ContentCatalogs[k].CataTitle;
+        var ssMId=resultData.ResultList.List[i].ContentCatalogs[k].CataMId;
+        if(strId==""){
+          strId=ssId;
+          strTitle=ssTitle;
+          strMId=ssMId;
+        }else{
+          strId+=","+ssId;
+          strTitle+=","+ssTitle;
+          strMId+=","+ssMId;
         }
-      }
-      var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
-                '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
-                '<div class="listImg">'+
-                  '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
-                '</div>'+
-                '<div class="listCon">'+
-                  '<h3>'+resultData.ResultList.List[i].ContentName+'</h3>'+
-                  '<p class="secTitle">'+resultData.ResultList.List[i].ContentPub+'</p>'+
-                  '<p class="playUrl">'+resultData.ResultList.List[i].ContentPlay+'</p>'+
-                  '<p class="other"><span>来源：'+resultData.ResultList.List[i].ContentSource+'</span></p>'+
-                  '<p class="desc"><span>描述：</span><span class="descspan">'+resultData.ResultList.List[i].ContentDescn+'</span></p>'+
-                '</div>'+
-                '<div class="sortUpdate">'+
-                  '<input type="text" class="sortNum" value="0">'+
-                  '<button class="sortUpdateBtn">OK</button>'+
-                '</div>'+
-              '</div>'
-      $(".detail").append(dl);         
-    }else{
-      for(var j=0;j<resultData.ResultList.List[i].List.length;j++){
-        var strId="",strTitle="",strMId="";
-        if(resultData.ResultList.List[i].ContentCatalogs){
-          for(var k=0;k<resultData.ResultList.List[i].ContentCatalogs.length;k++){
-            var ssId=resultData.ResultList.List[i].ContentCatalogs[k].CataDid;
-            var ssTitle=resultData.ResultList.List[i].ContentCatalogs[k].CataTitle;
-            var ssMId=resultData.ResultList.List[i].ContentCatalogs[k].CataMId;
-            if(strId==""){
-              strId=ssId;
-              strTitle=ssTitle;
-              strMId=ssMId;
-            }else{
-              strId+=","+ssId;
-              strTitle+=","+ssTitle;
-              strMId+=","+ssMId;
-            }
-          }
-        }
-        var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].List[j].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
-                  '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
-                  '<div class="listImg">'+
-                    '<img alt="mage" src='+resultData.ResultList.List[i].List[j].ContentImg+'>'+
-                  '</div>'+
-                  '<div class="listCon">'+
-                    '<h3>'+resultData.ResultList.List[i].List[j].ContentName+'</h3>'+
-                    '<p class="secTitle">'+resultData.ResultList.List[i].List[j].ContentPub+'</p>'+
-                    '<p class="playUrl">'+resultData.ResultList.List[i].List[j].ContentPlay+'</p>'+
-                    '<p class="other"><span>来源：'+resultData.ResultList.List[i].List[j].ContentSource+'</span></p>'+
-                    '<p class="desc"><span>描述：</span><span class="descspan">'+resultData.ResultList.List[i].ContentDescn+'</span></p>'+
-                  '</div>'+
-                  '<div class="sortUpdate">'+
-                    '<input type="text" class="sortNum" value="0">'+
-                    '<button class="sortUpdateBtn">OK</button>'+
-                  '</div>'+
-                '</div>'
-        $(".detail").append(dl);         
       }
     }
+    var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
+              '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
+              '<div class="listImg">'+
+                '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
+              '</div>'+
+              '<div class="listCon">'+
+                '<h3>'+resultData.ResultList.List[i].ContentName+'</h3>'+
+                '<p class="secTitle"><span>发布者：'+resultData.ResultList.List[i].ContentPub+'</span></p>'+
+                '<p class="playUrl"><span>主播放地址：'+resultData.ResultList.List[i].ContentPlay+'</span></p>'+
+                '<p class="other"><span>来源：'+resultData.ResultList.List[i].ContentSource+'</span></p>'+
+                '<p class="desc"><span>描述：</span><span class="descspan">'+resultData.ResultList.List[i].ContentDescn+'</span></p>'+
+              '</div>'+
+              '<div class="sortUpdate">'+
+                '<input type="text" class="sortNum" value="0">'+
+                '<button class="sortUpdateBtn">OK</button>'+
+              '</div>'+
+            '</div>'
+    $(".detail").append(dl);         
   }
 }
 
-/*得到当前选中节点的根路径 */
+/*得到页面上当前选中节点的路径 */
 function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲节点，根节点再次调用getParentNode得到null终止循环
   var s=treeNode.name;
   while(treeNode=treeNode.getParentNode()) s=treeNode.name+'/'+s;
   $(".radio_tit").text(s);
 } 
  
+/*点击弹出窗里面的树上的节点*/
+function onClick(event, treeId, treeNode){
+  if(clickName=="radio"){//点击电台分类
+    var node=radioObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    modalNode=node[0]; //当前选中的节点
+    if(modalNode.id=="1"){
+      alert("请在当前分类下的子分类进行操作");
+    }else{
+      var radioLi='<li class="_li" id='+modalNode.id+'>'+
+                  '<span>'+modalNode.name+'</span>'+
+                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                '</li>';
+      $(".radio_ul").append(radioLi); 
+      $("#chooseRadio").text("选择分类");
+      $("#radioTree").slideUp("slow");
+    }
+  }else{
+    var node=areaObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    modalNode=node[0]; //当前选中的节点
+    if((modalNode.id!="2")&&(modalNode.id!="9")){
+      var areaLi='<li class="_li" id='+modalNode.id+'>'+
+                    '<span>'+modalNode.name+'</span>'+
+                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                  '</li>';
+      $(".area_ul").append(areaLi);
+      $("#chooseArea").text("选择区域");
+      $("#areaTree").slideUp("slow");
+    }else{
+      alert("请在当前分类下的子分类进行操作");
+    }
+  }
+};
+
+/*遍历弹出页面上树的id的集合*/
+function ids(){
+  BcPlayPaths=[];
+  $(document).find(".playPathList").each(function(){
+    var newObj={};
+    newObj.BcPlayPath=$(this).children(".playPath").val();
+    newObj.BcSource=$(this).children(".bcSource").val();
+    if($(this).children(".isMain").is(":checked")){
+      newObj.IsMain="1";
+    }else{
+      newObj.IsMain="0";
+    }
+    BcPlayPaths.push(newObj);
+  });
+  if($(".area_ul li").length>0){
+    var areastr="";
+    $(".area_ul li").each(function(){
+      var ids=$(this).attr("id");
+      if(areastr==""){
+        areastr=ids;
+      }else{
+        areastr += ","+ids;
+      }
+    })
+  }else{
+    alert("请选择行政区域");
+  }
+  $("#nodeArea").attr({"value":areastr});
+  if($(".radio_ul li").length>0){
+    var radiostr="";
+    $(".radio_ul li").each(function(){
+      var ids=$(this).attr("id");
+      if(radiostr==""){
+        radiostr=ids;
+      }else{
+        radiostr += ","+ids;
+      }
+    })
+  }else{
+    alert("请选择电台分类");
+  }
+  $("#nodeRadio").attr({"value":radiostr});
+}
+
 /*增加新分类的方法*/
 function addBroadcast(){
   ids();
@@ -891,82 +897,80 @@ function addBroadcast(){
     }
   })
 }
-/*遍历弹出页面上树的id的集合*/
-function ids(){
-  BcPlayPaths=[];
-  $(document).find(".playPathList").each(function(){
-    var newObj={};
-    newObj.BcPlayPath=$(this).children(".playPath").val();
-    newObj.BcSource=$(this).children(".bcSource").val();
-    if($(this).children(".isMain").is(":checked")){
-      newObj.IsMain="1";
-    }else{
-      newObj.IsMain="0";
+
+/*为修改电台分类得到详细信息*/
+function getBcInfoForMod(bcId){
+  var _data={
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "UserId":"123",
+      "BcId":bcId
+  }
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/getBcInfo.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        loadModData(resultData);//加载修改时需要的详细数据
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
     }
-    BcPlayPaths.push(newObj);
-  });
-  if($(".area_ul li").length>0){
-    var areastr="";
-    $(".area_ul li").each(function(){
-      var ids=$(this).attr("id");
-      if(areastr==""){
-        areastr=ids;
-      }else{
-        areastr += ","+ids;
-      }
-    })
-  }else{
-    alert("请选择行政区域");
-  }
-  $("#nodeArea").attr({"value":areastr});
-  if($(".radio_ul li").length>0){
-    var radiostr="";
-    $(".radio_ul li").each(function(){
-      var ids=$(this).attr("id");
-      if(radiostr==""){
-        radiostr=ids;
-      }else{
-        radiostr += ","+ids;
-      }
-    })
-  }else{
-    alert("请选择电台分类");
-  }
-  $("#nodeRadio").attr({"value":radiostr});
+  })
 }
 
-/*点击弹出窗里面的树上的节点*/
-function onClick(event, treeId, treeNode){
-  if(clickName=="radio"){//点击电台分类
-    var node=radioObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
-    modalNode=node[0]; //当前选中的节点
-    if(modalNode.id=="1"){
-      alert("请在当前分类下的子分类进行操作");
-    }else{
-      var radioLi='<li class="_li" id='+modalNode.id+'>'+
-                  '<span>'+modalNode.name+'</span>'+
-                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
-                '</li>';
-      $(".radio_ul").append(radioLi); 
-      $("#chooseRadio").text("选择分类");
-      $("#radioTree").slideUp("slow");
-    }
+/*加载修改时需要的详细数据*/
+function loadModData(resultData){
+  $("#addCata").find(".modal-header>h4").html("修改电台分类");
+  var bcId=resultData.ResultInfo[0].ContentId;
+  $(".bcId").attr({"value":bcId});
+  var na=resultData.ResultInfo[0].ContentName;
+  $("#nodeNames").val(na);
+  var img=resultData.ResultInfo[0].ContentImg;
+  $(".defaultImg").attr({"src":img});
+  $(".playPathList:eq(0)").children(".playPath").val(resultData.ResultInfo[0].BcPlayPathList[0].BcPlayPath);
+  $(".playPathList:eq(0)").children(".bcSource").val(resultData.ResultInfo[0].BcPlayPathList[0].BcSource);
+  if(resultData.ResultInfo[0].BcPlayPathList[0].IsMain=="1"){
+    $(".playPathList:eq(0)").children(".isMain").attr({"checked":true});
   }else{
-    var node=areaObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
-    modalNode=node[0]; //当前选中的节点
-    if((modalNode.id!="2")&&(modalNode.id!="9")){
-      var areaLi='<li class="_li" id='+modalNode.id+'>'+
-                    '<span>'+modalNode.name+'</span>'+
-                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
-                  '</li>';
-      $(".area_ul").append(areaLi);
-      $("#chooseArea").text("选择区域");
-      $("#areaTree").slideUp("slow");
+    $(".playPathList:eq(0)").children(".isMain").attr({"checked":false});
+  }
+  for(var i=1;i<resultData.ResultInfo[0].BcPlayPathList.length;i++){
+    var newPath='<div class="playPathList">'+
+                  '<input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off" value='+resultData.ResultInfo[0].BcPlayPathList[i].BcPlayPath+'>'+
+                  '<input type="text" class="bcSource" placeholder="地址所属平台"/ value='+resultData.ResultInfo[0].BcPlayPathList[i].BcSource+'>'+
+                  '<input type="checkbox" name="isMain" class="isMain" />'+
+                  '<span class="note">是否设为主播放地址</span>'+
+                  '<div class="delplayPath">删除播放地址</div>'+
+                '</div>';
+    $(".playPaths").append(newPath);
+    if(resultData.ResultInfo[0].BcPlayPathList[i].IsMain=="1"){
+      $(".playPathList:eq("+i+")").children(".isMain").attr({"checked":true});
     }else{
-      alert("请在当前分类下的子分类进行操作");
+      $(".playPathList:eq("+i+")").children(".isMain").attr({"checked":false});
     }
   }
-};
+  var pub=resultData.ResultInfo[0].ContentPub;
+  $("#publisher").val(pub);
+  for(var i=0;i<resultData.ResultInfo[0].ContentCatalogs.length;i++){
+    var newli= '<li class="_li" id='+resultData.ResultInfo[0].ContentCatalogs[i].CataDid+'>'+
+                  '<span>'+resultData.ResultInfo[0].ContentCatalogs[i].CataTitle+'</span>'+
+                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                '</li>';
+    if(resultData.ResultInfo[0].ContentCatalogs[i].CataMId=="1"){//电台分类
+      $(".radio_ul").append(newli); 
+    }else{//行政区划
+      $(".area_ul").append(newli);
+    }
+  }
+  var des=resultData.ResultInfo[0].ContentDesc;
+  $("#nodeDescn").val((des=="null")?"":des);
+}
 
 /*修改已有分类的方法*/
 function modBroadcast(){
@@ -980,12 +984,11 @@ function modBroadcast(){
       "BcImg":$(".upfile").attr("value"),
       "BcAreaId":$("#nodeArea").attr("value"),
       "BcTypeId":$("#nodeRadio").attr("value"),
-      "BcPlayPath":BcPlayPaths,
+      "BcPlayPaths":BcPlayPaths,
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
   console.log(modInfo);
-  return;
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/updateBroadcast.do",
