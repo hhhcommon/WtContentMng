@@ -263,6 +263,54 @@
   background: #eee;
   cursor: pointer;
 }
+/*节目单管理样式*/
+#programme{width:80px;}
+#programmeMg{
+  width:100%;
+  height:100%;
+  display: none;
+  padding:10px;
+}
+.pro_cont{
+  width:100%;
+  height:100%;
+  background: #fff;
+}
+.radioName{
+  width:100%;
+  height:40px;
+  padding:10px;
+  border-bottom:
+}
+.pro_ctitle{
+  width:100%;
+  height:30px;
+  padding: 0px 40px;
+  overflow: hidden;
+}
+.pro_ctitle h4{
+  float: left;
+  height:30px;
+  line-height:30px;
+  margin-top:0px;
+  float: left;
+}
+.pro_ccont{
+  height:388px;
+  padding: 0px 40px;
+}
+.active{
+  background: #dedede;
+}
+.content{
+  height:388px;
+  display:none;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+.content.active{
+  display:block;
+}
 </style>
 </head>
 <body style="overflow:hidden;">
@@ -273,6 +321,7 @@
       <button type="button" id="mod" class="btn" style="margin-right:3px;" >修改</button>
       <button type="button" id="del" class="btn" style="margin-right:3px;" >删除</button>
       <button type="button" id="sear" class="btn" style="margin-right:3px;">搜索</button>
+      <button type="button" id="programme" class="btn" style="margin-right:3px;">节目单管理</button>
     </div>
     <!--显示主区域-->
     <div class="mainArea">
@@ -292,23 +341,7 @@
               <span class="radio_sum"></span>
             </div>
             <div class="ibox-content">
-              <div class="detail">
-                <!--<div class="listBox" actid="" acttype="" columnid="">
-                  <div class="listCheck"><input type="checkBox" name=""></div>
-                  <div class="listImg">
-                    <img alt="mage" src="http://pic.qingting.fm/2015/1221/20151221144845770.jpg!400">
-                  </div>
-                  <div class="listCon">
-                    <h3>巴黎清理一地铁站难民营地 移送超1000名难民</h3>
-                    <p class="secTitle">暂无</p>
-                    <p class="other"><span>来源：null</span><span>2016年11月5日 </span></p>
-                  </div>
-                  <div class="sortUpdate">
-                    <input type="text" class="sortNum" value="0">
-                    <button class="sortUpdateBtn">OK</button>
-                  </div>
-                </div>-->
-              </div>
+              <div class="detail"></div>
             </div>
           </div>
         </div>
@@ -403,6 +436,50 @@
           <div class="modal-footer" style="margin-top:60px;">
             <button id="save" type="button" class="btn btn-primary" style="position: absolute;left:513px;">提交</button>
             <button type="button" class="btn btn-white cancel" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--节目单页面-->
+    <div id="programmeMg" class="modal inmodal" data-backdrop="static">
+      <div class="pro_cont">
+        <div class="modal-header" style="padding-bottom:5px;">
+          <button type="button" class="close" id="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" style="margin-bottom:5px;">中央新闻广播电台</h4>
+        </div>
+        <div class="pro_ctitle">
+          <h4 class="active">周一</h4>
+          <h4>周二</h4>
+          <h4>周三</h4>
+          <h4>周四</h4>
+          <h4>周五</h4>
+          <h4>周六</h4>
+          <h4>周日</h4>
+        </div>
+        <div class="pro_ccont">
+          <div class="content active">
+                                周一的内容
+          </div>
+          <div class="content">
+                                周二的内容
+          </div>
+          <div class="content">
+                                周三的内容
+          </div>
+          <div class="content">
+                                周四的内容
+          </div>
+          <div class="content">
+                                周五的内容
+          </div>
+          <div class="content">
+                                周六的内容
+          </div>
+          <div class="content">
+                                周日的内容
           </div>
         </div>
       </div>
@@ -555,7 +632,7 @@ $(function() {
   //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
   $(".close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
-    $("#shade").css({"display":"none"});
+    $("#shade,#programmeMg").css({"display":"none"});
     $(document).find("input[type='checkbox']").removeAttr("checked");
   });
   
@@ -657,7 +734,7 @@ $(function() {
   $(document).on("click",".delplayPath",function(){
     $(this).parent().remove();
   });
-});  
+});
 
 /**
  * 加载树
@@ -1092,5 +1169,64 @@ $(document).on("mouseleave","._img",function(){
 $(document).on("click","._img",function(){
   $(this).parent().remove();
 });
+
+
+/*
+ 节目单管理页面
+ * */
+$("#programme").on("click",function(){
+  $("#programmeMg").show();
+  $("#shade").show();
+  getBcProgramme();//得到电台节目单信息
+});
+
+$('.pro_ctitle h4').click(function(){
+  var index = $(this).index();
+  $(this).addClass('active').siblings().removeClass('active');
+  $('.pro_ccont .content').eq(index).show().addClass('active').siblings().removeClass('active').hide();
+});
+
+/*初始化节目单数据*/
+$('.pro_ctitle h4').each(function(){
+  var week = new Date().getDay();
+  var index = $(this).index();
+  var indexs=index+1;
+  if(indexs==week){
+    $(this).addClass('active').siblings().removeClass('active');
+  $('.pro_ccont .content').eq(index).show().addClass('active').siblings().removeClass('active').hide();
+  }
+})
+
+
+/*得到电台节目单信息*/
+function getBcProgramme(){
+  $(document).find("input[type='checkbox']").each(function(){
+    if($(this).is(':checked')){
+      var bcId=$(this).parent().parent(".listBox").attr("contentid");
+      var _data={
+        "DeviceId":"3279A27149B24719991812E6ADBA5584",
+        "PCDType":"3",
+        "UserId":"123",
+        "BcId":bcId
+      };
+      $.ajax({
+        type: "POST",    
+        url:rootPath+"content/bc/getBcProgramme.do",
+        dataType: "json",
+        data:JSON.stringify(_data),
+        success: function(resultData){
+          if(resultData.ReturnType=="1001"){
+            
+          }else{
+            alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+          }
+        },
+        error: function(jqXHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      })
+    }
+  });
+}
 </script>
 </html>
