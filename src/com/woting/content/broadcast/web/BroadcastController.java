@@ -498,14 +498,6 @@ public class BroadcastController {
 			if (map.get("ReturnType") != null)
 				return map;
 			
-			String cataId = m.get("CatalogId")+"";
-			if (StringUtils.isNullOrEmptyOrSpace(cataId) || cataId.toLowerCase().equals("null")) {
-				cataId = null;
-			}
-			String cataType = m.get("CatalogType")+"";
-			if (StringUtils.isNullOrEmptyOrSpace(cataType) || cataType.toLowerCase().equals("null")) {
-				cataType = null;
-			}
 			String ids = m.get("Ids") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(ids) || ids.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
@@ -513,7 +505,7 @@ public class BroadcastController {
 				return map;
 			}
 			//
-			bcService.del(ids,cataType,cataId);
+			bcService.del(ids);
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 			return map;
