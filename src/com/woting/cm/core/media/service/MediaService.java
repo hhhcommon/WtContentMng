@@ -479,15 +479,22 @@ public class MediaService {
 			for (BroadcastPo bc : listpo) {
 				List<BCLiveFlowPo> ls = bcLiveFlowService.getBcLiveFlowsByBcId(bc.getId());
 				Map<String, Object> bcm = bc.toHashMap();
+				List<Map<String, Object>> ms = new ArrayList<>();
 				if (ls != null) {
 					for (BCLiveFlowPo bcLiveFlowPo : ls) {
 						if (bcLiveFlowPo.getIsMain() == 1) {
 							bcm.put("flowURI", bcLiveFlowPo.getFlowURI());
 							bcm.put("bcSource",bcLiveFlowPo.getBcSource());
 						}
+						Map<String, Object> bclfm = new HashMap<>();
+						bclfm.put("BcPlayPath", bcLiveFlowPo.getFlowURI());
+						bclfm.put("IsMain", bcLiveFlowPo.getIsMain());
+						bclfm.put("BcSource", bcLiveFlowPo.getBcSource());
+						ms.add(bclfm);
 					}
 				}
 				Map<String, Object> mam = ContentUtils.convert2Bc(bcm, null, catalist, pubChannelList, null);
+				mam.put("BcPlayPathList", ms);
 				list.add(mam);
 			}
 		}
