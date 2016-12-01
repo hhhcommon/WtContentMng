@@ -100,7 +100,7 @@
   </select>
 
   <!-- 删除数据 -->
-  <delete id="multiDelBc" parameterType="java.lang.String">
+  <delete id="multiDelResIds" parameterType="java.lang.String">
     delete from wt_ResDict_Ref where resId in (${value})
   </delete>
   <delete id="multiDelByResId" parameterType="java.lang.String">

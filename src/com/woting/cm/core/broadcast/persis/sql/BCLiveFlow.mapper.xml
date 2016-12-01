@@ -126,7 +126,7 @@
   <delete id="deleteByEntity" parameterType="java.util.Map">
     delete from wt_BCLiveFlow <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </delete>
-  <delete id="multiDelBc" parameterType="java.lang.String">
+  <delete id="multiDelBclf" parameterType="java.lang.String">
     delete from wt_BCLiveFlow where bcId in (${value})
   </delete>
 </mapper>

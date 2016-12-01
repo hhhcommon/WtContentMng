@@ -425,18 +425,13 @@ public class BroadcastProService {
 		return retP;
 	}
 
-	public void del(String ids, String cataType, String cataId) {
+	public void del(String ids) {
 		ids = ids.replaceAll(",", "','");
 		ids = "'" + ids + "'";
-		if (cataId!=null && cataType!=null) {
-		    String sql = " resId in ("+ids+")"+" and dictDid = '"+cataId+"' and dictMid = '" +cataType+"'";
-		    dictRefResDao.delete("delByDicts", sql);
-		} else {
-			broadcastDao.delete("multiDelBc", ids);
-		    bcLiveFlowDao.delete("multiDelBc", ids);
-		    dictRefResDao.delete("multiDelBc", ids);
-		    bcProDao.delete("multiDelBc", ids);
-		}
+		broadcastDao.delete("multiDelBc", ids);
+		bcLiveFlowDao.delete("multiDelBclf", ids);
+		dictRefResDao.delete("multiDelResIds", ids);
+		bcProDao.delete("multiDelBcP", ids);
 	}
 
 	/**
