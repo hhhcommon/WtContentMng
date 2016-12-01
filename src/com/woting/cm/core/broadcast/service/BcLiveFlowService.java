@@ -41,6 +41,7 @@ public class BcLiveFlowService {
 		Map<String, Object> m = new HashMap<>();
 		m.put("bcId", bcId);
 //		m.put("isMain", "1");
+		m.put("orderByClause", "isMain desc");
 		List<BCLiveFlowPo> ls = bclfDao.queryForList("getList", m);
 		if (ls!=null && ls.size()>0) {
 			return ls;
