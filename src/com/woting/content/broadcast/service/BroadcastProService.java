@@ -7,9 +7,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
-import org.apache.commons.io.filefilter.AndFileFilter;
-
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
@@ -43,13 +40,13 @@ public class BroadcastProService {
 	private MediaService mediaService;
 	private Map<String, Object> WeekDay = new HashMap<String, Object>() {
 		{
-			put("1", "星期一");
-			put("2", "星期二");
-			put("3", "星期三");
-			put("4", "星期四");
-			put("5", "星期五");
-			put("6", "星期六");
-			put("7", "星期日");
+			put("1", "2");
+			put("2", "3");
+			put("3", "4");
+			put("4", "5");
+			put("5", "6");
+			put("6", "7");
+			put("7", "1");
 		}
 	};
 	
@@ -391,6 +388,7 @@ public class BroadcastProService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Page<Map<String, Object>> getViewList(Map<String, Object> m) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		int pageIndex = Integer.parseInt(m.get("pageNumber") + "");
@@ -536,7 +534,7 @@ public class BroadcastProService {
 		return null;
 	}
 
-	public void updateBcProgrammes(String userId, String bcId, List<Map<String, Object>> programmes) {
+	public boolean updateBcProgrammes(String userId, String bcId, List<Map<String, Object>> programmes) {
 		List<BCProgrammePo> bcps = new ArrayList<>();
 		for (Map<String, Object> m : programmes) {
 			BCProgrammePo bcp = new BCProgrammePo();
@@ -549,9 +547,16 @@ public class BroadcastProService {
 			bcp.setSort(0);
 			bcps.add(bcp);
 		}
-		Map<String, Object> map = new HashMap<>();
-		map.put("bcId", bcId);
-		bcProDao.update("updateSort", map);
-		bcProDao.insert("insertList", bcps);
+		if (bcps!=null && bcps.size()>0) {
+			Map<String, Object> map = new HashMap<>();
+		    map.put("bcId", bcId);
+		    map.put("sort", 0);
+		    bcProDao.update("updateSort", map);
+		    map = new HashMap<>();
+		    map.put("list", bcps);
+		    bcProDao.insert("insertList", map);
+		    return true;
+		}
+		return false;
 	}
 }
