@@ -1300,11 +1300,7 @@ function loadBcProgramme(resultData){
         break;
     }
   }
-  $(document).find('.date').datetimepicker({
-    datepicker:false,
-    format:'H:i',
-    step:5
-  });
+  timeHS();//时分秒插件
 }
 
 /*点击每个节目单的新增，增加新的节目*/
@@ -1319,11 +1315,7 @@ function addPro(addPro){
                   '</div>'+
                 '</div>';
   $(addPro).parent().parent().after(newPro);
-  $(document).find('.date').datetimepicker({
-    datepicker:false,
-    format:'H:i',
-    step:5
-  });              
+  timeHS();//时分秒插件              
 }
 
 /*点击标题处的新增*/
@@ -1338,11 +1330,7 @@ $(".newadd").on("click",function(){
                   '</div>'+
                 '</div>';
   $(".pro_ccont .active").append(newPro); 
-  $(document).find('.date').datetimepicker({
-    datepicker:false,
-    format:'H:i',
-    step:5
-  });
+  timeHS();//时分秒插件
 });
 
 /*点击每个节目单的删除，删除这个节目*/
@@ -1394,5 +1382,13 @@ $(".commitPro").on("click",function(){
     }
   });
 });
+/*时分秒插件*/
+function timeHS(){
+  $(document).find('.date').datetimepicker({
+    datepicker:false,
+    format:'H:i',
+    step:5
+  });
+}
 </script>
 </html>
