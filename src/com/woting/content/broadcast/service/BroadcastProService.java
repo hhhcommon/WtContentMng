@@ -38,15 +38,22 @@ public class BroadcastProService {
 	private MybatisDAO<BCProgrammePo> bcProDao;
 	@Resource
 	private MediaService mediaService;
-	private Map<String, Object> WeekDay = new HashMap<String, Object>() {
+	private Map<String, Integer> WeekDay = new HashMap<String, Integer>() {
 		{
-			put("1", "2");
-			put("2", "3");
-			put("3", "4");
-			put("4", "5");
-			put("5", "6");
-			put("6", "7");
-			put("7", "1");
+			put("get1", 7);
+			put("get2", 1);
+			put("get3", 2);
+			put("get4", 3);
+			put("get5", 4);
+			put("get6", 5);
+			put("get7", 6);
+			put("update1", 2);
+			put("update2", 3);
+			put("update3", 4);
+			put("update4", 5);
+			put("update5", 6);
+			put("update6", 7);
+			put("update7", 1);
 		}
 	};
 	
@@ -515,6 +522,7 @@ public class BroadcastProService {
 	public List<Map<String, Object>> getBcProgrammes(String bcId) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("bcId", bcId);
+		m.put("sort", 0);
 		m.put("orderByClause", "weekDay,BeginTime");
 		List<BCProgrammePo> bcps = bcProDao.queryForList("getList", m);
 		if (bcps!=null && bcps.size()>0) {
@@ -526,7 +534,7 @@ public class BroadcastProService {
 				bcm.put("BeginTime", bcProgrammePo.getBeginTime());
 				bcm.put("EndTime", bcProgrammePo.getEndTime());
 				bcm.put("CTime", bcProgrammePo.getcTime());
-				bcm.put("WeekDay", bcProgrammePo.getWeekDay());
+				bcm.put("WeekDay", WeekDay.get("get"+bcProgrammePo.getWeekDay()));
 				bcms.add(bcm);
 			}
 			return bcms;
@@ -541,7 +549,7 @@ public class BroadcastProService {
 			bcp.setId(SequenceUUID.getPureUUID());
 			bcp.setBcId(bcId);
 			bcp.setTitle(m.get("Title")+"");
-			bcp.setWeekDay(Integer.valueOf(m.get("WeekDay")+""));
+			bcp.setWeekDay(WeekDay.get("update"+m.get("WeekDay")));
 			bcp.setBeginTime(m.get("BeginTime")+"");
 			bcp.setEndTime(m.get("EndTime")+"");
 			bcp.setSort(0);
