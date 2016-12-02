@@ -265,7 +265,7 @@ public class BroadcastProService {
 		broadcastDao.update(bPo);
 
 		// 字典
-		dictRefResDao.delete("multiDelBc", "'" + bcId + "'");// 先删除
+		dictRefResDao.delete("multiDelResIds", "'" + bcId + "'");// 先删除
 		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
 				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
@@ -308,7 +308,7 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		bcLiveFlowDao.delete("multiDelBc", "'"+bcId+"'");
+		bcLiveFlowDao.delete("multiDelBclf", "'"+bcId+"'");
 		for (Map<String, Object> ps : bcPlayPaths) {
 			BCLiveFlowPo lfp = new BCLiveFlowPo();
 		    lfp.setId(SequenceUUID.getUUIDSubSegment(4));
