@@ -1222,8 +1222,11 @@ $('.pro_ctitle h4').click(function(){
 
 /*清空数据*/
 $(".cancelPro,#programmeMg .close").on("click",function(){
-  $("#programmeMg,#shade").hide();
+  debugger;
+  $(".pro_ccont").children(".content").html("");
+  $("#proName").html("");
   $(document).find("input[type='checkbox']").removeAttr("checked");
+  $("#programmeMg,#shade").hide();
 })
 
 /*初始化节目单数据*/
@@ -1239,12 +1242,11 @@ $('.pro_ctitle h4').each(function(){
 
 /*得到电台节目单信息*/
 function getBcProgramme(){
-  $(".content,#proName").html("");//先清空数据
+  debugger;
   $(document).find("input[type='checkbox']").each(function(){
     if($(this).is(':checked')){
       var bcId=$(this).parent().parent(".listBox").attr("contentid");
       var bcName=$(this).parent().siblings(".listCon").children("h3").text();
-      $("#proName").html(bcName);
       $("#proName").attr({"bcId":bcId});
       var _data={
         "DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -1259,7 +1261,7 @@ function getBcProgramme(){
         data:JSON.stringify(_data),
         success: function(resultData){
           if(resultData.ReturnType=="1001"){
-            loadBcProgramme(resultData);//加载电台节目单信息
+            loadBcProgramme(resultData,bcName);//加载电台节目单信息
           }else{
             alert("当前电台没有节目单");
           }
@@ -1274,7 +1276,10 @@ function getBcProgramme(){
 }
 
 /*加载电台节目单信息*/
-function loadBcProgramme(resultData){
+function loadBcProgramme(resultData,bcName){
+  debugger;
+  $(".content,#proName").html("");//先清空数据
+  $("#proName").html(bcName);
   for(var i=0;i<resultData.ResultInfo.length;i++){
     var newPro= '<div class="conlist" bcId='+resultData.ResultInfo[i].BcId+' week='+resultData.ResultInfo[i].WeekDay+'>'+
                   '<input type="text" class="clspan1" value='+resultData.ResultInfo[i].Title+'>'+
@@ -1304,6 +1309,7 @@ $('.date').datetimepicker({
 
 /*点击每个节目单的新增，增加新的节目*/
 function addPro(addPro){
+  debugger;
   var newPro= '<div class="conlist" >'+
                   '<input type="text" class="clspan1" value="">'+
                   '<input type="text" class="clspan2 date" value="">'+
@@ -1318,6 +1324,7 @@ function addPro(addPro){
 
 /*点击标题处的新增*/
 $(".newadd").on("click",function(){
+  debugger;
   var newPro= '<div class="conlist" >'+
                   '<input type="text" class="clspan1" value="">'+
                   '<input type="text" class="clspan2 date" value="">'+
@@ -1332,11 +1339,13 @@ $(".newadd").on("click",function(){
 
 /*点击每个节目单的删除，删除这个节目*/
 function delPro(delPro){
+  debugger;
   $(delPro).parent().parent().remove();
 }
 
 /*点击提交，保存修改的内容*/
 $(".commitPro").on("click",function(){
+  debugger;
   var ProgrammeList=[];
   $(".pro_ccont .content").each(function(){
     if($(this).children(".conlist")){
@@ -1368,6 +1377,8 @@ $(".commitPro").on("click",function(){
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("节目单修改成功");
+        $(".content,#proName").html("");//先清空数据
+        $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#programmeMg,#shade").hide();
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
