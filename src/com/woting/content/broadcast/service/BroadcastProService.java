@@ -1,5 +1,6 @@
 package com.woting.content.broadcast.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -523,8 +524,18 @@ public class BroadcastProService {
 		Map<String, Object> m = new HashMap<>();
 		m.put("bcId", bcId);
 		m.put("sort", 0);
-		m.put("orderByClause", "weekDay,BeginTime");
+		m.put("orderByClause", "validTime desc");
+		m.put("limitNum", 1);
 		List<BCProgrammePo> bcps = bcProDao.queryForList("getList", m);
+		if (bcps!=null && bcps.size()>0) {
+			long vtime = bcps.get(0).getValidTime().getTime();
+			m = new HashMap<>();
+			m.put("bcId", bcId);
+		    m.put("sort", 0);
+		    m.put("validTime", new Timestamp(vtime));
+		    m.put("orderByClause", "weekDay,BeginTime");
+		    bcps = bcProDao.queryForList("getList", m);
+		}
 		if (bcps!=null && bcps.size()>0) {
 			List<Map<String, Object>> bcms = new ArrayList<>();
 			for (BCProgrammePo bcProgrammePo : bcps) {
@@ -544,25 +555,27 @@ public class BroadcastProService {
 
 	public boolean updateBcProgrammes(String userId, String bcId, List<Map<String, Object>> programmes) {
 		List<BCProgrammePo> bcps = new ArrayList<>();
+		long validTime = (System.currentTimeMillis()/86400000)*86400000-8*3600*1000;
 		for (Map<String, Object> m : programmes) {
 			BCProgrammePo bcp = new BCProgrammePo();
 			bcp.setId(SequenceUUID.getPureUUID());
 			bcp.setBcId(bcId);
 			bcp.setTitle(m.get("Title")+"");
+			bcp.setSort(0);
 			bcp.setWeekDay(WeekDay.get("update"+m.get("WeekDay")));
 			bcp.setBeginTime(m.get("BeginTime")+"");
 			bcp.setEndTime(m.get("EndTime")+"");
-			bcp.setSort(0);
+			bcp.setValidTime(new Timestamp(validTime));
 			bcps.add(bcp);
 		}
 		if (bcps!=null && bcps.size()>0) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("bcId", bcId);
+		    m.put("validTime", new Timestamp(validTime));
+		    bcProDao.update("updateSort", m);
 			Map<String, Object> map = new HashMap<>();
-		    map.put("bcId", bcId);
-		    map.put("sort", 0);
-		    bcProDao.update("updateSort", map);
-		    map = new HashMap<>();
 		    map.put("list", bcps);
-		    bcProDao.insert("insertList", map);
+			bcProDao.insert("insertList", map);
 		    return true;
 		}
 		return false;
