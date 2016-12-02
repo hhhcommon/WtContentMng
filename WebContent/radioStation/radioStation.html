@@ -304,6 +304,7 @@
   float: left;
   padding: 0px 20px;
   text-align: center;
+  cursor:pointer;
 }
 .pro_ccont{
   height:358px;
@@ -1351,6 +1352,31 @@ $(".commitPro").on("click",function(){
     }
   })
   console.log(ProgrammeList);
+  var _data={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "UserId":"123",
+    "BcId":$("#proName").attr("bcid"),
+    "ProgrammeList":ProgrammeList
+  };
+  console.log(_data);
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/updateBcProgramme.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        alert("节目单修改成功");
+        $("#programmeMg,#shade").hide();
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
 });
 </script>
 </html>
