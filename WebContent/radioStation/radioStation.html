@@ -609,12 +609,6 @@ $(function() {
   //1.1-加载页面上的树
   var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
   loadTree(zTreeObj,loadTreeData);
-  //1.2-加载弹出页面上电台分类的树
-  var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
-  loadTree(radioObj,loadRadioData);
-  //1.3-加载弹出页面上行政区划的树
-  var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
-  loadTree(areaObj,loadAreaData);
   
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
@@ -622,6 +616,10 @@ $(function() {
     cleanDialog();
     oPeType=1;
     $("#addCata").find(".modal-header>h4").html("添加电台分类");
+    var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
+    loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
+    var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+    loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   });
@@ -634,6 +632,10 @@ $(function() {
         oPeType=2;
         var bcId=$(this).parent().parent(".listBox").attr("contentid");
         getBcInfoForMod(bcId);//为修改得到详细的电台信息
+        var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
+        loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
+        var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+        loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
         $("#shade").css({"display":"block"});
         $("#addCata").modal("show"); 
       }
@@ -844,24 +846,7 @@ function reqDetailList(event, treeId, treeNode){
 function loadDetailList(treeNode,resultData){
   $(".radio_sum").html("共有"+resultData.ResultList.AllCount+"个电台");
   for(var i=0;i<resultData.ResultList.List.length;i++){
-    var strId="",strTitle="",strMId="";
-    if(resultData.ResultList.List[i].ContentCatalogs){
-      for(var k=0;k<resultData.ResultList.List[i].ContentCatalogs.length;k++){
-        var ssId=resultData.ResultList.List[i].ContentCatalogs[k].CataDid;
-        var ssTitle=resultData.ResultList.List[i].ContentCatalogs[k].CataTitle;
-        var ssMId=resultData.ResultList.List[i].ContentCatalogs[k].CataMId;
-        if(strId==""){
-          strId=ssId;
-          strTitle=ssTitle;
-          strMId=ssMId;
-        }else{
-          strId+=","+ssId;
-          strTitle+=","+ssTitle;
-          strMId+=","+ssMId;
-        }
-      }
-    }
-    var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+' strId='+strId+' strTitle='+strTitle+' strMId='+strMId+'>'+
+    var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+'>'+
               '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
               '<div class="listImg">'+
                 '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
@@ -898,9 +883,9 @@ function onClick(event, treeId, treeNode){
       alert("请在当前分类下的子分类进行操作");
     }else{
       var radioLi='<li class="_li" id='+modalNode.id+'>'+
-                  '<span>'+modalNode.name+'</span>'+
-                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
-                '</li>';
+                    '<span>'+modalNode.name+'</span>'+
+                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                  '</li>';
       $(".radio_ul").append(radioLi); 
       $("#chooseRadio").text("选择分类");
       $("#radioTree").slideUp("slow");
