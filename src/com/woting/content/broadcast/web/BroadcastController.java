@@ -778,9 +778,14 @@ public class BroadcastController {
 				map.put("Message", "无节目列表");
 				return map;
 			}
-			bcService.updateBcProgrammes(userId,bcId,programmes);
-			map.put("ReturnType", "1001");
-			map.put("Message", "修改成功");
+			boolean isok = bcService.updateBcProgrammes(userId,bcId,programmes);
+			if (isok) {
+				map.put("ReturnType", "1001");
+			    map.put("Message", "修改成功");
+			} else {
+				map.put("ReturnType", "1011");
+			    map.put("Message", "修改失败");
+			}
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

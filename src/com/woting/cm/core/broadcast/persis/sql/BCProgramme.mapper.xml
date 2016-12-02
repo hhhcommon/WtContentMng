@@ -67,11 +67,10 @@
       <if test="orderByClause!=null">order by ${orderByClause}</if>
     </select>
 	
-	<insert id="insertList" parameterType="java.util.List">
+	<insert id="insertList" parameterType="java.util.Map">
 		insert into
-		wt_BCProgramme(id,bcId,title,weekDay,beginTime,endTime,cTime) values
-		<foreach collection="list" item="list" index="index"
-			separator=",">
+		wt_BCProgramme(id,bcId,title,weekDay,sort,beginTime,endTime) values
+		<foreach collection="list" item="list" index="index" separator=",">
 			(#{list.id},#{list.bcId},#{list.title},#{list.weekDay},#{list.sort},#{list.beginTime},#{list.endTime})
 		</foreach>
 	</insert>
