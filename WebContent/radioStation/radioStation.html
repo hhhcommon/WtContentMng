@@ -14,6 +14,8 @@
   <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
   <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
   <link href="../resources/css/catalog.css" rel="stylesheet">
+  <!--时分秒选择器-->
+  <link href="../resources/css/jquery.datetimepicker.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
   <script src="../resources/plugins/zTree/js/jquery.ztree.excheck-3.5.js"></script>
@@ -22,6 +24,8 @@
   <script src="../resources/plugins/hplus/js/content.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/js/common.utils.js"></script>
+  <!--时分秒选择器-->
+  <script src="../resources/js/jquery.datetimepicker.full.js"></script>
 <style type="text/css">
 .detail{
   width: 100%;
@@ -263,6 +267,107 @@
   background: #eee;
   cursor: pointer;
 }
+/*节目单管理样式*/
+#programme{width:80px;}
+#programmeMg{
+  width:100%;
+  height:100%;
+  display: none;
+  min-height:497px;
+  overflow-y: auto;
+  padding:10px;
+  min-width:740px;
+}
+.pro_cont{
+  width:100%;
+  height:100%;
+  min-height:520px;
+  background: #fff;
+}
+.radioName{
+  width:100%;
+  height:40px;
+  padding:10px;
+  border-bottom:
+}
+.pro_ctitle{
+  width:100%;
+  height:30px;
+  padding: 0px 40px;
+  overflow: hidden;
+}
+.pro_ctitle h4{
+  float: left;
+  height:30px;
+  line-height:30px;
+  margin-top:0px;
+  float: left;
+  padding: 0px 20px;
+  text-align: center;
+  cursor:pointer;
+}
+.pro_ccont{
+  height:358px;
+  padding: 0px 40px;
+}
+.active{
+  background: #dedede;
+}
+.content{
+  height:358px;
+  display:none;
+  overflow-x:hidden;
+  overflow-y:auto;
+  position: relative;
+}
+.content.active{
+  display:block;
+}
+.conlist{
+  padding: 10px;
+  border-bottom: 1px solid #f5f5f5;
+  overflow: hidden;
+}
+.clspan1,.clspan2,.clspan3{
+  float: left;
+  text-align: left;
+  display: inline-block;
+}
+.clspan1{
+  width:auto;
+  font-size:16px;
+  border:none;
+  background: #fff;
+}
+.clspan2,.clspan3{width:75px;}
+.clspan2{margin-left:100px;}
+.clspan3{margin-left:10px;}
+.proBtns{
+  overflow: hidden;
+  margin-top:10px;
+  margin-left:35%;
+}
+.commitPro,.cancelPro{
+  width:auto;
+  float:left;
+}
+.cancelPro{
+  margin-left:20px;
+}
+.buttons{
+  width: 88px;
+  float: left;
+  margin-left: 30px;
+}
+.newadd{
+  float: right;
+  position: absolute;
+  top: 40px;
+  right: 70px;
+}
+.delPro{
+  margin-left:3px;
+}
 </style>
 </head>
 <body style="overflow:hidden;">
@@ -273,6 +378,7 @@
       <button type="button" id="mod" class="btn" style="margin-right:3px;" >修改</button>
       <button type="button" id="del" class="btn" style="margin-right:3px;" >删除</button>
       <button type="button" id="sear" class="btn" style="margin-right:3px;">搜索</button>
+      <button type="button" id="programme" class="btn" style="margin-right:3px;">节目单管理</button>
     </div>
     <!--显示主区域-->
     <div class="mainArea">
@@ -292,23 +398,7 @@
               <span class="radio_sum"></span>
             </div>
             <div class="ibox-content">
-              <div class="detail">
-                <!--<div class="listBox" actid="" acttype="" columnid="">
-                  <div class="listCheck"><input type="checkBox" name=""></div>
-                  <div class="listImg">
-                    <img alt="mage" src="http://pic.qingting.fm/2015/1221/20151221144845770.jpg!400">
-                  </div>
-                  <div class="listCon">
-                    <h3>巴黎清理一地铁站难民营地 移送超1000名难民</h3>
-                    <p class="secTitle">暂无</p>
-                    <p class="other"><span>来源：null</span><span>2016年11月5日 </span></p>
-                  </div>
-                  <div class="sortUpdate">
-                    <input type="text" class="sortNum" value="0">
-                    <button class="sortUpdateBtn">OK</button>
-                  </div>
-                </div>-->
-              </div>
+              <div class="detail"></div>
             </div>
           </div>
         </div>
@@ -324,8 +414,6 @@
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
-            <!--<span id="catalogBelong">分类属于：</span>-->
-            <!--<span id="nodePath"></span>-->
           </div>
           <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
             <form id="verOperForm" enctype ="multipart/form-data">
@@ -347,7 +435,6 @@
                 </tr>
                 <tr>
                   <td class="th add-th">播放地址</td>
-                  <!--<td colspan="3"><input type="text" class="form-control" id="url" name="url" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>-->
                   <td colspan="3">
                     <div class="playPaths">
                       <div class="playPathList">
@@ -357,13 +444,6 @@
                         <span class="note">是否设为主播放地址</span>
                         <div class="addplayPath">添加播放地址</div>
                       </div>
-                      <!--<div class="playPathList">
-                        <input type="text" class="playPath" placeholder="播放地址" aria-required="true" style="margin-bottom:0px;"  autocomplete="off">
-                        <input type="text" class="bcSource" placeholder="地址所属平台"/>
-                        <input type="checkbox" class="isMain" />
-                        <span class="note">是否设为主播放地址</span>
-                        <div class="addplayPath">添加播放地址</div>
-                      </div>-->
                     </div>
                   </td>
                 </tr>
@@ -404,6 +484,41 @@
             <button id="save" type="button" class="btn btn-primary" style="position: absolute;left:513px;">提交</button>
             <button type="button" class="btn btn-white cancel" data-dismiss="modal">关闭</button>
           </div>
+        </div>
+      </div>
+    </div>
+    <!--节目单页面-->
+    <div id="programmeMg" class="modal inmodal" data-backdrop="static">
+      <div class="pro_cont">
+        <div class="modal-header" style="padding-bottom:5px;">
+          <button type="button" class="close" id="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="proName" style="margin-bottom:5px;"></h4>
+          <button class="newadd">新增</button>
+        </div>
+        <div class="pro_ctitle">
+          <h4 class="active">周一</h4>
+          <h4>周二</h4>
+          <h4>周三</h4>
+          <h4>周四</h4>
+          <h4>周五</h4>
+          <h4>周六</h4>
+          <h4>周日</h4>
+        </div>
+        <div class="pro_ccont">
+          <div class="content active" id="week1" weekIndex="1"></div>
+          <div class="content" id="week2" weekIndex="2"></div>
+          <div class="content" id="week3" weekIndex="3"></div>
+          <div class="content" id="week4" weekIndex="4"></div>
+          <div class="content" id="week5" weekIndex="5"></div>
+          <div class="content" id="week6" weekIndex="6"></div>
+          <div class="content" id="week7" weekIndex="7"></div>
+        </div>
+        <div class="proBtns">
+          <input type="button"  class="commitPro" value="提交"/>
+          <input type="button"  class="cancelPro" value="取消"/>
         </div>
       </div>
     </div>
@@ -540,7 +655,7 @@ $(function() {
         catalogId=$(this).parent().parent(".listBox").attr("selectnodeid");
       }
     });
-    beforeRemove(check,catalogType,catalogId);
+    beforeRemove(check);
   });
   
   //2.4-点击提交按钮，提交表单
@@ -555,7 +670,7 @@ $(function() {
   //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
   $(".close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
-    $("#shade").css({"display":"none"});
+    $("#shade,#programmeMg").css({"display":"none"});
     $(document).find("input[type='checkbox']").removeAttr("checked");
   });
   
@@ -657,7 +772,7 @@ $(function() {
   $(document).on("click",".delplayPath",function(){
     $(this).parent().remove();
   });
-});  
+});
 
 /**
  * 加载树
@@ -1013,23 +1128,21 @@ function modBroadcast(){
 };
 
 //删除节点的时候验证是否删除
-function beforeRemove(check,catalogType,catalogId){
+function beforeRemove(check){
   if(confirm("确认删除这些电台 吗？")){
-    delBroadcast(check,catalogType,catalogId);
+    delBroadcast(check);
   }else{
     alert("成功取消删除");
   }
 }
 
 /*删除已有分类的方法*/
-function delBroadcast(check,catalogType,catalogId){
+function delBroadcast(check){
   var delInfo={
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
     "UserId":"123",
-    "Ids":check,
-    "CatalogType":catalogType,
-    "CatalogId":catalogId
+    "Ids":check
   };
   $.ajax({
     type: "POST",    
@@ -1039,7 +1152,7 @@ function delBroadcast(check,catalogType,catalogId){
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("删除成功!");
-        removing(check,catalogType,catalogId);//删除成功后从页面上移走
+        removing(check);//删除成功后从页面上移走
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -1091,6 +1204,179 @@ $(document).on("mouseleave","._img",function(){
 });
 $(document).on("click","._img",function(){
   $(this).parent().remove();
+});
+
+
+/*
+ 节目单管理页面
+ * */
+$("#programme").on("click",function(){
+  getBcProgramme();//得到电台节目单信息
+});
+/*tab切换*/
+$('.pro_ctitle h4').click(function(){
+  var index = $(this).index();
+  $(this).addClass('active').siblings().removeClass('active');
+  $('.pro_ccont .content').eq(index).show().addClass('active').siblings().removeClass('active').hide();
+});
+
+/*清空数据*/
+$(".cancelPro,#programmeMg .close").on("click",function(){
+  $("#programmeMg,#shade").hide();
+  $(document).find("input[type='checkbox']").removeAttr("checked");
+})
+
+/*初始化节目单数据*/
+$('.pro_ctitle h4').each(function(){
+  var week = new Date().getDay();
+  var index = $(this).index();
+  var indexs=index+1;
+  if(indexs==week){
+    $(this).addClass('active').siblings().removeClass('active');
+  $('.pro_ccont .content').eq(index).show().addClass('active').siblings(".content").removeClass('active').hide();
+  }
+})
+
+/*得到电台节目单信息*/
+function getBcProgramme(){
+  $(".content,#proName").html("");//先清空数据
+  $(document).find("input[type='checkbox']").each(function(){
+    if($(this).is(':checked')){
+      var bcId=$(this).parent().parent(".listBox").attr("contentid");
+      var bcName=$(this).parent().siblings(".listCon").children("h3").text();
+      $("#proName").html(bcName);
+      $("#proName").attr({"bcId":bcId});
+      var _data={
+        "DeviceId":"3279A27149B24719991812E6ADBA5584",
+        "PCDType":"3",
+        "UserId":"123",
+        "BcId":bcId
+      };
+      $.ajax({
+        type: "POST",    
+        url:rootPath+"content/bc/getBcProgramme.do",
+        dataType: "json",
+        data:JSON.stringify(_data),
+        success: function(resultData){
+          if(resultData.ReturnType=="1001"){
+            loadBcProgramme(resultData);//加载电台节目单信息
+          }else{
+            alert("当前电台没有节目单");
+          }
+        },
+        error: function(jqXHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      })
+      $("#programmeMg,#shade").show();
+    }
+  });
+}
+
+/*加载电台节目单信息*/
+function loadBcProgramme(resultData){
+  for(var i=0;i<resultData.ResultInfo.length;i++){
+    var newPro= '<div class="conlist" bcId='+resultData.ResultInfo[i].BcId+' week='+resultData.ResultInfo[i].WeekDay+'>'+
+                  '<input type="text" class="clspan1" value='+resultData.ResultInfo[i].Title+'>'+
+                  '<input type="text" class="clspan2 date" value='+resultData.ResultInfo[i].BeginTime+'>'+
+                  '<input type="text" class="clspan3 date" value='+resultData.ResultInfo[i].EndTime+'>'+
+                  '<div class="buttons">'+
+                    '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
+                    '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
+                  '</div>'+
+                '</div>';
+    if(resultData.ResultInfo[i].WeekDay=="1") $("#week1").append(newPro);
+    if(resultData.ResultInfo[i].WeekDay=="2") $("#week2").append(newPro);
+    if(resultData.ResultInfo[i].WeekDay=="3") $("#week3").append(newPro);
+    if(resultData.ResultInfo[i].WeekDay=="4") $("#week4").append(newPro);
+    if(resultData.ResultInfo[i].WeekDay=="5") $("#week5").append(newPro);
+    if(resultData.ResultInfo[i].WeekDay=="6") $("#week6").append(newPro);
+    if(resultData.ResultInfo[i].WeekDay=="7") $("#week7").append(newPro);
+  }
+}
+
+/*时分秒插件*/
+$('.date').datetimepicker({
+  datepicker:false,
+  format:'H:i',
+  step:5
+});
+
+/*点击每个节目单的新增，增加新的节目*/
+function addPro(addPro){
+  var newPro= '<div class="conlist" >'+
+                  '<input type="text" class="clspan1" value="">'+
+                  '<input type="text" class="clspan2 date" value="">'+
+                  '<input type="text" class="clspan3 date" value="">'+
+                  '<div class="buttons">'+
+                    '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
+                    '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
+                  '</div>'+
+                '</div>';
+  $(addPro).parent().parent().after(newPro);              
+}
+
+/*点击标题处的新增*/
+$(".newadd").on("click",function(){
+  var newPro= '<div class="conlist" >'+
+                  '<input type="text" class="clspan1" value="">'+
+                  '<input type="text" class="clspan2 date" value="">'+
+                  '<input type="text" class="clspan3 date" value="">'+
+                  '<div class="buttons">'+
+                    '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
+                    '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
+                  '</div>'+
+                '</div>';
+  $(".pro_ccont .active").append(newPro);   
+});
+
+/*点击每个节目单的删除，删除这个节目*/
+function delPro(delPro){
+  $(delPro).parent().parent().remove();
+}
+
+/*点击提交，保存修改的内容*/
+$(".commitPro").on("click",function(){
+  var ProgrammeList=[];
+  $(".pro_ccont .content").each(function(){
+    if($(this).children(".conlist")){
+      var proList={};
+      for(var i=0;i<$(this).children(".conlist").length;i++){
+        proList.WeekDay=$(this).attr("weekIndex");
+        proList.BcId=$("#proName").attr("bcid");
+        proList.Title=$(this).children(".conlist").children(".clspan1").val();
+        proList.BeginTime=$(this).children(".conlist").children(".clspan2").val();
+        proList.EndTime=$(this).children(".conlist").children(".clspan3").val();
+        ProgrammeList.push(proList)
+      }
+    }
+  })
+  console.log(ProgrammeList);
+  var _data={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "UserId":"123",
+    "BcId":$("#proName").attr("bcid"),
+    "ProgrammeList":ProgrammeList
+  };
+  console.log(_data);
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/updateBcProgramme.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        alert("节目单修改成功");
+        $("#programmeMg,#shade").hide();
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
 });
 </script>
 </html>
