@@ -187,6 +187,7 @@ public class MediaContentService {
 				cp.setResId(m.get("TypeInfo") + "");
 				cp.setDictMId("4");
 				cp.setDictDId(m.get("TypeId") + "");
+				cp.setcTime(new Timestamp(System.currentTimeMillis()));
 				cps.add(cp);
 			}
 			complexRefService.insertComplexRef(cps);
@@ -201,19 +202,27 @@ public class MediaContentService {
 
 		if (mediaService.getMaInfoById(ma.getId()) != null) {
 			map.put("ReturnType", "1001");
-			map.put("Message", "上传文件成功");
+			map.put("Message", "添加节目成功");
 		} else {
 			map.put("ReturnType", "1011");
-			map.put("Message", "上传失败");
+			map.put("Message", "添加节目失败");
 		}
 		return map;
 	}
 
 	/**
 	 * 修改单体信息
-	 * 
-	 * @param ma
-	 * @param sma
+	 * @param userid
+	 * @param contentId
+	 * @param contentname
+	 * @param contentimg
+	 * @param seqmediaId
+	 * @param timelong
+	 * @param contenturi
+	 * @param tags
+	 * @param memberType
+	 * @param contentdesc
+	 * @param pubTime
 	 * @return
 	 */
 	public boolean updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
@@ -325,6 +334,7 @@ public class MediaContentService {
 					cp.setResId(m.get("TypeInfo") + "");
 					cp.setDictMId("4");
 					cp.setDictDId(m.get("TypeId") + "");
+					cp.setcTime(new Timestamp(System.currentTimeMillis()));
 					cps.add(cp);
 				}
 				if (cps != null && cps.size() > 0) {
