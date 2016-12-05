@@ -724,7 +724,7 @@ $(function(){
   //点击专辑的封面图片，跳到这个专辑的详情页
   $(document).on("click",".rtcl_img",function(){
     var contentId=$(this).parent(".rtc_listBox").attr("contentId");
-    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
+    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
   });
