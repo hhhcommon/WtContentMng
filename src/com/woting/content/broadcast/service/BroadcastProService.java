@@ -266,8 +266,7 @@ public class BroadcastProService {
 
 		// 字典
 		dictRefResDao.delete("multiDelResIds", "'" + bcId + "'");// 先删除
-		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
-				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
 		DictModel tempDictM = null;
 		TreeNode<DictDetail> tempNode = null;
