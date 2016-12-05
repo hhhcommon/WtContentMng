@@ -354,9 +354,14 @@ $(function(){
       }
     }
   };
+  //当页面宽度发生变化时
   window.onresize=function(){
     laydate.reset(); 
   }
+  //日历插件的位置跟随着滚动条变化
+  $(".add").on("scroll", function(){ 
+    laydate.reset();//重设日历控件坐标，一般用于页面dom结构改变时
+  }) 
   //7.点击换一批
   $(document).on("click",".hyp",function(){
     alert("请求加载另一批数据");
