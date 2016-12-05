@@ -442,8 +442,8 @@ public class MediaContentService {
 		for (String id : ids) {
 			mediaService.removeMedia(id);
 		}
-		map.put("ReturnType", "1011");
-		map.put("Message", "单体删除失败");
+		map.put("ReturnType", "1001");
+		map.put("Message", "单体成功");
 		return map;
 	}
 
