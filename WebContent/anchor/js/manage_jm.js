@@ -347,14 +347,12 @@ $(function(){
     $(".yp_mz").val("aa.mp3");//数据库没有存这一字段，因为有需要，我自己加上的
     $(".upl_file").attr("value",resultData.Result.ContentPlay);
     $(".audio").attr("src",resultData.Result.ContentPlay);
-    var time=$(".audio")[0].duration;
-    $(".timeLong").attr({"value":parseInt(time)});
     $(".uplTitle").val(resultData.Result.ContentName);
     $(".defaultImg").attr("src",resultData.Result.ContentImg);
     $(".upl_zj option").each(function(){
       if($(this).attr("id")==resultData.Result.ContentSeqId){
-        $(".upl_zj option").attr("selected",false);
-        $(this).attr("selected",true); 
+        $(".upl_zj option").prop("selected",false);
+        $(this).prop("selected",true); 
       }
     })
     if(resultData.Result.ContentKeyWords!=null){
@@ -368,13 +366,13 @@ $(function(){
         $(".my_tag_con").find(".my_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input").prop("checked",true);
-            $(this).children("input").attr("disabled",true)
+            $(this).children("input").prop("disabled",true)
           }
         })
         $(".gg_tag_con").find(".gg_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input").prop("checked",true);
-            $(this).children("input").attr("disabled",true)
+            $(this).children("input").prop("disabled",true)
           }
         })
       }
@@ -546,16 +544,16 @@ $(function(){
     $(".upl_file").click();
   });
   $(".upl_file").change(function(){
-    debugger;
     uploadType=1;
-    $(".sonProgress,.parentProgress,.uploadStatus").hide();
     var oMyForm = new FormData();
     var filePath=$(this).val();
+    var _this=$(this);
+    var arr=filePath.split('\\');
+    var fileName=arr[arr.length-1];
     if(filePath){
-      var _this=$(this);
-      var arr=filePath.split('\\');
-      var fileName=arr[arr.length-1];
       $(".yp_mz").val(fileName);
+      $(".uploadStatus").hide();
+      $(".sonProgress,.parentProgress").show();
       oMyForm.append("ContentFile", $(this)[0].files[0]);
       oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
       oMyForm.append("MobileClass", "Chrome");
@@ -566,8 +564,10 @@ $(function(){
       if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
         alert("文件过大，请选择合适的文件上传！");
       }else{
-        requestUpload(_this,oMyForm,uploadType);//请求上传文件
+        requestUpload(_this,oMyForm,uploadType,fileName);//请求上传文件
       }
+    }else{
+      return;
     }
   });
   
@@ -618,7 +618,7 @@ $(function(){
 //});
   
   //5.请求上传文件
-  function requestUpload(_this,oMyForm,uploadType){
+  function requestUpload(_this,oMyForm,uploadType,fileName){
     $.ajax({
       url:rootPath+"common/uploadCM.do",
       type:"POST",
@@ -640,12 +640,8 @@ $(function(){
           _this.attr("value",opeResult.ful[0].FilePath);
           $(".audio").attr("src",opeResult.ful[0].FilePath);
           getTime();
-          $(".cancelUpload").show();
           $(".cancelUpload").hide();
-          if(uploadType=="1"){
-            $(".uploadStatus").show();
-            $(".sonProgress,.parentProgress").show();
-          };
+          if(uploadType=="1") $(".uploadStatus").show();
           if(uploadType=="2") $(".img_uploadStatus").show();
         }else{
           alert(opeResult.err);
@@ -764,7 +760,8 @@ $(function(){
                       '</div>'+
                       '<img class="cancelImg" src="img/upl_img2.png" alt="" />'+
                     '</li>';
-      $(".czfs_tag").append(new_czfs);              
+      $(".czfs_tag").append(new_czfs);
+      $(".czfs_author_ipt").val("");
     }
   });
   
