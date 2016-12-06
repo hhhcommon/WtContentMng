@@ -93,7 +93,7 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st">'+status+'</p>'+
+                      '<p class="zj_st" flowFlag='+resultData.ResultList[i].ContentPubChannels[0].FlowFlag+'>'+status+'</p>'+
                       '<div class="op_type">'+
                         '<p class="zj_edit">编辑</p>'+
                         '<p class="zj_pub">发布</p>'+
@@ -115,9 +115,15 @@ $(function(){
   //22-1点击编辑专辑按钮
    $(document).on("click",".zj_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    subType=2;
-    pubType=2;
-    edit_zj(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
+    if(flowFlag=="1"||flowFlag=="2") {
+      alert("当前状态不支持编辑状态");
+      return;
+    }else{
+      subType=2;
+      pubType=2;
+      edit_zj(contentId);
+    }
   })
    
   //33-1点击提交按钮，创建专辑/修改专辑
@@ -188,6 +194,10 @@ $(function(){
   
   //33-1.2保存编辑后的信息
   function save_edit_zj(){
+    debugger;
+    if(!$(".upl_img").attr("value")){
+      $(".upl_img").attr("value",$(".defaultImg").attr("src"));
+    }
     var _data={};
     _data.UserId="123";
     _data.DeviceId="3279A27149B24719991812E6ADBA5584";

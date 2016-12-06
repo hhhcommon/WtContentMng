@@ -104,7 +104,7 @@ $(function(){
                             '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
                           '</p>'+
                         '</div>'+
-                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
                         '<div class="op_type">'+
                           '<p class="jm_edit">编辑</p>'+
                           '<p class="jm_pub">发布</p>'+
@@ -148,9 +148,15 @@ $(function(){
   //22-1点击编辑节目按钮
    $(document).on("click",".jm_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    subType=2;
-    pubType=2;
-    edit_jm(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
+    if(flowFlag=="1"||flowFlag=="2") {
+      alert("当前状态不支持编辑状态");
+      return;
+    }else{
+      subType=2;
+      pubType=2;
+      edit_jm(contentId);
+    }
   })
   
   //33-1点击提交按钮，上传节目/修改节目
@@ -347,7 +353,6 @@ $(function(){
   
   //22-1.2填充节目信息
   function fillJmContent(resultData){
-    debugger;
     $(".jmId").attr("value",resultData.Result.ContentId);
     $(".iboxtitle h4").html("修改节目");
     $(".yp_mz").val("aa.mp3");//数据库没有存这一字段，因为有需要，我自己加上的
@@ -436,9 +441,9 @@ $(function(){
   
   //55-1点击发布节目按钮
   $(document).on("click",".jm_pub",function(){
-    $('.shade', parent.document).show();
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+    $('.shade', parent.document).show();
     pub_jm(contentId,contentSeqId);
   })
   function pub_jm(contentId,contentSeqId){
@@ -1045,7 +1050,7 @@ $(function(){
       options.imgSrc = e.target.result;
       cropper = $('.imageBox').cropbox(options);
     }
-    reader.readAsDataURL(this.files[0]);
+    reader.readAsDataURL($(this)[0].files[0]);
     var files=$(this)[0].files[0];
     console.log(files);
     saveClip(files);
@@ -1053,39 +1058,38 @@ $(function(){
   $('#btnCrop').on('click', function(){
     debugger;
     var img = cropper.getDataURL();
+    console.log(img);
     $('.cropped').html('');
     // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
     // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
     $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
   })
   $('#btnZoomIn').on('click', function(){
-    debugger;
     cropper.zoomIn();
   })
   $('#btnZoomOut').on('click', function(){
-    debugger;
     cropper.zoomOut();
   })
   
   function saveClip(files){
     $('#btnSave').on('click', function(){
       debugger;
-      var oMyForm = new FormData();
-  //  console.log(files);
-      oMyForm.append("ContentFile", files);
-      oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-      oMyForm.append("MobileClass", "Chrome");
-      oMyForm.append("PCDType", "3");
-      oMyForm.append("UserId", "123");
-      oMyForm.append("SrcType", "1");
-      oMyForm.append("Purpose", "2");
-      var imgbase64=$(".cropped img").attr("src");
-      var _this=$(this).parent(".action1").siblings(".cropped").children("img");
-      console.log(oMyForm);
+      var  imgBase64Data=$(document).find(".cropped img").attr("src");
+      console.log( imgBase64Data);
+//    var pos = imgBase64Data.indexOf("4")+2;//必须把imgBase64Data完全输出来，否则得不到图片
+//    imgBase64Data = imgBase64Data.substring(pos, imgBase64Data.length);//去掉Base64:开头的标识字符
+//    console.log( imgBase64Data);
+      var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                  "MobileClass": "Chrome",
+                  "PCDType" :"3",
+                  "UserId": "123",
+                  "Base64Code":imgBase64Data,
+                  "Purpose":"2"
+      }; 
       $.ajax({
-        url:rootPath+"common/uploadCM.do",
+        url:rootPath+"common/uploadBase64.do",
         type:"POST",
-        data:oMyForm,
+        data:JSON.stringify(_data),
         cache: false,
         processData: false,
         contentType: false,
@@ -1094,6 +1098,7 @@ $(function(){
         success: function (opeResult){
           if(opeResult.ful[0].success=="TRUE"){
             alert("文件裁剪上传成功");
+            return;
             $(".upl_img").attr("value",opeResult.ful[0].FilePath);
             if($(".defaultImg").css("display")!="none"){
               $(".defaultImg").css({"display":"none"});
