@@ -424,13 +424,14 @@ body{overflow: auto;}
 /*裁剪图片时的弹出层*/
 .container_clip{
   width: 100%;
-  height:100%;
+  height:540px;
   position: absolute;
   font-family: 微软雅黑;
-  top:0px;
+  top:100px;
   left:0px;
   z-index:1050;
   background: #fff;
+  overflow: auto;
   display: none;
 }
 .cc_title{
@@ -445,7 +446,7 @@ body{overflow: auto;}
   line-height: 12px;
   line-height: 0px;
   height: 0px;
-  margin: 20px;
+  margin:10px 0px 0px 0px;
   color: #bbb
 }
 .imgAction{
@@ -504,8 +505,8 @@ body{overflow: auto;}
   float: right;
   width: 66px;
   display: inline-block;
-  height:40px;
-  line-height: 40px;
+  height:30px;
+  line-height: 30px;
   font-size: 20px;
   color: #FFFFFF;
   margin:0px 2px;
@@ -533,7 +534,7 @@ body{overflow: auto;}
 }
 .new-contentarea input[type=file] {
   width:140px;
-  height:40px;
+  height:30px;
   background:#333;
   margin: 0 auto;
   position:absolute;
@@ -548,8 +549,8 @@ body{overflow: auto;}
 a.upload-img{
   width:140px;
   display: inline-block;
-  height:40px;
-  line-height: 40px;
+  height:30px;
+  line-height: 30px;
   font-size: 20px;
   color: #FFFFFF;
   background-color: #ffa634;
@@ -573,15 +574,14 @@ a.upload-img:hover{
   margin-left:20px;
 }
 .action1{
-  position: absolute;
-  bottom:-35px;
+  margin-top:220px;
   width:200px;
-  height:35px;
+  height:30px;
   overflow: hidden;
 }
 #btnSave,#btnCancel{
   width: 80px;
-  height: 35px;
+  height: 30px;
   color: #fff;
   float: left;
   margin-left: 10px;
