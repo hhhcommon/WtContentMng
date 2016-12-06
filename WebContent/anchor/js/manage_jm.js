@@ -5,16 +5,17 @@ $(function(){
   var uploadType=1;//uploadType=1代表上传文件,uploadType=2代表上传图片
   
   //00-1获取栏目筛选条件
+  var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "UserId":"123",
+            "PCDType":"3",
+            "MediaType":"MediaAsset"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getFiltrates.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "UserId":"123",
-          "PCDType":"3",
-          "MediaType":"MediaAsset"
-    },
+    data:JSON.stringify(data),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getChannelLabel(resultData);//得到栏目的筛选标签
@@ -60,21 +61,21 @@ $(function(){
   }
   
   //00-4获取节目列表
-  var dataParam={};
-  dataParam.DeviceId="3279A27149B24719991812E6ADBA5584";
-  dataParam.MobileClass="Chrome";
-  dataParam.PCDType="3";
-  dataParam.UserId="123";
-  dataParam.SeqMediaId="0";
-  dataParam.ChannelId="0";
-  dataParam.FlowFlag="0";
+  var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                  "MobileClass":"Chrome",
+                  "PCDType":"3",
+                  "UserId":"123",
+                  "SeqMediaId":"0",
+                  "ChannelId":"0",
+                  "FlowFlag":"0"
+  };
   getContentList(dataParam);
   function getContentList(obj){
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/getMediaList.do",
       dataType:"json",
-      data:obj,
+      data:JSON.stringify(obj),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           getMediaList(resultData); //得到节目列表
@@ -232,6 +233,10 @@ $(function(){
   
   //33-1.2保存编辑后的信息
   function save_edit_jm(){
+    debugger;
+    if(!$(".upl_img").attr("value")){
+      $(".upl_img").attr("value",$(".defaultImg").attr("src"));
+    }
     var _data={};
     _data.UserId="123";
     _data.DeviceId="3279A27149B24719991812E6ADBA5584";
@@ -240,7 +245,7 @@ $(function(){
     _data.ContentId=$(".jmId").val();
     _data.ContentURI=$(".upl_file").attr("value");
     _data.ContentName=$(".uplTitle").val();
-    _data.ContentImg=$(".upl_img").attr("value");
+    _data.ContentImg=$(".upl_img").attr("value")
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
     _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
@@ -312,16 +317,17 @@ $(function(){
   
   //22-1.1请求编辑节目时保存的信息
   function edit_jm(contentId){
+    var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/getMediaInfo.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           clear();//填充前清空数据
@@ -401,16 +407,17 @@ $(function(){
     del_jm(contentId);
   })
   function del_jm(contentId){
+    var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId
+  };
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/removeMedia.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId,
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功删除节目");
@@ -435,17 +442,18 @@ $(function(){
     pub_jm(contentId,contentSeqId);
   })
   function pub_jm(contentId,contentSeqId){
+    var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId,
+               "SeqMediaId":contentSeqId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/updateMediaStatus.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId,
-            "SeqMediaId":contentSeqId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
@@ -467,20 +475,21 @@ $(function(){
        弹出页面上的方法
    * */
  //1上传节目页面获取公共标签
+  var data1={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+             "MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":"123",
+             "MediaType":"1",
+             "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+             "ChannelIds":"cn31",
+             "TagType":"1",
+             "TagSize":"20"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "MediaType":"1",
-          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-          "ChannelIds":"cn31",
-          "TagType":"1",
-          "TagSize":"20"
-    },
+    data:JSON.stringify(data1),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getPubLabel(resultData);//得到上传节目页面公共标签元素
@@ -504,20 +513,21 @@ $(function(){
   }
   
   //2上传节目页面获取我的标签
+  var data2={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+             "MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":"123",
+             "MediaType":"1",
+             "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+             "ChannelIds":"cn31",
+             "TagType":"2",
+             "TagSize":"20"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "MediaType":"1",
-          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-          "ChannelIds":"cn31",
-          "TagType":"2",
-          "TagSize":"20"
-    },
+    data:JSON.stringify(data2),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getMyLabel(resultData);//得到上传节目页面我的标签元素
@@ -574,6 +584,7 @@ $(function(){
   //4.点击上传图片
   $(".upl_pt_img").on("click",function(){
     $(".mask_clip,.container_clip").show();
+    $(".newImg").remove();
   });
 //$(".upl_pt_img").on("click",function(){
 //  $(".upl_img").click();
@@ -688,18 +699,19 @@ $(function(){
 //})
   
   //6.获取选择专辑列表
+  var data5={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+             "MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":"123",
+             "FlagFlow":"0",
+             "ChannelId":"0",
+             "ShortSearch":"false"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/seq/getSeqMediaList.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "FlagFlow":"0",
-          "ChannelId":"0",
-          "ShortSearch":"false"
-    },
+    data:JSON.stringify(data5),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getAlbumList(resultData); //得到专辑列表,上传节目时使用
@@ -719,17 +731,18 @@ $(function(){
   }
   
   //7.获取创作方式列表
+  var data3={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+             "MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":"123",
+             "CatalogType":"4",
+             "TreeViewType":"zTree"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"baseinfo/getCataTree4View.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "CatalogType":"4",
-          "TreeViewType":"zTree"
-    },
+    data:JSON.stringify(data3),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getArtMethodList(resultData); //得到创作方式列表
@@ -925,18 +938,19 @@ $(function(){
   }
   function pubEditJm(_data){
     var contentId=$(".jmId").val();
-    var contentSeqId=_data.SeqMediaId
+    var contentSeqId=_data.SeqMediaId;
+    var data4={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId,
+               "SeqMediaId":contentSeqId
+  };
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/updateMediaStatus.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId,
-            "SeqMediaId":contentSeqId
-      },
+      data:JSON.stringify(data4),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
@@ -1013,4 +1027,94 @@ $(function(){
     }
   });
   
+  
+  /*
+   节目图片裁剪上传
+   * */
+  var options =
+  {
+    thumbBox: '.thumbBox',
+    spinner: '.spinner',
+    imgSrc: 'http://wotingfm.com:908/CM/resources/images/default.png'
+  }
+  var cropper = $('.imageBox').cropbox(options);
+  $('#upload-file').on('change', function(){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      options.imgSrc = e.target.result;
+      cropper = $('.imageBox').cropbox(options);
+    }
+    reader.readAsDataURL(this.files[0]);
+    var files=$(this)[0].files[0];
+    saveClip(files);
+  })
+  $('#btnCrop').on('click', function(){
+    var img = cropper.getDataURL();
+    $('.cropped').html('');
+    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
+    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
+    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
+  })
+  $('#btnZoomIn').on('click', function(){
+    cropper.zoomIn();
+  })
+  $('#btnZoomOut').on('click', function(){
+    cropper.zoomOut();
+  })
+  
+  function saveClip(files){
+    var oMyForm = new FormData();
+//  console.log(files);
+    oMyForm.append("ContentFile", files);
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("UserId", "123");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
+    $('#btnSave').on('click', function(){
+      var imgbase64=$(".cropped img").attr("src");
+      var _this=$(this).parent(".action1").siblings(".cropped").children("img");
+//    console.log(oMyForm);
+      $.ajax({
+        url:rootPath+"common/uploadCM.do",
+        type:"POST",
+        data:oMyForm,
+        cache: false,
+        processData: false,
+        contentType: false,
+        dataType:"json",
+        //表单提交前进行验证
+        success: function (opeResult){
+          if(opeResult.ful[0].success=="TRUE"){
+            alert("文件裁剪上传成功");
+            $(".upl_img").attr("value",opeResult.ful[0].FilePath);
+            if($(".defaultImg").css("display")!="none"){
+              $(".defaultImg").css({"display":"none"});
+            }
+            var fileReader = new FileReader();
+            fileReader.onload = function(evt){
+              var newImg =  $("<img class='newImg' alt='front cover' />");
+              newImg.attr({"src":this.result});//是Base64的data url数据
+              if($(".previewImg").children().length>1){
+                $(".previewImg img:last").replaceWith(newImg);
+              }else{
+                $(".previewImg").append(newImg);
+              }
+            }
+            fileReader.readAsDataURL(files);
+            $(".container_clip,.mask_clip").hide();
+          }else{
+            alert(opeResult.err);
+          }
+        },
+        error: function(XHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      });
+    })
+  }
+  $("#btnCancel").on("click",function(){
+    $(".container_clip,.mask_clip").hide();
+  })
 });

@@ -6,6 +6,7 @@
 <!--<link rel="stylesheet" href="css/style.css" type="text/css" />-->
 <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
 <script src="js/photoClip/cropbox.js"></script>
+<script src="../resources/js/mainPage.js"></script>
 <script src="../resources/js/context.utils.js"></script>
 <script src="js/manage_jm.js"></script>
 <style>
@@ -242,9 +243,10 @@ $(function(){
   })
   $('#btnCrop').on('click', function(){
     var img = cropper.getDataURL();
+    console.log(img);
     $('.cropped').html('');
     // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
-    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
+//  $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
     $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
   })
   $('#btnZoomIn').on('click', function(){
@@ -271,6 +273,7 @@ $(function(){
     $('#btnSave').on('click', function(){
       debugger;
       var imgbase64=$(".cropped img").attr("src");
+      console.log(imgbase64);
       var _this=$(this).parent(".action1").siblings(".cropped").children("img");
 //    console.log(oMyForm);
       $.ajax({
@@ -285,7 +288,6 @@ $(function(){
         success: function (opeResult){
           if(opeResult.ful[0].success=="TRUE"){
             alert("文件裁剪上传成功");
-            var bb=$(window.parent.document).find("#myIframe").attr({"src":"manage_jm.html"});
           }else{
             alert(opeResult.err);
           }
