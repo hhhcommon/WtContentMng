@@ -1076,6 +1076,9 @@ function loadModData(resultData){
 
 /*修改已有分类的方法*/
 function modBroadcast(){
+  if(!$(".upfile").attr("value")){
+    $(".upfile").attr("value",$(".defaultImg").attr("src"));
+  }
   ids();
   var modInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -1099,11 +1102,11 @@ function modBroadcast(){
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("修改成功");
-        reqDetailList(event,$("#nodeArea").attr("value"));
-        cleanDialog();
         $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
+        reqDetailList(event,$("#nodeArea").attr("value"));
+        cleanDialog();
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }

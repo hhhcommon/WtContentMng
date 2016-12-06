@@ -4,16 +4,17 @@ $(function(){
   var pubType=1;//pubType=1代表在创建专辑页面提交,pubType=2代表在修改专辑页面提交
   
   //00-1获取栏目筛选条件
+  var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "UserId":"123",
+            "PCDType":"3",
+            "MediaType":"MediaAsset"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getFiltrates.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "UserId":"123",
-          "PCDType":"3",
-          "MediaType":"MediaAsset"
-    },
+    data:JSON.stringify(data),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getChannelLabel(resultData);//得到栏目的筛选标签
@@ -252,16 +253,17 @@ $(function(){
   
   //22-1.1请求编辑专辑时保存的信息
   function edit_zj(contentId){
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaInfo.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           $(".mask,.add").show();
@@ -323,16 +325,17 @@ $(function(){
     del_zj(contentId);
   })
   function del_zj(contentId){
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/removeSeqMedia.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功删除专辑");
@@ -353,16 +356,17 @@ $(function(){
     pub_zj(contentId);
   })
   function pub_zj(contentId){
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaStatus.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
@@ -384,20 +388,21 @@ $(function(){
        弹出页面上的方法
    * */
   //1创建专辑页面获取公共标签
+  var data1={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "PCDType":"3",
+              "UserId":"123",
+              "MediaType":"1",
+              "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+              "ChannelIds":"cn31",
+              "TagType":"1",
+              "TagSize":"20"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "MediaType":"1",
-          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-          "ChannelIds":"cn31",
-          "TagType":"1",
-          "TagSize":"20"
-    },
+    data:JSON.stringify(data1),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getPubLabel(resultData);//得到创建专辑页面公共标签元素
@@ -421,20 +426,21 @@ $(function(){
   }
   
   //2.创建专辑页面获取我的标签
+  var data2={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "PCDType":"3",
+              "UserId":"123",
+              "MediaType":"1",
+              "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+              "ChannelIds":"cn31",
+              "TagType":"2",
+              "TagSize":"20"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "MediaType":"1",
-          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-          "ChannelIds":"cn31",
-          "TagType":"2",
-          "TagSize":"20"
-    },
+    data:JSON.stringify(data2),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getMyLabel(resultData);//得到创建专辑页面我的标签元素
@@ -674,16 +680,17 @@ $(function(){
   }
   function pubAddOrEditZj(_data){
     var contentId=$(".zjId").attr("value");
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaStatus.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
