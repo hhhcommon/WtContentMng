@@ -1039,6 +1039,7 @@ $(function(){
   }
   var cropper = $('.imageBox').cropbox(options);
   $('#upload-file').on('change', function(){
+    debugger;
     var reader = new FileReader();
     reader.onload = function(e) {
       options.imgSrc = e.target.result;
@@ -1046,9 +1047,11 @@ $(function(){
     }
     reader.readAsDataURL(this.files[0]);
     var files=$(this)[0].files[0];
+    console.log(files);
     saveClip(files);
   })
   $('#btnCrop').on('click', function(){
+    debugger;
     var img = cropper.getDataURL();
     $('.cropped').html('');
     // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
@@ -1056,26 +1059,29 @@ $(function(){
     $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
   })
   $('#btnZoomIn').on('click', function(){
+    debugger;
     cropper.zoomIn();
   })
   $('#btnZoomOut').on('click', function(){
+    debugger;
     cropper.zoomOut();
   })
   
   function saveClip(files){
-    var oMyForm = new FormData();
-//  console.log(files);
-    oMyForm.append("ContentFile", files);
-    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-    oMyForm.append("MobileClass", "Chrome");
-    oMyForm.append("PCDType", "3");
-    oMyForm.append("UserId", "123");
-    oMyForm.append("SrcType", "1");
-    oMyForm.append("Purpose", "2");
     $('#btnSave').on('click', function(){
+      debugger;
+      var oMyForm = new FormData();
+  //  console.log(files);
+      oMyForm.append("ContentFile", files);
+      oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+      oMyForm.append("MobileClass", "Chrome");
+      oMyForm.append("PCDType", "3");
+      oMyForm.append("UserId", "123");
+      oMyForm.append("SrcType", "1");
+      oMyForm.append("Purpose", "2");
       var imgbase64=$(".cropped img").attr("src");
       var _this=$(this).parent(".action1").siblings(".cropped").children("img");
-//    console.log(oMyForm);
+      console.log(oMyForm);
       $.ajax({
         url:rootPath+"common/uploadCM.do",
         type:"POST",
@@ -1103,6 +1109,8 @@ $(function(){
               }
             }
             fileReader.readAsDataURL(files);
+            $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
+            $('.cropped').html('');//设为默认图片
             $(".container_clip,.mask_clip").hide();
           }else{
             alert(opeResult.err);
@@ -1115,6 +1123,10 @@ $(function(){
     })
   }
   $("#btnCancel").on("click",function(){
+    debugger;
+    $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
+    $('.cropped').html('');//设为默认图片
     $(".container_clip,.mask_clip").hide();
+    $(".defaultImg").show();
   })
 });
