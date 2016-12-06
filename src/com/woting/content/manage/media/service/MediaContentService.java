@@ -100,14 +100,12 @@ public class MediaContentService {
 		MaSource maSource = new MaSource();
 		maSource.setMa(ma);
 		maSource.setId(SequenceUUID.getPureUUID());
-		maSource.setMaSrcType(3);
-		maSource.setMaSrcId(userid);
-		maSource.setMaSource(user.getLoginName());
+		maSource.setMaSrcType(1);
+		maSource.setMaSrcId("0");
+		maSource.setMaSource("我听科技");
 		maSource.setSmType(1);
 		maSource.setPlayURI(contenturi);
 		maSource.setIsMain(1);
-		
-		maSource.setDescn("上传文件测试用待删除");
 		maSource.setCTime(ma.getCTime());
 		mediaService.saveMas(maSource);
 
