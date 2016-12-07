@@ -194,7 +194,6 @@ $(function(){
   
   //33-1.2保存编辑后的信息
   function save_edit_zj(){
-    debugger;
     if(!$(".upl_img").attr("value")){
       $(".upl_img").attr("value",$(".defaultImg").attr("src"));
     }
@@ -307,21 +306,21 @@ $(function(){
         $(".my_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input[type='checkbox']").prop("checked",true);
-            $(this).children("input[type='checkbox']").attr("disabled",true);
+            $(this).children("input[type='checkbox']").prop("disabled",true);
           }
         })
         $(".gg_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input").prop("checked",true);
-            $(this).children("input").attr("disabled",true);
+            $(this).children("input").prop("disabled",true);
           }
         })
       }
     }
     $(".upl_zj option").each(function(){
       if($(this).attr("id")==resultData.Result.ContentPubChannels[0].ChannelId){
-        $(".upl_zj option").attr("selected",false);
-        $(this).attr("selected",true); 
+        $(".upl_zj option").prop("selected",false);
+        $(this).prop("selected",true); 
       }
     })
     $(".uplDecn").val(resultData.Result.ContentDesc);
@@ -471,74 +470,6 @@ $(function(){
       $(".my_tag_con").append(label); 
     }
   }
-  
-  //3.点击上传图片
-  $(".upl_pt_img").on("click",function(){
-    $(".upl_img").click();
-  });
-  $(".upl_img").change(function(){
-    $(".img_uploadStatus").hide();
-    //图片预览
-    if($(".defaultImg").css("display")!="none"){
-      $(".defaultImg").css({"display":"none"});
-    }
-    var fileReader = new FileReader();
-    fileReader.onload = function(evt){
-      if(FileReader.DONE==fileReader.readyState){
-        var newImg =  $("<img  class='newImg' alt='front cover' />");
-        newImg.attr({"src":this.result});//是Base64的data url数据
-        if($(".previewImg").children().length>1){
-          $(".previewImg img:last").replaceWith(newImg);
-        }else{
-          $(".previewImg").append(newImg);
-        }
-      }
-    }
-    fileReader.readAsDataURL($(this)[0].files[0]);
-    var oMyForm = new FormData();
-    var filePath=$(this).val();
-    var _this=$(this);
-    var arr=filePath.split('\\');
-    var fileName=arr[arr.length-1];
-    oMyForm.append("ContentFile", $(this)[0].files[0]);
-    console.log($(this)[0].files[0]);
-    oMyForm.append("UserId", "123");
-    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-    oMyForm.append("MobileClass", "Chrome");
-    oMyForm.append("PCDType", "3");
-    oMyForm.append("SrcType", "1");
-    oMyForm.append("Purpose", "2");
-    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
-      alert("图片过大，请选择合适的图片上传！");
-    }else{
-      requestUpload(_this,oMyForm);
-    }
-  });
-  
-  //4.请求上传文件
-  function requestUpload(_this,oMyForm){
-    $.ajax({
-      url:rootPath+"common/uploadCM.do",
-      type:"POST",
-      data:oMyForm,
-      cache: false,
-      processData: false,
-      contentType: false,
-      dataType:"json",
-      //表单提交前进行验证
-      success: function (opeResult){
-        if(opeResult.ful[0].success=="TRUE"){
-          $(".img_uploadStatus").show();
-          _this.attr("value",opeResult.ful[0].FilePath);
-        }else{
-          alert(opeResult.err);
-        }
-      },
-      error: function(XHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  };
   
   //5.获得栏目的分类信息
   $.ajax({
