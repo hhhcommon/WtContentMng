@@ -16,10 +16,10 @@ public class ImgUploadService {
 	public Map<String, Object> SaveBase64Img(String base64Code, String purpose) {
 		Map<String, Object> m = new HashMap<>();
 		String path = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
-		path += "uploadFiles\\tempuplf\\";
+		path += "uploadFiles/tempuplf/";
 		String fileName = SequenceUUID.getPureUUID()+".png";
 		boolean isok = Base64ImgUtils.GenerateImage(path, fileName, base64Code);
-		path = "http://www.wotingfm.com:908/CM/WebContent/uploadFiles/tempuplf/";
+		path = "http://www.wotingfm.com:908/CM/uploadFiles/tempuplf/";
 		if (isok) {
 			m.put("FileName", fileName);
 			m.put("FilePath", path+fileName);
