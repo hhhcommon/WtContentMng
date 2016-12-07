@@ -13,6 +13,7 @@ public class Base64ImgUtils {
 
 	public static boolean GenerateImage(String path, String fileName, String base64){
 		if (!StringUtils.isNullOrEmptyOrSpace(base64)) {
+			base64 = base64.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", "");
 			byte[] by = Base64Utils.decodeFromString(base64);
 			File file = CacheUtils.createFile(path+fileName);
 			try {
