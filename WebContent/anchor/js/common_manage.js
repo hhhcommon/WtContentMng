@@ -1,4 +1,5 @@
 $(function(){
+  var rootPath=getRootPath();
   var isExisted = true;//定义存在为true
   var tag_sum=0;//定义添加的标签数量,最大是5
   var type=2;//type=1点击多选,type=2未点击多选
@@ -367,4 +368,86 @@ $(function(){
     alert("请求加载另一批数据");
   });
   
+  /*
+    图片裁剪上传
+   * */
+  $(".upl_pt_img").on("click",function(){
+    $(".mask_clip,.container_clip").show();
+    $(".newImg").remove();
+  });
+  var options =
+  {
+    thumbBox: '.thumbBox',
+    spinner: '.spinner',
+    imgSrc: 'http://wotingfm.com:908/CM/resources/images/default.png'
+  };
+  var cropper = $('.imageBox').cropbox(options);
+  $('#upload-file').on('change', function(){
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      options.imgSrc = e.target.result;
+      cropper = $('.imageBox').cropbox(options);
+    }
+    reader.readAsDataURL($(this)[0].files[0]);
+  });
+  $('#btnCrop').on('click', function(){
+    var img = cropper.getDataURL();
+    $('.cropped').html('');
+    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
+  });
+  $('#btnZoomIn').on('click', function(){
+    cropper.zoomIn();
+  });
+  $('#btnZoomOut').on('click', function(){
+    cropper.zoomOut();
+  });
+  $('#btnSave').on('click', function(){
+    var  imgBase64Data=$(document).find(".cropped img").attr("src");
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "Base64Code":imgBase64Data,
+                "Purpose":"2"
+    }; 
+    $.ajax({
+      url:rootPath+"common/uploadBase64.do",
+      type:"POST",
+      data:JSON.stringify(_data),
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      //表单提交前进行验证
+      success: function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("图片裁剪上传成功");
+          $(".upl_img").attr("value",resultData.FilePath);
+          if($(".defaultImg").css("display")!="none"){
+            $(".defaultImg").css({"display":"none"});
+          }
+          var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
+          if($(".previewImg").children().length>1){
+            $(".previewImg img:last").replaceWith(newImg);
+          }else{
+            $(".previewImg").append(newImg);
+          }
+          $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
+          $('.cropped').html('');//设为默认图片
+          $(".container_clip,.mask_clip").hide();
+        }else{
+          alert(opeResult.err);
+        }
+      },
+      error: function(XHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  $("#btnCancel").on("click",function(){
+    $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
+    $('.cropped').html('');//设为默认图片
+    $(".container_clip,.mask_clip").hide();
+    $(".defaultImg").show();
+  });
 })

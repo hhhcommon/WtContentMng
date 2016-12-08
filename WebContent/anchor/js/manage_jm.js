@@ -2,7 +2,6 @@ $(function(){
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在上传节目页面提交,subType=2代表在修改节目页面提交
   var pubType=1;//pubType=1代表在上传节目页面发布,pubType=2代表在修改节目页面发布
-  var uploadType=1;//uploadType=1代表上传文件,uploadType=2代表上传图片
   
   //00-1获取栏目筛选条件
   var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -104,7 +103,7 @@ $(function(){
                             '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
                           '</p>'+
                         '</div>'+
-                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
                         '<div class="op_type">'+
                           '<p class="jm_edit">编辑</p>'+
                           '<p class="jm_pub">发布</p>'+
@@ -148,9 +147,15 @@ $(function(){
   //22-1点击编辑节目按钮
    $(document).on("click",".jm_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    subType=2;
-    pubType=2;
-    edit_jm(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
+    if(flowFlag=="1"||flowFlag=="2") {
+      alert("当前状态不支持编辑状态");
+      return;
+    }else{
+      subType=2;
+      pubType=2;
+      edit_jm(contentId);
+    }
   })
   
   //33-1点击提交按钮，上传节目/修改节目
@@ -233,7 +238,6 @@ $(function(){
   
   //33-1.2保存编辑后的信息
   function save_edit_jm(){
-    debugger;
     if(!$(".upl_img").attr("value")){
       $(".upl_img").attr("value",$(".defaultImg").attr("src"));
     }
@@ -347,7 +351,6 @@ $(function(){
   
   //22-1.2填充节目信息
   function fillJmContent(resultData){
-    debugger;
     $(".jmId").attr("value",resultData.Result.ContentId);
     $(".iboxtitle h4").html("修改节目");
     $(".yp_mz").val("aa.mp3");//数据库没有存这一字段，因为有需要，我自己加上的
@@ -412,7 +415,7 @@ $(function(){
                "PCDType":"3",
                "UserId":"123",
                "ContentId":contentId
-  };
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/removeMedia.do",
@@ -436,9 +439,9 @@ $(function(){
   
   //55-1点击发布节目按钮
   $(document).on("click",".jm_pub",function(){
-    $('.shade', parent.document).show();
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+    $('.shade', parent.document).show();
     pub_jm(contentId,contentSeqId);
   })
   function pub_jm(contentId,contentSeqId){
@@ -554,7 +557,6 @@ $(function(){
     $(".upl_file").click();
   });
   $(".upl_file").change(function(){
-    uploadType=1;
     var oMyForm = new FormData();
     var filePath=$(this).val();
     var _this=$(this);
@@ -574,62 +576,15 @@ $(function(){
       if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
         alert("文件过大，请选择合适的文件上传！");
       }else{
-        requestUpload(_this,oMyForm,uploadType,fileName);//请求上传文件
+        requestUpload(_this,oMyForm,fileName);//请求上传文件
       }
     }else{
       return;
     }
   });
   
-  //4.点击上传图片
-  $(".upl_pt_img").on("click",function(){
-    $(".mask_clip,.container_clip").show();
-    $(".newImg").remove();
-  });
-//$(".upl_pt_img").on("click",function(){
-//  $(".upl_img").click();
-//});
-//$(".upl_img").change(function(){
-//  uploadType=2;
-//  $(".img_uploadStatus").hide();
-//  //图片预览
-//  if($(".defaultImg").css("display")!="none"){
-//    $(".defaultImg").css({"display":"none"});
-//  }
-//  var fileReader = new FileReader();
-//  fileReader.onload = function(evt){
-//    if(FileReader.DONE==fileReader.readyState){
-//      var newImg =  $("<img class='newImg' alt='front cover' />");
-//      newImg.attr({"src":this.result});//是Base64的data url数据
-//      if($(".previewImg").children().length>1){
-//        $(".previewImg img:last").replaceWith(newImg);
-//      }else{
-//        $(".previewImg").append(newImg);
-//      }
-//    }
-//  }
-//  fileReader.readAsDataURL($(this)[0].files[0]);
-//  var oMyForm = new FormData();
-//  var filePath=$(this).val();
-//  var _this=$(this);
-//  var arr=filePath.split('\\');
-//  var fileName=arr[arr.length-1];
-//  oMyForm.append("ContentFile", $(this)[0].files[0]);
-//  oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-//  oMyForm.append("MobileClass", "Chrome");
-//  oMyForm.append("PCDType", "3");
-//  oMyForm.append("UserId", "123");
-//  oMyForm.append("SrcType", "1");
-//  oMyForm.append("Purpose", "2");
-//  if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
-//    alert("图片过大，请选择合适的图片上传！");
-//  }else{
-//    requestUpload(_this,oMyForm,uploadType);
-//  }
-//});
-  
-  //5.请求上传文件
-  function requestUpload(_this,oMyForm,uploadType,fileName){
+  //4.请求上传文件
+  function requestUpload(_this,oMyForm,fileName){
     $.ajax({
       url:rootPath+"common/uploadCM.do",
       type:"POST",
@@ -652,8 +607,7 @@ $(function(){
           $(".audio").attr("src",opeResult.ful[0].FilePath);
           getTime();
           $(".cancelUpload").hide();
-          if(uploadType=="1") $(".uploadStatus").show();
-          if(uploadType=="2") $(".img_uploadStatus").show();
+          $(".uploadStatus").show();
         }else{
           alert(opeResult.err);
         }
@@ -945,7 +899,7 @@ $(function(){
                "UserId":"123",
                "ContentId":contentId,
                "SeqMediaId":contentSeqId
-  };
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/updateMediaStatus.do",
@@ -1027,106 +981,4 @@ $(function(){
     }
   });
   
-  
-  /*
-   节目图片裁剪上传
-   * */
-  var options =
-  {
-    thumbBox: '.thumbBox',
-    spinner: '.spinner',
-    imgSrc: 'http://wotingfm.com:908/CM/resources/images/default.png'
-  }
-  var cropper = $('.imageBox').cropbox(options);
-  $('#upload-file').on('change', function(){
-    debugger;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      options.imgSrc = e.target.result;
-      cropper = $('.imageBox').cropbox(options);
-    }
-    reader.readAsDataURL(this.files[0]);
-    var files=$(this)[0].files[0];
-    console.log(files);
-    saveClip(files);
-  })
-  $('#btnCrop').on('click', function(){
-    debugger;
-    var img = cropper.getDataURL();
-    $('.cropped').html('');
-    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
-    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
-    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
-  })
-  $('#btnZoomIn').on('click', function(){
-    debugger;
-    cropper.zoomIn();
-  })
-  $('#btnZoomOut').on('click', function(){
-    debugger;
-    cropper.zoomOut();
-  })
-  
-  function saveClip(files){
-    $('#btnSave').on('click', function(){
-      debugger;
-      var oMyForm = new FormData();
-  //  console.log(files);
-      oMyForm.append("ContentFile", files);
-      oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-      oMyForm.append("MobileClass", "Chrome");
-      oMyForm.append("PCDType", "3");
-      oMyForm.append("UserId", "123");
-      oMyForm.append("SrcType", "1");
-      oMyForm.append("Purpose", "2");
-      var imgbase64=$(".cropped img").attr("src");
-      var _this=$(this).parent(".action1").siblings(".cropped").children("img");
-      console.log(oMyForm);
-      $.ajax({
-        url:rootPath+"common/uploadCM.do",
-        type:"POST",
-        data:oMyForm,
-        cache: false,
-        processData: false,
-        contentType: false,
-        dataType:"json",
-        //表单提交前进行验证
-        success: function (opeResult){
-          if(opeResult.ful[0].success=="TRUE"){
-            alert("文件裁剪上传成功");
-            $(".upl_img").attr("value",opeResult.ful[0].FilePath);
-            if($(".defaultImg").css("display")!="none"){
-              $(".defaultImg").css({"display":"none"});
-            }
-            var fileReader = new FileReader();
-            fileReader.onload = function(evt){
-              var newImg =  $("<img class='newImg' alt='front cover' />");
-              newImg.attr({"src":this.result});//是Base64的data url数据
-              if($(".previewImg").children().length>1){
-                $(".previewImg img:last").replaceWith(newImg);
-              }else{
-                $(".previewImg").append(newImg);
-              }
-            }
-            fileReader.readAsDataURL(files);
-            $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
-            $('.cropped').html('');//设为默认图片
-            $(".container_clip,.mask_clip").hide();
-          }else{
-            alert(opeResult.err);
-          }
-        },
-        error: function(XHR){
-          alert("发生错误" + jqXHR.status);
-        }
-      });
-    })
-  }
-  $("#btnCancel").on("click",function(){
-    debugger;
-    $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
-    $('.cropped').html('');//设为默认图片
-    $(".container_clip,.mask_clip").hide();
-    $(".defaultImg").show();
-  })
 });
