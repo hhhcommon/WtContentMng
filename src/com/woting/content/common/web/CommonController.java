@@ -23,6 +23,7 @@ import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
+import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.dict.service.DictContentService;
 
@@ -118,13 +119,16 @@ public class CommonController {
      * @param request 其中必须有RemoteUrl参数
      * @return json结构
      */
-    public String jsonp(HttpServletRequest request) throws IOException {
+    public Map<String, Object> jsonp(HttpServletRequest request) throws IOException {
         //获取参数
         Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+        Map<String, Object> map = new HashMap<>();
         //1-获取地址：
         String remoteUrl=m.get("RemoteUrl")+"";
         if (StringUtils.isNullOrEmptyOrSpace(remoteUrl)||remoteUrl.toLowerCase().equals("null")) {
-            return "{\"ReturnType\":\"0000\",\"Message\":\"无法获得远程Url\"}";
+        	map.put("ReturnType", "0000");
+        	map.put("Message", "无法获得远程Url");
+            return map;
         }
         m.remove("RemoteUrl");
         Connection conn=Jsoup.connect(remoteUrl);
@@ -134,11 +138,11 @@ public class CommonController {
         Document doc=conn.timeout(5000).ignoreContentType(true).get();
 
         String str=doc.select("body").html().toString();
-        str=str.replaceAll("\"", "'");
+//        str=str.replaceAll("\"", "'");
         str=str.replaceAll("\n", "");
         str=str.replaceAll("&quot;", "\"");
         str=str.replaceAll("\r", "");
-
-        return str;
+        map = (Map<String, Object>) JsonUtils.jsonToObj(str, Map.class);
+        return map;
     }
 }
