@@ -66,7 +66,7 @@ header .downLoad{
   padding:12px 0;
   font-size:16px;
   font-weight:200;
-  color:#f60;
+  color:#393939;
 }
 .box{
   width: 120px;
@@ -100,8 +100,7 @@ header .downLoad{
   height:32px;
   top:47px;
   left:-60px;
-  background:url(imgs/wt_play_left.png);
-  background-size:100% 100%;
+  background:url(imgs/audio_play.png) no-repeat 0 -162px;
 }
 .next{
   width:32px;
@@ -184,7 +183,7 @@ header .downLoad{
   font-size: 14px;
 }
 .ft_ccc{
-  color:#ccc;
+  color:#959595;
 }
 .jj{
   height:100%;
@@ -202,7 +201,7 @@ header .downLoad{
   width:100%;
   height:36px;
   padding:8px 24px;
-  background-color:#eee;
+  background-color:#f2f2f2;
   border-top: 1px solid #dedede;
   border-bottom:1px solid #e9e7e8;
 }
@@ -249,10 +248,14 @@ header .downLoad{
   margin-left: 75px;
 }
 .span{
+  width: calc(100% - 15px);
   font-size: 14px;
-  padding: 2px 0px 2px 10px;
   color: #f60;
-  padding:2px 0px 2px 10px;
+  display: inline-block;
+  padding: 2px 0px 2px 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .lcp{
   padding:5px 0px 2px 9px;
@@ -269,6 +272,7 @@ header .downLoad{
   float: left;
   margin-left: 5px;
   margin-top: 1px;
+  color:#959595;
 }
 .lcp .state{
   width: 15px;
@@ -288,7 +292,9 @@ header .downLoad{
 .lcp .sc{
   margin-left:15px;
 }
-
+.dn{
+  display: none;
+}
 
 
 
