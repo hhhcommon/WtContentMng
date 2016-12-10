@@ -1,0 +1,240 @@
+body{
+  min-width:320px;
+  max-width:736px;
+  margin:0 auto;
+  letter-spacing: 1px;
+  background:white;
+}
+*{
+  margin:0;
+  padding:0;
+  list-style:none;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: Helvetica,Tahoma,"\5FAE\8F6F\96C5\9ED1";
+}
+a{
+  text-decoration:none;
+  color:white;
+  font-weight:bold;
+}
+/*头部样式*/
+#container{
+  width:100%;
+}
+header{
+  background:white;
+  width:100%;
+  height:72px;
+  padding:10px 20px 10px;
+  border-bottom:1px solid #f1f2f2;
+}
+header #logo img{
+  width:150px;
+  height:48px;
+}
+header #logo{
+  width:50%;
+  float:left;
+}
+header .downLoad{
+  width:80px;
+  height:38px;
+  float:right;
+  text-align:center;
+  line-height:38px;
+  display:inline-block;
+  color:#f60;
+  border:1px solid #f60;
+  border-radius: 4px;
+  font-size:14px;
+  font-weight:bold;
+  padding:0 5px;
+  cursor:pointer;
+}
+/*专辑封面*/
+.PicBox{
+  background-color:#f60;
+  width:100%;
+  padding:10px 0;
+}
+.PicBox h4{
+  margin:0 auto;
+  width:50%;
+  text-align:center;
+  padding:12px 0;
+  font-size:14px;
+  font-weight:200;
+  color:#fff;
+}
+.box{
+  width: 120px;
+  height: 120px;
+  margin:0 auto;
+  position:relative;
+  background-image: url();
+  background-size: 100% 100%;
+}
+.box img{
+  width:120px;
+  height:120px;
+}
+.PicBox .ul{
+  width:244px;
+  margin:10px auto;
+  color:white;
+  font-size:14px;
+  overflow: hidden;
+}
+.PicBox .ul li{
+  width:80px;
+  float:left;
+  padding:0px 10px 0px 24px;
+}
+.PicBox .ul .border{
+  border-left:2px solid #fff;
+  border-right:2px solid #fff;
+}
+.lii{
+  width: 20px;
+  padding: 4px 0px 0px 0px;
+  margin-left: 4px;
+}
+/*详情+节目列表*/
+.content{
+  width:100%;
+  background: white;
+}
+.tab_nav{
+  width:100%;
+  overflow: hidden;
+}
+.tab_nav span{
+  float: left;
+  width:50%;
+  height: 30px;
+  text-align: center;
+  font-size:16px;
+  display: inline-block;
+}
+.selected{
+  color:#f60;
+  border-bottom:2px solid #f60;
+}
+.tab_con{
+  width:100%;
+  font-size: 14px;
+}
+.pad15{
+  padding:0px 15px;
+}
+.lt20{
+  color:#959595;
+}
+.tc1_head,.tc1_body,.descn,.tag{
+  padding:10px 0px;
+}
+.hide{
+  display: none;
+}
+.tc1_head ul{
+  overflow: hidden;
+}
+.tc1_head ul li{
+  float: left;
+}
+.tc1_head ul .tc1_li1{
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  border: 1px solid red;
+}
+.tc1_head ul li .pic1{
+  width: 60px;
+  height: 60px;
+}
+.tc1_head ul .tc1_li2{
+  width: calc(100% - 130px);
+  margin: 20px 0px 10px 10px;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tc1_head ul .tc1_li3{
+  width: 30px; 
+  margin: 4px 0px 10px 20px;
+}
+.tc1_head ul li .pic2{
+  width: 20px;
+  height: 20px;
+  margin-left: 5px; 
+} 
+.tc1_head .focus{
+  padding:0px;
+  font-size:14px;
+}    
+.ui-body-c, .ui-overlay-c{
+  text-shadow: 0 0 0 transparent;
+}
+/*节目列表*/
+.tc2_head{
+  background: #f2f2f2;
+  overflow: hidden;
+}
+.sum{
+  width:auto;
+  display: block;
+  padding: 10px 0px 10px 15px;
+  float: left;
+}
+.sort,.down{
+  float: left;
+  width: 30px;
+  height: 30px;
+  margin-top:5px;
+  background-size: 100% 100%;
+}
+.sort{
+  margin-left:45%;
+}
+.down{
+  margin-left:3%;
+}
+.zj_box{
+  width: 100%;
+  background: white;
+}
+.zj_box .ulBox{
+  width: 100%;
+}
+.zj_box .ulBox li {
+  width: 100%;
+  height: 85px;
+  padding: 8px 6px 0px 16px;
+  border-bottom: 1px solid #dedede;
+}
+.listBox .time{
+  padding-left: 69%;
+}
+.lcp{
+  padding: 5px 0px 2px 9px;
+  border: 1px solid white;
+  overflow: hidden;
+}
+.lcp img{
+  width: 15px;
+  height: 15px;
+  float: left;
+}
+.lcp span{
+  font-size: 12px;
+  float: left;
+  margin-left: 5px;
+  margin-top: 1px;
+  color: #959595;
+}
+.lcp .sc{
+  margin-left: 15px;
+}
