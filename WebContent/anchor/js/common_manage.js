@@ -22,6 +22,7 @@ $(function(){
   $(document).on("click",".trig_item",function(){
 //  debugger;
     var pId=$(this).parents(".attr").attr("id");
+    var id=$(this).attr("id");
     var pTitle='';
     if((pId=="status")&&($(this).parents(".attr").attr("ids")=="jmstatus")){
       pTitle="节目状态：";
@@ -46,7 +47,7 @@ $(function(){
     }
     if(type=="2"){//没有点击多选直接选中某一项
       $(this).attr({"selected":"selected"});
-      var newFilter='<li class="cate" pId='+pId+'>'+
+      var newFilter='<li class="cate" pId='+pId+' id='+id+'>'+
                     '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+$(this).children(".ss1").text()+'</span>'+
                     '<span class="cate_img">×</span>'+
                   '</li>';
@@ -75,6 +76,7 @@ $(function(){
 //  debugger;
     type=2;
     var pId=$(this).parents(".attr").attr("id");
+    var id=$(this).attr("id");
     var pTitle='';
     if(pId=="status"){
       pTitle="节目状态：";
@@ -86,18 +88,25 @@ $(function(){
       pTitle="所属栏目：";
     }
     var str=" ";
+    var ids=" ";
     $(this).parent().siblings(".attrValues").children(".av_ul").children(".trig_item").each(function(){
       if(typeof($(this).attr("selected"))!="undefined"){
         var txt=$(this).children(".ss1").text();
+        var id=$(this).attr("id");
         if(str==" "){
           str=txt;
         }else{
           str+=","+txt;
         }
+        if(ids==" "){
+          ids=id;
+        }else{
+          ids+=","+id;
+        }
       }
     })
-    console.log(str);
-    var newFilter='<li class="cate" pId='+pId+'>'+
+    console.log(str,ids);
+    var newFilter='<li class="cate" pId='+pId+' id='+ids+'>'+
                     '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+str+'</span>'+
                     '<span class="cate_img">×</span>'+
                   '</li>';
@@ -138,7 +147,6 @@ $(function(){
       $(".ri_top2").removeClass("border2").addClass("border1");
       $(".ri_top_li4").show();
     }
-    
     $("#"+pId).show();
     if($(".all").children(".new_cate").children("li").length<=0){
       $(".all").hide();
@@ -421,7 +429,7 @@ $(function(){
       dataType:"json",
       //表单提交前进行验证
       success: function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.Success =true){
           alert("图片裁剪上传成功");
           $(".upl_img").attr("value",resultData.FilePath);
           if($(".defaultImg").css("display")!="none"){
@@ -437,7 +445,7 @@ $(function(){
           $('.cropped').html('');//设为默认图片
           $(".container_clip,.mask_clip").hide();
         }else{
-          alert(opeResult.err);
+          alert(resultData.err);
         }
       },
       error: function(XHR){

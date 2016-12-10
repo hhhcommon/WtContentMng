@@ -48,14 +48,14 @@ $(function(){
   }
   
   //00-3获取专辑列表
-  var dataParam={"url":rootPath+"content/seq/getSeqMediaList.do","data":{"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","UserId":"123","PCDType":"3","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"}};
+  var dataParam={"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","UserId":"123","PCDType":"3","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"};
   getContentList(dataParam);
   function getContentList(obj){
     $.ajax({
       type:"POST",
-      url:obj.url,
+      url:rootPath+"content/seq/getSeqMediaList.do",
       dataType:"json",
-      data:JSON.stringify(obj.data),
+      data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           getSeqMediaList(resultData); //得到专辑列表
@@ -69,6 +69,7 @@ $(function(){
   
   //00-3.1得到专辑列表
   function getSeqMediaList(resultData){
+    console.log(resultData);
     $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
       var chas = resultData.ResultList[i].ContentPubChannels;
@@ -677,4 +678,68 @@ $(function(){
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
   });
+  
+  /*根据不同的筛选条件得到不同的专辑列表*/
+  var zjData={};
+  zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
+  zjData.MobileClass="Chrome";
+  zjData.PCDType="3";
+  zjData.UserId="123";
+  $(document).on("click",".trig_item",function(){
+    debugger;
+    $(document).find(".new_cate li").each(function(){
+      var pId=$(this).attr("pid");
+      var id=$(this).attr("id");
+      alert(pId);
+      alert(id);
+      if(pId!=null&&pId=="status"){
+        if(id=="5") {
+          zjData.FlowFlag='5';
+        }
+        if(id=="1") {
+          zjData.FlowFlag='1';
+        }
+        if(id=="2") {
+          zjData.FlowFlag='2';
+        }
+        if(id=="3") {
+          zjData.FlowFlag='3';
+        }
+      }else{
+        alert(123);
+      }
+      if(pId!=null&&pId=="channel"){
+        zjData.ChannelId=$(this).attr("id");
+      }
+    });
+    console.log(zjData);
+    getContentList(zjData);
+  });
+  $(document).on("click",".cate_img",function(){
+    debugger;
+    if($(".new_cate li").size()=="0"){
+      zjData.FlowFlag='0';
+      zjData.SeqMediaId='0';
+      zjData.ChannelId='0';
+    }else{
+      $(document).find(".new_cate li").each(function(){
+        var pId=$(this).attr("pid");
+        var id=$(this).attr("id");
+        alert(pId);
+        alert(id);
+        if(pId!="status"){
+          zjData.FlowFlag='0';
+        }
+        if(pId!="album"){
+          zjData.SeqMediaId='0';
+        }
+        if(pId!="channel"){
+          zjData.ChannelId='0';
+        }
+      });
+    }
+    console.log(zjData);
+    getContentList(zjData);
+  });
+  
 });
