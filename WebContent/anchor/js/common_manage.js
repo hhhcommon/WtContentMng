@@ -403,18 +403,18 @@ $(function(){
   });
   $('#btnSave').on('click', function(){
     var  imgBase64Data=$(document).find(".cropped img").attr("src");
-    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
-                "MobileClass":"Chrome",
-                "PCDType":"3",
-                "UserId":"123",
-                "ContentFile":imgBase64Data,
-                "Purpose":"2",
-                "SrcType":"1"
-    }; 
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile", imgBase64Data);
+    oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass","Chrome");
+    oMyForm.append("PCDType","3");
+    oMyForm.append("UserId","123");
+    oMyForm.append("Purpose","2");
+    oMyForm.append("SrcType","1");
     $.ajax({
       url:rootPath+"common/uploadCM.do",
       type:"POST",
-      data:JSON.stringify(_data),
+      data:oMyForm,
       cache: false,
       processData: false,
       contentType: false,
