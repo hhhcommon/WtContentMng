@@ -268,7 +268,7 @@ public class SeqController {
 			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = seqContentService.addSeqMediaInfo(userId, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
+			map = seqContentService.addSeqMediaInfo(null,userId, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
