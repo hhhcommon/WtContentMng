@@ -142,6 +142,8 @@ $(function(){
     clear();//清空数据
     subType=1;
     pubType=1;
+    $(".iboxtitle h4").html("上传节目");
+    
   });
   
   //22-1点击编辑节目按钮
@@ -923,7 +925,6 @@ $(function(){
   
   //点击上传修改之前的清空
   function clear(){
-    $(".mask,.add").show();
     $(".sonProgress").html(" ");
     $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"hidden"});
@@ -932,7 +933,7 @@ $(function(){
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");
     $(".newImg").remove();
-    $(".defaultImg").show();
+    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".img_uploadStatus,.uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){
       $(this).children("input[type='checkbox']").prop("checked",false);
@@ -944,6 +945,7 @@ $(function(){
     $(".change_czfs option").each(function(){
       $(this).attr("selected",false);
     })
+    $(".mask,.add").show();
   }
   
   //点击节目的封面图片，跳到这个节目的详情页

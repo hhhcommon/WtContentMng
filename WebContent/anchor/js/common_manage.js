@@ -402,9 +402,9 @@ $(function(){
     cropper.zoomOut();
   });
   $('#btnSave').on('click', function(){
-    var  imgBase64Data=$(document).find(".cropped img").attr("src");
+    var imgBase64Data=$(document).find(".cropped img").attr("src");
     var oMyForm = new FormData();
-    oMyForm.append("ContentFile", imgBase64Data);
+    oMyForm.append("ContentFile",imgBase64Data);
     oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
     oMyForm.append("MobileClass","Chrome");
     oMyForm.append("PCDType","3");

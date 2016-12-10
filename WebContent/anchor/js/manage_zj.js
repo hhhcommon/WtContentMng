@@ -110,6 +110,7 @@ $(function(){
     clear();//清空数据
     subType=1;
     pubType=1;
+    $(".iboxtitle h4").html("创建专辑");
   });
   
   //22-1点击编辑专辑按钮
@@ -652,13 +653,12 @@ $(function(){
 
   //点击上传修改之前的清空
   function clear(){
-    $(".mask,.add").show();
     $("body").css({"overflow":"hidden"});
     $(".upl_img").attr("value","");
     $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
     $(".newImg").remove();
-    $(".defaultImg").show();
+    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".img_uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){
       $(this).children("input[type='checkbox']").prop("checked",false);
@@ -667,6 +667,7 @@ $(function(){
     $(".upl_zj option").each(function(){
       $(this).attr("selected",false);
     })
+    $(".mask,.add").show();
   }
   
   //点击专辑的封面图片，跳到这个专辑的详情页
