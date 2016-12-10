@@ -68,10 +68,12 @@ public class FileUploadController extends UploadController {
 				}
 			}
 			map.put("FilePath", newfilepath.replace("/opt/tomcat8_CM/webapps/", "http://www.wotingfm.com:908/"));
+			map.put("Model", "1");
 		} else {
 			if (srcType.equals("2")) {
 				String filepath = m.get("FilePath") + ""; // 原始文件路径
 				map.put("FilePath", filepath.replace("/opt/tomcat8_CM/webapps/", "http://www.wotingfm.com:908/"));
+				map.put("Model", "2");
 			}
 		}
 		m.putAll(map);
