@@ -265,9 +265,10 @@ public class MediaContentController {
 			}
 			String seqmediaId = m.get("SeqMediaId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(seqmediaId) || seqmediaId.toLowerCase().equals("null")) {
-				map.put("ReturnType", "1014");
-				map.put("Message", "无专辑Id");
-				return map;
+				seqmediaId = null;
+//				map.put("ReturnType", "1014");
+//				map.put("Message", "无专辑Id");
+//				return map;
 			}
 			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";

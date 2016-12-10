@@ -78,12 +78,16 @@ public class SeqContentService {
 	 * @param m
 	 * @return
 	 */
-	public Map<String, Object> addSeqMediaInfo(String userid, String contentname, String channelId, String contentimg,
+	public Map<String, Object> addSeqMediaInfo(String id, String userid, String contentname, String channelId, String contentimg,
 			List<Map<String, Object>> tags, List<Map<String, Object>> memberType, String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 保存专辑信息到资源库
 		SeqMediaAsset sma = new SeqMediaAsset();
-		sma.setId(SequenceUUID.getPureUUID());
+		if (id!=null) {
+			sma.setId(id);
+		} else {
+			sma.setId(SequenceUUID.getPureUUID());
+		}
 		sma.setSmaTitle(contentname);
 		sma.setSmaImg(contentimg);
 		sma.setDescn(contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);

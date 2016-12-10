@@ -21,6 +21,7 @@ import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
+import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.woting.passport.UGA.persis.pojo.UserPo;
@@ -92,10 +93,26 @@ public class MediaContentService {
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
+		SeqMediaAsset sma;
 		// 保存专辑与单体媒体对应表
-		SeqMediaAsset sma = mediaService.getSmaInfoById(seqid);
-		mediaService.bindMa2Sma(ma, sma);
-
+		if (seqid!=null) {
+			sma = mediaService.getSmaInfoById(seqid);
+		    mediaService.bindMa2Sma(ma, sma);
+		} else {
+			String smaName = "";
+			if (user.getUserName()!=null) {
+				smaName = user.getUserName();
+			} else if (user.getNickName()!=null) {
+				smaName = user.getNickName();
+			} else if (user.getLoginName()!=null) {
+				smaName = user.getLoginName();
+			}
+			seqid = SequenceUUID.getPureUUID();
+			seqContentService.addSeqMediaInfo(seqid, userid, smaName+"的默认专辑", "cn36", null, null, null, null, null);
+			sma = mediaService.getSmaInfoById(seqid);
+		    mediaService.bindMa2Sma(ma, sma);
+		}
+		
 		// 保存资源来源表里
 		MaSource maSource = new MaSource();
 		maSource.setMa(ma);
