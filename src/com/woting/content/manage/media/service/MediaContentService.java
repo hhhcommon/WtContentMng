@@ -68,9 +68,9 @@ public class MediaContentService {
 	 * @param uploadmap
 	 * @return
 	 */
-	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid, String timelong,
-			String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType, String contentdesc,
-			String pubTime, String flowFlag) {
+	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid,
+			String timelong, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
+			String contentdesc, String pubTime, String flowFlag) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = new MediaAsset();
 		ma.setId(SequenceUUID.getPureUUID());
@@ -95,24 +95,29 @@ public class MediaContentService {
 		mediaService.saveMa(ma);
 		SeqMediaAsset sma;
 		// 保存专辑与单体媒体对应表
-		if (seqid!=null) {
+		if (seqid != null) {
 			sma = mediaService.getSmaInfoById(seqid);
-		    mediaService.bindMa2Sma(ma, sma);
+			mediaService.bindMa2Sma(ma, sma);
 		} else {
-			String smaName = "";
-			if (user.getUserName()!=null) {
-				smaName = user.getUserName();
-			} else if (user.getNickName()!=null) {
-				smaName = user.getNickName();
-			} else if (user.getLoginName()!=null) {
-				smaName = user.getLoginName();
+			sma = mediaService.getSmaInfoById("user::" + userid);
+			if (sma == null) {
+				String smaName = "";
+				if (user.getUserName() != null) {
+					smaName = user.getUserName();
+				} else if (user.getNickName() != null) {
+					smaName = user.getNickName();
+				} else if (user.getLoginName() != null) {
+					smaName = user.getLoginName();
+				}
+				seqid = "user::" + userid;
+				seqContentService.addSeqMediaInfo(seqid, userid, smaName + "的默认专辑", "cn36", null, null, null, null,null);
+				sma = mediaService.getSmaInfoById(seqid);
+				mediaService.bindMa2Sma(ma, sma);
+			} else {
+				mediaService.bindMa2Sma(ma, sma);
 			}
-			seqid = SequenceUUID.getPureUUID();
-			seqContentService.addSeqMediaInfo(seqid, userid, smaName+"的默认专辑", "cn36", null, null, null, null, null);
-			sma = mediaService.getSmaInfoById(seqid);
-		    mediaService.bindMa2Sma(ma, sma);
 		}
-		
+
 		// 保存资源来源表里
 		MaSource maSource = new MaSource();
 		maSource.setMa(ma);
@@ -227,6 +232,7 @@ public class MediaContentService {
 
 	/**
 	 * 修改单体信息
+	 * 
 	 * @param userid
 	 * @param contentId
 	 * @param contentname
@@ -241,18 +247,18 @@ public class MediaContentService {
 	 * @return
 	 */
 	public Map<String, Object> updateMediaInfo(String userid, String contentId, String contentname, String contentimg,
-			String seqmediaId,String timelong, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
-			String contentdesc, String pubTime) {
+			String seqmediaId, String timelong, String contenturi, List<Map<String, Object>> tags,
+			List<Map<String, Object>> memberType, String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<>();
 		List<ChannelAssetPo> channelAssetPos = mediaService.getChaByAssetIdAndPubId(userid, contentId);
-		if (channelAssetPos!=null && channelAssetPos.size()>0) {
-			if (channelAssetPos.get(0).getFlowFlag()!=0) {
+		if (channelAssetPos != null && channelAssetPos.size() > 0) {
+			if (channelAssetPos.get(0).getFlowFlag() != 0) {
 				map.put("ReturnType", "1015");
 				map.put("Message", "资源已发布");
 				return map;
 			}
 		}
-		
+
 		MediaAsset ma = mediaService.getMaInfoById(contentId);
 		if (contentname != null && !contentname.toLowerCase().equals("null")) { // 修改节目名称
 			ma.setMaTitle(contentname);
@@ -274,10 +280,10 @@ public class MediaContentService {
 			mediaService.updateMas(mas);
 		}
 		mediaService.updateMa(ma);
-		
-        // 修改节目绑定栏目信息
+
+		// 修改节目绑定栏目信息
 		modifyMediaStatus(userid, ma.getId(), seqmediaId, 0);
-		
+
 		// 删除标签
 		keyWordBaseService.deleteKeyWordRes(contentId, "wt_MediaAsset");
 		// 保存标签信息
