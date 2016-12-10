@@ -90,7 +90,7 @@ public class SeqContentService {
 		}
 		sma.setSmaTitle(contentname);
 		sma.setSmaImg(contentimg);
-		sma.setDescn(contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);
+		sma.setDescn(contentdesc==null||contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);
 		sma.setSmaStatus(1);
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(3);
