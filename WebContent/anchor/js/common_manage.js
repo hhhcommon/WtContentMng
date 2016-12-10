@@ -407,11 +407,12 @@ $(function(){
                 "MobileClass":"Chrome",
                 "PCDType":"3",
                 "UserId":"123",
-                "Base64Code":imgBase64Data,
-                "Purpose":"2"
+                "ContentFile":imgBase64Data,
+                "Purpose":"2",
+                "SrcType":"1"
     }; 
     $.ajax({
-      url:rootPath+"common/uploadBase64.do",
+      url:rootPath+"common/uploadCM.do",
       type:"POST",
       data:JSON.stringify(_data),
       cache: false,
