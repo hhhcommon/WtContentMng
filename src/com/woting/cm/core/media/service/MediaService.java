@@ -767,6 +767,7 @@ public class MediaService {
 		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
 		if (getResDictRefByResId(id) != null) { // 删除与专辑绑定的下级节目内容分类信息
 			for (SeqMaRefPo seqMaRefPo : l) {
+				removeMedia(seqMaRefPo.getMId());
 				removeResDictRef(seqMaRefPo.getMId());
 			}
 		}

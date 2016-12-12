@@ -143,7 +143,7 @@ public abstract class CacheUtils {
 	public static boolean writeFile(String jsonstr, String path) {
 		File file = createFile(path);
 		try {
-			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"GBK");
+			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
 			BufferedWriter writer = new BufferedWriter(write);
 			writer.write(jsonstr);
 			writer.close();
