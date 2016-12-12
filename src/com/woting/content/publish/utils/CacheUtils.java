@@ -26,7 +26,7 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://123.56.254.75:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://192.168.0.104:908/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
@@ -79,14 +79,10 @@ public abstract class CacheUtils {
 	/**
 	 * 创建ZJ文件夹里的html静态页面
 	 * 
-	 * @param str
-	 *            WebContent路径
-	 * @param rootpath
-	 *            要编写文件的文件夹路径
-	 * @param mapsequ
-	 *            专辑信息
-	 * @param listaudio
-	 *            单体组信息
+	 * @param str WebContent路径
+	 * @param rootpath 要编写文件的文件夹路径
+	 * @param mapsequ 专辑信息
+	 * @param listaudio 单体组信息
 	 * @return
 	 */
 	private static boolean createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio) {
@@ -167,7 +163,7 @@ public abstract class CacheUtils {
 		BufferedReader br = null;
 		File file = new File(path);
 		try {
-			in = new InputStreamReader(new FileInputStream(file),"gbk");
+			in = new InputStreamReader(new FileInputStream(file),"UTF-8");
 			br = new BufferedReader(in);
 			String zjstr = "";
 			while ((zjstr = br.readLine()) != null) {

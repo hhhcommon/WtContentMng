@@ -466,6 +466,17 @@ public class QueryService {
 		return map;
 	}
 	
+	public boolean getShareHtml(String resId, String mediaType) {
+		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
+			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
+				if (mediaType.equals("SEQU")) {
+					
+				}
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * 关闭数据库连接
 	 * @param conn
