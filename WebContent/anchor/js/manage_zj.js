@@ -55,10 +55,13 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaList.do",
       dataType:"json",
-      data:JSON.stringify(dataParam),
+      data:JSON.stringify(obj),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
+          $(".ri_top3_con").html("");//每次加载之前先清空
           getSeqMediaList(resultData); //得到专辑列表
+        }else{
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;'>没有查到任何内容</div>");//每次加载之前先清空
         }
       },
       error:function(XHR){
@@ -69,7 +72,6 @@ $(function(){
   
   //00-3.1得到专辑列表
   function getSeqMediaList(resultData){
-    console.log(resultData);
     $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
       var chas = resultData.ResultList[i].ContentPubChannels;
@@ -172,7 +174,6 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    console.log(_data);
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/addSeqMediaInfo.do",
@@ -686,12 +687,9 @@ $(function(){
   zjData.PCDType="3";
   zjData.UserId="123";
   $(document).on("click",".trig_item",function(){
-    debugger;
     $(document).find(".new_cate li").each(function(){
       var pId=$(this).attr("pid");
       var id=$(this).attr("id");
-      alert(pId);
-      alert(id);
       if(pId!=null&&pId=="status"){
         if(id=="5") {
           zjData.FlowFlag='5';
@@ -705,18 +703,14 @@ $(function(){
         if(id=="3") {
           zjData.FlowFlag='3';
         }
-      }else{
-        alert(123);
       }
       if(pId!=null&&pId=="channel"){
         zjData.ChannelId=$(this).attr("id");
       }
     });
-    console.log(zjData);
     getContentList(zjData);
   });
   $(document).on("click",".cate_img",function(){
-    debugger;
     if($(".new_cate li").size()=="0"){
       zjData.FlowFlag='0';
       zjData.SeqMediaId='0';
@@ -725,8 +719,6 @@ $(function(){
       $(document).find(".new_cate li").each(function(){
         var pId=$(this).attr("pid");
         var id=$(this).attr("id");
-        alert(pId);
-        alert(id);
         if(pId!="status"){
           zjData.FlowFlag='0';
         }
@@ -738,7 +730,6 @@ $(function(){
         }
       });
     }
-    console.log(zjData);
     getContentList(zjData);
   });
   
