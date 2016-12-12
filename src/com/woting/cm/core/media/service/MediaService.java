@@ -36,6 +36,7 @@ import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
+import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
@@ -64,6 +65,9 @@ public class MediaService {
 	private BcLiveFlowService bcLiveFlowService;
 	@Resource
 	private ComplexRefService complexRefService;
+	@Resource
+	private PersonService personService;
+
 	private Map<String, Object> FlowFlagState = new HashMap<String, Object>() {
 		{
 			put("0", "已提交");
@@ -117,7 +121,6 @@ public class MediaService {
 			String seqmediaid) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> m1 = new HashMap<>();
-		m1.put("publisherId", userid);
 		if (!flowflag.equals("0")) {
 			if (flowflag.equals("5")) {
 				m1.put("flowFlag", "0");
@@ -141,9 +144,17 @@ public class MediaService {
 			}
 		}
 		if (!seqmediaid.equals("0")) {
-			m1.put("assetId", seqmediaid);
-			m1.put("assetType", "wt_SeqMediaAsset");
-			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
+			m1.put("isValidate", "1");
+			m1.put("publisherId", userid);
+			String wheresql = " and assetId in (select resId form wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset')";
+			if (m1.containsKey("channelIds")) {
+				wheresql += " and channelId in ("+m1.get("channelIds")+")";
+			}
+			m1.put("wheresql", wheresql);
+			m1.put("sortByClause", " pubTime,cTime");
+			m1.remove("channelIds");
+			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m1);
 			if (chas != null && chas.size() > 0) {
 				String assetIds = "";
 				for (ChannelAssetPo cha : chas) {
@@ -152,7 +163,7 @@ public class MediaService {
 				assetIds = assetIds.substring(1);
 				Map<String, Object> m2 = new HashMap<>();
 				m2.put("ids", assetIds);
-				m2.put("smaPubId", userid);
+				m2.put("smaPubId", "0");
 				List<SeqMediaAssetPo> smas = seqMediaAssetDao.queryForList("getSmaList", m2);
 				if (smas != null && smas.size() > 0) {
 					for (SeqMediaAssetPo sma : smas) {
@@ -200,7 +211,7 @@ public class MediaService {
 			assetIds = assetIds.substring(1);
 			Map<String, Object> m2 = new HashMap<>();
 			m2.put("ids", assetIds);
-			m2.put("maPubId", userid);
+			m2.put("maPubId", "0");
 			List<MediaAssetPo> mas = mediaAssetDao.queryForList("getMaList", m2);
 			if (mas != null && mas.size() > 0) {
 				String resids = "";
@@ -284,21 +295,29 @@ public class MediaService {
 	public List<Map<String, Object>> getShortSmaListByPubId(String userid) {
 		List<Map<String, Object>> list = new ArrayList<>();
 		Map<String, Object> map = new HashMap<>();
-		map.put("publisherId", userid);
-		map.put("assetType", "wt_SeqMediaAsset");
-		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", map);
-		if (chas != null && chas.size() > 0) {
-			for (ChannelAssetPo cha : chas) {
-				SeqMediaAsset sma = getSmaInfoById(cha.getAssetId());
-				if (sma!=null) {
-					Map<String, Object> m = new HashMap<>();
-				    m.put("SeqMediaName", sma.getSmaTitle());
-				    m.put("SeqMediaId", sma.getId());
-				    list.add(m);
+		map.put("id", userid);
+		if (personService.getPersonPoById(userid) != null) {
+			map.clear();
+			map.put("isValidate", "1");
+			map.put("publisherId", userid);
+			map.put("assetType", "wt_SeqMediaAsset");
+			map.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset')");
+			map.put("sortByClause", " pubTime,cTime");
+			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", map);
+			if (chas != null && chas.size() > 0) {
+				for (ChannelAssetPo cha : chas) {
+					SeqMediaAsset sma = getSmaInfoById(cha.getAssetId());
+					if (sma != null) {
+						Map<String, Object> m = new HashMap<>();
+						m.put("SeqMediaName", sma.getSmaTitle());
+						m.put("SeqMediaId", sma.getId());
+						list.add(m);
+					}
 				}
-			}
-			if (list!=null && list.size()>0) {
-				return list;
+				if (list != null && list.size() > 0) {
+					return list;
+				}
 			}
 		}
 		return null;
@@ -308,65 +327,90 @@ public class MediaService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
 		Map<String, Object> m = new HashMap<>();
-		m.put("publisherId", userid);
-		m.put("assetType", "wt_SeqMediaAsset");
-		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m);
-		if (chas!=null && chas.size()>0) {
-			String ids = "";
-			for (ChannelAssetPo cha : chas) {
-				ids += ",'"+cha.getAssetId()+"'";
+		m.put("id", userid);
+		if (personService.getPersonPoById(userid) != null) {
+			m.clear();
+			m.put("isValidate", "1");
+			m.put("publisherId", userid);
+			m.put("assetType", "wt_SeqMediaAsset");
+			m.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset')");
+			m.put("sortByClause", " pubTime,cTime");
+			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m);
+			if (chas != null && chas.size() > 0) {
+				String ids = "";
+				for (ChannelAssetPo cha : chas) {
+					ids += ",'" + cha.getAssetId() + "'";
+				}
+				ids = ids.substring(1);
+				m = new HashMap<>();
+				m.put("ids", ids);
+				m.put("smaPubId", "0");
+				listpo = seqMediaAssetDao.queryForList("getSmaList", m);
+				list = makeSmaListToReturn(listpo);
+				return list;
 			}
-			ids = ids.substring(1);
-			m = new HashMap<>();
-			m.put("ids", ids);
-			m.put("smaPubId", userid);
-			listpo = seqMediaAssetDao.queryForList("getSmaList", m);
-			list = makeSmaListToReturn(listpo);
-		    return list;
 		}
+
 		return null;
 	}
 
 	public List<Map<String, Object>> getSmaListByPubId(String userid, String flowflag, String channelid) {
 		Map<String, Object> m1 = new HashMap<>();
-		m1.put("assetType", "wt_SeqMediaAsset");
-		if (!flowflag.equals("0")) {
-			if (flowflag.equals("5")) {
-				m1.put("flowFlag", "0"); // 5用来查询待入库，其余编号与flowflag对应
-			} else {
-				m1.put("flowFlag", flowflag);
-			}
-		}
-		if (!channelid.equals("0")) {
-			Map<String, Object> chm = new HashMap<>();
-			chm.put("pcId", channelid);
-			List<ChannelPo> chs = channelDao.queryForList("getInfo", chm);
-			if (chs != null && chs.size() > 0) {
-				String chids = "";
-				for (ChannelPo ch : chs) {
-					chids += ",'" + ch.getId() + "'";
+		m1.put("id", userid);
+		if (personService.getPersonPoById(userid) != null) {
+			m1.clear();
+			m1.put("assetType", "wt_SeqMediaAsset");
+			if (!flowflag.equals("0")) {
+				if (flowflag.equals("5")) {
+					m1.put("flowFlag", "0"); // 5用来查询待入库，其余编号与flowflag对应
+				} else {
+					m1.put("flowFlag", flowflag);
 				}
-				chids = chids.substring(1);
-				m1.put("channelIds", chids);
-			} else {
-				m1.put("channelIds", "'" + channelid + "'");
+			}
+			if (!channelid.equals("0")) {
+				Map<String, Object> chm = new HashMap<>();
+				chm.put("pcId", channelid);
+				List<ChannelPo> chs = channelDao.queryForList("getInfo", chm);
+				if (chs != null && chs.size() > 0) {
+					String chids = "";
+					for (ChannelPo ch : chs) {
+						chids += ",'" + ch.getId() + "'";
+					}
+					chids = chids.substring(1);
+					m1.put("channelIds", chids);
+				} else {
+					m1.put("channelIds", "'" + channelid + "'");
+				}
+			}
+			
+			m1.put("isValidate", "1");
+			m1.put("publisherId", userid);
+			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset')";
+			
+			if (m1.containsKey("channelIds")) {
+				wheresql += " and channelId in ("+m1.get("channelIds")+")";
+			}
+			m1.put("wheresql", wheresql);
+			m1.put("sortByClause", " pubTime,cTime");
+			m1.remove("channelIds");
+			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m1);
+			if (chas != null && chas.size() > 0) {
+				String assetIds = "";
+				for (ChannelAssetPo cha : chas) {
+					assetIds += ",'" + cha.getAssetId() + "'";
+				}
+				assetIds = assetIds.substring(1);
+				Map<String, Object> m2 = new HashMap<>();
+				m2.put("ids", assetIds);
+				m2.put("smaPubId", "0");
+				List<SeqMediaAssetPo> smas = seqMediaAssetDao.queryForList("getSmaList", m2);
+				List<Map<String, Object>> list = makeSmaListToReturn(smas);
+				return list;
 			}
 		}
-		m1.put("publisherId", userid);
-		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
-		if (chas != null && chas.size() > 0) {
-			String assetIds = "";
-			for (ChannelAssetPo cha : chas) {
-				assetIds += ",'" + cha.getAssetId() + "'";
-			}
-			assetIds = assetIds.substring(1);
-			Map<String, Object> m2 = new HashMap<>();
-			m2.put("ids", assetIds);
-			m2.put("smaPubId", userid);
-			List<SeqMediaAssetPo> smas = seqMediaAssetDao.queryForList("getSmaList", m2);
-			List<Map<String, Object>> list = makeSmaListToReturn(smas);
-			return list;
-		}
+
 		return null;
 	}
 
@@ -475,7 +519,7 @@ public class MediaService {
 					for (BCLiveFlowPo bcLiveFlowPo : ls) {
 						if (bcLiveFlowPo.getIsMain() == 1) {
 							bcm.put("flowURI", bcLiveFlowPo.getFlowURI());
-							bcm.put("bcSource",bcLiveFlowPo.getBcSource());
+							bcm.put("bcSource", bcLiveFlowPo.getBcSource());
 						}
 						Map<String, Object> bclfm = new HashMap<>();
 						bclfm.put("BcPlayPath", bcLiveFlowPo.getFlowURI());
@@ -567,6 +611,7 @@ public class MediaService {
 		cha.buildFromPo(chapo);
 		return cha;
 	}
+	
 
 	public List<ChannelAssetPo> getCHAListByAssetId(String assetIds, String assetType) {
 		Map<String, String> param = new HashMap<String, String>();
@@ -588,10 +633,13 @@ public class MediaService {
 		return chlist;
 	}
 
-	public List<ChannelAssetPo> getChaByAssetIdAndPubId(String pubId, String assetId) {
+	public List<ChannelAssetPo> getChaByAssetIdAndPubId(String pubId, String assetId, String assetType) {
 		Map<String, Object> m = new HashMap<>();
-		m.put("publisherId", pubId);
+		if (pubId != null) {
+			m.put("publisherId", pubId);
+		}
 		m.put("assetId", assetId);
+		m.put("assetType", assetType);
 		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m);
 		if (chas != null && chas.size() > 0) {
 			return chas;
@@ -607,13 +655,14 @@ public class MediaService {
 		List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResIds", param);
 		List<Map<String, Object>> catalist = new ArrayList<Map<String, Object>>();
 		if (rcrpL != null && rcrpL.size() > 0) {
-			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT))
+					.getContent();
 			for (DictRefResPo dictRefResPo : rcrpL) {
 				Map<String, Object> dictrefm = dictRefResPo.toHashMap();
-				DictModel dm = _cd.getDictModelById(dictrefm.get("dictMid")+"");
+				DictModel dm = _cd.getDictModelById(dictrefm.get("dictMid") + "");
 				dictrefm.put("dictMName", dm.getDmName());
-				TreeNode<DictDetail> root = (TreeNode<DictDetail>) dm.dictTree.findNode(dictrefm.get("dictDid")+"");
-				dictrefm.put("pathNames",root.getNodeName());
+				TreeNode<DictDetail> root = (TreeNode<DictDetail>) dm.dictTree.findNode(dictrefm.get("dictDid") + "");
+				dictrefm.put("pathNames", root.getNodeName());
 				catalist.add(dictrefm);
 			}
 		}

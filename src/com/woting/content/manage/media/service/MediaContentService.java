@@ -21,7 +21,9 @@ import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
-import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
+import com.woting.cm.core.person.persis.po.PersonPo;
+import com.woting.cm.core.person.persis.po.PersonRefPo;
+import com.woting.cm.core.person.service.PersonService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.woting.passport.UGA.persis.pojo.UserPo;
@@ -41,6 +43,8 @@ public class MediaContentService {
 	private KeyWordBaseService keyWordBaseService;
 	@Resource
 	private ComplexRefService complexRefService;
+	@Resource
+	private PersonService personService;
 
 	/**
 	 * 查询主播的资源列表
@@ -71,6 +75,10 @@ public class MediaContentService {
 	public Map<String, Object> addMediaAssetInfo(String userid, String contentname, String contentimg, String seqid,
 			String timelong, String contenturi, List<Map<String, Object>> tags, List<Map<String, Object>> memberType,
 			String contentdesc, String pubTime, String flowFlag) {
+		UserPo user = userService.getUserById(userid);
+		if (user == null) {
+			return null;
+		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		MediaAsset ma = new MediaAsset();
 		ma.setId(SequenceUUID.getPureUUID());
@@ -79,17 +87,53 @@ public class MediaContentService {
 		ma.setMaURL(contenturi);
 		ma.setTimeLong(Long.valueOf(timelong));
 		// ma.setKeyWords("上传文件测试用待删除");
-		ma.setMaPubType(3);// 主播
-		ma.setMaPubId(userid);
-		UserPo user = userService.getUserById(userid);
-		if (user == null) {
-			return null;
-		}
-		ma.setMaPublisher(user.getLoginName());
+		ma.setMaPubType(1);// 主播
+		ma.setMaPubId("0");
+		ma.setMaPublisher("我听科技");
 		ma.setDescn(contentdesc.toLowerCase().equals("null") ? "这家伙真懒，什么都没留下" : contentdesc);
 		ma.setPubCount(0);
 		ma.setMaStatus(1);
 		ma.setCTime(new Timestamp(System.currentTimeMillis()));
+		PersonPo po = personService.getPersonPoById(userid);
+		if (po != null) {
+			PersonRefPo poref = new PersonRefPo();
+			poref.setId(SequenceUUID.getPureUUID());
+			poref.setRefName("主播-节目");
+			poref.setPersonId(userid);
+			poref.setResTableName("wt_MediaAsset");
+			poref.setResId(ma.getId());
+			poref.setcTime(ma.getCTime());
+			personService.insertPersonRef(poref);
+		} else {
+			po = new PersonPo();
+			po.setId(userid);
+			po.setPortrait(contentimg);
+			if (user.getUserName() != null) {
+				po.setpName(user.getUserName());
+			} else if (user.getNickName() != null) {
+				po.setpName(user.getNickName());
+			} else if (user.getLoginName() != null) {
+				po.setpName(user.getLoginName());
+			} else
+				return null;
+			po.setIsVerified(1);
+			if (user.getDescn() != null) {
+				po.setDescn(user.getDescn());
+			}
+			po.setpSource("我听科技");
+			po.setpSrcId("0");
+			po.setcTime(ma.getCTime());
+			po.setLmTime(ma.getCTime());
+			personService.insertPerson(po);
+			PersonRefPo poref = new PersonRefPo();
+			poref.setId(SequenceUUID.getPureUUID());
+			poref.setRefName("主播-节目");
+			poref.setPersonId(userid);
+			poref.setResTableName("wt_MediaAsset");
+			poref.setResId(ma.getId());
+			poref.setcTime(ma.getCTime());
+			personService.insertPersonRef(poref);
+		}
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
@@ -110,7 +154,8 @@ public class MediaContentService {
 					smaName = user.getLoginName();
 				}
 				seqid = "user::" + userid;
-				seqContentService.addSeqMediaInfo(seqid, userid, smaName + "的默认专辑", "cn36", null, null, null, null,null);
+				seqContentService.addSeqMediaInfo(seqid, userid, smaName + "的默认专辑", "cn36", null, null, null, null,
+						null);
 				sma = mediaService.getSmaInfoById(seqid);
 				mediaService.bindMa2Sma(ma, sma);
 			} else {
@@ -152,8 +197,8 @@ public class MediaContentService {
 							kwr.setId(SequenceUUID.getPureUUID());
 							kwr.setKwId(kw.getId());
 							kwr.setRefName("标签-主播");
-							kwr.setResTableName("palt_User");
-							kwr.setResId(userid);
+							kwr.setResTableName("wt_Person");
+							kwr.setResId(po.getId());
 							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 							ls.add(kwr);
 						}
@@ -181,7 +226,7 @@ public class MediaContentService {
 						kwr.setId(SequenceUUID.getPureUUID());
 						kwr.setKwId(kw.getId());
 						kwr.setRefName("标签-主播");
-						kwr.setResTableName("palt_User");
+						kwr.setResTableName("wt_Person");
 						kwr.setResId(userid);
 						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 						ls.add(kwr);
@@ -250,7 +295,7 @@ public class MediaContentService {
 			String seqmediaId, String timelong, String contenturi, List<Map<String, Object>> tags,
 			List<Map<String, Object>> memberType, String contentdesc, String pubTime) {
 		Map<String, Object> map = new HashMap<>();
-		List<ChannelAssetPo> channelAssetPos = mediaService.getChaByAssetIdAndPubId(userid, contentId);
+		List<ChannelAssetPo> channelAssetPos = mediaService.getChaByAssetIdAndPubId(userid, contentId, "wt_MediaAsset");
 		if (channelAssetPos != null && channelAssetPos.size() > 0) {
 			if (channelAssetPos.get(0).getFlowFlag() != 0) {
 				map.put("ReturnType", "1015");
@@ -307,7 +352,7 @@ public class MediaContentService {
 							kwr.setId(SequenceUUID.getPureUUID());
 							kwr.setKwId(kw.getId());
 							kwr.setRefName("标签-主播");
-							kwr.setResTableName("palt_User");
+							kwr.setResTableName("wt_Person");
 							kwr.setResId(userid);
 							kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 							ls.add(kwr);
@@ -336,7 +381,7 @@ public class MediaContentService {
 						kwr.setId(SequenceUUID.getPureUUID());
 						kwr.setKwId(kw.getId());
 						kwr.setRefName("标签-主播");
-						kwr.setResTableName("palt_User");
+						kwr.setResTableName("wt_Person");
 						kwr.setResId(userid);
 						kwr.setcTime(new Timestamp(System.currentTimeMillis()));
 						ls.add(kwr);
@@ -487,15 +532,22 @@ public class MediaContentService {
 	}
 
 	public Map<String, Object> getMediaAssetInfo(String userId, String contentId) {
-		List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId);
-		if (chas != null && chas.size() > 0) {
-			MediaAsset ma = mediaService.getMaInfoById(contentId);
-			if (ma != null) {
-				List<MediaAssetPo> mas = new ArrayList<>();
-				mas.add(ma.convert2Po());
-				List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
-				if (rem != null && rem.size() > 0) {
-					return rem.get(0);
+		Map<String, Object> map = new HashMap<>();
+		map.put("id", userId);
+		if (personService.getPersonPoById(userId) != null) {
+			PersonRefPo poref = personService.getPersonRefBy("wt_MediaAsset", contentId);
+			if (poref.getId().equals(userId)) {
+				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_MediaAsset");
+				if (chas != null && chas.size() > 0) {
+					MediaAsset ma = mediaService.getMaInfoById(contentId);
+					if (ma != null) {
+						List<MediaAssetPo> mas = new ArrayList<>();
+						mas.add(ma.convert2Po());
+						List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
+						if (rem != null && rem.size() > 0) {
+							return rem.get(0);
+						}
+					}
 				}
 			}
 		}
