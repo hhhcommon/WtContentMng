@@ -4,28 +4,31 @@ $(function(){
   var pubType=1;//pubType=1代表在上传节目页面发布,pubType=2代表在修改节目页面发布
   
   //00-1获取栏目筛选条件
-  var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "UserId":"123",
-            "PCDType":"3",
-            "MediaType":"MediaAsset"
+  var dataF={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "UserId":"123",
+              "PCDType":"3",
+              "MediaType":"MediaAsset"
   };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getFiltrates.do",
-    dataType:"json",
-    data:JSON.stringify(data),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getChannelLabel(resultData);//得到栏目的筛选标签
-        getAlbumLabel(resultData);//得到专辑的筛选标签
+  getFiltrates(dataF);
+  function getFiltrates(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getFiltrates.do",
+      dataType:"json",
+      data:JSON.stringify(data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getChannelLabel(resultData);//得到栏目的筛选标签
+          getAlbumLabel(resultData);//得到专辑的筛选标签
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
-  
+    });
+  }
+
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
     for(var i=0;i<resultData.ResultList.ChannelList.length;i++){
@@ -231,6 +234,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }
@@ -314,6 +320,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }
@@ -378,15 +387,15 @@ $(function(){
         $(".upl_bq").append(new_tag);
         var tagId=resultData.Result.ContentKeyWords[i].TagId;
         $(".my_tag_con").find(".my_tag_con1").each(function(){
-          if($(this).attr("tagid")==tagId){
+          if($(this).attr("tagId")==tagId){
             $(this).children("input").prop("checked",true);
-            $(this).children("input").prop("disabled",true)
+            $(this).children("input").prop("disabled",true);
           }
         })
         $(".gg_tag_con").find(".gg_tag_con1").each(function(){
-          if($(this).attr("tagid")==tagId){
+          if($(this).attr("tagId")==tagId){
             $(this).children("input").prop("checked",true);
-            $(this).children("input").prop("disabled",true)
+            $(this).children("input").prop("disabled",true);
           }
         })
       }
@@ -431,6 +440,9 @@ $(function(){
           alert("成功删除节目");
           $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
           $('.shade', parent.document).hide();
@@ -467,6 +479,9 @@ $(function(){
           alert("节目发布成功");
           $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
           $('.shade', parent.document).hide();
@@ -809,6 +824,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }
@@ -916,6 +934,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }

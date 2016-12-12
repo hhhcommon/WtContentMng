@@ -4,26 +4,29 @@ $(function(){
   var pubType=1;//pubType=1代表在创建专辑页面提交,pubType=2代表在修改专辑页面提交
   
   //00-1获取栏目筛选条件
-  var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "UserId":"123",
-            "PCDType":"3",
-            "MediaType":"MediaAsset"
+  var dataF={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "UserId":"123",
+              "PCDType":"3",
+              "MediaType":"MediaAsset"
   };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getFiltrates.do",
-    dataType:"json",
-    data:JSON.stringify(data),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getChannelLabel(resultData);//得到栏目的筛选标签
+  getFiltrates(dataF);
+  function getFiltrates(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getFiltrates.do",
+      dataType:"json",
+      data:JSON.stringify(data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getChannelLabel(resultData);//得到栏目的筛选标签
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
   
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
@@ -185,6 +188,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }
@@ -255,6 +261,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }
       },
       error:function(jqXHR){
@@ -353,6 +362,9 @@ $(function(){
           alert("成功删除专辑");
           $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }
       },
       error:function(XHR){
@@ -384,6 +396,9 @@ $(function(){
           alert("专辑发布成功");
           $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
           $('.shade', parent.document).hide();
@@ -641,6 +656,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
           $(".mask,.add").hide();
