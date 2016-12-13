@@ -146,8 +146,8 @@ public class MediaService {
 		if (!seqmediaid.equals("0")) {
 			m1.put("isValidate", "1");
 			m1.put("publisherId", userid);
-			String wheresql = " and assetId in (select resId form wt_Person_Ref where personId = '" + userid
-					+ "' and resTableName = 'wt_SeqMediaAsset')";
+			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"')";
 			if (m1.containsKey("channelIds")) {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
@@ -202,6 +202,16 @@ public class MediaService {
 			}
 		}
 		m1.put("assetType", "wt_MediaAsset");
+		m1.put("isValidate", "1");
+		m1.put("publisherId", userid);
+		String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+				+ "' and resTableName = 'wt_MediaAsset')";
+		if (m1.containsKey("channelIds")) {
+			wheresql += " and channelId in ("+m1.get("channelIds")+")";
+		}
+		m1.put("wheresql", wheresql);
+		m1.put("sortByClause", " pubTime,cTime");
+		m1.remove("channelIds");
 		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
 		if (chas != null && chas.size() > 0) {
 			String assetIds = "";
@@ -603,13 +613,11 @@ public class MediaService {
 	}
 
 	// 根据栏目发布表资源id得到栏目发布信息
-	public ChannelAsset getCHAInfoByAssetId(String id) {
-		ChannelAsset cha = new ChannelAsset();
-		ChannelAssetPo chapo = channelAssetDao.getInfoObject("getInfoByAssetId", id);
-		if (chapo == null)
-			return null;
-		cha.buildFromPo(chapo);
-		return cha;
+	public List<ChannelAssetPo> getCHAInfoByAssetId(String id) {
+		List<ChannelAssetPo> chapo = channelAssetDao.queryForList("getInfoByAssetId", id);
+		if (chapo != null && chapo.size()>0)
+			return chapo;
+		return null;
 	}
 	
 
@@ -803,23 +811,25 @@ public class MediaService {
 		keyWordProService.removeKeyWordByAssetId(assetId, resTableName);
 	}
 
-	public void removeMedia(String id) {
+	public void removeMedia(String userId, String id) {
 		removeMa(id);
 		removeMas(id);
 		removeMa2SmaByMid(id);
 		removeResDictRef(id);
 		removeKeyWordRes(id, "wt_MediaAsset");
 		removeCha(id, "wt_MediaAsset");
+		personService.remove(userId, "wt_MediaAsset", id);
 	}
 
-	public void removeSeqMedia(String id) {
+	public void removeSeqMedia(String userId, String id) {
 		List<SeqMaRefPo> l = getSeqMaRefBySid(id);
 		if (getResDictRefByResId(id) != null) { // 删除与专辑绑定的下级节目内容分类信息
 			for (SeqMaRefPo seqMaRefPo : l) {
-				removeMedia(seqMaRefPo.getMId());
+				removeMedia(userId, seqMaRefPo.getMId());
 				removeResDictRef(seqMaRefPo.getMId());
 			}
 		}
+		personService.remove(userId, "wt_SeqMediaAsset", id);
 		removeResDictRef(id);
 		if (getCHAInfoByAssetId(id) != null) { // 删除与专辑绑定的下级节目栏目信息
 			for (SeqMaRefPo seqMaRefPo : l) {

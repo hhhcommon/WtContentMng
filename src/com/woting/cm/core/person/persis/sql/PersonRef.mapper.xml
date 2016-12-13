@@ -43,4 +43,8 @@
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   
+  <delete id="deleteByMap" parameterType="java.util.Map">
+    delete from wt_Person_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+  
 </mapper>

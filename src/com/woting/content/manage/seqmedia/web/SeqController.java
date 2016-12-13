@@ -259,6 +259,11 @@ public class SeqController {
 				return map;
 			}
 			String channelId = m.get("ChannelId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(channelId) || channelId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无栏目信息");
+				return map;
+			}
 			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
 			List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
 			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
@@ -641,7 +646,7 @@ public class SeqController {
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			map = seqContentService.removeSeqMediaAsset(contentid);
+			map = seqContentService.removeSeqMediaAsset(userId, contentid);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

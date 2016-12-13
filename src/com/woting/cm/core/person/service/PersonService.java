@@ -84,4 +84,12 @@ public class PersonService {
 		personRefDao.insert("insertList", m);
 	}
 	
+	public void remove(String personId, String resTableName, String resId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resTableName", resTableName);
+		m.put("resId", resId);
+		m.put("personId", personId);
+		personRefDao.delete("deleteByMap", m);
+	}
+	
 }

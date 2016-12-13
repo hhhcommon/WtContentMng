@@ -520,11 +520,11 @@ public class MediaContentService {
 		return false;
 	}
 
-	public Map<String, Object> removeMediaAsset(String contentid) {
+	public Map<String, Object> removeMediaAsset(String userId, String contentid) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		String[] ids = contentid.split(",");
 		for (String id : ids) {
-			mediaService.removeMedia(id);
+			mediaService.removeMedia(userId, id);
 		}
 		map.put("ReturnType", "1001");
 		map.put("Message", "单体成功");
