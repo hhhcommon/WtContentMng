@@ -391,13 +391,26 @@ $(function(){
   };
   var cropper = $('.imageBox').cropbox(options);
   $('#upload-file').on('change', function(){
+    uploadPic();
+  });
+  function uploadPic(){
     var reader = new FileReader();
     reader.onload = function(e) {
       options.imgSrc = e.target.result;
       cropper = $('.imageBox').cropbox(options);
     }
-    reader.readAsDataURL($(this)[0].files[0]);
-  });
+    reader.readAsDataURL($("#upload-file")[0].files[0]);
+    var jqObj=$("#upload-file");
+    jqObj.val("");
+    var domObj = jqObj[0];
+    domObj.outerHTML = domObj.outerHTML;
+    var newJqObj = jqObj.clone();
+    jqObj.before(newJqObj);
+    jqObj.remove();
+    $("#upload-file").unbind().change(function (){
+      uploadPic();
+    });
+  }
   $('#btnCrop').on('click', function(){
     var img = cropper.getDataURL();
     $('.cropped').html('');

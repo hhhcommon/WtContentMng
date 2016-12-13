@@ -285,13 +285,13 @@ $(function(){
       var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
       var detail={};
       if(resultData.ResultList.List[i].zhubo) detail.zhubo=resultData.ResultList.List[i].zhubo;
-      else detail.zhubo="清风";
+      else detail.zhubo="";
       if(resultData.ResultList.List[i].SeqInfo) detail.seqInfo=resultData.ResultList.List[i].SeqInfo.ContentName;
-      else detail.seqInfo="清风徐来";  
+      else detail.seqInfo="";  
       if(resultData.ResultList.List[i].ContentPub) detail.contentPub=resultData.ResultList.List[i].ContentPub;
-      else detail.contentPub="暂无来源"; 
+      else detail.contentPub=""; 
       if(resultData.ResultList.List[i].ContentDescn) detail.contentDescn=resultData.ResultList.List[i].ContentDescn;
-      else detail.contentDescn="暂无数据";
+      else detail.contentDescn="";
       var newListBox= '<li class="listBox" contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.seqInfo+' dp='+detail.contentPub+'>'+
                         '<div class="default"></div>'+
                         '<div class="dn">'+detail.contentDescn+'</div>'+

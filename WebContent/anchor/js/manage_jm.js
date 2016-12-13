@@ -180,12 +180,13 @@ $(function(){
   
   //33-1.1上传节目方法
   function add_jm(){
+    debugger;
     var _data={};
     _data.UserId="123";
     _data.DeviceId="3279A27149B24719991812E6ADBA5584";
     _data.MobileClass="Chrome";
     _data.PCDType="3";
-    _data.ContentURI=$(".upl_file").attr("value");
+    _data.ContentURI=$(".audio").attr("src");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
@@ -258,7 +259,7 @@ $(function(){
     _data.MobileClass="Chrome";
     _data.PCDType="3";
     _data.ContentId=$(".jmId").val();
-    _data.ContentURI=$(".upl_file").attr("value");
+    _data.ContentURI=$(".audio").attr("src");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value")
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
@@ -636,6 +637,16 @@ $(function(){
         alert("发生错误" + jqXHR.status);
       }
     });
+    var jqObj=$(".upl_file");
+    jqObj.val("");
+    var domObj = jqObj[0];
+    domObj.outerHTML = domObj.outerHTML;
+    var newJqObj = jqObj.clone();
+    jqObj.before(newJqObj);
+    jqObj.remove();
+    $(".upl_file").unbind().change(function (){
+      requestUpload(_this,oMyForm,fileName)
+    });
   };
   
   function getTime() {
@@ -774,7 +785,7 @@ $(function(){
     _data.DeviceId="3279A27149B24719991812E6ADBA5584";
     _data.MobileClass="Chrome";
     _data.PCDType="3";
-    _data.ContentURI=$(".upl_file").attr("value");
+    _data.ContentURI=$(".audio").attr("src");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
@@ -845,7 +856,7 @@ $(function(){
     _data.MobileClass="Chrome";
     _data.PCDType="3";
     _data.ContentId=$(".jmId").val();
-    _data.ContentURI=$(".upl_file").attr("value");
+    _data.ContentURI=$(".audio").attr("src");
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
@@ -988,48 +999,67 @@ $(function(){
   jmData.UserId="123";
   $(document).on("click",".trig_item",function(){
     $(document).find(".new_cate li").each(function(){
-      var pId=$(this).attr("pid");
-      var id=$(this).attr("id");
-      if(pId!=null&&pId=="status"){
-        if(id=="5") {
-          jmData.FlowFlag='5';
+      debugger;
+      if($(".new_cate li").size()>="0"){
+        var pId=$(this).attr("pid");
+        var id=$(this).attr("id");
+        if(pId=="status"){
+          if(id=="5") {
+            jmData.FlowFlag='5';
+          }else{
+            jmData.FlowFlag=id;
+          }
+          if(id=="1") {
+            jmData.FlowFlag='1';
+          }else{
+            jmData.FlowFlag=id;
+          }
+          if(id=="2") {
+            jmData.FlowFlag='2';
+          }else{
+            jmData.FlowFlag=id;
+          }
+          if(id=="3") {
+            jmData.FlowFlag='3';
+          }else{
+            jmData.FlowFlag=id;
+          }
         }
-        if(id=="1") {
-          jmData.FlowFlag='1';
+        if(pId=="album"){
+          jmData.SeqMediaId=$(this).attr("id");
         }
-        if(id=="2") {
-          jmData.FlowFlag='2';
+        if(pId=="channel"){
+          jmData.ChannelId=$(this).attr("id");
         }
-        if(id=="3") {
-          jmData.FlowFlag='3';
-        }
-      }
-      if(pId!=null&&pId=="album"){
-        jmData.SeqMediaId=$(this).attr("id");
-      }
-      if(pId!=null&&pId=="channel"){
-        jmData.ChannelId=$(this).attr("id");
       }
     });
     getContentList(jmData);
   });
   $(document).on("click",".cate_img",function(){
-    if($(".new_cate li").size()=="0"){
+    debugger;
+    if($(".new_cate li").size()<="0"){
       jmData.FlowFlag='0';
       jmData.SeqMediaId='0';
       jmData.ChannelId='0';
     }else{
       $(document).find(".new_cate li").each(function(){
+        debugger;
         var pId=$(this).attr("pid");
         var id=$(this).attr("id");
         if(pId!="status"){
           jmData.FlowFlag='0';
+        }else{
+          jmData.FlowFlag=id;
         }
         if(pId!="album"){
           jmData.SeqMediaId='0';
+        }else{
+          jmData.FlowFlag=id;
         }
         if(pId!="channel"){
           jmData.ChannelId='0';
+        }else{
+          jmData.FlowFlag=id;
         }
       });
     }

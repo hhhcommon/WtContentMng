@@ -3,6 +3,24 @@ $(function(){
   
   var page=2;
   var nextPage="false";
+  //控制播放按钮的播与停
+  var audio=$("<audio></audio>")[0];
+  $(".ulBox").on("click",".playBtn",function(){
+    if($(this).hasClass("play")){
+      $(this).removeClass("play");
+      audio.pause();
+    }else{
+      if($(".playBtn").hasClass("play")){
+        audio.pause();
+        $(".playBtn").removeClass("play");
+      }
+      audio.src=$(this).attr("data_src");
+      //播放当前资源，并改变当前按钮状态
+      $(this).addClass("play");
+      audio.play();
+    }
+  });
+  
   //详情和节目的切换
   $(".tab_nav span").on("click",function(){
     $(this).addClass("selected").siblings().removeClass();
@@ -12,14 +30,14 @@ $(function(){
   //加载更多
   function loadMore(resultData){
     for(var i=0;i<length;i++){
-      var listBox= '<li class="listBox">'+
-                    '<h4>封神演义 第123回</h4>'+
-                    '<div class="time">2014-10-23</div>'+
+      var listBox= '<li class="listBox playBtn" data_src="#####audioplay#####">'+
+                    '<h4>#####audioname#####</h4>'+
+                    '<div class="time">#####audiotime#####</div>'+
                     '<p class="lcp">'+
                       '<img src="imgs/sl.png" alt=""/>'+
-                      '<span>1234</span>'+
+                      '<span>#####audioplaycount#####</span>'+
                       '<img src="imgs/sc.png" alt="" class="sc"/>'+
-                      '<span class="contentT">3333</span>'+
+                      '<span class="contentT">#####audioplaytime#####</span>'+
                     '</p>'+
                   '</li>';
       $(".ulBox").append(listBox);           
