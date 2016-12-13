@@ -850,7 +850,7 @@ public class MediaService {
 		if (poref!=null) {
 			PersonPo po = personService.getPersonPoById(poref.getPersonId());
 		    Map<String, Object> pom = new HashMap<>();
-		    pom.put("resTableName", "wt_SeqMediaAsset");
+		    pom.put("resTableName", resTableName);
 		    pom.put("resId", resId);
 		    pom.put("pName", po.getpName());
 		    pom.put("cName", poref.getRefName());
