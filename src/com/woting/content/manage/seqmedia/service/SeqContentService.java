@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
-import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
@@ -227,8 +226,9 @@ public class SeqContentService {
 				complexRefService.insertComplexRef(cps);
 			}
 		}
-		if (!channelId.equals("null")) {
-			map = modifySeqStatus(userid, sma.getId(), channelId, 0);
+		String[] chaids = channelId.split(",");
+		for (String chaid : chaids) {
+			map = modifySeqStatus(userid, sma.getId(), chaid, 0);
 		}
 		if (mediaService.getSmaInfoById(sma.getId()) != null) {
 			if (channelId.equals("null") || map.get("ReturnType").equals("1001"))
@@ -346,15 +346,12 @@ public class SeqContentService {
 						complexRefService.insertComplexRef(cps);
 					}
 				}
-				if (channelId != null & !channelId.toLowerCase().equals("null")) {
-					ChannelAsset cha = mediaService.getCHAInfoByAssetId(sma.getId());
-					if (cha != null) {
-						int flowflag = cha.getFlowFlag();
-						if (!cha.getCh().getId().equals(channelId)) {
-							mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
-							modifySeqStatus(userid, sma.getId(), channelId, flowflag);
-						}
-					}
+				String[] chaids = channelId.split(",");
+				List<ChannelAssetPo> chas = mediaService.getCHAInfoByAssetId(sma.getId());
+				int flowflag = chas.get(0).getFlowFlag();
+				mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
+				for (String chaid : chaids) {
+					modifySeqStatus(userid, sma.getId(), chaid, flowflag);
 				}
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
@@ -439,9 +436,9 @@ public class SeqContentService {
 		return map;
 	}
 
-	public Map<String, Object> removeSeqMediaAsset(String contentid) {
+	public Map<String, Object> removeSeqMediaAsset(String userId, String contentid) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		mediaService.removeSeqMedia(contentid);
+		mediaService.removeSeqMedia(userId, contentid);
 		if (mediaService.getSmaInfoById(contentid) != null) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "专辑删除失败");
@@ -461,7 +458,7 @@ public class SeqContentService {
 		map.put("id", userId);
 		if (personService.getPersonPoById(userId) != null) {
 			PersonRefPo poref = personService.getPersonRefBy("wt_SeqMediaAsset", contentId);
-			if (poref.getId().equals(userId)) {
+			if (poref.getPersonId().equals(userId)) {
 				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_SeqMediaAsset");
 				if (chas != null && chas.size() > 0) {
 					SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);

@@ -689,7 +689,7 @@ public class MediaContentController {
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			map = mediaContentService.removeMediaAsset(contentid);
+			map = mediaContentService.removeMediaAsset(userId, contentid);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
