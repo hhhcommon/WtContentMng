@@ -147,12 +147,13 @@ header .downLoad{
 .tc1_head ul .tc1_li1{
   width: 60px;
   height: 60px;
-  border-radius: 30px;
-  border: 1px solid red;
+  padding-top:10px;
 }
 .tc1_head ul li .pic1{
   width: 60px;
   height: 60px;
+  border-radius:50%;
+  background-size:100% 100%;
 }
 .tc1_head ul .tc1_li2{
   width: calc(100% - 130px);
