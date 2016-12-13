@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.RequestUtils;
+import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.publish.service.QueryService;
 import com.woting.content.publish.utils.CacheUtils;
 import com.woting.passport.login.utils.RequestDataUtils;
@@ -170,28 +171,23 @@ public class QueryController {
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		int flowFlag = 0;
-		int page = 0;
-		int pagesize = 0;
-		StringBuilder sb = new StringBuilder();
-		List<Map<String, Object>> listsequs = queryService.getPublishedSeqList();
-		if(listsequs!=null && listsequs.size()>0) {
-			for (Map<String, Object> map2 : listsequs) {
-			    String sequid = (String) map2.get("ContentId");
-			    sequid = "38ce83fab9a347409179b79b807cac08";
-				if (sb.indexOf(sequid) < 0) {
-					queryService.getShareHtml(sequid, "SEQU");
-					Map<String, Object> m2 = queryService.getContentInfo(page, pagesize, sequid, "wt_SeqMediaAsset");
-					if (m2.get("audio") != null) {
-						map.put("ContentDetail", m2.get("sequ"));
-						map.put("SubList", m2.get("audio"));
-					}
-					sb.append(sequid);
-					
-//					CacheUtils.publishZJ(map);
-				}
-			}
-		} 
+		if (m.containsKey("ContentId")) {
+			String id = m.get("ContentId")+"";
+			queryService.getShareHtml(id, "SEQU");
+			map.put("Path", "http://192.168.0.104:908/CM/mweb/jm/0d351c960f1d4ee4a4270a42aa106931/content.html");
+			return map;
+		} else {
+		    StringBuilder sb = new StringBuilder();
+	    	List<Map<String, Object>> listsequs = queryService.getPublishedSeqList();
+		    if(listsequs!=null && listsequs.size()>0) {
+			    for (Map<String, Object> map2 : listsequs) {
+			        String sequid = map2.get("ContentId")+"";
+				    if (sb.indexOf(sequid) < 0) {
+					    queryService.getShareHtml(sequid, "SEQU");
+				    }
+			    }
+		    } 
+		}
 		return null;
 	}
 

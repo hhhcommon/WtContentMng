@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -37,6 +38,7 @@ import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.service.BroadcastProService;
 import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.content.manage.media.service.MediaContentService;
 import com.woting.content.publish.utils.CacheUtils;
 
 @Service
@@ -51,6 +53,8 @@ public class QueryService {
 	private ChannelService chService;
 	@Resource
 	private BroadcastProService bcService;
+	@Resource
+	private MediaContentService mediaContentService;
 
 	/**
 	 * 查询列表
@@ -486,7 +490,7 @@ public class QueryService {
 		return map;
 	}
 
-	public List<Map<String, Object>> getShareHtml(String resId, String mediaType) {
+	public void getShareHtml(String resId, String mediaType) {
 		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
 			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
 				if (mediaType.equals("SEQU")) {
@@ -498,27 +502,38 @@ public class QueryService {
 						if (smam != null && smam.size() > 0) {
 							Map<String, Object> map = new HashMap<>();
 							map.put("ContentDetail", smam.get(0));
-							map.put("SubList",  getContentInfo(0, 0, resId, "wt_SeqMediaAsset").get("audio"));
-							System.out.println(JsonUtils.objToJson(map));
-							CacheUtils.publishZJ(map);
+							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(resId);
+							if (mas != null && mas.size() > 0) {
+								Iterator<MediaAssetPo> it = mas.iterator();
+								while (it.hasNext()) {
+									MediaAssetPo mediaAssetPo = (MediaAssetPo) it.next();
+									String resIds = "'" + mediaAssetPo.getId() + "'";
+									List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId(resIds, "wt_MediaAsset");
+									if (chas != null && chas.size() > 0) {
+										ChannelAssetPo chapo = chas.get(0);
+										if (chapo.getFlowFlag() != 2)
+											it.remove();
+									}
+								}
+								map.put("SubList", mediaService.makeMaListToReturn(mas));
+								System.out.println(JsonUtils.objToJson(map));
+								CacheUtils.publishZJ(map);
+							}
 						}
-						return smam;
-					}
-				} else if (mediaType.equals("AUDIO")) {
-					MediaAsset ma = mediaService.getMaInfoById(resId);
-					if (ma != null) {
-						List<MediaAssetPo> listpo = new ArrayList<>();
-						listpo.add(ma.convert2Po());
-						List<Map<String, Object>> mam = mediaService.makeMaListToReturn(listpo);
-						if (mam != null && mam.size() > 0) {
-							// CacheUtils.publishZJ(map);
+					} else if (mediaType.equals("AUDIO")) {
+						MediaAsset ma = mediaService.getMaInfoById(resId);
+						if (ma != null) {
+							List<MediaAssetPo> listpo = new ArrayList<>();
+							listpo.add(ma.convert2Po());
+							List<Map<String, Object>> mam = mediaService.makeMaListToReturn(listpo);
+							if (mam != null && mam.size() > 0) {
+								// CacheUtils.publishZJ(map);
+							}
 						}
-						return mam;
 					}
 				}
 			}
 		}
-		return null;
 	}
 
 	/**

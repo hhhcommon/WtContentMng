@@ -536,7 +536,7 @@ public class MediaContentService {
 		map.put("id", userId);
 		if (personService.getPersonPoById(userId) != null) {
 			PersonRefPo poref = personService.getPersonRefBy("wt_MediaAsset", contentId);
-			if (poref.getId().equals(userId)) {
+			if (poref.getPersonId().equals(userId)) {
 				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_MediaAsset");
 				if (chas != null && chas.size() > 0) {
 					MediaAsset ma = mediaService.getMaInfoById(contentId);
