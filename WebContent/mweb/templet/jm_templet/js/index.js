@@ -9,6 +9,14 @@ $(function(){
   $("#jmAudio")[0].play();
   $(".playControl").addClass("play");
   
+  //资源准备就绪后，获取声音长度，否则NaN
+  $(audio).on("canplay",function(){
+    var ss=$("#jmAudio").attr("jmopenapp").split("=")[1];
+    var st=eval('(' + ss + ')').ContentTimes;
+    console.log(st);
+    $(".fullTime").text(formatTime(Math.round(st/1000)));
+  });
+  
   //播放控制面板的播放控制
   $(".playControl").on("click",function(){
     if($("#jmAudio")[0]){
@@ -176,7 +184,7 @@ $(function(){
   //请求推荐资源列表
   var searchStr=$(".palyCtrlBox").children("h4").text();
   var _data={
-        "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
+        "RemoteUrl":"http://www.wotingfm.com:808/wt/content/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
         "PCDType":"3",
         "SearchStr":searchStr,
@@ -261,19 +269,12 @@ $(function(){
         }else{
           time="00'"+s+"\"";
         }
-      }else if(time>60 && time<3600){
+      }else if(time>60){
         var m=parseInt(time / 60);
         var s=parseInt(time %60);
         m = m >= 10 ? m : "0" + m;
         s = s >= 10 ? s : "0" + s;
         time=m+"\'"+s+"\"";
-      }else if(time>=3600 && time<86400){
-        var h=parseInt(time / 3600);
-        var m=parseInt(time % 3600 /60);
-        var s=parseInt(time %3600 %60 %60);
-        m = m >= 10 ? m : "0" + m;
-        s = s >= 10 ? s : "0" + s;
-        time=h+"\'"+m+"\'"+s+"\"";
       }
     }
     return time;
