@@ -88,11 +88,11 @@ header .downLoad{
   height:42px;
   top:42px;
   left:40px;
-  background:url(imgs/play_playing.png) no-repeat;
+  background:url("../imgs/play_playing.png") no-repeat;
   background-size:100% 100%;
 }
 .play{
-  background: url(imgs/play_pause.png) no-repeat;
+  background: url("../imgs/play_pause.png") no-repeat;
   background-size: 100% 100%;
 }
 .previous{
@@ -100,14 +100,14 @@ header .downLoad{
   height:32px;
   top:47px;
   left:-60px;
-  background:url(imgs/audio_play.png) no-repeat 0 -162px;
+  background:url("../imgs/audio_play.png") no-repeat 0 -162px;
 }
 .next{
   width:32px;
   height:32px;
   top:47px;
   left:160px;
-  background:url(imgs/wt_play_right.png);
+  background:url("../imgs/wt_play_right.png");
   background-size:100% 100%;
 }
 .conPlay{
@@ -229,7 +229,7 @@ header .downLoad{
   position:relative;
   float:left;
   z-index:5;
-  background: url("imgs/jm.png");
+  background: url("../imgs/jm.png");
   background-size:100% 100%;
 }
 .audioImg{
@@ -281,12 +281,11 @@ header .downLoad{
   margin-left:110px;
 }
 .lcp .playGif{
-  background: url("imgs/play_ing.gif");
+  background: url("../imgs/play_ing.gif");
   background-size:100% 100%;
-  /*display: none;*/
 }
 .lcp .playPng{
-  background: url("imgs/play_flag1.png");
+  background: url("../imgs/play_flag1.png");
   background-size:100% 100%;
 }
 .lcp .sc{
