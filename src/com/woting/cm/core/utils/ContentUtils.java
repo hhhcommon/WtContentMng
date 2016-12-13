@@ -177,6 +177,7 @@ public abstract class ContentUtils {
                 onePerson.put("RefName", _p.get("cName"));//关系名称
                 onePerson.put("PerName", _p.get("pName"));//人员名称
                 onePerson.put("PerId", _p.get("personId"));//人员Id
+                onePerson.put("PerImg", _p.get("perImg"));
                 ret.add(onePerson);
             }
         }

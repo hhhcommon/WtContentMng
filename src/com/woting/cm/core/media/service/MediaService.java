@@ -855,6 +855,7 @@ public class MediaService {
 		    pom.put("pName", po.getpName());
 		    pom.put("cName", poref.getRefName());
 		    pom.put("personId", po.getId());
+		    pom.put("perImg", po.getPortrait());
 		    List<Map<String, Object>> personlist = new ArrayList<>();
 		    personlist.add(pom);
 		    return personlist;
