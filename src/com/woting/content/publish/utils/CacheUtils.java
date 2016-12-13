@@ -105,11 +105,25 @@ public abstract class CacheUtils {
 			htmlstr = htmlstr.replace("#####zhuboname#####", "")
 					.replace("#####zhuboimgs#####", "");
 		}
+		if (mapsequ.containsKey("ContentKeyWords")) {
+			List<Map<String, Object>> kws = (List<Map<String, Object>>) mapsequ.get("ContentKeyWords");
+			if (kws!=null && kws.size()>0) {
+				String kwstr = "";
+				for (Map<String, Object> map : kws) {
+					kwstr += "/"+map.get("TagName");
+				}
+				kwstr = kwstr.substring(1);
+				htmlstr = htmlstr.replace("#####sequtag#####", kwstr);
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####sequtag#####", "");
+		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequdesc#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequnrdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString())
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
-		        .replace("#####mediatype#####", "SEQU"); // 替换指定的信息
+		        .replace("#####mediatype#####", "SEQU")
+		        .replace("#####sequsum#####", listaudio.size()+""); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
 					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
