@@ -846,7 +846,7 @@ public class MediaService {
 	}
 	
 	private List<Map<String, Object>> makePersonList(String resTableName, String resId) {
-		PersonRefPo poref = personService.getPersonRefBy("wt_SeqMediaAsset", resId);
+		PersonRefPo poref = personService.getPersonRefBy(resTableName, resId);
 		if (poref!=null) {
 			PersonPo po = personService.getPersonPoById(poref.getPersonId());
 		    Map<String, Object> pom = new HashMap<>();

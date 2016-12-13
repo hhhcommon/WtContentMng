@@ -58,6 +58,31 @@ public abstract class CacheUtils {
 				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);// 生成content.html
 		}
 	}
+	
+	public static void publishJM(Map<String, Object> map) {
+		Map<String, Object> mapsequ = (Map<String, Object>) map.get("ContentDetail");
+		List<Map<String, Object>> listaudio = (List<Map<String, Object>>) map.get("SubList");
+		int audiosize = listaudio.size();
+		String jsonstr = JsonUtils.objToJson(mapsequ);
+		//生成 ZJ/info.json
+		writeFile(jsonstr, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/info.json");
+		for (int i = 1; i < audiosize / 15 + 2; i++) {
+			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+			for (int num = 0; num < ((i + 1) < (audiosize / 15 + 2) ? 15 : audiosize % 15); num++) {
+				list.add(listaudio.get((i - 1) * 15 + num));
+				Map<String, Object> map2 = listaudio.get((i - 1) * 15 + num);
+				String audiojson = JsonUtils.objToJson(map2);
+				//生成 JM/info.json和content.html文件
+				writeFile(audiojson, rootpath + jmpath + map2.get("ContentId").toString() + "/info.json");
+				createJMHtml(rootpath + jmpath + map2.get("ContentId").toString() + "/content.html", map2);
+			}
+			String audios = JsonUtils.objToJson(list);
+			//生成 ZJ/P*.json文件和content.html文件
+			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
+			if (i == 1)
+				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);// 生成content.html
+		}
+	}
 
 	public static File createFile(String path) {
 		File file = new File(path);
@@ -90,7 +115,7 @@ public abstract class CacheUtils {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
-		String ulString = "<li class='audioLi' data-src='#####audioplay#####'><div class='audioIntro'><a href='#####audiourl#####' target='_self'><h3>#####audioname#####</h3></a><p>#####audiopubtime#####</p></div><a href='javascript:void(0)' class='playBtn'></a></li>";
+		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p><li>";
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
@@ -105,15 +130,34 @@ public abstract class CacheUtils {
 			htmlstr = htmlstr.replace("#####zhuboname#####", "")
 					.replace("#####zhuboimgs#####", "");
 		}
+		if (mapsequ.containsKey("ContentKeyWords")) {
+			List<Map<String, Object>> kws = (List<Map<String, Object>>) mapsequ.get("ContentKeyWords");
+			if (kws!=null && kws.size()>0) {
+				String kwstr = "";
+				for (Map<String, Object> map : kws) {
+					kwstr += "/"+map.get("TagName");
+				}
+				kwstr = kwstr.substring(1);
+				htmlstr = htmlstr.replace("#####sequtag#####", kwstr);
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####sequtag#####", "");
+		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequdesc#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequnrdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString())
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
-		        .replace("#####mediatype#####", "SEQU"); // 替换指定的信息
+		        .replace("#####mediatype#####", "SEQU")
+		        .replace("#####sequsum#####", listaudio.size()+""); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
+			String pubtime = (map.get("ContentPubTime")+"").equals("null")?(map.get("CTime")+""):(map.get("ContentPubTime")+"");
+			pubtime = pubtime.substring(0, pubtime.length()-3);
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
-					.replace("#####audiopubtime#####", "0000-00-00 00:00");
+					.replace("#####audioplay#####", map.get("ContentURI").toString())
+					.replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
+					.replace("#####audiotime#####", pubtime)
+					.replace("#####audioplaycount#####", map.get("PlayCount")+"")
+					.replace("#####audioplaytime#####", map.get("ContentTimes")+"");
 		}
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
 		writeFile(htmlstr, path + "/content.html");
@@ -141,7 +185,7 @@ public abstract class CacheUtils {
 		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName")+"")
 				.replace("#####mediatype#####", "AUDIO")
 		        .replace("#####audioimgs#####", (map.get("ContentImg")+"").equals("null")?"":map.get("ContentImg")+"")
-		        .replace("#####audioplay#####", map.get("ContentURI")+"")
+		        .replace("#####audioplay#####", map.get("ContentPlay")+"")
 				.replace("#####audioid#####", map.get("ContentId")+"")
 				.replace("#####audiotime#####", map.get("ContentTimes")+"")
 				.replace("#####audiodescn#####", (map.get("ContentDesc")+"").equals("null")?"":map.get("ContentDesc")+"")

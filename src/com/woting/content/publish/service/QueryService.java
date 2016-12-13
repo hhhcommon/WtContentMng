@@ -239,35 +239,45 @@ public class QueryService {
 	 */
 	@SuppressWarnings("unchecked")
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
-		CacheEle<_CacheDictionary> cache = ((CacheEle<_CacheDictionary>) SystemCache
-				.getCache(WtContentMngConstants.CACHE_DICT));
+		CacheEle<_CacheDictionary> cache = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
 		_CacheDictionary cd = cache.getContent();
-
-		Map<String, Object> audioData = new HashMap<String, Object>();
-		MediaAsset ma = mediaService.getMaInfoById(contentid);
-		audioData.put("ContentId", ma.getId());
-		audioData.put("ContentName", ma.getMaTitle());
-		audioData.put("MediaType", acttype);
-		audioData.put("ContentImg", ma.getMaImg());
-		audioData.put("ContentCTime", ma.getCTime());
-		audioData.put("ContentPubTime", ma.getMaPublishTime());
-		audioData.put("ContentDesc", ma.getDescn());
-		audioData.put("ContentTimes", ma.getCTime());
-		audioData.put("ContentSource", ma.getMaPublisher());
-		audioData.put("ContentURI", ma.getMaURL());
-		audioData.put("ContentPersons", null);
-
-		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId") + "");
-		String catalogs = "";
-		for (DictRefResPo dictRefResPo : listdicref) {
-			DictDetail dd = cd.getDictDetail(dictRefResPo.getDictMid(), dictRefResPo.getDictDid());
-			if (dd != null)
-				catalogs += "," + dd.getNodeName();
+		
+		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentid+"'", acttype);
+		if (chas != null && chas.size() > 0) {
+			MediaAsset ma = mediaService.getMaInfoById(contentid);
+			if (ma != null) {
+				List<MediaAssetPo> mas = new ArrayList<>();
+				mas.add(ma.convert2Po());
+				List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
+				if (rem != null && rem.size() > 0) {
+					return rem.get(0);
+				}
+			}
 		}
-		audioData.put("ContentCatalogs",
-				(StringUtils.isNullOrEmptyOrSpace(catalogs) || catalogs.toLowerCase().equals("null")) ? null
-						: catalogs.substring(1));
-		return audioData;
+//
+//		Map<String, Object> audioData = new HashMap<String, Object>();
+//		MediaAsset ma = mediaService.getMaInfoById(contentid);
+//		audioData.put("ContentId", ma.getId());
+//		audioData.put("ContentName", ma.getMaTitle());
+//		audioData.put("MediaType", acttype);
+//		audioData.put("ContentImg", ma.getMaImg());
+//		audioData.put("ContentCTime", ma.getCTime());
+//		audioData.put("ContentPubTime", ma.getMaPublishTime());
+//		audioData.put("ContentDesc", ma.getDescn());
+//		audioData.put("ContentTimes", ma.getCTime());
+//		audioData.put("ContentSource", ma.getMaPublisher());
+//		audioData.put("ContentURI", ma.getMaURL());
+//		audioData.put("ContentPersons", null);
+//
+//		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId") + "");
+//		String catalogs = "";
+//		for (DictRefResPo dictRefResPo : listdicref) {
+//			DictDetail dd = cd.getDictDetail(dictRefResPo.getDictMid(), dictRefResPo.getDictDid());
+//			if (dd != null)
+//				catalogs += "," + dd.getNodeName();
+//		}
+//		audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs) || catalogs.toLowerCase().equals("null")) ? null : catalogs.substring(1));
+		return null;
 	}
 
 	/**
@@ -516,7 +526,6 @@ public class QueryService {
 									}
 								}
 								map.put("SubList", mediaService.makeMaListToReturn(mas));
-								System.out.println(JsonUtils.objToJson(map));
 								CacheUtils.publishZJ(map);
 							}
 						}
@@ -527,7 +536,7 @@ public class QueryService {
 							listpo.add(ma.convert2Po());
 							List<Map<String, Object>> mam = mediaService.makeMaListToReturn(listpo);
 							if (mam != null && mam.size() > 0) {
-								// CacheUtils.publishZJ(map);
+								
 							}
 						}
 					}
