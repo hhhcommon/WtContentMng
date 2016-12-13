@@ -146,8 +146,8 @@ public class MediaService {
 		if (!seqmediaid.equals("0")) {
 			m1.put("isValidate", "1");
 			m1.put("publisherId", userid);
-			String wheresql = " and assetId in (select resId form wt_Person_Ref where personId = '" + userid
-					+ "' and resTableName = 'wt_SeqMediaAsset')";
+			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"')";
 			if (m1.containsKey("channelIds")) {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
@@ -202,6 +202,16 @@ public class MediaService {
 			}
 		}
 		m1.put("assetType", "wt_MediaAsset");
+		m1.put("isValidate", "1");
+		m1.put("publisherId", userid);
+		String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+				+ "' and resTableName = 'wt_MediaAsset')";
+		if (m1.containsKey("channelIds")) {
+			wheresql += " and channelId in ("+m1.get("channelIds")+")";
+		}
+		m1.put("wheresql", wheresql);
+		m1.put("sortByClause", " pubTime,cTime");
+		m1.remove("channelIds");
 		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
 		if (chas != null && chas.size() > 0) {
 			String assetIds = "";
