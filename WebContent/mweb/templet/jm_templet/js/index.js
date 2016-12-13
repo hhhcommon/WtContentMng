@@ -184,7 +184,7 @@ $(function(){
   //请求推荐资源列表
   var searchStr=$(".palyCtrlBox").children("h4").text();
   var _data={
-        "RemoteUrl":"http://www.wotingfm.com:808/wt/content/searchByText.do",
+        "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
         "PCDType":"3",
         "SearchStr":searchStr,
@@ -300,14 +300,14 @@ $(function(){
                         '<div class="listCon">'+
                           '<span class="span">'+resultData.ResultList.List[i].ContentName+'</span>'+
                           '<p class="lcp lcpp">'+
-                            '<img src="imgs/zj.png" alt="" />'+
+                            '<img src="../../templet/jm_templet/imgs/zj.png" alt="" />'+
                             '<span>'+resultData.ResultList.List[i].ContentPub+'</span>'+
                            ' <span alt="" class="state"/><span>'+
                           '</p>'+
                           '<p class="lcp">'+
-                            '<img src="imgs/sl.png" alt="" />'+
+                            '<img src="../../templet/jm_templet/imgs/sl.png" alt="" />'+
                             '<span>'+resultData.ResultList.List[i].PlayCount+'</span>'+
-                           '<img src="imgs/sc.png" alt="" class="sc"/>'+
+                           '<img src="../../templet/jm_templet/imgs/sc.png" alt="" class="sc"/>'+
                            '<span class="contentT" ></span>'+
                           '</p>'+
                         '</div>'+
