@@ -85,7 +85,8 @@ public abstract class CacheUtils {
 	 * @param listaudio 单体组信息
 	 * @return
 	 */
-	private static boolean createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio) {
+	@SuppressWarnings("unchecked")
+	private static void createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio) {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
@@ -93,6 +94,15 @@ public abstract class CacheUtils {
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
+		if (mapsequ.containsKey("ContentPersons")) {
+			List<Map<String, Object>> poms = (List<Map<String, Object>>) mapsequ.get("ContentPersons");
+			if (poms!=null && poms.size()>0) {
+				Map<String, Object> pom = poms.get(0);
+				htmlstr = htmlstr.replace("#####audiozhubo#####", pom.get("PerName")+"");
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####audiozhubo#####", "");
+		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
 				.replace("#####sequdesc#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString())
@@ -102,10 +112,8 @@ public abstract class CacheUtils {
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
 					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html");
 		}
-
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
 		writeFile(htmlstr, path + "/content.html");
-		return false;
 	}
 
 	/**
@@ -115,18 +123,28 @@ public abstract class CacheUtils {
 	 * @param map
 	 * @return
 	 */
-	private static boolean createJMHtml(String path, Map<String, Object> map) {
+	private static void createJMHtml(String path, Map<String, Object> map) {
 		//读取节目html模版
 		String htmlstr = readFile(rootpath + templetpath + "/jm_templet/index.html");
+		if (map.containsKey("ContentPersons")) {
+			List<Map<String, Object>> poms = (List<Map<String, Object>>) map.get("ContentPersons");
+			if (poms!=null && poms.size()>0) {
+				Map<String, Object> pom = poms.get(0);
+				htmlstr = htmlstr.replace("#####audiozhubo#####", pom.get("PerName")+"");
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####audiozhubo#####", "");
+		}
 		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName")+"")
 				.replace("#####mediatype#####", "AUDIO")
-		        .replace("#####audioimgs#####", map.get("ContentImg")+"")
+		        .replace("#####audioimgs#####", (map.get("ContentImg")+"").equals("null")?null:map.get("ContentImg")+"")
 		        .replace("#####audioplay#####", map.get("ContentURI")+"")
 				.replace("#####audioid#####", map.get("ContentId")+"")
 				.replace("#####audiotime#####", map.get("ContentTimes")+"")
-				.replace("#####audiodesc#####", map.get("ContentDesc")+"");
+				.replace("#####audiodescn#####", (map.get("ContentDesc")+"").equals("null")?null:map.get("ContentDesc")+"")
+				.replace("#####audioseq#####", map.get("ContentSeqName")+"")
+				.replace("#####audiosource#####", map.get("ContentPub")+"");
 		writeFile(htmlstr, path);
-		return false;
 	}
 
 	/**

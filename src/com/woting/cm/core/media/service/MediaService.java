@@ -36,6 +36,8 @@ import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
+import com.woting.cm.core.person.persis.po.PersonPo;
+import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.manage.channel.service.ChannelContentService;
@@ -439,8 +441,8 @@ public class MediaService {
 			for (SeqMediaAssetPo seqMediaAssetPo : listpo) {
 				SeqMediaAsset sma = new SeqMediaAsset();
 				sma.buildFromPo(seqMediaAssetPo);
-				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), null, catalist, pubChannelList,
-						null);
+				List<Map<String, Object>> personlist = makePersonList("wt_SeqMediaAsset", sma.getId());
+				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), personlist, catalist, pubChannelList, null);
 				// 标签处理
 				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + sma.getId() + "'",
 						"wt_SeqMediaAsset");
@@ -481,7 +483,8 @@ public class MediaService {
 			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
 			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
 			for (MediaAssetPo ma : listpo) {
-				Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), null, catalist, pubChannelList, null);
+				List<Map<String, Object>> personlist = makePersonList("wt_MediaAsset", ma.getId());
+				Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), personlist, catalist, pubChannelList, null);
 				SeqMaRefPo smaref = getSeqMaRefByMId(ma.getId());
 				SeqMediaAsset sma = getSmaInfoById(smaref.getSId());
 				mam.put("ContentSeqId", sma.getId());
@@ -840,5 +843,22 @@ public class MediaService {
 		removeCha(id, "wt_SeqMediaAsset");
 		removeMa2SmaBySid(id);
 		removeSma(id);
+	}
+	
+	private List<Map<String, Object>> makePersonList(String resTableName, String resId) {
+		PersonRefPo poref = personService.getPersonRefBy("wt_SeqMediaAsset", resId);
+		if (poref!=null) {
+			PersonPo po = personService.getPersonPoById(poref.getPersonId());
+		    Map<String, Object> pom = new HashMap<>();
+		    pom.put("resTableName", "wt_SeqMediaAsset");
+		    pom.put("resId", resId);
+		    pom.put("pName", po.getpName());
+		    pom.put("cName", poref.getRefName());
+		    pom.put("personId", po.getId());
+		    List<Map<String, Object>> personlist = new ArrayList<>();
+		    personlist.add(pom);
+		    return personlist;
+		}
+		return null;
 	}
 }
