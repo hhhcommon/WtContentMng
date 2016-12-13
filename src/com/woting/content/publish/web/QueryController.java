@@ -160,31 +160,34 @@ public class QueryController {
 
 	/**
 	 * 发布所有已审核的节目 只用于测试用
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/getAll.do")
+	@RequestMapping(value = "/content/getShareHtml.do")
 	@ResponseBody
 	public Map<String, Object> getAll(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		if (m.containsKey("ContentId")) {
 			String id = m.get("ContentId")+"";
-			queryService.getShareHtml(id, "SEQU");
-			map.put("Path", "http://192.168.0.104:908/CM/mweb/jm/0d351c960f1d4ee4a4270a42aa106931/content.html");
+			boolean isok = queryService.getShareHtml(id, "SEQU");
+			if (isok) {
+				map.put("ReturnType", "1001");
+				map.put("Message", "静态页面生成成功");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "静态页面生成失败");
+			}
 			return map;
 		} else {
-		    StringBuilder sb = new StringBuilder();
 	    	List<Map<String, Object>> listsequs = queryService.getPublishedSeqList();
 		    if(listsequs!=null && listsequs.size()>0) {
 			    for (Map<String, Object> map2 : listsequs) {
 			        String sequid = map2.get("ContentId")+"";
-				    if (sb.indexOf(sequid) < 0) {
-					    queryService.getShareHtml(sequid, "SEQU");
-				    }
+					queryService.getShareHtml(sequid, "SEQU");
 			    }
-		    } 
+		    }
 		}
 		return null;
 	}

@@ -17,18 +17,13 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.WtContentMngConstants;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.service.ChannelService;
-import com.woting.cm.core.dict.mem._CacheDictionary;
-import com.woting.cm.core.dict.model.DictDetail;
-import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
@@ -237,11 +232,7 @@ public class QueryService {
 	 * @param acttype
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
-		CacheEle<_CacheDictionary> cache = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
-		_CacheDictionary cd = cache.getContent();
-		
 		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentid+"'", acttype);
 		if (chas != null && chas.size() > 0) {
 			MediaAsset ma = mediaService.getMaInfoById(contentid);
@@ -254,29 +245,6 @@ public class QueryService {
 				}
 			}
 		}
-//
-//		Map<String, Object> audioData = new HashMap<String, Object>();
-//		MediaAsset ma = mediaService.getMaInfoById(contentid);
-//		audioData.put("ContentId", ma.getId());
-//		audioData.put("ContentName", ma.getMaTitle());
-//		audioData.put("MediaType", acttype);
-//		audioData.put("ContentImg", ma.getMaImg());
-//		audioData.put("ContentCTime", ma.getCTime());
-//		audioData.put("ContentPubTime", ma.getMaPublishTime());
-//		audioData.put("ContentDesc", ma.getDescn());
-//		audioData.put("ContentTimes", ma.getCTime());
-//		audioData.put("ContentSource", ma.getMaPublisher());
-//		audioData.put("ContentURI", ma.getMaURL());
-//		audioData.put("ContentPersons", null);
-//
-//		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId") + "");
-//		String catalogs = "";
-//		for (DictRefResPo dictRefResPo : listdicref) {
-//			DictDetail dd = cd.getDictDetail(dictRefResPo.getDictMid(), dictRefResPo.getDictDid());
-//			if (dd != null)
-//				catalogs += "," + dd.getNodeName();
-//		}
-//		audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs) || catalogs.toLowerCase().equals("null")) ? null : catalogs.substring(1));
 		return null;
 	}
 
@@ -467,10 +435,8 @@ public class QueryService {
 	/**
 	 * 加载专辑id为zjId的专辑的下属的节目列表，注意是某一页page的列表
 	 * 
-	 * @param zjId
-	 *            专辑Id
-	 * @param page
-	 *            第几页
+	 * @param zjId 专辑Id
+	 * @param page 第几页
 	 * @return 返回该页的数据，以json串的方式，若该页无数据返回null
 	 */
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
@@ -479,7 +445,7 @@ public class QueryService {
 		String path = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "" + "mweb/zj/" + zjId + "/";
 		// 2-判断是否有page所对应的数据
 		File thisPage, nextPage;
-		thisPage = new File(path + "P" + page + ".json");// func()
+		thisPage = new File(path + "P" + page + ".json");
 		int nextpage = Integer.valueOf(page) + 1;
 		nextPage = new File(path + "P" + nextpage + ".json");
 		if (!thisPage.exists()) {
@@ -500,7 +466,7 @@ public class QueryService {
 		return map;
 	}
 
-	public void getShareHtml(String resId, String mediaType) {
+	public boolean getShareHtml(String resId, String mediaType) {
 		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
 			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
 				if (mediaType.equals("SEQU")) {
@@ -527,22 +493,14 @@ public class QueryService {
 								}
 								map.put("SubList", mediaService.makeMaListToReturn(mas));
 								CacheUtils.publishZJ(map);
-							}
-						}
-					} else if (mediaType.equals("AUDIO")) {
-						MediaAsset ma = mediaService.getMaInfoById(resId);
-						if (ma != null) {
-							List<MediaAssetPo> listpo = new ArrayList<>();
-							listpo.add(ma.convert2Po());
-							List<Map<String, Object>> mam = mediaService.makeMaListToReturn(listpo);
-							if (mam != null && mam.size() > 0) {
-								
+								return true;
 							}
 						}
 					}
 				}
 			}
 		}
+		return false;
 	}
 
 	/**

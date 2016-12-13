@@ -199,6 +199,7 @@ public abstract class ContentUtils {
         }
         return ret.size()>0?ret:null;
     }
+    
     private static List<Map<String, Object>> fetchChannels(List<Map<String, Object>> channelList, String resTableName, String resId) {//喜欢处理
         if (channelList==null||channelList.size()==0) return null;
         Map<String, Object> oneChn=null;

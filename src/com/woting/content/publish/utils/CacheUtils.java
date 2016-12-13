@@ -58,31 +58,6 @@ public abstract class CacheUtils {
 				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);// 生成content.html
 		}
 	}
-	
-	public static void publishJM(Map<String, Object> map) {
-		Map<String, Object> mapsequ = (Map<String, Object>) map.get("ContentDetail");
-		List<Map<String, Object>> listaudio = (List<Map<String, Object>>) map.get("SubList");
-		int audiosize = listaudio.size();
-		String jsonstr = JsonUtils.objToJson(mapsequ);
-		//生成 ZJ/info.json
-		writeFile(jsonstr, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/info.json");
-		for (int i = 1; i < audiosize / 15 + 2; i++) {
-			List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-			for (int num = 0; num < ((i + 1) < (audiosize / 15 + 2) ? 15 : audiosize % 15); num++) {
-				list.add(listaudio.get((i - 1) * 15 + num));
-				Map<String, Object> map2 = listaudio.get((i - 1) * 15 + num);
-				String audiojson = JsonUtils.objToJson(map2);
-				//生成 JM/info.json和content.html文件
-				writeFile(audiojson, rootpath + jmpath + map2.get("ContentId").toString() + "/info.json");
-				createJMHtml(rootpath + jmpath + map2.get("ContentId").toString() + "/content.html", map2);
-			}
-			String audios = JsonUtils.objToJson(list);
-			//生成 ZJ/P*.json文件和content.html文件
-			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
-			if (i == 1)
-				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);// 生成content.html
-		}
-	}
 
 	public static File createFile(String path) {
 		File file = new File(path);
