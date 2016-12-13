@@ -125,10 +125,14 @@ public abstract class CacheUtils {
 		        .replace("#####mediatype#####", "SEQU")
 		        .replace("#####sequsum#####", listaudio.size()+""); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
+			String pubtime = (map.get("ContentPubTime")+"").equals("null")?(map.get("CTime")+""):(map.get("ContentPubTime")+"");
+			pubtime = pubtime.substring(0, pubtime.length()-3);
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
 					.replace("#####audioplay#####", map.get("ContentURI").toString())
 					.replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
-					.replace("#####audiopubtime#####", "0000-00-00 00:00");
+					.replace("#####audiotime#####", pubtime)
+					.replace("#####audioplaycount#####", map.get("PlayCount")+"")
+					.replace("#####audioplaytime#####", map.get("ContentTimes")+"");
 		}
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
 		writeFile(htmlstr, path + "/content.html");
