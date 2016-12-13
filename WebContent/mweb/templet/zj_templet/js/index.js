@@ -44,7 +44,6 @@ $(function(){
     }
   }
   
-  
   //添加滚动条事件
   window.onscroll=function(){
     //当滚动到最底部以上60像素时,加载新内容  
@@ -65,6 +64,7 @@ $(function(){
         },
         success: function(resultData){
           if (resultData.ReturnType=="1001"){
+            var resultData=eval('(' + resultData + ')');
             loadMore(resultData);
             if(resultData.NextPage=="true"){
               page++;
@@ -80,6 +80,33 @@ $(function(){
     }
   }
   
-  
+  //获取节目列表的节目时长
+  $(document).find(".ulBox li").each(function(){
+    var timeLong=$(this).children(".lcp").children(".contentT").text();
+    $(this).children(".lcp").children(".contentT").text(formatTimeTJ(timeLong/1000));
+  })
+
+  //秒转时分秒格式--节目列表
+  function formatTimeTJ(longTime){
+    debugger;
+    var time=parseFloat(longTime);
+    if(time!=null && time !=""){
+      if(time<60){
+        var s=time;
+        if(s<10){
+          time="00'0"+s+"\"";
+        }else{
+          time="00'"+s+"\"";
+        }
+      }else if(time>60){
+        var m=parseInt(time / 60);
+        var s=parseInt(time %60);
+        m = m >= 10 ? m : "0" + m;
+        s = s >= 10 ? s : "0" + s;
+        time=m+"\'"+s+"\"";
+      }
+    }
+    return time;
+  }
   
 });

@@ -200,6 +200,7 @@ $(function(){
     data:JSON.stringify(_data),
     success: function(resultData) {
       if (resultData.ReturnType=="1001"){
+        var resultData=eval('(' + resultData + ')');
         loadRecomList(resultData);
       }
     },
