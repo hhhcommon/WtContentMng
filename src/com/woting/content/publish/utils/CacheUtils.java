@@ -90,7 +90,7 @@ public abstract class CacheUtils {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
-		String ulString = "<li class='audioLi' data-src='#####audioplay#####'><div class='audioIntro'><a href='#####audiourl#####' target='_self'><h3>#####audioname#####</h3></a><p>#####audiopubtime#####</p></div><a href='javascript:void(0)' class='playBtn'></a></li>";
+		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p><li>";
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
@@ -126,7 +126,8 @@ public abstract class CacheUtils {
 		        .replace("#####sequsum#####", listaudio.size()+""); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
+					.replace("#####audioplay#####", map.get("ContentURI").toString())
+					.replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
 					.replace("#####audiopubtime#####", "0000-00-00 00:00");
 		}
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
