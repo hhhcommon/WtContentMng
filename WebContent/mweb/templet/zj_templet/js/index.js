@@ -34,9 +34,9 @@ $(function(){
                     '<h4>#####audioname#####</h4>'+
                     '<div class="time">#####audiotime#####</div>'+
                     '<p class="lcp">'+
-                      '<img src="imgs/sl.png" alt=""/>'+
+                      '<img src="../../templet/zj_templet/imgs/sl.png" alt=""/>'+
                       '<span>#####audioplaycount#####</span>'+
-                      '<img src="imgs/sc.png" alt="" class="sc"/>'+
+                      '<img src="../../templet/zj_templet/imgs/sc.png" alt="" class="sc"/>'+
                       '<span class="contentT">#####audioplaytime#####</span>'+
                     '</p>'+
                   '</li>';

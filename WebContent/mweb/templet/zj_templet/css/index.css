@@ -191,17 +191,18 @@ header .downLoad{
   float: left;
 }
 .sort,.down{
-  float: left;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   margin-top:5px;
   background-size: 100% 100%;
 }
 .sort{
-  margin-left:17%;
+  float: right;
+  margin-right:3%;
 }
 .down{
-  margin-left:3%;
+  float: right;
+  margin-right:3%;
 }
 .zj_box{
   width: 100%;
@@ -217,7 +218,8 @@ header .downLoad{
   border-bottom: 1px solid #dedede;
 }
 .listBox .time{
-  padding-left: 69%;
+  padding-left: 53%;
+  padding-top: 8px;
 }
 .lcp{
   padding: 5px 0px 2px 9px;
