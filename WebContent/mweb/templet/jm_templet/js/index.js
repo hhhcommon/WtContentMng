@@ -174,7 +174,7 @@ $(function(){
   });
   
   //请求推荐资源列表
-  var searchStr=$(".palyCtrlBox").children("h4").text();
+  var searchStr='周杰伦';//$(".palyCtrlBox").children("h4").text();
   var _data={
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
@@ -192,7 +192,8 @@ $(function(){
     data:JSON.stringify(_data),
     success: function(resultData) {
       if (resultData.ReturnType=="1001"){
-        loadRecomList(resultData);
+      	var dd = resultData.Data;
+        loadRecomList(eval('(' + dd + ')'));
       }
     },
     error: function(jqXHR){
@@ -281,6 +282,8 @@ $(function(){
   
   //创建相关推荐资源列表
   function loadRecomList(resultData){
+  	console.log(resultData);
+  	debugger
     for(var i=0;i<resultData.ResultList.AllCount;i++){
       var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
       var detail={};
