@@ -53,7 +53,7 @@ $(function(){
         url:rootPath+"common/jsonp.do",
         dataType: "json",
         data:{
-          "RemoteUrl":"http://www.wotingfm.com:808/wt/getContentInfo.do",
+          "RemoteUrl":"http://www.wotingfm.com:808/wt/content/getContentInfo.do",
           "IMEI":"3279A27149B24719991812E6ADBA5583",
           "PCDType":"3",
           "ContentId":$(".PicBox").attr("contentId"),

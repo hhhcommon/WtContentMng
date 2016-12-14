@@ -147,7 +147,7 @@ header .downLoad{
 .tc1_head ul .tc1_li1{
   width: 60px;
   height: 60px;
-  padding-top:10px;
+  margin-top:10px;
 }
 .tc1_head ul li .pic1{
   width: 60px;
@@ -165,7 +165,7 @@ header .downLoad{
 }
 .tc1_head ul .tc1_li3{
   width: 30px; 
-  margin: 4px 0px 10px 20px;
+  margin: 14px 0px 10px 20px;
 }
 .tc1_head ul li .pic2{
   width: 20px;
