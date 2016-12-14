@@ -13,7 +13,6 @@ $(function(){
   $(audio).on("canplay",function(){
     var ss=$("#jmAudio").attr("jmopenapp").split("=")[1];
     var st=eval('(' + ss + ')').ContentTimes;
-    console.log(st);
     $(".fullTime").text(formatTime(Math.round(st/1000)));
   });
   
