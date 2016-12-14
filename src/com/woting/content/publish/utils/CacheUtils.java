@@ -90,7 +90,7 @@ public abstract class CacheUtils {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
-		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p><li>";
+		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'  share_url='#####shareurl#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='../../templet/zj_templet/imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='../../templet/zj_templet/imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p><li>";
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
@@ -128,8 +128,8 @@ public abstract class CacheUtils {
 			String pubtime = (map.get("ContentPubTime")+"").equals("null")?(map.get("CTime")+""):(map.get("ContentPubTime")+"");
 			pubtime = pubtime.substring(0, pubtime.length()-3);
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-//					.replace("#####audioplay#####", map.get("ContentURI").toString())
-					.replace("#####audioplay#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
+					.replace("#####audioplay#####", map.get("ContentPlay").toString())
+					.replace("#####shareurl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
 					.replace("#####audiotime#####", pubtime)
 					.replace("#####audioplaycount#####", map.get("PlayCount")+"")
 					.replace("#####audioplaytime#####", map.get("ContentTimes")+"");
