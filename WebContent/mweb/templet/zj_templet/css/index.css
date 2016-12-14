@@ -241,3 +241,9 @@ header .downLoad{
 .lcp .sc{
   margin-left: 15px;
 }
+.listBox h4{
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

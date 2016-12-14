@@ -29,7 +29,6 @@ $(function(){
   
   //加载更多
   function loadMore(resultData){
-    debugger;
     for(var i=0;i<length;i++){
       var listBox= '<li class="listBox playBtn" data_src="#####audioplay#####">'+
                     '<h4>#####audioname#####</h4>'+
@@ -50,19 +49,14 @@ $(function(){
     //当滚动到最底部以上60像素时,加载新内容  
     if($(document).height() - $(this).scrollTop() - $(this).height()<60){
       var _data={
-                  "RemoteUrl":"http://www.wotingfm.com:808/wt/content/getContentInfo.do",
-                  "IMEI":"3279A27149B24719991812E6ADBA5583",
-                  "PCDType":"3",
                   "ContentId":$(".PicBox").attr("contentId"),
                   "MediaType":"SEQU",
-                  "ResultType":"0",
-                  "PageType":"0",
                   "Page":page,
                   "PageSize":"20"
       };
       $.ajax({
         type: "POST",
-        url:rootPath+"common/jsonp.do",
+        url:rootPath+"content/getZJSubPage.do",
         dataType: "json",
         data:JSON.stringify(_data),
         success: function(resultData){
