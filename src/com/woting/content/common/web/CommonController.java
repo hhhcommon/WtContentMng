@@ -137,11 +137,12 @@ public class CommonController {
         }
         Document doc=conn.timeout(5000).ignoreContentType(true).get();
         String str=doc.select("body").html().toString();
-//        str=str.replaceAll("\"", "'");
+        str=str.replaceAll("\"", "'");
         str=str.replaceAll("\n", "");
         str=str.replaceAll("&quot;", "\"");
         str=str.replaceAll("\r", "");
-        map = (Map<String, Object>) JsonUtils.jsonToObj(str, Map.class);
+        map.put("ReturnType", "1001");
+    	map.put("Data", str);
         return map;
     }
 }
