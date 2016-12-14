@@ -48,23 +48,22 @@ $(function(){
   window.onscroll=function(){
     //当滚动到最底部以上60像素时,加载新内容  
     if($(document).height() - $(this).scrollTop() - $(this).height()<60){
+      var _data={
+                  "ContentId":$(".PicBox").attr("contentId"),
+                  "MediaType":"SEQU",
+                  "Page":page,
+                  "PageSize":"20"
+      };
       $.ajax({
         type: "POST",
-        url:rootPath+"common/jsonp.do",
+        url:rootPath+"content/getZJSubPage.do",
         dataType: "json",
-        data:{
-          "RemoteUrl":"http://www.wotingfm.com:808/wt/content/getContentInfo.do",
-          "IMEI":"3279A27149B24719991812E6ADBA5583",
-          "PCDType":"3",
-          "ContentId":$(".PicBox").attr("contentId"),
-          "ResultType":"0",
-          "PageType":"0",
-          "Page":page,
-          "PageSize":"20"
-        },
+        data:JSON.stringify(_data),
         success: function(resultData){
-          if (resultData.ReturnType=="1001"){
-            var resultData=eval('(' + resultData + ')');
+          console.log(resultData);
+          var resultData=eval('(' + resultData.Data + ')');
+          console.log(resultData);
+          if(resultData.ReturnType=="1001"){
             loadMore(resultData);
             if(resultData.NextPage=="true"){
               page++;
@@ -87,8 +86,7 @@ $(function(){
   })
 
   //秒转时分秒格式--节目列表
-  function formatTimeTJ(longTime){
-    debugger;
+  function formatTimeTJ(longTime){ 
     var time=parseFloat(longTime);
     if(time!=null && time !=""){
       if(time<60){
