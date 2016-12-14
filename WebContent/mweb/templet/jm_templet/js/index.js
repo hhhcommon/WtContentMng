@@ -9,6 +9,13 @@ $(function(){
   $("#jmAudio")[0].play();
   $(".playControl").addClass("play");
   
+  //资源准备就绪后，获取声音长度，否则NaN
+  $(audio).on("canplay",function(){
+    var ss=$("#jmAudio").attr("jmopenapp").split("=")[1];
+    var st=eval('(' + ss + ')').ContentTimes;
+    $(".fullTime").text(formatTime(Math.round(st/1000)));
+  });
+  
   //播放控制面板的播放控制
   $(".playControl").on("click",function(){
     if($("#jmAudio")[0]){
@@ -174,7 +181,7 @@ $(function(){
   });
   
   //请求推荐资源列表
-  var searchStr='周杰伦';//$(".palyCtrlBox").children("h4").text();
+  var searchStr=$(".palyCtrlBox").children("h4").text();
   var _data={
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
@@ -192,8 +199,8 @@ $(function(){
     data:JSON.stringify(_data),
     success: function(resultData) {
       if (resultData.ReturnType=="1001"){
-      	var dd = resultData.Data;
-        loadRecomList(eval('(' + dd + ')'));
+        var resultData=eval('(' + resultData + ')');
+        loadRecomList(resultData);
       }
     },
     error: function(jqXHR){
@@ -262,19 +269,12 @@ $(function(){
         }else{
           time="00'"+s+"\"";
         }
-      }else if(time>60 && time<3600){
+      }else if(time>60){
         var m=parseInt(time / 60);
         var s=parseInt(time %60);
         m = m >= 10 ? m : "0" + m;
         s = s >= 10 ? s : "0" + s;
         time=m+"\'"+s+"\"";
-      }else if(time>=3600 && time<86400){
-        var h=parseInt(time / 3600);
-        var m=parseInt(time % 3600 /60);
-        var s=parseInt(time %3600 %60 %60);
-        m = m >= 10 ? m : "0" + m;
-        s = s >= 10 ? s : "0" + s;
-        time=h+"\'"+m+"\'"+s+"\"";
       }
     }
     return time;
@@ -282,8 +282,6 @@ $(function(){
   
   //创建相关推荐资源列表
   function loadRecomList(resultData){
-  	console.log(resultData);
-  	debugger
     for(var i=0;i<resultData.ResultList.AllCount;i++){
       var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
       var detail={};
@@ -302,14 +300,14 @@ $(function(){
                         '<div class="listCon">'+
                           '<span class="span">'+resultData.ResultList.List[i].ContentName+'</span>'+
                           '<p class="lcp lcpp">'+
-                            '<img src="imgs/zj.png" alt="" />'+
+                            '<img src="../../templet/jm_templet/imgs/zj.png" alt="" />'+
                             '<span>'+resultData.ResultList.List[i].ContentPub+'</span>'+
                            ' <span alt="" class="state"/><span>'+
                           '</p>'+
                           '<p class="lcp">'+
-                            '<img src="imgs/sl.png" alt="" />'+
+                            '<img src="../../templet/jm_templet/imgs/sl.png" alt="" />'+
                             '<span>'+resultData.ResultList.List[i].PlayCount+'</span>'+
-                           '<img src="imgs/sc.png" alt="" class="sc"/>'+
+                           '<img src="../../templet/jm_templet/imgs/sc.png" alt="" class="sc"/>'+
                            '<span class="contentT" ></span>'+
                           '</p>'+
                         '</div>'+

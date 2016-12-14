@@ -34,16 +34,15 @@ $(function(){
                     '<h4>#####audioname#####</h4>'+
                     '<div class="time">#####audiotime#####</div>'+
                     '<p class="lcp">'+
-                      '<img src="imgs/sl.png" alt=""/>'+
+                      '<img src="../../templet/zj_templet/imgs/sl.png" alt=""/>'+
                       '<span>#####audioplaycount#####</span>'+
-                      '<img src="imgs/sc.png" alt="" class="sc"/>'+
+                      '<img src="../../templet/zj_templet/imgs/sc.png" alt="" class="sc"/>'+
                       '<span class="contentT">#####audioplaytime#####</span>'+
                     '</p>'+
                   '</li>';
       $(".ulBox").append(listBox);           
     }
   }
-  
   
   //添加滚动条事件
   window.onscroll=function(){
@@ -65,6 +64,7 @@ $(function(){
         },
         success: function(resultData){
           if (resultData.ReturnType=="1001"){
+            var resultData=eval('(' + resultData + ')');
             loadMore(resultData);
             if(resultData.NextPage=="true"){
               page++;
@@ -80,6 +80,33 @@ $(function(){
     }
   }
   
-  
+  //获取节目列表的节目时长
+  $(document).find(".ulBox li").each(function(){
+    var timeLong=$(this).children(".lcp").children(".contentT").text();
+    $(this).children(".lcp").children(".contentT").text(formatTimeTJ(timeLong/1000));
+  })
+
+  //秒转时分秒格式--节目列表
+  function formatTimeTJ(longTime){
+    debugger;
+    var time=parseFloat(longTime);
+    if(time!=null && time !=""){
+      if(time<60){
+        var s=time;
+        if(s<10){
+          time="00'0"+s+"\"";
+        }else{
+          time="00'"+s+"\"";
+        }
+      }else if(time>60){
+        var m=parseInt(time / 60);
+        var s=parseInt(time %60);
+        m = m >= 10 ? m : "0" + m;
+        s = s >= 10 ? s : "0" + s;
+        time=m+"\'"+s+"\"";
+      }
+    }
+    return time;
+  }
   
 });
