@@ -10,11 +10,9 @@ $(function(){
   $(".playControl").addClass("play");
   
   //资源准备就绪后，获取声音长度，否则NaN
-  $(audio).on("canplay",function(){
     var ss=$("#jmAudio").attr("jmopenapp").split("=")[1];
     var st=eval('(' + ss + ')').ContentTimes;
     $(".fullTime").text(formatTime(Math.round(st/1000)));
-  });
   
   //播放控制面板的播放控制
   $(".playControl").on("click",function(){
@@ -90,12 +88,12 @@ $(function(){
       $(".playControl").removeClass("play");
     }
     if($(this).index()=="0"){//点击上一个
-      $(".previous").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
+      $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
     }else if($(this).index()==len){//点击下一个
-      $(".next").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+      $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
     }else{
-      $(".previous").css({"background":"url(./imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
-      $(".next").css({"background":"url(./imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
+      $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
+      $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
     }
     //从推荐列表选择声音时，节目详情变化
     $(".detail").children(".dp1").children(".dpspan").text($(this).attr("dz"));
@@ -115,10 +113,10 @@ $(function(){
         if(i<=0){
           return false;
         }else if(i==1){
-          $(".previous").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
+          $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
         }
         if(i<=$(".listBox").length-1){
-          $(".next").css({"background":"url(./imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
+          $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
         }
         listNum=i-1;
         $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
@@ -152,10 +150,10 @@ $(function(){
             return false;
           }
           if(i==$(".listBox").length-2){
-            $(".next").css({"background":"url(./imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+            $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
           }
           if(i>=0){
-            $(".previous").css({"background":"url(./imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
+            $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
           }
           $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
           $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
@@ -186,7 +184,7 @@ $(function(){
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
         "PCDType":"3",
-        "SearchStr":searchStr,
+        "SearchStr":"周杰伦",
         "ResultType":"0",
         "PageType":"0",
         "Page":"0",
@@ -198,11 +196,11 @@ $(function(){
     dataType:"json",
     data:JSON.stringify(_data),
     success: function(resultData) {
-      console.log(resultData);
-      var resultData=eval('(' + resultData + ')');
-      console.log(resultData);
+      var resultData=eval('(' + resultData.Data + ')');
       if (resultData.ReturnType=="1001"){
         loadRecomList(resultData);
+      }else{
+        return;
       }
     },
     error: function(jqXHR){
