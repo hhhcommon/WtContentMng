@@ -29,15 +29,19 @@ $(function(){
   
   //加载更多
   function loadMore(resultData){
-    for(var i=0;i<length;i++){
-      var listBox= '<li class="listBox playBtn" data_src="#####audioplay#####">'+
-                    '<h4>#####audioname#####</h4>'+
-                    '<div class="time">#####audiotime#####</div>'+
+    for(var i=0;i<resultData.ResultList.length;i++){
+      var str=resultData.ResultList[i].CTime;
+      var ct=str.substring(0,str.lastIndexOf(":"));
+      var timeLong=resultData.ResultList[i].ContentTimes;
+      var tl=formatTimeTJ(timeLong/1000);
+      var listBox= '<li class="listBox playBtn" data_src='+resultData.ResultList[i].ContentPlay+' share_url='+resultData.ResultList[i].ContentShareUrl+'>'+
+                    '<h4>'+resultData.ResultList[i].ContentName+'</h4>'+
+                    '<div class="time">'+ct+'</div>'+
                     '<p class="lcp">'+
                       '<img src="../../templet/zj_templet/imgs/sl.png" alt=""/>'+
-                      '<span>#####audioplaycount#####</span>'+
+                      '<span>'+resultData.ResultList[i].PlayCount+'</span>'+
                       '<img src="../../templet/zj_templet/imgs/sc.png" alt="" class="sc"/>'+
-                      '<span class="contentT">#####audioplaytime#####</span>'+
+                      '<span class="contentT">'+tl+'</span>'+
                     '</p>'+
                   '</li>';
       $(".ulBox").append(listBox);           
@@ -59,9 +63,6 @@ $(function(){
         dataType: "json",
         data:JSON.stringify(_data),
         success: function(resultData){
-          console.log(resultData);
-          var resultData=eval('(' + resultData.Data + ')');
-          console.log(resultData);
           if(resultData.ReturnType=="1001"){
             loadMore(resultData);
             if(resultData.NextPage=="true"){

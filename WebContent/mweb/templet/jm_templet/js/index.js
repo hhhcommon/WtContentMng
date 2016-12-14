@@ -54,8 +54,8 @@ $(function(){
       var progressValue = this.currentTime/this.duration*($(".currentMusicBar").width());
       $('.currentMusicBarRound')[0].style.left = parseInt(progressValue) + 'px';
       //播放时长
-      if(formatTime(Math.round(this.currentTime))!=0){
-        $(".playTime").text(formatTime(Math.round(this.currentTime)));
+      if(formatTime(Math.floor(this.currentTime))!=0){
+        $(".playTime").text(formatTime(Math.floor(this.currentTime)));
       }
     };
   },false);
