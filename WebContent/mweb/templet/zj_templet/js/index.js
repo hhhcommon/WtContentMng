@@ -63,8 +63,8 @@ $(function(){
           "PageSize":"20"
         },
         success: function(resultData){
+          var resultData=eval('(' + resultData + ')');
           if (resultData.ReturnType=="1001"){
-            var resultData=eval('(' + resultData + ')');
             loadMore(resultData);
             if(resultData.NextPage=="true"){
               page++;

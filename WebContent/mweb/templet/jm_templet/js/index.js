@@ -198,8 +198,8 @@ $(function(){
     dataType:"json",
     data:JSON.stringify(_data),
     success: function(resultData) {
+      var resultData=eval('(' + resultData + ')');
       if (resultData.ReturnType=="1001"){
-        var resultData=eval('(' + resultData + ')');
         loadRecomList(resultData);
       }
     },
