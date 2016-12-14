@@ -26,7 +26,7 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://localhost:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
@@ -98,8 +98,7 @@ public abstract class CacheUtils {
 			List<Map<String, Object>> poms = (List<Map<String, Object>>) mapsequ.get("ContentPersons");
 			if (poms!=null && poms.size()>0) {
 				Map<String, Object> pom = poms.get(0);
-				htmlstr = htmlstr.replace("#####zhuboname#####", pom.get("PerName")+"")
-						.replace("#####zhuboimgs#####", pom.get("PerImg")+"");
+				htmlstr = htmlstr.replace("#####zhuboname#####", pom.get("PerName")+"").replace("#####zhuboimgs#####", pom.get("PerImg")+"");
 			}
 		} else {
 			htmlstr = htmlstr.replace("#####zhuboname#####", "")
@@ -120,7 +119,7 @@ public abstract class CacheUtils {
 		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
 				.replace("#####sequnrdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
-				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString())
+				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
 		        .replace("#####mediatype#####", "SEQU")
 		        .replace("#####sequsum#####", num+""); // 替换指定的信息
@@ -159,7 +158,7 @@ public abstract class CacheUtils {
 		}
 		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName")+"")
 				.replace("#####mediatype#####", "AUDIO")
-		        .replace("#####audioimgs#####", (map.get("ContentImg")+"").equals("null")?"":map.get("ContentImg")+"")
+		        .replace("#####audioimgs#####", (map.get("ContentImg")+"").equals("null")?"":map.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####audioplay#####", map.get("ContentPlay")+"")
 				.replace("#####audioid#####", map.get("ContentId")+"")
 				.replace("#####audiotime#####", map.get("ContentTimes")+"")

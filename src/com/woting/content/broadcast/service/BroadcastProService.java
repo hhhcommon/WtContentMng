@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
@@ -39,6 +42,7 @@ public class BroadcastProService {
 	private MybatisDAO<BCProgrammePo> bcProDao;
 	@Resource
 	private MediaService mediaService;
+//	private _CacheDictionary _cd;
 	private Map<String, Integer> WeekDay = new HashMap<String, Integer>() {
 		{
 			put("get1", 7);
@@ -65,6 +69,7 @@ public class BroadcastProService {
 		bcLiveFlowDao.setNamespace("A_BCLIVEFLOW");
 		dictRefResDao.setNamespace("A_DREFRES");
 		bcProDao.setNamespace("A_BCPROGRAMME");
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -166,10 +171,9 @@ public class BroadcastProService {
 		bPo.setBcURL(m.get("bcUrl") + "");
 		bPo.setDescn(m.get("descn") + "");
 		broadcastDao.insert(bPo);
-
-		// 字典
-		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
-				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		
+		
 		// 字典--地区
 		String tempIds = m.get("bcArea") + "";
 		DictModel tempDictM = _cd.getDictModelById("2");
@@ -407,8 +411,7 @@ public class BroadcastProService {
 			param.put("mId", mId);
 
 			// 可通过当前节点获得其和下所有字节点列表
-			com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
-					.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			DictModel tempDictM = _cd.getDictModelById(mId);
 			TreeNode<DictDetail> root = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(rId);
 			// 得到所有下级结点的Id
@@ -578,5 +581,32 @@ public class BroadcastProService {
 		    return true;
 		}
 		return false;
+	}
+
+	public Map<String, Object> getBroadcasts(String catalogType, String catalogId) {
+		_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		DictModel tempDictM = _cd.getDictModelById(catalogType);
+		TreeNode<DictDetail> root = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(catalogId);
+		List<TreeNode<? extends TreeNodeBean>> Dictds = root.getChildren();
+		String cataids = getCataIds(root);
+		System.out.println(cataids);
+		return null;
+	}
+	
+	public String getCataIds(TreeNode<? extends TreeNodeBean> root){
+		String cataids = "";
+		cataids +=",'"+root.getId()+"'";
+		List<TreeNode<? extends TreeNodeBean>> Dictds = root.getChildren();
+		if (Dictds!=null && Dictds.size()>0) {
+			for (TreeNode<? extends TreeNodeBean> treeNode : Dictds) {
+				if (treeNode.getChildCount()>0) {
+					cataids += getCataIds(root);
+				}else {
+					cataids+=",'"+treeNode.getId()+"'";
+				}
+			}
+		}
+		cataids = cataids.substring(1);
+		return cataids;
 	}
 }

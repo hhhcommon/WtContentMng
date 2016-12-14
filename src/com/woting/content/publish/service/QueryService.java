@@ -47,7 +47,7 @@ public class QueryService {
 	@Resource
 	private ChannelService chService;
 	@Resource
-	private BroadcastProService bcService;
+	private BroadcastProService broadcastProService;
 	@Resource
 	private MediaContentService mediaContentService;
 
@@ -257,7 +257,7 @@ public class QueryService {
 	 */
 	public Map<String, Object> getBroadcastInfo(String contentid, String acttype) {
 		Map<String, Object> broadcastData = new HashMap<String, Object>();// 单体信息
-		BroadcastPo bc = bcService.getBroadcastList(contentid);
+		BroadcastPo bc = broadcastProService.getBroadcastList(contentid);
 		if (bc == null)
 			return null;
 		broadcastData.put("ContentId", bc.getId());
