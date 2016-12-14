@@ -51,8 +51,7 @@ $(function(){
       var _data={
                   "ContentId":$(".PicBox").attr("contentId"),
                   "MediaType":"SEQU",
-                  "Page":page,
-                  "PageSize":"20"
+                  "Page":page
       };
       $.ajax({
         type: "POST",
