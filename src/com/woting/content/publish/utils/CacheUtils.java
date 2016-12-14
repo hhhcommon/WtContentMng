@@ -55,7 +55,7 @@ public abstract class CacheUtils {
 			//生成 ZJ/P*.json文件和content.html文件
 			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
 			if (i == 1)
-				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);// 生成content.html
+				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list, audiosize);// 生成content.html
 		}
 	}
 
@@ -86,11 +86,11 @@ public abstract class CacheUtils {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static void createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio) {
+	private static void createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio, int num) {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
-		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'  share_url='#####shareurl#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='../../templet/zj_templet/imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='../../templet/zj_templet/imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p><li>";
+		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'  share_url='#####shareurl#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='../../templet/zj_templet/imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='../../templet/zj_templet/imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p></li>";
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
@@ -123,7 +123,7 @@ public abstract class CacheUtils {
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString())
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
 		        .replace("#####mediatype#####", "SEQU")
-		        .replace("#####sequsum#####", listaudio.size()+""); // 替换指定的信息
+		        .replace("#####sequsum#####", num+""); // 替换指定的信息
 		for (Map<String, Object> map : listaudio) {
 			String pubtime = (map.get("ContentPubTime")+"").equals("null")?(map.get("CTime")+""):(map.get("ContentPubTime")+"");
 			pubtime = pubtime.substring(0, pubtime.length()-3);

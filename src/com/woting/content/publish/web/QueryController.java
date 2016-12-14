@@ -202,11 +202,21 @@ public class QueryController {
 	@RequestMapping(value = "/content/getZJSubPage.do")
 	@ResponseBody
 	public Map<String, Object> getZJSubPage(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String zjid = (String) m.get("ContentId");
-		String page = (String) m.get("Page");
-		Map<String, Object> map = new HashMap<String, Object>();
-		map = queryService.getZJSubPage(zjid, page);
+		String contentId = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无内容ID");
+			return map;
+		}
+		String page = m.get("Page") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(page) || page.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无页码");
+			return map;
+		}
+		map = queryService.getZJSubPage(contentId, page);
 		return map;
 	}
 }
