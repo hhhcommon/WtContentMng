@@ -198,7 +198,9 @@ $(function(){
     dataType:"json",
     data:JSON.stringify(_data),
     success: function(resultData) {
+      console.log(resultData);
       var resultData=eval('(' + resultData + ')');
+      console.log(resultData);
       if (resultData.ReturnType=="1001"){
         loadRecomList(resultData);
       }
