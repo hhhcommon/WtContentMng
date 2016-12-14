@@ -141,7 +141,6 @@ public class CommonController {
         str=str.replaceAll("\n", "");
         str=str.replaceAll("&quot;", "\"");
         str=str.replaceAll("\r", "");
-        map.put("ReturnType", "1001");
     	map.put("Data", str);
         return map;
     }

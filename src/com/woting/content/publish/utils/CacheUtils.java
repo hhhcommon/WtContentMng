@@ -26,7 +26,7 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://192.168.0.104:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://localhost:908/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
@@ -128,8 +128,8 @@ public abstract class CacheUtils {
 			String pubtime = (map.get("ContentPubTime")+"").equals("null")?(map.get("CTime")+""):(map.get("ContentPubTime")+"");
 			pubtime = pubtime.substring(0, pubtime.length()-3);
 			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-					.replace("#####audioplay#####", map.get("ContentURI").toString())
-					.replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
+//					.replace("#####audioplay#####", map.get("ContentURI").toString())
+					.replace("#####audioplay#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
 					.replace("#####audiotime#####", pubtime)
 					.replace("#####audioplaycount#####", map.get("PlayCount")+"")
 					.replace("#####audioplaytime#####", map.get("ContentTimes")+"");
