@@ -659,6 +659,7 @@ public class MediaService {
 	}
 
 	// 根据资源id得到资源字典项对应关系
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getResDictRefByResId(String resids, String resTableName) {
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("resTableName", resTableName);
@@ -666,8 +667,7 @@ public class MediaService {
 		List<DictRefResPo> rcrpL = dictRefDao.queryForList("getListByResIds", param);
 		List<Map<String, Object>> catalist = new ArrayList<Map<String, Object>>();
 		if (rcrpL != null && rcrpL.size() > 0) {
-			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT))
-					.getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			for (DictRefResPo dictRefResPo : rcrpL) {
 				Map<String, Object> dictrefm = dictRefResPo.toHashMap();
 				DictModel dm = _cd.getDictModelById(dictrefm.get("dictMid") + "");

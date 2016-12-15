@@ -277,6 +277,7 @@
   
   <select id="getMaListBySmaId" parameterType="java.lang.String" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where id in (select mId from wt_SeqMA_Ref where sId=#{sId,jdbcType=VARCHAR})
+    order by cTime desc
   </select>
   
   <!-- 根据主播id获取 -->
