@@ -103,7 +103,7 @@ $(function(){
     var tt=$(this).children(".listCon").children(".lcp").children(".contentT").attr("fullTime");
     $(".fullTime").text(tt);
     var src=$(this).children(".audioImg").attr("src");
-    $(".box").css({"background-image":"url("+src+")"});
+    $(".boximg").css({"background-image":"url("+src+")"});
   });
   
   //点击上一个
@@ -184,10 +184,10 @@ $(function(){
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
         "PCDType":"3",
-        "SearchStr":"周杰伦",
+        "SearchStr":searchStr,
         "ResultType":"0",
         "PageType":"0",
-        "Page":"0",
+        "Page":"1",
         "PageSize":"20"
   };
   $.ajax({
@@ -293,6 +293,8 @@ $(function(){
       else detail.contentPub=""; 
       if(resultData.ResultList.List[i].ContentDescn) detail.contentDescn=resultData.ResultList.List[i].ContentDescn;
       else detail.contentDescn="";
+      if((resultData.ResultList.List[i].PlayCount==null)||(!resultData.ResultList.List[i].PlayCount)) detail.playCount="";
+      else detail.PlayCount=resultData.ResultList.List[i].PlayCount;
       var newListBox= '<li class="listBox" contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.seqInfo+' dp='+detail.contentPub+'>'+
                         '<div class="default"></div>'+
                         '<div class="dn">'+detail.contentDescn+'</div>'+
@@ -301,12 +303,12 @@ $(function(){
                           '<span class="span">'+resultData.ResultList.List[i].ContentName+'</span>'+
                           '<p class="lcp lcpp">'+
                             '<img src="../../templet/jm_templet/imgs/zj.png" alt="" />'+
-                            '<span>'+resultData.ResultList.List[i].ContentPub+'</span>'+
+                            '<span>'+detail.contentPub+'</span>'+
                            ' <span alt="" class="state"/><span>'+
                           '</p>'+
                           '<p class="lcp">'+
                             '<img src="../../templet/jm_templet/imgs/sl.png" alt="" />'+
-                            '<span>'+resultData.ResultList.List[i].PlayCount+'</span>'+
+                            '<span>'+detail.playCount+'</span>'+
                            '<img src="../../templet/jm_templet/imgs/sc.png" alt="" class="sc"/>'+
                            '<span class="contentT" ></span>'+
                           '</p>'+

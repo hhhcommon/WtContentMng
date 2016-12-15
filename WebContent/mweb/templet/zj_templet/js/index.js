@@ -4,21 +4,24 @@ $(function(){
   var page=2;
   var nextPage="false";
   //控制播放按钮的播与停
-  var audio=$("<audio></audio>")[0];
+//var audio=$("<audio></audio>")[0];
   $(".ulBox").on("click",".playBtn",function(){
-    if($(this).hasClass("play")){
-      $(this).removeClass("play");
-      audio.pause();
-    }else{
-      if($(".playBtn").hasClass("play")){
-        audio.pause();
-        $(".playBtn").removeClass("play");
-      }
-      audio.src=$(this).attr("data_src");
-      //播放当前资源，并改变当前按钮状态
-      $(this).addClass("play");
-      audio.play();
-    }
+//  if($(this).hasClass("play")){
+//    $(this).removeClass("play");
+//    audio.pause();
+//  }else{
+//    if($(".playBtn").hasClass("play")){
+//      audio.pause();
+//      $(".playBtn").removeClass("play");
+//    }
+//    audio.src=$(this).attr("data_src");
+//    //播放当前资源，并改变当前按钮状态
+//    $(this).addClass("play");
+//    audio.play();
+//  }
+    
+    var shareUrl=$(this).attr("share_url");
+    window.location.href=shareUrl;
   });
   
   //详情和节目的切换
@@ -51,7 +54,7 @@ $(function(){
   //添加滚动条事件
   window.onscroll=function(){
     //当滚动到最底部以上60像素时,加载新内容  
-    if($(document).height() - $(this).scrollTop() - $(this).height()<60){
+    if($(document).height() - $(this).scrollTop() - $(this).height()==0){
       var _data={
                   "ContentId":$(".PicBox").attr("contentId"),
                   "MediaType":"SEQU",
@@ -65,11 +68,7 @@ $(function(){
         success: function(resultData){
           if(resultData.ReturnType=="1001"){
             loadMore(resultData);
-            if(resultData.NextPage=="true"){
-              page++;
-            }
-          }else{
-            return;
+            page++;
           }
         },
         error: function(jqXHR){  

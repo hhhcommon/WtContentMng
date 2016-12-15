@@ -73,12 +73,19 @@ header .downLoad{
   height: 120px;
   margin:0 auto;
   position:relative;
-  background-image: url();
+}
+.boximg{
+  width: 120px;
+  height: 120px;
   background-size: 100% 100%;
 }
 .box img{
-  width:120px;
-  height:120px;
+  width:122px;
+  height:122px;
+  position: absolute;
+  top:-1px;
+  left:-1px;
+  background-size:100% 100%;
 }
 .PicBox .ul{
   width:244px;
@@ -157,7 +164,7 @@ header .downLoad{
 }
 .tc1_head ul .tc1_li2{
   width: calc(100% - 130px);
-  margin: 20px 0px 10px 10px;
+  margin: 28px 0px 10px 10px;
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
