@@ -37,6 +37,7 @@
 *{margin: 0;padding: 0;}
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+body{-moz-user-select: none;}
 #wrapper{
   width:100%;
 }
@@ -210,7 +211,7 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 }
 </style>
 </head>
-<body class="fixed-sidebar full-height-layout gray-bg laydate_body">
+<body class="fixed-sidebar full-height-layout gray-bg laydate_body" onselectstart="return false">
 <div id="wrapper">
   <div class="navbar-fixed-top" style="width:100%;height:80px;background: #ffa634;">
     <a href="#" style="float:left;"><img alt="woting logo" class="logo" src="img/logo1.png"></a>

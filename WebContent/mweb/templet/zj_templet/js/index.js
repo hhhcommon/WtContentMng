@@ -37,12 +37,20 @@ $(function(){
       var ct=str.substring(0,str.lastIndexOf(":"));
       var timeLong=resultData.ResultList[i].ContentTimes;
       var tl=formatTimeTJ(timeLong/1000);
-      var listBox= '<li class="listBox playBtn" data_src='+resultData.ResultList[i].ContentPlay+' share_url='+resultData.ResultList[i].ContentShareUrl+'>'+
-                    '<h4>'+resultData.ResultList[i].ContentName+'</h4>'+
+      if(resultData.ResultList.List[i].ContentPlay) detail.contentPlay=resultData.ResultList.List[i].ContentPlay;
+      else detail.contentPlay="未知";
+      if(resultData.ResultList.List[i].ContentShareUrl) detail.contentShareUrl=resultData.ResultList.List[i].ContentShareUrl;
+      else detail.contentShareUrl="未知";
+      if(resultData.ResultList.List[i].ContentName) detail.contentName=resultData.ResultList.List[i].ContentName;
+      else detail.contentName="未知";
+      if(resultData.ResultList.List[i].PlayCount) detail.playCount=resultData.ResultList.List[i].PlayCount;
+      else detail.playCount="0";
+      var listBox= '<li class="listBox playBtn" data_src='+detail.contentPlay+' share_url='+detail.contentShareUrl+'>'+
+                    '<h4>'+detail.contentName+'</h4>'+
                     '<div class="time">'+ct+'</div>'+
                     '<p class="lcp">'+
                       '<img src="../../templet/zj_templet/imgs/sl.png" alt=""/>'+
-                      '<span>'+resultData.ResultList[i].PlayCount+'</span>'+
+                      '<span>'+detail.playCount+'</span>'+
                       '<img src="../../templet/zj_templet/imgs/sc.png" alt="" class="sc"/>'+
                       '<span class="contentT">'+tl+'</span>'+
                     '</p>'+
@@ -105,5 +113,13 @@ $(function(){
     }
     return time;
   }
+  
+  //打开APP或下载
+  $(".downLoad").click(function(){
+    window.location=$(".PicBox").attr("zjOpenApp");
+    window.setTimeout(function () {
+      window.location.href= "http://www.wotingfm.com/download/WoTing.apk";
+    },2000);
+  });
   
 });

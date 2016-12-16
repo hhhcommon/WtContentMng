@@ -198,6 +198,7 @@ $(function(){
     success: function(resultData) {
       var resultData=eval('(' + resultData.Data + ')');
       if (resultData.ReturnType=="1001"){
+        console.log(resultData);
         loadRecomList(resultData);
       }else{
         return;
@@ -283,24 +284,32 @@ $(function(){
   //创建相关推荐资源列表
   function loadRecomList(resultData){
     for(var i=0;i<resultData.ResultList.AllCount;i++){
-      var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
       var detail={};
+      if(resultData.ResultList.List[i].ContentTimes){
+        var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
+      }else{
+        var contentTime="0";
+      }
       if(resultData.ResultList.List[i].zhubo) detail.zhubo=resultData.ResultList.List[i].zhubo;
-      else detail.zhubo="";
+      else detail.zhubo="未知";
       if(resultData.ResultList.List[i].SeqInfo) detail.seqInfo=resultData.ResultList.List[i].SeqInfo.ContentName;
-      else detail.seqInfo="";  
+      else detail.seqInfo="未知";  
       if(resultData.ResultList.List[i].ContentPub) detail.contentPub=resultData.ResultList.List[i].ContentPub;
-      else detail.contentPub=""; 
+      else detail.contentPub="未知"; 
       if(resultData.ResultList.List[i].ContentDescn) detail.contentDescn=resultData.ResultList.List[i].ContentDescn;
-      else detail.contentDescn="";
-      if((resultData.ResultList.List[i].PlayCount==null)||(!resultData.ResultList.List[i].PlayCount)) detail.playCount="";
-      else detail.PlayCount=resultData.ResultList.List[i].PlayCount;
-      var newListBox= '<li class="listBox" contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.seqInfo+' dp='+detail.contentPub+'>'+
+      else detail.contentDescn="暂无描述";
+      if(resultData.ResultList.List[i].PlayCount!=null) detail.playCount=resultData.ResultList.List[i].PlayCount;
+      else detail.playCount="0";
+      if(resultData.ResultList.List[i].ContentImg) detail.contentImg=resultData.ResultList.List[i].ContentImg;
+      else detail.contentImg="暂无图片";
+      if(resultData.ResultList.List[i].ContentName) detail.contentName=resultData.ResultList.List[i].ContentName;
+      else detail.contentName="暂无图片";
+      var newListBox= '<li contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.seqInfo+' dp='+detail.contentPub+' class="listBox">'+
                         '<div class="default"></div>'+
                         '<div class="dn">'+detail.contentDescn+'</div>'+
-                        '<img src='+resultData.ResultList.List[i].ContentImg+' class="audioImg"/>'+
+                        '<img src='+detail.contentImg+' class="audioImg" alt="节目图片"/>'+
                         '<div class="listCon">'+
-                          '<span class="span">'+resultData.ResultList.List[i].ContentName+'</span>'+
+                          '<span class="span">'+detail.contentName+'</span>'+
                           '<p class="lcp lcpp">'+
                             '<img src="../../templet/jm_templet/imgs/zj.png" alt="" />'+
                             '<span>'+detail.contentPub+'</span>'+

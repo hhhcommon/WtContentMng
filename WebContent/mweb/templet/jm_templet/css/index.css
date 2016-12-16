@@ -20,8 +20,9 @@ a{
   font-weight:bold;
 }
 /*头部样式*/
-#container{
+.container{
   width:100%;
+  margin-top:-20px;
 }
 header{
   background:white;
@@ -177,7 +178,7 @@ header .downLoad{
   height: 30px;
   background-size:100% 100%;
   float: left;
-  margin-left: 20px;
+  margin-left:15px;
 }
 .dt span{
   width: auto;
@@ -208,7 +209,7 @@ header .downLoad{
 .tj{
   width:100%;
   height:36px;
-  padding:8px 24px;
+  padding:8px 18px;
   background-color:#f2f2f2;
   border-top: 1px solid #dedede;
   border-bottom:1px solid #e9e7e8;
@@ -223,9 +224,8 @@ header .downLoad{
 }
 .audioList .ulBox li{
   width:100%;
-  height:85px;
-  padding:8px 6px 0px 16px;
-  margin-bottom:8px;
+  height:90px;
+  padding:8px 6px 8px 16px;
   border-bottom:1px solid #dedede;
 }
 .audioList ul li:hover{
@@ -241,18 +241,18 @@ header .downLoad{
   background-size:100% 100%;
 }
 .audioImg{
-  width: 68px;
-  height: 72px;
+  width: 66px;
+  height: 70px;
   background-size:100% 100%;
   position: relative;
-  top: 0px;
-  left: -68px;
+  top: 1px;
+  left: -67px;
 }
 .listCon{
   width:70%;
   height:72px;
   position: absolute;
-  margin-top: -77px;
+  margin-top: -72px;
   margin-left: 75px;
 }
 .span{
@@ -260,13 +260,13 @@ header .downLoad{
   font-size: 14px;
   color: #f60;
   display: inline-block;
-  padding: 2px 0px 2px 10px;
+  padding: 2px 0px 0px 10px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .lcp{
-  padding:5px 0px 2px 9px;
+  padding:2px 0px 2px 9px;
   border:1px solid white;
   overflow: hidden;
 }
@@ -279,8 +279,12 @@ header .downLoad{
   font-size: 12px;
   float: left;
   margin-left: 5px;
-  margin-top: 1px;
+  margin-top: 0px;
   color:#959595;
+}
+.contentT{
+  position: absolute;
+  left:105px;
 }
 .lcp .state{
   width: 15px;
@@ -297,7 +301,8 @@ header .downLoad{
   background-size:100% 100%;
 }
 .lcp .sc{
-  margin-left:15px;
+  position: absolute;
+  left:90px;
 }
 .dn{
   display: none;
