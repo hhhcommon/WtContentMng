@@ -1,18 +1,23 @@
 $(function(){
-  var rootPath=getRootPath();
+  var swiper = new Swiper('#swiper-container', {//swiper滑页
+    autoHeight: true,
+    onlyExternal :true
+  });
   
+  var rootPath=getRootPath();
+  var indexs=1;//星期几
   //控制播放的节目的顺序号
   var listNum=0;
   //获取播放元素容器
   var audio=$("audio")[0];
   //打开链接时，自动播放对应声音资源
-  $("#jmAudio")[0].play();
+  $("#raAudio")[0].play();
   $(".playControl").addClass("play");
   
   //资源准备就绪后，获取声音长度，否则NaN
   $("audio").on("canplay",function(){
     if(typeof($(this).attr("id"))!="undefined"){
-      var st=$("#jmAudio")[0].duration;
+      var st=$("#raAudio")[0].duration;
       $(".fullTime").text(formatTime(Math.round(st)));
       $(audio).removeAttr("id");
     }
@@ -20,13 +25,13 @@ $(function(){
     
   //播放控制面板的播放控制
   $(".playControl").on("click",function(){
-    if($("#jmAudio")[0]){
+    if($("#raAudio")[0]){
       if($(".playControl").hasClass("play")){//处于播放状态
         $(".playControl").removeClass("play");
-        $("#jmAudio")[0].pause();
+        $("#raAudio")[0].pause();
       }else{
         $(".playControl").addClass("play");
-        $("#jmAudio")[0].play();
+        $("#raAudio")[0].play();
       }
     }else{
       if($(".playControl").hasClass("play")){//处于播放状态
@@ -194,7 +199,7 @@ $(function(){
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
         "PCDType":"3",
-        "SearchStr":searchStr,
+        "SearchStr":"北京教学广播",
         "ResultType":"0",
         "PageType":"0",
         "Page":"1",
@@ -208,7 +213,6 @@ $(function(){
     success: function(resultData) {
       var resultData=eval('(' + resultData.Data + ')');
       if (resultData.ReturnType=="1001"){
-        console.log(resultData);
         loadRecomList(resultData);
       }else{
         return;
@@ -221,7 +225,8 @@ $(function(){
   
   //打开APP或下载
   $(".downLoad,.like").click(function(){
-    window.location=$("#jmAudio").attr("jmOpenApp");
+    alert("测试数据");
+    window.location=$("#raAudio").attr("raOpenApp");
     window.setTimeout(function () {
       window.location.href= "http://www.wotingfm.com/download/WoTing.apk";
     },2000);
@@ -343,6 +348,119 @@ $(function(){
   $(".tj .tjh4").on("click",function(){
     var index = $(this).index();
     $(this).addClass('active').siblings().removeClass('active');
-    $('.audioList ul').eq(index).show().siblings().hide();
+    $('.radioList ul').eq(index).show().siblings().hide();
   })
+  
+  //点击节目单
+  $(".border").click(function(){
+    swiper.slideNext();
+    var height=$(".jmd").height();
+    $(".container").css({"height":height+"px","overflow-y":"hidden"});
+    $(".swiper-wrapper").css({"max-height":height});
+  })
+  //点击返回按钮
+  $(".jmd_head").click(function(){
+    swiper.slidePrev();
+    $(".container").css({"height":"auto","overflow-y":"auto"});
+    $(".swiper-wrapper").css({"max-height":null});
+    selected();
+  })
+  //节目单页面出现的时候默认选中当前的日期
+  selected();//点击默认选中节目单
+  function selected(){
+    $('.jmd_nav .week').each(function(){//初始化节目单，默认显示当前是周几
+      var week = new Date().getDay();
+      var requestTimes=new Date().getTime();
+      var index = $(this).index();
+      indexs=index+1;
+      if(indexs==week){
+        $(this).addClass('active').siblings().removeClass('active');
+        getJMD(requestTimes,indexs);//得到当天的节目单
+        $('.jmd_con .weekCont').eq(index).show().siblings().hide();
+      }
+    })
+  }
+  //节目单时间的切换
+  $('.jmd_nav .week').click(function(){
+    var requestTimes="";
+    var index = $(this).index();
+    indexs=index+1;
+    var onet=24*3600*1000;
+    var nowt=new Date().getTime();//今天的时间戳
+    var week = new Date().getDay();//今天是周几
+    if(indexs<=week){
+      requestTimes=nowt-onet*(week-indexs);//当前选中日期的时间戳
+    }else{
+      requestTimes=nowt+onet*(indexs-week);//当前选中日期的时间戳
+    }
+    $(this).addClass('active').siblings().removeClass('active');
+    getJMD(requestTimes,indexs);//得到当天的节目单
+  });
+  //请求加载节目单
+  function getJMD(requestTimes,indexs){
+//  var contentId=$("#raAudio").attr("raOpenApp").split("=")[1].ContentId;
+    var _data={
+      "RemoteUrl":"http://www.wotingfm.com:808/wt/content/getBCProgramme.do",
+      "IMEI":"3279A27149B24719991812E6ADBA5583",
+      "PCDType":"3",
+      "PageType":"0",
+      "UserId":"123",
+      "BcId":"cb165a78315b",
+      "RequestTimes":requestTimes
+    };
+    $.ajax({
+      url: rootPath+"common/jsonp.do",
+      type:"POST",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success: function(resultData) {
+        var resultData=eval('(' + resultData.Data + ')');
+        if(resultData.ReturnType=="1001"){
+          $("#week"+indexs).html("");
+          for(var i=0;i<resultData.ResultList[0].List.length;i++){
+            if(resultData.ResultList[0].List[i].Title) title=resultData.ResultList[0].List[i].Title;
+            else title="暂无标题";
+            if(resultData.ResultList[0].List[i].BeginTime) bt=resultData.ResultList[0].List[i].BeginTime;
+            else bt="未知";
+            if(resultData.ResultList[0].List[i].EndTime) et=resultData.ResultList[0].List[i].EndTime;
+            else et="未知";
+            var bt=bt.substring(0,bt.lastIndexOf(":"));
+            var et=et.substring(0,et.lastIndexOf(":"));
+            var lib='<div class="wcListBox">'+
+                      '<span class="lbc">'+title+'</span>'+
+                      '<span class="lbt">'+bt+'-'+et+'</span>'+
+                    '</div>';
+            $("#week"+indexs).append(lib);
+            $('.jmd_con .weekCont').eq(indexs-1).show().siblings().hide();
+          }
+          loadJMD(resultData,indexs);//加载节目单列表
+        }else{
+          $("#week"+indexs).append("<span class='nojmd'>暂无节目单</span>");  
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  //加载节目单列表
+  function loadJMD(resultData,indexs){
+    $("#week"+indexs).html("");
+    for(var i=0;i<resultData.ResultList[0].List.length;i++){
+      if(resultData.ResultList[0].List[i].Title) title=resultData.ResultList[0].List[i].Title;
+      else title="暂无标题";
+      if(resultData.ResultList[0].List[i].BeginTime) bt=resultData.ResultList[0].List[i].BeginTime;
+      else bt="未知";
+      if(resultData.ResultList[0].List[i].EndTime) et=resultData.ResultList[0].List[i].EndTime;
+      else et="未知";
+      var bt=bt.substring(0,bt.lastIndexOf(":"));
+      var et=et.substring(0,et.lastIndexOf(":"));
+      var lib='<div class="wcListBox">'+
+                '<span class="lbc">'+title+'</span>'+
+                '<span class="lbt">'+bt+'-'+et+'</span>'+
+              '</div>';
+      $("#week"+indexs).append(lib);
+      $('.jmd_con .weekCont').eq(indexs-1).show().siblings().hide();
+    }
+  }
 });

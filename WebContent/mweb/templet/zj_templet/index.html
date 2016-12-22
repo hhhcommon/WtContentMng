@@ -22,7 +22,7 @@
   <script src="../../templet/zj_templet/js/index.js"></script>
 </head>
 <body>
-  <img style="width:0px;height:0px;opacity: 0;" src="#####sequimgs#####" />
+  <img style="width:0px;height:0px;opacity: 0;position:absolute ;" src="#####sequimgs#####" />
   <div class="container">
     <!--头部开始-->
     <header>
@@ -37,7 +37,7 @@
         <img src="../../templet/zj_templet/imgs/liubianxing_orange.png"/>
       </div>
       <ul class="ul">
-        <li>
+        <li class="like">
           <span class="lis">喜欢</span>
           <img class="lii" src="../../templet/zj_templet/imgs/wt_img_prefer.png" alt=""/>
         </li>
@@ -45,17 +45,14 @@
           <span class="lis">分享</span>
           <img class="lii" src="../../templet/zj_templet/imgs/wt_img_share.png" alt=""/>
         </li>
-        <li>
-          <span class="lis">评论</span>
-          <img class="lii" src="../../templet/zj_templet/imgs/wt_img_pinglun_white.png" alt=""/>
-        </li>
       </ul>
     </div>
-    <!--详情+节目列表-->
+    <!--详情+节目列表+评论列表-->
     <div class="content">
       <div class="tab_nav">
         <span class="selected">详情</span>
         <span>节目</span>
+        <span>查看评论</span>
       </div>
       <div class="tab_con">
         <div class="tc1 pad15 tc">
@@ -79,12 +76,45 @@
         <div class="hide tc2 tc">
           <div class="tc2_head">
             <span class="sum">共有#####sequsum#####集</span>
-            <img src="../../templet/zj_templet/imgs/image_down_load.png" alt="" class="down"/>
             <img src="../../templet/zj_templet/imgs/image_sort.png" alt="" class="sort"/>
           </div>
           <div class="zj_box">
             <ul class="ulBox">#####audiolist#####</ul>
           </div>
+        </div>
+        <div class="hide tc2 tc">
+          <ul class="comment">
+            <li class="ctList">
+              <div class="default"></div>
+              <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
+              <div class="listCon">
+                <p class="lcs">
+                  <span class="commentName">周杰伦</span>
+                  <span class="commentTime">2016-12-24</span>
+                </p>
+                <div class="commentContent">
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                </div>
+              </div>
+            </li>
+            <li class="ctList">
+              <div class="default"></div>
+              <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
+              <div class="listCon">
+                <p class="lcs">
+                  <span class="commentName">周杰伦</span>
+                  <span class="commentTime">2016-12-24</span>
+                </p>
+                <div class="commentContent">
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

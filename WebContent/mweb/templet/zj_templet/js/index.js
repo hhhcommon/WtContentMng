@@ -32,18 +32,19 @@ $(function(){
   
   //加载更多
   function loadMore(resultData){
+    var detail={};
     for(var i=0;i<resultData.ResultList.length;i++){
       var str=resultData.ResultList[i].CTime;
       var ct=str.substring(0,str.lastIndexOf(":"));
       var timeLong=resultData.ResultList[i].ContentTimes;
       var tl=formatTimeTJ(timeLong/1000);
-      if(resultData.ResultList.List[i].ContentPlay) detail.contentPlay=resultData.ResultList.List[i].ContentPlay;
+      if(resultData.ResultList[i].ContentPlay) detail.contentPlay=resultData.ResultList[i].ContentPlay;
       else detail.contentPlay="未知";
-      if(resultData.ResultList.List[i].ContentShareUrl) detail.contentShareUrl=resultData.ResultList.List[i].ContentShareUrl;
+      if(resultData.ResultList[i].ContentShareUrl) detail.contentShareUrl=resultData.ResultList[i].ContentShareUrl;
       else detail.contentShareUrl="未知";
-      if(resultData.ResultList.List[i].ContentName) detail.contentName=resultData.ResultList.List[i].ContentName;
+      if(resultData.ResultList[i].ContentName) detail.contentName=resultData.ResultList[i].ContentName;
       else detail.contentName="未知";
-      if(resultData.ResultList.List[i].PlayCount) detail.playCount=resultData.ResultList.List[i].PlayCount;
+      if(resultData.ResultList[i].PlayCount) detail.playCount=resultData.ResultList[i].PlayCount;
       else detail.playCount="0";
       var listBox= '<li class="listBox playBtn" data_src='+detail.contentPlay+' share_url='+detail.contentShareUrl+'>'+
                     '<h4>'+detail.contentName+'</h4>'+

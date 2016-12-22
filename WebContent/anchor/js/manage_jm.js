@@ -494,6 +494,49 @@ $(function(){
     });
   }
   
+  //66-1点击撤回节目按钮
+  $(document).on("click",".jm_recal",function(){
+    $('.shade', parent.document).show();
+    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+    var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+    var flowFlag=$(this).parent(".optype").siblings(".jm_st").attr("flowFlag");
+    recal_jm(contentId,flowFlag);
+  })
+  function recal_jm(contentId,flowFlag){
+    var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId,
+               "ContentFlowFlag":flowFlag,
+               "OpeType":"revoke"
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/updateContentStatus.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("成功撤回节目");
+          $('.shade', parent.document).hide();
+          getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
+        }else{
+          alert(resultData.Message);
+          $('.shade', parent.document).hide();
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  
+  
   
   /*
        弹出页面上的方法

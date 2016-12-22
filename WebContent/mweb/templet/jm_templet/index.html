@@ -22,7 +22,7 @@
   <script src="../../templet/jm_templet/js/index.js"></script>
 </head>
 <body>
-  <img style="width:0px;height:0px;opacity: 0;" src="#####audioimgs#####" />
+  <img style="width:0px;height:0px;opacity: 0;position:absolute ;" src="#####audioimgs#####" />
   <div class="container">
     <!--头部开始-->
     <header>
@@ -48,6 +48,16 @@
         <span class="fullTime"></span>
       </div>
       <audio src="#####audioplay#####" id="jmAudio" jmOpenApp="com.woting.htmlcallback://#####mediatype#####?jsonStr={'ContentId':'#####audioid#####'}"></audio>
+      <ul class="ul">
+        <li class="like">
+          <span class="lis">喜欢</span>
+          <img class="lii" src="../../templet/dt_templet/imgs/wt_person_like.png" alt=""/>
+        </li>
+        <li class="border">
+          <span class="lis">分享</span>
+          <img class="lii" src="../../templet/dt_templet/imgs/wt_share.png" alt=""/>
+        </li>
+      </ul>
     </div>
     <div class="detail">
       <div class="dt">
@@ -64,10 +74,43 @@
     </div>
     <!--相关推荐列表-->
     <div class="tj">
-      <h4>相关推荐</h4>
+      <span class="tjh4 active">相关推荐</span>
+      <span class="tjh4">查看评论</span>
     </div>
     <div class="audioList">
       <ul class="ulBox"></ul>
+      <ul class="comment">
+        <li class="ctList">
+          <div class="default"></div>
+          <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
+          <div class="listCon">
+            <p class="lcs">
+              <span class="commentName">周杰伦</span>
+              <span class="commentTime">2016-12-24</span>
+            </p>
+            <div class="commentContent">
+                            近给公司开发手机端网站，发现一个很厉害的插件
+                            近给公司开发手机端网站，发现一个很厉害的插件
+                            近给公司开发手机端网站，发现一个很厉害的插件
+            </div>
+          </div>
+        </li>
+        <li class="ctList">
+          <div class="default"></div>
+          <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
+          <div class="listCon">
+            <p class="lcs">
+              <span class="commentName">周杰伦</span>
+              <span class="commentTime">2016-12-24</span>
+            </p>
+            <div class="commentContent">
+                            近给公司开发手机端网站，发现一个很厉害的插件
+                            近给公司开发手机端网站，发现一个很厉害的插件
+                            近给公司开发手机端网站，发现一个很厉害的插件
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </body>

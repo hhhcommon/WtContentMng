@@ -84,12 +84,13 @@ body{-moz-user-select: none;}
 	position: relative;
   margin-top:100px;
   height:84%;
-  /*border:1px solid red;*/
 }
 /*中间左侧导航*/
-.con_left{
-  width:220px;
-  border:1px solid #dedede;
+body.fixed-sidebar .navbar-static-side,
+body.canvas-menu .navbar-static-side{
+  position: absolute;
+  border: 1px solid #dedede;
+  margin-left: 20px;
 }
 .con_left .li_audio1{
   position:absolute;
@@ -160,8 +161,20 @@ body{-moz-user-select: none;}
   color:#000;
 }
 /*中间右侧内容*/
+#page-wrapper{
+  padding: 0px !important;
+  position: inherit;
+  margin: 0 20px 0 260px;
+}
+body.fixed-sidebar.mini-navbar #page-wrapper{
+  margin: 0 20px 0 112px;
+}
+#page-wrapper .row{ 
+  margin-left:0px;
+  margin-right:0px;
+}
 .con_right{
-  border-top:1px solid #dedede;
+  border:1px solid #dedede;
 }
 #content-main{
   height:calc(100% - 1px) !important;
@@ -240,7 +253,7 @@ body{-moz-user-select: none;}
   </div>
   <div class="wrapper">
     <!--左侧导航开始-->
-    <nav class="navbar-default navbar-static-side" role="navigation" style="position:absolute;">
+    <nav class="navbar-default navbar-static-side left_nav" role="navigation">
       <div class="sidebar-collapse con_left">
         <ul class="nav" id="side-menu">
           <li class="manage">
