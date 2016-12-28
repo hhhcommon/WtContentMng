@@ -8,7 +8,7 @@
   <!-- D:\workIDE\projects\WtContentMng || D:\workIDE\work\WtContentMng || D:\WBWorkDir\WtContentMng -->
 
   <properties>
-    <projectDir>  D:\workIDE\work\WtContentMng </projectDir>
+    <projectDir>D:\workIDE\projects\WtContentMng</projectDir>
   </properties>
 
   <parent>
