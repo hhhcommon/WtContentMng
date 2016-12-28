@@ -17,6 +17,10 @@
   <script src="js/common_manage.js"></script>
   <script src="js/manage_zj.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <!--裁剪图片的插件-->
+  <script src="js/photoClip/pic.js"></script>
+  <script src="js/photoClip/lrz.pc.min.js"></script>
+  <script src="js/photoClip/jquery.imgareaselect.min.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -25,23 +29,16 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 a:hover{color:#ffa634;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{overflow: auto;}
+body{overflow: auto;-moz-user-select: none;}
 .content{
   width:100%;
   min-width:780px;
   height:auto;
 }
-.content .container{
-  /*position: relative;*/
-}
 .content .container .row{
   margin-left:0px;
   margin-right:0px;
   position: inherit;
-}
-.con_right{
-  /*height:1090px;*/
-  /*border:1px solid #dedede;*/
 }
 .ri_top{
   width:100%;
@@ -411,8 +408,108 @@ body{overflow: auto;}
   text-align: center;
   cursor: pointer;
 }
+/*裁剪图片时的遮罩层*/
+.mask_clip{
+  width:100%;
+  height:1100px;
+  position: absolute;
+  top:0px;
+  left:0px;
+  z-index:1020;
+  background:rgba(0,0,0,0.5);
+  display: none;
+}
+/*裁剪图片时的弹出层*/
+.container_clip{
+  width: 100%;
+  height:540px;
+  position: fixed;
+  font-family: 微软雅黑;
+  top:0px;
+  left:0px;
+  z-index:1050;
+  background: #fff;
+  overflow: auto;
+  display: none;
+}
+.cc_title{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  padding: 5px 0px 5px 20px;
+  font-family: "微软雅黑";
+}
+.container_clip p {
+  line-height: 12px;
+  line-height: 0px;
+  height: 0px;
+  margin:10px 0px 0px 0px;
+  color: #bbb
+}
+.imgAction{
+  width:402px;
+  height:500px;
+  margin-left:20px;
+  position: relative;
+  float: left;
+  border:1px solid #aaa;
+}
+.upload_pic,.picFile{
+  margin-left: 10px;
+  background: #ffa634;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.item {
+  margin-top: 60px;
+}
+#anniuDiv{
+  margin-top:15px;
+}
+.clipOver {
+  width: 200px;
+  height: 240px;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  float: left;
+  margin-left: 20px;
+}
+.cropped{
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  border: 1px #ddd solid;
+  text-align: center;
+}
+.action1{
+  position: absolute;
+  top: 220px;
+}
+#btnSave,#resetId{
+  float: left;
+  margin-left: 10px;
+  background: #ffa634;
+  border: 0px solid transparent;
+  border-radius: 3px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.btn-success,
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active, 
+.btn-success.active, 
+.open .dropdown-toggle.btn-success {
+  background-color: #ffa634;
+  border-color: #ffa634;
+  color: #fff;
+  float: left;
+  margin-left:3px;
+}
 </style>
-<body>
+<body onselectstart="return false">
 <div class="content">
   <div class="container">
     <div class="row">
@@ -428,22 +525,17 @@ body{overflow: auto;}
         </ul>
         <div class="all">
           <div class="all_cate">所有分类 > </div>
-          <ul class="new_cate">
-            <!--<li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>专辑一,专辑二,专辑三</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>电影电视</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">节目状态：</span>发布</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>脱口秀</span><span class="cate_img">×</span></li>-->
-          </ul>
+          <ul class="new_cate"></ul>
         </div>
         <div class="ri_top2 border1">
           <div class="attr" id="status" ids="zjstatus">
             <div class="attrKey">专辑状态 :</div>
             <div class="attrValues">
               <ul class="av-gather av_ul">
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
+                <li class="trig_item" id="5"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
+                <li class="trig_item" id="1"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
+                <li class="trig_item" id="2"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
+                <li class="trig_item" id="3"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
               </ul>
             </div>
             <div class="btns">
@@ -455,34 +547,8 @@ body{overflow: auto;}
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
-              <ul class="av-gather av_ul">
-                <!--<li class="trig_item chnel" data_idx="0"><a  class="ss1" href="javascript:void(0)">电影电视</a></li>
-                <li class="trig_item chnel" data_idx="1"><a  class="ss1" href="javascript:void(0)">脱口秀</a></li>
-                <li class="trig_item chnel" data_idx="2"><a  class="ss1" href="javascript:void(0)">历史人文</a></li>
-                <li class="trig_item chnel" data_idx="3"><a  class="ss1" href="javascript:void(0)">商业财经</a></li>
-                <li class="trig_item chnel" data_idx="4"><a  class="ss1" href="javascript:void(0)">儿童科教</a></li>-->
-              </ul>
+              <ul class="av-gather av_ul"></ul>
             </div>
-            <!--<ul class="tab_cont_item chnels" data_idx="0" data_name="电影电视">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
-            </ul>-->
-            <!--<ul class="tab_cont_item chnels" data_idx="1" data_name="脱口秀">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
-            </ul>-->
-            <!--<ul class="tab_cont_item chnels" data_idx="2" data_name="历史人文">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
-            </ul>-->
-            <!--<ul class="tab_cont_item chnels" data_idx="3" data_name="商业财经">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
-            </ul>-->
           </div>
         </div>
         <div class="ri_top3">
@@ -491,94 +557,7 @@ body{overflow: auto;}
             <span class="rth_st">专辑状态</span>
             <span class="rth_op">相关操作</span>
           </div>
-          <div class="ri_top3_con">
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <p class="rtcl_con_name">
-                  <span>专辑名称 ：</span>
-                  <span>双份的阳光</span>
-                </p>
-                <p class="rtcl_con_num">
-                  <span>节目数量 ： </span>
-                  <span>8个</span>
-                </p>
-                <p class="rtcl_con_time">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-          </div>
+          <div class="ri_top3_con"></div>
         </div>  
       </div>
     </div>
@@ -626,27 +605,11 @@ body{overflow: auto;}
                   </div>
                 </div>
               </div>
-              <!--<div class="form-group">-->
-                <!--<label class="col-sm-2 control-label">专辑分类<span class="ast">*</span>：</label>-->
-                <!--<div class="col-sm-10" style="padding-left:0px;">-->
-                  <!--<select name="" class="upl_zj">-->
-                    <!--<option value="">专辑分类一</option>
-                    <option value="">专辑分类二</option>
-                    <option value="">专辑分类三</option>
-                    <option value="">专辑分类四</option>
-                    <option value="">专辑分类五</option>-->
-                  <!--</select>--> 
-                <!--</div>-->
-              <!--</div>-->
               <div class="form-group">
                 <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <div class="tag_box">
-                    <ul class="upl_bq">
-                      <!--<li class="upl_bq_img"><span>自定义标签一</span><img class="upl_bq_cancelimg1" src="img/upl_img2.png" alt="" /></li>
-                      <li class="upl_bq_img"><span>自定义标签二</span><img class="upl_bq_cancelimg1" src="img/upl_img2.png" alt="" /></li>
-                      <li class="upl_bq_img"><span>自定义标签一</span><img class="upl_bq_cancelimg1" src="img/upl_img2.png" alt="" /></li>-->
-                    </ul>
+                    <ul class="upl_bq"></ul>
                     <div class="input_tag">
                       <input type="text" class="tag_txt"/>
                     </div>
@@ -654,38 +617,12 @@ body{overflow: auto;}
                   <div class="my_tag">
                     <h5>我的标签</h5>
                     <span class="hyp">换一批</span>
-                    <ul class="my_tag_con">
-                      <!--<li class="my_tag_con1">
-                        <input type="checkbox" class="my_tag_con1_check" />
-                        <span class="my_tag_con1_span">自定义标签一</span>
-                      </li>
-                      <li class="my_tag_con1">
-                        <input type="checkbox" class="my_tag_con1_check" />
-                        <span class="my_tag_con1_span">自定义标签二</span>
-                      </li>
-                      <li class="my_tag_con1">
-                        <input type="checkbox" class="my_tag_con1_check" />
-                        <span class="my_tag_con1_span">自定义标签三</span>
-                      </li>-->
-                    </ul>
+                    <ul class="my_tag_con"></ul>
                   </div>
                   <div class="gg_tag">
                     <h5>公共标签</h5>
                     <span class="hyp">换一批</span>
-                    <ul class="gg_tag_con">
-                      <!--<li class="gg_tag_con1">
-                        <input type="checkbox" class="gg_tag_con1_check" />
-                        <span class="gg_tag_con1_span">标签一</span>
-                      </li>
-                      <li class="gg_tag_con1">
-                        <input type="checkbox" class="gg_tag_con1_check" />
-                        <span class="gg_tag_con1_span">标签二</span>
-                      </li>
-                      <li class="gg_tag_con1">
-                        <input type="checkbox" class="gg_tag_con1_check" />
-                        <span class="gg_tag_con1_span">标签三</span>
-                      </li>-->
-                    </ul>
+                    <ul class="gg_tag_con"></ul>
                   </div>
                   <p>最多添加5个标签，单个标签最长6个汉字，按回车或空格确认</p>
                 </div>
@@ -693,13 +630,7 @@ body{overflow: auto;}
               <div class="form-group">
                 <label class="col-sm-2 control-label">发布栏目<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
-                  <select name="" class="upl_zj" autocomplete="off">
-                    <!--<option value="">专辑分类一</option>
-                    <option value="">专辑分类二</option>
-                    <option value="">专辑分类三</option>
-                    <option value="">专辑分类四</option>
-                    <option value="">专辑分类五</option>-->
-                  </select>
+                  <select name="" class="upl_zj" autocomplete="off"></select>
                 </div>
               </div>
               <div class="form-group">
@@ -729,6 +660,41 @@ body{overflow: auto;}
       </div>
     </div>
   </div> 
+</div>
+<!--裁剪图片时需要的遮罩层-->
+<div class="mask_clip"></div>
+<!--裁剪图片时需要的弹出层-->
+<div class="container_clip">
+  <div class="cc_title">专辑管理 > 裁剪图片</div>
+  <div class="imgAction">
+    <div class="row-fluid col-sm-12 col-md-12" id="anniuDiv">
+      <input type="file" class="picFile" style="display:none;"/>
+      <button  class="btn btn-success upload_pic">选择图片</button>
+      <button  class="btn btn-success" id="rotateRight">顺时针旋转</button>
+      <button  class="btn btn-success" id="scale">缩小</button>
+      <button  class="btn btn-success" id="little">放大</button>
+      <button  class="btn btn-success" id="affirmId">裁剪</button>
+    </div>
+    <div class="row-fluid col-sm-12 col-md-12 item" id="canvasDivId">
+      <canvas id="myCanvas" width="200" height="200" class="img-responsive" style="border:1px solid #d3d3d3;display:none;">
+              你的浏览器不支持HTML5. 
+      </canvas>  
+    </div> 
+    <div class="row-fluid col-sm-12 col-md-12">
+      <canvas id="myCanvasTow" width="200" height="200" class="img-responsive" style="border:1px solid #d3d3d3;display:none;">
+              你的浏览器不支持HTML5. 
+      </canvas>
+    </div>
+  </div>
+  <div class="clipOver">
+    <div class="cropped"> 
+      <img id="cutImgId" class="img-responsive" src=""style="width: 100;height: 100;display:none;">
+    </div>
+    <div class="action1">
+      <button  id="btnSave"  class="btn btn-success" >保存</button>
+      <button  id="resetId"  class="btn btn-success" >取消</button>
+    </div>
+  </div>
 </div>
 </body>
 </html>

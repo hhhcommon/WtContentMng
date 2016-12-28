@@ -176,6 +176,8 @@ public abstract class ContentUtils {
                 onePerson=new HashMap<String, Object>();
                 onePerson.put("RefName", _p.get("cName"));//关系名称
                 onePerson.put("PerName", _p.get("pName"));//人员名称
+                onePerson.put("PerId", _p.get("personId"));//人员Id
+                onePerson.put("PerImg", _p.get("perImg"));
                 ret.add(onePerson);
             }
         }
@@ -197,6 +199,7 @@ public abstract class ContentUtils {
         }
         return ret.size()>0?ret:null;
     }
+    
     private static List<Map<String, Object>> fetchChannels(List<Map<String, Object>> channelList, String resTableName, String resId) {//喜欢处理
         if (channelList==null||channelList.size()==0) return null;
         Map<String, Object> oneChn=null;

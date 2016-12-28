@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>专辑分享页</title>
+  <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+  <link href="zj_share.css" text="text/css" rel="stylesheet" />
+  <script src="jquery-2.1.1.min.js"></script>
+  <script>
+    $(document).bind('mobileinit',function(){
+      $.mobile.changePage.defaults.changeHash = false;
+      $.mobile.hashListeningEnabled = false;
+      $.mobile.pushStateEnabled = false;
+    });
+  </script> 
+  <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+  <script src="../../resources/js/mainPage.js"></script>
+  <script src="../../resources/js/context.utils.js"></script>
+  <script src="zj_share.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!--头部开始-->
+    <header>
+      <div id="logo"><img src="imgs/logo2.png" /></div>
+      <div class="downLoad">打开收听</div>
+    </header>
+    <!--专辑封面界面-->
+    <div class="PicBox">
+      <h4>刘德华</h4>
+      <div class="box">
+        <img src="imgs/liubianxing_orange.png"/>
+      </div>
+      <ul class="ul">
+        <li>
+          <span class="lis">喜欢</span>
+          <img class="lii" src="imgs/wt_img_prefer.png" alt=""/>
+        </li>
+        <li class="border">
+          <span class="lis">分享</span>
+          <img class="lii" src="imgs/wt_img_share.png" alt=""/>
+        </li>
+        <li>
+          <span class="lis">评论</span>
+          <img class="lii" src="imgs/wt_img_pinglun_white.png" alt=""/>
+        </li>
+      </ul>
+    </div>
+    <!--详情+节目列表-->
+    <div class="content">
+      <div class="tab_nav">
+        <span class="selected">详情</span>
+        <span>节目</span>
+      </div>
+      <div class="tab_con">
+        <div class="tc1 pad15 tc">
+          <div class="tc1_head">
+            <span class="lt20">主播介绍</span>
+            <ul>
+              <li class="tc1_li1"><img class="pic1" src="" alt="" /></li>
+              <li class="tc1_li2">单田芳：封神演义【高清】</li>
+              <li class="tc1_li3"><img class="pic2" src="imgs/focus.png" alt="" /><span class="focus">关注</span></li>
+            </ul>
+          </div>
+          <div class="tc1_body">
+            <span class="lt20">内容介绍</span>
+            <div class="descn">可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用可以使用</div>
+          </div>
+          <div class="tc1_foot">
+            <span class="lt20">标签</span>
+            <div class="tag">偏好设置/讲笑话/评书曲艺</div>
+          </div>
+        </div>
+        <div class="hide tc2 tc">
+          <div class="tc2_head">
+            <span class="sum">共140集</span>
+            <img src="imgs/image_sort.png" alt="" class="sort"/>
+            <img src="imgs/image_down_load.png" alt="" class="down"/>
+          </div>
+          <div class="zj_box">
+            <ul class="ulBox">
+              <li class='listBox'>
+                <h4>封神演义 第123回</h4>
+                <div class="time">2014-10-23</div>
+                <p class="lcp">
+                  <img src="imgs/sl.png" alt=""/>
+                  <span>1234</span>
+                  <img src="imgs/sc.png" alt="" class="sc"/>
+                  <span class="contentT">3'33'</span>
+                </p>
+              </li>
+              <li class='listBox'>
+                <h4>封神演义 第123回</h4>
+                <div class="time">2014-10-23</div>
+                <p class="lcp">
+                  <img src="imgs/sl.png" alt=""/>
+                  <span>1234</span>
+                  <img src="imgs/sc.png" alt="" class="sc"/>
+                  <span class="contentT">3'33'</span>
+                </p>
+              </li>
+              <li class='listBox'>
+                <h4>封神演义 第123回</h4>
+                <div class="time">2014-10-23</div>
+                <p class="lcp">
+                  <img src="imgs/sl.png" alt=""/>
+                  <span>1234</span>
+                  <img src="imgs/sc.png" alt="" class="sc"/>
+                  <span class="contentT">3'33'</span>
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

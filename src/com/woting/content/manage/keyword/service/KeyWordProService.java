@@ -21,27 +21,9 @@ public class KeyWordProService {
 	
 	public List<Map<String, Object>> getKeyWordList(String tagType, String userId, String typeId, String tagsize) {
 		List<KeyWordPo> kwlist = keyWordBaseService.getRandKeyWordByOwner(tagType, userId, typeId, tagsize);
-		List<Map<String, Object>> kwre = new ArrayList<>();
-		if (kwlist!=null && kwlist.size()>0) {
-			for (KeyWordPo kw : kwlist) {
-				Map<String, Object> m = new HashMap<>();
-				m.put("TagName", kw.getKwName());
-				m.put("nPy", kw.getnPy());
-				m.put("TagId", kw.getId());
-				m.put("Sort", kw.getSort());
-				m.put("CTime", kw.getcTime());
-				if (tagType.equals("1")) {
-					m.put("TagOrg", "公共标签");
-				} else {
-					if (tagType.equals("2")) {
-						m.put("TagOrg", "我的标签");
-					}
-				}
-				kwre.add(m);
-			}
-			if (kwre!=null && kwre.size()>0) {
-				return kwre;
-			}
+		List<Map<String, Object>> kwre = makeReturnList(tagType, kwlist, userId);
+		if (kwre!=null && kwre.size()>0) {
+			return kwre;
 		}
 		return null;
 	}
@@ -49,20 +31,10 @@ public class KeyWordProService {
 	public List<Map<String, Object>> getKeyWordListBySeqMedia(String seqmediaid, String tagType, String userId, String tagsize) {
 		ChannelAssetPo cha = channelContentService.getChannelAssetByAssetIdAndPubId(seqmediaid, userId, "wt_SeqMediaAsset");
 		List<KeyWordPo> kwlist = keyWordBaseService.getRandKeyWordByOwner(tagType, userId, cha.getChannelId(), tagsize);
-		List<Map<String, Object>> kwre = new ArrayList<>();
-		if (kwlist!=null && kwlist.size()>0) {
-			for (KeyWordPo kw : kwlist) {
-				Map<String, Object> m = new HashMap<>();
-				m.put("TagName", kw.getKwName());
-				m.put("nPy", kw.getnPy());
-				m.put("TagId", kw.getId());
-				m.put("Sort", kw.getSort());
-				m.put("CTime", kw.getcTime());
-				kwre.add(m);
-			}
-			if (kwre!=null && kwre.size()>0) {
-				return kwre;
-			}
+//		List<KeyWordPo> ownkws = keyWordBaseService.getKeyWordsByAssetId(userId, "palt_User");
+		List<Map<String, Object>> kwre = makeReturnList(tagType, kwlist, userId);
+		if (kwre!=null && kwre.size()>0) {
+			return kwre;
 		}
 		return null;
 	}
@@ -87,5 +59,83 @@ public class KeyWordProService {
 	
 	public void removeKeyWordByAssetId(String assetId, String resTableName) {
 		keyWordBaseService.deleteKeyWordRes(assetId, resTableName);
+	}
+
+	public List<Map<String, Object>> getKeyWordList(String tagType, String userid, String tagsize) {
+		List<KeyWordPo> kws = keyWordBaseService.getRandKeyWordByOwner(tagType, userid, null, tagsize);
+//		List<KeyWordPo> ownkws = keyWordBaseService.getKeyWordsByAssetId(userid, "palt_User");
+		List<Map<String, Object>> kwre = makeReturnList(tagType, kws, userid);
+		if (kwre!=null && kwre.size()>0) {
+			return kwre;
+		}
+		return null;
+	}
+	
+	private List<Map<String, Object>> makeReturnList(String tagType, List<KeyWordPo> kws, String userId) {
+		if (tagType.equals("1")) {
+			if (kws!=null && kws.size()>0) {
+				List<Map<String, Object>> kwre = new ArrayList<>();
+				for (KeyWordPo kw : kws) {
+					Map<String, Object> m = new HashMap<>();
+					m.put("TagName", kw.getKwName());
+					m.put("nPy", kw.getnPy());
+					m.put("TagId", kw.getId());
+					m.put("Sort", kw.getSort());
+					m.put("CTime", kw.getcTime());
+					m.put("TagOrg", "公共标签");
+					kwre.add(m);
+				}
+				if (kwre!=null && kwre.size()>0) {
+					return kwre;
+				}
+			}
+		}
+		if (tagType.equals("2")) {
+			if (kws!=null && kws.size()>0) {
+				List<Map<String, Object>> kwre = new ArrayList<>();
+				for (KeyWordPo kw : kws) {
+					Map<String, Object> m = new HashMap<>();
+					m.put("TagName", kw.getKwName());
+					m.put("nPy", kw.getnPy());
+					m.put("TagId", kw.getId());
+					m.put("Sort", kw.getSort());
+					m.put("CTime", kw.getcTime());
+					m.put("TagOrg", "我的标签");
+					kwre.add(m);
+				}
+				if (kwre!=null && kwre.size()>0) {
+					return kwre;
+				}
+			}
+		}
+		if (tagType.equals("3")) {
+			if (kws!=null && kws.size()>0) {
+				List<Map<String, Object>> kwre = new ArrayList<>();
+				List<KeyWordPo> ownkws = keyWordBaseService.getKeyWordsByAssetId(userId, "palt_User");
+				for (KeyWordPo kw : kws) {
+					Map<String, Object> m = new HashMap<>();
+					m.put("TagName", kw.getKwName());
+					m.put("nPy", kw.getnPy());
+					m.put("TagId", kw.getId());
+					m.put("Sort", kw.getSort());
+					m.put("CTime", kw.getcTime());
+					if (ownkws!=null && ownkws.size()>0) {
+						for (KeyWordPo k : ownkws) {
+							if (kw.getId().equals(k.getId())) {
+								m.put("TagOrg", "我的标签");
+							}
+						}
+					}
+					if (!m.containsKey("TagOrg")) {
+						m.put("TagOrg", "公共标签");
+					}
+					kwre.add(m);
+				}
+				if (kwre!=null && kwre.size()>0) {
+					return kwre;
+				}
+			}
+		}
+		return null;
 	}
 }

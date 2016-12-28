@@ -1,5 +1,6 @@
 package com.woting.content.broadcast.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
+import org.w3c.dom.css.ElementCSSInlineStyle;
 
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
@@ -19,6 +22,7 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo;
+import com.woting.cm.core.broadcast.persis.po.BCProgrammePo;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
@@ -34,19 +38,56 @@ public class BroadcastProService {
 	private MybatisDAO<BCLiveFlowPo> bcLiveFlowDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<DictRefResPo> dictRefResDao;
+	@Resource(name = "defaultDAO")
+	private MybatisDAO<BCProgrammePo> bcProDao;
 	@Resource
 	private MediaService mediaService;
-
+//	private _CacheDictionary _cd;
+	private Map<String, Integer> WeekDay = new HashMap<String, Integer>() {
+		{
+			put("get1", 7);
+			put("get2", 1);
+			put("get3", 2);
+			put("get4", 3);
+			put("get5", 4);
+			put("get6", 5);
+			put("get7", 6);
+			put("update1", 2);
+			put("update2", 3);
+			put("update3", 4);
+			put("update4", 5);
+			put("update5", 6);
+			put("update6", 7);
+			put("update7", 1);
+		}
+	};
+	
+	
 	@PostConstruct
 	public void initParam() {
 		broadcastDao.setNamespace("A_BROADCAST");
 		bcLiveFlowDao.setNamespace("A_BCLIVEFLOW");
 		dictRefResDao.setNamespace("A_DREFRES");
+		bcProDao.setNamespace("A_BCPROGRAMME");
+		
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addBroadcast(String userId, String bcTitle, String bcImg, String bcAreaId, String bcTypeId,
-			String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
+	public boolean addBroadcast(String userId, String bcTitle, String bcImg, String bcAreaId, String bcTypeId,
+			List<Map<String, Object>> bcPlayPaths, String bcPublisher, String bcDescn) {
+		boolean isok = true;
+		for (Map<String, Object> map : bcPlayPaths) {
+			if (map.get("IsMain").equals("1") && isok==true) {
+				isok = false;
+				continue;
+			}
+			if (map.get("IsMain").equals("1") && isok==false) {
+				return false;
+			}
+		}
+		if (isok) {
+			return false;
+		}
 		BroadcastPo bPo = new BroadcastPo();
 		bPo.setId(SequenceUUID.getUUIDSubSegment(4));
 		bPo.setBcTitle(bcTitle);
@@ -63,24 +104,27 @@ public class BroadcastProService {
 				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
 		DictModel tempDictM = null;
-		tempDictM = _cd.getDictModelById("2");
 		TreeNode<DictDetail> tempNode = null;
-		tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		if (tempNode == null) {
-			tempDictM = _cd.getDictModelById("9");
-			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
+		String areaids[] = bcAreaId.split(",");
+		for (String arid : areaids) {
+			tempDictM = _cd.getDictModelById("2");
+			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			if (tempNode == null) {
+				tempDictM = _cd.getDictModelById("9");
+				tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			}
+			if (tempNode != null) {
+				DictRefResPo drrPo = new DictRefResPo();
+				drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+				drrPo.setRefName("电台所属地区");
+				drrPo.setResTableName("wt_Broadcast");
+				drrPo.setResId(bPo.getId());
+				drrPo.setDictMid(tempDictM.getId());
+				drrPo.setDictDid(arid);
+				dictRefResDao.insert(drrPo);
+			}
 		}
 
-		if (tempNode != null) {
-			DictRefResPo drrPo = new DictRefResPo();
-			drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
-			drrPo.setRefName("电台所属地区");
-			drrPo.setResTableName("wt_Broadcast");
-			drrPo.setResId(bPo.getId());
-			drrPo.setDictMid(tempDictM.getId());
-			drrPo.setDictDid(bcAreaId);
-			dictRefResDao.insert(drrPo);
-		}
 		// 字典--分类
 		String ids[] = bcTypeId.split(",");
 		tempDictM = _cd.getDictModelById("1");
@@ -99,14 +143,17 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		BCLiveFlowPo lfp = new BCLiveFlowPo();
-		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
-		lfp.setBcId(bPo.getId());
-		lfp.setBcSrcType(2);
-		lfp.setBcSource("管理端录入");
-		lfp.setFlowURI(bcPlayPath);
-		lfp.setIsMain(Integer.valueOf(isMain));
-		bcLiveFlowDao.insert(lfp);
+		for (Map<String, Object> ps : bcPlayPaths) {
+			BCLiveFlowPo lfp = new BCLiveFlowPo();
+		    lfp.setId(SequenceUUID.getUUIDSubSegment(4));
+		    lfp.setBcId(bPo.getId());
+		    lfp.setBcSrcType(2);
+		    lfp.setBcSource(ps.get("BcSource")+"");
+		    lfp.setFlowURI(ps.get("BcPlayPath")+"");
+		    lfp.setIsMain(Integer.valueOf(ps.get("IsMain")+""));
+		    bcLiveFlowDao.insert(lfp);
+		}
+		return true;
 	}
 
 	/**
@@ -124,10 +171,9 @@ public class BroadcastProService {
 		bPo.setBcURL(m.get("bcUrl") + "");
 		bPo.setDescn(m.get("descn") + "");
 		broadcastDao.insert(bPo);
-
-		// 字典
-		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
-				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		
+		
 		// 字典--地区
 		String tempIds = m.get("bcArea") + "";
 		DictModel tempDictM = _cd.getDictModelById("2");
@@ -196,8 +242,21 @@ public class BroadcastProService {
 	 * @param bcDescn
 	 */
 	@SuppressWarnings("unchecked")
-	public void updateBroadcast(String userId, String bcId, String bcTitle, String bcImg, String bcAreaId,
-			String bcTypeId, String bcPlayPath, String bcPublisher, String isMain, String bcDescn) {
+	public boolean updateBroadcast(String userId, String bcId, String bcTitle, String bcImg, String bcAreaId,
+			String bcTypeId, List<Map<String, Object>> bcPlayPaths, String bcPublisher, String bcDescn) {
+		boolean isok = true;
+		for (Map<String, Object> map : bcPlayPaths) {
+			if (map.get("IsMain").equals("1") && isok==true) {
+				isok = false;
+				continue;
+			}
+			if (map.get("IsMain").equals("1") && isok==false) {
+				return false;
+			}
+		}
+		if (isok) {
+			return false;
+		}
 		BroadcastPo bPo = new BroadcastPo();
 		bPo.setId(bcId);
 		bPo.setBcTitle(bcTitle);
@@ -210,28 +269,29 @@ public class BroadcastProService {
 		broadcastDao.update(bPo);
 
 		// 字典
-		dictRefResDao.delete("multiDelBc", "'" + bcId + "'");// 先删除
-		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
-				.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		dictRefResDao.delete("multiDelResIds", "'" + bcId + "'");// 先删除
+		com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 		// 字典--地区
 		DictModel tempDictM = null;
-		tempDictM = _cd.getDictModelById("2");
 		TreeNode<DictDetail> tempNode = null;
-		tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		if (tempNode == null) {
-			tempDictM = _cd.getDictModelById("9");
-			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(bcAreaId);
-		}
-
-		if (tempNode != null) {
-			DictRefResPo drrPo = new DictRefResPo();
-			drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
-			drrPo.setRefName("电台所属地区");
-			drrPo.setResTableName("wt_Broadcast");
-			drrPo.setResId(bPo.getId());
-			drrPo.setDictMid(tempDictM.getId());
-			drrPo.setDictDid(bcAreaId);
-			dictRefResDao.insert(drrPo);
+		String areaids[] = bcAreaId.split(",");
+		for (String arid : areaids) {
+			tempDictM = _cd.getDictModelById("2");
+			tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			if (tempNode == null) {
+				tempDictM = _cd.getDictModelById("9");
+				tempNode = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(arid);
+			}
+			if (tempNode != null) {
+				DictRefResPo drrPo = new DictRefResPo();
+				drrPo.setId(SequenceUUID.getUUIDSubSegment(4));
+				drrPo.setRefName("电台所属地区");
+				drrPo.setResTableName("wt_Broadcast");
+				drrPo.setResId(bPo.getId());
+				drrPo.setDictMid(tempDictM.getId());
+				drrPo.setDictDid(arid);
+				dictRefResDao.insert(drrPo);
+			}
 		}
 		// 字典--分类
 		String ids[] = bcTypeId.split(",");
@@ -251,15 +311,18 @@ public class BroadcastProService {
 		}
 
 		// 直播流
-		bcLiveFlowDao.delete("multiDelBc", "'" + bcId + "'");// 先删除
-		BCLiveFlowPo lfp = new BCLiveFlowPo();
-		lfp.setId(SequenceUUID.getUUIDSubSegment(4));
-		lfp.setBcId(bPo.getId());
-		lfp.setBcSrcType(2);
-		lfp.setBcSource("管理端录入");
-		lfp.setFlowURI(bcPlayPath);
-		lfp.setIsMain(Integer.valueOf(isMain));
-		bcLiveFlowDao.insert(lfp);
+		bcLiveFlowDao.delete("multiDelBclf", "'"+bcId+"'");
+		for (Map<String, Object> ps : bcPlayPaths) {
+			BCLiveFlowPo lfp = new BCLiveFlowPo();
+		    lfp.setId(SequenceUUID.getUUIDSubSegment(4));
+			lfp.setBcId(bPo.getId());
+			lfp.setBcSrcType(2);
+			lfp.setBcSource(ps.get("BcSource")+"");
+			lfp.setFlowURI(ps.get("BcPlayPath")+"");
+			lfp.setIsMain(Integer.valueOf(ps.get("IsMain")+""));
+			bcLiveFlowDao.insert(lfp);
+		}
+		return true;
 	}
 
 	/**
@@ -336,6 +399,7 @@ public class BroadcastProService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Page<Map<String, Object>> getViewList(Map<String, Object> m) {
 		Map<String, Object> param = new HashMap<String, Object>();
 		int pageIndex = Integer.parseInt(m.get("pageNumber") + "");
@@ -347,8 +411,7 @@ public class BroadcastProService {
 			param.put("mId", mId);
 
 			// 可通过当前节点获得其和下所有字节点列表
-			com.woting.cm.core.dict.mem._CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache
-					.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			DictModel tempDictM = _cd.getDictModelById(mId);
 			TreeNode<DictDetail> root = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(rId);
 			// 得到所有下级结点的Id
@@ -374,8 +437,9 @@ public class BroadcastProService {
 		ids = ids.replaceAll(",", "','");
 		ids = "'" + ids + "'";
 		broadcastDao.delete("multiDelBc", ids);
-		bcLiveFlowDao.delete("multiDelBc", ids);
-		dictRefResDao.delete("multiDelBc", ids);
+		bcLiveFlowDao.delete("multiDelBclf", ids);
+		dictRefResDao.delete("multiDelResIds", ids);
+		bcProDao.delete("multiDelBcP", ids);
 	}
 
 	/**
@@ -458,19 +522,91 @@ public class BroadcastProService {
 		return bclist;
 	}
 
-	// public List<Map<String, Object>> getSqlList(){
-	// List<BroadcastPo> listbp = broadcastDao.queryForList();
-	// for (BroadcastPo broadcastPo : listbp) {
-	// LiveFlowPo liveFlowPo = bc_liveflowDao.getInfoObject("getInfoByBcId",
-	// broadcastPo.getId());
-	// if(liveFlowPo!=null){
-	// Map<String, Object> m = new HashMap<String,Object>();
-	// m.put("channelName", broadcastPo.getBcTitle());
-	// List<Map<String, Object>> l = new ArrayList<Map<String,Object>>();
-	// Map<String, Object> m2 = new HashMap<String,Object>();
-	// m2.put("streamName", "蜻蜓资源");
-	// }
-	// }
-	// return null;
-	// }
+	public List<Map<String, Object>> getBcProgrammes(String bcId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("bcId", bcId);
+		m.put("sort", 0);
+		m.put("orderByClause", "validTime desc");
+		m.put("limitNum", 1);
+		List<BCProgrammePo> bcps = bcProDao.queryForList("getList", m);
+		if (bcps!=null && bcps.size()>0) {
+			long vtime = bcps.get(0).getValidTime().getTime();
+			m = new HashMap<>();
+			m.put("bcId", bcId);
+		    m.put("sort", 0);
+		    m.put("validTime", new Timestamp(vtime));
+		    m.put("orderByClause", "weekDay,BeginTime");
+		    bcps = bcProDao.queryForList("getList", m);
+		}
+		if (bcps!=null && bcps.size()>0) {
+			List<Map<String, Object>> bcms = new ArrayList<>();
+			for (BCProgrammePo bcProgrammePo : bcps) {
+				Map<String, Object> bcm = new HashMap<>();
+				bcm.put("BcId", bcProgrammePo.getBcId());
+				bcm.put("Title", bcProgrammePo.getTitle());
+				bcm.put("BeginTime", bcProgrammePo.getBeginTime());
+				bcm.put("EndTime", bcProgrammePo.getEndTime());
+				bcm.put("CTime", bcProgrammePo.getcTime());
+				bcm.put("WeekDay", WeekDay.get("get"+bcProgrammePo.getWeekDay()));
+				bcms.add(bcm);
+			}
+			return bcms;
+		}
+		return null;
+	}
+
+	public boolean updateBcProgrammes(String userId, String bcId, List<Map<String, Object>> programmes) {
+		List<BCProgrammePo> bcps = new ArrayList<>();
+		long validTime = (System.currentTimeMillis()/86400000)*86400000-8*3600*1000;
+		for (Map<String, Object> m : programmes) {
+			BCProgrammePo bcp = new BCProgrammePo();
+			bcp.setId(SequenceUUID.getPureUUID());
+			bcp.setBcId(bcId);
+			bcp.setTitle(m.get("Title")+"");
+			bcp.setSort(0);
+			bcp.setWeekDay(WeekDay.get("update"+m.get("WeekDay")));
+			bcp.setBeginTime(m.get("BeginTime")+"");
+			bcp.setEndTime(m.get("EndTime")+"");
+			bcp.setValidTime(new Timestamp(validTime));
+			bcps.add(bcp);
+		}
+		if (bcps!=null && bcps.size()>0) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("bcId", bcId);
+		    m.put("validTime", new Timestamp(validTime));
+		    bcProDao.update("updateSort", m);
+			Map<String, Object> map = new HashMap<>();
+		    map.put("list", bcps);
+			bcProDao.insert("insertList", map);
+		    return true;
+		}
+		return false;
+	}
+
+	public Map<String, Object> getBroadcasts(String catalogType, String catalogId) {
+		_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
+		DictModel tempDictM = _cd.getDictModelById(catalogType);
+		TreeNode<DictDetail> root = (TreeNode<DictDetail>) tempDictM.dictTree.findNode(catalogId);
+		List<TreeNode<? extends TreeNodeBean>> Dictds = root.getChildren();
+		String cataids = getCataIds(root);
+		System.out.println(cataids);
+		return null;
+	}
+	
+	public String getCataIds(TreeNode<? extends TreeNodeBean> root){
+		String cataids = "";
+		cataids +=",'"+root.getId()+"'";
+		List<TreeNode<? extends TreeNodeBean>> Dictds = root.getChildren();
+		if (Dictds!=null && Dictds.size()>0) {
+			for (TreeNode<? extends TreeNodeBean> treeNode : Dictds) {
+				if (treeNode.getChildCount()>0) {
+					cataids += getCataIds(root);
+				}else {
+					cataids+=",'"+treeNode.getId()+"'";
+				}
+			}
+		}
+		cataids = cataids.substring(1);
+		return cataids;
+	}
 }

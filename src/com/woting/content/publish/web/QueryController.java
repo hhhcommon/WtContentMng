@@ -11,8 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.RequestUtils;
+import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.publish.service.QueryService;
-import com.woting.content.publish.utils.CacheUtils;
 import com.woting.passport.login.utils.RequestDataUtils;
 
 /**
@@ -161,35 +161,36 @@ public class QueryController {
 
 	/**
 	 * 发布所有已审核的节目 只用于测试用
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value = "/content/getAll.do")
+	@RequestMapping(value = "/content/getShareHtml.do")
 	@ResponseBody
-	public Map<String, Object> getAll(HttpServletRequest request) {
+	public Map<String, Object> getShareHtml(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		int flowFlag = 0;
-		int page = 0;
-		int pagesize = 0;
-		StringBuilder sb = new StringBuilder();
-		List<Map<String, Object>> listsequs = queryService.getPublishedSeqList();
-		if(listsequs!=null && listsequs.size()>0) {
-			for (Map<String, Object> map2 : listsequs) {
-			    String sequid = (String) map2.get("ContentId");
-				if (sb.indexOf(sequid) < 0) {
-					Map<String, Object> m2 = queryService.getContentInfo(page, pagesize, sequid, "wt_SeqMediaAsset");
-					if (m2.get("audio") != null) {
-						map.put("ContentDetail", m2.get("sequ"));
-						map.put("SubList", m2.get("audio"));
-					}
-					sb.append(sequid);
-					CacheUtils.publishZJ(map);
-				}
-			}
-		} 
-		return null;
+		String contentId = m.get("ContentId")+"";
+		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无内容ID");
+			return map;
+		}
+		String mediaType = m.get("MediaType")+"";
+		if (StringUtils.isNullOrEmptyOrSpace(mediaType) || mediaType.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无内容类型");
+			return map;
+		}
+		boolean isok = queryService.getShareHtml(contentId, mediaType);
+		if (isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "静态页面生成成功");
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "静态页面生成失败");
+		}
+		return map;
 	}
 
 	/**
@@ -201,11 +202,21 @@ public class QueryController {
 	@RequestMapping(value = "/content/getZJSubPage.do")
 	@ResponseBody
 	public Map<String, Object> getZJSubPage(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String zjid = (String) m.get("ContentId");
-		String page = (String) m.get("Page");
-		Map<String, Object> map = new HashMap<String, Object>();
-		map = queryService.getZJSubPage(zjid, page);
+		String contentId = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无内容ID");
+			return map;
+		}
+		String page = m.get("Page") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(page) || page.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无页码");
+			return map;
+		}
+		map = queryService.getZJSubPage(contentId, page);
 		return map;
 	}
 }

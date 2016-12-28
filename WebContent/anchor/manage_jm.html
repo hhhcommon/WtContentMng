@@ -18,7 +18,9 @@
   <script src="js/manage_jm.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
   <!--裁剪图片的插件-->
-  <script src="js/photoClip/cropbox.js"></script>
+  <script src="js/photoClip/pic.js"></script>
+  <script src="js/photoClip/lrz.pc.min.js"></script>
+  <script src="js/photoClip/jquery.imgareaselect.min.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -26,16 +28,12 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{overflow: auto;}
+body{overflow: auto;-moz-user-select: none; }
 .content{
   position: relative;
   width:100%;
   min-width:780px;
   height:100%;
-}
-.content .container{
-  /*position: relative;
-  height:100%;*/
 }
 .content .container .row{
   position: absolute;
@@ -43,10 +41,6 @@ body{overflow: auto;}
   margin-left:0px;
   margin-right:0px;
   position: inherit;
-}
-.con_right{
-  /*position: absolute;
-  height: 100%;*/
 }
 .ri_top{
   width:100%;
@@ -191,7 +185,6 @@ body{overflow: auto;}
 .ri_top3{
   width:100%;
   height:100%;
-/*  overflow: hidden;*/
   margin-top:15px;
 }
 .ri_top3_head{
@@ -424,13 +417,14 @@ body{overflow: auto;}
 /*裁剪图片时的弹出层*/
 .container_clip{
   width: 100%;
-  height:100%;
-  position: absolute;
+  height:540px;
+  position: fixed;
   font-family: 微软雅黑;
   top:0px;
   left:0px;
   z-index:1050;
   background: #fff;
+  overflow: auto;
   display: none;
 }
 .cc_title{
@@ -445,7 +439,7 @@ body{overflow: auto;}
   line-height: 12px;
   line-height: 0px;
   height: 0px;
-  margin: 20px;
+  margin:10px 0px 0px 0px;
   color: #bbb
 }
 .imgAction{
@@ -454,135 +448,41 @@ body{overflow: auto;}
   margin-left:20px;
   position: relative;
   float: left;
+  border:1px solid #aaa;
 }
-.action {
-  width: 400px;
-  height: 40px;
+.upload_pic,.picFile{
+  margin-left: 10px;
+  background: #ffa634;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.item {
+  margin-top: 60px;
+}
+#anniuDiv{
+  margin-top:15px;
+}
+.clipOver {
+  width: 200px;
+  height: 240px;
   position: relative;
+  top: 0px;
+  left: 0px;
+  float: left;
+  margin-left: 20px;
 }
-.cropped {
+.cropped{
   width: 200px;
   height: 200px;
   position: absolute;
   border: 1px #ddd solid;
   text-align: center;
 }
-.imageBox {
-  position: relative;
-  height: 400px;
-  width: 400px;
-  border: 1px solid #aaa;
-  background: #fff;
-  overflow: hidden;
-  background-repeat: no-repeat;
-  cursor: move;
-}
-.imageBox .thumbBox {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 200px;
-  height: 200px;
-  margin-top: -100px;
-  margin-left: -100px;
-  box-sizing: border-box;
-  border: 1px solid rgb(102, 102, 102);
-  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.1);
-  background: none repeat scroll 0% 0% transparent;
-}
-.imageBox .spinner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  text-align: center;
-  line-height: 400px;
-  background: rgba(0,0,0,0.7);
-}
-.Btnsty_peyton{ 
-  float: right;
-  width: 66px;
-  display: inline-block;
-  height:40px;
-  line-height: 40px;
-  font-size: 20px;
-  color: #FFFFFF;
-  margin:0px 2px;
-  background-color: #ffa634;
-  border-radius: 3px;
-  text-decoration: none;
-  cursor: pointer;
-  box-shadow: 0px 0px 5px #B0B0B0;
-  border: 0px #fff solid;
-  cursor: pointer;
-}
-/*选择文件上传*/
-.new-contentarea {
-  width: 140px;
-  overflow:hidden;
-  margin: 0 auto;
-  position:relative;
-  float:left;
-  cursor: pointer;
-}
-.new-contentarea label {
-  width:100%;
-  height:100%;
-  display:block;
-}
-.new-contentarea input[type=file] {
-  width:140px;
-  height:40px;
-  background:#333;
-  margin: 0 auto;
-  position:absolute;
-  right:50%;
-  margin-right:-70px;
-  top:0;
-  opacity:0;
-  filter:alpha(opacity=0);
-  z-index:2;
-  cursor: pointer;
-}
-a.upload-img{
-  width:140px;
-  display: inline-block;
-  height:40px;
-  line-height: 40px;
-  font-size: 20px;
-  color: #FFFFFF;
-  background-color: #ffa634;
-  border-radius: 3px;
-  text-decoration:none;
-  cursor:pointer;
-  border: 0px #fff solid;
-  cursor: pointer;
-}
-a.upload-img:hover{
-  background-color: #ec7e70;
-}
-.tc{text-align:center;}
-.clipOver{
-  width:200px;
-  height:240px;
-  position: relative;
-  top:0px;
-  left:0px;
-  float: left;
-  margin-left:20px;
-}
 .action1{
   position: absolute;
-  bottom:-35px;
-  width:200px;
-  height:35px;
-  overflow: hidden;
+  top: 220px;
 }
-#btnSave,#btnCancel{
-  width: 80px;
-  height: 35px;
-  color: #fff;
+#btnSave,#resetId{
   float: left;
   margin-left: 10px;
   background: #ffa634;
@@ -591,8 +491,20 @@ a.upload-img:hover{
   font-size: 20px;
   cursor: pointer;
 }
+.btn-success,
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active, 
+.btn-success.active, 
+.open .dropdown-toggle.btn-success {
+  background-color: #ffa634;
+  border-color: #ffa634;
+  color: #fff;
+  float: left;
+  margin-left:3px;
+}
 </style>
-<body class="laydate_body">
+<body class="laydate_body" onselectstart="return false">
 <div class="content">
   <div class="container">
     <div class="row">
@@ -608,22 +520,17 @@ a.upload-img:hover{
         </ul>
         <div class="all">
           <div class="all_cate">所有分类 > </div>
-          <ul class="new_cate">
-            <!--<li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>专辑一,专辑二,专辑三</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>电影电视</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">节目状态：</span>发布</span><span class="cate_img">×</span></li>
-            <li class="cate"><span class="cate_desc"><span class="cate_desc_title">所属栏目：</span>脱口秀</span><span class="cate_img">×</span></li>-->
-          </ul>
+          <ul class="new_cate"></ul>
         </div>
         <div class="ri_top2 border1">
           <div class="attr" id="status" ids="jmstatus">
             <div class="attrKey">节目状态 :</div>
             <div class="attrValues">
               <ul class="av-gather av_ul">
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
-                <li class="trig_item"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
+                <li class="trig_item" id="5"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
+                <li class="trig_item" id="1"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
+                <li class="trig_item" id="2"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
+                <li class="trig_item" id="3"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
               </ul>
             </div>
             <div class="btns">
@@ -635,25 +542,7 @@ a.upload-img:hover{
           <div class="attr" id="album">
             <div class="attrKey">所属专辑 :</div>
             <div class="attrValues">
-              <!--<ul class="av-gather av_ul">
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑1</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑2</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑3</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑4</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑5</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑6</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑7</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑8</a></li>
-              </ul>-->
-              <ul class="av-gather av_ul">
-                <!--<li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑9</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑10</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑11</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑12</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑13</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑14</a></li>
-                <li class="trig_item" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">专辑15</a></li>-->
-              </ul>
+              <ul class="av-gather av_ul"></ul>
             </div>
             <div class="btns">
               <span class="btns_sub">确定</span>
@@ -664,34 +553,8 @@ a.upload-img:hover{
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
-              <ul class="av-gather av_ul">
-                <!--<li class="trig_item chnel" data_idx="0"><a  class="ss1" href="javascript:void(0)">电影电视</a></li>
-                <li class="trig_item chnel" data_idx="1"><a  class="ss1" href="javascript:void(0)">脱口秀</a></li>
-                <li class="trig_item chnel" data_idx="2"><a  class="ss1" href="javascript:void(0)">历史人文</a></li>
-                <li class="trig_item chnel" data_idx="3"><a  class="ss1" href="javascript:void(0)">商业财经</a></li>
-                <li class="trig_item chnel" data_idx="4"><a  class="ss1" href="javascript:void(0)">儿童科教</a></li>-->
-              </ul>
+              <ul class="av-gather av_ul"></ul>
             </div>
-            <!--<ul class="tab_cont_item chnels" data_idx="0" data_name="电影电视">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
-            </ul>-->
-            <!--<ul class="tab_cont_item chnels" data_idx="1" data_name="脱口秀">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
-            </ul>-->
-            <!--<ul class="tab_cont_item chnels" data_idx="2" data_name="历史人文">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
-            </ul>-->
-            <!--<ul class="tab_cont_item chnels" data_idx="3" data_name="商业财经">
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
-              <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目4</a></li>
-            </ul>-->
           </div>
         </div> 
         <div class="ri_top3">
@@ -700,88 +563,7 @@ a.upload-img:hover{
             <span class="rth_st">节目状态</span>
             <span class="rth_op">相关操作</span>
           </div>
-          <div class="ri_top3_con">
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-            <!--<div class="rtc_listBox">
-              <div class="rtcl_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="rtcl_con">
-                <h4>敢不敢带上耳机听音乐</h4>
-                <p class="zj_name">我是高冷女歌手</p>
-                <p class="other">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-              <p class="jm_st">已发布</p>
-              <div class="op_type">
-                <p class="jm_edit">编辑</p>
-                <p class="jm_pub">发布</p>
-                <p class="jm_del">删除</p>
-                <p class="jm_recal">撤回</p>
-              </div>
-            </div>-->
-          </div>
+          <div class="ri_top3_con"></div>
         </div>  
       </div>
     </div>
@@ -814,7 +596,7 @@ a.upload-img:hover{
                     <img class="upl_wj_img" src="img/upl_img1.png" alt="" />
                   </div>
                   <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
-                  <audio class="audio" src="" style="display:none;"></audio>
+                  <audio class="audio" preload="auto" src="" style="display:none;"></audio>
                   <div class="upl_yp">
                     <input type="text" class="yp_mz" >
                     <div class="parentProgress">
@@ -855,24 +637,14 @@ a.upload-img:hover{
               <div class="form-group">
                 <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
-                  <select name="" class="upl_zj" autocomplete="off">
-                    <!--<option id="zhuanji1" value="">专辑一</option>
-                    <option id="zhuanji2" value="">专辑二</option>
-                    <option id="zhuanji3" value="">专辑三</option>
-                    <option id="zhuanji4" value="">专辑四</option>
-                    <option id="zhuanji5" value="">专辑五</option>-->
-                  </select> 
+                  <select name="" class="upl_zj" autocomplete="off"></select>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <div class="tag_box">
-                    <ul class="upl_bq">
-                      <!--<li class="upl_bq_img"><span>标签一</span><img class="upl_bq_cancelimg1" src="img/upl_img2.png" alt="" /></li>
-                      <li class="upl_bq_img"><span>标签二</span><img class="upl_bq_cancelimg1" src="img/upl_img2.png" alt="" /></li>
-                      <li class="upl_bq_img"><span>自定义标签一</span><img class="upl_bq_cancelimg1" src="img/upl_img2.png" alt="" /></li>-->
-                    </ul>
+                    <ul class="upl_bq"></ul>
                     <div class="input_tag">
                       <input type="text" class="tag_txt"/>
                     </div>
@@ -880,45 +652,19 @@ a.upload-img:hover{
                   <div class="my_tag">
                     <h5>我的标签</h5>
                     <span class="hyp">换一批</span>
-                    <ul class="my_tag_con">
-                      <!--<li class="my_tag_con1">
-                        <input type="checkbox" class="my_tag_con1_check" />
-                        <span class="my_tag_con1_span">自定义标签一</span>
-                      </li>
-                      <li class="my_tag_con1">
-                        <input type="checkbox" class="my_tag_con1_check" />
-                        <span class="my_tag_con1_span">自定义标签二</span>
-                      </li>
-                      <li class="my_tag_con1">
-                        <input type="checkbox" class="my_tag_con1_check" />
-                        <span class="my_tag_con1_span">自定义标签三</span>
-                      </li>-->
-                    </ul>
+                    <ul class="my_tag_con"></ul>
                   </div>
                   <div class="gg_tag">
                     <h5>公共标签</h5>
                     <span class="hyp">换一批</span>
-                    <ul class="gg_tag_con">
-                      <!--<li class="gg_tag_con1">
-                        <input type="checkbox" class="gg_tag_con1_check" />
-                        <span class="gg_tag_con1_span">标签一</span>
-                      </li>
-                      <li class="gg_tag_con1">
-                        <input type="checkbox" class="gg_tag_con1_check" />
-                        <span class="gg_tag_con1_span">标签二</span>
-                      </li>
-                      <li class="gg_tag_con1">
-                        <input type="checkbox" class="gg_tag_con1_check" />
-                        <span class="gg_tag_con1_span">标签三</span>
-                      </li>-->
-                    </ul>
+                    <ul class="gg_tag_con"></ul>
                   </div>
                   <p>最多添加5个标签，单个标签最长6个汉字，按回车确认</p>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">节目简介：</label>
-                <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
                   <div class="upl_desc">
                     <textarea type="text" class="uplDecn" placeholder="关于节目内容的简单介绍"></textarea>
                   </div>
@@ -926,21 +672,11 @@ a.upload-img:hover{
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">创作方式：</label>
-                <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
                   <div class="upl_czfs">
-                    <ul class="czfs_tag">
-                      <!--<li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">郭德纲、于谦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>
-                      <li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">于谦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>
-                      <li class="czfs_tag_li bqImg"><div class="czfs_tag_div"><span class="czfs_tag_span1">演播：</span><span class="czfs_tag_span2">郭德纲、于谦、周杰伦</span></div><img class="cancelImg" src="img/upl_img2.png" alt="" /></li>-->
-                    </ul>
+                    <ul class="czfs_tag"></ul>
                     <div class="czfs_div">
-                      <select name="" class="change_czfs" autocomplete="off">
-                        <!--<option value="" typeId="cz1">表演</option>
-                        <option value="" typeId="cz2">演播</option>
-                        <option value="" typeId="cz3">播音</option>
-                        <option value="" typeId="cz4">主持</option>
-                        <option value="" typeId="cz5">作曲</option>-->
-                      </select>
+                      <select name="" class="change_czfs" autocomplete="off"></select>
                       <input type="text" class="czfs_author_ipt" placeholder="请输入对应的作者（必填）"/>
                       <div class="czfs_author">确认</div>
                     </div>
@@ -972,119 +708,36 @@ a.upload-img:hover{
 <div class="mask_clip"></div>
 <!--裁剪图片时需要的弹出层-->
 <div class="container_clip">
-  <div class="cc_title">节目管理 > 上传节目 > 裁剪图片</div>
+  <div class="cc_title">节目管理 > 裁剪图片</div>
   <div class="imgAction">
-    <div class="imageBox">
-      <div class="thumbBox"></div>
-      <div class="spinner" style="display: none">Loading...</div>
+    <div class="row-fluid col-sm-12 col-md-12" id="anniuDiv">
+      <input type="file" class="picFile" style="display:none;"/>
+      <button  class="btn btn-success upload_pic">选择图片</button>
+      <button  class="btn btn-success" id="rotateRight">顺时针旋转</button>
+      <button  class="btn btn-success" id="scale">缩小</button>
+      <button  class="btn btn-success" id="little">放大</button>
+      <button  class="btn btn-success" id="affirmId">裁剪</button>
     </div>
-    <div class="action"> 
-      <div class="new-contentarea tc"> <a href="javascript:void(0)" class="upload-img">
-        <label for="upload-file">上传图像</label>
-        </a>
-        <input type="file" class="" name="upload-file" id="upload-file" />
-      </div>
-      <input type="button" id="btnCrop"  class="Btnsty_peyton" value="裁切">
-      <input type="button" id="btnZoomIn" class="Btnsty_peyton" value="+"  >
-      <input type="button" id="btnZoomOut" class="Btnsty_peyton" value="-" >
+    <div class="row-fluid col-sm-12 col-md-12 item" id="canvasDivId">
+      <canvas id="myCanvas" width="200" height="200" class="img-responsive" style="border:1px solid #d3d3d3;display:none;">
+              你的浏览器不支持HTML5. 
+      </canvas>  
+    </div> 
+    <div class="row-fluid col-sm-12 col-md-12">
+      <canvas id="myCanvasTow" width="200" height="200" class="img-responsive" style="border:1px solid #d3d3d3;display:none;">
+              你的浏览器不支持HTML5. 
+      </canvas>
     </div>
   </div>
   <div class="clipOver">
-    <div class="cropped"></div>
+    <div class="cropped"> 
+      <img id="cutImgId" class="img-responsive" src=""style="width: 100;height: 100;display:none;">
+    </div>
     <div class="action1">
-      <input type="button" id="btnSave"  class="" value="保存">
-      <input type="button" id="btnCancel"  class="" value="取消">
+      <button  id="btnSave"  class="btn btn-success" >保存</button>
+      <button  id="resetId"  class="btn btn-success" >取消</button>
     </div>
   </div>
 </div>
 </body>
-<script>
-  var rootPath=getRootPath();
-  var options =
-  {
-    thumbBox: '.thumbBox',
-    spinner: '.spinner',
-    imgSrc: 'http://wotingfm.com:908/CM/resources/images/default.png'
-  }
-  var cropper = $('.imageBox').cropbox(options);
-  $('#upload-file').on('change', function(){
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      options.imgSrc = e.target.result;
-      cropper = $('.imageBox').cropbox(options);
-    }
-    reader.readAsDataURL(this.files[0]);
-    var files=$(this)[0].files[0];
-    saveClip(files);
-  })
-  $('#btnCrop').on('click', function(){
-    var img = cropper.getDataURL();
-    $('.cropped').html('');
-    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:64px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;" ><p>64px*64px</p>');
-    // $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width:128px;margin-top:4px;box-shadow:0px 0px 12px #7E7E7E;"><p>128px*128px</p>');
-    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
-  })
-  $('#btnZoomIn').on('click', function(){
-    cropper.zoomIn();
-  })
-  $('#btnZoomOut').on('click', function(){
-    cropper.zoomOut();
-  })
-  
-  function saveClip(files){
-    var oMyForm = new FormData();
-//  console.log(files);
-    oMyForm.append("ContentFile", files);
-    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-    oMyForm.append("MobileClass", "Chrome");
-    oMyForm.append("PCDType", "3");
-    oMyForm.append("UserId", "123");
-    oMyForm.append("SrcType", "1");
-    oMyForm.append("Purpose", "2");
-    $('#btnSave').on('click', function(){
-      var imgbase64=$(".cropped img").attr("src");
-      var _this=$(this).parent(".action1").siblings(".cropped").children("img");
-//    console.log(oMyForm);
-      $.ajax({
-        url:rootPath+"common/uploadCM.do",
-        type:"POST",
-        data:oMyForm,
-        cache: false,
-        processData: false,
-        contentType: false,
-        dataType:"json",
-        //表单提交前进行验证
-        success: function (opeResult){
-          if(opeResult.ful[0].success=="TRUE"){
-            alert("文件裁剪上传成功");
-            $(".upl_img").attr("value",opeResult.ful[0].FilePath);
-            if($(".defaultImg").css("display")!="none"){
-              $(".defaultImg").css({"display":"none"});
-            }
-            var fileReader = new FileReader();
-            fileReader.onload = function(evt){
-              var newImg =  $("<img class='newImg' alt='front cover' />");
-              newImg.attr({"src":this.result});//是Base64的data url数据
-              if($(".previewImg").children().length>1){
-                $(".previewImg img:last").replaceWith(newImg);
-              }else{
-                $(".previewImg").append(newImg);
-              }
-            }
-            fileReader.readAsDataURL(files);
-            $(".container_clip,.mask_clip").hide();
-          }else{
-            alert(opeResult.err);
-          }
-        },
-        error: function(XHR){
-          alert("发生错误" + jqXHR.status);
-        }
-      });
-    })
-  }
-  $("#btnCancel").on("click",function(){
-    $(".container_clip,.mask_clip").hide();
-  })
-</script>
 </html>

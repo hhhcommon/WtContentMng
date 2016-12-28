@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>个人资料</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="css/demo.css" /> -->
+  <!-- <link rel="stylesheet" type="text/css" href="css/easydropdown.css"/> -->
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <!--日历插件-->
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <script src="js/common_manage.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <!-- <script src="js/jquery.easydropdown.min.js"></script> -->
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;}
+.detail{
+  width:100%;
+  min-width:780px;
+  height:auto;
+  overflow: auto;
+  margin-bottom:20px;
+}
+.detail_title{
+  width: 100%;
+  height: 30px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-left:20px;
+}
+.detail_content{
+  width:100%;
+  position: relative;
+  margin-top:20px;
+  height:550px;
+}
+@media (min-width: 768px){
+  .col-sm-10 {
+    width: calc(100% - 120px ) !important;
+  }
+}
+.left_content{
+  width:70%;
+  height:auto;
+  position: relative;
+  float: left;
+}
+.left_content .row,
+.form-horizontal .form-group{
+  margin-left:-5px !important;
+  margin-right:5px !important;
+}
+.col-sm-12{
+  padding-left:0px;
+}
+.form-horizontal .control-label{
+  font-size: 16px;
+  color: #000;
+  font-family: "微软雅黑";
+  text-align: center;
+  width: auto !important;
+  padding-top: 12px;
+}
+.control-label .ast {
+  color: #ffa634;
+}
+.nickname,.realname,.phone,.mail{
+  width: 100%;
+  height: 35px;
+  color: #000;
+  border: 1px solid #dedede;
+}
+.signature,.info,.introduction{
+  width:100%;
+  min-height:50px;
+  border: 1px solid #dedede;
+  resize:none;
+}
+.birthday_container{
+  width:100%;
+  min-height:35px;
+}
+.year,.month,.day{
+  width: 90px;
+  height: 35px;
+  line-height: 35px;
+  padding-left: 8px;
+  border: 1px solid #dedede;
+  font-size: 15px;
+  color: #000 !important;
+  display: inline-block;
+  padding-right: 14px;
+}
+.sex{
+  width:100%;
+  height:35px;
+  overflow: hidden;
+}
+.male_div,.female_div,.secret_div{
+  float: left;
+  height:35px;
+  margin-right:55px;
+}
+input[type=checkbox]{
+  margin:7px 5px 0px 0px;
+}
+.male,.female,.secret{
+  width:20px;
+  height:20px;
+  margin-left:20px;
+  margin-top:7px;
+  float: left;
+  display: inline-block;
+}
+.male_span,.female_span,.secret_span{
+  color: #333;
+  padding: 7px 12px 0px 0px;
+  height: 25px;
+   float: left; 
+   font-size:14px;
+  display: inline-block;
+}
+.phone,.mail{
+  height:35px;
+  line-height:35px;
+}
+.saveSet{
+  width: 100px;
+  height: 30px;
+  border: 1px solid #dedede;
+  border-radius: 2px;
+  background: #ffa634;
+  color: #fff;
+  float: right;
+  margin-right: 20px;
+}
+.right_content{
+  width:30%;
+  height:auto;
+  float: left;
+}
+.portrait{
+  width:180px;
+  height:180px;
+  margin-top:20px;
+}
+.portrait img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.txt_p1{
+ margin-top:10px;
+ padding-left: 40px; 
+}
+.txt_p2{
+ margin-top:10px;
+ padding-left:10px; 
+}
+.replace_portrait{
+  width: 100px;
+  height: 30px;
+  background: #ffa634;
+  color: #fff;
+  font-family: "微软雅黑";
+  font-size: 16px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+}
+.dropdown-menu{
+  min-width: 90px;
+}
+.caret{
+  margin-left:40px;
+  margin-top:-5px;
+}
+.year_menu,.month_menu,.day_menu{
+  height:204px;
+  overflow: auto;
+}
+.dropdown{
+  float: left;
+  width:32.3% !important;
+}
+.birthday_container .dropdown:nth-child(1){
+  margin-left:0px;
+}
+.birthday_container .dropdown:nth-child(2){
+  margin-left:1%;
+}
+.birthday_container .dropdown:nth-child(3){
+  margin-left:1%;
+}
+</style>
+<body>
+<div class="detail">
+  <div class="detail_title">首页> 个人资料</div>
+    <div class="detail_content">
+      <div class="left_content container">
+        <div class="row">
+          <div class="col-sm-12">
+            <form action="" class="form-horizontal">
+              <div class="form-group">
+                <label class="col-sm-2 control-label">昵&emsp;&emsp;称<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:5px;">
+                  <input type="text" class="nickname " placeholder="我是主播">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:16px;">个人签名<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:10px;">
+                  <textarea class="signature" name="" rows="" cols=""></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:16px;">个人简介<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:10px;">
+                  <textarea class="introduction" name="" rows="" cols=""></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">真实姓名<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:5px;">
+                  <input type="text" class="realname " placeholder="我是主播">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:5px;">出生日期<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:10px;">
+                  <div class="birthday_container" id="div_container">  
+                    <div class="btn-group">
+                      <a href="#" class="year date" data-toggle="dropdown">年<span class="caret"></span></a>
+                      <ul class="dropdown-menu year_menu" role="menu">
+                        <!-- <li><a href="#" value="">2016年</a></li> -->
+                        <!-- <li><a href="#">2015年</a></li> -->
+                      </ul>
+                    </div>
+                    <div class="btn-group">
+                      <a href="#" class="month date" data-toggle="dropdown">月<span class="caret"></span></a>
+                      <ul class="dropdown-menu month_menu" role="menu">
+                        <!-- <li><a href="#">1月</a></li> -->
+                        <!-- <li><a href="#">2月</a></li> -->
+                      </ul>
+                    </div>
+                    <div class="btn-group">
+                      <a href="#" class="day date" data-toggle="dropdown">日<span class="caret"></span></a>
+                      <ul class="dropdown-menu day_menu" role="menu">
+                        <!-- <li><a href="#">1号</a></li> -->
+                        <!-- <li><a href="#">2号</a></li> -->
+                      </ul>
+                    </div>  
+                  </div>  
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:5px;">性&emsp;&emsp;别<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:10px;">
+                  <div class="sex">  
+                    <div class="male_div">
+                      <input type="checkbox" class="male"/>
+                      <span class="male_span">男</span>
+                    </div>
+                    <div class="female_div">
+                      <input type="checkbox" class="female"/>
+                      <span class="female_span">女</span>
+                    </div>
+                    <div class="secret_div">
+                      <input type="checkbox" class="secret"/>
+                      <span class="secret_span">保密</span>
+                    </div>
+                  </div>  
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">手&emsp;&emsp;机<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-top:5px;">
+                  <input type="text" class="phone " placeholder="123456888897789">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">邮&emsp;&emsp;箱<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:15px;padding-top:5px;">
+                  <input type="text" class="mail" placeholder="邮箱">
+                </div>
+              </div>
+              <div class="form-group">
+                <input  class="saveSet" type="button" value="保存设置" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="right_content">
+       <h3>我的头像：</h3>
+       <div class="portrait">
+         <img src="img/a5.jpg" alt="" />
+       </div>
+       <p class="txt_p1">文加大小≤1兆</p>
+       <p class="txt_p2">支持JPG.PNG的文件格式</p>
+       <div class="replace_portrait">替换头像</div>
+      </div>
+    </div>
+    
+  </div>
+</body>
+<script>
+$(".year_menu").on("click","li",function(){
+  $(".year_menu li").removeClass("selected");
+  $(this).addClass("selected");
+  var txt=$(this).children("a").html();
+  $(this).parent().siblings(".date").html(txt);
+  var _this=$(this).parent().parent().parent();
+  $.fn.birthday.change(_this);
+});
+$(".month_menu").on("click","li",function(){
+  $(".month_menu li").removeClass("selected");
+  $(this).addClass("selected");
+  var txt=$(this).children("a").html();
+  $(this).parent().siblings(".date").html(txt);
+  var _this=$(this).parent().parent().parent();
+  $.fn.birthday.change(_this);
+});
+$(".day_menu").on("click","li",function(){
+  $(".day_menu li").removeClass("selected");
+  $(this).addClass("selected");
+  var txt=$(this).children("a").html();
+  $(this).parent().siblings(".date").html(txt);
+  var _this=$(this).parent().parent().parent();
+  $.fn.birthday.change(_this);
+});
+
+$.fn.birthday = function(options){
+  var opts = $.extend({}, $.fn.birthday.defaults, options);//整合参数  
+  var $year = $(this).children(".btn-group").children(".year_menu");  
+  var $month = $(this).children(".btn-group").children(".month_menu");  
+  var $day = $(this).children(".btn-group").children(".day_menu");  
+  MonHead = [31,28,31,30,31,30,31,31,30,31,30,31];  
+  return this.each(function(){  
+    var date = new Date();
+    var nowYear = date.getFullYear();//获取当前的年
+    var con="";
+    for(var i=nowYear;i>=nowYear-20;i--){
+      con+="<li><a href='javascript:void(0)' value="+i+">"+i+"年</a></li>";
+    }
+    $(".year_menu").append(con);
+    con = "";
+    for(var i=1;i<=12;i++){
+      con+="<li><a href='javascript:void(0)' value="+i+">"+i+"月</a></li>";
+    }
+    $(".month_menu").append(con);
+    con = "";
+    var n = MonHead[0];//默认显示第一月  
+    for(i = 1; i <= n; i++){  
+      con+="<li><a href='javascript:void(0)' value="+i+">"+i+"日</a></li>";  
+    }  
+    $(".day_menu").append(con);
+  });
+};
+$.fn.birthday.change = function(obj){ 
+  var $year = obj.children(".btn-group").children(".year_menu");  
+  var $month = obj.children(".btn-group").children(".month_menu");  
+  var $day = obj.children(".btn-group").children(".day_menu");
+  $day.empty();  
+  var selectedYear = $year.children(".selected").children("a").attr("value");  
+  var selectedMonth = $month.children(".selected").children("a").attr("value");  
+  console.log(selectedYear,selectedMonth);
+  if(selectedMonth == 2 && $.fn.birthday.IsRunYear(selectedYear)){//如果是闰年  
+    var con ="";  
+    for(var i = 1; i <= 29; i++){  
+      con+="<li><a href='javascript:void(0)' value="+i+">"+i+"日</a></li>";   
+    }  
+    $day.append(con);  
+  }else {//如果不是闰年也没选2月份  
+    var con = "";  
+    for(var i = 1; i <= MonHead[selectedMonth-1]; i++){  
+      con+="<li><a href='javascript:void(0)' value="+i+">"+i+"日</a></li>";
+    }  
+    $day.append(con);  
+  }   
+};  
+$.fn.birthday.IsRunYear = function(selectedYear){  
+  return(((0 == selectedYear%4)&& (selectedYear%100!=0))||(selectedYear%400==0));  
+};  
+$.fn.birthday.defaults = {  
+  year:"year",  
+  month:"month",  
+  day:"day"  
+};  
+$(".birthday_container").birthday();    
+</script>
+</html>

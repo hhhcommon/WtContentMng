@@ -265,9 +265,10 @@ public class MediaContentController {
 			}
 			String seqmediaId = m.get("SeqMediaId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(seqmediaId) || seqmediaId.toLowerCase().equals("null")) {
-				map.put("ReturnType", "1014");
-				map.put("Message", "无专辑Id");
-				return map;
+				seqmediaId = null;
+//				map.put("ReturnType", "1014");
+//				map.put("Message", "无专辑Id");
+//				return map;
 			}
 			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";
@@ -441,17 +442,9 @@ public class MediaContentController {
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			boolean isok = mediaContentService.updateMediaInfo(userId, contentId, contentname, contentimg, seqmediaId,
+			map = mediaContentService.updateMediaInfo(userId, contentId, contentname, contentimg, seqmediaId,
 					timelong, contenturi, tags, membertypes, contentdesc, pubTime);
-			if (isok) {
-				map.put("ReturnType", "1001");
-				map.put("Message", "修改成功");
-				return map;
-			} else {
-				map.put("ReturnType", "1011");
-				map.put("Message", "修改失败");
-				return map;
-			}
+			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
 			map.put("ReturnType", "T");
@@ -696,7 +689,7 @@ public class MediaContentController {
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			map = mediaContentService.removeMediaAsset(contentid);
+			map = mediaContentService.removeMediaAsset(userId, contentid);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

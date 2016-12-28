@@ -42,9 +42,8 @@
   <!-- 获得列表 -->
   <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_BCLiveFlow
-    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/>
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
     <if test="orderByClause!=null">order by ${orderByClause}</if>
-    </if>
   </select>
   
   <select id="getBCLiveFolwByBcSource" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -127,7 +126,7 @@
   <delete id="deleteByEntity" parameterType="java.util.Map">
     delete from wt_BCLiveFlow <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </delete>
-  <delete id="multiDelBc" parameterType="java.lang.String">
+  <delete id="multiDelBclf" parameterType="java.lang.String">
     delete from wt_BCLiveFlow where bcId in (${value})
   </delete>
 </mapper>

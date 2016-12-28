@@ -284,10 +284,17 @@ body{
 	width:calc(100% - 120px);
 }
 .pubDetail .conBox .conTitle h2{
-	font-weight:600;
-	margin-right:24px;
-	position:relative;
-	font-size:20px;
+  max-width: 200px;
+  float: left;
+  font-weight: 600;
+  margin-right: 24px;
+  position: relative;
+  display: inline-block;
+  font-size: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-top:5px;
 }
 .pubDetail .conBox .conTitle h2 span{
 	width:30px;
@@ -306,9 +313,11 @@ body{
 	padding-left:0;
 }
 .conBox .conTitle span{
-	padding-left:24px;
-	color:#ccc;
-	font-size:12px;
+	padding-left: 24px;
+  color: #ccc;
+  float: left;
+  font-size: 12px;
+  margin-top: 10px;
 }
 
 .pubDetail .conBox .conTitle dl{
@@ -392,4 +401,7 @@ body{
   left:-25px;
   top:30px;
 }
-
+.detail .title{
+  overflow: hidden;
+  height: 40px;
+}

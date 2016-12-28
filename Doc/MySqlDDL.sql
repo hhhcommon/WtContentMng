@@ -576,6 +576,21 @@ CREATE TABLE wt_Kw_Ref (
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='033标签库对应关系表';
 
+/**034复杂关系表[WT_COMPLEX_REF]*/
+DROP TABLE IF EXISTS wt_Complex_Ref;
+CREATE TABLE wt_Complex_Ref (
+  id             varchar(32)      NOT NULL             COMMENT '关系UUID',
+  assetTableName varchar(200)     NOT NULL             COMMENT '资源类型表名',
+  assetId        varchar(32)      NOT NULL             COMMENT '资源Id',
+  resTableName   varchar(200)                          COMMENT '关系资源类型表名',
+  resId          varchar(32)      NOT NULL             COMMENT '关系资源Id',
+  dictMId        varchar(32)      NOT NULL             COMMENT '字典组Id',
+  dictDId        varchar(32)      NOT NULL             COMMENT '字典项Id',
+  cTime          timestamp        NOT NULL  DEFAULT CURRENT_TIMESTAMP  COMMENT '创建时间',
+  PRIMARY KEY (id)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='034复杂关系表';
+
 /*****************************************/
 /**
 CREATE OR REPLACE ALGORITHM=UNDEFINED SQL SECURITY DEFINER

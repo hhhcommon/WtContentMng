@@ -4,25 +4,29 @@ $(function(){
   var pubType=1;//pubType=1代表在创建专辑页面提交,pubType=2代表在修改专辑页面提交
   
   //00-1获取栏目筛选条件
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getFiltrates.do",
-    dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "UserId":"123",
-          "PCDType":"3",
-          "MediaType":"MediaAsset"
-    },
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getChannelLabel(resultData);//得到栏目的筛选标签
+  var dataF={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "UserId":"123",
+              "PCDType":"3",
+              "MediaType":"MediaAsset"
+  };
+  getFiltrates(dataF);
+  function getFiltrates(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getFiltrates.do",
+      dataType:"json",
+      data:JSON.stringify(data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getChannelLabel(resultData);//得到栏目的筛选标签
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
   
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
@@ -47,17 +51,20 @@ $(function(){
   }
   
   //00-3获取专辑列表
-  var dataParam={"url":rootPath+"content/seq/getSeqMediaList.do","data":{"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","UserId":"123","PCDType":"3","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"}};
+  var dataParam={"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","UserId":"123","PCDType":"3","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"};
   getContentList(dataParam);
   function getContentList(obj){
     $.ajax({
       type:"POST",
-      url:obj.url,
+      url:rootPath+"content/seq/getSeqMediaList.do",
       dataType:"json",
-      data:JSON.stringify(obj.data),
+      data:JSON.stringify(obj),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
+          $(".ri_top3_con").html("");//每次加载之前先清空
           getSeqMediaList(resultData); //得到专辑列表
+        }else{
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;'>没有查到任何内容</div>");//每次加载之前先清空
         }
       },
       error:function(XHR){
@@ -92,7 +99,7 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st">'+status+'</p>'+
+                      '<p class="zj_st" flowFlag='+resultData.ResultList[i].ContentPubChannels[0].FlowFlag+'>'+status+'</p>'+
                       '<div class="op_type">'+
                         '<p class="zj_edit">编辑</p>'+
                         '<p class="zj_pub">发布</p>'+
@@ -109,14 +116,21 @@ $(function(){
     clear();//清空数据
     subType=1;
     pubType=1;
+    $(".iboxtitle h4").html("创建专辑");
   });
   
   //22-1点击编辑专辑按钮
    $(document).on("click",".zj_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    subType=2;
-    pubType=2;
-    edit_zj(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
+    if(flowFlag=="1"||flowFlag=="2") {
+      alert("当前状态不支持编辑状态");
+      return;
+    }else{
+      subType=2;
+      pubType=2;
+      edit_zj(contentId);
+    }
   })
    
   //33-1点击提交按钮，创建专辑/修改专辑
@@ -163,7 +177,6 @@ $(function(){
     var str_time=$(".layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
-    console.log(_data);
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/addSeqMediaInfo.do",
@@ -175,6 +188,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }
@@ -187,6 +203,9 @@ $(function(){
   
   //33-1.2保存编辑后的信息
   function save_edit_zj(){
+    if(!$(".upl_img").attr("value")){
+      $(".upl_img").attr("value",$(".defaultImg").attr("src"));
+    }
     var _data={};
     _data.UserId="123";
     _data.DeviceId="3279A27149B24719991812E6ADBA5584";
@@ -242,6 +261,9 @@ $(function(){
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }
       },
       error:function(jqXHR){
@@ -252,16 +274,17 @@ $(function(){
   
   //22-1.1请求编辑专辑时保存的信息
   function edit_zj(contentId){
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaInfo.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           $(".mask,.add").show();
@@ -295,21 +318,21 @@ $(function(){
         $(".my_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input[type='checkbox']").prop("checked",true);
-            $(this).children("input[type='checkbox']").attr("disabled",true);
+            $(this).children("input[type='checkbox']").prop("disabled",true);
           }
         })
         $(".gg_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input").prop("checked",true);
-            $(this).children("input").attr("disabled",true);
+            $(this).children("input").prop("disabled",true);
           }
         })
       }
     }
     $(".upl_zj option").each(function(){
       if($(this).attr("id")==resultData.Result.ContentPubChannels[0].ChannelId){
-        $(".upl_zj option").attr("selected",false);
-        $(this).attr("selected",true); 
+        $(".upl_zj option").prop("selected",false);
+        $(this).prop("selected",true); 
       }
     })
     $(".uplDecn").val(resultData.Result.ContentDesc);
@@ -323,21 +346,25 @@ $(function(){
     del_zj(contentId);
   })
   function del_zj(contentId){
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/removeSeqMedia.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功删除专辑");
           $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }
       },
       error:function(XHR){
@@ -353,21 +380,25 @@ $(function(){
     pub_zj(contentId);
   })
   function pub_zj(contentId){
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaStatus.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
           $('.shade', parent.document).hide();
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
           $('.shade', parent.document).hide();
@@ -384,20 +415,21 @@ $(function(){
        弹出页面上的方法
    * */
   //1创建专辑页面获取公共标签
+  var data1={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "PCDType":"3",
+              "UserId":"123",
+              "MediaType":"1",
+              "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+              "ChannelIds":"cn31",
+              "TagType":"1",
+              "TagSize":"20"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "MediaType":"1",
-          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-          "ChannelIds":"cn31",
-          "TagType":"1",
-          "TagSize":"20"
-    },
+    data:JSON.stringify(data1),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getPubLabel(resultData);//得到创建专辑页面公共标签元素
@@ -421,20 +453,21 @@ $(function(){
   }
   
   //2.创建专辑页面获取我的标签
+  var data2={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+              "MobileClass":"Chrome",
+              "PCDType":"3",
+              "UserId":"123",
+              "MediaType":"1",
+              "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+              "ChannelIds":"cn31",
+              "TagType":"2",
+              "TagSize":"20"
+  };
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
-    data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-          "MobileClass":"Chrome",
-          "PCDType":"3",
-          "UserId":"123",
-          "MediaType":"1",
-          "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-          "ChannelIds":"cn31",
-          "TagType":"2",
-          "TagSize":"20"
-    },
+    data:JSON.stringify(data2),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         getMyLabel(resultData);//得到创建专辑页面我的标签元素
@@ -455,74 +488,6 @@ $(function(){
       $(".my_tag_con").append(label); 
     }
   }
-  
-  //3.点击上传图片
-  $(".upl_pt_img").on("click",function(){
-    $(".upl_img").click();
-  });
-  $(".upl_img").change(function(){
-    $(".img_uploadStatus").hide();
-    //图片预览
-    if($(".defaultImg").css("display")!="none"){
-      $(".defaultImg").css({"display":"none"});
-    }
-    var fileReader = new FileReader();
-    fileReader.onload = function(evt){
-      if(FileReader.DONE==fileReader.readyState){
-        var newImg =  $("<img  class='newImg' alt='front cover' />");
-        newImg.attr({"src":this.result});//是Base64的data url数据
-        if($(".previewImg").children().length>1){
-          $(".previewImg img:last").replaceWith(newImg);
-        }else{
-          $(".previewImg").append(newImg);
-        }
-      }
-    }
-    fileReader.readAsDataURL($(this)[0].files[0]);
-    var oMyForm = new FormData();
-    var filePath=$(this).val();
-    var _this=$(this);
-    var arr=filePath.split('\\');
-    var fileName=arr[arr.length-1];
-    oMyForm.append("ContentFile", $(this)[0].files[0]);
-    console.log($(this)[0].files[0]);
-    oMyForm.append("UserId", "123");
-    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-    oMyForm.append("MobileClass", "Chrome");
-    oMyForm.append("PCDType", "3");
-    oMyForm.append("SrcType", "1");
-    oMyForm.append("Purpose", "2");
-    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
-      alert("图片过大，请选择合适的图片上传！");
-    }else{
-      requestUpload(_this,oMyForm);
-    }
-  });
-  
-  //4.请求上传文件
-  function requestUpload(_this,oMyForm){
-    $.ajax({
-      url:rootPath+"common/uploadCM.do",
-      type:"POST",
-      data:oMyForm,
-      cache: false,
-      processData: false,
-      contentType: false,
-      dataType:"json",
-      //表单提交前进行验证
-      success: function (opeResult){
-        if(opeResult.ful[0].success=="TRUE"){
-          $(".img_uploadStatus").show();
-          _this.attr("value",opeResult.ful[0].FilePath);
-        }else{
-          alert(opeResult.err);
-        }
-      },
-      error: function(XHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  };
   
   //5.获得栏目的分类信息
   $.ajax({
@@ -674,22 +639,26 @@ $(function(){
   }
   function pubAddOrEditZj(_data){
     var contentId=$(".zjId").attr("value");
+    var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                "MobileClass":"Chrome",
+                "PCDType":"3",
+                "UserId":"123",
+                "ContentId":contentId
+    };
     $.ajax({
       type:"POST",
       url:rootPath+"content/seq/updateSeqMediaStatus.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
-            "MobileClass":"Chrome",
-            "PCDType":"3",
-            "UserId":"123",
-            "ContentId":contentId
-      },
+      data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
           getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
           $(".mask,.add").hide();
@@ -704,13 +673,12 @@ $(function(){
 
   //点击上传修改之前的清空
   function clear(){
-    $(".mask,.add").show();
     $("body").css({"overflow":"hidden"});
     $(".upl_img").attr("value","");
     $(".zjId,.uplTitle,.uplDecn,.layer-date").val("");
     $(".upl_bq").html("");
     $(".newImg").remove();
-    $(".defaultImg").show();
+    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".img_uploadStatus").hide();
     $(".my_tag_con1,.gg_tag_con1").each(function(){
       $(this).children("input[type='checkbox']").prop("checked",false);
@@ -719,13 +687,68 @@ $(function(){
     $(".upl_zj option").each(function(){
       $(this).attr("selected",false);
     })
+    $(".mask,.add").show();
   }
   
   //点击专辑的封面图片，跳到这个专辑的详情页
   $(document).on("click",".rtcl_img",function(){
     var contentId=$(this).parent(".rtc_listBox").attr("contentId");
-    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
+    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
   });
+  
+  /*根据不同的筛选条件得到不同的专辑列表*/
+  var zjData={};
+  zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
+  zjData.MobileClass="Chrome";
+  zjData.PCDType="3";
+  zjData.UserId="123";
+  $(document).on("click",".trig_item",function(){
+    $(document).find(".new_cate li").each(function(){
+      var pId=$(this).attr("pid");
+      var id=$(this).attr("id");
+      if(pId!=null&&pId=="status"){
+        if(id=="5") {
+          zjData.FlowFlag='5';
+        }
+        if(id=="1") {
+          zjData.FlowFlag='1';
+        }
+        if(id=="2") {
+          zjData.FlowFlag='2';
+        }
+        if(id=="3") {
+          zjData.FlowFlag='3';
+        }
+      }
+      if(pId!=null&&pId=="channel"){
+        zjData.ChannelId=$(this).attr("id");
+      }
+    });
+    getContentList(zjData);
+  });
+  $(document).on("click",".cate_img",function(){
+    if($(".new_cate li").size()=="0"){
+      zjData.FlowFlag='0';
+      zjData.SeqMediaId='0';
+      zjData.ChannelId='0';
+    }else{
+      $(document).find(".new_cate li").each(function(){
+        var pId=$(this).attr("pid");
+        var id=$(this).attr("id");
+        if(pId!="status"){
+          zjData.FlowFlag='0';
+        }
+        if(pId!="album"){
+          zjData.SeqMediaId='0';
+        }
+        if(pId!="channel"){
+          zjData.ChannelId='0';
+        }
+      });
+    }
+    getContentList(zjData);
+  });
+  
 });

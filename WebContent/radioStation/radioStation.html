@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>电台管理</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
+  <link href="../resources/plugins/hplus/css/plugins/jqpagination/fy.css" rel="stylesheet"/>
+  <link href="../resources/css/catalog.css" rel="stylesheet">
+  <!--时分秒选择器-->
+  <link href="../resources/css/jquery.datetimepicker.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/plugins/hplus/js/content.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+  <!--时分秒选择器-->
+  <script src="../resources/js/jquery.datetimepicker.full.js"></script>
+<style type="text/css">
+.detail{
+  width: 100%;
+  min-width: 500px;
+  height: 400px;
+  border: 1px solid #3370b7;
+  overflow: auto;
+}
+#cataTree{
+  height:400px;
+}
+.listBox {
+  width: 100%;
+  height: 100px;
+  padding: 6px;
+  border-bottom: 2px solid #f3f3f4;
+  background: white;
+  position: relative;
+  cursor: pointer;
+}
+.listBox .listCheck {
+  width: 6%;
+  text-align: center;
+  height: 78px;
+  line-height: 78px;
+}
+.listBox .listImg, .listBox .listCon, .listBox .listCheck {
+  float: left;
+}
+.listBox .listImg {
+  height: 80px;
+  width: 80px;
+  margin-right: 15px;
+  margin-left: 6px;
+}
+.listBox .listImg img {
+  height: 100%;
+  width: 100%;
+}
+.listBox .listCon {
+  width: 70%;
+  height: 100%;
+}
+.listBox .listCon h3 {
+  font-size: 12px;
+  margin-top: 0;
+  margin-bottom: 2px;
+  color: #0071CE;
+  position: relative;
+  display: inline-block;
+  max-width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listBox .secTitle,.listBox .playUrl,.listBox .other,.listBox .desc {
+  font-size: 12px;
+  color: #333;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.listBox p {
+  margin: 0 0 2px;
+}
+.listBox .other span{
+  padding-right: 12px;
+}
+.detail .listBox .sortUpdate {
+  width: 100px;
+  height: 20px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: none;
+}
+.detail .listBox .sortUpdate .sortNum {
+  width: 60px;
+  height: 20px;
+  background-color: #f3f3f4;
+  color: black;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  outline: 0px;
+}
+.detail .listBox .sortUpdate .sortUpdateBtn {
+  height: 20px;
+  line-heihgt: 20px;
+  width: 24px;
+  margin: 0;
+  padding: 0;
+  border-radius: 20px;
+  border: none;
+}
+.upl_pt{
+  padding: 15px 0px 15px 0px;
+}
+.previewImg{
+  width: 100px;
+  height: 100px;
+  border: 1px solid #dedede;
+}
+.previewImg img{
+  background-size: 100% 100%;
+  width: 100%;
+  height: 100%;
+}
+.upfile{
+  width: 10px !important;
+  height: 10px;
+  display: none !important;
+}
+#areaTree,#radioTree{
+  width:450px;
+  height: 145px;
+  margin-left: 0px;
+  border: 1px solid #dedede;
+  margin-top: 0px !important;
+  float: left;
+  display: none;
+}
+#chooseArea ,#chooseRadio{
+  width: 100px;
+  height: 32px;
+  margin-left:20px;
+  font-size: 12px;
+  line-height: 32px;
+  float: left;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #e5e6e7;
+}
+.title_radio{
+  height: 30px;
+}
+.title_radio h5{
+  width: auto;
+  padding: 1px 10px 1px 20px;
+  float: left;
+  font-size: 16px;
+}
+.radio_tit{
+  float: left;
+  padding: 6px 10px 10px 10px;
+}
+.radio_sum{
+  float: left;
+  padding: 6px 10px 10px 10px;
+}
+#nodeArea,#nodeRadio{
+  width:330px;
+  margin-bottom:0px;
+  display:none;
+  float:left;
+}
+.area_ul,.radio_ul{
+  width:330px;
+  min-height: 30px;
+  height:auto;
+  float: left;
+  border:1px solid #dedede;
+  padding-left:0px;
+}
+._li{
+  position: relative;
+  width:60px;
+  height:30px;
+  line-height:30px;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border:1px solid #333;
+  float: left;
+  margin:3px 0px 3px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+._img{
+  position: absolute;
+  top:-4px;
+  right:-4px;
+  display: none;
+}
+.playPaths{
+  width: 450px;
+  min-height: 80px;
+  border: 1px solid #dedede;
+}
+.playPathList{
+  width: 448px;
+  height: 80px;
+  border: 1px solid #333;
+  margin: 10px 0px;
+  overflow: hidden;
+  position: relative;
+}
+.playPath{
+  width:450px;
+  height:30px;
+  float: left;
+  margin-top:4px;
+  margin-bottom:0px !important;
+  padding: 4px 6px;
+  border: 1px solid #dedede;
+}
+.isMain{
+  width: 20px !important;
+  height: 20px;
+  float: left;
+  position: relative;
+  top: 10px;
+  left: 20px;
+}
+.note{
+  display: inline-block;
+  float: left;
+  position: relative;
+  top: 17px;
+  left: 25px;
+}
+.bcSource{
+  width:170px !important;
+  height:30px;
+  margin-top:10px;
+  float: left;
+  padding: 4px 6px;
+  border: 1px solid #dedede;
+}
+.addplayPath,.delplayPath{
+  width: 80px;
+  position: relative;
+  top: 10px;
+  left: 55px;
+  height: 30px;
+  line-height: 30px;
+  float: left;
+  border: 1px solid #dedede;
+  background: #eee;
+  cursor: pointer;
+}
+/*节目单管理样式*/
+#programme{width:80px;}
+#programmeMg{
+  width:100%;
+  height:100%;
+  display: none;
+  min-height:497px;
+  overflow-y: auto;
+  padding:10px;
+  min-width:740px;
+}
+.pro_cont{
+  width:100%;
+  height:100%;
+  min-height:520px;
+  background: #fff;
+}
+.radioName{
+  width:100%;
+  height:40px;
+  padding:10px;
+  border-bottom:
+}
+.pro_ctitle{
+  width:100%;
+  height:30px;
+  padding: 0px 40px;
+  overflow: hidden;
+}
+.pro_ctitle h4{
+  float: left;
+  height:30px;
+  line-height:30px;
+  margin-top:0px;
+  float: left;
+  padding: 0px 20px;
+  text-align: center;
+  cursor:pointer;
+}
+.pro_ccont{
+  height:358px;
+  padding: 0px 40px;
+}
+.active{
+  background: #dedede;
+}
+.content{
+  height:358px;
+  display:none;
+  overflow-x:hidden;
+  overflow-y:auto;
+  position: relative;
+}
+.content.active{
+  display:block;
+}
+.conlist{
+  padding: 10px;
+  border-bottom: 1px solid #f5f5f5;
+  overflow: hidden;
+}
+.clspan1,.clspan2,.clspan3{
+  float: left;
+  text-align: left;
+  display: inline-block;
+}
+.clspan1{
+  width:auto;
+  font-size:16px;
+  border:none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  background: #fff;
+}
+.clspan2,.clspan3{width:75px;}
+.clspan2{margin-left:100px;}
+.clspan3{margin-left:10px;}
+.proBtns{
+  overflow: hidden;
+  margin-top:10px;
+  margin-left:35%;
+}
+.commitPro,.cancelPro{
+  width:auto;
+  float:left;
+}
+.cancelPro{
+  margin-left:20px;
+}
+.buttons{
+  width: 88px;
+  float: left;
+  margin-left: 30px;
+}
+.newadd{
+  float: right;
+  position: absolute;
+  top: 40px;
+  right: 70px;
+}
+.delPro{
+  margin-left:3px;
+}
+</style>
+</head>
+<body style="overflow:hidden;">
+  <div style="height:100%;background: white;">
+    <!--菜单栏-->
+    <div class="toobarArea">
+      <button type="button" id="add" class="btn" style="margin-right:3px;">添加</button>
+      <button type="button" id="mod" class="btn" style="margin-right:3px;" >修改</button>
+      <button type="button" id="del" class="btn" style="margin-right:3px;" >删除</button>
+      <button type="button" id="sear" class="btn" style="margin-right:3px;">搜索</button>
+      <button type="button" id="programme" class="btn" style="margin-right:3px;">节目单管理</button>
+    </div>
+    <!--显示主区域-->
+    <div class="mainArea">
+      <!--左侧列表-->
+      <div id="catListArea" class="catListArea">
+        <!--动态加载分类列表-->
+        <ul id="cataTree" class="ztree"></ul>
+      </div>
+      <!--右侧详情-->
+      <div id="catDetailArea" class="catDetailArea">
+        <!--动态加载电台分类详情-->
+        <div class="col-sm-12">
+          <div class="ibox float-e-margins">
+            <div class="title_radio">
+              <h5>电台分类详情</h5>
+              <span class="radio_tit"></span>
+              <span class="radio_sum"></span>
+            </div>
+            <div class="ibox-content">
+              <div class="detail"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 遮罩 -->
+    <div id="shade"></div>
+    <!--弹出内容:添加分类-->
+    <div id="addCata" class="modal inmodal" data-backdrop="static">
+      <div class="modal-dialog" style="width:660px; margin:10px auto 0 auto">
+        <div class="modal-content">
+          <input type="text" class="bcId" style="display:none;" value="" obj=""/>
+          <div class="modal-header" style="padding-bottom:5px;">
+            <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" style="margin-bottom:5px;"></h4>
+          </div>
+          <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
+            <form id="verOperForm" enctype ="multipart/form-data">
+              <table>
+                <tr>
+                  <td class="th add-th">电台名称</td>
+                  <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="电台名称" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>
+                </tr>
+                <tr>
+                  <td class="th add-th">电台图片</td>
+                  <td colspan="3">
+                    <div class="upl_pt">
+                      <input class="upfile" type="file" />
+                      <div class="previewImg">
+                        <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="th add-th">播放地址</td>
+                  <td colspan="3">
+                    <div class="playPaths">
+                      <div class="playPathList">
+                        <input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">
+                        <input type="text" class="bcSource" placeholder="地址所属平台"/>
+                        <input type="checkbox" name="isMain" class="isMain" />
+                        <span class="note">是否设为主播放地址</span>
+                        <div class="addplayPath">添加播放地址</div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="th add-th">发布者</td>
+                  <td colspan="3"><input type="text" class="form-control" id="publisher" name="publisher" placeholder="发布者" aria-required="true" style="margin-bottom:0px;"  autocomplete="off"></td>
+                </tr>
+                <tr class="area">
+                  <td class="th add-th">行政区域</td>
+                  <td colspan="3">
+                    <div style="width:450px;overflow: hidden;">
+                      <input type="text" class="form-control" id="nodeArea" name="nodeArea" value="" obj="" placeholder="行政区域id" aria-required="true">
+                      <ul class="area_ul"></ul>
+                      <div id='chooseArea'>选择区域</div>
+                    </div>
+                    <ul id="areaTree" class="ztree"></ul>
+                  </td>  
+                </tr>
+                <tr>
+                  <td class="th add-th">父类电台</td>
+                  <td colspan="3">
+                    <div style="width:450px;overflow: hidden;">
+                      <input type="text" class="form-control" id="nodeRadio" name="nodeRadio" value="" obj="" placeholder="父电台id" aria-required="true">
+                      <ul class="radio_ul"></ul>
+                      <div id='chooseRadio'>选择分类</div>
+                    </div>
+                    <ul id="radioTree" class="ztree"></ul>
+                  </td>  
+                </tr>
+                <tr>
+                  <td class="th add-th">详细信息</td>
+                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;margin-top:13px;"></textarea></td>
+                </tr>
+              </table>
+            </form>
+          </div>
+          <div class="modal-footer" style="margin-top:60px;">
+            <button id="save" type="button" class="btn btn-primary" style="position: absolute;left:513px;">提交</button>
+            <button type="button" class="btn btn-white cancel" data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--节目单页面-->
+    <div id="programmeMg" class="modal inmodal" data-backdrop="static">
+      <div class="pro_cont">
+        <div class="modal-header" style="padding-bottom:5px;">
+          <button type="button" class="close" id="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          <h4 class="modal-title" id="proName" style="margin-bottom:5px;"></h4>
+          <button class="newadd">新增</button>
+        </div>
+        <div class="pro_ctitle">
+          <h4 class="active">周一</h4>
+          <h4>周二</h4>
+          <h4>周三</h4>
+          <h4>周四</h4>
+          <h4>周五</h4>
+          <h4>周六</h4>
+          <h4>周日</h4>
+        </div>
+        <div class="pro_ccont">
+          <div class="content active" id="week1" weekIndex="1"></div>
+          <div class="content" id="week2" weekIndex="2"></div>
+          <div class="content" id="week3" weekIndex="3"></div>
+          <div class="content" id="week4" weekIndex="4"></div>
+          <div class="content" id="week5" weekIndex="5"></div>
+          <div class="content" id="week6" weekIndex="6"></div>
+          <div class="content" id="week7" weekIndex="7"></div>
+        </div>
+        <div class="proBtns">
+          <input type="button"  class="commitPro" value="提交"/>
+          <input type="button"  class="cancelPro" value="取消"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<script >
+var zTreeObj,zTreeObjs,treeNode,rootNode,nodePathStr,modalNode;
+var rootPath=getRootPath();
+var oPeType=1;//1新增，2修改
+var clickName="";//area点击行政区划，radio点击电台分类
+var BcPlayPaths=[];//播放地址
+
+//初始化方法：页面加载完成后执行
+$(function() {
+  //0-初始化页面
+  //0.1-初始化页面树样式
+  zTreeObj=$.fn.zTree.init($("#cataTree"),{
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:reqDetailList
+    }
+  });
+  
+  //0.2--初始化弹出框的树(行政区划)
+  areaObj=$.fn.zTree.init($("#areaTree"),{
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:onClick
+    }
+  });
+  
+  //0.3--初始化弹出框的树(电台分类)
+  radioObj=$.fn.zTree.init($("#radioTree"),{
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:onClick
+    }
+  });
+  
+  //1-加载数据
+  //1.1-加载页面上的树
+  var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
+  loadTree(zTreeObj,loadTreeData);
+  
+  //2-初始化按钮
+  //2.1-点击添加按钮，增加新的分类
+  $("#add").on("click",function(){
+    cleanDialog();
+    oPeType=1;
+    $("#addCata").find(".modal-header>h4").html("添加电台分类");
+    var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
+    loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
+    var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+    loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
+    $("#shade").css({"display":"block"});
+    $("#addCata").modal("show");
+  });
+  
+  //2.2-点击修改按钮，修改已有的分类
+  $("#mod").on("click",function(){
+    $(document).find("input[type='checkbox']").each(function(){
+      if($(this).is(':checked')){
+        cleanDialog();
+        oPeType=2;
+        var bcId=$(this).parent().parent(".listBox").attr("contentid");
+        getBcInfoForMod(bcId);//为修改得到详细的电台信息
+        var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
+        loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
+        var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+        loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
+        $("#shade").css({"display":"block"});
+        $("#addCata").modal("show"); 
+      }
+    })
+  });
+  
+  //2.3-点击删除按钮，删除已有的分类
+  $("#del").on("click",function(){
+    var check="";
+    var catalogType="";
+    var catalogId="";
+    $(document).find("input[type='checkbox']").each(function(){
+      if($(this).is(':checked')){
+        var  contentid=$(this).parent().parent(".listBox").attr("contentid");
+        if(check==""){
+          check=contentid;
+        }else{
+          check+=","+contentid;
+        }
+        catalogType=$(this).parent().parent(".listBox").attr("selectnodemid");
+        catalogId=$(this).parent().parent(".listBox").attr("selectnodeid");
+      }
+    });
+    beforeRemove(check);
+  });
+  
+  //2.4-点击提交按钮，提交表单
+  $("#save").on("click",function(){
+    if(oPeType=="1"){
+      addBroadcast();
+    }else{
+      modBroadcast();
+    }
+  })
+  
+  //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
+  $(".close,#shade,.cancel").on("click",function(){
+    $("#addCata").modal("hide");
+    $("#shade,#programmeMg").css({"display":"none"});
+    $(document).find("input[type='checkbox']").removeAttr("checked");
+  });
+  
+  //2.6-点击上传图片
+  $(".previewImg").on("click",function(){
+    $(".upfile").click();
+  }); 
+  $(".upfile").change(function(){
+    if($(".defaultImg").css("display")!="none"){
+      $(".defaultImg").css({"display":"none"});
+    }
+    var _this=$(this);
+    var fileReader = new FileReader();
+    fileReader.onload = function(evt){
+      if(FileReader.DONE==fileReader.readyState){
+        var newImg =  $("<img  class='newImg' alt='front cover' />");
+        newImg.attr({"src":this.result});//是Base64的data url数据
+        if($(".previewImg").children().length>1){
+          $(".previewImg img:last").replaceWith(newImg);
+        }else{
+          $(".previewImg").append(newImg);
+        }
+      }
+    }
+    fileReader.readAsDataURL($(this)[0].files[0]);
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("UserId", "123");
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "2");
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      //表单提交前进行验证
+      success: function (opeResult){
+        if(opeResult.ful[0].success=="TRUE"){
+          _this.attr("value",opeResult.ful[0].FilePath);
+        }else{
+          alert(opeResult.err);
+        }
+      },
+      error: function(XHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  
+  //2.7-点击选择行政区域，弹出树形分类
+  $("#chooseArea").on("click",function(){
+    if($(this).text()=="选择区域"){
+      $(this).text("收起区域");
+      $("#areaTree").slideDown("slow");
+    }else{
+      $(this).text("选择区域");
+      $("#areaTree").slideUp("slow");
+    }
+    clickName="area";
+  });
+  
+  //2.8-点击电台分类，弹出树形分类
+  $("#chooseRadio").on("click",function(){
+    if($(this).text()=="选择分类"){
+      $(this).text("收起分类");
+      $("#radioTree").slideDown("slow");
+    }else{
+      $(this).text("选择分类");
+      $("#radioTree").slideUp("slow");
+    }
+    clickName="radio";
+  });
+  
+  //2.9-点击添加播放地址，增加新的播放地址
+  $(".addplayPath").on("click",function(){
+    var newPath='<div class="playPathList">'+
+                  '<input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">'+
+                  '<input type="text" class="bcSource" placeholder="地址所属平台"/>'+
+                  '<input type="checkbox" name="isMain" class="isMain" />'+
+                  '<span class="note">是否设为主播放地址</span>'+
+                  '<div class="delplayPath">删除播放地址</div>'+
+                '</div>';
+    $(".playPaths").append(newPath);
+  });
+  
+  //2.91--设为主播放地址的时候选中勾选框(只能选择一个checkbox)
+  $(document).on("click","input[name='isMain']",function(){
+    $("input[name='isMain']").prop({"checked":false});
+    $(this).prop({"checked":true});
+  });
+  
+  //2.10-点击删除播放地址，删除刚才添加的播放地址
+  $(document).on("click",".delplayPath",function(){
+    $(this).parent().remove();
+  });
+});
+
+/**
+ * 加载树
+ */
+/*加载页面上的树*/
+function loadTree(obj,loadData) {
+  var _url=rootPath+"baseinfo/getCataTree4View.do";
+  var i=0;
+  loadRecursion(0);
+
+  function loadRecursion(index) {
+    if (index==loadData.length) return;
+    $.ajax({
+      type: "POST",    
+      url: _url,
+      dataType: "json",
+      data: loadData[index++],
+      success: function(jsonData){
+        if(jsonData.ReturnType=="1001") {
+          obj.addNodes(null,jsonData.Data,false);
+        }
+        loadRecursion(index);
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+}
+
+/*选中页面上某一分类，加载对应的列表详情*/
+function reqDetailList(event, treeId, treeNode){
+  var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
+  treeNode=nodes[0]; //当前选中的节点
+  //alert("加载详情选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name+"当前选中节点的根节点:"+treeNode.attributes.mId);
+  var _data={
+    "IMEI":"3279A27149B24719991812E6ADBA5583",
+    "PCDType":"3",
+    "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
+    "CatalogType":treeNode.attributes.mId,
+    "CatalogId":treeNode.id,
+    "MediaType":"RADIO",
+    "ResultType":"3",
+    "PageSize":"100",
+    "Page":"1"
+  };
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/getBroadcastList.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        $(".detail,.radio_tit,.radio_sum").html("");
+        getZtreeRootPath(treeNode);//得到当前选中节点的根路径
+        loadDetailList(treeNode,resultData);
+      }else{
+        $(".radio_tit,.radio_sum").html("");
+        $(".detail").html('<p style="font-size:20px;text-align:center;">暂时没有电台</p>');
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  })
+}
+function loadDetailList(treeNode,resultData){
+  $(".radio_sum").html("共有"+resultData.ResultList.AllCount+"个电台");
+  for(var i=0;i<resultData.ResultList.List.length;i++){
+    var dl= '<div class="listBox" selectNodeId='+treeNode.id+' selectNodeMid='+treeNode.attributes.mId+' contentId='+resultData.ResultList.List[i].ContentId+' contentPub='+resultData.ResultList.List[i].ContentPub+'>'+
+              '<div class="listCheck"><input type="checkBox" name="chk"></div>'+
+              '<div class="listImg">'+
+                '<img alt="mage" src='+resultData.ResultList.List[i].ContentImg+'>'+
+              '</div>'+
+              '<div class="listCon">'+
+                '<h3>'+resultData.ResultList.List[i].ContentName+'</h3>'+
+                '<p class="secTitle"><span>发布者：'+resultData.ResultList.List[i].ContentPub+'</span></p>'+
+                '<p class="playUrl"><span>主播放地址：'+resultData.ResultList.List[i].ContentPlay+'</span></p>'+
+                '<p class="other"><span>来源：'+resultData.ResultList.List[i].ContentSource+'</span></p>'+
+                '<p class="desc"><span>描述：</span><span class="descspan">'+resultData.ResultList.List[i].ContentDescn+'</span></p>'+
+              '</div>'+
+              '<div class="sortUpdate">'+
+                '<input type="text" class="sortNum" value="0">'+
+                '<button class="sortUpdateBtn">OK</button>'+
+              '</div>'+
+            '</div>'
+    $(".detail").append(dl);         
+  }
+}
+
+/*得到页面上当前选中节点的路径 */
+function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲节点，根节点再次调用getParentNode得到null终止循环
+  var s=treeNode.name;
+  while(treeNode=treeNode.getParentNode()) s=treeNode.name+'/'+s;
+  $(".radio_tit").text(s);
+} 
+ 
+/*点击弹出窗里面的树上的节点*/
+function onClick(event, treeId, treeNode){
+  if(clickName=="radio"){//点击电台分类
+    var node=radioObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    modalNode=node[0]; //当前选中的节点
+    if(modalNode.id=="1"){
+      alert("请在当前分类下的子分类进行操作");
+    }else{
+      var radioLi='<li class="_li" id='+modalNode.id+'>'+
+                    '<span>'+modalNode.name+'</span>'+
+                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                  '</li>';
+      $(".radio_ul").append(radioLi); 
+      $("#chooseRadio").text("选择分类");
+      $("#radioTree").slideUp("slow");
+    }
+  }else{
+    var node=areaObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    modalNode=node[0]; //当前选中的节点
+    if((modalNode.id!="2")&&(modalNode.id!="9")){
+      var areaLi='<li class="_li" id='+modalNode.id+'>'+
+                    '<span>'+modalNode.name+'</span>'+
+                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                  '</li>';
+      $(".area_ul").append(areaLi);
+      $("#chooseArea").text("选择区域");
+      $("#areaTree").slideUp("slow");
+    }else{
+      alert("请在当前分类下的子分类进行操作");
+    }
+  }
+};
+
+/*遍历弹出页面上树的id的集合*/
+function ids(){
+  BcPlayPaths=[];
+  $(document).find(".playPathList").each(function(){
+    var newObj={};
+    newObj.BcPlayPath=$(this).children(".playPath").val();
+    newObj.BcSource=$(this).children(".bcSource").val();
+    if($(this).children(".isMain").is(":checked")){
+      newObj.IsMain="1";
+    }else{
+      newObj.IsMain="0";
+    }
+    BcPlayPaths.push(newObj);
+  });
+  if($(".area_ul li").length>0){
+    var areastr="";
+    $(".area_ul li").each(function(){
+      var ids=$(this).attr("id");
+      if(areastr==""){
+        areastr=ids;
+      }else{
+        areastr += ","+ids;
+      }
+    })
+  }else{
+    alert("请选择行政区域");
+  }
+  $("#nodeArea").attr({"value":areastr});
+  if($(".radio_ul li").length>0){
+    var radiostr="";
+    $(".radio_ul li").each(function(){
+      var ids=$(this).attr("id");
+      if(radiostr==""){
+        radiostr=ids;
+      }else{
+        radiostr += ","+ids;
+      }
+    })
+  }else{
+    alert("请选择电台分类");
+  }
+  $("#nodeRadio").attr({"value":radiostr});
+}
+
+/*增加新分类的方法*/
+function addBroadcast(){
+  ids();
+  var num=0;//计数  判断是否存在主播放地址
+  for(var i=0;i<BcPlayPaths.length;i++){
+    if(BcPlayPaths[i].IsMain=="0"){
+      num++;
+    }
+  }
+  if(num==BcPlayPaths.length){
+    alert("请选择一个并且只能选择一个主播放地址");
+    return;
+  }else{
+    var addInfo={
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "UserId":"123",
+      "BcTitle":$("#nodeNames").val(),
+      "BcImg":$(".upfile").attr("value"),
+      "BcAreaId":$("#nodeArea").attr("value"),
+      "BcTypeId":$("#nodeRadio").attr("value"),
+      "BcPlayPaths":BcPlayPaths,
+      "BcPublisher":$("#publisher").val(),
+      "BcDescn":$("#nodeDescn").val()
+    };
+  }
+  console.log(addInfo);
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/addBroadcast.do",
+    dataType: "json",
+    data:JSON.stringify(addInfo),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        cleanDialog();
+        alert("添加成功!");
+        $("#addCata").modal("hide");
+        $("#shade").css({"display":"none"});
+        reqDetailList(event,$("#nodeArea").attr("value"));
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  })
+}
+
+/*为修改电台分类得到详细信息*/
+function getBcInfoForMod(bcId){
+  var _data={
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "UserId":"123",
+      "BcId":bcId
+  }
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/getBcInfo.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        loadModData(resultData);//加载修改时需要的详细数据
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  })
+}
+
+/*加载修改时需要的详细数据*/
+function loadModData(resultData){
+  $("#addCata").find(".modal-header>h4").html("修改电台分类");
+  var bcId=resultData.ResultInfo[0].ContentId;
+  $(".bcId").attr({"value":bcId});
+  var na=resultData.ResultInfo[0].ContentName;
+  $("#nodeNames").val(na);
+  var img=resultData.ResultInfo[0].ContentImg;
+  $(".defaultImg").attr({"src":img});
+  $(".playPathList:eq(0)").children(".playPath").val(resultData.ResultInfo[0].BcPlayPathList[0].BcPlayPath);
+  $(".playPathList:eq(0)").children(".bcSource").val(resultData.ResultInfo[0].BcPlayPathList[0].BcSource);
+  if(resultData.ResultInfo[0].BcPlayPathList[0].IsMain=="1"){
+    $(".playPathList:eq(0)").children(".isMain").attr({"checked":true});
+  }else{
+    $(".playPathList:eq(0)").children(".isMain").attr({"checked":false});
+  }
+  for(var i=1;i<resultData.ResultInfo[0].BcPlayPathList.length;i++){
+    var newPath='<div class="playPathList">'+
+                  '<input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off" value='+resultData.ResultInfo[0].BcPlayPathList[i].BcPlayPath+'>'+
+                  '<input type="text" class="bcSource" placeholder="地址所属平台"/ value='+resultData.ResultInfo[0].BcPlayPathList[i].BcSource+'>'+
+                  '<input type="checkbox" name="isMain" class="isMain" />'+
+                  '<span class="note">是否设为主播放地址</span>'+
+                  '<div class="delplayPath">删除播放地址</div>'+
+                '</div>';
+    $(".playPaths").append(newPath);
+    if(resultData.ResultInfo[0].BcPlayPathList[i].IsMain=="1"){
+      $(".playPathList:eq("+i+")").children(".isMain").attr({"checked":true});
+    }else{
+      $(".playPathList:eq("+i+")").children(".isMain").attr({"checked":false});
+    }
+  }
+  var pub=resultData.ResultInfo[0].ContentPub;
+  $("#publisher").val(pub);
+  for(var i=0;i<resultData.ResultInfo[0].ContentCatalogs.length;i++){
+    var newli= '<li class="_li" id='+resultData.ResultInfo[0].ContentCatalogs[i].CataDid+'>'+
+                  '<span>'+resultData.ResultInfo[0].ContentCatalogs[i].CataTitle+'</span>'+
+                  '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                '</li>';
+    if(resultData.ResultInfo[0].ContentCatalogs[i].CataMId=="1"){//电台分类
+      $(".radio_ul").append(newli); 
+    }else{//行政区划
+      $(".area_ul").append(newli);
+    }
+  }
+  var des=resultData.ResultInfo[0].ContentDesc;
+  $("#nodeDescn").val((des=="null")?"":des);
+}
+
+/*修改已有分类的方法*/
+function modBroadcast(){
+  if(!$(".upfile").attr("value")){
+    $(".upfile").attr("value",$(".defaultImg").attr("src"));
+  }
+  ids();
+  var modInfo={
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "UserId":"123",
+      "BcId":$(".bcId").attr("value"),
+      "BcTitle":$("#nodeNames").val(),
+      "BcImg":$(".upfile").attr("value"),
+      "BcAreaId":$("#nodeArea").attr("value"),
+      "BcTypeId":$("#nodeRadio").attr("value"),
+      "BcPlayPaths":BcPlayPaths,
+      "BcPublisher":$("#publisher").val(),
+      "BcDescn":$("#nodeDescn").val()
+  };
+  console.log(modInfo);
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/updateBroadcast.do",
+    dataType: "json",
+    data:JSON.stringify(modInfo),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        alert("修改成功");
+        $(document).find("input[type='checkbox']").removeAttr("checked");
+        $("#addCata").modal("hide");
+        $("#shade").css({"display":"none"});
+        reqDetailList(event,$("#nodeArea").attr("value"));
+        cleanDialog();
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  })
+};
+
+//删除节点的时候验证是否删除
+function beforeRemove(check){
+  if(confirm("确认删除这些电台 吗？")){
+    delBroadcast(check);
+  }else{
+    alert("成功取消删除");
+  }
+}
+
+/*删除已有分类的方法*/
+function delBroadcast(check){
+  var delInfo={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "UserId":"123",
+    "Ids":check
+  };
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/delBc.do",
+    dataType: "json",
+    data:JSON.stringify(delInfo),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        alert("删除成功!");
+        removing(check);//删除成功后从页面上移走
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  })
+};
+
+/*删除成功后从页面上移走*/
+function removing(check){
+  var checks=check.split(",");
+  for(var i=0;i<checks.length;i++){
+    $(document).find(".detail .listBox").each(function(){
+      var contentId=$(this).attr("contentid");
+      if(checks[i]==contentId){
+        $(this).remove();
+      }
+    })
+  }
+}
+
+/*清空分类界面方法*/
+function cleanDialog(){
+  $("form")[0].reset();
+  $(".newImg").remove();
+  $(".defaultImg").show();
+  $("#cataTreess").hide();
+  $("#nodeArea,#nodeRadio").attr({"value":""});
+  $(".area_ul,.radio_ul").children("._li").remove();
+  $(".playPaths").children(".playPathList:gt(0)").remove();
+}
+
+/*鼠标放在弹出页面的树上，取消按钮出现*/
+$(document).on("mouseenter","._li",function(){
+  $(this).children("._img").show();
+});
+$(document).on("mouseleave","._li",function(){
+  $(this).children("._img").hide();
+});
+$(document).on("mouseenter","._img",function(){
+  event.stopPropagation();
+  $(this).attr({"src":"../anchor/img/upl_img6.png"});
+});
+$(document).on("mouseleave","._img",function(){
+  event.stopPropagation();
+  $(this).attr({"src":"../anchor/img/upl_img2.png"});
+});
+$(document).on("click","._img",function(){
+  $(this).parent().remove();
+});
+
+
+/*
+ 节目单管理页面
+ * */
+$("#programme").on("click",function(){
+  getBcProgramme();//得到电台节目单信息
+  $('.pro_ctitle h4').each(function(){//初始化节目单，默认显示当前是周几
+    var week = new Date().getDay();
+    var index = $(this).index();
+    var indexs=index+1;
+    if(indexs==week){
+      $(this).addClass('active').siblings().removeClass('active');
+      $('.pro_ccont .content').eq(index).show().addClass('active').siblings(".content").removeClass('active').hide();
+    }
+  })
+});
+
+/*tab切换*/
+$('.pro_ctitle h4').click(function(){
+  var index = $(this).index();
+  $(this).addClass('active').siblings().removeClass('active');
+  $('.pro_ccont .content').eq(index).show().addClass('active').siblings().removeClass('active').hide();
+});
+
+/*清空数据*/
+$(".cancelPro,#programmeMg .close").on("click",function(){
+  $(".pro_ccont").children(".content").html("");
+  $("#proName").html("");
+  $(document).find("input[type='checkbox']").removeAttr("checked");
+  $("#programmeMg,#shade").hide();
+})
+
+/*得到电台节目单信息*/
+function getBcProgramme(){
+  $(document).find("input[type='checkbox']").each(function(){
+    if($(this).is(':checked')){
+      var bcId=$(this).parent().parent(".listBox").attr("contentid");
+      var bcName=$(this).parent().siblings(".listCon").children("h3").text();
+      $("#proName").text(bcName);
+      $("#proName").attr({"bcId":bcId});
+      var _data={
+        "DeviceId":"3279A27149B24719991812E6ADBA5584",
+        "PCDType":"3",
+        "UserId":"123",
+        "BcId":bcId
+      };
+      $.ajax({
+        type: "POST",    
+        url:rootPath+"content/bc/getBcProgramme.do",
+        dataType: "json",
+        data:JSON.stringify(_data),
+        success: function(resultData){
+          if(resultData.ReturnType=="1001"){
+            loadBcProgramme(resultData);//加载电台节目单信息
+          }else{
+            alert("当前电台没有节目单");
+          }
+        },
+        error: function(jqXHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      })
+      $("#programmeMg,#shade").show();
+    }
+  });
+}
+
+/*加载电台节目单信息*/
+function loadBcProgramme(resultData){
+  $(".content").html("");//先清空数据
+  for(var i=0;i<resultData.ResultInfo.length;i++){
+    var newPro= '<div class="conlist" bcId='+resultData.ResultInfo[i].BcId+' week='+resultData.ResultInfo[i].WeekDay+'>'+
+                  '<input type="text" class="clspan1" value="'+resultData.ResultInfo[i].Title+'">'+
+                  '<input type="text" class="clspan2 date" value="'+resultData.ResultInfo[i].BeginTime+'">'+
+                  '<input type="text" class="clspan3 date" value="'+resultData.ResultInfo[i].EndTime+'">'+
+                  '<div class="buttons">'+
+                    '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
+                    '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
+                  '</div>'+
+                '</div>';
+    var w= resultData.ResultInfo[i].WeekDay;           
+    switch(w){
+      case 1:
+        $("#week1").append(newPro);
+        break;
+      case 2:
+        $("#week2").append(newPro);
+        break;
+      case 3:
+        $("#week3").append(newPro);
+        break;
+      case 4:
+        $("#week4").append(newPro);
+        break;
+      case 5:
+        $("#week5").append(newPro);
+        break;
+      case 6:
+        $("#week6").append(newPro);
+        break;
+      case 7:
+        $("#week7").append(newPro);
+        break;
+      default:
+        break;
+    }
+  }
+  timeHS();//时分秒插件
+}
+
+/*点击每个节目单的新增，增加新的节目*/
+function addPro(addPro){
+  var newPro= '<div class="conlist" >'+
+                  '<input type="text" class="clspan1" value="">'+
+                  '<input type="text" class="clspan2 date" value="">'+
+                  '<input type="text" class="clspan3 date" value="">'+
+                  '<div class="buttons">'+
+                    '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
+                    '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
+                  '</div>'+
+                '</div>';
+  $(addPro).parent().parent().after(newPro);
+  timeHS();//时分秒插件              
+}
+
+/*点击标题处的新增*/
+$(".newadd").on("click",function(){
+  var newPro= '<div class="conlist" >'+
+                  '<input type="text" class="clspan1" value="">'+
+                  '<input type="text" class="clspan2 date" value="">'+
+                  '<input type="text" class="clspan3 date" value="">'+
+                  '<div class="buttons">'+
+                    '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
+                    '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
+                  '</div>'+
+                '</div>';
+  $(".pro_ccont .active").append(newPro); 
+  timeHS();//时分秒插件
+});
+
+/*点击每个节目单的删除，删除这个节目*/
+function delPro(delPro){
+  $(delPro).parent().parent().remove();
+}
+
+/*点击提交，保存修改的内容*/
+$(".commitPro").on("click",function(){
+  var ProgrammeList=[];
+  for(var i=0;i<$(".pro_ccont .content").length;i++){
+    if($(".content:eq("+i+")").children(".conlist").length>0){
+      $(".content:eq("+i+")").children(".conlist").each(function(){
+        var proList={};
+        proList.WeekDay=$(this).parent().attr("weekIndex");
+        proList.BcId=$("#proName").attr("bcid");
+        proList.Title=$(this).children(".clspan1").val();
+        proList.BeginTime=$(this).children(".clspan2").val();
+        proList.EndTime=$(this).children(".clspan3").val();
+        ProgrammeList.push(proList);
+      })
+    }
+  }
+  console.log(ProgrammeList);
+  var _data={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "UserId":"123",
+    "BcId":$("#proName").attr("bcid"),
+    "ProgrammeList":ProgrammeList
+  };
+  $.ajax({
+    type: "POST",    
+    url:rootPath+"content/bc/updateBcProgramme.do",
+    dataType: "json",
+    data:JSON.stringify(_data),
+    success: function(resultData){
+      if(resultData.ReturnType=="1001"){
+        alert("节目单修改成功");
+        $(".content,#proName").html("");//先清空数据
+        $(document).find("input[type='checkbox']").removeAttr("checked");
+        $("#programmeMg,#shade").hide();
+      }else{
+        alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+});
+/*时分秒插件*/
+function timeHS(){
+  $(document).find('.date').datetimepicker({
+    datepicker:false,
+    format:'H:i',
+    step:5
+  });
+}
+</script>
+</html>

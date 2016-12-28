@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -16,29 +17,28 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.WtContentMngConstants;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.service.ChannelService;
-import com.woting.cm.core.dict.mem._CacheDictionary;
-import com.woting.cm.core.dict.model.DictDetail;
-import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
+import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
+import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.service.BroadcastProService;
 import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.content.manage.media.service.MediaContentService;
 import com.woting.content.publish.utils.CacheUtils;
+
 @Service
 public class QueryService {
-	@Resource(name="dataSource")
+	@Resource(name = "dataSource")
 	private DataSource DataSource;
 	@Resource
 	private MediaService mediaService;
@@ -47,7 +47,9 @@ public class QueryService {
 	@Resource
 	private ChannelService chService;
 	@Resource
-	private BroadcastProService bcService;
+	private BroadcastProService broadcastProService;
+	@Resource
+	private MediaContentService mediaContentService;
 
 	/**
 	 * 查询列表
@@ -72,9 +74,9 @@ public class QueryService {
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int numall = 0;
 		String sql = "";
-		
-		Map<String, Object> m = new HashMap<String,Object>();
-		m.put("channelId",channelId);
+
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("channelId", channelId);
 		m.put("publisherId", publisherId);
 		m.put("beginPubtime", beginpubtime);
 		m.put("endPubtime", endpubtime);
@@ -82,9 +84,9 @@ public class QueryService {
 		m.put("endcTime", endctime);
 		m.put("flowFlag", flowFlag);
 		numall = mediaService.getCountInCha(m);
-		
+
 		m.clear();
-		m.put("channelId",channelId);
+		m.put("channelId", channelId);
 		m.put("publisherId", publisherId);
 		m.put("beginPubtime", beginpubtime);
 		m.put("endPubtime", endpubtime);
@@ -106,23 +108,23 @@ public class QueryService {
 			oneData.put("ContentFlowFlag", channelAssetPo.getFlowFlag());
 			list2seq.add(oneData);
 		}
-		
+
 		// 查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
 			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
-				SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId")+"");
-				map.put("ContentName",sma.getSmaTitle());
+				SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId") + "");
+				map.put("ContentName", sma.getSmaTitle());
 				map.put("ContentSource", sma.getPublisher());
 				map.put("ContentDesc", sma.getDescn());
 			} else {
 				if (map.get("MediaType").equals("wt_MediaAsset")) {
-					MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId")+"");
+					MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId") + "");
 					map.put("ContentName", ma.getMaTitle());
 					map.put("ContentSource", ma.getMaPublisher());
 					map.put("ContentDesc", ma.getDescn());
 				} else {
 					if (map.get("MediaType").equals("wt_Broadcast")) {
-						//待更改
+						// 待更改
 						sql = "select bcTitle,bcPublisher,descn from wt_Broadcast where id = ? limit 1";
 						try {
 							conn = DataSource.getConnection();
@@ -150,6 +152,7 @@ public class QueryService {
 
 	/**
 	 * 查询已显示的节目信息
+	 * 
 	 * @param pagesize
 	 * @param page
 	 * @param id
@@ -188,33 +191,38 @@ public class QueryService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
 		SeqMediaAsset sma = mediaService.getSmaInfoById(id);
-		List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
-		List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'"+sma.getId()+"'", "wt_SeqMediaAsset");
-		List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId());
-		Map<String, Object> smap = sma.toHashMap();
-		smap.put("count", listseqmaref.size());
-		smap.put("smaPublishTime",chlist.get(0).get("pubTime"));
-		seqData = ContentUtils.convert2Sma(smap, null, catalist, chlist, null);
+		if (sma != null) {
+			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'" + sma.getId() + "'",
+					"wt_SeqMediaAsset");
+			List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'" + sma.getId() + "'",
+					"wt_SeqMediaAsset");
+			List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId());
+			Map<String, Object> smap = sma.toHashMap();
+			smap.put("count", listseqmaref.size());
+			smap.put("smaPublishTime", chlist.get(0).get("pubTime"));
+			seqData = ContentUtils.convert2Sma(smap, null, catalist, chlist, null);
 
-		// 查询专辑和单体的联系
-		List<String> listaudioid = new ArrayList<String>();
-		
-		for (SeqMaRefPo seqMaRefPo : listseqmaref) {
-			listaudioid.add(seqMaRefPo.getMId());
-		}
+			// 查询专辑和单体的联系
+			List<String> listaudioid = new ArrayList<String>();
 
-		// 查询单体信息
-		for (String audid : listaudioid) {
-			listaudio.add(getAudioInfo(audid, "wt_MediaAsset"));
-		}
+			for (SeqMaRefPo seqMaRefPo : listseqmaref) {
+				listaudioid.add(seqMaRefPo.getMId());
+			}
 
-		if (listaudio.size() == 0) {
-			map.put("audio", null);
-		} else {
-			map.put("audio", listaudio);
+			// 查询单体信息
+			for (String audid : listaudioid) {
+				listaudio.add(getAudioInfo(audid, "wt_MediaAsset"));
+			}
+
+			if (listaudio.size() == 0) {
+				map.put("audio", null);
+			} else {
+				map.put("audio", listaudio);
+			}
+			map.put("sequ", seqData);
+			return map;
 		}
-		map.put("sequ", seqData);
-		return map;
+		return null;
 	}
 
 	/**
@@ -224,33 +232,20 @@ public class QueryService {
 	 * @param acttype
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
-        CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
-        _CacheDictionary cd=cache.getContent();
-
-        Map<String, Object> audioData = new HashMap<String,Object>();
-		MediaAsset ma = mediaService.getMaInfoById(contentid);
-		audioData.put("ContentId",ma.getId());
-		audioData.put("ContentName",ma.getMaTitle());
-		audioData.put("MediaType", acttype);
-		audioData.put("ContentImg", ma.getMaImg());
-		audioData.put("ContentCTime",ma.getCTime());
-		audioData.put("ContentPubTime", ma.getMaPublishTime());
-		audioData.put("ContentDesc", ma.getDescn());
-		audioData.put("ContentTimes", ma.getCTime());
-		audioData.put("ContentSource", ma.getMaPublisher());
-		audioData.put("ContentURI", ma.getMaURL());
-		audioData.put("ContentPersons", null);
-		
-		List<DictRefResPo> listdicref = mediaService.getResDictRefByResId(audioData.get("ContentId")+"");
-		String catalogs = "";
-		for (DictRefResPo dictRefResPo : listdicref) {
-		    DictDetail dd=cd.getDictDetail(dictRefResPo.getDictMid(), dictRefResPo.getDictDid());
-		    if (dd!=null) catalogs+= ","+dd.getNodeName();
+		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentid+"'", acttype);
+		if (chas != null && chas.size() > 0) {
+			MediaAsset ma = mediaService.getMaInfoById(contentid);
+			if (ma != null) {
+				List<MediaAssetPo> mas = new ArrayList<>();
+				mas.add(ma.convert2Po());
+				List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
+				if (rem != null && rem.size() > 0) {
+					return rem.get(0);
+				}
+			}
 		}
-		audioData.put("ContentCatalogs", (StringUtils.isNullOrEmptyOrSpace(catalogs)||catalogs.toLowerCase().equals("null"))?null:catalogs.substring(1));
-		return audioData;
+		return null;
 	}
 
 	/**
@@ -262,8 +257,9 @@ public class QueryService {
 	 */
 	public Map<String, Object> getBroadcastInfo(String contentid, String acttype) {
 		Map<String, Object> broadcastData = new HashMap<String, Object>();// 单体信息
-		BroadcastPo bc = bcService.getBroadcastList(contentid);
-		if (bc==null) return null;
+		BroadcastPo bc = broadcastProService.getBroadcastList(contentid);
+		if (bc == null)
+			return null;
 		broadcastData.put("ContentId", bc.getId());
 		broadcastData.put("ContentName", bc.getBcTitle());
 		broadcastData.put("MediaType", bc.getBcTitle());
@@ -311,7 +307,8 @@ public class QueryService {
 	/**
 	 * 修改审核状态
 	 * 
-	 * @param id 栏目发布表id
+	 * @param id
+	 *            栏目发布表id
 	 * @param number
 	 * @return
 	 */
@@ -324,9 +321,9 @@ public class QueryService {
 		for (int i = 0; i < ids.length; i++) {
 			ChannelAsset cha = new ChannelAsset();
 			cha.setId(ids[i]);
-		    cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-		    cha.setFlowFlag(Integer.valueOf(number));
-		    num = mediaService.updateCha(cha);
+			cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+			cha.setFlowFlag(Integer.valueOf(number));
+			num = mediaService.updateCha(cha);
 		}
 		if (num == 1) {
 			map.put("ReturnType", "1001");
@@ -339,6 +336,7 @@ public class QueryService {
 
 	/**
 	 * 修改排序号
+	 * 
 	 * @param id
 	 * @param sort
 	 * @return
@@ -355,7 +353,7 @@ public class QueryService {
 		newcha.setId(id);
 		newcha.setSort(Integer.valueOf(sort));
 		newcha.setPubTime(new Timestamp(System.currentTimeMillis()));
-		
+
 		String sql = "update wt_ChannelAsset set sort = ?,pubTime= ? where id = ?";
 		try {
 			conn = DataSource.getConnection();
@@ -381,6 +379,7 @@ public class QueryService {
 
 	/**
 	 * 获得分类和发布组织信息
+	 * 
 	 * @return
 	 */
 	public Map<String, Object> getConditionsInfo() {
@@ -390,7 +389,7 @@ public class QueryService {
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> listcatalogs = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> listorganize = new ArrayList<Map<String, Object>>();
-		
+
 		String sql = "select id,channelName from wt_Channel"; // 获得栏目分类信息
 		try {
 			conn = DataSource.getConnection();
@@ -428,53 +427,119 @@ public class QueryService {
 		map.put("Source", listorganize);
 		return map;
 	}
-	
+
 	public List<Map<String, Object>> getPublishedSeqList() {
 		return chService.getSeqPublishedList();
 	}
 
 	/**
 	 * 加载专辑id为zjId的专辑的下属的节目列表，注意是某一页page的列表
+	 * 
 	 * @param zjId 专辑Id
 	 * @param page 第几页
 	 * @return 返回该页的数据，以json串的方式，若该页无数据返回null
 	 */
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
-		Map<String, Object> map = new HashMap<String,Object>();
-		//1-根据zjId，计算出文件存放目录
-		String path=SystemCache.getCache(FConstants.APPOSPATH).getContent()+""+ "mweb/zj/"+zjId+"/";
-		//2-判断是否有page所对应的数据
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 1-根据zjId，计算出文件存放目录
+		String path = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "" + "mweb/zj/" + zjId + "/";
+		// 2-判断是否有page所对应的数据
 		File thisPage, nextPage;
-		thisPage = new File(path+"P"+page+".json");//func()
-		int nextpage = Integer.valueOf(page)+1;
-		nextPage=new File(path+"P"+nextpage+".json");
-		if(!thisPage.exists()){
+		thisPage = new File(path + "P" + page + ".json");
+		int nextpage = Integer.valueOf(page) + 1;
+		nextPage = new File(path + "P" + nextpage + ".json");
+		if (!thisPage.exists()) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "没有相关内容 ");
-		}else {//组织本页数据
-			String jsonstr = CacheUtils.readFile(path+"P"+page+".json");
+		} else {// 组织本页数据
+			String jsonstr = CacheUtils.readFile(path + "P" + page + ".json");
 			List<Map<String, Object>> listaudios = (List<Map<String, Object>>) JsonUtils.jsonToObj(jsonstr, List.class);
-			if(listaudios!=null){
+			if (listaudios != null) {
 				map.put("ResultList", listaudios);
 				map.put("ReturnType", "1001");
-				map.put("NextPage", String.valueOf(nextPage.exists()));//判断是否有下一页，并组织到返回数据中
-			}else{
+				map.put("NextPage", String.valueOf(nextPage.exists()));// 判断是否有下一页，并组织到返回数据中
+			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有相关内容 ");
 			}
 		}
 		return map;
 	}
-	
+
+	public boolean getShareHtml(String resId, String mediaType) {
+		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
+			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
+				if (mediaType.equals("SEQU")) {
+					SeqMediaAsset sma = mediaService.getSmaInfoById(resId);
+					if (sma != null) {
+						List<SeqMediaAssetPo> listpo = new ArrayList<>();
+						listpo.add(sma.convert2Po());
+						List<Map<String, Object>> smam = mediaService.makeSmaListToReturn(listpo);
+						if (smam != null && smam.size() > 0) {
+							Map<String, Object> map = new HashMap<>();
+							map.put("ContentDetail", smam.get(0));
+							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(resId);
+							if (mas != null && mas.size() > 0) {
+								Iterator<MediaAssetPo> it = mas.iterator();
+								while (it.hasNext()) {
+									MediaAssetPo mediaAssetPo = (MediaAssetPo) it.next();
+									String resIds = "'" + mediaAssetPo.getId() + "'";
+									List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId(resIds, "wt_MediaAsset");
+									if (chas != null && chas.size() > 0) {
+										ChannelAssetPo chapo = chas.get(0);
+										if (chapo.getFlowFlag() != 2)
+											it.remove();
+									}
+								}
+								map.put("SubList", mediaService.makeMaListToReturn(mas));
+								CacheUtils.publishZJ(map);
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 关闭数据库连接
+	 * 
 	 * @param conn
 	 * @param ps
 	 * @param rs
 	 */
 	private void closeConnection(Connection conn, PreparedStatement ps, ResultSet rs) {
-		if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-        if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-        if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+		if (rs != null)
+			try {
+				rs.close();
+				rs = null;
+			} catch (Exception e) {
+				rs = null;
+			} finally {
+				rs = null;
+			}
+		;
+		if (ps != null)
+			try {
+				ps.close();
+				ps = null;
+			} catch (Exception e) {
+				ps = null;
+			} finally {
+				ps = null;
+			}
+		;
+		if (conn != null)
+			try {
+				conn.close();
+				conn = null;
+			} catch (Exception e) {
+				conn = null;
+			} finally {
+				conn = null;
+			}
+		;
 	}
 }

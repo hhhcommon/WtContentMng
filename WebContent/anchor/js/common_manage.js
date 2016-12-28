@@ -1,4 +1,5 @@
 $(function(){
+  var rootPath=getRootPath();
   var isExisted = true;//定义存在为true
   var tag_sum=0;//定义添加的标签数量,最大是5
   var type=2;//type=1点击多选,type=2未点击多选
@@ -21,6 +22,7 @@ $(function(){
   $(document).on("click",".trig_item",function(){
 //  debugger;
     var pId=$(this).parents(".attr").attr("id");
+    var id=$(this).attr("id");
     var pTitle='';
     if((pId=="status")&&($(this).parents(".attr").attr("ids")=="jmstatus")){
       pTitle="节目状态：";
@@ -45,7 +47,7 @@ $(function(){
     }
     if(type=="2"){//没有点击多选直接选中某一项
       $(this).attr({"selected":"selected"});
-      var newFilter='<li class="cate" pId='+pId+'>'+
+      var newFilter='<li class="cate" pId='+pId+' id='+id+'>'+
                     '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+$(this).children(".ss1").text()+'</span>'+
                     '<span class="cate_img">×</span>'+
                   '</li>';
@@ -74,6 +76,7 @@ $(function(){
 //  debugger;
     type=2;
     var pId=$(this).parents(".attr").attr("id");
+    var id=$(this).attr("id");
     var pTitle='';
     if(pId=="status"){
       pTitle="节目状态：";
@@ -85,18 +88,25 @@ $(function(){
       pTitle="所属栏目：";
     }
     var str=" ";
+    var ids=" ";
     $(this).parent().siblings(".attrValues").children(".av_ul").children(".trig_item").each(function(){
       if(typeof($(this).attr("selected"))!="undefined"){
         var txt=$(this).children(".ss1").text();
+        var id=$(this).attr("id");
         if(str==" "){
           str=txt;
         }else{
           str+=","+txt;
         }
+        if(ids==" "){
+          ids=id;
+        }else{
+          ids+=","+id;
+        }
       }
     })
-    console.log(str);
-    var newFilter='<li class="cate" pId='+pId+'>'+
+    console.log(str,ids);
+    var newFilter='<li class="cate" pId='+pId+' id='+ids+'>'+
                     '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+str+'</span>'+
                     '<span class="cate_img">×</span>'+
                   '</li>';
@@ -137,7 +147,6 @@ $(function(){
       $(".ri_top2").removeClass("border2").addClass("border1");
       $(".ri_top_li4").show();
     }
-    
     $("#"+pId).show();
     if($(".all").children(".new_cate").children("li").length<=0){
       $(".all").hide();
@@ -210,6 +219,8 @@ $(function(){
   $(".collapse-link,.cancel").on("click",function(){
     $("form")[0].reset();
     $(".mask,.add").hide();
+    $(".sonProgress").html(" ");
+    $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"auto"});
   });
   
@@ -354,12 +365,112 @@ $(function(){
       }
     }
   };
+  //当页面宽度发生变化时
   window.onresize=function(){
     laydate.reset(); 
   }
+  //日历插件的位置跟随着滚动条变化
+  $(".add").on("scroll", function(){ 
+    laydate.reset();//重设日历控件坐标，一般用于页面dom结构改变时
+  }) 
   //7.点击换一批
   $(document).on("click",".hyp",function(){
     alert("请求加载另一批数据");
   });
+  
+  /*
+    图片裁剪上传
+   * */
+  $(".upl_pt_img").on("click",function(){
+    $(".mask_clip,.container_clip").show();
+  });
+  $(".upload_pic").on("click",function(){
+    $(".picFile").click();
+  })
+  $('.picFile').on('change', function(){
+    cleCanvas();
+    uploadPic();
+  });
+  function uploadPic(){
+    var ics = new imgStroke();
+    var reader=new FileReader();
+    reader.onload=function(){ 
+      // 通过 reader.result 来访问生成的 DataURL
+      var url=reader.result;
+      ics.init({"canvasId":"myCanvas","url":url,"x":20,"y":20});
+      demo_report();
+    };       
+    reader.readAsDataURL($(".picFile")[0].files[0]);
+    var jqObj=$(".picFile");
+    jqObj.val("");
+    var domObj = jqObj[0];
+    domObj.outerHTML = domObj.outerHTML;
+    var newJqObj = jqObj.clone();
+    jqObj.before(newJqObj);
+    jqObj.remove();
+    $(".picFile").unbind().change(function (){
+      uploadPic();
+    });
+  }
+  $('#btnSave').on('click', function(){
+    var imgBase64Data=$(document).find(".cropped img").attr("src");
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile",imgBase64Data);
+    oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass","Chrome");
+    oMyForm.append("PCDType","3");
+    oMyForm.append("UserId","123");
+    oMyForm.append("Purpose","2");
+    oMyForm.append("SrcType","1");
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      //表单提交前进行验证
+      success: function(resultData){
+        if(resultData.Success =true){
+          alert("图片裁剪上传成功");
+          $(".upl_img").attr("value",resultData.FilePath);
+          cleCanvas();
+          $(".container_clip,.mask_clip").hide();
+          if($(".defaultImg").css("display")!="none"){
+            $(".defaultImg").css({"display":"none"});
+          }
+          var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
+          if($(".previewImg").children().length>1){
+            $(".previewImg img:last").replaceWith(newImg);
+          }else{
+            $(".previewImg").append(newImg);
+          } 
+        }else{
+          alert(resultData.err);
+        }
+      },
+      error: function(XHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  
+  $("#resetId").on("click",function(){
+    if(confirm("您确定要取消裁剪吗？")){
+      cleCanvas();
+      $(".container_clip,.mask_clip").hide();
+    }
+  });
+  
+  //清空画布
+  function cleCanvas(){
+    var myctx=document.getElementById("myCanvas").getContext("2d");
+    myctx.restore();
+    var towctx=document.getElementById("myCanvasTow").getContext("2d");
+    towctx.restore();
+    $("#myCanvas,#myCanvasTow").hide();
+    $("#cutImgId").attr({"src":""});
+  }
   
 })

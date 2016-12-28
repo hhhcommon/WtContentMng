@@ -129,6 +129,7 @@
 /* DROP DOWN WRAPPER */
 
 .dropdown div{
+  height:204px !important;
 	position: absolute;
 	height: 0;
 	left: -1px;
@@ -176,7 +177,7 @@
 	height: 100%;
 	width: 100%;
 	list-style: none;
-	overflow: hidden;
+	overflow: auto;
 }
 
 .dropdown.scrollable.open ul{
@@ -193,7 +194,7 @@
 /* .focus class is also added on hover */
 
 .dropdown li.focus{
-	background: #d24a67;
+	background: #FFA634;
 	position: relative;
 	z-index: 3;
 	color: #fff;

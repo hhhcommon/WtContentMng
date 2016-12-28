@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -27,7 +26,7 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://123.56.254.75:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
@@ -56,7 +55,7 @@ public abstract class CacheUtils {
 			//生成 ZJ/P*.json文件和content.html文件
 			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
 			if (i == 1)
-				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list);// 生成content.html
+				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list, audiosize);// 生成content.html
 		}
 	}
 
@@ -80,37 +79,62 @@ public abstract class CacheUtils {
 	/**
 	 * 创建ZJ文件夹里的html静态页面
 	 * 
-	 * @param str
-	 *            WebContent路径
-	 * @param rootpath
-	 *            要编写文件的文件夹路径
-	 * @param mapsequ
-	 *            专辑信息
-	 * @param listaudio
-	 *            单体组信息
+	 * @param str WebContent路径
+	 * @param rootpath 要编写文件的文件夹路径
+	 * @param mapsequ 专辑信息
+	 * @param listaudio 单体组信息
 	 * @return
 	 */
-	private static boolean createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio) {
+	@SuppressWarnings("unchecked")
+	private static void createZJHtml(String path, Map<String, Object> mapsequ, List<Map<String, Object>> listaudio, int num) {
 		//存放专辑html模版
 		String htmlstr = "";
 		//生成节目html模版
-		String ulString = "<li class='audioLi' data-src='#####audioplay#####'><div class='audioIntro'><a href='#####audiourl#####' target='_self'><h3>#####audioname#####</h3></a><p>2015-10-26</p></div><a href='javascript:void(0)' class='playBtn'></a></li>";
+		String ulString = "<li class='listBox playBtn' data_src='#####audioplay#####'  share_url='#####shareurl#####'><h4>#####audioname#####</h4><div class='time'>#####audiotime#####</div><p class='lcp'><img src='../../templet/zj_templet/imgs/sl.png' alt=''/><span>#####audioplaycount#####</span><img src='../../templet/zj_templet/imgs/sc.png' alt='' class='sc'/><span class='contentT'>#####audioplaytime#####</span></p></li>";
 		//存放节目列表html
 		String lis = "";
 		htmlstr = readFile(rootpath + templetpath + "/zj_templet/index.html"); // 读取专辑html模版文件
-		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequdesc#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
-				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString())
-		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
-		        .replace("#####mediatype#####", "SEQU"); // 替换指定的信息
-		for (Map<String, Object> map : listaudio) {
-			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
-					.replace("#####audioplay#####", map.get("ContentURI").toString()).replace("#####audiourl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html");
+		if (mapsequ.containsKey("ContentPersons")) {
+			List<Map<String, Object>> poms = (List<Map<String, Object>>) mapsequ.get("ContentPersons");
+			if (poms!=null && poms.size()>0) {
+				Map<String, Object> pom = poms.get(0);
+				htmlstr = htmlstr.replace("#####zhuboname#####", pom.get("PerName")+"").replace("#####zhuboimgs#####", pom.get("PerImg")+"");
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####zhuboname#####", "")
+					.replace("#####zhuboimgs#####", "");
 		}
-
+		if (mapsequ.containsKey("ContentKeyWords")) {
+			List<Map<String, Object>> kws = (List<Map<String, Object>>) mapsequ.get("ContentKeyWords");
+			if (kws!=null && kws.size()>0) {
+				String kwstr = "";
+				for (Map<String, Object> map : kws) {
+					kwstr += "/"+map.get("TagName");
+				}
+				kwstr = kwstr.substring(1);
+				htmlstr = htmlstr.replace("#####sequtag#####", kwstr);
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####sequtag#####", "");
+		}
+		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
+				.replace("#####sequnrdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
+		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
+		        .replace("#####mediatype#####", "SEQU")
+		        .replace("#####sequsum#####", num+""); // 替换指定的信息
+		for (Map<String, Object> map : listaudio) {
+			String pubtime = (map.get("ContentPubTime")+"").equals("null")?(map.get("CTime")+""):(map.get("ContentPubTime")+"");
+			pubtime = pubtime.substring(0, pubtime.length()-3);
+			lis += ulString.replace("#####audioname#####", map.get("ContentName").toString())
+					.replace("#####audioplay#####", map.get("ContentPlay").toString())
+					.replace("#####shareurl#####",jmurlrootpath + jmpath + map.get("ContentId").toString() + "/content.html")
+					.replace("#####audiotime#####", pubtime)
+					.replace("#####audioplaycount#####", map.get("PlayCount")+"")
+					.replace("#####audioplaytime#####", map.get("ContentTimes")+"");
+		}
 		htmlstr = htmlstr.replace("#####audiolist#####", lis);
 		writeFile(htmlstr, path + "/content.html");
-		return false;
 	}
 
 	/**
@@ -120,18 +144,28 @@ public abstract class CacheUtils {
 	 * @param map
 	 * @return
 	 */
-	private static boolean createJMHtml(String path, Map<String, Object> map) {
+	private static void createJMHtml(String path, Map<String, Object> map) {
 		//读取节目html模版
 		String htmlstr = readFile(rootpath + templetpath + "/jm_templet/index.html");
+		if (map.containsKey("ContentPersons")) {
+			List<Map<String, Object>> poms = (List<Map<String, Object>>) map.get("ContentPersons");
+			if (poms!=null && poms.size()>0) {
+				Map<String, Object> pom = poms.get(0);
+				htmlstr = htmlstr.replace("#####audiozhubo#####", pom.get("PerName")+"");
+			}
+		} else {
+			htmlstr = htmlstr.replace("#####audiozhubo#####", "");
+		}
 		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName")+"")
 				.replace("#####mediatype#####", "AUDIO")
-		        .replace("#####audioimgs#####", map.get("ContentImg")+"")
-		        .replace("#####audioplay#####", map.get("ContentURI")+"")
+		        .replace("#####audioimgs#####", (map.get("ContentImg")+"").equals("null")?"":map.get("ContentImg").toString().replace(".png", ".300_300.png"))
+		        .replace("#####audioplay#####", map.get("ContentPlay")+"")
 				.replace("#####audioid#####", map.get("ContentId")+"")
 				.replace("#####audiotime#####", map.get("ContentTimes")+"")
-				.replace("#####audiodesc#####", map.get("ContentDesc")+"");
+				.replace("#####audiodescn#####", (map.get("ContentDesc")+"").equals("null")?"":map.get("ContentDesc")+"")
+				.replace("#####audioseq#####", map.get("ContentSeqName")+"")
+				.replace("#####audiosource#####", map.get("ContentPub")+"");
 		writeFile(htmlstr, path);
-		return false;
 	}
 
 	/**
@@ -144,7 +178,7 @@ public abstract class CacheUtils {
 	public static boolean writeFile(String jsonstr, String path) {
 		File file = createFile(path);
 		try {
-			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"GBK");
+			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
 			BufferedWriter writer = new BufferedWriter(write);
 			writer.write(jsonstr);
 			writer.close();
@@ -168,7 +202,7 @@ public abstract class CacheUtils {
 		BufferedReader br = null;
 		File file = new File(path);
 		try {
-			in = new InputStreamReader(new FileInputStream(file),"gbk");
+			in = new InputStreamReader(new FileInputStream(file),"UTF-8");
 			br = new BufferedReader(in);
 			String zjstr = "";
 			while ((zjstr = br.readLine()) != null) {

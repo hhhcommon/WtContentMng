@@ -1,0 +1,35 @@
+<html>
+  <meta charset="UTF-8">
+  <title> getSessionId </title>
+  <meta name="Generator" content="EditPlus">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+<head>
+  <style>
+  #browerVersion{
+    width:200px;
+    height:200px;
+    border:1px solid red;
+  }
+  </style>
+</head>
+<body bgcolor="#fef4d9" >
+  sessionId 是jtoe环境下的，后台会自动生成一个sessionId，前端不用管
+</body>
+<SCRIPT>
+getSessionId();
+function getSessionId(){
+   var c_name = 'JSESSIONID';
+   if(document.cookie.length>0){
+      c_start=document.cookie.indexOf(c_name + "=")
+      if(c_start!=-1){
+        c_start=c_start + c_name.length+1
+        c_end=document.cookie.indexOf(";",c_start)
+        if(c_end==-1) c_end=document.cookie.length
+        return unescape(document.cookie.substring(c_start,c_end));
+      }
+   }
+  }
+</SCRIPT>
+</html> 

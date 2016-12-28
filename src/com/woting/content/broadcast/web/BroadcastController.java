@@ -10,9 +10,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,7 +41,7 @@ import com.woting.passport.session.SessionService;
 @RequestMapping(value = "/content/bc/")
 public class BroadcastController {
 	@Resource
-	private BroadcastProService bcService;
+	private BroadcastProService broadcastProService;
 	@Resource(name = "redisSessionService")
 	private SessionService sessionService;
 
@@ -53,7 +50,7 @@ public class BroadcastController {
 	public Map<String, Object> addBc(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		bcService.add(m);
+		broadcastProService.add(m);
 		map.put("returnType", "1001");
 		return map;
 	}
@@ -165,8 +162,15 @@ public class BroadcastController {
 				map.put("Message", "无电台分类Id");
 				return map;
 			}
-			String bcPlayPath = m.get("BcPlayPath") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) || bcPlayPath.toLowerCase().equals("null")) {
+			// String bcPlayPath = m.get("BcPlayPath") + "";
+			// if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) ||
+			// bcPlayPath.toLowerCase().equals("null")) {
+			// map.put("ReturnType", "1016");
+			// map.put("Message", "无电台直播流");
+			// return map;
+			// }
+			List<Map<String, Object>> bcPlayPaths = (List<Map<String, Object>>) m.get("BcPlayPaths");
+			if (bcPlayPaths == null || bcPlayPaths.size() == 0) {
 				map.put("ReturnType", "1016");
 				map.put("Message", "无电台直播流");
 				return map;
@@ -177,18 +181,19 @@ public class BroadcastController {
 				map.put("Message", "无电台发布者");
 				return map;
 			}
-			String isMain = m.get("IsMain") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(isMain) || isMain.toLowerCase().equals("null")) {
-				isMain = "0";
-			}
 			String bcDescn = m.get("BcDescn") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(bcDescn) || bcDescn.toLowerCase().equals("null")) {
 				bcDescn = null;
 			}
-			bcService.addBroadcast(userId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPath, bcPublisher, isMain,
+			boolean isok = broadcastProService.addBroadcast(userId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPaths, bcPublisher,
 					bcDescn);
-			map.put("ReturnType", "1001");
-			map.put("Message", "电台添加成功");
+			if (isok) {
+				map.put("ReturnType", "1001");
+				map.put("Message", "电台添加成功");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "电台添加失败");
+			}
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -322,8 +327,8 @@ public class BroadcastController {
 				map.put("Message", "无电台分类Id");
 				return map;
 			}
-			String bcPlayPath = m.get("BcPlayPath") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(bcPlayPath) || bcPlayPath.toLowerCase().equals("null")) {
+			List<Map<String, Object>> bcPlayPaths = (List<Map<String, Object>>) m.get("BcPlayPaths");
+			if (bcPlayPaths == null || bcPlayPaths.size() == 0) {
 				map.put("ReturnType", "1016");
 				map.put("Message", "无电台直播流");
 				return map;
@@ -342,10 +347,15 @@ public class BroadcastController {
 			if (StringUtils.isNullOrEmptyOrSpace(bcDescn) || bcDescn.toLowerCase().equals("null")) {
 				bcDescn = null;
 			}
-			bcService.updateBroadcast(userId, bcId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPath, bcPublisher, isMain,
-					bcDescn);
-			map.put("ReturnType", "1001");
-			map.put("Message", "修改成功");
+			boolean isok = broadcastProService.updateBroadcast(userId, bcId, bcTitle, bcImg, bcAreaId, bcTypeId, bcPlayPaths,
+					bcPublisher, bcDescn);
+			if (isok) {
+				map.put("ReturnType", "1001");
+				map.put("Message", "电台添加成功");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "电台添加失败");
+			}
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -371,7 +381,7 @@ public class BroadcastController {
 	public Page<Map<String, Object>> loadBc(HttpServletRequest request) {
 		Page<Map<String, Object>> _p = new Page<Map<String, Object>>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		_p = bcService.getViewList(m);
+		_p = broadcastProService.getViewList(m);
 
 		Collection<Map<String, Object>> retResult = _p.getResult();
 		if (retResult != null && retResult.size() > 0) {
@@ -379,7 +389,7 @@ public class BroadcastController {
 			for (Map<String, Object> one : retResult) {// 此次扫描，得到所有的Id
 				ids += ",'" + one.get("id") + "'";
 			}
-			List<DictRefResPo> rcrpL = bcService.getCataRefList(ids.substring(1));
+			List<DictRefResPo> rcrpL = broadcastProService.getCataRefList(ids.substring(1));
 			if (rcrpL != null && rcrpL.size() > 0) {
 				for (Map<String, Object> one : retResult) {// 此次扫描，填充数据
 					ids = "" + one.get("id");
@@ -489,8 +499,15 @@ public class BroadcastController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
+
+			String ids = m.get("Ids") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(ids) || ids.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无电台Id");
+				return map;
+			}
 			//
-			bcService.del(m.get("Ids") + "");
+			broadcastProService.del(ids);
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 			return map;
@@ -551,6 +568,417 @@ public class BroadcastController {
 			}
 		}
 		return map;
+	}
+
+	@RequestMapping(value = "getBcProgramme.do")
+	@ResponseBody
+	public Map<String, Object> getBcProgramme(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.4.3--/content/bc/getBcProgramme.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/getBcInfo.do");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			//
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户Id");
+				return map;
+			}
+			String bcId = m.get("BcId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcId) || bcId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无内容Id");
+				return map;
+			}
+			List<Map<String, Object>> l = broadcastProService.getBcProgrammes(bcId);
+			if (l != null && l.size() > 0) {
+				map.put("ResultInfo", l);
+				map.put("ReturnType", "1001");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "查询失败");
+			}
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
+			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "updateBcProgramme.do")
+	@ResponseBody
+	public Map<String, Object> updateBcProgramme(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.4.5--/content/bc/updateBcProgramme.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/updateBroadcast.do");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 数据采集
+			userId = m.get("UserId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无用户信息");
+				return map;
+			}
+			String bcId = m.get("BcId") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(bcId) || bcId.toLowerCase().equals("null")) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无电台Id");
+				return map;
+			}
+			List<Map<String, Object>> programmes = (List<Map<String, Object>>) m.get("ProgrammeList");
+			if (programmes == null || programmes.size() == 0) {
+				map.put("ReturnType", "1013");
+				map.put("Message", "无节目列表");
+				return map;
+			}
+			boolean isok = broadcastProService.updateBcProgrammes(userId, bcId, programmes);
+			if (isok) {
+				map.put("ReturnType", "1001");
+				map.put("Message", "修改成功");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "修改失败");
+			}
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
+			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@RequestMapping(value = "getBcList.do")
+	@ResponseBody
+	public Map<String, Object> getBcList(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String userid = m.get("UserId") + "";
+		String page = m.get("Page") + "";
+		String pagesize = m.get("PageSize") + "";
+		String errMsg = "";
+
+		System.out.println(userid + "#" + page + "#" + pagesize);
+
+		if (userid.toLowerCase().equals("null"))
+			errMsg += ",无用户信息";
+		if (page.toLowerCase().equals("null"))
+			errMsg += ",无页码信息";
+		if (pagesize.toLowerCase().equals("null"))
+			errMsg += ",无每页条数信息";
+		if (!StringUtils.isNullOrEmptyOrSpace(errMsg)) {
+			errMsg = errMsg.substring(1);
+			map.put("ReturnType", "1002");
+			map.put("Message", errMsg);
+			return map;
+		}
+		int pagenum = Integer.valueOf(page);
+		int pagesizenum = Integer.valueOf(pagesize);
+		List<Map<String, Object>> bclist = broadcastProService.getBroadcastListInfo(pagenum, pagesizenum);
+
+		if (bclist == null) {
+			map.put("ReturnType", "1002");
+			map.put("Message", "无数据");
+			return map;
+		}
+		map.put("ReturnType", "1001");
+		map.put("ResultList", bclist);
+		map.put("AllCount", bclist.size());
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "getBroadcastList.do")
+	@ResponseBody
+	public Map<String, Object> getBroadcastList(HttpServletRequest request) {
+		// 数据收集处理==1
+		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+		alPo.setApiName("5.4.5--/content/bc/updateBcProgramme.do");
+		alPo.setObjType("005");// 用户组对象
+		alPo.setDealFlag(1);// 处理成功
+		alPo.setOwnerType(201);
+		alPo.setOwnerId("--");
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			// 0-获取参数
+			String userId = "";
+			MobileUDKey mUdk = null;
+			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+			alPo.setReqParam(JsonUtils.objToJson(m));
+			if (m == null || m.size() == 0) {
+				map.put("ReturnType", "0000");
+				map.put("Message", "无法获取需要的参数");
+			} else {
+				MobileParam mp = MobileParam.build(m);
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+					mp.setImei(request.getSession().getId());
+				}
+				mUdk = mp.getUserDeviceKey();
+				if (mUdk != null) {
+					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/updateBroadcast.do");
+					if ((retM.get("ReturnType") + "").equals("2003")) {
+						map.put("ReturnType", "200");
+						map.put("Message", "需要登录");
+					} else {
+						map.putAll(retM);
+						if ((retM.get("ReturnType") + "").equals("1001"))
+							map.remove("ReturnType");
+					}
+					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+				} else {
+					map.put("ReturnType", "0000");
+					map.put("Message", "无法获取需要的参数");
+				}
+			}
+			// 数据收集处理==2
+			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+				alPo.setOwnerId(map.get("UserId") + "");
+			} else {
+				// 过客
+				if (mUdk != null)
+					alPo.setOwnerId(mUdk.getDeviceId());
+				else
+					alPo.setOwnerId("0");
+			}
+			if (mUdk != null) {
+				alPo.setDeviceType(mUdk.getPCDType());
+				alPo.setDeviceId(mUdk.getDeviceId());
+			}
+			if (m != null) {
+				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setExploreVer(m.get("MobileClass") + "");
+					}
+					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+						alPo.setExploreName(m.get("exploreName") + "");
+					}
+				} else {
+					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+						alPo.setDeviceClass(m.get("MobileClass") + "");
+					}
+				}
+			}
+			if (map.get("ReturnType") != null)
+				return map;
+
+			// 1-得到模式Id
+			String catalogType = (m.get("CatalogType") == null ? null : m.get("CatalogType") + "");
+			if (StringUtils.isNullOrEmptyOrSpace(catalogType))
+				catalogType = "-1";
+			// 2-得到字典项Id或父栏目Id
+			String catalogId = (m.get("CatalogId") == null ? null : m.get("CatalogId") + "");
+			if (StringUtils.isNullOrEmptyOrSpace(catalogId))
+				catalogId = null;
+			Map<String, Object> contents = broadcastProService.getBroadcasts(catalogType, catalogId);
+			if (contents != null && contents.size() > 0) {
+				map.put("ResultList", contents);
+				map.put("ReturnType", "1001");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "没有查到任何内容");
+			}
+			return map;
+		} catch (Exception e) {
+			e.printStackTrace();
+			map.put("ReturnType", "T");
+			map.put("TClass", e.getClass().getName());
+			map.put("Message", StringUtils.getAllMessage(e));
+			alPo.setDealFlag(2);
+			return map;
+		} finally {
+			// 数据收集处理=3
+			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+			alPo.setReturnData(JsonUtils.objToJson(map));
+			try {
+				ApiGatherMemory.getInstance().put2Queue(alPo);
+			} catch (InterruptedException e) {
+			}
+		}
+		// Map<String, Object> map = new HashMap<String, Object>();
+		// Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		// String datastr = JsonUtils.objToJson(m);
+		// Map<String, String> datas = (Map<String, String>)
+		// JsonUtils.jsonToObj(datastr, Map.class);
+		// Document doc = null;
+		// try {
+		// doc =
+		// Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true)
+		// .data(datas).post();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// if (doc != null) {
+		// String elem = doc.body().html();
+		// elem = elem.replace("&quot;", "\"");
+		// map = (Map<String, Object>) JsonUtils.jsonToObj(elem, Map.class);
+		// }
+		// return map;
 	}
 
 	@RequestMapping(value = "getBcInfo.do")
@@ -628,7 +1056,7 @@ public class BroadcastController {
 			}
 			if (map.get("ReturnType") != null)
 				return map;
-			
+
 			//
 			userId = m.get("UserId") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(userId) || userId.toLowerCase().equals("null")) {
@@ -642,7 +1070,7 @@ public class BroadcastController {
 				map.put("Message", "无内容Id");
 				return map;
 			}
-			List<Map<String, Object>> l = bcService.getBroadcastInfo(bcId);
+			List<Map<String, Object>> l = broadcastProService.getBroadcastInfo(bcId);
 			if (l != null && l.size() > 0) {
 				map.put("ResultInfo", l);
 				map.put("ReturnType", "1001");
@@ -668,66 +1096,5 @@ public class BroadcastController {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@RequestMapping(value = "getBcList.do")
-	@ResponseBody
-	public Map<String, Object> getBcList(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String userid = m.get("UserId") + "";
-		String page = m.get("Page") + "";
-		String pagesize = m.get("PageSize") + "";
-		String errMsg = "";
-
-		System.out.println(userid + "#" + page + "#" + pagesize);
-
-		if (userid.toLowerCase().equals("null"))
-			errMsg += ",无用户信息";
-		if (page.toLowerCase().equals("null"))
-			errMsg += ",无页码信息";
-		if (pagesize.toLowerCase().equals("null"))
-			errMsg += ",无每页条数信息";
-		if (!StringUtils.isNullOrEmptyOrSpace(errMsg)) {
-			errMsg = errMsg.substring(1);
-			map.put("ReturnType", "1002");
-			map.put("Message", errMsg);
-			return map;
-		}
-		int pagenum = Integer.valueOf(page);
-		int pagesizenum = Integer.valueOf(pagesize);
-		List<Map<String, Object>> bclist = bcService.getBroadcastListInfo(pagenum, pagesizenum);
-
-		if (bclist == null) {
-			map.put("ReturnType", "1002");
-			map.put("Message", "无数据");
-			return map;
-		}
-		map.put("ReturnType", "1001");
-		map.put("ResultList", bclist);
-		map.put("AllCount", bclist.size());
-		return map;
-	}
-
-	@RequestMapping(value = "getBroadcastList.do")
-	@ResponseBody
-	public Map<String, Object> getBroadcastList(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String datastr = JsonUtils.objToJson(m);
-		Map<String, String> datas = (Map<String, String>) JsonUtils.jsonToObj(datastr, Map.class);
-		Document doc = null;
-		try {
-			doc = Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true)
-					.data(datas).post();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (doc != null) {
-			String elem = doc.body().html();
-			elem = elem.replace("&quot;", "\"");
-			map = (Map<String, Object>) JsonUtils.jsonToObj(elem, Map.class);
-		}
-		return map;
 	}
 }
