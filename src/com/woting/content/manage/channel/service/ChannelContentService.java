@@ -121,63 +121,68 @@ public class ChannelContentService {
     		List<Map<String, Object>> ffm = new ArrayList<>();
     		List<String> titles = new ArrayList<>();
     		for (ChannelAssetPo chaPo : l) {
-    			if (mediatype.equals("MediaAsset") && chaPo.getAssetType().equals("wt_SeqMediaAsset")) {
-					Map<String, Object> m3 = new HashMap<>();
-					m3.put("PubName", chaPo.getPubName());
-					m3.put("FlowFlag", chaPo.getFlowFlag());
-					m3.put("PubId", chaPo.getAssetId());
-					m3.put("ChannelId", chaPo.getChannelId());
-					smam.add(m3);
-				}
-    			
-    			boolean fmIsOk = true;
-    			if (ffm!=null && ffm.size()>0) {
-					for (Map<String, Object> fm : ffm) {
-						if (fm.get("FlowFlagId").equals(FlowFlagState.get(FlowFlagState.get(chaPo.getFlowFlag()+"")))) {
-							fmIsOk = false;
+    			try {
+					if (mediatype.equals("MediaAsset") && chaPo.getAssetType().equals("wt_SeqMediaAsset")) {
+						Map<String, Object> m3 = new HashMap<>();
+						m3.put("PubName", chaPo.getPubName());
+						m3.put("FlowFlag", chaPo.getFlowFlag());
+						m3.put("PubId", chaPo.getAssetId());
+						m3.put("ChannelId", chaPo.getChannelId());
+						smam.add(m3);
+					}
+	    			
+	    			boolean fmIsOk = true;
+	    			if (ffm!=null && ffm.size()>0) {
+						for (Map<String, Object> fm : ffm) {
+							if (fm.get("FlowFlagId").equals(FlowFlagState.get(FlowFlagState.get(chaPo.getFlowFlag()+"")))) {
+								fmIsOk = false;
+							}
 						}
 					}
-				}
-    			if (fmIsOk) {
-    				Map<String, Object> fm = new HashMap<>();
-    			    fm.put("FlowFlagId", FlowFlagState.get(FlowFlagState.get(chaPo.getFlowFlag()+"")));
-    			    fm.put("FlowFlagName", FlowFlagState.get(chaPo.getFlowFlag()+""));
-    			    ffm.add(fm);
-				}
-    			
-    			Map<String, Object> mc = zc.findNode(chaPo.getChannelId()).toHashMap();
-    			mc = ChannelUtils.buildChanelMap(mc);
-    			Map<String, Object> mp = zc.findNode(chaPo.getChannelId()).getParent().toHashMap();
-    			mp = ChannelUtils.buildChanelMap(mp);
-				if (mp.get("nodeName").equals("栏目根")) {
-					if (rem.containsKey(mc.get("nodeName"))) {
-						continue;
-					} else {
-						rem.put(mc.get("nodeName")+"", mc);
-						titles.add(mc.get("nodeName")+"");
+	    			if (fmIsOk) {
+	    				Map<String, Object> fm = new HashMap<>();
+	    			    fm.put("FlowFlagId", FlowFlagState.get(FlowFlagState.get(chaPo.getFlowFlag()+"")));
+	    			    fm.put("FlowFlagName", FlowFlagState.get(chaPo.getFlowFlag()+""));
+	    			    ffm.add(fm);
 					}
-				} else {
-					if (rem.containsKey(mp.get("nodeName"))) {
-						Map<String, Object> m1 = (Map<String, Object>) rem.get(mp.get("nodeName"));
-						List<Map<String, Object>> chils = (List<Map<String, Object>>) m1.get("children");
-						if (chils!=null && chils.size()>0) {
-							boolean isok = true;
-							for (Map<String, Object> m2 : chils) {
-								if(m2.get("nodeName").equals(mc.get("nodeName"))) {
-									isok = false;
+	    			
+	    			Map<String, Object> mc = zc.findNode(chaPo.getChannelId()).toHashMap();
+	    			mc = ChannelUtils.buildChanelMap(mc);
+	    			Map<String, Object> mp = zc.findNode(chaPo.getChannelId()).getParent().toHashMap();
+	    			mp = ChannelUtils.buildChanelMap(mp);
+					if (mp.get("nodeName").equals("栏目根")) {
+						if (rem.containsKey(mc.get("nodeName"))) {
+							continue;
+						} else {
+							rem.put(mc.get("nodeName")+"", mc);
+							titles.add(mc.get("nodeName")+"");
+						}
+					} else {
+						if (rem.containsKey(mp.get("nodeName"))) {
+							Map<String, Object> m1 = (Map<String, Object>) rem.get(mp.get("nodeName"));
+							List<Map<String, Object>> chils = (List<Map<String, Object>>) m1.get("children");
+							if (chils!=null && chils.size()>0) {
+								boolean isok = true;
+								for (Map<String, Object> m2 : chils) {
+									if(m2.get("nodeName").equals(mc.get("nodeName"))) {
+										isok = false;
+									}
+								}
+								if (isok) {
+									chils.add(mc);
 								}
 							}
-							if (isok) {
-								chils.add(mc);
-							}
+						} else {
+							rem.put(mp.get("nodeName")+"", mp);
+							titles.add(mp.get("nodeName")+"");
+							List<Map<String, Object>> chils = new ArrayList<>();
+							chils.add(mc);
+							mp.put("children", chils);
 						}
-					} else {
-						rem.put(mp.get("nodeName")+"", mp);
-						titles.add(mp.get("nodeName")+"");
-						List<Map<String, Object>> chils = new ArrayList<>();
-						chils.add(mc);
-						mp.put("children", chils);
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
 				}
 			}
     		Map<String, Object> map = new HashMap<>();

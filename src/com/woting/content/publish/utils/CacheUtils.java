@@ -55,7 +55,7 @@ public abstract class CacheUtils {
 			//生成 ZJ/P*.json文件和content.html文件
 			writeFile(audios, rootpath + zjpath + mapsequ.get("ContentId").toString() + "/P" + i + ".json");
 			if (i == 1)
-				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list, audiosize);// 生成content.html
+				createZJHtml(rootpath + zjpath + mapsequ.get("ContentId").toString(), mapsequ, list, audiosize); // 生成content.html
 		}
 	}
 
@@ -118,7 +118,7 @@ public abstract class CacheUtils {
 			htmlstr = htmlstr.replace("#####sequtag#####", "");
 		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequnrdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
 		        .replace("#####mediatype#####", "SEQU")

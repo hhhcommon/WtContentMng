@@ -26,11 +26,8 @@ public class V_FileUploadController extends AbstractFileUploadController {
     @Resource
     private VersionService verService;
 
-    
-    
     @Override
-	public void afterUploadAllFiles(Map<String, Object> retMap, Map<String, Object> a, Map<String, Object> p,
-			HttpSession session) {
+	public void afterUploadAllFiles(Map<String, Object> retMap, Map<String, Object> a, Map<String, Object> p, HttpSession session) {
     	if (this.verCfg==null) verCfg=verService.getVerConfig();
         try {
             //1-获得参数
