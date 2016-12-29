@@ -180,7 +180,6 @@ $(function(){
   
   //33-1.1上传节目方法
   function add_jm(){
-    debugger;
     var _data={};
     _data.UserId="123";
     _data.DeviceId="3279A27149B24719991812E6ADBA5584";
@@ -373,6 +372,7 @@ $(function(){
     $(".audio").attr("src",resultData.Result.ContentPlay);
     $(".uplTitle").val(resultData.Result.ContentName);
     $(".defaultImg").attr("src",resultData.Result.ContentImg);
+    $(".upl_img").attr("value",resultData.Result.ContentImg);
     $(".upl_zj option").each(function(){
       if($(this).attr("id")==resultData.Result.ContentSeqId){
         $(".upl_zj option").prop("selected",false);
@@ -494,6 +494,49 @@ $(function(){
     });
   }
   
+  //66-1点击撤回节目按钮
+  $(document).on("click",".jm_recal",function(){
+    $('.shade', parent.document).show();
+    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+    var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+    var flowFlag=$(this).parent(".optype").siblings(".jm_st").attr("flowFlag");
+    recal_jm(contentId,flowFlag);
+  })
+  function recal_jm(contentId,flowFlag){
+    var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId,
+               "ContentFlowFlag":flowFlag,
+               "OpeType":"revoke"
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/updateContentStatus.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("成功撤回节目");
+          $('.shade', parent.document).hide();
+          getContentList(dataParam);//重新加载节目列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
+        }else{
+          alert(resultData.Message);
+          $('.shade', parent.document).hide();
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  
+  
   
   /*
        弹出页面上的方法
@@ -578,34 +621,29 @@ $(function(){
     $(".upl_file").click();
   });
   $(".upl_file").change(function(){
+    $(".upl_file").attr("value","");
+    $(".uploadStatus").hide();
+    $(".yp_mz").val("");
+    $(".audio").attr("src","");
     var oMyForm = new FormData();
-    var filePath=$(this).val();
     var _this=$(this);
-    var arr=filePath.split('\\');
-    var fileName=arr[arr.length-1];
-    if(filePath){
-      $(".yp_mz").val(fileName);
-      $(".uploadStatus").hide();
-      $(".sonProgress,.parentProgress").show();
-      oMyForm.append("ContentFile", $(this)[0].files[0]);
-      oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
-      oMyForm.append("MobileClass", "Chrome");
-      oMyForm.append("PCDType", "3");
-      oMyForm.append("UserId", "123");
-      oMyForm.append("SrcType", "2");
-      oMyForm.append("Purpose", "1");
-      if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
-        alert("文件过大，请选择合适的文件上传！");
-      }else{
-        requestUpload(_this,oMyForm,fileName);//请求上传文件
-      }
+    $(".sonProgress,.parentProgress").show();
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("UserId", "123");
+    oMyForm.append("SrcType", "2");
+    oMyForm.append("Purpose", "1");
+    if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
+      alert("文件过大，请选择合适的文件上传！");
     }else{
-      return;
+      requestUpload(_this,oMyForm);//请求上传文件
     }
   });
   
   //4.请求上传文件
-  function requestUpload(_this,oMyForm,fileName){
+  function requestUpload(_this,oMyForm){
     $.ajax({
       url:rootPath+"common/uploadCM.do",
       type:"POST",
@@ -623,11 +661,11 @@ $(function(){
       },
       //表单提交前进行验证
       success: function (resultData){
-        if(resultData.Success=true){
-          _this.attr("value",resultData.FilePath);
+        if(resultData.Success==true){
           $(".audio").attr("src",resultData.FilePath);
+          $(".yp_mz").val(resultData.FileOrigName);
+          $(".upl_file").attr("value",resultData.FilePath);
           getTime();
-          $(".cancelUpload").hide();
           $(".uploadStatus").show();
         }else{
           alert(resultData.err);
@@ -636,16 +674,6 @@ $(function(){
       error: function(XHR){
         alert("发生错误" + jqXHR.status);
       }
-    });
-    var jqObj=$(".upl_file");
-    jqObj.val("");
-    var domObj = jqObj[0];
-    domObj.outerHTML = domObj.outerHTML;
-    var newJqObj = jqObj.clone();
-    jqObj.before(newJqObj);
-    jqObj.remove();
-    $(".upl_file").unbind().change(function (){
-      requestUpload(_this,oMyForm,fileName)
     });
   };
   
@@ -963,7 +991,7 @@ $(function(){
     $(".sonProgress").html(" ");
     $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"hidden"});
-    $(".jmId,.upl_file,.upl_img,.timeLong").attr("value","");
+    $(".jmId,.upl_file,.upl_img,.timeLong").attr({"value":""});
     $(".audio").attr("src","");
     $(".uplTitle,.yp_mz,.uplDecn,.czfs_author_ipt,.layer-date").val("");
     $(".upl_bq,.czfs_tag").html("");

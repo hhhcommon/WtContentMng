@@ -219,6 +219,8 @@ $(function(){
   $(".collapse-link,.cancel").on("click",function(){
     $("form")[0].reset();
     $(".mask,.add").hide();
+    $(".sonProgress").html(" ");
+    $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"auto"});
   });
   
@@ -381,47 +383,35 @@ $(function(){
    * */
   $(".upl_pt_img").on("click",function(){
     $(".mask_clip,.container_clip").show();
-    $(".newImg").remove();
   });
-  var options =
-  {
-    thumbBox: '.thumbBox',
-    spinner: '.spinner',
-    imgSrc: 'http://wotingfm.com:908/CM/resources/images/default.png'
-  };
-  var cropper = $('.imageBox').cropbox(options);
-  $('#upload-file').on('change', function(){
+  $(".upload_pic").on("click",function(){
+    $(".picFile").click();
+  })
+  $('.picFile').on('change', function(){
+    cleCanvas();
     uploadPic();
   });
   function uploadPic(){
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      options.imgSrc = e.target.result;
-      cropper = $('.imageBox').cropbox(options);
-    }
-    reader.readAsDataURL($("#upload-file")[0].files[0]);
-    var jqObj=$("#upload-file");
+    var ics = new imgStroke();
+    var reader=new FileReader();
+    reader.onload=function(){ 
+      // 通过 reader.result 来访问生成的 DataURL
+      var url=reader.result;
+      ics.init({"canvasId":"myCanvas","url":url,"x":20,"y":20});
+      demo_report();
+    };       
+    reader.readAsDataURL($(".picFile")[0].files[0]);
+    var jqObj=$(".picFile");
     jqObj.val("");
     var domObj = jqObj[0];
     domObj.outerHTML = domObj.outerHTML;
     var newJqObj = jqObj.clone();
     jqObj.before(newJqObj);
     jqObj.remove();
-    $("#upload-file").unbind().change(function (){
+    $(".picFile").unbind().change(function (){
       uploadPic();
     });
   }
-  $('#btnCrop').on('click', function(){
-    var img = cropper.getDataURL();
-    $('.cropped').html('');
-    $('.cropped').append('<img src="'+img+'" align="absmiddle" style="width：200px;"><p>500px*500px</p>');
-  });
-  $('#btnZoomIn').on('click', function(){
-    cropper.zoomIn();
-  });
-  $('#btnZoomOut').on('click', function(){
-    cropper.zoomOut();
-  });
   $('#btnSave').on('click', function(){
     var imgBase64Data=$(document).find(".cropped img").attr("src");
     var oMyForm = new FormData();
@@ -445,6 +435,8 @@ $(function(){
         if(resultData.Success =true){
           alert("图片裁剪上传成功");
           $(".upl_img").attr("value",resultData.FilePath);
+          cleCanvas();
+          $(".container_clip,.mask_clip").hide();
           if($(".defaultImg").css("display")!="none"){
             $(".defaultImg").css({"display":"none"});
           }
@@ -453,10 +445,7 @@ $(function(){
             $(".previewImg img:last").replaceWith(newImg);
           }else{
             $(".previewImg").append(newImg);
-          }
-          $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
-          $('.cropped').html('');//设为默认图片
-          $(".container_clip,.mask_clip").hide();
+          } 
         }else{
           alert(resultData.err);
         }
@@ -466,10 +455,22 @@ $(function(){
       }
     });
   });
-  $("#btnCancel").on("click",function(){
-    $(".imageBox").css({"backgroundImage":"url(http://wotingfm.com:908/CM/resources/images/default.png)"});
-    $('.cropped').html('');//设为默认图片
-    $(".container_clip,.mask_clip").hide();
-    $(".defaultImg").show();
+  
+  $("#resetId").on("click",function(){
+    if(confirm("您确定要取消裁剪吗？")){
+      cleCanvas();
+      $(".container_clip,.mask_clip").hide();
+    }
   });
+  
+  //清空画布
+  function cleCanvas(){
+    var myctx=document.getElementById("myCanvas").getContext("2d");
+    myctx.restore();
+    var towctx=document.getElementById("myCanvasTow").getContext("2d");
+    towctx.restore();
+    $("#myCanvas,#myCanvasTow").hide();
+    $("#cutImgId").attr({"src":""});
+  }
+  
 })

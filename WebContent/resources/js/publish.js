@@ -176,9 +176,11 @@ function ContentInfoLoad(conList){
   $(".actThumb").attr({'src':conList.ContentDetail.ContentImg});
   $(".actTitle").html(conList.ContentDetail.ContentName);
   if(conList.ContentDetail.MediaType=="SEQU"){
-    $(".itemCount").text("专辑里的声音("+conList.ContentCount+")");
+    $(".itemCount").text("专辑里的声音("+conList.ContentDetail.ContentSubCount+")");
   }else if(conList.ContentDetail.MediaType=="wt_MediaAsset"){
      	
+  }else{
+    $(".itemCount").text("");
   }
      
     
@@ -197,8 +199,8 @@ function ContentInfoLoad(conList){
 //   default:
 //   }
      
-  $(".actSource").text("来源："+conList.ContentDetail.ContentSource);
-  $(".actPubTime").text(conList.ContentDetail.ContentPubTime);
+  $(".actSource").text("来源："+conList.ContentDetail.ContentPub);
+  $(".actPubTime").text(conList.ContentDetail.CTime);
   $(".vjName").html(!conList.ContentDetail.ContentPersons?"暂无":conList.ContentDetail.ContentPersons);
   $(".actDesn").html(!conList.ContentDetail.ContentDesc?"暂无":conList.ContentDetail.ContentDesc);
   $(".cloumn").html(conList.ContentDetail.ContentCatalogs);
@@ -222,25 +224,29 @@ function AudioListLoad(itemList,sort){
   var tbody=$("<tbody></tbody>");
  //循环创建table行
   for(var i=0;i<conListLength;i++){
-    tr=$("<tr></tr>");
-    tr.attr({"contentId":itemList[i].ContentId,"contentURI":itemList[i].ContentURI});
-    tdFirst=$("<td></td>");
-    tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
-    tdA=$("<a href='javascript:;'></a>");
-    tdA.text(itemList[i].ContentName);
-    tdSecond=$("<td class='text-right'></td>");
-    tdSecond.text(itemList[i].ContentPubTime);
+    if(itemList[i]!=null){
+      tr=$("<tr></tr>");
+      tr.attr({"contentId":itemList[i].ContentId,"contentURI":itemList[i].ContentURI});
+      tdFirst=$("<td></td>");
+      tdSpan=$("<span class='fa fa-youtube-play fa-lg'></span>")
+      tdA=$("<a href='javascript:;'></a>");
+      tdA.text(itemList[i].ContentName);
+      tdSecond=$("<td class='text-right'></td>");
+      tdSecond.text(itemList[i].ContentPubTime);
     
-    tdFirst.append(tdSpan).append(tdA);
-    tr.append(tdFirst).append(tdSecond);
-    //根据是否有无sort参数判断插入行的方式，以实现正反序效果
-    if(sort){
-  	  tbody.prepend(tr);  //前置插入行
+      tdFirst.append(tdSpan).append(tdA);
+      tr.append(tdFirst).append(tdSecond);
+      //根据是否有无sort参数判断插入行的方式，以实现正反序效果
+      if(sort){
+        tbody.prepend(tr);  //前置插入行
+      }else{
+        tbody.append(tr);   //后置追加行
+      }
+      $(".table").append(tbody);
     }else{
-  	  tbody.append(tr);   //后置追加行
+      console.log("声音为空");
     }
   }
-  $(".table").append(tbody);
 }
 function fy(event){
 	var flowFlag=event.data.flowFlag;

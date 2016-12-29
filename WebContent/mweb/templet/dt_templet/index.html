@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>#####radioname#####</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
+  <meta name="keywords" content="#####radiodescn#####">
+  <meta name="description" content="#####radiodescn#####">
+  <link href="../../templet/dt_templet/css/swiper.min.css" text="text/css" rel="stylesheet" />
+  <link href="../../templet/dt_templet/css/index.css" text="text/css" rel="stylesheet" />
+  <script src="../../templet/dt_templet/js/jquery-2.1.1.min.js"></script>
+  <script src="../../templet/dt_templet/js/swiper.min.js"></script>
+  <script src="../../../resources/js/mainPage.js"></script>
+  <script src="../../../resources/js/context.utils.js"></script>
+  <script src="../../templet/dt_templet/js/index.js"></script>
+</head>
+<body>
+<img style="width:0px;height:0px;opacity:0;position:absolute;" src="#####radioimgs#####" />
+<div class="swiper-container" id="swiper-container">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">
+      <div class="container">
+        <!--头部开始-->
+        <header>
+          <div id="logo"><img src="../../templet/dt_templet/imgs/logo2.png" /></div>
+          <div class="downLoad">打开收听</div>
+        </header>
+        <!--播放控制界面-->
+        <div class="palyCtrlBox">
+          <h4>#####radioname#####</h4>
+          <img src="" alt="" />
+          <div class="box" >
+            <div class="boximg" style="background-image: url(#####radioimgs#####)"></div>
+            <img src="../../templet/dt_templet/imgs/jm.png"/>
+            <a href="javascript:void(0);" class="playControl"></a>
+            <a href="javascript:void(0);" class="previous"></a>
+            <a href="javascript:void(0);" class="next"></a>
+          </div>
+          <div class="conPlay">
+            <span class="playTime"></span>
+            <div class="currentMusicBar">
+              <div class="currentMusicBarRound"></div>
+            </div>
+            <span class="fullTime"></span>
+          </div>
+          <audio src="#####radioplay#####" id="raAudio" raOpenApp="com.woting.htmlcallback://#####mediatype#####?jsonStr={'ContentId':'#####radioid#####'}"></audio>
+          <ul class="ul">
+            <li class="like">
+              <span class="lis">喜欢</span>
+              <img class="lii" src="../../templet/dt_templet/imgs/wt_person_like.png" alt=""/>
+            </li>
+            <li class="border">
+              <span class="lis cjmd">节目单</span>
+              <img class="lii" src="../../templet/dt_templet/imgs/xq.png" alt=""/>
+            </li>
+            <li class="share">
+              <span class="lis">分享</span>
+              <img class="lii" src="../../templet/dt_templet/imgs/wt_share.png" alt=""/>
+            </li>
+          </ul>
+        </div>
+        <div class="detail">
+          <div class="dt">
+            <img class="xq" src="../../templet/dt_templet/imgs/xq.png" alt="" />
+            <span>节目详情</span>
+          </div>
+          <!--<p class="dp1"><span class="ft_ccc">主播:</span><span class="dpspan">#####radiozhubo#####</span></p>
+          <p class="dp2"><span class="ft_ccc">专辑:</span><span class="dpspan">#####radioseq#####</span></p>  -->
+          <p class="dp3"><span class="ft_ccc">来源:</span><span class="dpspan">#####radiosource#####</span></p> 
+          <p class="dp4">
+            <span class="ft_ccc jj">简介:</span>
+            <span class="js dpspan">#####radiodescn#####</span>
+          </p>
+        </div>
+        <!--相关推荐列表-->
+        <div class="tj">
+          <span class="tjh4 active">相关推荐</span>
+          <span class="tjh4">查看评论</span>
+        </div>
+        <div class="radioList">
+          <ul class="ulBox"></ul>
+          <ul class="comment">
+            <li class="ctList">
+              <div class="default"></div>
+              <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
+              <div class="listCon">
+                <p class="lcs">
+                  <span class="commentName">周杰伦</span>
+                  <span class="commentTime">2016-12-24</span>
+                </p>
+                <div class="commentContent">
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                </div>
+              </div>
+            </li>
+            <li class="ctList">
+              <div class="default"></div>
+              <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
+              <div class="listCon">
+                <p class="lcs">
+                  <span class="commentName">周杰伦</span>
+                  <span class="commentTime">2016-12-24</span>
+                </p>
+                <div class="commentContent">
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                                近给公司开发手机端网站，发现一个很厉害的插件
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div class="jmd">
+        <div class="jmd_head">
+          <img class="back" src="../../templet/dt_templet/imgs/back_images.png" alt="左箭头" />
+          <span class="jmd_title">节目单</span>
+        </div>
+        <div class="content">
+          <div class="jmd_nav">
+            <span class="week active">周一</span>
+            <span class="week">周二</span>
+            <span class="week">周三</span>
+            <span class="week">周四</span>
+            <span class="week">周五</span>
+            <span class="week">周六</span>
+            <span class="week">周日</span>
+          </div>
+          <div class="jmd_con">
+            <div class="weekCont swiper-slide" id="week1" weekIndex="1"></div>
+            <div class="weekCont swiper-slide" id="week2" weekIndex="2"></div>
+            <div class="weekCont swiper-slide" id="week3" weekIndex="3"></div>
+            <div class="weekCont swiper-slide" id="week4" weekIndex="4"></div>
+            <div class="weekCont swiper-slide" id="week5" weekIndex="5"></div>
+            <div class="weekCont swiper-slide" id="week6" weekIndex="6"></div>
+            <div class="weekCont swiper-slide" id="week7" weekIndex="7"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
