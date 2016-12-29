@@ -325,7 +325,8 @@ public class QueryService {
 					ChannelAssetPo cha =  chas.get(0);
 	                if (Integer.valueOf(number)==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 	                cha.setFlowFlag(Integer.valueOf(number));
-	                num+=mediaService.updateCha(cha);
+	                mediaService.updateCha(cha);
+	                num++;
 				}
 	        }
 	        if (num>0) {
