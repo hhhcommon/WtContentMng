@@ -111,7 +111,7 @@ $(function(){
       if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="0"){//提交
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="1"){//审核
-        
+        $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del,.zj_recal").removeClass("cf60").addClass("c173");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="2"){//发布
         $("#op_Box"+i).children(".zj_recal").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
@@ -132,8 +132,8 @@ $(function(){
    $(document).on("click",".zj_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
-    if(flowFlag=="1"||flowFlag=="2") {
-      alert("当前状态不支持编辑状态");
+    if(flowFlag=="1"||flowFlag=="2") {//0提交1审核2发布3撤回
+      alert("当前状态不支持编辑操作");
       return;
     }else{
       subType=2;
@@ -372,9 +372,15 @@ $(function(){
   
   //44-1点击删除专辑按钮
   $(document).on("click",".zj_del",function(){
-    $('.shade', parent.document).show();
-    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    del_zj(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
+    if(flowFlag=="0"||flowFlag=="3"){//0提交1审核2发布3撤回
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      del_zj(contentId);
+    }else{
+      alert("当前专辑不支持删除操作");
+      return;
+    }
   })
   function del_zj(contentId){
     var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -406,9 +412,15 @@ $(function(){
   
   //55-1点击发布节目按钮
   $(document).on("click",".zj_pub",function(){
-    $('.shade', parent.document).show();
-    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    pub_zj(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
+    if(flowFlag=="1"||flowFlag=="2") {//0提交1审核2发布3撤回
+      alert("当前状态不支持发布操作");
+      return;
+    }else{
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      pub_zj(contentId);
+    }
   })
   function pub_zj(contentId){
     var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -441,6 +453,50 @@ $(function(){
     });
   }
   
+  //66-1点击撤回专辑按钮
+  $(document).on("click",".zj_recal",function(){
+    var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
+    if(flowFlag=="2") {//0提交1审核2发布3撤回
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      recal_zj(contentId,flowFlag);
+    }else{
+      alert("当前节目不支持撤回操作");
+      return;
+    }
+  })
+  function recal_zj(contentId,flowFlag){
+    var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":"123",
+               "ContentId":contentId,
+               "ContentFlowFlag":flowFlag,
+               "OpeType":"revoke"
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/updateContentStatus.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("成功撤回专辑");
+          $('.shade', parent.document).hide();
+          getContentList(dataParam);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
+        }else{
+          alert(resultData.Message);
+          $('.shade', parent.document).hide();
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
   
   /*
        弹出页面上的方法
