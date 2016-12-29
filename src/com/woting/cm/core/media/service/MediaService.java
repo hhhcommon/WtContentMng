@@ -489,8 +489,7 @@ public class MediaService {
 				SeqMediaAsset sma = getSmaInfoById(smaref.getSId());
 				mam.put("ContentSeqId", sma.getId());
 				mam.put("ContentSeqName", sma.getSmaTitle());
-				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + ma.getId() + "'",
-						"wt_MediaAsset");
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + ma.getId() + "'", "wt_MediaAsset");
 				if (kws != null && kws.size() > 0) {
 					mam.put("ContentKeyWords", kws);
 				}

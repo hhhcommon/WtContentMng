@@ -135,7 +135,7 @@ public class CommonController {
         for (String key: m.keySet()) {
             if (m.get(key)!=null) conn.data(key, m.get(key)+"");
         }
-        Document doc=conn.timeout(5000).ignoreContentType(true).get();
+        Document doc=conn.timeout(10000).ignoreContentType(true).get();
         String str=doc.select("body").html().toString();
         str=str.replaceAll("\"", "'");
         str=str.replaceAll("\n", "");
