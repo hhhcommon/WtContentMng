@@ -2,7 +2,6 @@ package com.woting.content.publish.web;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -135,9 +134,15 @@ public class QueryController {
 		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 //		String userId = (String) m.get("UserId");
 		String ids = (String) m.get("Id");
+        if (m.get("ContentIds")!=null&&!StringUtils.isNullOrEmptyOrSpace(""+m.get("ContentsIds"))) {
+            ids=""+m.get("ContentIds");
+        } else {
+            if (m.get("ContentId")!=null&&!StringUtils.isNullOrEmptyOrSpace(""+m.get("ContentsId"))) {
+                ids=""+m.get("ContentId");
+            }
+        }
 		String numbers = (String) m.get("ContentSort");
 		String opeType = (String) m.get("OpeType");
-		System.out.println(flowFlag + "#" + ids + "#" + numbers + "#" + opeType);
 		Map<String, Object> map = queryService.modifyInfo(ids, numbers, flowFlag, opeType);
 		return map;
 	}

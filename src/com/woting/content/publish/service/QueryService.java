@@ -314,22 +314,22 @@ public class QueryService {
 	 */
 	public Map<String, Object> modifyStatus(String id, String number) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		id = id.replaceAll("%2C", ",");
-		id = id.substring(0, id.length() - 1);
+//		id = id.replaceAll("%2C", ",");
+//		id = id.substring(0, id.length() - 1);
 		String[] ids = id.split(",");
 		int num = 0;
-		for (int i = 0; i < ids.length; i++) {
-			ChannelAsset cha = new ChannelAsset();
-			cha.setId(ids[i]);
-			cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-			cha.setFlowFlag(Integer.valueOf(number));
-			num = mediaService.updateCha(cha);
-		}
-		if (num == 1) {
-			map.put("ReturnType", "1001");
-		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "修改失败");
+		try {
+	        for (int i = 0; i < ids.length; i++) {
+	            ChannelAsset cha = new ChannelAsset();
+	            cha.setId(ids[i]);
+	            if (Integer.valueOf(number)==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+	            cha.setFlowFlag(Integer.valueOf(number));
+	            num+=mediaService.updateCha(cha);
+	        }
+            map.put("ReturnType", "1001");
+		} catch(Exception e) {
+            map.put("ReturnType", "1011");
+            map.put("Message", "修改失败");
 		}
 		return map;
 	}
