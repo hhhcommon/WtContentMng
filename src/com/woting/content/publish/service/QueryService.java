@@ -320,16 +320,23 @@ public class QueryService {
 		int num = 0;
 		try {
 	        for (int i = 0; i < ids.length; i++) {
-	            ChannelAsset cha = new ChannelAsset();
-	            cha.setId(ids[i]);
-	            if (Integer.valueOf(number)==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-	            cha.setFlowFlag(Integer.valueOf(number));
-	            num+=mediaService.updateCha(cha);
+	        	List<ChannelAssetPo> chas = mediaService.getCHAInfoByAssetId(id);
+	        	if (chas!=null) {
+					ChannelAssetPo cha =  chas.get(0);
+	                if (Integer.valueOf(number)==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+	                cha.setFlowFlag(Integer.valueOf(number));
+	                num+=mediaService.updateCha(cha);
+				}
 	        }
-            map.put("ReturnType", "1001");
+	        if (num>0) {
+				map.put("ReturnType", "1001");
+				map.put("Message", "修改成功");
+			} else {
+			    map.put("ReturnType", "1011");
+                map.put("Message", "修改失败");
+			}
 		} catch(Exception e) {
-            map.put("ReturnType", "1011");
-            map.put("Message", "修改失败");
+           e.printStackTrace();
 		}
 		return map;
 	}
