@@ -533,17 +533,15 @@ ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='030数据日志';
 /**031 资产与外部系统对照表[WT_RESORGASSET_Ref]*/
 DROP TABLE IF EXISTS wt_ResOrgAsset_Ref;
 CREATE TABLE wt_ResOrgAsset_Ref (
-  idxMd5        varchar(32)   NOT NULL             COMMENT '用于索引的Md5码，是resTableName+refType+origType+origId，作为唯一索引',
-  resTableName  varchar(200)  NOT NULL             COMMENT 'WT资源类型，表名：主要的资产表，目前1电台；2单体媒体资源；3专辑资源',
-  resId         varchar(32)   NOT NULL             COMMENT '表内记录Id',
-  refType       varchar(20)   NOT NULL             COMMENT '关系类型，目前只有ETL',
-  orgId         varchar(32)   NOT NULL             COMMENT '外部系统ID,对应wt_Organize',
-  origType      varchar(200)  NOT NULL             COMMENT '外部系统中主对象的分类，各个源不相同，有自己的规则',
-  origId        varchar(100)  NOT NULL             COMMENT '外部系统中主对象的ID',
-  contentMd5    varchar(32)                        COMMENT '内容Md5,这个内容是以Wt资源库为准的',
-  dealFlag      int unsigned  NOT NULL  DEFAULT 0  COMMENT '处理类型：0未处理，1已处理',
+  id            varchar(32)   NOT NULL             COMMENT 'UUID',
+  resTableName  varchar(100)  NOT NULL             COMMENT '资源类型表名：电台；单体媒体资源；专辑资源',
+  resId         varchar(32)   NOT NULL             COMMENT '资源Id',
+  orgName       varchar(32)   NOT NULL             COMMENT '资源来源平台',
+  origId        varchar(32)   NOT NULL             COMMENT '抓取库内容Id',
+  origTableName varchar(100)  NOT NULL             COMMENT '抓取库资源类型表名',
+  origSrcId     varchar(32)   NOT NULL             COMMENT '对应抓取平台内容Id',
   cTime         timestamp     NOT NULL  DEFAULT CURRENT_TIMESTAMP  COMMENT '创建时间',
-  PRIMARY KEY (idxMd5)
+  PRIMARY KEY (id)
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='031资产与外部系统对照表';
 
