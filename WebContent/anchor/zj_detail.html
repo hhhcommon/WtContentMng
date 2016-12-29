@@ -12,6 +12,7 @@
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <!--日历插件-->
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
@@ -159,26 +160,42 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   margin-top:10px;
 }
 .list_title{
-  height:30px;
+  height:32px;
   border-bottom:1px dotted #000;
-  overflow: hidden;
+}
+.content-tabs{
+  height: 30px;
+  background: #fff;
+  border-bottom: solid 0px #f3f3f4;
+}
+.content-tabs button:hover {
+  background: #fff;
 }
 .list_title h4{
   color:#000;
   float: left;
   padding-left:20px;
-  height:30px;
+  height:32px;
   font-size:15px;
-  line-height:30px;
+  margin-top:0px;
+  line-height:32px;
 }
-.list_title span{
-  color:#0071CE;
+.list_title_span{
+  color: #000;
+  font-weight: bolder;
   float: right;
   height:30px;
   line-height:30px;
   font-size:15px;
   padding-right:10px;
   cursor: pointer;
+}
+.jm_states{
+  float: right;
+  width: 135px;
+  font-weight: bolder;
+  color: #000;
+  font-size: 15px;
 }
 .zj_jmlist {
   width: 100%;
@@ -187,6 +204,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   border: 1px solid #00458A;
 }
 .list_content{
+  width:100%;
   height:360px;
   overflow-y: auto;
 }
@@ -212,20 +230,8 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   padding-left:20px;
   width:290px;
 }
-.list_content1_img{
-  background: url("img/btn.png") repeat;
-  width: 25px;
-  height: 25px;
-  background-size: 100%;
-  cursor: pointer;
-  display: inline-block;
-  overflow: hidden;
-  background-position: 0px -154px;
-  vertical-align: middle;
-  user-select: none;
-  -webkit-user-select: none;
-  white-space: nowrap;
-  margin-left: 150px;
+.playcount{
+  position: absolute;
 }
 .list_content1_span1{
   padding-left:0px;
@@ -282,6 +288,63 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.rtc_listBox{
+  width:97%;
+  height:110px;
+  border-bottom:1px solid #dedede;
+  position:relative;
+  font-family: "微软雅黑";
+  font-size:14px ;
+  overflow: hidden;
+}
+.rtcl_img{
+  height:80px;
+  width:80px;
+  margin-top:15px;
+  margin-left:20px;
+  margin-right:10px;
+  border:1px solid #dedede;
+  float: left;
+  cursor: pointer;
+}
+.rtcl_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.rtcl_con{
+  height:100%;
+  float: left;
+  color:rgb(173,172,172);
+}
+.rtcl_con h4{
+  margin-top:20px;
+  color:#000;
+}
+.jm_st{
+  float: right;
+  line-height: 110px;
+  margin-right:104px;
+  color:#000;
+}
+.op_type{
+  float: right;
+  margin-right:-140px;
+}
+.op_type p{
+  cursor: pointer;
+  margin:5px 0px 0px 0px;
+}
+.cf60{
+ color:#f60; 
+}
+.c173{
+  color:rgb(173,172,172);
+}
+.dropdown-menu{
+  left:15px;
+  min-width:110px !important;
+}
 </style>
 <body onselectstart="return false">
 <div class="detail">
@@ -317,9 +380,22 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
           <div class="dcl_zj_jmlist">
             <div class="list_title">
               <h4></h4>
-              <span>更改排序</span>
+              <span class="list_title_span">相关操作</span>
+              <div class="btn-group content-tabs jm_states">
+                <button class="dropdown" data-toggle="dropdown" aria-expanded="false" style="width: 120px;" >节目状态
+                  <img src="img/filter2.png" alt="" />
+                </button>
+                <ul role="menu" class="dropdown-menu">
+                  <li class="saved" text="已保存" type="saved"><a>已保存</a></li>
+                  <li class="pending" text="审核中" type="pending"><a>审核中</a></li>
+                  <li class="pended" text="已审核" type="pended"><a>已审核</a></li>
+                  <li class="notPass" text="未通过" type="notPass"><a>未通过</a></li>
+                  <li class="published" text="已发布" type="published"><a>已发布</a></li>
+                  <li class="recalling" text="待撤回" type="recalling"><a>待撤回</a></li>
+                  <li class="recalled" text="已撤回" type="recalled"><a>已撤回</a></li>
+                </ul>
+              </div>
             </div>
-            <audio src="" controls class="audio" style="display:none;"></audio>
             <ul class="list_content">
               <!--<li class="list_content1" style="margin-top:15px;">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
@@ -448,23 +524,55 @@ $(function(){
   var contentId=href.split('?')[1].split("=")[1];
   var rootPath=getRootPath();
   
-  getZjDetail(contentId);//得到专辑信息
-  function getZjDetail(contentId){
-    $.ajax({
-      type:"POST",
-      url:rootPath+"content/seq/getSeqMediaInfo.do",
-      dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+  var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
             "MobileClass":"Chrome",
             "UserId":"123",
             "PCDType":"3",
             "ContentId":contentId
-      },
+  };
+  getZjDetail(data);//得到专辑信息
+  function getZjDetail(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/seq/getSeqMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           fillZjDetail(resultData);//填充专辑数据
         }else{
           alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+            "MobileClass":"Chrome",
+            "UserId":"123",
+            "PCDType":"3",
+            "FlagFlow":"0",
+            "ChannelId":"0",
+            "SeqMediaId":contentId
+  };
+  //得到专辑下面的节目列表
+  getZj_jmList(_data);
+  function getZj_jmList(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/getMediaList.do",
+      dataType:"json",
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillZj_jmList(resultData);//填充专辑数据
+        }else{
+          $(".list_content").html("");//每次加载之前先清空
+          $(".list_content").html("<li style='text-align: center;'>暂无节目数据</li>");
+          $(".list_title h4").html("共0个节目");
         }
       },
       error:function(XHR){
@@ -485,21 +593,9 @@ $(function(){
         $(".dcl_zjcontent2 ul").append(newli);
       }
     }
-    $(".ctime").html(resultData.Result.CTime);
+    $(".ctime").html("最近更新时间:&nbsp;&nbsp;"+resultData.Result.CTime);
     $(".dcl_zjcontent3_p1").html(resultData.Result.ContentDesc);
     $(".list_title h4").html("共"+resultData.Result.SubCount+"个节目");
-    if(resultData.Result.MediaAssetList!=null){
-      for(var i=0;i<resultData.Result.MediaAssetList.length;i++){
-        var newjiList='<li class="list_content1" contentSeqId='+resultData.Result.MediaAssetList[i].ContentSeqId+' style="margin-top:15px;">'+
-                        '<span class="list_content1_a" href="#">'+resultData.Result.MediaAssetList[i].ContentName+'</span>'+
-                        '<span class="list_content1_img play_pause" href="javascrript:" contentPlay='+resultData.Result.MediaAssetList[i].ContentPlay+'></span>'+
-                        '<span class="list_content1_span1">('+resultData.Result.MediaAssetList[i].PlayCount+')</span>'+
-                        '<span class="list_content1_span2">'+resultData.Result.ContentPubChannels[0].FlowFlagState+'</span>'+
-                        '<span class="list_content1_span3">'+resultData.Result.MediaAssetList[i].CTime+'</span>'+
-                      '</li>';
-        $(".list_content").append(newjiList);             
-      }
-    }
   }
   
   getMyZjDetail();//得到我的所有专辑信息
@@ -562,27 +658,174 @@ $(function(){
     getZjDetail(contentId);
   })
   
-  //点击专辑的节目列表的播放按钮
-  $(document).on("click",".list_content1_img",function(){
-    var audios=$(".audio")[0];//定义播放器的容器
-    var contentPlay=$(this).attr("contentPlay");
-    if($(this).hasClass("play_pause")){
-      $(this).parent().siblings(".list_content1").children(".list_content1_img").removeClass("playing").addClass("play_pause");
-      $(this).parent().siblings(".list_content1").children(".list_content1_img").css({"background-position":"0px -154px"});
-      $(this).removeClass("play_pause").addClass("playing");
-      $(".audio").attr({"src":contentPlay});
-      audios.play();
-      $(this).css({"background-position":"0px -324px"});
-    }else{
-      $(this).parent().siblings(".list_content1").children(".list_content1_img").removeClass("playing").addClass("play_pause");
-      $(this).parent().siblings(".list_content1").children(".list_content1_img").css({"background-position":"0px -324px"});
-      $(this).removeClass("playing").addClass("play_pause");
-      $(".audio").removeAttr("src");
-      audios.pause();
-      $(this).css({"background-position":"0px -154px"});
+  //专辑的节目列表
+  function fillZj_jmList(resultData){
+    $(".list_content,.list_title h4").html("");//每次加载之前先清空
+    $(".dcl_zjcontent2 .h3span").html("("+resultData.ResultList.AllCount+"个节目)");
+    $(".list_title h4").html("共"+resultData.ResultList.AllCount+"个节目");
+    for(var i=0;i<resultData.ResultList.AllCount;i++){
+      if(resultData.ResultList.List[i].ContentSeqName){
+        var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+                        '<div class="rtcl_img">'+
+                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+                        '</div>'+
+                        '<div class="rtcl_con">'+
+                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                          '<p class="other">'+
+                            '<span>时间 ：</span>'+
+                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                          '</p>'+
+                          '<p class="playcount">'+
+                            '<img class="list_content1_img" src="img/act1.png" alt="图片" />'+
+                            '<span class="list_content1_span1">('+resultData.ResultList.List[i].PlayCount+')</span>'+
+                          '</p>'+
+                        '</div>'+
+                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<div class="op_type" id="op_Box'+i+'">'+
+                          '<p class="jm_edit c173">编辑</p>'+
+                          '<p class="jm_pub c173">发布</p>'+
+                          '<p class="jm_del c173">删除</p>'+
+                          '<p class="jm_recal c173">撤回</p>'+
+                        '</div>'+
+                      '</li>';
+      }else{
+        var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+                        '<div class="rtcl_img">'+
+                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+                        '</div>'+
+                        '<div class="rtcl_con">'+
+                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                          '<p class="other">'+
+                            '<span>时间 ：</span>'+
+                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                          '</p>'+
+                          '<p class="playcount">'+
+                            '<img class="list_content1_img" src="img/act1.png" alt="图片" />'+
+                            '<span class="list_content1_span1">('+resultData.ResultList.List[i].PlayCount+')</span>'+
+                          '</p>'+
+                        '</div>'+
+                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<div class="op_type" id="op_Box'+i+'">'+
+                          '<p class="jm_edit c173">编辑</p>'+
+                          '<p class="jm_pub c173">发布</p>'+
+                          '<p class="jm_del c173">删除</p>'+
+                          '<p class="jm_recal c173">撤回</p>'+
+                        '</div>'+
+                      '</li>';
+      }
+      $(".list_content").append(programBox); 
+      if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="0"){//提交
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="1"){//审核
+        
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="2"){//发布
+        $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }
     }
-  });
+  }
   
+  //选择不同的节目状态
+    var count=0;
+    var FlowFlag;
+    $(".dropdown-menu").on("click","li",function(){
+      switch($(this).attr("type")){
+        case 'saved':
+          FlowFlag=0;
+          count=0;
+          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                          "MobileClass":"Chrome",
+                          "PCDType":"3",
+                          "UserId":"123",
+                          "SeqMediaId":contentId,
+                          "ChannelId":"0",
+                          "FlowFlag":FlowFlag
+          };
+          $(".dropdown").html($(this).attr("text"));
+          $(".list_content").html("");
+          getZj_jmList(dataParam);
+          break;
+        case 'pending':
+          FlowFlag=1;
+          count=0;
+          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                          "MobileClass":"Chrome",
+                          "PCDType":"3",
+                          "UserId":"123",
+                          "SeqMediaId":contentId,
+                          "ChannelId":"0",
+                          "FlowFlag":FlowFlag
+          };
+          $(".dropdown").html($(this).attr("text"));
+          $(".list_content").html("");
+          getZj_jmList(dataParam);
+          break;
+        case 'pended':
+          FlowFlag=1;
+          count=0;
+          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                          "MobileClass":"Chrome",
+                          "PCDType":"3",
+                          "UserId":"123",
+                          "SeqMediaId":contentId,
+                          "ChannelId":"0",
+                          "FlowFlag":FlowFlag
+          };
+          $(".dropdown").html($(this).attr("text"));
+          $(".list_content").html("");
+          getZj_jmList(dataParam);
+          break;
+        case 'published':
+          FlowFlag=2;
+          count=0;
+          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                          "MobileClass":"Chrome",
+                          "PCDType":"3",
+                          "UserId":"123",
+                          "SeqMediaId":contentId,
+                          "ChannelId":"0",
+                          "FlowFlag":FlowFlag
+          };
+          $(".dropdown").html($(this).attr("text"));
+          $(".list_content").html("");
+          getZj_jmList(dataParam);
+          break;
+        case 'notPass':
+          FlowFlag=3;
+          count=0;
+          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                          "MobileClass":"Chrome",
+                          "PCDType":"3",
+                          "UserId":"123",
+                          "SeqMediaId":contentId,
+                          "ChannelId":"0",
+                          "FlowFlag":FlowFlag
+          };
+          $(".dropdown").html($(this).attr("text"));
+          $(".list_content").html("");
+          getZj_jmList(dataParam);
+          break;
+        case 'recall':
+          FlowFlag=4;
+          count=0;
+          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+                          "MobileClass":"Chrome",
+                          "PCDType":"3",
+                          "UserId":"123",
+                          "SeqMediaId":contentId,
+                          "ChannelId":"0",
+                          "FlowFlag":FlowFlag
+          };
+          $(".dropdown").html($(this).attr("text"));
+          $(".list_content").html("");
+          getZj_jmList(dataParam);
+          break;
+        default:
+      }
+    })
+
+
 });
 </script>
 </html>

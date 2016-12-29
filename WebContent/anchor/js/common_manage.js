@@ -228,7 +228,7 @@ $(function(){
   $(window).on("scroll", function(){ 
     var sTop = $(window).scrollTop();  
     var sTop = parseInt(sTop);  
-    if (sTop >= 120){ 
+    if (sTop >= 10){ 
       if(!$('.footer', parent.document).is(":visible")){ 
         $('.wrapper', parent.document).css({"height":"64%"});
         $('.footer', parent.document).show();
@@ -373,10 +373,6 @@ $(function(){
   $(".add").on("scroll", function(){ 
     laydate.reset();//重设日历控件坐标，一般用于页面dom结构改变时
   }) 
-  //7.点击换一批
-  $(document).on("click",".hyp",function(){
-    alert("请求加载另一批数据");
-  });
   
   /*
     图片裁剪上传

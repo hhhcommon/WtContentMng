@@ -454,3 +454,8 @@ header .downLoad{
   text-align: center;
   margin-top:20px;
 }
+.noComment{
+  height:34px;
+  line-height: 34px;
+  text-align:center;
+}

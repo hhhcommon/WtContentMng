@@ -110,11 +110,11 @@ $(function(){
                           '</p>'+
                         '</div>'+
                         '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type">'+
-                          '<p class="jm_edit">编辑</p>'+
-                          '<p class="jm_pub">发布</p>'+
-                          '<p class="jm_del">删除</p>'+
-                          '<p class="jm_recal">撤回</p>'+
+                        '<div class="op_type" id="op_Box'+i+'">'+
+                          '<p class="jm_edit c173">编辑</p>'+
+                          '<p class="jm_pub c173">发布</p>'+
+                          '<p class="jm_del c173">删除</p>'+
+                          '<p class="jm_recal c173">撤回</p>'+
                         '</div>'+
                       '</div>';
       }else{
@@ -130,16 +130,25 @@ $(function(){
                             '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
                           '</p>'+
                         '</div>'+
-                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type">'+
-                          '<p class="jm_edit">编辑</p>'+
-                          '<p class="jm_pub">发布</p>'+
-                          '<p class="jm_del">删除</p>'+
-                          '<p class="jm_recal">撤回</p>'+
+                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<div class="op_type" id="op_Box'+i+'">'+
+                          '<p class="jm_edit c173">编辑</p>'+
+                          '<p class="jm_pub c173">发布</p>'+
+                          '<p class="jm_del c173">删除</p>'+
+                          '<p class="jm_recal c173">撤回</p>'+
                         '</div>'+
                       '</div>';
       }
-      $(".ri_top3_con").append(programBox);     
+      $(".ri_top3_con").append(programBox); 
+      if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="0"){//提交
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="1"){//审核
+        
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="2"){//发布
+        $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }
     }
   }
   
@@ -535,9 +544,6 @@ $(function(){
     });
   }
   
-  
-  
-  
   /*
        弹出页面上的方法
    * */
@@ -552,23 +558,27 @@ $(function(){
              "TagType":"1",
              "TagSize":"20"
   };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getTags.do",
-    dataType:"json",
-    data:JSON.stringify(data1),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getPubLabel(resultData);//得到上传节目页面公共标签元素
+  loadPubTag(data1);
+  function loadPubTag(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getTags.do",
+      dataType:"json",
+      data:JSON.stringify(data1),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getPubLabel(resultData);//得到上传节目页面公共标签元素
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
   
   //1.1得到上传节目页面公共标签元素
   function getPubLabel(resultData){
+    $(".gg_tag_con").html("");
     for(var i=0;i<resultData.AllCount;i++){
       var label='<li class="gg_tag_con1" tagType='+resultData.ResultList[i].TagOrg+' tagId='+resultData.ResultList[i].TagId+'>'+
                   '<input type="checkbox" class="gg_tag_con1_check" />'+
@@ -578,6 +588,11 @@ $(function(){
       $(".gg_tag_con").append(label); 
     }
   }
+  
+  //1.2请求更换一批公共标签
+  $(document).on("click",".gg_tag .hyp",function(){
+    loadPubTag(data1);
+  })
   
   //2上传节目页面获取我的标签
   var data2={"DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -590,23 +605,27 @@ $(function(){
              "TagType":"2",
              "TagSize":"20"
   };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getTags.do",
-    dataType:"json",
-    data:JSON.stringify(data2),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getMyLabel(resultData);//得到上传节目页面我的标签元素
+  loadMyTag(data2);
+  function loadMyTag(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getTags.do",
+      dataType:"json",
+      data:JSON.stringify(data2),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getMyLabel(resultData);//得到上传节目页面我的标签元素
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
   
   //2.1得到上传节目页面我的标签元素
   function getMyLabel(resultData){
+    $(".my_tag_con").html("");
     for(var i=0;i<resultData.AllCount;i++){
       var label='<li class="my_tag_con1" tagType='+resultData.ResultList[i].TagOrg+' tagId='+resultData.ResultList[i].TagId+'>'+
                   '<input type="checkbox" class="my_tag_con1_check" />'+
@@ -615,6 +634,11 @@ $(function(){
       $(".my_tag_con").append(label); 
     }
   }
+  
+  //2.2请求更换一批我的标签
+  $(document).on("click",".my_tag .hyp",function(){
+    loadMyTag(data2);
+  })
   
   //3.点击上传文件
   $(".upl_wj").on("click",function(){

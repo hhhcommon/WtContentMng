@@ -116,11 +116,77 @@ $(function(){
   }
   
   //打开APP或下载
-  $(".downLoad").click(function(){
+  $(".downLoad,.like").click(function(){
     window.location=$(".PicBox").attr("zjOpenApp");
     window.setTimeout(function () {
       window.location.href= "http://www.wotingfm.com/download/WoTing.apk";
     },2000);
   });
+  
+  //请求查看评论
+  var contentId=eval('('+$(".PicBox").attr("zjOpenApp").split("=")[1]+')').ContentId;
+  comment(contentId);
+  function comment(contentId){
+    var data={
+          "RemoteUrl":"http://www.wotingfm.com:808/wt/discuss/article/getList.do",
+          "IMEI":"3279A27149B24719991812E6ADBA5583",
+          "PCDType":"3",
+          "ContentId":contentId,
+          "MediaType":"AUDIO",
+          "Page":"1",
+          "PageSize":"20"
+    };
+    $.ajax({
+      url: rootPath+"common/jsonp.do",
+      type:"POST",
+      dataType:"json",
+      data:JSON.stringify(data),
+      success: function(resultData) {
+        var resultData=eval('(' + resultData.Data + ')');
+        if(resultData.ReturnType=="1001"){
+          loadCommentList(resultData);
+        }else{
+          $(".comment").html("");
+          $(".comment").append("<li class='noComment'>暂无评论</li>");
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  //加载评论列表
+  function loadCommentList(resultData){
+    $(".comment").html("");
+    for(var i=0;i<resultData.AllCount;i++){
+      var commentTime=resultData.DiscussList[i].Time;
+      var commentList='<li class="ctList" commentId='+resultData.DiscussList[i].Id+'>'+
+                        '<div class="default"></div>'+
+                        '<img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">'+
+                        '<div class="listCon">'+
+                          '<p class="lcs">'+
+                            '<span class="commentName">'+resultData.DiscussList[i].UserInfo.UserName+'</span>'+
+                            '<span class="commentTime"></span>'+
+                          '</p>'+
+                          '<div class="commentContent">'+resultData.DiscussList[i].Discuss+'</div>'+
+                       '</div>'+
+                      '</li>';
+      $(".comment").append(commentList);
+      $(".commentTime").eq(i).text(formatCommentDate(commentTime));
+    }
+  }
+  
+  //评论时间转换
+  function formatCommentDate(tt){ 
+    var date = new Date(parseInt(tt));
+    Y = date.getFullYear() + '-';
+    M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    D = date.getDate() + ' ';
+    h = date.getHours() + ':';
+    m = date.getMinutes() + ':';
+    s = date.getSeconds(); 
+    return Y+M+D+h+m+s;
+  } 
   
 });

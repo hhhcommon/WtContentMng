@@ -169,15 +169,14 @@ body{
 .listBox .listCon{
 	width:70%;
 	height:100%;
+	overflow: hidden;
 }
-
 .listBox .listCheck{
 	width:6%;
 	text-align: center;
 	height:58px;
 	line-height:58px;
 }
-
 .listBox p{
 	margin:0 0 2px;
 }
