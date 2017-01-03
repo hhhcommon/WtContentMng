@@ -95,48 +95,58 @@ $(function(){
   //00-4.1得到节目列表
   function getMediaList(resultData){
     for(var i=0;i<resultData.ResultList.AllCount;i++){
+      if(resultData.ResultList.List[i].ContentPubChannels){
+        var channelds="";
+        for(var j=0;j<resultData.ResultList.List[i].ContentPubChannels.length;j++){
+          if(channelds==""){
+            channelds=resultData.ResultList.List[i].ContentPubChannels[j].ChannelId;
+          }else{
+            channelds+=","+resultData.ResultList.List[i].ContentPubChannels[j].ChannelId;
+          }
+        }
+      }
       if(resultData.ResultList.List[i].ContentSeqName){
-        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+resultData.ResultList.List[i].ContentPubChannels[0].ChannelId+'>'+
-                        '<div class="rtcl_img">'+
-                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
-                        '</div>'+
-                        '<div class="rtcl_con">'+
-                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
-                          '<p class="zj_name">'+resultData.ResultList.List[i].ContentSeqName+'</p>'+
-                          '<p class="other">'+
-                            '<span>时间 ：</span>'+
-                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
-                          '</p>'+
-                        '</div>'+
-                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type" id="op_Box'+i+'">'+
-                          '<p class="jm_edit c173">编辑</p>'+
-                          '<p class="jm_pub c173">发布</p>'+
-                          '<p class="jm_del c173">删除</p>'+
-                          '<p class="jm_recal c173">撤回</p>'+
-                        '</div>'+
-                      '</div>';
+        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+channelds+'>'+
+                          '<div class="rtcl_img">'+
+                            '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+                          '</div>'+
+                          '<div class="rtcl_con">'+
+                            '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                            '<p class="zj_name">'+resultData.ResultList.List[i].ContentSeqName+'</p>'+
+                            '<p class="other">'+
+                              '<span>时间 ：</span>'+
+                              '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                            '</p>'+
+                          '</div>'+
+                          '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                          '<div class="op_type" id="op_Box'+i+'">'+
+                            '<p class="jm_edit c173">编辑</p>'+
+                            '<p class="jm_pub c173">发布</p>'+
+                            '<p class="jm_del c173">删除</p>'+
+                            '<p class="jm_recal c173">撤回</p>'+
+                          '</div>'+
+                        '</div>';
       }else{
-        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+resultData.ResultList.List[i].ContentPubChannels[0].ChannelId+'>'+
-                        '<div class="rtcl_img">'+
-                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
-                        '</div>'+
-                        '<div class="rtcl_con">'+
-                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
-                          '<p class="zj_name">暂未绑定专辑</p>'+
-                          '<p class="other">'+
-                            '<span>时间 ：</span>'+
-                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
-                          '</p>'+
-                        '</div>'+
-                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type" id="op_Box'+i+'">'+
-                          '<p class="jm_edit c173">编辑</p>'+
-                          '<p class="jm_pub c173">发布</p>'+
-                          '<p class="jm_del c173">删除</p>'+
-                          '<p class="jm_recal c173">撤回</p>'+
-                        '</div>'+
-                      '</div>';
+        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+channelds+'>'+
+                          '<div class="rtcl_img">'+
+                            '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+                          '</div>'+
+                          '<div class="rtcl_con">'+
+                            '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                            '<p class="zj_name">暂未绑定专辑</p>'+
+                            '<p class="other">'+
+                              '<span>时间 ：</span>'+
+                              '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                            '</p>'+
+                          '</div>'+
+                          '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                          '<div class="op_type" id="op_Box'+i+'">'+
+                            '<p class="jm_edit c173">编辑</p>'+
+                            '<p class="jm_pub c173">发布</p>'+
+                            '<p class="jm_del c173">删除</p>'+
+                            '<p class="jm_recal c173">撤回</p>'+
+                          '</div>'+
+                        '</div>';
       }
       $(".ri_top3_con").append(programBox);
       if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="0"){//提交
