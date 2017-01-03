@@ -21,7 +21,6 @@ import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
-import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.media.model.MediaAsset;
@@ -280,28 +279,29 @@ public class QueryService {
 	 * @param OpeType
 	 * @return
 	 */
-	public Map<String, Object> modifyInfo(String id, String number, int flowFlag, String OpeType) {
-		Map<String, Object> map = new HashMap<String, Object>();
+	public boolean modifyInfo(String contentId, String channelIds, String mediaType, int number, String OpeType) {
+		int flowFlag = 0;
+		boolean isok = false;
 		switch (OpeType) {
 		case "sort":
-			map = modifySort(id, number); // 修改排序号
+			isok = modifySort(contentId, channelIds, mediaType, number); // 修改排序号
 			break;
 		case "pass":
-			number = "2";
-			map = modifyStatus(id, number); // 修改审核状态为通过
+			flowFlag = 2;
+			isok = modifyStatus(contentId, channelIds, mediaType, flowFlag); // 修改审核状态为通过
 			break;
 		case "nopass":
-			number = "3";
-			map = modifyStatus(id, number); // 修改审核状态为未通过
+			flowFlag = 3;
+			isok = modifyStatus(contentId, channelIds, mediaType, flowFlag); // 修改审核状态为未通过
 			break;
 		case "revoke":
-			number = "4";
-			map = modifyStatus(id, number); // 修改审核状态为撤回
+			flowFlag = 4;
+			isok = modifyStatus(contentId, channelIds, mediaType, flowFlag); // 修改审核状态为撤回
 			break;
 		default:
 			break;
 		}
-		return map;
+		return isok;
 	}
 
 	/**
@@ -312,34 +312,48 @@ public class QueryService {
 	 * @param number
 	 * @return
 	 */
-	public Map<String, Object> modifyStatus(String id, String number) {
-		Map<String, Object> map = new HashMap<String, Object>();
-//		id = id.replaceAll("%2C", ",");
-//		id = id.substring(0, id.length() - 1);
-		String[] ids = id.split(",");
-		int num = 0;
-		try {
-	        for (int i = 0; i < ids.length; i++) {
-	        	List<ChannelAssetPo> chas = mediaService.getCHAInfoByAssetId(id);
-	        	if (chas!=null) {
-					ChannelAssetPo cha =  chas.get(0);
-	                if (Integer.valueOf(number)==2) cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-	                cha.setFlowFlag(Integer.valueOf(number));
-	                mediaService.updateCha(cha);
-	                num++;
-				}
-	        }
-	        if (num>0) {
-				map.put("ReturnType", "1001");
-				map.put("Message", "修改成功");
-			} else {
-			    map.put("ReturnType", "1011");
-                map.put("Message", "修改失败");
-			}
-		} catch(Exception e) {
-           e.printStackTrace();
+	public boolean modifyStatus(String contentId, String channelIds, String mediaType, int flowFlag) {
+		String chaid = "";
+		if (channelIds!=null) {
+			String[] chaIds = channelIds.split(",");
+		    if (chaIds!=null && chaIds.length>0) {
+			    for (String str : chaIds) {
+				    chaid += ",'"+str+"'";
+			    }
+			    chaid = chaid.substring(1);
+		    }
 		}
-		return map;
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("assetId", contentId);
+		if (mediaType.equals("SEQU"))
+			m.put("assetType", "wt_SeqMediaAsset");
+		else if (mediaType.equals("AUDIO")) 
+			m.put("assetType", "wt_MediaAsset");
+		if (chaid.length()>=3) {
+			m.put("channelIds", chaid);
+		}
+		List<ChannelAssetPo> chas = mediaService.getChaBy(m);
+		if (chas!=null) {
+			int num = 0;
+			int chaSize = chas.size();
+			for (ChannelAssetPo channelAssetPo : chas) {
+				try {
+					channelAssetPo.setFlowFlag(flowFlag);
+				    if (flowFlag==2) {
+					    channelAssetPo.setPubTime(new Timestamp(System.currentTimeMillis()));
+				    }
+				    mediaService.updateCha(channelAssetPo);
+				    num++;
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+				if (num==chaSize) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -349,40 +363,45 @@ public class QueryService {
 	 * @param sort
 	 * @return
 	 */
-	public Map<String, Object> modifySort(String id, String sort) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Map<String, Object> map = new HashMap<String, Object>();
-		int num = 0;
-		ChannelAsset oldcha = mediaService.getCHAInfoById(id);
-		ChannelAsset newcha = new ChannelAsset();
-		newcha.setCh(oldcha.getCh());
-		newcha.setId(id);
-		newcha.setSort(Integer.valueOf(sort));
-		newcha.setPubTime(new Timestamp(System.currentTimeMillis()));
-
-		String sql = "update wt_ChannelAsset set sort = ?,pubTime= ? where id = ?";
-		try {
-			conn = DataSource.getConnection();
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, Integer.valueOf(sort));
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			ps.setTimestamp(2, timestamp);
-			ps.setString(3, id);
-			num = ps.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			closeConnection(conn, ps, rs);
+	public boolean modifySort(String contentId, String channelIds, String mediaType, int sort) {
+		String chaid = "";
+		if (channelIds!=null) {
+			String[] chaIds = channelIds.split(",");
+		    if (chaIds!=null && chaIds.length>0) {
+			    for (String str : chaIds) {
+				    chaid += ",'"+str+"'";
+			    }
+			    chaid = chaid.substring(1);
+		    }
 		}
-		if (num == 1) {
-			map.put("ReturnType", "1001");
-		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "修改失败");
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", contentId);
+		if (mediaType.equals("SEQU"))
+			m.put("assetType", "wt_SeqMediaAsset");
+		else if (mediaType.equals("AUDIO"))
+			m.put("assetType", "wt_MediaAsset");
+		if (chaid.length()>=3) {
+			m.put("channelIds", chaid);
 		}
-		return map;
+		List<ChannelAssetPo> chas = mediaService.getChaBy(m);
+		if (chas!=null) {
+			int num = 0;
+			int chaSize = chas.size();
+			for (ChannelAssetPo channelAssetPo : chas) {
+				try {
+					channelAssetPo.setSort(sort);
+				    mediaService.updateCha(channelAssetPo);
+				    num++;
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+			}
+			if (num==chaSize) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -447,6 +466,7 @@ public class QueryService {
 	 * @param page 第几页
 	 * @return 返回该页的数据，以json串的方式，若该页无数据返回null
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 1-根据zjId，计算出文件存放目录

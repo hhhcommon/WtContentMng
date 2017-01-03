@@ -130,21 +130,58 @@ public class QueryController {
 	@RequestMapping(value = "/content/updateContentStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 //		String userId = (String) m.get("UserId");
-		String ids = (String) m.get("Id");
-        if (m.get("ContentIds")!=null&&!StringUtils.isNullOrEmptyOrSpace(""+m.get("ContentsIds"))) {
-            ids=""+m.get("ContentIds");
-        } else {
-            if (m.get("ContentId")!=null&&!StringUtils.isNullOrEmptyOrSpace(""+m.get("ContentsId"))) {
-                ids=""+m.get("ContentId");
-            }
-        }
-		String numbers = (String) m.get("ContentSort");
-		String opeType = (String) m.get("OpeType");
-		Map<String, Object> map = queryService.modifyInfo(ids, numbers, flowFlag, opeType);
-		return map;
+		String contentid = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无内容Id");
+			return map;
+		}
+		String mediaType = m.get("MediaType") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(mediaType) || mediaType.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1013");
+			map.put("Message", "无内容类型");
+			return map;
+		}
+		String opeType = m.get("OpeType") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(opeType) || opeType.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1014");
+			map.put("Message", "无操作类型");
+			return map;
+		}
+		String channelIds = m.get("ChannelIds") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(channelIds) || channelIds.toLowerCase().equals("null")) {
+			channelIds = null;
+		}
+		boolean isok = false;
+		if (opeType.equals("sort")) {
+			String numbers = (String) m.get("ContentSort");
+			int number = 0;
+			try {
+				number = Integer.valueOf(numbers);
+			} catch (Exception e) {
+				e.printStackTrace();
+				map.put("ReturnType", "1015");
+				map.put("Message", "无排序号");
+				return map;
+			}
+			isok = queryService.modifyInfo(contentid, channelIds, mediaType, number, opeType);
+		} else {
+			if (opeType.equals("pass") || opeType.equals("nopass") || opeType.equals("revoke")) {
+				isok = queryService.modifyInfo(contentid, channelIds, mediaType, 0, opeType);
+			}
+		}
+		if (isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "修改成功");
+			return map;
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
+			return map;
+		}
 	}
 
 	/**
