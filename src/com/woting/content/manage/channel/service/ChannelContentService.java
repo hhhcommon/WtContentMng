@@ -37,12 +37,13 @@ public class ChannelContentService {
 			put("0", "已提交");
 			put("1", "审核");
 			put("2", "发布");
-			put("3", "撤回");
+			put("3", "未通过");
 			put("4", "撤回");
 			put("已提交", "5");
 			put("审核", "1");
 			put("发布", "2");
-			put("撤回", "3");
+			put("未通过", "3");
+			put("撤回", "4");
 		}
 	};
 	
@@ -120,15 +121,19 @@ public class ChannelContentService {
     		List<Map<String, Object>> smam = new ArrayList<>();
     		List<Map<String, Object>> ffm = new ArrayList<>();
     		List<String> titles = new ArrayList<>();
+    		String contentName = "";
     		for (ChannelAssetPo chaPo : l) {
     			try {
 					if (mediatype.equals("MediaAsset") && chaPo.getAssetType().equals("wt_SeqMediaAsset")) {
-						Map<String, Object> m3 = new HashMap<>();
-						m3.put("PubName", chaPo.getPubName());
-						m3.put("FlowFlag", chaPo.getFlowFlag());
-						m3.put("PubId", chaPo.getAssetId());
-						m3.put("ChannelId", chaPo.getChannelId());
-						smam.add(m3);
+						if (!contentName.contains(chaPo.getPubName())) {
+							contentName += chaPo.getPubName();
+						    Map<String, Object> m3 = new HashMap<>();
+						    m3.put("PubName", chaPo.getPubName());
+						    m3.put("FlowFlag", chaPo.getFlowFlag());
+						    m3.put("PubId", chaPo.getAssetId());
+						    m3.put("ChannelId", chaPo.getChannelId());
+						    smam.add(m3);
+						}
 					}
 	    			
 	    			boolean fmIsOk = true;

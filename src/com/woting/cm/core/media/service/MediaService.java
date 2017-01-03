@@ -75,8 +75,8 @@ public class MediaService {
 			put("0", "已提交");
 			put("1", "审核中");
 			put("2", "已发布");
-			put("3", "已撤回");
-			put("4", "未通过");
+			put("3", "未通过");
+			put("4", "已撤回");
 		}
 	};
 
@@ -206,8 +206,7 @@ public class MediaService {
 		m1.put("assetType", "wt_MediaAsset");
 		m1.put("isValidate", "1");
 		m1.put("publisherId", userid);
-		String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
-				+ "' and resTableName = 'wt_MediaAsset')";
+		String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_MediaAsset')";
 		if (m1.containsKey("channelIds")) {
 			wheresql += " and channelId in ("+m1.get("channelIds")+")";
 		}
@@ -313,8 +312,7 @@ public class MediaService {
 			map.put("isValidate", "1");
 			map.put("publisherId", userid);
 			map.put("assetType", "wt_SeqMediaAsset");
-			map.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
-					+ "' and resTableName = 'wt_SeqMediaAsset')");
+			map.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_SeqMediaAsset')");
 			map.put("sortByClause", " pubTime,cTime");
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", map);
 			if (chas != null && chas.size() > 0) {
@@ -398,9 +396,7 @@ public class MediaService {
 			
 			m1.put("isValidate", "1");
 			m1.put("publisherId", userid);
-			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
-					+ "' and resTableName = 'wt_SeqMediaAsset')";
-			
+			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_SeqMediaAsset')";
 			if (m1.containsKey("channelIds")) {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
