@@ -105,6 +105,7 @@ public class QueryService {
 			oneData.put("ContentPubTime", channelAssetPo.getPubTime());
 			oneData.put("ContentSort", channelAssetPo.getSort());
 			oneData.put("ContentFlowFlag", channelAssetPo.getFlowFlag());
+			oneData.put("ContentChannelId", channelAssetPo.getChannelId());
 			list2seq.add(oneData);
 		}
 
@@ -121,26 +122,6 @@ public class QueryService {
 					map.put("ContentName", ma.getMaTitle());
 					map.put("ContentSource", ma.getMaPublisher());
 					map.put("ContentDesc", ma.getDescn());
-				} else {
-					if (map.get("MediaType").equals("wt_Broadcast")) {
-						// 待更改
-						sql = "select bcTitle,bcPublisher,descn from wt_Broadcast where id = ? limit 1";
-						try {
-							conn = DataSource.getConnection();
-							ps = conn.prepareStatement(sql);
-							ps.setString(1, (String) map.get("ContentId"));
-							rs = ps.executeQuery();
-							while (rs != null && rs.next()) {
-								map.put("ContentName", rs.getString("bcTitle"));
-								map.put("ContentSource", rs.getString("bcPublisher"));
-								map.put("ContentDesc", rs.getString("descn"));
-							}
-						} catch (SQLException e) {
-							e.printStackTrace();
-						} finally {
-							closeConnection(conn, ps, rs);
-						}
-					}
 				}
 			}
 		}
