@@ -96,7 +96,7 @@ $(function(){
   function getMediaList(resultData){
     for(var i=0;i<resultData.ResultList.AllCount;i++){
       if(resultData.ResultList.List[i].ContentSeqName){
-        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+resultData.ResultList.List[i].ContentPubChannels[0].ChannelId+'>'+
                         '<div class="rtcl_img">'+
                           '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
                         '</div>'+
@@ -117,7 +117,7 @@ $(function(){
                         '</div>'+
                       '</div>';
       }else{
-        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+resultData.ResultList.List[i].ContentPubChannels[0].ChannelId+'>'+
                         '<div class="rtcl_img">'+
                           '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
                         '</div>'+
@@ -478,7 +478,7 @@ $(function(){
     }else{
       $('.shade', parent.document).show();
       var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-      pub_zj(contentId);
+      pub_jm(contentId);
     }
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
@@ -520,25 +520,28 @@ $(function(){
   //66-1点击撤回节目按钮
   $(document).on("click",".jm_recal",function(){
     var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
-    if(flowFlag=="2") {//0提交1审核2发布3撤回
+    if(flowFlag=="2"){//0提交1审核2发布3撤回
       $('.shade', parent.document).show();
       var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-      var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
-      recal_jm(contentId,flowFlag);
+      var channelId=$(this).parents(".rtc_listBox").attr("channelid");
+      recal_jm(contentId,channelId,flowFlag);
     }else{
       alert("当前节目不支持撤回操作");
       return;
     }
   })
-  function recal_jm(contentId,flowFlag){
+  function recal_jm(contentId,channelId,flowFlag){
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
                "MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":"123",
+               "MediaType": "AUDIO",
                "ContentId":contentId,
+               "ChannelId":channelId,
                "ContentFlowFlag":flowFlag,
                "OpeType":"revoke"
     };
+    console.log(_data);
     $.ajax({
       type:"POST",
       url:rootPath+"content/updateContentStatus.do",

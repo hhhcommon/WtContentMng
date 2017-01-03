@@ -131,6 +131,7 @@ var zTreeObj,treeNode,rootNode,nodePathStr,modalNode;
 var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
+var selectNode=1;//1选中节点，2未选中节点
 //需要加载的分类树的数据，以list方式给出
 var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
 
@@ -189,46 +190,61 @@ $(function() {
     cleanDialog();
     oPeType=1;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("添加栏目");
-    $("#addCata").find("tr:eq(2)").css({"display":"none"});
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
+    if(selectNode==2){//未选中节点
+      alert("请先选中分类在进行操作");
+      return;
+    }else{
+      $("#addCata").find(".modal-header>h4").html("添加栏目");
+      $("#addCata").find("tr:eq(2)").css({"display":"none"});
+      $("#shade").css({"display":"block"});
+      $("#addCata").modal("show");
+    }
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
     oPeType=2;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("修改栏目");
-    $("#addCata").find("tr:eq(2)").show();
-    $("#nodeNames").val(treeNode.name);
-    $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
-    $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//父节点的Id
-    $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//父节点的名字
-    $("#contentType").val((treeNode.attributes.contentType)?(treeNode.attributes.contentType):"");//资源类型value
-    //资源类型对应的checkbox的选中状态  
-    if(treeNode.attributes.contentType){
-      $("input[name='checkbox']").slice(0,4).prop("checked",false).prop("disabled",false);
-      $("input[name='checkbox']").each(function(){
-        if(treeNode.attributes.contentType.indexOf('0')>-1){
-          $("input[name='checkbox']").slice(0,4).prop("checked",true);
-          $("input[name='checkbox']").slice(1,4).prop("disabled",true);
-        }else{
-          for (var i=1;i<4;i++){
-            if(treeNode.attributes.contentType.indexOf(i)>-1){
-              $("input[name='checkbox']:eq("+i+")").prop("checked",true);
+    if(selectNode==2){//未选中节点
+      alert("请先选中分类在进行操作");
+      return;
+    }else{
+      $("#addCata").find(".modal-header>h4").html("修改栏目");
+      $("#addCata").find("tr:eq(2)").show();
+      $("#nodeNames").val(treeNode.name);
+      $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
+      $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//父节点的Id
+      $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//父节点的名字
+      $("#contentType").val((treeNode.attributes.contentType)?(treeNode.attributes.contentType):"");//资源类型value
+      //资源类型对应的checkbox的选中状态  
+      if(treeNode.attributes.contentType){
+        $("input[name='checkbox']").slice(0,4).prop("checked",false).prop("disabled",false);
+        $("input[name='checkbox']").each(function(){
+          if(treeNode.attributes.contentType.indexOf('0')>-1){
+            $("input[name='checkbox']").slice(0,4).prop("checked",true);
+            $("input[name='checkbox']").slice(1,4).prop("disabled",true);
+          }else{
+            for (var i=1;i<4;i++){
+              if(treeNode.attributes.contentType.indexOf(i)>-1){
+                $("input[name='checkbox']:eq("+i+")").prop("checked",true);
+              }
             }
           }
-        }
-      });
+        });
+      }
+      $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
+      $("#shade").css({"display":"block"});
+      $("#addCata").modal("show");
     }
-    $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
   });
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
     getRootNode();
-    beforeRemove();
+    if(selectNode==2){//未选中节点
+      alert("请先选中分类在进行操作");
+      return;
+    }else{
+      beforeRemove();
+    }
   });
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
@@ -317,9 +333,10 @@ function getRootNode() {
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
   if(!treeNode){
-    alert("请先选中分类在进行操作");
     $("#shade").css({"display":"none"});
     $("#addCata").modal("hide");
+    selectNode=2;//未选中节点
+    return;
 //  $("#addCata").find(".modal-header>span:eq(1)").html("栏目");
   }else{
     alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
@@ -336,6 +353,7 @@ function getRootNode() {
       $("#addCata").find(".modal-header>span:eq(0)").hide();
       $("#addCata").find(".modal-header>span:eq(1)").hide();
     }
+    selectNode=1;//已选中节点
   }
 }
 
@@ -496,6 +514,7 @@ function cleanDialog() {
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });
+  $("#all,#radio,#jm,#zj").prop("checked",false).prop("disabled",false);
 }
 </script>
 </html>

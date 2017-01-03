@@ -106,6 +106,7 @@
 var zTreeObj,treeNode,rootNode,nodePathStr;
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
+var selectNode=1;//1选中节点，2未选中节点
 //需要加载的分类树的数据，以list方式给出
 //var loadTreeData=[{CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"3",TreeViewType:"zTree"}, {CatalogType:"2",TreeViewType:"zTree"}, {CatalogType:"4",TreeViewType:"zTree"}, {CatalogType:"5",TreeViewType:"zTree"}];
 var loadTreeData=[{CatalogType:"4",TreeViewType:"zTree"}, {CatalogType:"5",TreeViewType:"zTree"}];
@@ -143,30 +144,45 @@ $(function() {
     cleanDialog();
     oPeType=1;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
-    $("#addCata").find("tr:eq(2)").css({"display":"none"});
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
+    if(selectNode==2){//未选中节点
+      alert("请先选中分类在进行操作");
+      return;
+    }else{
+      $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
+      $("#addCata").find("tr:eq(2)").css({"display":"none"});
+      $("#shade").css({"display":"block"});
+      $("#addCata").modal("show");
+    }
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
     oPeType=2;
     getRootNode();
-    $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
-    $("#addCata").find("tr:eq(2)").show();
-    $("#nodeNames").val(treeNode.name);
-    $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
-    $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
-    $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
-    $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");
-    $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
-    $("#shade").css({"display":"block"});
-    $("#addCata").modal("show");
+    if(selectNode==2){//未选中节点
+      alert("请先选中分类在进行操作");
+      return;
+    }else{
+      $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
+      $("#addCata").find("tr:eq(2)").show();
+      $("#nodeNames").val(treeNode.name);
+      $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
+      $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
+      $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
+      $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");
+      $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
+      $("#shade").css({"display":"block"});
+      $("#addCata").modal("show");
+    }
   });
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
     getRootNode();
-    delCatalog();
+    if(selectNode==2){//未选中节点
+      alert("请先选中分类在进行操作");
+      return;
+    }else{
+      delCatalog();
+    }
   });
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
@@ -215,20 +231,27 @@ function loadTree(loadData) {
 function getRootNode() {
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
-  alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
-  if(!treeNode)alert("请先选中分类在进行操作");
-  nodePathStr=treeNode.attributes.pathName+"";
-  if(nodePathStr.indexOf("/")>=0){
-    rootNode=nodePathStr.split("/")[0];
+  if(!treeNode){
+    $("#shade").css({"display":"none"});
+    $("#addCata").modal("hide");
+    selectNode=2;//未选中节点
+    return;
   }else{
-    rootNode=treeNode.attributes.pathName;
-  }
-  var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
-  if(oPeType==1){
-    $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
-  }else{
-    $("#addCata").find(".modal-header>span:eq(1)").html(modPathNames);
-    channelParentIdListLoad();//加载父id的方法
+    alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
+    nodePathStr=treeNode.attributes.pathName+"";
+    if(nodePathStr.indexOf("/")>=0){
+      rootNode=nodePathStr.split("/")[0];
+    }else{
+      rootNode=treeNode.attributes.pathName;
+    }
+    var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
+    if(oPeType==1){
+      $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+    }else{
+      $("#addCata").find(".modal-header>span:eq(1)").html(modPathNames);
+      channelParentIdListLoad();//加载父id的方法
+    }
+    selectNode=1;//已选中节点
   }
 }
 
