@@ -157,6 +157,8 @@ $(function(){
         $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
         $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="4"){//已撤回
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
       }
     }
   }
@@ -486,14 +488,11 @@ $(function(){
       alert("当前状态不支持发布操作");
       return;
     }else{
-      $('.shade', parent.document).show();
       var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-      pub_jm(contentId);
+      var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      $('.shade', parent.document).show();
+      pub_jm(contentId,contentSeqId);
     }
-    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
-    $('.shade', parent.document).show();
-    pub_jm(contentId,contentSeqId);
   })
   function pub_jm(contentId,contentSeqId){
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",

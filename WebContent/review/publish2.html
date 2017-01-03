@@ -67,11 +67,18 @@
 			var data={
                 UserId: "zhangsan", 
                 ContentFlowFlag:flowFlag,
-                Id:$(this).parents(".listBox")[0].getAttribute("columnId"),
+                ChannelId:$(this).parents(".listBox")[0].getAttribute("columnId"),
+                ContentId:$(this).parents(".listBox")[0].getAttribute("actid"),
                 ContentSort:$(this).prev().val(),//js的获取属性值方法
                 OpeType:"sort"
-              };
-			commonAjax(url,data,$(".pubList>.actList"),getContentList);
+            };
+			if($(this).parents(".listBox")[0].getAttribute("acttype")=="wt_MediaAsset"){//节目
+			  data.MediaType="AUDIO";
+			}else if($(this).parents(".listBox")[0].getAttribute("acttype")=="wt_SeqMediaAsset"){//专辑
+			  data.MediaType="SEQU";
+			}
+			console.log(JSON.stringify(data));
+			commonAjax(url,JSON.stringify(data),$(".pubList>.actList"),getContentList);
 			//阻止事件向上级冒泡
 			ev.stopPropagation();
 		});
@@ -93,11 +100,27 @@
 		});
 		//审核处理
 		$("button[opeType]").on('click',function(){
-			var checkedList="";
+			var checkedList="";//栏目id
+			var contentIdList="";//节目或专辑或电台id
+			var mediaType="";//判断是节目还是专辑还是电台
 			$.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
-				checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
+			  if(checkedList==""){
+			    checkedList=val.parentNode.parentNode.getAttribute("columnId");
+			  }else{
+			    checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
+			  }
+				if(contentIdList==""){
+          contentIdList=val.parentNode.parentNode.getAttribute("actid");
+        }else{
+          contentIdList+=val.parentNode.parentNode.getAttribute("actid")+",";
+        }
+        if($(this).parents(".listBox").attr("acttype")=="wt_MediaAsset"){//节目
+          mediaType="AUDIO";
+        }else if($(this).parents(".listBox").attr("acttype")=="wt_SeqMediaAsset"){//专辑
+          mediaType="SEQU";
+        }
 			});
-			if(checkedList==""){
+			if(checkedList==""||contentIdList==""){
 				alert("您还没有选择任何节目！");
 				$("input[type='checkBox'][name='all']").prop({"checked":null});
 				return;
@@ -105,11 +128,18 @@
 			$("input[type='checkBox'][name='all']").prop({"checked":null});
 			var url=rootPath+"content/updateContentStatus.do";
 			var data={
-                UserId: "zhangsan", 
+                UserId:"zhangsan", 
                 ContentFlowFlag:flowFlag,
-                Id:checkedList,
-                OpeType:$(this).attr("opeType")
+                ContentId:contentIdList,
+                ChannelIds:checkedList,
+                OpeType:$(this).attr("opeType"),
+                MediaType:mediaType
 		          };
+		  console.log(typeof(mediaType));
+      console.log(typeof("wt_MediaAsset"));
+      console.log("aaa"+JSON.stringify(data));
+      var data=JSON.stringify(data);
+      console.log(data);
 			commonAjax(url,data,$(".pubList>.actList"),getContentList);
 		});
 		

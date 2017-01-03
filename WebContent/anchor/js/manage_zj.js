@@ -126,10 +126,9 @@ $(function(){
         $("#op_Box"+i).children(".zj_recal").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//已撤回
+        $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
       }
-//    else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//未通过
-//      $("#op_Box"+i).children(".zj_edit,.zj_del").removeClass("c173").addClass("cf60");
-//    }
     }
   }
   
