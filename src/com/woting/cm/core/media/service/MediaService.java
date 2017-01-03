@@ -471,6 +471,7 @@ public class MediaService {
 	}
 
 	// 整理专辑返回结果
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> makeMaListToReturn(List<MediaAssetPo> listpo) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if (listpo != null && listpo.size() > 0) {
@@ -641,6 +642,16 @@ public class MediaService {
 			chlist.add(chpo.toHashMap());
 		}
 		return chlist;
+	}
+	
+	public List<ChannelAssetPo> getChaBy(Map<String, Object> m) {
+		if (m!=null && m.size()>0) {
+			List<ChannelAssetPo> channelAssetPos = channelAssetDao.queryForList("getList", m);
+			if (channelAssetPos!=null && channelAssetPos.size()>0) {
+				return channelAssetPos;
+			}
+		}
+		return null;
 	}
 
 	public List<ChannelAssetPo> getChaByAssetIdAndPubId(String pubId, String assetId, String assetType) {

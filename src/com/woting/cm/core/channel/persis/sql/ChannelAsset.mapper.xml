@@ -116,7 +116,9 @@
 
   <!-- 获得列表 -->
   <select id="getList" parameterType="java.util.Map" resultMap="channelAssetMap">
-    select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> <if test="channelIds!=null"> and channelId in (${channelIds})</if>
+    select <include refid="Base_Column_List"/>from wt_ChannelAsset 
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> 
+    <if test="channelIds!=null"> and channelId in (${channelIds})</if>
   </select>
   
   <select id="getListByFlowFlag" resultMap="channelAssetMap" parameterType="java.util.Map">
@@ -194,14 +196,12 @@
   <update id="update" parameterType="java.util.Map">
     update wt_ChannelAsset
     <set>
-      <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
       <if test="channelId!=null">channelId=#{channelId,jdbcType=VARCHAR},</if>
-      <if test="assetType!=null">assetType=#{assetType,jdbcType=VARCHAR},</if>
       <if test="assetId!=null">assetId=#{assetId,jdbcType=VARCHAR},</if>
       <if test="publisherId!=null">publisherId=#{publisherId,jdbcType=VARCHAR},</if>
       <if test="checkerId!=null">checkerId=#{checkerId,jdbcType=VARCHAR},</if>
       <if test="isValidate!=null and isValidate!=0">isValidate=#{isValidate,jdbcType=INTEGER},</if>
-      <if test="sort!=null and sort!=0">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
       <if test="pubName!=null">pubName=#{pubName,jdbcType=VARCHAR},</if>
       <if test="pubImg!=null">pubImg=#{pubImg,jdbcType=VARCHAR},</if>
       <if test="flowFlag!=null and flowFlag!=0">flowFlag=#{flowFlag,jdbcType=VARCHAR},</if>
