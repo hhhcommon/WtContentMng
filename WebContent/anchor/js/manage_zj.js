@@ -116,6 +116,8 @@ $(function(){
         $("#op_Box"+i).children(".zj_recal").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//未通过
+        $("#op_Box"+i).children(".zj_edit,.zj_del").removeClass("c173").addClass("cf60");
       }
     }
   }
@@ -456,24 +458,28 @@ $(function(){
   //66-1点击撤回专辑按钮
   $(document).on("click",".zj_recal",function(){
     var flowFlag=$(this).parent(".op_type").siblings(".zj_st").attr("flowFlag");
-    if(flowFlag=="2") {//0提交1审核2发布3撤回
+    if(flowFlag=="2"){//0提交1审核2发布3撤回
       $('.shade', parent.document).show();
       var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-      recal_zj(contentId,flowFlag);
+      var channelId=$(this).parents(".rtc_listBox").attr("channelid");
+      recal_zj(contentId,channelId,flowFlag);
     }else{
-      alert("当前节目不支持撤回操作");
+      alert("当前专辑不支持撤回操作");
       return;
     }
   })
-  function recal_zj(contentId,flowFlag){
+  function recal_zj(contentId,channelId,flowFlag){
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
                "MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":"123",
+               "MediaType": "SEQU",
                "ContentId":contentId,
+               "ChannelId":channelId,
                "ContentFlowFlag":flowFlag,
                "OpeType":"revoke"
     };
+    console.log(_data);
     $.ajax({
       type:"POST",
       url:rootPath+"content/updateContentStatus.do",
