@@ -35,7 +35,7 @@ public class QueryController {
 	@ResponseBody
 	public Map<String, Object> getContents(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String catalogsid = null;
 		int flowFlag = 0;
 		String source = null;

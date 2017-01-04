@@ -67,12 +67,8 @@ public class QueryService {
 	public Map<String, Object> getContent(int flowFlag, int page, int pagesize, String channelId, String publisherId,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		Map<String, Object> mapall = new HashMap<String, Object>();
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		int numall = 0;
-		String sql = "";
 
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("channelId", channelId);
@@ -92,7 +88,7 @@ public class QueryService {
 		m.put("begincTime", beginctime);
 		m.put("endcTime", endctime);
 		m.put("flowFlag", flowFlag);
-		m.put("beginNum", page * pagesize);
+		m.put("beginNum", (page-1) * pagesize);
 		m.put("size", pagesize);
 		List<ChannelAssetPo> listchapo = mediaService.getContentsByFlowFlag(m);
 		for (ChannelAssetPo channelAssetPo : listchapo) {
