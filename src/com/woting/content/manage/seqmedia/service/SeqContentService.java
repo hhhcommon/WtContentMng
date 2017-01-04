@@ -392,7 +392,7 @@ public class SeqContentService {
 			cha.setIsValidate(1);
 			cha.setPubImg(sma.getSmaImg());
 			cha.setPubName(sma.getSmaTitle());
-			cha.setPublisherId(userid);
+			cha.setPublisherId("0");
 			cha.setCheckerId("1");
 			cha.setSort(0);
 			cha.setInRuleIds("etl");
@@ -459,7 +459,7 @@ public class SeqContentService {
 		if (personService.getPersonPoById(userId) != null) {
 			PersonRefPo poref = personService.getPersonRefBy("wt_SeqMediaAsset", contentId);
 			if (poref.getPersonId().equals(userId)) {
-				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_SeqMediaAsset");
+				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId("0", contentId, "wt_SeqMediaAsset");
 				if (chas != null && chas.size() > 0) {
 					SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
 					if (sma != null) {

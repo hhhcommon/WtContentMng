@@ -439,7 +439,7 @@ public class MediaContentService {
 								ChannelAssetPo macha = new ChannelAssetPo();
 								macha.setId(SequenceUUID.getPureUUID());
 								macha.setChannelId(cha.getChannelId());
-								macha.setPublisherId(userid);
+								macha.setPublisherId("0");
 								macha.setCheckerId("1");
 								macha.setAssetId(ma.getId());
 								macha.setAssetType("wt_MediaAsset");
@@ -465,7 +465,7 @@ public class MediaContentService {
 								ChannelAssetPo macha = new ChannelAssetPo();
 								macha.setId(SequenceUUID.getPureUUID());
 								macha.setChannelId(cha.getChannelId());
-								macha.setPublisherId(userid);
+								macha.setPublisherId("0");
 								macha.setCheckerId("1");
 								macha.setFlowFlag(flowflag);
 								macha.setAssetId(ma.getId());
@@ -537,7 +537,7 @@ public class MediaContentService {
 		if (personService.getPersonPoById(userId) != null) {
 			PersonRefPo poref = personService.getPersonRefBy("wt_MediaAsset", contentId);
 			if (poref.getPersonId().equals(userId)) {
-				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_MediaAsset");
+				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId("0", contentId, "wt_MediaAsset");
 				if (chas != null && chas.size() > 0) {
 					MediaAsset ma = mediaService.getMaInfoById(contentId);
 					if (ma != null) {

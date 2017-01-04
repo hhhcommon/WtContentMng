@@ -129,7 +129,6 @@ public class QueryService {
 						e.printStackTrace();
 						continue;
 					}
-					
 				}
 			}
 		}
