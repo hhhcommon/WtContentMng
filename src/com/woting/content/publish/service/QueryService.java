@@ -108,16 +108,28 @@ public class QueryService {
 		// 查询显示的节目名称，发布组织和描述信息
 		for (Map<String, Object> map : list2seq) {
 			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
-				SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId") + "");
-				map.put("ContentName", sma.getSmaTitle());
-				map.put("ContentSource", sma.getPublisher());
-				map.put("ContentDesc", sma.getDescn());
+				try {
+					SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId") + "");
+				    map.put("ContentName", sma.getSmaTitle());
+				    map.put("ContentSource", sma.getPublisher());
+				    map.put("ContentDesc", sma.getDescn());
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+				
 			} else {
 				if (map.get("MediaType").equals("wt_MediaAsset")) {
-					MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId") + "");
-					map.put("ContentName", ma.getMaTitle());
-					map.put("ContentSource", ma.getMaPublisher());
-					map.put("ContentDesc", ma.getDescn());
+					try {
+						MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId") + "");
+					    map.put("ContentName", ma.getMaTitle());
+					    map.put("ContentSource", ma.getMaPublisher());
+					    map.put("ContentDesc", ma.getDescn());
+					} catch (Exception e) {
+						e.printStackTrace();
+						continue;
+					}
+					
 				}
 			}
 		}
