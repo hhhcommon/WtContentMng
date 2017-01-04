@@ -4,11 +4,12 @@ var current_page=1;
 var isSelect=false;
 //获取查询条件列表，节目分类和来源
 function getConditions(){
+  var data={UserId: "zhangsan"};
 	$.ajax({
     type: "POST",    
     url:rootPath+"content/getConditions.do",
     dataType: "json",
-    data:{UserId: "zhangsan"},
+    data:JSON.stringify(data),
     success: function(ConditionsList){
       if(ConditionsList.ReturnType=="1001"){
         ConditionsListLoad(ConditionsList);
@@ -24,6 +25,7 @@ function getConditions(){
 
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
+//debugger;
 	$.ajax({
     type: "POST",
     url:url,
@@ -32,13 +34,15 @@ function commonAjax(url,data,obj,callback){
     beforeSend: function(){obj.html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
     success: function(ContentList){
       if(ContentList.ReturnType=="1001"){
+        console.log(ContentList);
       	obj.html(""); //再重新创建新的数据集时，先清空之前的
       	//判断是查询还是修改操作，调用不同的方法
       	if(data.OpeType){
-      		callback(1,data.ContentFlowFlag);
-      	}else{
-      		callback(ContentList);
-      	}
+          callback(1,data.ContentFlowFlag);
+        }else{
+          callback(ContentList);
+        }
+        console.log(current_page,data.ContentFlowFlag);
       }else{
       	obj.html("<div style='text-align:left;height:300px;padding:20px;padding-top:140px;'>"+ContentList.Message+"</div>");
       }  
@@ -50,6 +54,7 @@ function commonAjax(url,data,obj,callback){
 }	
 //从后台请求节目列表数据
 function getContentList(current_page,flowFlag,isSelect){
+//debugger;
 	var url=rootPath+"content/getContents.do";
 	var data={};
 	//带专门查询条件的查询
@@ -61,7 +66,7 @@ function getContentList(current_page,flowFlag,isSelect){
         	SourceId:$(".source option:selected").attr("sourceId"),
           Page:current_page,
           PageSize:"10"
-        };
+      };
 	}else{
 		//基础的按状态查询
 		data={
@@ -69,7 +74,7 @@ function getContentList(current_page,flowFlag,isSelect){
           ContentFlowFlag:flowFlag,
           Page:current_page,
           PageSize:"10"
-	      };
+	    };
 	}
 	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 }
@@ -95,6 +100,7 @@ function ConditionsListLoad(ConditionsList){
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
+//debugger;
 	contentCount=actList.ContentCount;
 	contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
 	$(".totalPage").text(contentCount);
@@ -102,7 +108,7 @@ function ContentListLoad(actList){
   if(!actList||contentCount==0||!actList.ResultList||actListLength==0){
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
   }else{
-	  //声明下面需要创建的节点，以便添加内容和添加到文档中
+	  //声明下面需要创建的节点，以便添加内容到文档中
 	  var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
 	  var sortDiv,sortInput,sortBtn;
 	  //actListDiv=$("<div class='actList'></div>");
@@ -112,7 +118,8 @@ function ContentListLoad(actList){
 	    listDiv.attr({
 	      actId:actList.ResultList[i].ContentId,
 	      actType:actList.ResultList[i].MediaType,
-	      columnId:actList.ResultList[i].Id
+	      columnId:actList.ResultList[i].Id,
+	      channelId:actList.ResultList[i].ContentChannelId
 	    });
       checkDiv=$("<div class='listCheck'>");
       checkInput=$("<input type='checkBox' name='' />");

@@ -404,3 +404,6 @@ body{
   overflow: hidden;
   height: 40px;
 }
+.page span{
+  width: 41px !important;
+}

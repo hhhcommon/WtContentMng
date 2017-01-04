@@ -77,11 +77,21 @@ $(function(){
   function getSeqMediaList(resultData){
     $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
-      var chas = resultData.ResultList[i].ContentPubChannels;
-      var status = '';
-      if(!chas) status ='不存在';
-      else status = chas[0].FlowFlagState;
-      var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
+//    var chas = resultData.ResultList[i].ContentPubChannels;
+//    var status = '';
+//    if(!chas) status ='不存在';
+//    else status = chas[0].FlowFlagState;
+      if(resultData.ResultList[i].ContentPubChannels){
+        var channelds="";
+        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
+          if(channelds==""){
+            channelds=resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }else{
+            channelds+=","+resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }
+        }
+      }
+      var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' channelId='+channelds+'>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
                       '</div>'+
@@ -99,7 +109,7 @@ $(function(){
                           '<span>'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st" flowFlag='+resultData.ResultList[i].ContentPubChannels[0].FlowFlag+'>'+status+'</p>'+
+                      '<p class="zj_st" flowFlag='+resultData.ResultList[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList[i].ContentPubChannels[0].FlowFlagState+'</p>'+
                       '<div class="op_type" id="op_Box'+i+'">'+
                         '<p class="zj_edit c173">编辑</p>'+
                         '<p class="zj_pub c173">发布</p>'+
@@ -116,8 +126,8 @@ $(function(){
         $("#op_Box"+i).children(".zj_recal").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
-      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//未通过
-        $("#op_Box"+i).children(".zj_edit,.zj_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//已撤回
+        $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
       }
     }
   }
