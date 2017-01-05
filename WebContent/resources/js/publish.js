@@ -34,7 +34,6 @@ function commonAjax(url,data,obj,callback){
     beforeSend: function(){obj.html("<div style='text-align:center;height:300px;line-height:200px;'>数据加载中...</div>")}, 
     success: function(ContentList){
       if(ContentList.ReturnType=="1001"){
-        console.log(ContentList);
       	obj.html(""); //再重新创建新的数据集时，先清空之前的
       	//判断是查询还是修改操作，调用不同的方法
       	if(data.OpeType){
@@ -42,7 +41,6 @@ function commonAjax(url,data,obj,callback){
         }else{
           callback(ContentList);
         }
-        console.log(current_page,data.ContentFlowFlag);
       }else{
       	obj.html("<div style='text-align:left;height:300px;padding:20px;padding-top:140px;'>"+ContentList.Message+"</div>");
       }  

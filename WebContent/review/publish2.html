@@ -77,8 +77,6 @@
 			}else if($(this).parents(".listBox")[0].getAttribute("acttype")=="wt_SeqMediaAsset"){//专辑
 			  data.MediaType="SEQU";
 			}
-			console.log(JSON.stringify(data));
-			var data=JSON.stringify(data);
 			commonAjax(url,data,$(".pubList>.actList"),getContentList);
 			//阻止事件向上级冒泡
 			ev.stopPropagation();

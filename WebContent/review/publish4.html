@@ -136,7 +136,7 @@
       }
     });
     
-    //选取复选框时，阻止向上冒泡触发li标签的click事件
+    //复选框和排序号输入框获取焦点时，阻止向上冒泡触发listBox的click事件
     $(".actList").on("click","input",function(ev){
       //阻止事件向上级冒泡
       ev.stopPropagation();
