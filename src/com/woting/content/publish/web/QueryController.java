@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.publish.service.QueryService;
-import com.woting.passport.login.utils.RequestDataUtils;
 
 /**
  * 列表查询接口
@@ -44,7 +43,7 @@ public class QueryController {
 		Timestamp begincontentctime = null;
 		Timestamp endcontentctime = null;
 //		String userId = m.get("UserId")+"";
-		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
+		int page = m.get("Page") == null ? -1 : Integer.valueOf(m.get("Page")+"");
 		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
 		if (m.containsKey("CatalogsId"))
 			catalogsid = (String) m.get("CatalogsId");

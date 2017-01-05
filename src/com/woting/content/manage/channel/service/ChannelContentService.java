@@ -75,7 +75,7 @@ public class ChannelContentService {
 	public Map<String, Object> getFiltrateByUserId(String userid, String mediatype, List<Map<String, Object>> flowflags, List<Map<String, Object>> channelIds,
 			List<Map<String, Object>> seqMediaIds) {
     	Map<String, Object> m = new HashMap<>();
-    	m.put("publisherId", userid);
+    	m.put("publisherId", "0");
     	String wheresql = "";
     	if (flowflags!=null && flowflags.size()>0) {
     		String flowstr = "";
@@ -106,11 +106,18 @@ public class ChannelContentService {
 			mediaids = mediaids.substring(1);
 			wheresql +=" and assetId in ("+mediaids+")"; 
 		}
-    	if (wheresql.length()>3) {
-			m.put("wheresql", wheresql);
-		}
     	if (mediatype.equals("SeqMedia")) {
 			m.put("assetType", "wt_SeqMediaAsset");
+			wheresql += " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+				+ "' and resTableName = 'wt_SeqMediaAsset' )";
+		} else {
+			if (mediatype.equals("MediaAsset")) {
+				wheresql += " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+						+ "' and resTableName = 'wt_SeqMediaAsset' )";
+			}
+		}
+    	if (wheresql.length()>3) {
+			m.put("wheresql", wheresql);
 		}
     	m.put("sortByClause", " cTime desc,pubTime desc");
     	List<ChannelAssetPo> l = channelAssetDao.queryForList("getListBy", m);

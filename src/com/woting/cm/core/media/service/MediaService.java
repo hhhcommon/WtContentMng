@@ -147,7 +147,7 @@ public class MediaService {
 		}
 		if (!seqmediaid.equals("0")) {
 			m1.put("isValidate", "1");
-			m1.put("publisherId", userid);
+			m1.put("publisherId", "0");
 			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
 					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"')";
 			if (m1.containsKey("channelIds")) {
@@ -205,7 +205,7 @@ public class MediaService {
 		}
 		m1.put("assetType", "wt_MediaAsset");
 		m1.put("isValidate", "1");
-		m1.put("publisherId", userid);
+		m1.put("publisherId", "0");
 		String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_MediaAsset')";
 		if (m1.containsKey("channelIds")) {
 			wheresql += " and channelId in ("+m1.get("channelIds")+")";
@@ -310,7 +310,7 @@ public class MediaService {
 		if (personService.getPersonPoById(userid) != null) {
 			map.clear();
 			map.put("isValidate", "1");
-			map.put("publisherId", userid);
+			map.put("publisherId", "0");
 			map.put("assetType", "wt_SeqMediaAsset");
 			map.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_SeqMediaAsset')");
 			map.put("sortByClause", " pubTime,cTime");
@@ -341,7 +341,7 @@ public class MediaService {
 		if (personService.getPersonPoById(userid) != null) {
 			m.clear();
 			m.put("isValidate", "1");
-			m.put("publisherId", userid);
+			m.put("publisherId", "0");
 			m.put("assetType", "wt_SeqMediaAsset");
 			m.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
 					+ "' and resTableName = 'wt_SeqMediaAsset')");
@@ -395,7 +395,7 @@ public class MediaService {
 			}
 			
 			m1.put("isValidate", "1");
-			m1.put("publisherId", userid);
+			m1.put("publisherId", "0");
 			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_SeqMediaAsset')";
 			if (m1.containsKey("channelIds")) {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
