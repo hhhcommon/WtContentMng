@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.FConstants;
@@ -23,8 +24,6 @@ import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.service.ChannelService;
-import com.woting.cm.core.media.model.MediaAsset;
-import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
@@ -109,9 +108,9 @@ public class QueryService {
 		for (Map<String, Object> map : list2seq) {
 			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
 				try {
-					SeqMediaAsset sma = mediaService.getSmaInfoById(map.get("ContentId") + "");
+					SeqMediaAssetPo sma = mediaService.getSmaInfoById(map.get("ContentId") + "");
 				    map.put("ContentName", sma.getSmaTitle());
-				    map.put("ContentSource", sma.getPublisher());
+				    map.put("ContentSource", sma.getSmaPublisher());
 				    map.put("ContentDesc", sma.getDescn());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -121,7 +120,7 @@ public class QueryService {
 			} else {
 				if (map.get("MediaType").equals("wt_MediaAsset")) {
 					try {
-						MediaAsset ma = mediaService.getMaInfoById(map.get("ContentId") + "");
+						MediaAssetPo ma = mediaService.getMaInfoById(map.get("ContentId") + "");
 					    map.put("ContentName", ma.getMaTitle());
 					    map.put("ContentSource", ma.getMaPublisher());
 					    map.put("ContentDesc", ma.getDescn());
@@ -177,7 +176,7 @@ public class QueryService {
 		List<Map<String, Object>> listaudio = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
-		SeqMediaAsset sma = mediaService.getSmaInfoById(id);
+		SeqMediaAssetPo sma = mediaService.getSmaInfoById(id);
 		if (sma != null) {
 			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'" + sma.getId() + "'",
 					"wt_SeqMediaAsset");
@@ -222,10 +221,10 @@ public class QueryService {
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
 		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentid+"'", acttype);
 		if (chas != null && chas.size() > 0) {
-			MediaAsset ma = mediaService.getMaInfoById(contentid);
+			MediaAssetPo ma = mediaService.getMaInfoById(contentid);
 			if (ma != null) {
 				List<MediaAssetPo> mas = new ArrayList<>();
-				mas.add(ma.convert2Po());
+				mas.add(ma);
 				List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
 				if (rem != null && rem.size() > 0) {
 					return rem.get(0);
@@ -267,24 +266,24 @@ public class QueryService {
 	 * @param OpeType
 	 * @return
 	 */
-	public boolean modifyInfo(String contentId, String channelIds, String mediaType, int number, String OpeType) {
+	public boolean modifyInfo(List<Map<String, Object>> contentIds, int number, String OpeType) {
 		int flowFlag = 0;
 		boolean isok = false;
 		switch (OpeType) {
 		case "sort":
-			isok = modifySort(contentId, channelIds, mediaType, number); // 修改排序号
+			isok = modifySort(contentIds, number); // 修改排序号
 			break;
 		case "pass":
 			flowFlag = 2;
-			isok = modifyStatus(contentId, channelIds, mediaType, flowFlag); // 修改审核状态为通过
+			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为通过
 			break;
 		case "nopass":
 			flowFlag = 3;
-			isok = modifyStatus(contentId, channelIds, mediaType, flowFlag); // 修改审核状态为未通过
+			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为未通过
 			break;
 		case "revoke":
 			flowFlag = 4;
-			isok = modifyStatus(contentId, channelIds, mediaType, flowFlag); // 修改审核状态为撤回
+			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为撤回
 			break;
 		default:
 			break;
@@ -300,25 +299,57 @@ public class QueryService {
 	 * @param number
 	 * @return
 	 */
-	public boolean modifyStatus(String contentId, String channelIds, String mediaType, int flowFlag) {
-		String chaid = "";
-		if (channelIds!=null) {
-			String[] chaIds = channelIds.split(",");
-		    if (chaIds!=null && chaIds.length>0) {
-			    for (String str : chaIds) {
-				    chaid += ",'"+str+"'";
+	public boolean modifyStatus(List<Map<String, Object>> contentIds, int flowFlag) {
+		String wheresql = "";
+		String conid = "";
+		for (Map<String, Object> map : contentIds) {
+			String channelIds = map.get("ChannelIds")+"";
+			String mediaType = "";
+		    if (map.get("MediaType").equals("SEQU")) {
+		    	mediaType = "wt_SeqMediaAsset";
+			} else if (map.get("MediaType").equals("AUDIO")) 
+				mediaType = "wt_MediaAsset";
+			else mediaType = null;
+			if (!StringUtils.isNullOrEmptyOrSpace(channelIds) && !channelIds.equals("null")) {
+				String chaid = "";
+				String[] chaIds = channelIds.split(",");
+			    if (chaIds!=null && chaIds.length>0) {
+				    for (String str : chaIds) {
+					    chaid += " or channelId = '"+str+"'";
+				    }
+				    chaid = chaid.substring(3);
+				    chaid = " (" + chaid + ")";
+				    
+				    conid += " or ( assetId = '" + map.get("Id") + "'";
+				    if (mediaType!=null) {
+						conid +=  " and assetType = '" + mediaType + "'";
+					}
+				    conid += " and "+ chaid +")";
+			    } else {
+			    	conid += " or ( assetId = '" + map.get("Id") + "'";
+			    	if (mediaType!=null) {
+						conid += " and assetType = '" + mediaType + "' )";
+					} else conid += ")" ;
 			    }
-			    chaid = chaid.substring(1);
-		    }
+			} else {
+				conid += " or ( assetId = '" + map.get("Id") + "'";
+		    	if (mediaType!=null) {
+					conid += " and assetType = '" + mediaType + "' )";
+				} else conid += ")" ;
+			}
 		}
+		if (conid.length()<3) {
+			return false;
+		}
+		conid = conid.substring(3);
+		conid = " (" + conid + ")";
+		
+		wheresql += " and" + conid;
+		
 		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("assetId", contentId);
-		if (mediaType.equals("SEQU"))
-			m.put("assetType", "wt_SeqMediaAsset");
-		else if (mediaType.equals("AUDIO")) 
-			m.put("assetType", "wt_MediaAsset");
-		if (chaid.length()>=3) {
-			m.put("channelIds", chaid);
+		m.put("isValidate", 1);
+		if (wheresql.length()>3) {
+			m.put("wheresql", wheresql);
 		}
 		List<ChannelAssetPo> chas = mediaService.getChaBy(m);
 		if (chas!=null) {
@@ -351,25 +382,57 @@ public class QueryService {
 	 * @param sort
 	 * @return
 	 */
-	public boolean modifySort(String contentId, String channelIds, String mediaType, int sort) {
-		String chaid = "";
-		if (channelIds!=null) {
-			String[] chaIds = channelIds.split(",");
-		    if (chaIds!=null && chaIds.length>0) {
-			    for (String str : chaIds) {
-				    chaid += ",'"+str+"'";
+	public boolean modifySort(List<Map<String, Object>> contentIds, int sort) {
+		String wheresql = "";
+		String conid = "";
+		for (Map<String, Object> map : contentIds) {
+			String channelIds = map.get("ChannelIds")+"";
+			String mediaType = "";
+		    if (map.get("MediaType").equals("SEQU")) {
+		    	mediaType = "wt_SeqMediaAsset";
+			} else if (map.get("MediaType").equals("AUDIO")) 
+				mediaType = "wt_MediaAsset";
+			else mediaType = null;
+			if (!StringUtils.isNullOrEmptyOrSpace(channelIds) && !channelIds.equals("null")) {
+				String chaid = "";
+				String[] chaIds = channelIds.split(",");
+			    if (chaIds!=null && chaIds.length>0) {
+				    for (String str : chaIds) {
+					    chaid += " or channelId = '"+str+"'";
+				    }
+				    chaid = chaid.substring(3);
+				    chaid = " (" + chaid + ")";
+				    
+				    conid += " or ( assetId = '" + map.get("Id") + "'";
+				    if (mediaType!=null) {
+						conid +=  " and assetType = '" + mediaType + "'";
+					}
+				    conid += "and "+ chaid +")";
+			    } else {
+			    	conid += " or ( assetId = '" + map.get("Id") + "'";
+			    	if (mediaType!=null) {
+						conid += " and assetType = '" + mediaType + "' )";
+					} else conid += ")" ;
 			    }
-			    chaid = chaid.substring(1);
-		    }
+			} else {
+				conid += " or ( assetId = '" + map.get("Id") + "'";
+		    	if (mediaType!=null) {
+					conid += " and assetType = '" + mediaType + "' )";
+				} else conid += ")" ;
+			}
 		}
-		Map<String, Object> m = new HashMap<>();
-		m.put("assetId", contentId);
-		if (mediaType.equals("SEQU"))
-			m.put("assetType", "wt_SeqMediaAsset");
-		else if (mediaType.equals("AUDIO"))
-			m.put("assetType", "wt_MediaAsset");
-		if (chaid.length()>=3) {
-			m.put("channelIds", chaid);
+		if (conid.length()<3) {
+			return false;
+		}
+		conid = conid.substring(3);
+		conid = " (" + conid + ")";
+		
+		wheresql += " and" + conid;
+		
+		Map<String, Object> m = new HashMap<String, Object>();
+		m.put("isValidate", 1);
+		if (wheresql.length()>3) {
+			m.put("wheresql", wheresql);
 		}
 		List<ChannelAssetPo> chas = mediaService.getChaBy(m);
 		if (chas!=null) {
@@ -486,10 +549,10 @@ public class QueryService {
 		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
 			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
 				if (mediaType.equals("SEQU")) {
-					SeqMediaAsset sma = mediaService.getSmaInfoById(resId);
+					SeqMediaAssetPo sma = mediaService.getSmaInfoById(resId);
 					if (sma != null) {
 						List<SeqMediaAssetPo> listpo = new ArrayList<>();
-						listpo.add(sma.convert2Po());
+						listpo.add(sma);
 						List<Map<String, Object>> smam = mediaService.makeSmaListToReturn(listpo);
 						if (smam != null && smam.size() > 0) {
 							Map<String, Object> map = new HashMap<>();

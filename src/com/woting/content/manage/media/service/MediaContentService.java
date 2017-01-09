@@ -17,10 +17,10 @@ import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
-import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
+import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
@@ -137,14 +137,14 @@ public class MediaContentService {
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
-		SeqMediaAsset sma;
+		SeqMediaAssetPo smaPo;
 		// 保存专辑与单体媒体对应表
 		if (seqid != null) {
-			sma = mediaService.getSmaInfoById(seqid);
-			mediaService.bindMa2Sma(ma, sma);
+			smaPo = mediaService.getSmaInfoById(seqid);
+			mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 		} else {
-			sma = mediaService.getSmaInfoById("user::" + userid);
-			if (sma == null) {
+			smaPo = mediaService.getSmaInfoById("user::" + userid);
+			if (smaPo == null) {
 				String smaName = "";
 				if (user.getUserName() != null) {
 					smaName = user.getUserName();
@@ -156,10 +156,10 @@ public class MediaContentService {
 				seqid = "user::" + userid;
 				seqContentService.addSeqMediaInfo(seqid, userid, smaName + "的默认专辑", "cn36", null, null, null, null,
 						null);
-				sma = mediaService.getSmaInfoById(seqid);
-				mediaService.bindMa2Sma(ma, sma);
+				smaPo = mediaService.getSmaInfoById(seqid);
+				mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 			} else {
-				mediaService.bindMa2Sma(ma, sma);
+				mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 			}
 		}
 
@@ -259,7 +259,7 @@ public class MediaContentService {
 		}
 
 		// 新增栏目
-		modifyMediaStatus(userid, ma.getId(), sma.getId(), 0);
+		modifyMediaStatus(userid, ma.getId(), smaPo.getId(), 0);
 
 		if (flowFlag.equals("2")) {
 			modifyMediaStatus(userid, ma.getId(), seqid, 2);
@@ -304,7 +304,7 @@ public class MediaContentService {
 			}
 		}
 
-		MediaAsset ma = mediaService.getMaInfoById(contentId);
+		MediaAssetPo ma = mediaService.getMaInfoById(contentId);
 		if (contentname != null && !contentname.toLowerCase().equals("null")) { // 修改节目名称
 			ma.setMaTitle(contentname);
 		}
@@ -422,8 +422,8 @@ public class MediaContentService {
 	}
 
 	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag) {
-		SeqMediaAsset sma = mediaService.getSmaInfoById(seqMediaId);
-		MediaAsset ma = mediaService.getMaInfoById(mediaId);
+		SeqMediaAssetPo sma = mediaService.getSmaInfoById(seqMediaId);
+		MediaAssetPo ma = mediaService.getMaInfoById(mediaId);
 		if (sma != null) {
 			SeqMaRefPo seqmapo = mediaService.getSeqMaRefByMId(mediaId);
 			if (seqmapo != null) {
@@ -539,10 +539,10 @@ public class MediaContentService {
 			if (poref.getPersonId().equals(userId)) {
 				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId("0", contentId, "wt_MediaAsset");
 				if (chas != null && chas.size() > 0) {
-					MediaAsset ma = mediaService.getMaInfoById(contentId);
+					MediaAssetPo ma = mediaService.getMaInfoById(contentId);
 					if (ma != null) {
 						List<MediaAssetPo> mas = new ArrayList<>();
-						mas.add(ma.convert2Po());
+						mas.add(ma);
 						List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
 						if (rem != null && rem.size() > 0) {
 							return rem.get(0);

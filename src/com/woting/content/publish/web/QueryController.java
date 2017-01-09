@@ -1,7 +1,9 @@
 package com.woting.content.publish.web;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -126,22 +128,24 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/updateContentStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 //		String userId = (String) m.get("UserId");
-		String contentid = m.get("ContentId") + "";
-		if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
+		List<Map<String, Object>> contentIds = new ArrayList<>();
+		if (m.containsKey("ContentIds")) {
+			contentIds = (List<Map<String, Object>>) m.get("ContentIds");
+			if (contentIds==null || contentIds .size()==0) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无内容Id");
+				return map;
+			}
+		} else {
 			map.put("ReturnType", "1012");
 			map.put("Message", "无内容Id");
-			return map;
-		}
-		String mediaType = m.get("MediaType") + "";
-		if (StringUtils.isNullOrEmptyOrSpace(mediaType) || mediaType.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1013");
-			map.put("Message", "无内容类型");
 			return map;
 		}
 		String opeType = m.get("OpeType") + "";
@@ -166,10 +170,10 @@ public class QueryController {
 				map.put("Message", "无排序号");
 				return map;
 			}
-			isok = queryService.modifyInfo(contentid, channelIds, mediaType, number, opeType);
+			isok = queryService.modifyInfo(contentIds, number, opeType);
 		} else {
 			if (opeType.equals("pass") || opeType.equals("nopass") || opeType.equals("revoke")) {
-				isok = queryService.modifyInfo(contentid, channelIds, mediaType, 0, opeType);
+				isok = queryService.modifyInfo(contentIds, 0, opeType);
 			}
 		}
 		if (isok) {

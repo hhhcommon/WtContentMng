@@ -71,6 +71,7 @@ public class MediaService {
 	private PersonService personService;
 
 	private Map<String, Object> FlowFlagState = new HashMap<String, Object>() {
+		private static final long serialVersionUID = 1L;
 		{
 			put("0", "已提交");
 			put("1", "审核中");
@@ -247,7 +248,7 @@ public class MediaService {
 					SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
 					if (seqMaRefPo != null) {
 						m.put("ContentSeqId", seqMaRefPo.getSId());
-						SeqMediaAsset sma = getSmaInfoById(seqMaRefPo.getSId());
+						SeqMediaAssetPo sma = getSmaInfoById(seqMaRefPo.getSId());
 						if (sma != null) {
 							m.put("ContentSeqName", sma.getSmaTitle());
 						}
@@ -261,6 +262,7 @@ public class MediaService {
 	}
 
 	// 根据主播id查询其所有单体资源
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getMaInfoByMaPubId(String id) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<MediaAssetPo> listpo = new ArrayList<MediaAssetPo>();
@@ -287,7 +289,7 @@ public class MediaService {
 				}
 				SeqMaRefPo seqMaRefPo = seqMaRefDao.getInfoObject("getS2MRefInfoByMId", mediaAssetPo.getId());
 				m.put("ContentSeqId", seqMaRefPo == null ? null : seqMaRefPo.getSId());
-				SeqMediaAsset sma = getSmaInfoById(seqMaRefPo.getSId());
+				SeqMediaAssetPo sma = getSmaInfoById(seqMaRefPo.getSId());
 				if (sma != null) {
 					m.put("ContentSeqName", sma.getSmaTitle());
 				}
@@ -317,7 +319,7 @@ public class MediaService {
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", map);
 			if (chas != null && chas.size() > 0) {
 				for (ChannelAssetPo cha : chas) {
-					SeqMediaAsset sma = getSmaInfoById(cha.getAssetId());
+					SeqMediaAssetPo sma = getSmaInfoById(cha.getAssetId());
 					if (sma != null) {
 						Map<String, Object> m = new HashMap<>();
 						m.put("SeqMediaName", sma.getSmaTitle());
@@ -423,6 +425,7 @@ public class MediaService {
 	}
 
 	// 整理专辑返回结果
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> makeSmaListToReturn(List<SeqMediaAssetPo> listpo) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		if (listpo != null && listpo.size() > 0) {
@@ -483,7 +486,7 @@ public class MediaService {
 				List<Map<String, Object>> personlist = makePersonList("wt_MediaAsset", ma.getId());
 				Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), personlist, catalist, pubChannelList, null);
 				SeqMaRefPo smaref = getSeqMaRefByMId(ma.getId());
-				SeqMediaAsset sma = getSmaInfoById(smaref.getSId());
+				SeqMediaAssetPo sma = getSmaInfoById(smaref.getSId());
 				mam.put("ContentSeqId", sma.getId());
 				mam.put("ContentSeqName", sma.getSmaTitle());
 				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + ma.getId() + "'", "wt_MediaAsset");
@@ -570,13 +573,11 @@ public class MediaService {
 	}
 
 	// 根据专辑id得到专辑
-	public SeqMediaAsset getSmaInfoById(String id) {
-		SeqMediaAsset sma = new SeqMediaAsset();
+	public SeqMediaAssetPo getSmaInfoById(String id) {
 		SeqMediaAssetPo smapo = seqMediaAssetDao.getInfoObject("getSmaInfoById", id);
-		if (smapo == null)
-			return null;
-		sma.buildFromPo(smapo);
-		return sma;
+		if (smapo != null)
+			return smapo;
+		return null;
 	}
 
 	public List<MediaAssetPo> getMaListBySmaId(String smaid) {
@@ -691,14 +692,12 @@ public class MediaService {
 		return rcrpL;
 	}
 
-	public MediaAsset getMaInfoById(String id) {
-		MediaAsset ma = new MediaAsset();
+	public MediaAssetPo getMaInfoById(String id) {
 		MediaAssetPo mapo = mediaAssetDao.getInfoObject("getMaInfoById", id);
-		if (mapo == null)
-			return null;
-		else
-			ma.buildFromPo(mapo);
-		return ma;
+		if (mapo!=null) {
+			return mapo;
+		}
+		return null;
 	}
 
 	public MaSourcePo getMasInfoByMaId(String maId) {
@@ -720,7 +719,7 @@ public class MediaService {
 		return _mas;
 	}
 
-	public void bindMa2Sma(MediaAsset ma, SeqMediaAsset sma) {
+	public void bindMa2Sma(MediaAssetPo ma, SeqMediaAssetPo sma) {
 		SeqMaRefPo smrPo = new SeqMaRefPo();
 		if (StringUtils.isNullOrEmptyOrSpace(ma.getId()) || StringUtils.isNullOrEmptyOrSpace(sma.getId())) {
 			throw new Wtcm0101CException("专辑和单曲的Id都不能为空");
@@ -769,12 +768,12 @@ public class MediaService {
 		mediaAssetDao.update("updateMas", mas);
 	}
 
-	public void updateMa(MediaAsset ma) {
-		mediaAssetDao.update("updateMa", ma.convert2Po());
+	public void updateMa(MediaAssetPo ma) {
+		mediaAssetDao.update("updateMa", ma);
 	}
 
-	public void updateSma(SeqMediaAsset sma) {
-		seqMediaAssetDao.update("updateSma", sma.convert2Po());
+	public void updateSma(SeqMediaAssetPo sma) {
+		seqMediaAssetDao.update("updateSma", sma);
 	}
 
 	public int updateCha(ChannelAsset cha) {
