@@ -255,7 +255,7 @@ public class SeqContentService {
 			String pubTime) {
 		if (personService.getPersonPoById(userid) != null) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
+			SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentid);
 			if (sma != null) {
 				sma.setSmaTitle(contentname);
 				if (contentimg != null & !contentimg.toLowerCase().equals("null")) {
@@ -376,7 +376,7 @@ public class SeqContentService {
 	 */
 	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
+		SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentId);
 		if (sma == null) {
 			map.put("ReturnType", "1013");
 			map.put("Message", "专辑不存在");
@@ -461,10 +461,10 @@ public class SeqContentService {
 			if (poref.getPersonId().equals(userId)) {
 				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId("0", contentId, "wt_SeqMediaAsset");
 				if (chas != null && chas.size() > 0) {
-					SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
+					SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentId);
 					if (sma != null) {
 						List<SeqMediaAssetPo> smas = new ArrayList<>();
-						smas.add(sma.convert2Po());
+						smas.add(sma);
 						List<Map<String, Object>> ls = mediaService.makeSmaListToReturn(smas);
 						if (ls != null && ls.size() > 0) {
 							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(contentId);
