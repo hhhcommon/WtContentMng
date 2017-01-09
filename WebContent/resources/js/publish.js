@@ -25,7 +25,6 @@ function getConditions(){
 
 //公共ajax请求
 function commonAjax(url,data,obj,callback){
-//debugger;
 	$.ajax({
     type: "POST",
     url:url,
@@ -52,7 +51,6 @@ function commonAjax(url,data,obj,callback){
 }	
 //从后台请求节目列表数据
 function getContentList(current_page,flowFlag,isSelect){
-//debugger;
 	var url=rootPath+"content/getContents.do";
 	var data={};
 	//带专门查询条件的查询
@@ -98,13 +96,15 @@ function ConditionsListLoad(ConditionsList){
 
 //创建节目列表DOM树
 function ContentListLoad(actList){
-//debugger;
 	contentCount=actList.ContentCount;
 	contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
 	$(".totalPage").text(contentCount);
   var actListLength=actList.ResultList.length;
   if(!actList||contentCount==0||!actList.ResultList||actListLength==0){
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
+    $(".pubDetail .conBox").children(".actThumb").attr({"src":""});
+    $(".pubDetail .conBox").children(".actTitle,.actSource,.actPubTime,.vjName,.actDesn,.cloumn").html("");
+    $(document).find(".pubDetail .conBox").css({"display":"none"});
   }else{
 	  //声明下面需要创建的节点，以便添加内容到文档中
 	  var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
