@@ -8,15 +8,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-
-import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.stereotype.Service;
-
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
@@ -543,43 +539,6 @@ public class QueryService {
 			}
 		}
 		return map;
-	}
-
-	public boolean getShareHtml(String resId, String mediaType) {
-		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
-			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
-				if (mediaType.equals("SEQU")) {
-					SeqMediaAssetPo sma = mediaService.getSmaInfoById(resId);
-					if (sma != null) {
-						List<SeqMediaAssetPo> listpo = new ArrayList<>();
-						listpo.add(sma);
-						List<Map<String, Object>> smam = mediaService.makeSmaListToReturn(listpo);
-						if (smam != null && smam.size() > 0) {
-							Map<String, Object> map = new HashMap<>();
-							map.put("ContentDetail", smam.get(0));
-							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(resId);
-							if (mas != null && mas.size() > 0) {
-								Iterator<MediaAssetPo> it = mas.iterator();
-								while (it.hasNext()) {
-									MediaAssetPo mediaAssetPo = (MediaAssetPo) it.next();
-									String resIds = "'" + mediaAssetPo.getId() + "'";
-									List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId(resIds, "wt_MediaAsset");
-									if (chas != null && chas.size() > 0) {
-										ChannelAssetPo chapo = chas.get(0);
-										if (chapo.getFlowFlag() != 2)
-											it.remove();
-									}
-								}
-								map.put("SubList", mediaService.makeMaListToReturn(mas));
-								CacheUtils.publishZJ(map);
-								return true;
-							}
-						}
-					}
-				}
-			}
-		}
-		return false;
 	}
 
 	/**
