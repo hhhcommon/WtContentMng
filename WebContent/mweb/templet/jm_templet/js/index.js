@@ -152,9 +152,10 @@ $(function(){
   //点击下一首
   var isList=false;
   $(".next").on("click",function(){
+    debugger;
     if(isList){
       $(document).find(".state").each(function(i,val){
-        if(val.className!="state"){
+        if(val.className=="playGif"){
           //判断是否为最后一个
           //如果有正在播放的列表，那么播放下一条，如果没有，则播放第一条
           if(i>=$(".listBox").length-1){
@@ -170,6 +171,8 @@ $(function(){
           $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
           listNum=i+1;
           return false;
+        }else{
+          
         }
       })
     }else{
@@ -258,7 +261,8 @@ $(function(){
   
   //打开APP或下载
   $(".downLoad,.like").click(function(){
-    window.location=$("#jmAudio").attr("jmOpenApp");
+    window.location=$(audio).attr("jmOpenApp");
+    alert($(audio).attr("jmOpenApp"));
     window.setTimeout(function () {
       window.location.href= "http://www.wotingfm.com/download/WoTing.apk";
     },2000);
