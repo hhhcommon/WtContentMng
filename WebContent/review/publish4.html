@@ -74,40 +74,28 @@
     });
     //审核处理
     $("button[opeType]").on('click',function(){
-      var channelIdList="";//栏目id
-      var contentIdList="";//节目或专辑或电台id
+      var mediaType="";//判断是节目还是专辑还是电台
+      var contentids=[];//选中的节目或专辑或电台的集合
       $.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
-        if(channelIdList==""){
-          channelIdList=val.parentNode.parentNode.getAttribute("channelid");
-        }else{
-          channelIdList+=val.parentNode.parentNode.getAttribute("channelid")+",";
-        }
-        if(contentIdList==""){
-          contentIdList=val.parentNode.parentNode.getAttribute("actid");
-        }else{
-          contentIdList+=val.parentNode.parentNode.getAttribute("actid")+",";
-        }
-        if($(this).parents(".listBox").attr("acttype")=="wt_MediaAsset"){//节目
+        var content={};//选中的节目的集合
+        var channelIdList=val.parentNode.parentNode.getAttribute("channelid");//栏目id
+        var contentIdList=val.parentNode.parentNode.getAttribute("actid");//节目或专辑或电台id
+        if($(this).parents(".listBox").attr("acttype")=="wt_MediaAsset"){
           mediaType="AUDIO";
         }else if($(this).parents(".listBox").attr("acttype")=="wt_SeqMediaAsset"){//专辑
           mediaType="SEQU";
         }
+        content.Id=contentIdList;
+        content.MediaType=mediaType;
+        content.ChannelIds=channelIdList;
+        contentids.push(content);
       });
-      if(channelIdList==""||contentIdList==""){
-        alert("您还没有选择任何节目");
-        $("input[type='checkBox'][name='all']").prop({"checked":null});
-        return;
-      }
-      $("input[type='checkBox'][name='all']").prop({"checked":null});
       var data={
                 UserId:"zhangsan", 
                 ContentFlowFlag:flowFlag,
-                ContentId:contentIdList,
-                ChannelIds:channelIdList,
-                OpeType:$(this).attr("opeType"),
-                MediaType:mediaType
+                ContentIds:contentids,
+                OpeType:$(this).attr("opeType")
               };
-              
       $.ajax({
         type: "POST",
         url:rootPath+"content/updateContentStatus.do",
@@ -115,7 +103,8 @@
         data:JSON.stringify(data),
         success: function(result){
           if(result.ReturnType=="1001"){
-            console.log(result);
+            alert("成功通过");
+            $("input[type='checkBox'][name='all']").prop({"checked":null});
             //判断是查询还是修改操作，调用不同的方法
             getContentList(1,data.ContentFlowFlag);
           }else{
@@ -136,7 +125,7 @@
       }
     });
     
-    //选取复选框时，阻止向上冒泡触发li标签的click事件
+    //复选框和排序号输入框获取焦点时，阻止向上冒泡触发listBox的click事件
     $(".actList").on("click","input",function(ev){
       //阻止事件向上级冒泡
       ev.stopPropagation();
