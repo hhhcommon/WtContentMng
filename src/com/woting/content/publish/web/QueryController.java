@@ -205,40 +205,6 @@ public class QueryController {
 	}
 
 	/**
-	 * 发布所有已审核的节目 只用于测试用
-	 *
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/content/getShareHtml.do")
-	@ResponseBody
-	public Map<String, Object> getShareHtml(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String contentId = m.get("ContentId")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无内容ID");
-			return map;
-		}
-		String mediaType = m.get("MediaType")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(mediaType) || mediaType.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无内容类型");
-			return map;
-		}
-		boolean isok = queryService.getShareHtml(contentId, mediaType);
-		if (isok) {
-			map.put("ReturnType", "1001");
-			map.put("Message", "静态页面生成成功");
-		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "静态页面生成失败");
-		}
-		return map;
-	}
-
-	/**
 	 * 分享页的分页加载请求
 	 * 
 	 * @param request
