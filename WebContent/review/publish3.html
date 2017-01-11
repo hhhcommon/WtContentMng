@@ -65,24 +65,47 @@
 		});
 		//审核处理
 		$("button[opeType]").on('click',function(){
-			var checkedList="";
+			var mediaType="";//判断是节目还是专辑还是电台
+      var contentids=[];//选中的节目或专辑或电台的集合
 			$.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
-				checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
+				var content={};//选中的节目的集合
+        var channelIdList=val.parentNode.parentNode.getAttribute("channelid");//栏目id
+        var contentIdList=val.parentNode.parentNode.getAttribute("actid");//节目或专辑或电台id
+        if($(this).parents(".listBox").attr("acttype")=="wt_MediaAsset"){
+          mediaType="AUDIO";
+        }else if($(this).parents(".listBox").attr("acttype")=="wt_SeqMediaAsset"){//专辑
+          mediaType="SEQU";
+        }
+        content.Id=contentIdList;
+        content.MediaType=mediaType;
+        content.ChannelIds=channelIdList;
+        contentids.push(content);
 			});
-			if(checkedList==""){
-				alert("您还没有选择任何节目");
-				$("input[type='checkBox'][name='all']").prop({"checked":null});
-				return;
-			}
-			$("input[type='checkBox'][name='all']").prop({"checked":null});
-			var url=rootPath+"content/updateContentStatus.do";
 			var data={
-                UserId: "zhangsan", 
+                UserId:"zhangsan", 
                 ContentFlowFlag:flowFlag,
-                Id:checkedList,
+                ContentIds:contentids,
                 OpeType:$(this).attr("opeType")
               };
-			commonAjax(url,data,$(".pubList>.actList"),getContentList);
+      $.ajax({
+        type: "POST",
+        url:rootPath+"content/updateContentStatus.do",
+        dataType:"json",
+        data:JSON.stringify(data),
+        success: function(result){
+          if(result.ReturnType=="1001"){
+            alert("成功通过");
+            $("input[type='checkBox'][name='all']").prop({"checked":null});
+            //判断是查询还是修改操作，调用不同的方法
+            getContentList(1,data.ContentFlowFlag);
+          }else{
+            alert(result.Message);
+          }
+        },
+        error: function(jqXHR){
+          obj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        }     
+      });
 		});
 		//节目列表全选全不选
 		$("input[name='all']").on('click',function(){

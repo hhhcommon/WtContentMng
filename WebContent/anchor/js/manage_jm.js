@@ -540,13 +540,18 @@ $(function(){
     }
   })
   function recal_jm(contentId,channelId,flowFlag){
+    var content=[];
+    var contentList={
+      "Id":contentId,
+      "ChannelIds":channelId,
+      "MediaType": "AUDIO"
+    };
+    content.push(contentList);
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
                "MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":"123",
-               "MediaType": "AUDIO",
-               "ContentId":contentId,
-               "ChannelId":channelId,
+               "ContentIds":content,
                "ContentFlowFlag":flowFlag,
                "OpeType":"revoke"
     };
