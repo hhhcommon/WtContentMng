@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no">
   <meta name="keywords" content="#####radiodescn#####">
   <meta name="description" content="#####radiodescn#####">
+  <link rel="shortcut icon" href="../../../resources/images/favicon.ico" />
   <link href="../../templet/dt_templet/css/swiper.min.css" text="text/css" rel="stylesheet" />
   <link href="../../templet/dt_templet/css/index.css" text="text/css" rel="stylesheet" />
   <script src="../../templet/dt_templet/js/jquery-2.1.1.min.js"></script>
@@ -15,7 +16,7 @@
   <script src="../../templet/dt_templet/js/index.js"></script>
 </head>
 <body>
-<img style="width:0px;height:0px;opacity:0;position:absolute;" src="#####radioimgs#####" />
+<img class="timg" style="width:0px;height:0px;opacity:0;position:absolute;" src="#####radioimgs#####" />
 <div class="swiper-container" id="swiper-container">
   <div class="swiper-wrapper">
     <div class="swiper-slide">
@@ -114,4 +115,128 @@
   </div>
 </div>
 </body>
+<script>
+  var rootPath=getRootPath();
+  var tImg=$(".timg").attr("src");//分享的缩略图
+  var url=window.location.href.split('#')[0];
+  url=url.replace('&', '%26');
+  var data={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "MobileClass":"Chrome",
+    "SharePath":url
+  };
+  $.ajax({
+    url: rootPath+"share/getWXConfig.do",
+    type:"POST",
+    dataType:"json",
+    data:data,
+    success: function(resultData) {
+      if(resultData.ReturnType=="1001"){
+        getWXConfig(resultData);
+      }else{
+        return;
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+  function getWXConfig(resultData){
+    wx.config({
+      debug: false ,// 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+      appId:resultData.Result.AppId, // 必填，公众号的唯一标识
+      timestamp:resultData.Result.TimeStamp, // 必填，生成签名的时间戳
+      nonceStr:resultData.Result.NonceStr, // 必填，生成签名的随机串
+      signature:resultData.Result.Signature,// 必填，签名，见附录1
+      jsApiList: [
+        // 必填，所有要调用的 API 都要加到这个列表中
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQZone',
+        'onMenuShareQQ'
+      ]
+    });
+    wx.ready(function () { // 在这里调用 API
+      //批量隐藏功能按钮接口
+      wx.hideMenuItems({
+        menuList: [ // 要隐藏的菜单项，所有menu项见附录3
+          /*  
+            'menuItem:share:qq',
+            'menuItem:share:weiboApp'
+            'menuItem:openWithSafari',
+            'menuItem:openWithQQBrowser',
+            'menuItem:favorite',
+            'menuItem:share:facebook',
+            'menuItem:share:QZone',
+          */
+        ] 
+      });
+      //分享到朋友圈
+      wx.onMenuShareTimeline({
+        title:'#####radioname#####', // 分享标题
+        desc:'#####radiodescn#####', // 分享描述
+        link: url, // 分享链接
+        imgUrl: tImg, // 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享失败');
+        }
+      });
+      //分享给朋友
+      wx.onMenuShareAppMessage({
+        title:'#####radioname#####', // 分享标题
+        desc:'#####radiodescn#####', // 分享描述
+        link:url, // 分享链接
+        imgUrl: tImg, // 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享失败');
+        }
+      });
+      //分享到qq
+      wx.onMenuShareQQ({
+        title:'#####radioname#####', // 分享标题
+        desc:' #####radiodescn#####', // 分享描述
+        link:url, // 分享链接
+        imgUrl:tImg, // 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享qq成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享qq');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享qq失败');
+        }
+      });
+      //分享到qq空间
+      wx.onMenuShareQZone({
+        title:'#####radioname#####', // 分享标题
+        desc:' #####radiodescn#####',//分享描述
+        link:url, // 分享链接
+        imgUrl:tImg,// 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享qq空间成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享qq空间');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享qq空间失败');
+        }
+      });
+    })
+  }
+</script>
 </html>
