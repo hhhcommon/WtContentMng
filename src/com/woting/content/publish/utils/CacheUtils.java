@@ -26,7 +26,7 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://www.wotingfm.com/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
