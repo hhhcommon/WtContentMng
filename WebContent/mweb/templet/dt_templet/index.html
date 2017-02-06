@@ -11,13 +11,14 @@
   <link href="../../templet/dt_templet/css/index.css" text="text/css" rel="stylesheet" />
   <script src="../../templet/dt_templet/js/jquery-2.1.1.min.js"></script>
   <script src="../../templet/dt_templet/js/swiper.min.js"></script>
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
   <script src="../../../resources/js/mainPage.js"></script>
   <script src="../../../resources/js/context.utils.js"></script>
   <script src="../../templet/dt_templet/js/index.js"></script>
 </head>
 <body>
 <img class="timg" style="width:0px;height:0px;opacity:0;position:absolute;" src="#####radioimgs#####" />
-<div class="swiper-container" id="swiper-container">
+<div class="swiper-container" id="swiper-container" style="overflow-y: hidden;">
   <div class="swiper-wrapper">
     <div class="swiper-slide">
       <div class="container">
@@ -92,13 +93,13 @@
         </div>
         <div class="content">
           <div class="jmd_nav">
-            <span class="week active">周一</span>
-            <span class="week">周二</span>
-            <span class="week">周三</span>
-            <span class="week">周四</span>
-            <span class="week">周五</span>
-            <span class="week">周六</span>
-            <span class="week">周日</span>
+            <span class="week active" indexs="1">周一</span>
+            <span class="week" indexs="2">周二</span>
+            <span class="week" indexs="3">周三</span>
+            <span class="week" indexs="4">周四</span>
+            <span class="week" indexs="5">周五</span>
+            <span class="week" indexs="6">周六</span>
+            <span class="week" indexs="0">周日</span>
           </div>
           <div class="jmd_con">
             <div class="weekCont swiper-slide" id="week1" weekIndex="1"></div>
@@ -107,7 +108,7 @@
             <div class="weekCont swiper-slide" id="week4" weekIndex="4"></div>
             <div class="weekCont swiper-slide" id="week5" weekIndex="5"></div>
             <div class="weekCont swiper-slide" id="week6" weekIndex="6"></div>
-            <div class="weekCont swiper-slide" id="week7" weekIndex="7"></div>
+            <div class="weekCont swiper-slide" id="week0" weekIndex="0"></div>
           </div>
         </div>
       </div>

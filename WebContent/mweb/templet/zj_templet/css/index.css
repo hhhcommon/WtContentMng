@@ -320,7 +320,6 @@ header .downLoad{
   text-overflow: ellipsis;
 }
 .noComment{
-  height:34px;
-  line-height: 34px;
+  padding-top:10px;
   text-align:center;
 }
