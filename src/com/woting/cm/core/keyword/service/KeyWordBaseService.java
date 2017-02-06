@@ -107,7 +107,7 @@ public class KeyWordBaseService {
 	
 	public List<KeyWordPo> getKeyWordsByAssetId (String assetId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
-		m.put("resIds", assetId);
+		m.put("resIds", "'"+assetId+"'");
 		m.put("resTableName", resTableName);
 		List<KeyWordResPo> kwres = keyWordResDao.queryForList("getKeyWordResByResId", m);
 		if (kwres!=null && kwres.size()>0) {
