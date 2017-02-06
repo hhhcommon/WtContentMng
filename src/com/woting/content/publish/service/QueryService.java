@@ -24,9 +24,13 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.cm.core.person.persis.po.PersonPo;
+import com.woting.cm.core.person.persis.po.PersonRefPo;
+import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.service.BroadcastProService;
 import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.content.manage.media.service.MediaContentService;
 import com.woting.content.publish.utils.CacheUtils;
 
@@ -36,6 +40,10 @@ public class QueryService {
 	private DataSource DataSource;
 	@Resource
 	private MediaService mediaService;
+	@Resource
+	private PersonService personService;
+	@Resource
+	private KeyWordProService keyWordProService;
 	@Resource
 	private ChannelContentService chaService;
 	@Resource
@@ -108,11 +116,20 @@ public class QueryService {
 				    map.put("ContentName", sma.getSmaTitle());
 				    map.put("ContentSource", sma.getSmaPublisher());
 				    map.put("ContentDesc", sma.getDescn());
+				    PersonRefPo perf = personService.getPersonRefBy("wt_SeqMediaAsset", sma.getId());
+				    if (perf!=null) {
+						PersonPo pers = personService.getPersonPoById(perf.getPersonId());
+						if (pers!=null) {
+							map.put("PersonName",pers.getpName());
+							map.put("PersonId",pers.getId());
+						}
+					}
+				    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(sma.getId(), "wt_SeqMediaAsset");
+				    map.put("KeyWords",kwlist);
 				} catch (Exception e) {
 					e.printStackTrace();
 					continue;
 				}
-				
 			} else {
 				if (map.get("MediaType").equals("wt_MediaAsset")) {
 					try {
@@ -120,6 +137,22 @@ public class QueryService {
 					    map.put("ContentName", ma.getMaTitle());
 					    map.put("ContentSource", ma.getMaPublisher());
 					    map.put("ContentDesc", ma.getDescn());
+					    SeqMaRefPo smaf = mediaService.getSeqMaRefByMId(ma.getId());
+					    if (smaf!=null) {
+							SeqMediaAssetPo sma = mediaService.getSmaInfoById(smaf.getSId());
+							map.put("ContentSeqName", sma.getSmaTitle());
+							map.put("ContentSeqId", sma.getId());
+						}
+					    PersonRefPo perf = personService.getPersonRefBy("wt_MediaAsset", ma.getId());
+					    if (perf!=null) {
+							PersonPo pers = personService.getPersonPoById(perf.getPersonId());
+							if (pers!=null) {
+								map.put("PersonName",pers.getpName());
+								map.put("PersonId",pers.getId());
+							}
+						}
+					    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(ma.getId(), "wt_MediaAsset");
+					    map.put("KeyWords",kwlist);
 					} catch (Exception e) {
 						e.printStackTrace();
 						continue;
