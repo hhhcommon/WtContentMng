@@ -2,29 +2,12 @@ $(function(){
   var rootPath=getRootPath();
   
   var page=2;
-  var nextPage="false";
-  //控制播放按钮的播与停
-//var audio=$("<audio></audio>")[0];
-  $(".ulBox").on("click",".playBtn",function(){
-//  if($(this).hasClass("play")){
-//    $(this).removeClass("play");
-//    audio.pause();
-//  }else{
-//    if($(".playBtn").hasClass("play")){
-//      audio.pause();
-//      $(".playBtn").removeClass("play");
-//    }
-//    audio.src=$(this).attr("data_src");
-//    //播放当前资源，并改变当前按钮状态
-//    $(this).addClass("play");
-//    audio.play();
-//  }
-    
+  $(".ulBox").on("click",".playBtn",function(){//点击专辑里面的某个节目，跳到节目页
     var shareUrl=$(this).attr("share_url");
     window.location.href=shareUrl;
   });
   
-  //详情和节目的切换
+  //详情和节目,评论的切换
   $(".tab_nav span").on("click",function(){
     $(this).addClass("selected").siblings().removeClass();
     $(".tab_con > .tc").hide().eq($(".tab_nav span").index(this)).show();
@@ -37,7 +20,7 @@ $(function(){
       var str=resultData.ResultList[i].CTime;
       var ct=str.substring(0,str.lastIndexOf(":"));
       var timeLong=resultData.ResultList[i].ContentTimes;
-      var tl=formatTimeTJ(timeLong/1000);
+      var tl=formatTimeTJ(timeLong);
       if(resultData.ResultList[i].ContentPlay) detail.contentPlay=resultData.ResultList[i].ContentPlay;
       else detail.contentPlay="未知";
       if(resultData.ResultList[i].ContentShareUrl) detail.contentShareUrl=resultData.ResultList[i].ContentShareUrl;
@@ -90,7 +73,7 @@ $(function(){
   //获取节目列表的节目时长
   $(document).find(".ulBox li").each(function(){
     var timeLong=$(this).children(".lcp").children(".contentT").text();
-    $(this).children(".lcp").children(".contentT").text(formatTimeTJ(timeLong/1000));
+    $(this).children(".lcp").children(".contentT").text(formatTimeTJ(timeLong));
   })
 
   //秒转时分秒格式--节目列表
@@ -148,6 +131,7 @@ $(function(){
         }else{
           $(".comment").html("");
           $(".comment").append("<li class='noComment'>暂无评论</li>");
+          $(".noComment").css({"height":$(".tab_con").height()});
         }
       },
       error: function(jqXHR){
