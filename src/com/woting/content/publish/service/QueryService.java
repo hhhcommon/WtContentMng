@@ -66,38 +66,19 @@ public class QueryService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getContent(int flowFlag, int page, int pagesize, String channelId, String publisherId,
+	public Map<String, Object> getContent(String flowFlag, int page, int pagesize, String channelId, String publisherId,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		Map<String, Object> mapall = new HashMap<String, Object>();
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
 		long numall = 0;
-
-//		Map<String, Object> m = new HashMap<String, Object>();
-//		m.put("channelId", channelId);
-//		m.put("publisherId", publisherId);
-//		m.put("beginPubtime", beginpubtime);
-//		m.put("endPubtime", endpubtime);
-//		m.put("begincTime", beginctime);
-//		m.put("endcTime", endctime);
-//		m.put("flowFlag", flowFlag);
-//		numall = mediaService.getCountInCha(m);
-//
-//		m.clear();
-//		m.put("channelId", channelId);
-//		m.put("publisherId", publisherId);
-//		m.put("beginPubtime", beginpubtime);
-//		m.put("endPubtime", endpubtime);
-//		m.put("begincTime", beginctime);
-//		m.put("endcTime", endctime);
-//		m.put("flowFlag", flowFlag);
-//		m.put("beginNum", (page-1) * pagesize);
-//		m.put("size", pagesize);
-		
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		String sql = "select count(*) from wt_ChannelAsset ch "
-				+ "where ch.flowFlag = " +flowFlag + " and (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+				+ "where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+		if (flowFlag!=null) {
+			sql += " and ch.flowFlag = "+flowFlag;
+		}
 		if (channelId!=null) {
 			sql += " and ch.channelId = '"+channelId+"'";
 		}
@@ -146,7 +127,10 @@ public class QueryService {
 				+ "ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset' "
 				+ "LEFT JOIN wt_SeqMediaAsset sma "
 				+ "ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
-				+ "where ch.flowFlag = " + flowFlag + " and (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+				+ "where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+		if (flowFlag!=null) {
+			sql += " and ch.flowFlag = "+flowFlag;
+		}
 		if (channelId!=null) {
 			sql += " and ch.channelId = '"+channelId+"'";
 		}
@@ -249,29 +233,6 @@ public class QueryService {
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
-
-		// 查询显示的节目名称，发布组织和描述信息
-//		for (Map<String, Object> map : list2seq) {
-//			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
-//				try {
-//				    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(map.get("ContentId")+"", "wt_SeqMediaAsset");
-//				    map.put("KeyWords",kwlist);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//					continue;
-//				}
-//			} else {
-//				if (map.get("MediaType").equals("wt_MediaAsset")) {
-//					try {
-//					    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(map.get("ContentId")+"", "wt_MediaAsset");
-//					    map.put("KeyWords",kwlist);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//						continue;
-//					}
-//				}
-//			}
-//		}
 		mapall.put("List", list2seq);
 		mapall.put("Count", numall);
 		return mapall;
