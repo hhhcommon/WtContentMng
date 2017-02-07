@@ -97,12 +97,24 @@ public class QueryService {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		String sql = "select count(*) from wt_ChannelAsset ch "
-				+ "where ch.flowFlag = "+flowFlag;
+				+ "where ch.flowFlag = " +flowFlag + " and (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
 		if (channelId!=null) {
 			sql += " and ch.channelId = '"+channelId+"'";
 		}
 		if (publisherId!=null) {
 			sql += " and ch.publisherId = '"+publisherId+"'";
+		}
+		if (beginpubtime!=null) {
+			sql += " and ch.pubTime >= '"+beginpubtime+"'";
+		}
+		if (endpubtime!=null) {
+			sql += " and ch.pubTime <= '"+endpubtime+"'";
+		}
+		if (beginctime!=null) {
+			sql += " and ch.cTime >= '"+beginctime+"'";
+		}
+		if (endctime!=null) {
+			sql += " and ch.cTime <= '"+endctime+"'";
 		}
 		try {
 			conn = DataSource.getConnection();
@@ -112,8 +124,8 @@ public class QueryService {
 				numall = rs.getLong(1);
 			}
 			
-			rs.close(); rs=null;
-            ps.close(); ps=null;
+			if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -134,14 +146,26 @@ public class QueryService {
 				+ "ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset' "
 				+ "LEFT JOIN wt_SeqMediaAsset sma "
 				+ "ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
-				+ "where ch.flowFlag = "+flowFlag;
+				+ "where ch.flowFlag = " + flowFlag + " and (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
 		if (channelId!=null) {
 			sql += " and ch.channelId = '"+channelId+"'";
 		}
 		if (publisherId!=null) {
 			sql += " and ch.publisherId = '"+publisherId+"'";
 		}
-		sql += " ORDER BY ch.sort DESC, ch.pubTime DESC ,ch.cTime DESC LIMIT ";
+		if (beginpubtime!=null) {
+			sql += " and ch.pubTime >= '"+beginpubtime+"'";
+		}
+		if (endpubtime!=null) {
+			sql += " and ch.pubTime <= '"+endpubtime+"'";
+		}
+		if (beginctime!=null) {
+			sql += " and ch.cTime >= '"+beginctime+"'";
+		}
+		if (endctime!=null) {
+			sql += " and ch.cTime <= '"+endctime+"'";
+		}
+		sql += " ORDER BY ch.sort DESC, ch.pubTime DESC LIMIT ";
 		if (page>0 && pagesize>0) {
 			sql += (page-1)*pagesize +","+pagesize;
 		} else {
@@ -158,61 +182,65 @@ public class QueryService {
 				oneDate.put("ChannelId", rs.getString("channelId"));
 				oneDate.put("ContentName", rs.getString("pubName"));
 				oneDate.put("ContentId", rs.getString("assetId"));
+				oneDate.put("ContentPublisher", rs.getString("publisher"));
 				oneDate.put("MediaType", rs.getString("assetType"));
 				oneDate.put("ContentDesc", rs.getString("descn"));
 				oneDate.put("ContentImg", rs.getString("pubImg"));
 				oneDate.put("ContentFlowFlag", rs.getInt("flowFlag"));
 				oneDate.put("ContentSort", rs.getInt("sort"));
 				oneDate.put("ContentTime", rs.getTimestamp("time"));
-				oneDate.put("PersonId", null);
-				oneDate.put("PersonName", null);
+				oneDate.put("PersonId", rs.getString("personId"));
+				oneDate.put("PersonName", rs.getString("pName"));
 				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
 				list2seq.add(oneDate);
 			}
-			ids = ids.substring(3);
 			
-			rs.close(); rs=null;
-            ps.close(); ps=null;
-            
-			sql = "SELECT pers.id,pers.pName,persf.resId from wt_Person pers LEFT JOIN wt_Person_Ref persf ON pers.id = persf.personId "
-					+ "where "+ids;
-			ps = conn.prepareStatement(sql);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				for (Map<String, Object> map : list2seq) {
-					if (map.get("ContentId").equals(rs.getString("resId"))) {
-						map.put("PersonId", rs.getString("id"));
-						map.put("PersonName", rs.getString("pName"));
-					}
-				}
-			}
+			if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 			
-			rs.close(); rs=null;
-            ps.close(); ps=null;
-            
-			sql = "SELECT kws.id,kws.kwName,kwsf.resId from wt_KeyWord kws LEFT JOIN wt_Kw_Res kwsf ON kws.id = kwsf.kwId "
-					+ "where"+ids.replace("persf", "kwsf");
-			ps = conn.prepareStatement(sql);
-			rs = ps.executeQuery();
-			while (rs != null && rs.next()) {
-				for (Map<String, Object> map : list2seq) {
-					if (map.get("ContentId").equals(rs.getString("resId"))) {
-						Map<String, Object> kwmap = new HashMap<>();
-						kwmap.put("TagName", rs.getString("kwName"));
-						kwmap.put("TagId", rs.getString("id"));
-						if (map.containsKey("KeyWords")) {
-							List<Map<String, Object>> kws = (List<Map<String, Object>>) map.get("KeyWords");
-							kws.add(kwmap);
-						} else {
-							List<Map<String, Object>> kws = new ArrayList<>();
-							kws.add(kwmap);
-							map.put("KeyWords", kws);
+			if (ids.length()>3) {
+				ids = ids.substring(3);
+//				sql = "SELECT pers.id,pers.pName,persf.resId from wt_Person pers LEFT JOIN wt_Person_Ref persf ON pers.id = persf.personId "
+//						+ "where "+ids;
+//				ps = conn.prepareStatement(sql);
+//				rs = ps.executeQuery();
+//				while (rs != null && rs.next()) {
+//					for (Map<String, Object> map : list2seq) {
+//						if (map.get("ContentId").equals(rs.getString("resId"))) {
+//							map.put("PersonId", rs.getString("id"));
+//							map.put("PersonName", rs.getString("pName"));
+//						}
+//					}
+//				}
+//				
+//				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+//	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            
+				sql = "SELECT kws.id,kws.kwName,kwsf.resId from wt_KeyWord kws LEFT JOIN wt_Kw_Res kwsf ON kws.id = kwsf.kwId "
+						+ "where "+ids.replace("persf", "kwsf")
+						+ " order by kwsf.cTime ASC";
+				ps = conn.prepareStatement(sql);
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					for (Map<String, Object> map : list2seq) {
+						if (map.get("ContentId").equals(rs.getString("resId"))) {
+							Map<String, Object> kwmap = new HashMap<>();
+							kwmap.put("TagName", rs.getString("kwName"));
+							kwmap.put("TagId", rs.getString("id"));
+							if (map.containsKey("KeyWords")) {
+								List<Map<String, Object>> kws = (List<Map<String, Object>>) map.get("KeyWords");
+								kws.add(kwmap);
+							} else {
+								List<Map<String, Object>> kws = new ArrayList<>();
+								kws.add(kwmap);
+								map.put("KeyWords", kws);
+							}
 						}
 					}
 				}
+				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 			}
-			rs.close(); rs=null;
-            ps.close(); ps=null;
 			conn.close(); conn=null;
 		} catch (Exception e) {
 			e.printStackTrace();

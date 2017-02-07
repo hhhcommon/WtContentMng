@@ -35,6 +35,7 @@ public class QueryController {
 	@RequestMapping(value = "/content/getContents.do")
 	@ResponseBody
 	public Map<String, Object> getContents(HttpServletRequest request) {
+		long begtime = System.currentTimeMillis();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String catalogsid = null;
@@ -53,24 +54,29 @@ public class QueryController {
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		if (m.containsKey("SourceId"))
 			publisherId = (String) m.get("SourceId");
-		if (m.containsKey("BeginContentPubTime"))
-			begincontentpubtime = Timestamp.valueOf(m.get("BeginContentPubTime")+"");
-		if (m.containsKey("EndContentPubTime"))
-			endcontentpubtime = Timestamp.valueOf(m.get("EndContentPubTime")+"");
-		if (m.containsKey("BeginContentCTime"))
-			begincontentctime = Timestamp.valueOf(m.get("BeginContentCTime")+"");
-		if (m.containsKey("EndContentCTime"))
-			endcontentctime = Timestamp.valueOf(m.get("EndContentCTime")+"");
+		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
+			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
+		if (m.containsKey("EndContentPubTime") && m.get("EndContentPubTime")!=null && !m.get("EndContentPubTime").equals("null"))
+			endcontentpubtime =  new Timestamp(Long.valueOf(m.get("EndContentPubTime")+""));
+		if (m.containsKey("BeginContentCTime") && m.get("BeginContentCTime")!=null && !m.get("BeginContentCTime").equals("null"))
+			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
+		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
+			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
 		if (flowFlag > 0 && page > 0 && pagesize > 0) {
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, publisherId,
-					begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
-			map.put("ResultList", maplist.get("List"));
-			map.put("ReturnType", "1001");
-			map.put("ContentCount", maplist.get("Count"));
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			if ((Long)maplist.get("Count") > 0) {
+				map.put("ResultList", maplist.get("List"));
+				map.put("ReturnType", "1001");
+				map.put("AllCount", maplist.get("Count"));
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("AllCount", maplist.get("Count"));
+			}
 		} else {
-			map.put("ReturnType", "1002");
+			map.put("ReturnType", "1012");
 			map.put("Message", "请求信息有误");
 		}
+		map.put("TestDurtion", System.currentTimeMillis()-begtime);
 		return map;
 	}
 
