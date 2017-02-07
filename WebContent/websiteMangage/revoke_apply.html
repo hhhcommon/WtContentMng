@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>撤回申请</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">                                                                     
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="css/globalplayer.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="js/globalplayer.js"></script>
+  <script src="js/filter.js"></script>
+  <script src="js/revoke_apply.js"></script>
+<style>
+/*全局样式*/
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+body{-moz-user-select: none;overflow-x: auto;}
+#wrapper{
+  width:100%;
+}
+.content{
+  position: relative;
+  width: 100%;
+  min-width: 1080px;
+  height: 100%;
+  overflow-x: auto;
+}
+.content .containers{
+  width:100%;
+}
+.content .containers .row{
+  position: absolute;
+  height: 100%;
+  margin-left:0px;
+  margin-right:0px;
+  position: inherit;
+}
+.ri_top{
+  width:100%;
+  height:50px;
+  overflow: hidden;
+}
+.pass_note{
+  width:100%;
+  height:50px;
+  overflow: hidden;
+  position: absolute;
+  background: #23c6c8;
+  font-size: 16px;
+  color: #fff;
+  text-align: left;
+  padding-left: 50px;
+  line-height: 50px;
+  display: none;
+  z-index:14;
+}
+.ri_top_li1{
+  width:156px;
+  height:30px;
+  color:#000;
+  font-size:14px;
+  margin-top:20px;
+  float: left;
+}
+.ri_top_li2{
+  float: left;
+  margin-top: 16px;
+  width: 180px;
+  height: 30px;
+}
+.ri_top_li2_inp{
+  width: 180px;
+  height: 30px;
+  font-size: 14px;
+  padding-left: 6px;
+}
+.ri_top_li2_img{
+  position: absolute;
+  top: 23px;
+  left: 324px;
+  width: 18px;
+  height: 18px;
+  background-size: 100% 100%;
+}
+.ri_top_li3{
+  width: 80px;
+  height: 30px;
+  float: left;
+  background: #eaeaea;
+  position: absolute;
+  top:16px;
+  right:1.7%;
+  cursor: pointer;
+}
+.ri_top_li3 span{
+  line-height: 30px;
+  margin-left:3px;
+}
+.ri_top_li3 img{
+  margin-left:6px;
+}
+/*所有分类*/
+.all{
+  width:100%;
+  height:auto;
+  border:1px solid #dedede;
+  overflow: hidden;
+  margin-top:15px;
+  padding:0px 0px 10px 0px;
+  display: none;
+}
+.all_cate{
+  width:70px;
+  height:25px;
+  line-height:25px;
+  float: left;
+  margin-top:10px;
+  color:#000;
+}
+.new_cate{
+  width:calc(100% - 100px);
+  height:auto;
+  float: left;
+  color:#000;
+}
+.cate{
+  width: auto;
+  height: 25px;
+  line-height: 22px;
+  padding:0 1px 0 6px;
+  float: left;
+  margin-left:10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-top:10px;
+}
+.cate:hover{
+  border: 1px solid #0077c7;
+}
+.cate:hover .cate_img{
+  color:#0077c7;
+}
+.cate_desc{
+  width:auto;
+  height:20px;
+  line-height:20px;
+}
+.cate_img{
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 8px;
+  color:#dedede;
+}
+.check_cate{
+  width:20px;
+  height:20px;
+  float: left;
+  margin-top:5px;
+  background: url(img/sprite.png);
+  background-repeat:no-repeat ;
+  background-position: -41px -414px;
+  display: none;
+}
+.check_more {
+  position: absolute;
+  top: 5px;
+  right: 45px;
+  width: 30px;
+  border: 1px solid #dedede;
+  height: auto;
+  line-height: 22px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.ss1{
+  float:left;
+}
+.btns{
+  width: 100%;
+  height: 30px;
+  float: left;
+  margin-top: 10px;
+  display: none; 
+  text-align: center;
+}
+.btns_sub{
+  color: #fff;
+  background: #ffa634;
+  border: 1px solid #ffa634;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 2px;
+  height: 20px;
+  width: 42px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+.btns_can{
+  color: #fff;
+  background: #ccc;
+  border: 1px solid #ccc;
+  display: inline-block;
+  margin: 5px;
+  border-radius: 2px;
+  height: 20px;
+  width: 42px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+/*中间右侧区域样式2*/
+.ri_top2{
+  width:100%;
+  height:auto;
+  overflow: hidden;
+  margin-top:15px;
+}
+.border1{
+  border: 1px solid #dedede; 
+}
+.border2{
+  border: 1px solid transparent; 
+}
+.attr:last-child{
+  border-bottom:none;
+}
+.attr{
+  width:100%;
+  position: relative;
+  float: left;
+  border-bottom:1px solid #dedede;
+}
+.attrKey{
+  overflow: hidden;
+  float: left;
+  width:60px;
+  height:40px;
+  line-height:40px;
+  color: rgb(91,90,90);
+  text-indent: 20px;
+  text-overflow: ellipsis;
+  font-size:14px;
+  background: #f5f5f5;
+}
+.attrValues {
+  margin-left: 60px;
+  padding-right: 110px;
+  overflow: hidden;
+}
+.attrValues .av-gather{
+  overflow: hidden;
+  margin-bottom:0px;
+}
+.h40{
+  height: 40px;
+}
+.trig_item{
+  display: block;
+  float: left;
+  margin-left:16px;
+  height:40px;
+  line-height: 40px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.trig_curr{
+  height:41px;
+  position:relative;
+  z-index:12;
+  border:1px solid #999;
+  border-bottom:medium none;
+  background:#fff;
+  color:#f60;
+}
+.attrTabcon{
+  overflow: hidden;
+}
+.tab_cont_item{
+  position: absolute;
+  left: 0;
+  top: 39px;
+  width:100%;
+  border: 1px solid #999;
+  background: #fff;
+  display: none;
+  z-index: 10;
+}
+.tab_cont_item li{
+  float:left;
+  height:40px;
+  line-height:40px;
+  margin-left:20px;
+}
+.con_right ul{
+  margin-bottom:0px;
+}
+.more1{
+  top: 5px;
+  right: 10px;
+  width: 110px;
+  height: auto;
+  line-height: 22px;
+  overflow: hidden;
+}
+.startPubTime,.endPubTime{
+  float:left;
+  margin-top:5px;
+  width:100px;
+} 
+.line{
+  float:left;
+  margin-top: 10px;
+  padding: 0px 5px;
+}
+.ensure{
+  float:left;
+  width: 36px;
+  height: 21px;
+  text-align: center;
+  border: 1px solid #dedede;
+  margin-top: 9px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+/*列表展示区域*/
+.ri_top3{
+  width:100%;
+  height:100%;
+  margin-top:20px;
+}
+.rt_opt{
+  height:50px;
+  background:skyblue;
+  overflow: hidden;
+}
+.fl{
+  float: left;
+}
+.rto_check{
+  margin:15px 10px 15px 20px;
+  width:18px;
+  height:18px;
+  cursor: pointer; 
+}
+.rto_txt{
+  font-size: 16px;
+  margin: 15px 0px;
+  color: #337ab7;
+}
+.rto_pass,.rto_nopass{
+  margin-left:50px;
+  width:85px;
+  height:30px;
+  color: #fff;
+  cursor: pointer;
+  margin-top:10px;
+  text-align: center;
+  line-height:30px;
+}
+.rto_pass{
+  background: #0077c7;
+}
+.rto_nopass{
+  background: darkred;
+}
+.ri_top3_head{
+  width:100%;
+  height:40px;
+  background:#f5f5f5;
+  border:1px solid #dedede;
+  overflow: hidden;
+}
+.rth_txt{
+  width:100px;
+  height:20px;
+  line-height:20px;
+  color:#000;
+  margin-top:10px;
+  font-size:16px;
+  font-family: "微软雅黑";
+  float: left;
+  text-align: center;
+}
+.rth_txt1{
+  margin: 0px 420px 0px 10px;
+}
+.rth_txt2{
+  border-left:2px solid #d8d8d8;
+}
+.rth_txt3{  
+  border-left:2px solid #d8d8d8;
+}
+.rth_txt4{
+  border-left:2px solid #d8d8d8;
+}
+.rth_txt5{
+  text-indent: 65px;
+  border-left:2px solid #d8d8d8;
+}
+.ri_top3_con{
+  width:100%;
+  overflow:hidden;
+}
+.rtc_listBox{
+  width: calc(100% - 15px );
+  height: 145px;
+  margin-left: 15px;
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+}
+.rtcl_img_check{
+  width:18px;
+  height:18px;
+  margin: 44px 30px 44px 10px;
+}
+.rtcl_img{
+  width:80px;
+  height:80px;
+  margin-top: 15px;
+  margin-right:15px;
+  border:1px solid black;
+}
+.rtcl_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.rtcl_con{
+  width:370px;
+  height:100%;
+  float: left;
+  color:rgb(173,172,172);
+}
+.rtcl_con_p{
+  color: #000;
+  font-size: 14px;
+  font-weight: bolder;
+  margin-top: 15px;
+}
+.rtcl_con_channels{
+  overflow: hidden;
+  width: 350px;
+  color: #000;
+}
+.rtcl_con_channel1 {
+  font-weight: bolder;
+}
+.rtcl_con_channel1s{
+  overflow: hidden;
+  position: relative;
+  margin-left: 5px;
+  width: 300px;
+}
+.rtcl_con_channel2{
+  padding:0px 5px;
+}
+.rtcl_con_sum{
+  width: auto;
+  height: 30px;
+  line-height: 30px;
+  overflow: hidden;
+}
+.rtcl_con_sum li{
+  float: left;
+  width:100px;
+  margin-top:5px;
+  cursor: pointer
+}
+.sequ_sum,.anchor_name,.source_form{
+  color: #000;
+  padding: 0px 8px;
+  text-align: center;
+  position: relative;
+  top: 45px;
+  width: 110px;
+}
+.sequ_sum{
+  text-indent: -15px;
+  font-weight: bolder;
+}
+.anchor_name{
+  text-indent: -35px;
+}
+.source_form{
+  text-indent: -50px;
+  font-weight: bolder;
+}
+.audio_time{
+  color: #000;
+  text-align: center;
+  position: relative;
+  top: 45px;
+}
+/*不通过样式*/
+.nopass_masker{
+  width:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  background: #000;
+  opacity: 0.5;
+  display: none;
+  z-index:100;
+}
+.nopass_container{
+  width:575px;
+  height:auto;
+  position: fixed;
+  top:20px;
+  background: #fff;
+  z-index:101;
+  display: none;
+  cursor: pointer;
+}
+.nopass_head{
+  width:100%;
+  height:40px;
+  background:#DAE1EB;
+  color:#000;
+  font-weight:bolder;
+  overflow: hidden;
+}
+.nh_span1{
+  font-size:16px;
+  float: left;
+  margin: 9px 20px;
+}
+.nh_span2{
+  font-size:20px;
+  float: right;
+  margin: 7px 20px;
+}
+.nopass_content{
+  /*height: 440px;*/
+}
+.nc_con1{
+  width:100%;
+  height:75px;
+  border-bottom:1px solid #dedede;
+}
+.nc_txt1{
+  color:#007FFF;
+  position: absolute;
+  font-weight:bold;
+  font-size: 15px;
+  margin: 25px 0px 25px 20px;
+}
+.nc_con2{
+  height:auto;
+  font-size:14px;
+  margin:30px 20px 0px 20px;
+}
+.black{
+  color:#000;
+}
+.blue{
+  color:#007FFF;
+}
+.nc_txt3{
+  height:110px;
+}
+.nc_txt4{
+  position: relative;
+  top: 10px;
+  float: left;
+}
+.other_reason{
+  float: left;
+}
+.nc_con3{
+  margin: 0px 20px 20px;
+  overflow: hidden;
+}
+.nc_checkimg{
+  width:18px;
+  height:18px;
+}
+.nc_txt5{
+  margin: 6px 20px 10px 340px;
+}
+.nc_txt6{
+  margin-left: 10px;
+  color: #000;
+}
+.nc_txt7{
+  width:80px;
+  height:30px;
+  text-align: center;
+  line-height: 30px;
+  color:#000;
+  background:#0077c7;
+}
+.nc_reasons{
+  overflow: hidden;
+}
+.nc_reasons li{
+  width: auto;
+  float: left;
+  margin-right: 20px;
+}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.rt_opt .page {
+  width: 360px;
+  height:30px;
+  margin:10px 0px 0px 50px;
+  background-color: #f3f3f4;
+  border-top: 1px solid #ccc;
+}
+.page .pagination {
+  display: inline-block;
+  margin: 0px;
+  border-radius: 4px;
+}
+.pagination i {
+  display: block;
+  float: left;
+  height:29px;
+  width: auto;
+  line-height: 30px;
+  color: black;
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 2px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: bold;
+  background-color: #f3f3f4;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
+  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
+  background-image: linear-gradient(#f3f3f4, #f3f3f4);
+}
+.pagination span {
+  display: block;
+  float: left;
+  height: 29px;
+  width: 50px;
+  line-height: 30px;
+  color: #0077c7;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #f3f3f4;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
+  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
+  background-image: linear-gradient(#f3f3f4, #f3f3f4);
+}
+.gigantic.pagination input {
+  width: 55px;
+  margin-top: 5px;
+  height: 20px;
+  font-size: 12px;
+  background: white;
+  color: black;
+  text-align: center;
+  padding: 0 2px;
+  margin-left: -3px;
+  border: 1px solid #ccc;
+}
+.pagination span.disabled, .pagination span.disabled:hover, .pagination span.disabled:focus, .pagination span.disabled:active {
+  background-color: red;
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
+  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
+  background-image: linear-gradient(#f3f3f4, #f3f3f4);
+  color: #A8A8A8;
+  cursor: default;
+  text-decoration:none;
+}
+</style> 
+</head>
+<body class="laydate_body" onselectstart="return false">
+<div class="content">
+  <div class="containers">
+    <div class="row">
+      <div class="col-md-12 con_right">
+        <ul class="ri_top">
+          <li class="ri_top_li1">审核管理 > 撤回申请</li>
+          <li class="ri_top_li2">
+            <input class="ri_top_li2_inp" type="text" placeholder="搜索"/>
+            <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
+          </li>
+          <li class="ri_top_li3"><span class="filter">收起筛选</span><img src="img/filter1.png" alt="收起筛选" /></li>
+        </ul>
+        <div class="all">
+          <div class="all_cate">所有分类 ></div>
+          <ul class="new_cate">
+            <li class="cate">
+              <span class="cate_desc"><span class="cate_desc_title">栏目：</span>电影电视</span>
+              <span class="cate_img">×</span>
+            </li>
+          </ul>
+        </div>
+        <div class="ri_top2 border1">
+          <div class="attr" id="channel">
+            <div class="attrKey">栏目 :</div>
+            <div class="attrValues">
+              <ul class="av-gather av_ul h40">
+                <!--<li class="trig_item chnel" data_idx='0' id='cn0' pid='0'><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电影电视</a></li>
+                <li class="trig_item chnel" data_idx='1' id='cn1' pid='0'><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电台丛林</a></li>
+                <li class="trig_item chnel" data_idx='2' id='cn2' pid='0'><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">历史人文</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">商业财经</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电影电视</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电台丛林</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">历史人文</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">商业财经</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电影电视</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电台丛林</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">历史人文</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">商业财经</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电影电视</a></li>
+                <li class="trig_item chnel" ><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">电台丛林</a></li>-->
+              </ul>
+            </div>
+            <div class="more1">
+              <span class="check_more more2">更多</span>
+            </div>
+            <div class="attrTabcon">
+              <!--<ul class="tab_cont_item chnels" data_idx="0" data_name="电影电视" pid='cn0'>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目1</a></li>
+              </ul>
+              <ul class="tab_cont_item chnels" data_idx="1" data_name="电台丛林" pid='cn1'>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目2</a></li>
+              </ul>
+              <ul class="tab_cont_item chnels" data_idx="2" data_name="历史人文" pid='cn2'>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+                <li class="trig_item_li"><a class="ss1" href="javascript:void(0)">二级栏目3</a></li>
+              </ul>-->
+            </div>
+          </div>  
+          <div class="attr" id="source">
+            <div class="attrKey">来源 :</div>
+            <div class="attrValues">
+              <ul class="av-gather av_ul">
+                <!--<li class="trig_item">
+                  <div class="check_cate"></div>
+                  <a class="ss1" href="javascript:void(0)">蜻蜓</a>
+                </li>
+                <li class="trig_item">
+                  <div class="check_cate"></div>
+                  <a class="ss1" href="javascript:void(0)">考拉</a>
+                </li>
+                <li class="trig_item">
+                  <div class="check_cate"></div>
+                  <a class="ss1" href="javascript:void(0)">喜马拉雅</a>
+                </li>
+                <li class="trig_item">
+                  <div class="check_cate"></div>
+                  <a class="ss1" href="javascript:void(0)">我听</a>
+                </li>-->
+              </ul>
+            </div>
+            <div class="btns">
+              <span class="btns_sub">确定</span>
+              <span class="btns_can">取消</span>
+            </div>
+            <span class="check_more more3">多选</span>
+          </div>
+          <div class="attr" id="time">
+            <div class="attrKey">时间 :</div>
+            <div class="attrValues">
+              <div class="av-gather av_ul input-daterange" id="datepicker">
+                <input type="text" class="input-sm form-control startPubTime" name="StartPubTime" value="" placeholder="输入开始日期" />
+                <span class="line">---</span>
+                <input type="text" class="input-sm form-control endPubTime" name="EndPubTime" value="" placeholder="输入结束日期"/>
+                <span class="ensure">确定</span>
+              </div>
+            </div>
+          </div>
+        </div> 
+        <div class="ri_top3">
+          <div class="rt_opt">
+            <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
+            <span class="rto_txt fl">全选</span>
+            <span class="rto_pass fl" opetype="revoke">同意撤回</span>
+            <span class="rto_nopass fl">不予撤回</span>
+            <div class="page fl">
+              <div class="gigantic pagination">
+                <i class="currentPage">1</i><i>/</i><i class="totalPage"></i><i>页</i>
+                <span class="previous" data_action="previous">上一页</span>
+                <span class="next" data_action="next">下一页</span>
+                <span class="jump" data_action="toPage">跳至</span><input type="text" class="toPage" value="">
+              </div>
+            </div>
+            <div class="pass_note">操作成功!撤回的节目已下架</div>
+          </div>
+          <div class="ri_top3_head">
+            <span class="rth_txt1 rth_txt">待审核内容</span>
+            <span class="rth_txt2 rth_txt">集数</span>
+            <span class="rth_txt3 rth_txt">主播</span>
+            <span class="rth_txt4 rth_txt">来源</span>
+            <span class="rth_txt5 rth_txt">时间</span>
+          </div>
+          <div class="ri_top3_con">
+            <!--<div class="rtc_listBox">
+              <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
+              <div class="rtcl_img fl">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="rtcl_con fl">
+                <p class="rtcl_con_p">敢不敢带上耳机听音乐</p>
+                <div class="rtcl_con_channels">
+                  <span class="rtcl_con_channel1 fl">栏目：</span>
+                  <ul class="rtcl_con_channel1s fl">
+                    <li class="rtcl_con_channel2 fl">罗振宇</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li>
+                    <li class="rtcl_con_channel2 fl">逻辑思维</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li>
+                    <li class="rtcl_con_channel2 fl">罗振宇</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li>
+                    <li class="rtcl_con_channel2 fl">逻辑思维</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li>
+                  </ul>
+                </div>
+                <ul class="rtcl_con_sum">
+                  <li class="play">
+                    <img class="play1" alt="播放" src="img/act1.png"/>
+                    <span class="play2">3.83万</span>
+                  </li>
+                  <li class="love">
+                    <img class="love1" alt="喜欢" src="img/act3.png"/>
+                    <span class="love2">4.83万</span>
+                  </li>
+                  <li class="intransit">
+                    <img class="intransit1" alt="转发" src="img/act5.png"/>
+                    <span class="intransit2">8.83万</span>
+                  </li>
+                </ul>
+              </div>
+              <span class="sequ_sum fl">222</span>
+              <span class="anchor_name fl">罗萨芬</span>
+              <span class="source_form fl">喜马拉雅</span>
+              <span class="audio_time fl">2017-01-07 &nbsp;&nbsp; 12:53:53</span>
+            </div>-->
+            <!--<div class="rtc_listBox">
+              <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
+              <div class="rtcl_img fl">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="rtcl_con fl">
+                <p class="rtcl_con_p">敢不敢带上耳机听音乐</p>
+                <div class="rtcl_con_channels">
+                  <span class="rtcl_con_channel1 fl">栏目：</span>
+                  <ul class="rtcl_con_channel1s fl">
+                    <li class="rtcl_con_channel2 fl">罗振宇</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li>
+                    <li class="rtcl_con_channel2 fl">逻辑思维</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li>
+                  </ul>
+                </div>
+                <ul class="rtcl_con_sum">
+                  <li class="play">
+                    <img class="play1" alt="播放" src="img/act1.png"/>
+                    <span class="play2">3.83万</span>
+                  </li>
+                  <li class="love">
+                    <img class="love1" alt="喜欢" src="img/act3.png"/>
+                    <span class="love2">4.83万</span>
+                  </li>
+                  <li class="intransit">
+                    <img class="intransit1" alt="转发" src="img/act5.png"/>
+                    <span class="intransit2">8.83万</span>
+                  </li>
+                </ul>
+              </div>
+              <span class="sequ_sum fl">222</span>
+              <span class="anchor_name fl">罗萨芬</span>
+              <span class="source_form fl">喜马拉雅</span>
+              <span class="audio_time fl">2017-01-07 &nbsp;&nbsp; 12:53:53</span>
+            </div>
+            <div class="rtc_listBox">
+              <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
+              <div class="rtcl_img fl">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="rtcl_con fl">
+                <p class="rtcl_con_p">敢不敢带上耳机听音乐</p>
+                <div class="rtcl_con_channels">
+                  <span class="rtcl_con_channel1 fl">栏目：</span>
+                  <ul class="rtcl_con_channel1s fl">
+                    <li class="rtcl_con_channel2 fl">电影电视</li>
+                    <li class="rtcl_con_channel2 fl">脱口秀</li> 
+                  </ul>
+                </div>
+                <ul class="rtcl_con_sum">
+                  <li class="play">
+                    <img class="play1" alt="播放" src="img/act1.png"/>
+                    <span class="play2">3.83万</span>
+                  </li>
+                  <li class="love">
+                    <img class="love1" alt="喜欢" src="img/act3.png"/>
+                    <span class="love2">483</span>
+                  </li>
+                  <li class="intransit">
+                    <img class="intransit1" alt="转发" src="img/act5.png"/>
+                    <span class="intransit2">8</span>
+                  </li>
+                </ul>
+              </div>
+              <span class="sequ_sum fl">22</span>
+              <span class="anchor_name fl">罗萨芬</span>
+              <span class="source_form fl">喜马拉雅</span>
+              <span class="audio_time fl">2017-01-07 &nbsp;&nbsp; 12:53:53</span>
+            </div>  -->
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+  <!--s:全局播放器-->
+  <div class="globalplayer">
+    <!--s:收起状态-->
+    <div class="glp_mini">
+      <img class="sound_face" src="img/launch.png">
+    </div>
+    <!--e:收起状态-->
+    <!--s:展开状态-->
+    <div class="glp_block">
+      <div class="glp_panel">
+        <div class="controls">
+          <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
+          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+          <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
+        </div>
+        <div class="player_panel">
+          <a href="#" class="title" title="">朝珠为啥只有清朝有</a>
+          <div>
+            <span class="time sound_position">08:20</span>
+            <div class="player_progressbar">
+              <div class="player_playbar"></div>
+              <div class="player_circle"></div>  
+            </div>
+            <span class="time sound_duration">15:20</span>
+          </div>
+        </div>
+        <div class="volume_panel">
+          <img src="img/volume.png" alt="音量图标" class="volume_img"/>
+          <div class="volume-progressbar">
+            <div class="volume_playbar"></div>
+            <div class="volume_circle"></div> 
+          </div>
+        </div>
+        <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
+      </div>
+    </div>
+    <!--e:展开状态-->
+  </div>
+  <!--e:全局播放器-->
+</div> 
+<!--s:不通过-->
+<div class="nopass_masker"></div>
+<div class="nopass_container">
+  <div class="nopass_head">
+    <span class="nh_span1">不予撤回</span>
+    <span class="nh_span2">×</span>
+  </div>
+  <div class="nopass_content">
+    <div class="nc_con1">
+      <span class="nc_txt1">选择了2个节目，您确认所选的节目不予撤回么？</span>
+    </div>
+    <div class="nc_con2">
+      <p class="nc_txt2 black">请告知主播具体的原因：</p>
+      <ul class="nc_reasons">
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
+          <span class="ct">付费节目</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
+          <span class="ct">原因二</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
+          <span class="ct">付费节目</span>
+        </li>
+      </ul>
+      <div class="nc_txt3">
+        <span class="nc_txt4">其他原因：</span>
+        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+      </div>
+    </div>
+    <div class="nc_con3">
+      <div class="nc_txt5 fl">
+        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl"/>
+        <span class="nc_txt6 fl">违规登记</span>
+      </div>
+      <div class="nc_txt7 fl">确定</div>
+    </div>
+  </div>
+</div>
+<!--e:不通过-->   
+</body>
+</html>
