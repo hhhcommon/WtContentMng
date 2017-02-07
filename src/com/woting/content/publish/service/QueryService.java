@@ -24,8 +24,6 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
-import com.woting.cm.core.person.persis.po.PersonPo;
-import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.service.BroadcastProService;
@@ -67,99 +65,185 @@ public class QueryService {
 	 * @param endctime
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getContent(int flowFlag, int page, int pagesize, String channelId, String publisherId,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		Map<String, Object> mapall = new HashMap<String, Object>();
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
-		int numall = 0;
+		long numall = 0;
 
-		Map<String, Object> m = new HashMap<String, Object>();
-		m.put("channelId", channelId);
-		m.put("publisherId", publisherId);
-		m.put("beginPubtime", beginpubtime);
-		m.put("endPubtime", endpubtime);
-		m.put("begincTime", beginctime);
-		m.put("endcTime", endctime);
-		m.put("flowFlag", flowFlag);
-		numall = mediaService.getCountInCha(m);
-
-		m.clear();
-		m.put("channelId", channelId);
-		m.put("publisherId", publisherId);
-		m.put("beginPubtime", beginpubtime);
-		m.put("endPubtime", endpubtime);
-		m.put("begincTime", beginctime);
-		m.put("endcTime", endctime);
-		m.put("flowFlag", flowFlag);
-		m.put("beginNum", (page-1) * pagesize);
-		m.put("size", pagesize);
-		List<ChannelAssetPo> listchapo = mediaService.getContentsByFlowFlag(m);
-		for (ChannelAssetPo channelAssetPo : listchapo) {
-			Map<String, Object> oneData = new HashMap<String, Object>();
-			oneData.put("Id", channelAssetPo.getId());// 栏目ID修改排序功能时使用
-			oneData.put("MediaType", channelAssetPo.getAssetType());
-			oneData.put("ContentId", channelAssetPo.getAssetId());// 内容ID获得详细信息时使用
-			oneData.put("ContentImg", channelAssetPo.getPubImg());
-			oneData.put("ContentCTime", channelAssetPo.getCTime());
-			oneData.put("ContentPubTime", channelAssetPo.getPubTime());
-			oneData.put("ContentSort", channelAssetPo.getSort());
-			oneData.put("ContentFlowFlag", channelAssetPo.getFlowFlag());
-			oneData.put("ContentChannelId", channelAssetPo.getChannelId());
-			list2seq.add(oneData);
+//		Map<String, Object> m = new HashMap<String, Object>();
+//		m.put("channelId", channelId);
+//		m.put("publisherId", publisherId);
+//		m.put("beginPubtime", beginpubtime);
+//		m.put("endPubtime", endpubtime);
+//		m.put("begincTime", beginctime);
+//		m.put("endcTime", endctime);
+//		m.put("flowFlag", flowFlag);
+//		numall = mediaService.getCountInCha(m);
+//
+//		m.clear();
+//		m.put("channelId", channelId);
+//		m.put("publisherId", publisherId);
+//		m.put("beginPubtime", beginpubtime);
+//		m.put("endPubtime", endpubtime);
+//		m.put("begincTime", beginctime);
+//		m.put("endcTime", endctime);
+//		m.put("flowFlag", flowFlag);
+//		m.put("beginNum", (page-1) * pagesize);
+//		m.put("size", pagesize);
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String sql = "select count(*) from wt_ChannelAsset ch "
+				+ "where ch.flowFlag = "+flowFlag;
+		if (channelId!=null) {
+			sql += " and ch.channelId = '"+channelId+"'";
 		}
-
-		// 查询显示的节目名称，发布组织和描述信息
-		for (Map<String, Object> map : list2seq) {
-			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
-				try {
-					SeqMediaAssetPo sma = mediaService.getSmaInfoById(map.get("ContentId") + "");
-				    map.put("ContentName", sma.getSmaTitle());
-				    map.put("ContentSource", sma.getSmaPublisher());
-				    map.put("ContentDesc", sma.getDescn());
-				    PersonRefPo perf = personService.getPersonRefBy("wt_SeqMediaAsset", sma.getId());
-				    if (perf!=null) {
-						PersonPo pers = personService.getPersonPoById(perf.getPersonId());
-						if (pers!=null) {
-							map.put("PersonName",pers.getpName());
-							map.put("PersonId",pers.getId());
-						}
-					}
-				    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(sma.getId(), "wt_SeqMediaAsset");
-				    map.put("KeyWords",kwlist);
-				} catch (Exception e) {
-					e.printStackTrace();
-					continue;
-				}
-			} else {
-				if (map.get("MediaType").equals("wt_MediaAsset")) {
-					try {
-						MediaAssetPo ma = mediaService.getMaInfoById(map.get("ContentId") + "");
-					    map.put("ContentName", ma.getMaTitle());
-					    map.put("ContentSource", ma.getMaPublisher());
-					    map.put("ContentDesc", ma.getDescn());
-					    SeqMaRefPo smaf = mediaService.getSeqMaRefByMId(ma.getId());
-					    if (smaf!=null) {
-							SeqMediaAssetPo sma = mediaService.getSmaInfoById(smaf.getSId());
-							map.put("ContentSeqName", sma.getSmaTitle());
-							map.put("ContentSeqId", sma.getId());
-						}
-					    PersonRefPo perf = personService.getPersonRefBy("wt_MediaAsset", ma.getId());
-					    if (perf!=null) {
-							PersonPo pers = personService.getPersonPoById(perf.getPersonId());
-							if (pers!=null) {
-								map.put("PersonName",pers.getpName());
-								map.put("PersonId",pers.getId());
-							}
-						}
-					    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(ma.getId(), "wt_MediaAsset");
-					    map.put("KeyWords",kwlist);
-					} catch (Exception e) {
-						e.printStackTrace();
-						continue;
+		if (publisherId!=null) {
+			sql += " and ch.publisherId = '"+publisherId+"'";
+		}
+		try {
+			conn = DataSource.getConnection();
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs != null && rs.next()) {
+				numall = rs.getLong(1);
+			}
+			
+			rs.close(); rs=null;
+            ps.close(); ps=null;
+            
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		sql = "SELECT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,"
+				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,"
+				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,"
+				+ "(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,"
+				+ "ch.assetId,c.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg,per.id personId,per.pName "
+				+ "from wt_ChannelAsset ch "
+				+ "LEFT JOIN wt_Person_Ref perf "
+				+ "ON ch.assetId = perf.resId and ch.assetType = perf.resTableName "
+				+ "LEFT JOIN wt_Person per "
+				+ "on perf.personId = per.Id "
+				+ "LEFT JOIN wt_Channel c "
+				+ "ON ch.channelId = c.id "
+				+ "LEFT JOIN wt_MediaAsset ma "
+				+ "ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset' "
+				+ "LEFT JOIN wt_SeqMediaAsset sma "
+				+ "ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
+				+ "where ch.flowFlag = "+flowFlag;
+		if (channelId!=null) {
+			sql += " and ch.channelId = '"+channelId+"'";
+		}
+		if (publisherId!=null) {
+			sql += " and ch.publisherId = '"+publisherId+"'";
+		}
+		sql += " ORDER BY ch.sort DESC, ch.pubTime DESC ,ch.cTime DESC LIMIT ";
+		if (page>0 && pagesize>0) {
+			sql += (page-1)*pagesize +","+pagesize;
+		} else {
+			sql += 0 +","+pagesize;
+		}
+		try {
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			String ids = "";
+			while (rs != null && rs.next()) {
+				Map<String, Object> oneDate = new HashMap<String, Object>();
+				oneDate.put("id", rs.getString("id"));
+				oneDate.put("ChannelName", rs.getString("channelName"));
+				oneDate.put("ChannelId", rs.getString("channelId"));
+				oneDate.put("ContentName", rs.getString("pubName"));
+				oneDate.put("ContentId", rs.getString("assetId"));
+				oneDate.put("MediaType", rs.getString("assetType"));
+				oneDate.put("ContentDesc", rs.getString("descn"));
+				oneDate.put("ContentImg", rs.getString("pubImg"));
+				oneDate.put("ContentFlowFlag", rs.getInt("flowFlag"));
+				oneDate.put("ContentSort", rs.getInt("sort"));
+				oneDate.put("ContentTime", rs.getTimestamp("time"));
+				oneDate.put("PersonId", null);
+				oneDate.put("PersonName", null);
+				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
+				list2seq.add(oneDate);
+			}
+			ids = ids.substring(3);
+			
+			rs.close(); rs=null;
+            ps.close(); ps=null;
+            
+			sql = "SELECT pers.id,pers.pName,persf.resId from wt_Person pers LEFT JOIN wt_Person_Ref persf ON pers.id = persf.personId "
+					+ "where "+ids;
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs != null && rs.next()) {
+				for (Map<String, Object> map : list2seq) {
+					if (map.get("ContentId").equals(rs.getString("resId"))) {
+						map.put("PersonId", rs.getString("id"));
+						map.put("PersonName", rs.getString("pName"));
 					}
 				}
 			}
-		}
+			
+			rs.close(); rs=null;
+            ps.close(); ps=null;
+            
+			sql = "SELECT kws.id,kws.kwName,kwsf.resId from wt_KeyWord kws LEFT JOIN wt_Kw_Res kwsf ON kws.id = kwsf.kwId "
+					+ "where"+ids.replace("persf", "kwsf");
+			ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while (rs != null && rs.next()) {
+				for (Map<String, Object> map : list2seq) {
+					if (map.get("ContentId").equals(rs.getString("resId"))) {
+						Map<String, Object> kwmap = new HashMap<>();
+						kwmap.put("TagName", rs.getString("kwName"));
+						kwmap.put("TagId", rs.getString("id"));
+						if (map.containsKey("KeyWords")) {
+							List<Map<String, Object>> kws = (List<Map<String, Object>>) map.get("KeyWords");
+							kws.add(kwmap);
+						} else {
+							List<Map<String, Object>> kws = new ArrayList<>();
+							kws.add(kwmap);
+							map.put("KeyWords", kws);
+						}
+					}
+				}
+			}
+			rs.close(); rs=null;
+            ps.close(); ps=null;
+			conn.close(); conn=null;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+            if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
+        }
+
+		// 查询显示的节目名称，发布组织和描述信息
+//		for (Map<String, Object> map : list2seq) {
+//			if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
+//				try {
+//				    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(map.get("ContentId")+"", "wt_SeqMediaAsset");
+//				    map.put("KeyWords",kwlist);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//					continue;
+//				}
+//			} else {
+//				if (map.get("MediaType").equals("wt_MediaAsset")) {
+//					try {
+//					    List<Map<String, Object>> kwlist = keyWordProService.getKeyWordListByAssetId(map.get("ContentId")+"", "wt_MediaAsset");
+//					    map.put("KeyWords",kwlist);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//						continue;
+//					}
+//				}
+//			}
+//		}
 		mapall.put("List", list2seq);
 		mapall.put("Count", numall);
 		return mapall;
@@ -492,7 +576,7 @@ public class QueryService {
 	public Map<String, Object> getConditionsInfo() {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+		ResultSet rs = null;//TODO
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> listcatalogs = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> listorganize = new ArrayList<Map<String, Object>>();

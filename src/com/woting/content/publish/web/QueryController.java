@@ -39,7 +39,7 @@ public class QueryController {
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String catalogsid = null;
 		int flowFlag = 0;
-		String source = null;
+		String publisherId = null;
 		Timestamp begincontentpubtime = null;
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
@@ -52,7 +52,7 @@ public class QueryController {
 		if (m.containsKey("ContentFlowFlag"))
 			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 		if (m.containsKey("SourceId"))
-			source = (String) m.get("SourceId");
+			publisherId = (String) m.get("SourceId");
 		if (m.containsKey("BeginContentPubTime"))
 			begincontentpubtime = Timestamp.valueOf(m.get("BeginContentPubTime")+"");
 		if (m.containsKey("EndContentPubTime"))
@@ -62,7 +62,7 @@ public class QueryController {
 		if (m.containsKey("EndContentCTime"))
 			endcontentctime = Timestamp.valueOf(m.get("EndContentCTime")+"");
 		if (flowFlag > 0 && page > 0 && pagesize > 0) {
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, publisherId,
 					begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
 			map.put("ResultList", maplist.get("List"));
 			map.put("ReturnType", "1001");
