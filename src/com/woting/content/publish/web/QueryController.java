@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.publish.service.QueryService;
-
 /**
  * 列表查询接口
  *
@@ -39,19 +38,19 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String catalogsid = null;
-		int flowFlag = 0;
+		String flowFlag = null;
 		String publisherId = null;
 		Timestamp begincontentpubtime = null;
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
 		Timestamp endcontentctime = null;
 //		String userId = m.get("UserId")+"";
-		int page = m.get("Page") == null ? -1 : Integer.valueOf(m.get("Page")+"");
-		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
+		int page = m.get("Page") == null ? 1 : Integer.valueOf(m.get("Page")+"");
+		int pagesize = m.get("PageSize") == null ? 10 : Integer.valueOf((String) m.get("PageSize"));
 		if (m.containsKey("CatalogsId"))
 			catalogsid = (String) m.get("CatalogsId");
 		if (m.containsKey("ContentFlowFlag"))
-			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
+			flowFlag = m.get("ContentFlowFlag") == null ? null : m.get("ContentFlowFlag")+"";
 		if (m.containsKey("SourceId"))
 			publisherId = (String) m.get("SourceId");
 		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
@@ -62,7 +61,7 @@ public class QueryController {
 			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
 		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
 			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
-		if (flowFlag > 0 && page > 0 && pagesize > 0) {
+		if (page > 0 && pagesize > 0) {
 			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
 			if ((Long)maplist.get("Count") > 0) {
 				map.put("ResultList", maplist.get("List"));
