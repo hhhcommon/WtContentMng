@@ -313,6 +313,7 @@
   
    <select id="getS2MRefInfoBySId" parameterType="java.lang.String" resultMap="seqMaRefMap">
     select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where sid=#{sid,jdbcType=VARCHAR}
+    order by columnNum DESC
   </select>
   
   

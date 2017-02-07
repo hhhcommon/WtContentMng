@@ -35,6 +35,17 @@ public class PersonService {
 		return null;
 	}
 	
+	public List<PersonRefPo> getPersonRefsBy(String resTableName, String resId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resTableName", resTableName);
+		m.put("resId", resId);
+		List<PersonRefPo> pfs = personRefDao.queryForList("getListBy", m);
+		if (pfs!=null && pfs.size()>0) {
+			return pfs;
+		}
+		return null;
+	}
+	
 	public List<PersonRefPo> getPersonRefByPId(String personId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("resTableName", resTableName);
@@ -42,6 +53,28 @@ public class PersonService {
 		List<PersonRefPo> pfs = personRefDao.queryForList("getListBy", m);
 		if (pfs!=null && pfs.size()>0) {
 			return pfs;
+		}
+		return null;
+	}
+	
+	public List<Map<String, Object>> getPersonByPId(String resId, String resTableName) {
+		List<PersonRefPo> pfs = getPersonRefsBy(resTableName, resId);
+		if (pfs!=null && pfs.size()>0) {
+			List<Map<String, Object>> pmaps = new ArrayList<>();
+			for (PersonRefPo personRefPo : pfs) {
+				PersonPo po = getPersonPoById(personRefPo.getPersonId());
+				if (po!=null) {
+					Map<String, Object> m = new HashMap<>();
+					m.put("resTableName", resTableName);
+					m.put("resId", resId);
+					m.put("pName", po.getpName());
+					m.put("cName", "内容-主播");
+					m.put("personId", po.getId());
+					m.put("perImg", po.getPortrait());
+					pmaps.add(m);
+				}
+			}
+			return pmaps;
 		}
 		return null;
 	}

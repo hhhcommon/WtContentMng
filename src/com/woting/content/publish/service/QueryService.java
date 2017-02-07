@@ -159,6 +159,8 @@ public class QueryService {
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			String ids = "";
+			String maids = "";
+			String smaids = "";
 			while (rs != null && rs.next()) {
 				Map<String, Object> oneDate = new HashMap<String, Object>();
 				oneDate.put("id", rs.getString("id"));
@@ -175,12 +177,53 @@ public class QueryService {
 				oneDate.put("ContentTime", rs.getTimestamp("time"));
 				oneDate.put("PersonId", rs.getString("personId"));
 				oneDate.put("PersonName", rs.getString("pName"));
+				oneDate.put("MediaSize", 1);
 				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
+				if (rs.getString("assetType").equals("wt_MediaAsset")) {
+					maids += " or maId = '"+rs.getString("assetId")+"'";
+				}
+				if (rs.getString("assetType").equals("wt_SeqMediaAsset")) {
+					smaids += " or sId = '"+rs.getString("assetId")+"'";
+				}
 				list2seq.add(oneDate);
 			}
 			
 			if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+            
+            if (maids.length()>0) {
+				maids = maids.substring(3);
+				sql = "SELECT maId,playURI FROM wt_MaSource "
+						+ "where isMain = 1 and ("+maids+")";
+				ps = conn.prepareStatement(sql);
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					for (Map<String, Object> map : list2seq) {
+						if (map.get("MediaType").equals("wt_MediaAsset") && map.get("ContentId").equals(rs.getString("maId"))) {
+							map.put("ContentPlayUrl", rs.getString("playURI"));
+						}
+					}
+				}
+				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+			}
+            if (smaids.length()>0) { //查询专辑下级节目总数
+				smaids = smaids.substring(3);
+				sql = "SELECT sId,COUNT(*) num from wt_SeqMA_Ref "
+						+ "where "+smaids
+						+ " GROUP BY sId";
+				ps = conn.prepareStatement(sql);
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					for (Map<String, Object> map : list2seq) {
+						if (map.get("MediaType").equals("wt_SeqMediaAsset") && map.get("ContentId").equals(rs.getString("sId"))) {
+							map.put("MediaSize", rs.getString("num"));
+						}
+					}
+				}
+				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+			}
 			
 			if (ids.length()>3) {
 				ids = ids.substring(3);
@@ -285,10 +328,11 @@ public class QueryService {
 			List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'" + sma.getId() + "'",
 					"wt_SeqMediaAsset");
 			List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId());
+			List<Map<String, Object>> pmaps = personService.getPersonByPId(id, acttype);
 			Map<String, Object> smap = sma.toHashMap();
 			smap.put("count", listseqmaref.size());
 			smap.put("smaPublishTime", chlist.get(0).get("pubTime"));
-			seqData = ContentUtils.convert2Sma(smap, null, catalist, chlist, null);
+			seqData = ContentUtils.convert2Sma(smap, pmaps, catalist, chlist, null);
 
 			// 查询专辑和单体的联系
 			List<String> listaudioid = new ArrayList<String>();
@@ -565,7 +609,7 @@ public class QueryService {
 	public Map<String, Object> getConditionsInfo() {
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;//TODO
+		ResultSet rs = null;
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<Map<String, Object>> listcatalogs = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> listorganize = new ArrayList<Map<String, Object>>();
