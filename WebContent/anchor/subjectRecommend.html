@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>选题推荐</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="js/common_manage.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
+.subject{
+  position: absolute;
+  width:100%;
+  min-width:780px;
+  height:auto;
+  background: white;
+}
+.header{
+  padding-left:20px;
+  height:40px;
+  overflow: hidden;
+  background: rgb(240,240,240);
+}
+.hearder_span{
+  width:65px;
+  float: left;
+  font-weight:bolder;
+  color: #000;
+  line-height: 40px;
+  font-size:16px;
+}
+.header_ipt{
+  width:180px;
+  height:24px;
+  float:left;
+  margin: 8px 0px 8px 20px;
+}
+.hearder_img{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  float: left;
+  margin-top: 10px;
+  margin-left: -23px;
+}
+.row{
+  margin-right: 0px;
+  margin-left: 0px;
+}
+.col{
+  width:336px;
+  height:365px;
+  border:1px solid rgb(222,222,222);
+  float: left;
+  margin-left:20px;
+  margin-top:20px;
+  box-shadow: 0px -1px 1px rgb(222,222,222);
+}
+.ibox{
+  padding:10px;
+}
+.ibox_title{
+  overflow: hidden;
+}
+.ibox_title span{
+  float: left; 
+  font-size:18px;
+  color:#000;
+}
+.ibox-title .it{
+  width:288px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ibox_title .f60{
+  color: #f60;
+}
+.ibox_content{
+  width: 312px;
+  height: 200px;
+  margin: 15px 0px;
+  border:1px solid black;
+}
+.ibox_content img{
+  width: 100%;
+  height: 100%;
+  background-size:100% 100%;
+}
+.ibox_footer{
+  overflow: hidden;
+}
+.if_li{
+  float: left;
+  width:150px;
+  margin: 0px 6px 6px 0px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.square{
+  width: 4px;
+  height: 4px;
+  background: #f60;
+  float: left;
+  margin-top: 8px;
+  margin-left: 2px;
+}
+.viewpoint{
+  font-size: 14px;
+  color: #000;
+  padding-left: 5px;
+}
+.foot{
+  position: relative;
+  width:100%;
+  height:auto;
+  border-top: 1px solid rgb(222,222,222);
+  border-bottom: 1px solid rgb(222,222,222);
+  margin-top: 25px;
+}
+.foot_title{
+  height:40px;
+  color:#000;
+  font-weight:bold;
+  line-height:40px;
+  background: rgb(240,240,240);
+  font-size:16px;
+  padding-left:20px;
+}
+.foot_content{
+  width:100%;
+  height:auto;
+  position: relative;
+  background: #fff;
+}
+.fc_left{
+  width: 65%;
+  float: left;
+  border-right:1px solid rgb(222,222,222);
+}
+.fcl_title{
+  padding:20px;
+  overflow: hidden;
+}
+.fcl_span{
+  float: left;
+  height: 30px;
+  line-height: 30px;
+  color: #000;
+  font-weight:bold;
+  font-size: 14px;
+}
+.fcl_ipt{
+  float: left;
+  margin-left:20px;
+  width: calc(100% - 200px );
+  height: 30px;
+  padding-left:15px;
+}
+.fcl_add{
+  width: 80px;
+  height: 30px;
+  font-size: 15px;
+  background: #f60;
+  color: #000;
+  text-align: center;
+  font-weight: bold;
+  line-height: 30px;
+  float: left;
+  margin-left: 20px;
+}
+.fcl_content{
+  padding: 20px;
+}
+.fclc_title{
+  height:20px;
+  line-height: 20px;
+  font-size:14px;
+  font-weight: bold;
+  color:#000;
+  overflow: hidden;
+}
+.my_tag{
+  float: left;
+}
+.mytag_del{
+  float: right;
+  padding-right: 10px;
+}
+.fclc_content ul{
+  overflow: hidden;
+  margin-left:-40px;
+}
+.taglist{
+  padding:7px 10px;
+  font-size:12px;
+  color:rgb(103,103,103);
+  float: left;
+  margin:20px 0px 0px 40px;
+  border:1px solid rgb(222,222,222);
+}
+.fc_right{
+  width:35%;
+  padding: 0px 20px;
+  float:left;
+}
+.fcr_title{
+  width:100%;
+  font-size:16px;
+  text-align: center;
+  line-height: 80px;
+  color:#000;
+  font-weight: bold;
+}
+.fcr_content{
+  /*border:1px solid red;*/
+}
+.fcr_content ul{
+  overflow: hidden;
+  margin-left:-40px;
+}
+</style>
+<body class="laydate_body" onselectstart="return false">
+<div class="subject">
+  <div class="header">
+    <span class="hearder_span">选题推荐</span>
+    <input class="header_ipt" type="text" />
+    <img class="hearder_img" src="" alt="搜索按钮" />
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="ibox">
+        <div class="ibox_title">
+          <span class="f60">#</span>
+          <span class="it">韩国通过总统弹劾案朴槿惠即将停职</span>
+          <span class="f60">#</span>
+        </div>
+        <div class="ibox_content">
+          <img src="img/a5.jpg" alt="选题图片" />
+        </div>
+        <ul class="ibox_footer">
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ibox">
+        <div class="ibox_title">
+          <span class="f60">#</span>
+          <span class="it">韩国通过总统弹劾案朴槿惠即将停职</span>
+          <span class="f60">#</span>
+        </div>
+        <div class="ibox_content">
+          <img src="img/a5.jpg" alt="选题图片" />
+        </div>
+        <ul class="ibox_footer">
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ibox">
+        <div class="ibox_title">
+          <span class="f60">#</span>
+          <span class="it">韩国通过总统弹劾案朴槿惠即将停职</span>
+          <span class="f60">#</span>
+        </div>
+        <div class="ibox_content">
+          <img src="img/a5.jpg" alt="选题图片" />
+        </div>
+        <ul class="ibox_footer">
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ibox">
+        <div class="ibox_title">
+          <span class="f60">#</span>
+          <span class="it">韩国通过总统弹劾案朴槿惠即将停职</span>
+          <span class="f60">#</span>
+        </div>
+        <div class="ibox_content">
+          <img src="img/a5.jpg" alt="选题图片" />
+        </div>
+        <ul class="ibox_footer">
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ibox">
+        <div class="ibox_title">
+          <span class="f60">#</span>
+          <span class="it">韩国通过总统弹劾案朴槿惠即将停职</span>
+          <span class="f60">#</span>
+        </div>
+        <div class="ibox_content">
+          <img src="img/a5.jpg" alt="选题图片" />
+        </div>
+        <ul class="ibox_footer">
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="if_li">
+            <span class="square"></span>
+            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot">
+    <div class="foot_title">标签</div>
+    <div class="foot_content">
+      <div class="fc_left">
+        <div class="fcl_title">
+          <span class="fcl_span">自定义标签:</span>
+          <input class="fcl_ipt" type="text" placeholder="输入感兴趣的关键词"/>
+          <span class="fcl_add">添加</span>
+        </div>
+        <div class="fcl_content">
+          <div class="fclc_title">
+            <span class="my_tag">我的标签</span>
+            <span class="mytag_del">删除</span>
+          </div>
+          <div class="fclc_content">
+            <ul>
+              <li class="taglist">空气重污染</li>
+              <li class="taglist">美国加息</li>
+              <li class="taglist">网红经济</li>
+              <li class="taglist">官方购物后回答</li>
+              <li class="taglist">空气重污染</li>
+              <li class="taglist">空气重</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="fc_right">
+        <div class="fcr_title">推荐标签</div>
+        <div class="fcr_content">
+          <ul>
+            <li class="taglist">空气重污染</li>
+            <li class="taglist">美国加息</li>
+            <li class="taglist">网红经济</li>
+            <li class="taglist">官方购物后回答</li>
+            <li class="taglist">空气重污染</li>
+            <li class="taglist">空气重</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>  
+  $(".subject").on("click",".col",function(){
+//  alert();
+//  var index=$(this).index();
+//  alert('topic'+index+'.html');
+//  $("#myIframe", parent.document).hide();
+//  $("#newIframe", parent.document).attr({"src":'topic'+index+'.html'}).show();
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).attr({"src":'topics.html'}).show();
+  })
+</script>
+</html>

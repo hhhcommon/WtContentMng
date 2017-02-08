@@ -5,7 +5,17 @@ $(function(){
   });
   
   var rootPath=getRootPath();
-  var indexs=1;//星期几
+  var indexs=0;//获取indexs属性，对应星期几
+  var _index=0;//索引值，和星期几配合使用的weekContent
+  var isNowTime=true;
+  var $this=null;
+  var requestTimes=0;
+//var onet=0;//一天的时间戳
+//var nowt=0;//今天的时间戳
+//var week =0;//今天是周几
+  var week=new Date().getDay();//今天是周几（1-6周一到周六，0周日）
+  var onet=24*3600*1000;//一天的时间戳
+  var nowt=new Date().getTime();//今天的时间戳
   //控制播放的节目的顺序号
   var listNum=0;
   //获取播放元素容器
@@ -36,7 +46,7 @@ $(function(){
     }else{
       if($(".playControl").hasClass("play")){//处于播放状态
         $(document).find(".state").each(function(i,val){
-          if(val.className!="state"){
+          if($(this).hasClass("playGif")){
             $(val).removeClass("playGif").addClass("playPng");
             return false;
           }
@@ -45,7 +55,7 @@ $(function(){
         audio.pause();
       }else{
         $(document).find(".state").each(function(i,val){
-          if(val.className!="state"){
+          if($(this).hasClass("playPng")){
             $(val).removeClass("playPng").addClass("playGif");
             return false;
           }
@@ -96,13 +106,13 @@ $(function(){
     }else{
       $(".playControl").removeClass("play");
     }
-    if($(this).index()=="0"){//点击上一个
-      $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
-    }else if($(this).index()==len){//点击下一个
-      $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+    if($(this).index()=="0"){//上一个按钮变成灰色
+      $(".previous").css({"background":"url(../../templet/dt_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
+    }else if($(this).index()==len){//下一个按钮变成灰色
+      $(".next").css({"background":"url(../../templet/dt_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
     }else{
-      $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
-      $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
+      $(".previous").css({"background":"url(../../templet/dt_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
+      $(".next").css({"background":"url(../../templet/dt_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
     }
     //从推荐列表选择声音时，节目详情变化
     $(".detail").children(".dp1").children(".dpspan").text($(this).attr("dz"));
@@ -120,33 +130,37 @@ $(function(){
   //点击上一个
   $(".previous").on("click",function(){
     $(document).find(".state").each(function(i,val){
-      if(val.className!="state"){
+      if($(this).hasClass("playGif")){
         if(i<=0){
+          alert("当前已经是第一首了");
           return false;
         }else if(i==1){
-          $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
+          $(".previous").css({"background":"url(../../templet/dt_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
         }
         if(i<=$(".listBox").length-1){
-          $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
+          $(".next").css({"background":"url(../../templet/dt_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
         }
         listNum=i-1;
-        $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
-        $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
-        $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
-        $(".listBox").eq(listNum).children(".listCon").children(".span").css({"color":"#ffa364"});
-        $(".playTime").text("00:00");
-        $('.currentMusicBarRound')[0].style.left="0px";
-        $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
-        $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
-        $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
-        $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
-        $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
-        var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
-        $(".box").css({"background-image":"url("+src+")"});
-        audio.src=$(".listBox").eq(listNum).attr("data_src");
-        audioPlay($(".listBox").eq(listNum),audio,true);
-        $(".playControl").addClass("play");
-        return false;
+        if(listNum>=0){
+          $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
+          $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
+          $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
+          $(".listBox").eq(listNum).children(".listCon").children(".span").css({"color":"#ffa364"});
+          $(".playTime").text("00:00");
+          $('.currentMusicBarRound')[0].style.left="0px";
+          $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
+          $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
+          $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
+          $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
+          $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
+          var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
+          $(".box").css({"background-image":"url("+src+")"});
+          audio.src=$(".listBox").eq(listNum).attr("data_src");
+          audioPlay($(".listBox").eq(listNum),audio,true);
+          $(".playControl").addClass("play");
+          var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
+          comment(contentId);//加载评论列表
+        }
       }
     });
   });
@@ -156,41 +170,46 @@ $(function(){
   $(".next").on("click",function(){
     if(isList){
       $(document).find(".state").each(function(i,val){
-        if(val.className!="state"){
+        if($(this).hasClass("playGif")){
           //判断是否为最后一个
           //如果有正在播放的列表，那么播放下一条，如果没有，则播放第一条
           if(i>=$(".listBox").length-1){
+            alert("当前已经是最后一个节目了");
             return false;
           }
           if(i==$(".listBox").length-2){
-            $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+            $(".next").css({"background":"url(../../templet/dt_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
           }
           if(i>=0){
-            $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
+            $(".previous").css({"background":"url(../../templet/dt_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
           }
           $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
           $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
           listNum=i+1;
-          return false;
         }
       })
     }else{
       $(audio).removeAttr("id");
       isList=true;
+      listNum=0;
     }
-    $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
-    $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
-    $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
-    $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
-    $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
-    $(".playTime").text("00:00");
-    $('.currentMusicBarRound')[0].style.left="0px";
-    $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
-    var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
-    $(".box").css({"background-image":"url("+src+")"});
-    audio.src=$(".listBox").eq(listNum).attr("data_src");
-    audioPlay($(".listBox").eq(listNum),audio,true);
-    $(".playControl").addClass("play");
+    if(listNum<=$(".listBox").length){
+      $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
+      $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
+      $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
+      $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
+      $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
+      $(".playTime").text("00:00");
+      $('.currentMusicBarRound')[0].style.left="0px";
+      $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
+      var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
+      $(".box").css({"background-image":"url("+src+")"});
+      audio.src=$(".listBox").eq(listNum).attr("data_src");
+      audioPlay($(".listBox").eq(listNum),audio,true);
+      $(".playControl").addClass("play");
+      var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
+      comment(contentId);//加载评论列表
+    }
   });
   
   //请求推荐资源列表
@@ -199,7 +218,7 @@ $(function(){
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
         "PCDType":"3",
-        "SearchStr":"北京教学广播",
+        "SearchStr":"北京新闻广播",
         "ResultType":"0",
         "PageType":"0",
         "Page":"1",
@@ -248,6 +267,7 @@ $(function(){
         }else{
           $(".comment").html("");
           $(".comment").append("<li class='noComment'>暂无评论</li>");
+          $(".noComment").css({"height":$(".ulBox").height()});
         }
       },
       error: function(jqXHR){
@@ -330,6 +350,7 @@ $(function(){
   
   //创建相关推荐资源列表
   function loadRecomList(resultData){
+    alert(11);
     for(var i=0;i<resultData.ResultList.AllCount;i++){
       var detail={};
       if(resultData.ResultList.List[i].ContentTimes){
@@ -384,52 +405,62 @@ $(function(){
   })
   
   //点击节目单
+  selected();//点击默认选中节目单
   $(".border").click(function(){
     swiper.slideNext();
+    selected();//点击默认选中节目单
     var height=$(".jmd").height();
-    $(".container").css({"height":height+"px","overflow-y":"hidden"});
-    $(".swiper-wrapper").css({"max-height":height});
+    $(".swiper-wrapper").css({"height":height+"px"});
   })
   //点击返回按钮
   $(".jmd_head").click(function(){
     swiper.slidePrev();
-    $(".container").css({"height":"auto","overflow-y":"auto"});
-    $(".swiper-wrapper").css({"max-height":null});
+    $(".swiper-wrapper").css({"height":$(".container").height()+"px"});
     selected();
   })
   //节目单页面出现的时候默认选中当前的日期
-  selected();//点击默认选中节目单
   function selected(){
     $('.jmd_nav .week').each(function(){//初始化节目单，默认显示当前是周几
-      var week = new Date().getDay();
-      var requestTimes=new Date().getTime();
-      var index = $(this).index();
-      indexs=index+1;
+      indexs=$(this).attr("indexs");
+      _index=$(this).index();
+      $this=$(this);
       if(indexs==week){
-        $(this).addClass('active').siblings().removeClass('active');
-        getJMD(requestTimes,indexs);//得到当天的节目单
-        $('.jmd_con .weekCont').eq(index).show().siblings().hide();
+        requestTimes=nowt;
+        isNowTime=true;
+        console.log($this,_index,requestTimes,indexs,isNowTime);
+        getJMD($this,_index,requestTimes,indexs,isNowTime);//得到当天的节目单
       }
-    })
+    }) 
   }
   //节目单时间的切换
   $('.jmd_nav .week').click(function(){
-    var requestTimes="";
-    var index = $(this).index();
-    indexs=index+1;
-    var onet=24*3600*1000;
-    var nowt=new Date().getTime();//今天的时间戳
-    var week = new Date().getDay();//今天是周几
-    if(indexs<=week){
-      requestTimes=nowt-onet*(week-indexs);//当前选中日期的时间戳
-    }else{
-      requestTimes=nowt+onet*(indexs-week);//当前选中日期的时间戳
+    indexs=$(this).attr("indexs");
+    _index=$(this).index();
+    $this=$(this);
+    if(indexs!=0){//选中的不是周日
+      if(indexs<week){
+        requestTimes=nowt-onet*(week-indexs);//当前选中日期的时间戳
+        isNowTime=false;
+      }else if(indexs>week){
+        requestTimes=nowt+onet*(indexs-week);//当前选中日期的时间戳
+        isNowTime=false;
+      }else{
+        requestTimes=nowt;//当前选中日期的时间戳
+        isNowTime=true;
+      }
+    }else{//选中的是周日
+      if(indexs!=week){
+        requestTimes=nowt+onet*(indexs-week);//当前选中日期的时间戳
+        isNowTime=false;
+      }else{
+        requestTimes=nowt;//当前选中日期的时间戳
+        isNowTime=true;
+      }
     }
-    $(this).addClass('active').siblings().removeClass('active');
-    getJMD(requestTimes,indexs);//得到当天的节目单
+    getJMD($this,_index,requestTimes,indexs,isNowTime);//得到当天的节目单
   });
   //请求加载节目单
-  function getJMD(requestTimes,indexs){
+  function getJMD($this,_index,requestTimes,indexs,isNowTime){
 //  var contentId=$("#raAudio").attr("raOpenApp").split("=")[1].ContentId;
     var _data={
       "RemoteUrl":"http://www.wotingfm.com:808/wt/content/getBCProgramme.do",
@@ -460,13 +491,23 @@ $(function(){
             var et=et.substring(0,et.lastIndexOf(":"));
             var lib='<div class="wcListBox">'+
                       '<span class="lbc">'+title+'</span>'+
-                      '<span class="lbt">'+bt+'-'+et+'</span>'+
+                      '<span class="lbt" bt='+bt+' et='+et+'>'+bt+'-'+et+'</span>'+
+                      '<span class="lbz">直播</span>'+
                     '</div>';
             $("#week"+indexs).append(lib);
-            $('.jmd_con .weekCont').eq(indexs-1).show().siblings().hide();
+            $this.addClass('active').siblings().removeClass('active');
+            $('.jmd_con .weekCont').eq(_index).show().siblings().hide();
           }
-          loadJMD(resultData,indexs);//加载节目单列表
+          if(isNowTime){
+            $('.jmd_con .weekCont').eq(_index).children(".wcListBox").each(function(){
+              var beginTime=$(this).children(".lbt").attr("bt");
+              var endTime=$(this).children(".lbt").attr("et");
+              var _this=$(this);
+              time_range(_this,beginTime,endTime);
+            })
+          }
         }else{
+          $("#week"+indexs).html("");
           $("#week"+indexs).append("<span class='nojmd'>暂无节目单</span>");  
         }
       },
@@ -474,26 +515,6 @@ $(function(){
         alert("发生错误" + jqXHR.status);
       }
     });
-  }
-  //加载节目单列表
-  function loadJMD(resultData,indexs){
-    $("#week"+indexs).html("");
-    for(var i=0;i<resultData.ResultList[0].List.length;i++){
-      if(resultData.ResultList[0].List[i].Title) title=resultData.ResultList[0].List[i].Title;
-      else title="暂无标题";
-      if(resultData.ResultList[0].List[i].BeginTime) bt=resultData.ResultList[0].List[i].BeginTime;
-      else bt="未知";
-      if(resultData.ResultList[0].List[i].EndTime) et=resultData.ResultList[0].List[i].EndTime;
-      else et="未知";
-      var bt=bt.substring(0,bt.lastIndexOf(":"));
-      var et=et.substring(0,et.lastIndexOf(":"));
-      var lib='<div class="wcListBox">'+
-                '<span class="lbc">'+title+'</span>'+
-                '<span class="lbt">'+bt+'-'+et+'</span>'+
-              '</div>';
-      $("#week"+indexs).append(lib);
-      $('.jmd_con .weekCont').eq(indexs-1).show().siblings().hide();
-    }
   }
   
   //加载评论列表
@@ -528,4 +549,31 @@ $(function(){
     s = date.getSeconds(); 
     return Y+M+D+h+m+s;
   } 
+  
+  //当前时间以后的节目都可以播
+  function time_range(_this,beginTime,endTime){ 
+    var strb = beginTime.split (":");  
+    if(strb.length != 2){  
+      return false;  
+    }  
+    var stre = endTime.split (":");  
+    if(stre.length != 2){  
+      return false;  
+    }  
+    var b = new Date ();  
+    var e = new Date ();  
+    var n = new Date ();  
+    b.setHours (strb[0]);  
+    b.setMinutes (strb[1]);  
+    e.setHours (stre[0]);  
+    e.setMinutes (stre[1]);  
+    if (n.getTime () - b.getTime () > 0 && n.getTime () - e.getTime () < 0){ 
+      _this.css({"color":"#000"});
+      _this.children(".lbz").show();
+      return true;  
+    }else{  
+      _this.css({"color":"#959595"});
+      return false;  
+    }  
+  }    
 });
