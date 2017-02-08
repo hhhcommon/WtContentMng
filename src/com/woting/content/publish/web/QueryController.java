@@ -63,12 +63,14 @@ public class QueryController {
 			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
 		if (page > 0 && pagesize > 0) {
 			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
-			if ((Long)maplist.get("Count") > 0) {
+			List<Map<String, Object>> list = (List<Map<String, Object>>)maplist.get("List");
+			if (list.size() > 0) {
 				map.put("ResultList", maplist.get("List"));
 				map.put("ReturnType", "1001");
 				map.put("AllCount", maplist.get("Count"));
 			} else {
 				map.put("ReturnType", "1011");
+				map.put("Message", "无内容");
 				map.put("AllCount", maplist.get("Count"));
 			}
 		} else {
