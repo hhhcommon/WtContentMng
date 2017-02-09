@@ -328,7 +328,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-top: 10px;
   padding: 0px 5px;
 }
-.ensure{
+.ensure,.clean{
   float:left;
   width: 36px;
   height: 21px;
@@ -614,6 +614,9 @@ body{-moz-user-select: none;overflow-x: auto;}
   float: left;
   margin-right: 20px;
 }
+.nc_reasons li img{
+  margin:-2px 0px 0px 0px;
+}
 .ellipsis{
   overflow: hidden;
   white-space: nowrap;
@@ -784,6 +787,7 @@ body{-moz-user-select: none;overflow-x: auto;}
                 <span class="line">---</span>
                 <input type="text" class="input-sm form-control endPubTime" name="EndPubTime" value="" placeholder="输入结束日期"/>
                 <span class="ensure">确定</span>
+                <span class="clean">清除</span>
               </div>
             </div>
           </div>
@@ -982,15 +986,15 @@ body{-moz-user-select: none;overflow-x: auto;}
       <p class="nc_txt2 black">请告知主播具体的原因：</p>
       <ul class="nc_reasons">
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
           <span class="ct">付费节目</span>
         </li>
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
           <span class="ct">原因二</span>
         </li>
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
           <span class="ct">付费节目</span>
         </li>
       </ul>
@@ -1001,7 +1005,7 @@ body{-moz-user-select: none;overflow-x: auto;}
     </div>
     <div class="nc_con3">
       <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl"/>
+        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl "/>
         <span class="nc_txt6 fl">违规登记</span>
       </div>
       <div class="nc_txt7 fl">确定</div>

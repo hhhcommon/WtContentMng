@@ -249,8 +249,9 @@ $(function(){
   /*日期处理--日历插件*/
   $(".input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
   //--设置当前月份
-  $("input[name='StartPubTime']").val(getCurMonthFirstDay_format("yyyy-MM-dd"));
-  $("input[name='EndPubTime']").val(getCurMonthLastDay_format("yyyy-MM-dd"));
+//$("input[name='StartPubTime']").val(getCurMonthFirstDay_format("yyyy-MM-dd"));
+//$("input[name='EndPubTime']").val(getCurMonthLastDay_format("yyyy-MM-dd"));
+
   
   /*获取栏目的筛选条件*/
   var data1={};

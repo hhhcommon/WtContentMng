@@ -328,7 +328,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-top: 10px;
   padding: 0px 5px;
 }
-.ensure{
+.ensure,.clean{
   float:left;
   width: 36px;
   height: 21px;
@@ -580,9 +580,6 @@ body{-moz-user-select: none;overflow-x: auto;}
 .black{
   color:#000;
 }
-.blue{
-  color:#007FFF;
-}
 .nc_txt3{
   height:110px;
 }
@@ -616,6 +613,17 @@ body{-moz-user-select: none;overflow-x: auto;}
   line-height: 30px;
   color:#000;
   background:#0077c7;
+}
+.nc_reasons{
+  overflow: hidden;
+}
+.nc_reasons li{
+  width: auto;
+  float: left;
+  margin: 5px 10px 5px 0px;
+}
+.nc_reasons li img{
+  margin:10px 0px 0px 0px;
 }
 .ellipsis{
   overflow: hidden;
@@ -787,6 +795,7 @@ body{-moz-user-select: none;overflow-x: auto;}
                 <span class="line">---</span>
                 <input type="text" class="input-sm form-control endPubTime" name="EndPubTime" value="" placeholder="输入结束日期"/>
                 <span class="ensure">确定</span>
+                <span class="clean">清除</span>
               </div>
             </div>
           </div>
@@ -980,14 +989,32 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <div class="nopass_content">
     <div class="nc_con1">
-      <span class="nc_txt1">选择了2个节目，您确认所选的节目不能通过审核么？</span>
+      <span class="nc_txt1"></span>
     </div>
     <div class="nc_con2">
       <p class="nc_txt2 black">请告知主播具体的原因：</p>
-      <p class="nc_txt2">广告信息及垃圾信息</p>
-      <p class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</p>
-      <p class="nc_txt2 blue">虚构事实。隐瞒真相以误导、欺骗他人</p>
-      <p class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</p>
+      <ul class="nc_reasons">
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <span class="nc_txt2">广告信息及垃圾信息</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <span class="nc_txt2">虚构事实。隐瞒真相以误导、欺骗他人</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <span class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+        </li>
+      </ul>
       <div class="nc_txt3">
         <span class="nc_txt4">其他原因：</span>
         <textarea name="" rows="4" cols="62" class="other_reason"></textarea>

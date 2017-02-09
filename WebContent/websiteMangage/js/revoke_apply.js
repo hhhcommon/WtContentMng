@@ -5,12 +5,8 @@ $(function(){
   var contentCount=0;//总页码数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
 
-  var data1={
-              "UserId":"123",
-              "ContentFlowFlag":"2",
-              "Page":"1",
-              "PageSize":"10"
-            };
+  var data1={};
+  
   /*时间戳转日期*/
   function getLocalTime(cptime) {     
     return new Date(parseInt(cptime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-"); 
@@ -58,20 +54,17 @@ $(function(){
       }
     }
   });
-  //判断再点击翻页之前是否选择了筛选条件
+  //判断在点击翻页之前是否选择了筛选条件
   function opts(){
+    destroy(data1);
+    data1.UserId="123";
+    data1.ContentFlowFlag=flowflag;
+    data1.PageSize="10";
     if(optfy==1){//optfy=1未选中具体筛选条件前翻页
-      data3={
-              "UserId":"123",
-              "ContentFlowFlag":flowflag,
-              "Page":current_page,
-              "PageSize":"10"
-            };
+      data1.Page=current_page;
     }else{//optfy=2选中具体筛选条件后翻页
       var catalogsId=null;
       var sourceId=null;
-      var st=new Date($(".startPubTime").val()).getTime();
-      var et=new Date($(".endPubTime").val()).getTime();
       $(document).find(".new_cate li").each(function(){
         if($(".new_cate li").size()>="0"){
           var pId=$(this).attr("pid");
@@ -83,25 +76,18 @@ $(function(){
           }
         }
       });
-      data3.UserId="zhangsan";
-      data3.PageSize="10";
-      data3.Page=current_page;
-      data3.ContentFlowFlag=flowflag;
-      data3.CatalogsId=catalogsId;
-      data3.SourceId=sourceId;
-      data3.BeginContentPubTime=st;
-      data3.EndContentPubTime=et;
+      data1.Page=current_page;
+      data1.CatalogsId=catalogsId;
+      data1.SourceId=sourceId;
     }
-    getContentList(data3);
+    getContentList(data1);
   }
   /*得到资源列表*/
-  var data3={
-              "UserId":"123",
-              "ContentFlowFlag":flowflag,
-              "Page":current_page,
-              "PageSize":"10"
-            };
-  getContentList(data3);
+  data1.UserId="123";
+  data1.ContentFlowFlag=flowflag;
+  data1.Page=current_page;
+  data1.PageSize="10";
+  getContentList(data1);
   function getContentList(dataParam){
     $.ajax({
       type:"POST",
@@ -124,7 +110,7 @@ $(function(){
       }
     });
   }
-  function loadContentList(resultData){
+  function loadContentList(resultData){//加载来源的筛选条件
     for(var i=0;i<resultData.ResultList.length;i++){
       var cptime=resultData.ResultList[i].ContentTime;
       var listbox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' contentChannelId='+resultData.ResultList[i].ChannelId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
@@ -210,7 +196,7 @@ $(function(){
       alert("请先选中内容再进行操作");
       return;
     }else{
-      var data4={
+      var data2={
                 UserId:"zhangsan",
                 ContentIds:contentIds,
                 OpeType:$(this).attr("opetype")
@@ -219,26 +205,34 @@ $(function(){
         type: "POST",
         url:rootPath+"CM/content/updateContentStatus.do",
         dataType:"json",
-        data:JSON.stringify(data4),
+        data:JSON.stringify(data2),
         success: function(resultData){
           if(resultData.ReturnType=="1001"){
             $(".pass_note").show();
             setTimeout(function(){$(".pass_note").hide();},2000);
-            $(document).find(".new_cate li").each(function(){
-              if($(".new_cate li").size()>="0"){
+            $(".page").find("span").removeClass("disabled");
+            destroy(data1);
+            current_page=1;
+            $(".currentPage").html(current_page);
+            data1.UserId="123";
+            data1.PageSize="10";
+            data1.Page=current_page;
+            data1.ContentFlowFlag=flowflag;
+            if($(".new_cate li").size()>"0"){
+              $(document).find(".new_cate li").each(function(){
                 var pId=$(this).attr("pid");
                 var id=$(this).attr("id");
                 if(pId=="channel"){
-                  catalogsId=$(this).attr("id");
+                  data1.CatalogsId=$(this).attr("id");
                 }else{
-                  sourceId=$(this).attr("id");
+                  data1.CatalogsId=$(this).attr("id");
                 }
-              }
-            });
-//          data1.CatalogsId=catalogsId;
-//          data1.SourceId=sourceId;
-//          data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-//          data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+              });
+            }
+            if(($(".startPubTime").val())&&($(".endPubTime").val())){
+              data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
+              data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+            }
             getContentList(data1);
           }else{
             alert(resultData.Message);
@@ -289,7 +283,7 @@ $(function(){
   //点击不通过原因页面的确定
   $(".nc_txt7").on("click",function(){
     var data4={
-                UserId:"zhangsan",
+                UserId:"123",
                 ContentIds:contentIds,
                 OpeType:$(".nopass").attr("opetype")
     };
@@ -311,66 +305,130 @@ $(function(){
     });
   })
   /*根据不同的筛选条件得到不同的节目列表*/
-  var data5={};
   $(document).on("click",".trig_item,.trig_item_li",function(){
-    $(".currentPage").html("1");
-    for(var key in data5){//清空对象
-      delete data5[key];
-    }
-    current_page=1;
-    data5.UserId="zhangsan";
-    data5.PageSize="10";
-    data5.Page=current_page;
-    data5.ContentFlowFlag=flowflag;
-    data5.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-    data5.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
     optfy=2;//选中具体筛选条件后翻页
+    $(".page").find("span").removeClass("disabled");
+    destroy(data1);
+    current_page=1;
+    $(".currentPage").html(current_page);
+    data1.UserId="123";
+    data1.PageSize="10";
+    data1.Page=current_page;
+    data1.ContentFlowFlag=flowflag;
     if($(".new_cate li").size()>"0"){
       $(document).find(".new_cate li").each(function(){
         var pId=$(this).attr("pid");
         var id=$(this).attr("id");
         if(pId=="channel"){
-          data5.CatalogsId=$(this).attr("id");
+          data1.CatalogsId=$(this).attr("id");
         }else{
-          data5.SourceId=$(this).attr("id");
+          data1.SourceId=$(this).attr("id");
         }
       });
-      getContentList(data5);
+    }
+    if(($(".startPubTime").val())&&($(".endPubTime").val())){
+      data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
+      data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+    }
+    getContentList(data1);
+  });
+  $(document).on("click",".cate_img",function(){//点击取消所选的筛选条件
+    $(".page").find("span").removeClass("disabled");
+    destroy(data1);
+    current_page=1;
+    $(".currentPage").html(current_page);
+    data1.UserId="123";
+    data1.PageSize="10";
+    data1.Page=current_page;
+    data1.ContentFlowFlag=flowflag;
+    if($(".new_cate li").size()>"0"){
+      $(document).find(".new_cate li").each(function(){
+        var pId=$(this).attr("pid");
+        var id=$(this).attr("id");
+        if(pId=="channel"){
+          data1.CatalogsId=$(this).attr("id");
+        }else{
+          data1.SourceId=$(this).attr("id");
+        }
+      });
     }else{
+      optfy=1;//未选中具体筛选条件前翻页
+    }
+    if(($(".startPubTime").val())&&($(".endPubTime").val())){
+      data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
+      data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+    }
+    getContentList(data1);
+  });
+  /*点击筛选条件日期附近的确定按钮*/
+  $(".ensure").on("click",function(){
+    var st=new Date($(".startPubTime").val()).getTime();
+    var et=new Date($(".endPubTime").val()).getTime();
+    if(st>et){
+      alert("你选择的时间段不合法，请重新选择");
+      $(".startPubTime,.endPubTime").val("");
+    }else{
+      optfy=2;//选中具体筛选条件后翻页
+      $(".page").find("span").removeClass("disabled");
+      destroy(data1);
+      current_page=1;
+      $(".currentPage").html(current_page);
+      data1.UserId="123";
+      data1.PageSize="10";
+      data1.Page=current_page;
+      data1.ContentFlowFlag=flowflag;
+      data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
+      data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+      if($(".new_cate li").size()>"0"){
+        $(document).find(".new_cate li").each(function(){
+          var pId=$(this).attr("pid");
+          var id=$(this).attr("id");
+          if(pId=="channel"){
+            data1.CatalogsId=$(this).attr("id");
+          }else{
+            data1.SourceId=$(this).attr("id");
+          }
+        });
+      }
       getContentList(data1);
     }
   });
-  $(document).on("click",".cate_img",function(){//点击取消所选的筛选条件
-    $(".currentPage").html("1");
-    for(var key in data5){//清空对象
-      delete data5[key];
-    }
+  /*点击筛选条件日期附近的清除按钮*/
+  $(".clean").on("click",function(){
+    $(".startPubTime,.endPubTime").val("");
+    $(".page").find("span").removeClass("disabled");
+    destroy(data1);
     current_page=1;
-    data5.UserId="zhangsan";
-    data5.PageSize="10";
-    data5.Page=current_page;
-    data5.ContentFlowFlag=flowflag;
-    data5.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-    data5.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+    $(".currentPage").html(current_page);
+    data1.UserId="123";
+    data1.PageSize="10";
+    data1.Page=current_page;
+    data1.ContentFlowFlag=flowflag;
     if($(".new_cate li").size()>"0"){
+      optfy=2;//选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
         var pId=$(this).attr("pid");
         var id=$(this).attr("id");
         if(pId=="channel"){
-          data5.CatalogsId=$(this).attr("id");
+          data1.CatalogsId=$(this).attr("id");
         }else{
-          data5.SourceId=$(this).attr("id");
+          data1.SourceId=$(this).attr("id");
         }
       });
-      getContentList(data5);
     }else{
-      getContentList(data1);
+      optfy=1;//选中具体筛选条件后翻页
     }
+    getContentList(data1);
   });
   /*清空*/
   function clear(){
     $(".ri_top3_con,.totalPage").html("");
     $(".toPage").val("");
   }
-
+  /*销毁obj对象的key-value*/
+  function destroy(obj){
+    for(var key in obj){//清空对象
+      delete obj[key];
+    }
+  }
 });
