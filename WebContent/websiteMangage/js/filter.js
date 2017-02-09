@@ -39,13 +39,13 @@ $(function(){
       pTitle="来源：";
     }
     if(type=="1"){//点击多选后选中某一项
-    if($(this).children(".check_cate").css("background-position")=="-62px -414px"){
-      $(this).children(".check_cate").css({"background-position":"-41px -414px"});
-      $(this).removeAttr("selected");
-    }else{
-      $(this).children(".check_cate").css({"background-position":"-62px -414px"});
-      $(this).attr({"selected":"selected"});
-    }
+      if($(this).children(".check_cate").css("background-position")=="-62px -414px"){
+        $(this).children(".check_cate").css({"background-position":"-41px -414px"});
+        $(this).removeAttr("selected");
+      }else{
+        $(this).children(".check_cate").css({"background-position":"-62px -414px"});
+        $(this).attr({"selected":"selected"});
+      }
     }
     if(type=="2"){//没有点击多选直接选中某一项
       $(this).attr({"selected":"selected"});
@@ -64,7 +64,7 @@ $(function(){
           i++;
         }
       })
-      console.log("I=="+i);
+      console.log("隐藏的数目=="+i);
       if(i==sl){
         $(".ri_top2").removeClass("border1").addClass("border2"); 
         $(".ri_top_li4").hide();
@@ -76,7 +76,8 @@ $(function(){
   });
   $(document).on("click",".trig_item_li",function(){
     var pname=$(this).parent(".chnels").attr("data_name");
-    var newFilter='<li class="cate" pId="channel">'+
+    var id=$(this).attr("id")
+    var newFilter='<li class="cate" pId="channel" id='+id+'>'+
                     '<span class="cate_desc"><span class="cate_desc_title">所属栏目&gt;'+pname+'</span>'+"&gt;"+$(this).children(".ss1").text()+'</span>'+
                     '<span class="cate_img">×</span>'+
                   '</li>';
@@ -131,7 +132,7 @@ $(function(){
         i++;
       }
     })
-    console.log("I=="+i);
+    console.log("隐藏的数目=="+i);
     if(i==sl){
       $(".ri_top2").removeClass("border1").addClass("border2"); 
       $(".ri_top_li4").hide();
@@ -147,7 +148,7 @@ $(function(){
     $(this).parent(".btns").hide();
     $(this).parent(".btns").siblings(".check_more").show();
   });
-  $(document).on("click",".cate_img",function(){//所有分类里面的取消
+  $(document).on("click",".cate_img",function(){//所有筛选条件里面的取消
     $(this).parent(".cate").remove();
     var pId=$(this).parent(".cate").attr("pId");
     $("#"+pId).children(".btns").hide();
@@ -165,9 +166,15 @@ $(function(){
     if($(this).hasClass("checkbox1")){
       $(".checkbox_img").attr({"src":"img/checkbox2.png"});
       $(this).removeClass("checkbox1");
+      $(".ri_top3_con .rtc_listBox").each(function(){
+        $(this).children(".rtcl_img_check").removeClass("checkbox1")
+      }); 
     }else{
       $(".checkbox_img").attr({"src":"img/checkbox1.png"});
       $(this).addClass("checkbox1");
+      $(".ri_top3_con .rtc_listBox").each(function(){
+        $(this).children(".rtcl_img_check").addClass("checkbox1")
+      }); 
     }
   });
   $(document).on("click",".rtcl_img_check",function(){//点击单个勾选框
@@ -265,7 +272,6 @@ $(function(){
     });
   }
   function loadChannelFilters(resultData){
-    console.log(resultData.Data.children.length);
     for(var i=0;i<resultData.Data.children.length;i++){
       var li='<li class="trig_item chnel" data_idx='+i+' id='+resultData.Data.children[i].id+' pid='+resultData.Data.children[i].attributes.parentId+'>'+
                 '<div class="check_cate"></div>'+
@@ -276,8 +282,8 @@ $(function(){
       $("#channel .attrValues .av_ul").append(li);
       if(resultData.Data.children[i].children){
         for(var j=0;j<resultData.Data.children[i].children.length;j++){
-          var li_tab_ul_li='<li class="trig_item_li">'+
-                              '<a class="ss1" href="javascript:void(0)" channelid='+resultData.Data.children[i].children[j].id+'>'+resultData.Data.children[i].children[j].name+'</a>'+
+          var li_tab_ul_li='<li class="trig_item_li" id='+resultData.Data.children[i].children[j].id+'>'+
+                              '<a class="ss1" href="javascript:void(0)">'+resultData.Data.children[i].children[j].name+'</a>'+
                             '</li>';
           $(".tab_cont_item").eq(i).append(li_tab_ul_li);
         }
@@ -310,9 +316,9 @@ $(function(){
   }
   function loadSourceFilters(resultData){
     for(var i=0;i<resultData.Source.length;i++){
-      var li='<li class="trig_item">'+
+      var li='<li class="trig_item" id='+resultData.Source[i].SourceId+'>'+
                 '<div class="check_cate"></div>'+
-                '<a class="ss1" href="javascript:void(0)" sourceId='+resultData.Source[i].SourceId+'>'+resultData.Source[i].SourceName+'</a>'+
+                '<a class="ss1" href="javascript:void(0)">'+resultData.Source[i].SourceName+'</a>'+
               '</li>';
       $("#source .attrValues .av_ul").append(li);
     }

@@ -401,13 +401,14 @@ body{overflow: auto;background: #fff;}
   color:#000;
   background:#0077c7;
 }
+
 </style>
 <body>
 <div class="detail">
   <div class="containers">
     <div class="detail_content">
       <div class="dc_left1">
-        <div class="detail_title">节目管理> 已发布> 时间的朋友1026跨年演讲</div>
+        <div class="detail_title">节目管理> 已发布> </div>
         <div class="dc_left">
           <div class="dcl_jmcontent">
             <div class="dcl_jmcontent1">
@@ -415,40 +416,40 @@ body{overflow: auto;background: #fff;}
             </div>
             <div class="dcl_jmcontent2">
               <div class="title">
-                <h3>时间的朋友1026跨年演讲</h3>
+                <h3></h3>
               </div>
-              <p class="ctime">最近更新时间：<span>2017-04-23 12：12:34</span></p>
-              <p>来自专辑<span class="comZj">【逻辑思维】</span></p>
+              <p class="ctime">最近更新时间：<span class="cctime"></span></p>
+              <p>来自专辑<span class="comZj"></span></p>
               <div class="tagss">
               	<span>标签：</span>
               	<ul class="tags">
+                  <!--<li class="newli"><span class="newspan">自定义标签一</span></li>
                   <li class="newli"><span class="newspan">自定义标签一</span></li>
                   <li class="newli"><span class="newspan">自定义标签一</span></li>
                   <li class="newli"><span class="newspan">自定义标签一</span></li>
-                  <li class="newli"><span class="newspan">自定义标签一</span></li>
-                  <li class="newli"><span class="newspan">自定义标签一</span></li>
+                  <li class="newli"><span class="newspan">自定义标签一</span></li>-->
                 </ul>
               </div>
               <ul class="act">
                 <li class="play">
                   <img class="play1" src="img/act1.png" alt="" />
-                  <span class="play2">播放(0)</span>
+                  <span class="play2"></span>
                 </li>
                 <li class="love">
                   <img class="love1" src="img/act3.png" alt="" />
-                  <span class="love2">喜欢(0)</span>
+                  <span class="love2"></span>
                 </li>
                 <li class="download">
                   <img class="download1" src="img/act4.png" alt="" />
-                  <span class="download2">下载(0)</span>
+                  <span class="download2"></span>
                 </li>
                 <li class="share">
                   <img class="share1" src="img/act2.png" alt="" />
-                  <span class="share2">分享(0)</span>
+                  <span class="share2"></span>
                 </li>
                 <li class="intransit">
                   <img class="intransit1" src="img/act5.png" alt="" />
-                  <span class="intransit2">转发(0)</span>
+                  <span class="intransit2"></span>
                 </li>
               </ul>
             </div>
@@ -456,10 +457,7 @@ body{overflow: auto;background: #fff;}
           		<span class="revoke">撤回</span>
           		<span class="player">播放</span>
           	</div>
-          	<div class="dcl_jmcontent4">间的朋友1026跨年演讲间的朋友1026跨年演讲间的朋友1026跨
-          		年演讲间的朋友1026跨年演讲间的朋友1026跨年演讲间的朋友1026跨
-          		年演讲间的朋友1026跨年演讲间的朋友1026跨年演讲间的朋友1026跨年演讲
-          	</div>
+          	<div class="dcl_jmcontent4"></div>
           </div>
         </div>
       </div>
@@ -562,31 +560,57 @@ body{overflow: auto;background: #fff;}
 </body>
 <script>
 $(function(){
-	$(document).on("click",".revoke",function(){//点击不通过
-    var height=$(".containers").height();
-    var width1=$(".nopass_masker").width();
-    var width2=$(".nopass_container").width();
-    var left=(width1-width2)/2;
-    $(".nopass_container").css({"left":left+"px"});
-    $(".nopass_masker").css({"height":height}).show();
-    $("body").css({"overflow-x":"hidden"});
-    $(".nopass_container").show();
-  });
-  $(window).resize(function(){//时刻监听着页面的变化
-    var height=$(".containers").height();
-    var width1=$(".nopass_masker").width();
-    var width2=$(".nopass_container").width();
-    var left=(width1-width2)/2;
-    if(left>=20){
-      $(".nopass_container").css({"left":left+"px"});
-    }else{
-      return;
+  var href=$("#newIframe", parent.document).attr("src");
+  var contentId=href.split('?')[1].split("=")[1];
+  var rootPath=getRootPath();
+  
+  var data1={"UserId":"zhangsan",
+             "ContentFlowFlag":"2",
+             "Page":"1",
+             "PageSize":"10",
+             "ContentId":contentId,
+              "MediaType":"wt_MediaAsset"
+  };
+  /*得到节目信息*/
+  getZjDetail(data1);
+  function getZjDetail(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/content/getContentInfo.do",
+      dataType:"json",
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillJmDetail(resultData);//填充节目数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  //填充节目数据
+  function fillJmDetail(resultData){
+    $(".detail_title").html("节目管理> 已发布> "+resultData.ContentDetail.ContentName);
+    $(".dcl_jmcontent2 .title h3").html(resultData.ContentDetail.ContentName);
+    $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
+    $(".cctime").html(resultData.ContentDetail.CTime);
+    $(".comZj").html(!resultData.ContentDetail.ContentSeqName?"【自定义专辑】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
+    if(resultData.ContentDetail.ContentCatalogs!=null){
+      for(var i=0;i<resultData.ContentDetail.ContentCatalogs.length;i++){
+        var li='<li class="newli"><span class="newspan" catalogId='+resultData.ContentDetail.ContentCatalogs[i].CataDid+'>'+resultData.ContentDetail.ContentCatalogs[i].CataTitle+'</span></li>';
+        $(".tags").append(li);
+      }
     }
-  })
-  $(".nopass_masker,.nh_span2").on("click",function(){//点击遮罩层或不通过页面上的取消按钮
-    $(".nopass_masker,.nopass_container").hide();
-    $("body").css({"overflow-x":"auto"});
-  });
-})
+    $(".play2").html(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
+    $(".love2").html(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
+    $(".download2").html(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
+    $(".share2").html(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
+    $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
+    $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
+  }
+});
 </script>
 </html>

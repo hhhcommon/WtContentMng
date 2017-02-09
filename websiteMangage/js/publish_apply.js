@@ -1,6 +1,6 @@
 $(function(){
   var rootPath=getRootPath();
-  var flowflag="2";
+  var flowflag="1";
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   
@@ -119,11 +119,7 @@ $(function(){
       if(resultData.ResultList[i].MediaType=="wt_SeqMediaAsset"){
         $(".sequ_name").eq(i).text("该内容已经是专辑");
       }else if(resultData.ResultList[i].MediaType=="wt_MediaAsset"){
-        if(resultData.ResultList[i].ContentSeqName){
-          $(".sequ_name").eq(i).attr({"contentSeqId":resultData.ResultList[i].ContentSeqId}).text(resultData.ResultList[i].ContentSeqName);
-        }else{
-          $(".sequ_name").eq(i).text("自定义专辑名称");
-        }
+        $(".sequ_name").eq(i).attr({"contentSeqId":resultData.ResultList[i].ContentSeqId}).text(resultData.ResultList[i].ContentSeqName);
       }
       if(resultData.ResultList[i].PersonName){
         $(".anchor_name").eq(i).text(resultData.ResultList[i].PersonName);
@@ -146,7 +142,56 @@ $(function(){
       }
     }
   } 
-  /*已发布内容--撤回*/
+  /*待审核内容--通过*/
+  $(".rto_pass").on("click",function(){
+    var contentIds=[];
+    $(".ri_top3_con .rtc_listBox").each(function(){
+      if($(this).children(".rtcl_img_check").hasClass("checkbox1")){//未选中
+        
+      }else{//已选中
+        var contentList={};
+        contentList.Id=$(this).attr("contentId");
+        if($(this).attr("mediatype")=="wt_SeqMediaAsset"){//专辑
+          contentList.MediaType="SEQU";
+        }else if($(this).attr("mediatype")=="wt_MediaAsset"){//节目
+          contentList.MediaType="AUDIO";
+        }else{//电台
+          
+        }
+        contentList.ChannelIds=$(this).attr("contentchannelid");
+        contentIds.push(contentList);
+      }
+    });
+    if(contentIds.length==0){//未选中内容
+      alert("请先选中内容再进行操作");
+      return;
+    }else{
+      var data4={
+                UserId:"zhangsan",
+                ContentIds:contentIds,
+                OpeType:$(this).attr("opetype")
+      };
+      $.ajax({
+        type: "POST",
+        url:rootPath+"CM/content/updateContentStatus.do",
+        dataType:"json",
+        data:JSON.stringify(data4),
+        success: function(resultData){
+          if(resultData.ReturnType=="1001"){
+            $(".pass_note").show();
+            setTimeout(function(){$(".pass_note").hide();},2000);
+            getContentList(1,flowflag);
+          }else{
+            alert(resultData.Message);
+          }
+        },
+        error: function(jqXHR){
+          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        }     
+      });
+    }
+  });
+  /*待审核内容--不通过*/
   $(".rto_nopass").on("click",function(){
     $(".nc_txt1").text(" ");
     var contentIds=[];
@@ -206,18 +251,4 @@ $(function(){
       }     
     });
   })
-  /*点击跳到对应的详情页*/
-  $(document).on("click",".rtc_listBox .rtcl_img",function(){
-    var contentId=$(this).parent(".rtc_listBox").attr("contentid");
-    alert(contentId);
-    if($(this).parent(".rtc_listBox").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
-      $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
-    }else if($(this).parent(".rtc_listBox").attr("mediatype")=="wt_MediaAsset"){//节目
-      $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId});
-    }else{//电台
-      
-    }
-    $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).show();
-  });
 });
