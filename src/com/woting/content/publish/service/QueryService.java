@@ -180,7 +180,7 @@ public class QueryService {
 				oneDate.put("MediaSize", 1);
 				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
 				if (rs.getString("assetType").equals("wt_MediaAsset")) {
-					maids += " or maId = '"+rs.getString("assetId")+"'";
+					maids += " or mId = '"+rs.getString("assetId")+"'";
 				}
 				if (rs.getString("assetType").equals("wt_SeqMediaAsset")) {
 					smaids += " or sId = '"+rs.getString("assetId")+"'";
@@ -193,14 +193,18 @@ public class QueryService {
             
             if (maids.length()>0) {
 				maids = maids.substring(3);
-				sql = "SELECT maId,playURI FROM wt_MaSource "
-						+ "where isMain = 1 and ("+maids+")";
+				sql = "SELECT s.*,mas.playURI FROM "
+						+ "(SELECT sma.id,sma.smaTitle,smaf.mId from wt_SeqMediaAsset sma,wt_SeqMA_Ref smaf where sma.id = smaf.sId and ("+maids+")) s"
+						+ " LEFT JOIN wt_MaSource mas"
+						+ " ON s.mId = mas.maId and mas.isMain = 1";
 				ps = conn.prepareStatement(sql);
 				rs = ps.executeQuery();
 				while (rs != null && rs.next()) {
 					for (Map<String, Object> map : list2seq) {
-						if (map.get("MediaType").equals("wt_MediaAsset") && map.get("ContentId").equals(rs.getString("maId"))) {
+						if (map.get("MediaType").equals("wt_MediaAsset") && map.get("ContentId").equals(rs.getString("mId"))) {
 							map.put("ContentPlayUrl", rs.getString("playURI"));
+							map.put("ContentSeqId", rs.getString("id"));
+							map.put("ContentSeqName", rs.getString("smaTitle"));
 						}
 					}
 				}
