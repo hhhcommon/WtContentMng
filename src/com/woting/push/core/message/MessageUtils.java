@@ -2,6 +2,8 @@ package com.woting.push.core.message;
 
 import java.io.UnsupportedEncodingException;
 
+import com.spiritdata.framework.util.SequenceUUID;
+
 /**
  * 消息处理中，对字节数组和消息内容的转换方法和公共判断方法的集合
  * @author wanghui
@@ -96,53 +98,6 @@ public abstract class MessageUtils {
     }
 
     /**
-     * 根据原始一般消息(非媒体消息)生成应答消息
-     * @param orgMsg 一般消息
-     * @return 应答消息
-     */
-    public static MsgNormal buildAckMsg(MsgNormal orgMsg) {
-        MsgNormal ret=new MsgNormal();
-
-        ret.setAffirm(0);
-        ret.setMsgType(1);
-        ret.setSendTime(System.currentTimeMillis());
-        ret.setFromType(orgMsg.getToType());
-        ret.setToType(orgMsg.getFromType());
-
-        ret.setBizType(0);
-        ret.setCmdType(0);
-        ret.setReMsgId(orgMsg.getMsgId());
-
-        return ret;
-    }
-
-    /**
-     * 根据原始媒体消息(非媒体消息)生成应答消息
-     * @param orgMsg 一般消息
-     * @param returnType 返回类型
-     * @return 应答消息
-     */
-    public static MsgMedia buildAckMsg(MsgMedia orgMsg, int returnType) {
-        MsgMedia ret=new MsgMedia();
-
-        ret.setAffirm(0);
-        ret.setMsgType(1);
-        ret.setSendTime(System.currentTimeMillis());
-        ret.setFromType(orgMsg.getToType());
-        ret.setToType(orgMsg.getFromType());
-
-        ret.setBizType(orgMsg.getBizType());
-        ret.setMediaType(orgMsg.getMediaType());
-        ret.setTalkId(orgMsg.getTalkId());
-        ret.setSeqNo(orgMsg.getSeqNo());
-        ret.setReturnType(returnType);
-
-        ret.setObjId(orgMsg.getObjId()); //准备删除
-
-        return ret;
-    }
-
-    /**
      * 根据字符串数组创建消息对象
      * @param binaryMsg
      * @return
@@ -155,5 +110,99 @@ public abstract class MessageUtils {
         if (msgType==1) return new MsgMedia(binaryMsg);
         else
         return null;
+    }
+
+    /**
+     * 根据原始一般消息(非媒体消息)生成应答消息
+     * @param orgMsg 一般消息
+     * @return 应答消息
+     */
+    public static MsgNormal buildAckMsg(MsgNormal orgMsg) {
+        MsgNormal ret=new MsgNormal();
+
+        ret.setReMsgId(orgMsg.getMsgId());
+
+        ret.setToType(orgMsg.getFromType());
+        ret.setFromType(orgMsg.getToType());
+
+        ret.setMsgType(1);
+        ret.setAffirm(0);
+
+        ret.setBizType(0);
+        ret.setCmdType(0);
+
+        ret.setSendTime(System.currentTimeMillis());
+        return ret;
+    }
+
+    public static MsgNormal buildAckEntryMsg(MsgNormal orgMsg) {
+        MsgNormal ret=new MsgNormal();
+
+        ret.setReMsgId(orgMsg.getMsgId());
+
+        ret.setToType(orgMsg.getFromType());
+        ret.setFromType(orgMsg.getToType());
+
+        ret.setMsgType(1);
+        ret.setAffirm(0);
+
+        ret.setBizType(15);
+        ret.setCmdType(0);
+
+        ret.setDeviceId(orgMsg.getDeviceId());
+        ret.setUserId(orgMsg.getUserId());
+        ret.setPCDType(orgMsg.getPCDType());
+
+        return ret;
+    }
+
+    /**
+     * 根据原消息，生成返回消息的壳 
+     * @param msg 愿消息
+     * @return 返回消息壳
+     */
+    public static MsgNormal buildRetMsg(MsgNormal msg) {
+        MsgNormal retMsg=new MsgNormal();
+
+        retMsg.setMsgId(SequenceUUID.getUUIDSubSegment(4));
+        retMsg.setReMsgId(msg.getMsgId());
+
+        retMsg.setToType(msg.getFromType());
+        retMsg.setFromType(msg.getToType());
+
+        retMsg.setMsgType(1);//是应答消息
+        retMsg.setAffirm(0);//不需要回复
+
+        retMsg.setBizType(msg.getBizType());
+        retMsg.setCmdType(msg.getCmdType());
+
+        return retMsg;
+    }
+
+    /**
+     * 根据原消息，生成返回消息的壳 
+     * @param msg 愿消息
+     * @return 返回消息壳
+     */
+    public static MsgNormal clone(MsgNormal msg) {
+        MsgNormal retMsg=new MsgNormal();
+
+        retMsg.setMsgId(SequenceUUID.getUUIDSubSegment(4));
+        retMsg.setReMsgId(msg.getReMsgId());
+
+        retMsg.setToType(msg.getToType());
+        retMsg.setFromType(msg.getFromType());
+
+        retMsg.setMsgType(msg.getMsgType());//是应答消息
+        retMsg.setAffirm(msg.getAffirm());//不需要回复
+
+        retMsg.setBizType(msg.getBizType());
+        retMsg.setCmdType(msg.getCmdType());
+
+        retMsg.setDeviceId(msg.getDeviceId());
+        retMsg.setUserId(msg.getUserId());
+        retMsg.setPCDType(msg.getPCDType());
+
+        return retMsg;
     }
 }

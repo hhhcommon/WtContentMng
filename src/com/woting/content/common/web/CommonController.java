@@ -23,7 +23,8 @@ import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
 import com.woting.cm.core.dict.model.DictDetail;
 import com.woting.cm.core.dict.model.DictModel;
-import com.spiritdata.framework.util.JsonUtils;
+import com.woting.cm.core.subscribe.SubscribeThread;
+import com.woting.cm.core.subscribe.service.SubscribeService;
 import com.spiritdata.framework.util.RequestUtils;
 import com.woting.content.manage.dict.service.DictContentService;
 
@@ -38,6 +39,8 @@ public class CommonController {
 	private ChannelService channelService;
 	@Resource
 	private DictContentService dictdService;
+	@Resource
+	private SubscribeService subscribeService;
 
 	/**
 	 * 获取内容分类树
@@ -142,6 +145,29 @@ public class CommonController {
         str=str.replaceAll("&quot;", "\"");
         str=str.replaceAll("\r", "");
     	map.put("Data", str);
+        return map;
+    }
+    
+    @RequestMapping(value="subscribe.do")
+    @ResponseBody
+    /**
+     * 用jsonP的方式获取数据
+     * @param request 其中必须有RemoteUrl参数
+     * @return json结构
+     */
+    public Map<String, Object> makeSubscribe(HttpServletRequest request) throws IOException {
+        //获取参数
+        Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+        Map<String, Object> map = new HashMap<>();
+        //1-获取地址：
+        String maId=m.get("ContentId")+"";
+        if (StringUtils.isNullOrEmptyOrSpace(maId)||maId.toLowerCase().equals("null")) {
+        	map.put("ReturnType", "1011");
+        	map.put("Message", "无法获得内容Id");
+            return map;
+        }
+        new SubscribeThread(maId).start();
+        map.put("ReturnType", "1001");
         return map;
     }
 }

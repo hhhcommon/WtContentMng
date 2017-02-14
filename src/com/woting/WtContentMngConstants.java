@@ -8,4 +8,6 @@ public class WtContentMngConstants {
     public static final String APP_VERSIONCONFIG="AppVersionConfig";
     //栏目结构
     public final static String CACHE_CHANNEL="CacheChannel";
+    //socket客户端连接对象
+    public static final String SOCKET_OBJ="SocketClientObj";
 }
