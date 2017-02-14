@@ -41,6 +41,7 @@ public class QueryController {
 		String catalogsid = null;
 		String flowFlag = null;
 		String publisherId = null;
+		String mediaType = null;
 		Timestamp begincontentpubtime = null;
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
@@ -48,6 +49,8 @@ public class QueryController {
 //		String userId = m.get("UserId")+"";
 		int page = m.get("Page") == null ? 1 : Integer.valueOf(m.get("Page")+"");
 		int pagesize = m.get("PageSize") == null ? 10 : Integer.valueOf((String) m.get("PageSize"));
+		if (m.containsKey("MediaType")) 
+			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
 		if (m.containsKey("CatalogsId"))
 			catalogsid = (String) m.get("CatalogsId");
 		if (m.containsKey("ContentFlowFlag"))
@@ -63,7 +66,7 @@ public class QueryController {
 		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
 			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
 		if (page > 0 && pagesize > 0) {
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, mediaType, catalogsid, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
 			List<Map<String, Object>> list = (List<Map<String, Object>>)maplist.get("List");
 			if (list.size() > 0) {
 				map.put("ResultList", maplist.get("List"));

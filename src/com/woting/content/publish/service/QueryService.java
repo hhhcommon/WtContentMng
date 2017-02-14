@@ -67,7 +67,7 @@ public class QueryService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> getContent(String flowFlag, int page, int pagesize, String channelId, String publisherId,
+	public Map<String, Object> getContent(String flowFlag, int page, int pagesize, String mediaType, String channelId, String publisherId,
 			Timestamp beginpubtime, Timestamp endpubtime, Timestamp beginctime, Timestamp endctime) {
 		Map<String, Object> mapall = new HashMap<String, Object>();
 		List<Map<String, Object>> list2seq = new ArrayList<Map<String, Object>>();
@@ -77,6 +77,10 @@ public class QueryService {
 		ResultSet rs = null;
 		String sql = "select count(*) from wt_ChannelAsset ch "
 				+ "where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+		if (mediaType!=null) {
+			if (mediaType.equals("SEQU")) sql += " and ch.assetType = 'wt_SeqMediaAsset'";
+			else if(mediaType.equals("AUDIO")) sql += " and ch.assetType = 'wt_MediaAsset'";
+		}
 		if (flowFlag!=null) {
 			sql += " and ch.flowFlag = "+flowFlag;
 		}
@@ -129,6 +133,10 @@ public class QueryService {
 				+ "LEFT JOIN wt_SeqMediaAsset sma "
 				+ "ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
 				+ "where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+		if (mediaType!=null) {
+			if (mediaType.equals("SEQU")) sql += " and ch.assetType = 'wt_SeqMediaAsset'";
+			else if(mediaType.equals("AUDIO")) sql += " and ch.assetType = 'wt_MediaAsset'";
+		}
 		if (flowFlag!=null) {
 			sql += " and ch.flowFlag = "+flowFlag;
 		}
