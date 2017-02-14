@@ -16,8 +16,8 @@
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="js/filter.js"></script>
   <script src="js/globalplayer.js"></script>
-  <script src="js/filter.js"></script>	
   <script src="js/published.js"></script>
 <style>
 /*全局样式*/
@@ -328,7 +328,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-top: 10px;
   padding: 0px 5px;
 }
-.ensure{
+.ensure,.clean{
   float:left;
   width: 36px;
   height: 21px;
@@ -528,11 +528,12 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nopass_container{
   width:575px;
-  height:auto;
+  height:500px;
   position: fixed;
   top:20px;
   background: #fff;
   z-index:101;
+  overflow-y: auto;
   display: none;
   cursor: pointer;
 }
@@ -550,9 +551,12 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin: 9px 20px;
 }
 .nh_span2{
-  font-size:20px;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
   float: right;
-  margin: 7px 20px;
+  text-align: center;
+  margin: 10px 20px;
 }
 .nopass_content{
   /*height: 440px;*/
@@ -588,10 +592,14 @@ body{-moz-user-select: none;overflow-x: auto;}
   top: 10px;
   float: left;
 }
+.nc_txt5{
+  margin: 6px 20px 10px 340px;
+}
 .other_reason{
   float: left;
 }
 .nc_con3{
+  position: relative;
   margin: 0px 20px 20px;
   overflow: hidden;
 }
@@ -599,8 +607,8 @@ body{-moz-user-select: none;overflow-x: auto;}
   width:18px;
   height:18px;
 }
-.nc_txt5{
-  margin: 6px 20px 10px 340px;
+.nc_reasons  li img,.nc_txt5 img{
+  margin:0px;
 }
 .nc_txt6{
   margin-left: 10px;
@@ -613,6 +621,14 @@ body{-moz-user-select: none;overflow-x: auto;}
   line-height: 30px;
   color:#000;
   background:#0077c7;
+}
+.nc_reasons{
+  overflow: hidden;
+}
+.nc_reasons li{
+  width: auto;
+  float: left;
+  margin: 5px 10px 5px 0px;
 }
 .ellipsis{
   overflow: hidden;
@@ -789,6 +805,7 @@ body{-moz-user-select: none;overflow-x: auto;}
                 <span class="line">---</span>
                 <input type="text" class="input-sm form-control endPubTime" name="EndPubTime" value="" placeholder="输入结束日期"/>
                 <span class="ensure">确定</span>
+                <span class="clean">清除</span>
               </div>
             </div>
           </div>
@@ -934,6 +951,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <!--s:全局播放器-->
   <div class="globalplayer">
+    <audio src="" class="audio" controls loop autoplay="autoplay" style="display: none;"></audio>
     <!--s:收起状态-->
     <div class="glp_mini">
       <img class="sound_face" src="img/launch.png">
@@ -948,19 +966,19 @@ body{-moz-user-select: none;overflow-x: auto;}
           <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
         </div>
         <div class="player_panel">
-          <a href="#" class="title" title="">朝珠为啥只有清朝有</a>
+          <a href="#" class="title" title=""></a>
           <div>
-            <span class="time sound_position">08:20</span>
+            <span class="time sound_position"></span>
             <div class="player_progressbar">
               <div class="player_playbar"></div>
               <div class="player_circle"></div>  
             </div>
-            <span class="time sound_duration">15:20</span>
+            <span class="time sound_duration"></span>
           </div>
         </div>
         <div class="volume_panel">
           <img src="img/volume.png" alt="音量图标" class="volume_img"/>
-          <div class="volume-progressbar">
+          <div class="volume_progressbar">
             <div class="volume_playbar"></div>
             <div class="volume_circle"></div> 
           </div>
@@ -981,14 +999,32 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <div class="nopass_content">
     <div class="nc_con1">
-      <span class="nc_txt1">选择了2个节目，您确认撤回所选的节目么？</span>
+      <span class="nc_txt1"></span>
     </div>
     <div class="nc_con2">
       <p class="nc_txt2 black">请告知主播具体的原因：</p>
-      <p class="nc_txt2">广告信息及垃圾信息</p>
-      <p class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</p>
-      <p class="nc_txt2 blue">虚构事实。隐瞒真相以误导、欺骗他人</p>
-      <p class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</p>
+      <ul class="nc_reasons">
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">广告信息及垃圾信息</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">虚构事实。隐瞒真相以误导、欺骗他人</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+        </li>
+      </ul>
       <div class="nc_txt3">
         <span class="nc_txt4">其他原因：</span>
         <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
@@ -996,7 +1032,7 @@ body{-moz-user-select: none;overflow-x: auto;}
     </div>
     <div class="nc_con3">
       <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl"/>
+        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
         <span class="nc_txt6 fl">违规登记</span>
       </div>
       <div class="nc_txt7 fl">确定</div>

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,6 +22,11 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;background: #fff;}
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .detail{
   width:1090px;
   min-width:850px;
@@ -415,7 +418,7 @@ body{overflow: auto;background: #fff;}
               <img src="" alt="节目封面图片" />
             </div>
             <div class="dcl_jmcontent2">
-              <div class="title">
+              <div class="title ellipsis">
                 <h3></h3>
               </div>
               <p class="ctime">最近更新时间：<span class="cctime"></span></p>
@@ -465,7 +468,7 @@ body{overflow: auto;background: #fff;}
         <div class="my_title">同专辑的节目</div>
         <div class="dc_right">
           <div class="dcr_jmlist">
-            <div class="dcr_jmlist1">
+            <!--<div class="dcr_jmlist1">
               <div class="list1_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -482,8 +485,8 @@ body{overflow: auto;background: #fff;}
                   <span>2016-10-08 10:47:35</span>
                 </p>
               </div>
-            </div>
-            <div class="dcr_jmlist1">
+            </div>-->
+            <!--<div class="dcr_jmlist1">
               <div class="list1_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -500,8 +503,8 @@ body{overflow: auto;background: #fff;}
                   <span>2016-10-08 10:47:35</span>
                 </p>
               </div>
-            </div>
-            <div class="dcr_jmlist1">
+            </div>-->
+            <!--<div class="dcr_jmlist1">
               <div class="list1_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -518,7 +521,7 @@ body{overflow: auto;background: #fff;}
                   <span>2016-10-08 10:47:35</span>
                 </p>
               </div>
-            </div>
+            </div>-->
           </div> 
         </div>
       </div>
@@ -559,17 +562,20 @@ body{overflow: auto;background: #fff;}
 <!--e:不通过-->  
 </body>
 <script>
-$(function(){
-  var href=$("#newIframe", parent.document).attr("src");
-  var contentId=href.split('?')[1].split("=")[1];
   var rootPath=getRootPath();
-  
-  var data1={"UserId":"zhangsan",
+  function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) return unescape(r[2]); //返回参数值
+  }
+  var seqId=getUrlParam('seqId');
+  var contentId=getUrlParam('contentId');
+  var data1={"UserId":"123",
              "ContentFlowFlag":"2",
              "Page":"1",
              "PageSize":"10",
              "ContentId":contentId,
-              "MediaType":"wt_MediaAsset"
+             "MediaType":"wt_MediaAsset"
   };
   /*得到节目信息*/
   getZjDetail(data1);
@@ -581,7 +587,11 @@ $(function(){
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
-          fillJmDetail(resultData);//填充节目数据
+          if(dataParam.MediaType=="wt_MediaAsset"){
+            fillJmDetail(resultData);//填充节目数据
+          }else{
+            fillJmList(resultData);//填充专辑下的节目列表
+          }
         }else{
           alert(resultData.Message);
         }
@@ -611,6 +621,38 @@ $(function(){
     $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
     $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
   }
-});
+  /*同专辑下的所有节目*/
+  var data2={"UserId":"123",
+             "ContentFlowFlag":"2",
+             "Page":"1",
+             "PageSize":"10",
+             "ContentId":seqId,
+             "MediaType":"wt_SeqMediaAsset"
+  };
+  getZjDetail(data2);
+  //填充专辑下的节目列表
+  function fillJmList(resultData){
+    for(var i=0;i<resultData.SubList.length;i++){
+      var list= '<div class="dcr_jmlist1">'+
+                  '<div class="list1_img">'+
+                    '<img src='+resultData.SubList[i].ContentImg+' alt="节目图片" />'+
+                  '</div>'+
+                  '<div class="list1_con">'+
+                    '<p class="list1_con_name ellipsis">'+
+                      '<span>'+resultData.SubList[i].ContentName+'</span>'+
+                    '</p>'+
+                    '<p class="list1_con_num">'+
+                      '<span>播放次数 ： </span>'+
+                      '<span>'+resultData.SubList[i].PlayCount+'</span>'+
+                    '</p>'+
+                    '<p class="list1_con_time">'+
+                      '<span>时间 ：</span>'+
+                      '<span>'+resultData.SubList[i].CTime+'</span>'+
+                    '</p>'+
+                  '</div>'+
+                '</div>';
+      $(".dcr_jmlist").append(list);
+    }
+  }
 </script>
 </html>

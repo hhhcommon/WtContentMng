@@ -16,9 +16,10 @@
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
-  <script src="js/globalplayer.js"></script>
   <script src="js/filter.js"></script>
+  <script src="js/globalplayer.js"></script>
   <script src="js/revoke_apply.js"></script>
+  
 <style>
 /*全局样式*/
 *{margin: 0;padding: 0;}
@@ -398,7 +399,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   text-align: center;
 }
 .rth_txt1{
-  margin: 0px 420px 0px 10px;
+  margin: 10px 420px 0px 10px;
 }
 .rth_txt2{
   border-left:2px solid #d8d8d8;
@@ -520,11 +521,12 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nopass_container{
   width:575px;
-  height:auto;
+  height:500px;
   position: fixed;
   top:20px;
   background: #fff;
   z-index:101;
+  overflow-y: auto;
   display: none;
   cursor: pointer;
 }
@@ -542,9 +544,12 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin: 9px 20px;
 }
 .nh_span2{
-  font-size:20px;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
   float: right;
-  margin: 7px 20px;
+  text-align: center;
+  margin: 10px 20px;
 }
 .nopass_content{
   /*height: 440px;*/
@@ -584,6 +589,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   float: left;
 }
 .nc_con3{
+  position: relative;
   margin: 0px 20px 20px;
   overflow: hidden;
 }
@@ -593,6 +599,9 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nc_txt5{
   margin: 6px 20px 10px 340px;
+}
+.nc_reasons  li img,.nc_txt5 img{
+  margin:0px;
 }
 .nc_txt6{
   margin-left: 10px;
@@ -615,7 +624,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-right: 20px;
 }
 .nc_reasons li img{
-  margin:-2px 0px 0px 0px;
+  margin:-3px 0px 0px 0px;
 }
 .ellipsis{
   overflow: hidden;
@@ -933,6 +942,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <!--s:全局播放器-->
   <div class="globalplayer">
+    <audio src="" class="audio" controls loop autoplay="autoplay" style="display: none;"></audio>
     <!--s:收起状态-->
     <div class="glp_mini">
       <img class="sound_face" src="img/launch.png">
@@ -943,23 +953,23 @@ body{-moz-user-select: none;overflow-x: auto;}
       <div class="glp_panel">
         <div class="controls">
           <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+          <img class="btn_player playerBtn playing" src="img/pause.png" alt="播放/暂停" />
           <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
         </div>
         <div class="player_panel">
-          <a href="#" class="title" title="">朝珠为啥只有清朝有</a>
+          <a href="#" class="title" title=""></a>
           <div>
-            <span class="time sound_position">08:20</span>
+            <span class="time sound_position"></span>
             <div class="player_progressbar">
               <div class="player_playbar"></div>
               <div class="player_circle"></div>  
             </div>
-            <span class="time sound_duration">15:20</span>
+            <span class="time sound_duration"></span>
           </div>
         </div>
         <div class="volume_panel">
           <img src="img/volume.png" alt="音量图标" class="volume_img"/>
-          <div class="volume-progressbar">
+          <div class="volume_progressbar">
             <div class="volume_playbar"></div>
             <div class="volume_circle"></div> 
           </div>
@@ -986,15 +996,15 @@ body{-moz-user-select: none;overflow-x: auto;}
       <p class="nc_txt2 black">请告知主播具体的原因：</p>
       <ul class="nc_reasons">
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
           <span class="ct">付费节目</span>
         </li>
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
           <span class="ct">原因二</span>
         </li>
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg rtcl_img_check"/>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
           <span class="ct">付费节目</span>
         </li>
       </ul>
@@ -1005,13 +1015,13 @@ body{-moz-user-select: none;overflow-x: auto;}
     </div>
     <div class="nc_con3">
       <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl "/>
+        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
         <span class="nc_txt6 fl">违规登记</span>
       </div>
       <div class="nc_txt7 fl">确定</div>
     </div>
   </div>
 </div>
-<!--e:不通过-->   
+<!--e:不通过--> 
 </body>
 </html>

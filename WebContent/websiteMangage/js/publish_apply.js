@@ -1,16 +1,13 @@
 $(function(){
   var rootPath=getRootPath();
-  var flowflag="2";
+  var flowflag="1";
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
-
   var data1={};
+  var audioList=[];//节目播放列表
+  var listNum=0;//控制播放节目的序号
   
-  /*时间戳转日期*/
-  function getLocalTime(cptime) {     
-    return new Date(parseInt(cptime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-"); 
-  }
   /*翻页*/
   $(".pagination span").on("click",function(){
     var data_action=$(this).attr("data_action");
@@ -110,7 +107,8 @@ $(function(){
       }
     });
   }
-  function loadContentList(resultData){
+  function loadContentList(resultData){//加载资源列表
+    audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var cptime=resultData.ResultList[i].ContentTime;
       var listbox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' contentChannelId='+resultData.ResultList[i].ChannelId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
@@ -145,10 +143,27 @@ $(function(){
                   '</div>';
       $(".ri_top3_con").append(listbox);
       $(".audio_time").eq(i).text(getLocalTime(cptime));
+      if(resultData.ResultList[i].ContentPlayUrl){
+        var audioObj={};
+        audioObj.title=resultData.ResultList[i].ContentName;
+        audioObj.playUrl=resultData.ResultList[i].ContentPlayUrl;
+        audioList.push(audioObj);
+        $(".audio").attr({"src":""});
+        $(".player_panel .title").html("");
+        $(".player_panel .title").html(audioList[0].title);
+        $(".audio").attr("src",audioList[0].playUrl);
+        getTime();
+        $(".rtc_listBox").eq(i).addClass("playurl");
+      }
       if(resultData.ResultList[i].MediaType=="wt_SeqMediaAsset"){
         $(".sequ_name").eq(i).text("该内容已经是专辑");
       }else if(resultData.ResultList[i].MediaType=="wt_MediaAsset"){
         $(".sequ_name").eq(i).attr({"contentSeqId":resultData.ResultList[i].ContentSeqId}).text(resultData.ResultList[i].ContentSeqName);
+      }
+      if(resultData.ResultList[i].MediaSize){
+        $(".sequ_sum").eq(i).text(resultData.ResultList[i].MediaSize);
+      }else{
+        $(".sequ_sum").eq(i).text("0");
       }
       if(resultData.ResultList[i].PersonName){
         $(".anchor_name").eq(i).text(resultData.ResultList[i].PersonName);
@@ -196,7 +211,7 @@ $(function(){
       return;
     }else{
       var data2={
-                UserId:"zhangsan",
+                UserId:"123",
                 ContentIds:contentIds,
                 OpeType:$(this).attr("opetype")
       };
@@ -210,24 +225,7 @@ $(function(){
             $(".pass_note").show();
             setTimeout(function(){$(".pass_note").hide();},2000);
             $(".page").find("span").removeClass("disabled");
-            destroy(data1);
-            current_page=1;
-            $(".currentPage").html(current_page);
-            data1.UserId="123";
-            data1.PageSize="10";
-            data1.Page=current_page;
-            data1.ContentFlowFlag=flowflag;
-            if($(".new_cate li").size()>"0"){
-              $(document).find(".new_cate li").each(function(){
-                var pId=$(this).attr("pid");
-                var id=$(this).attr("id");
-                if(pId=="channel"){
-                  data1.CatalogsId=$(this).attr("id");
-                }else{
-                  data1.CatalogsId=$(this).attr("id");
-                }
-              });
-            }
+            anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
             if(($(".startPubTime").val())&&($(".endPubTime").val())){
               data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
               data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
@@ -275,7 +273,7 @@ $(function(){
       $(".nopass_container").css({"left":left+"px"});
       $(".nopass_masker").css({"height":height}).show();
       $("body").css({"overflow-x":"hidden"});
-      $(".nc_txt1").text("选择了"+contentIds.length+"个节目，您确认所选的节目不能通过审核么？");
+      $(".nc_txt1").text("选择了"+contentIds.length+"个节目，您确认所选的节目不予发布么？");
       $(".nopass_container").show();
     }
   });
@@ -307,51 +305,19 @@ $(function(){
   $(document).on("click",".trig_item,.trig_item_li",function(){
     optfy=2;//选中具体筛选条件后翻页
     $(".page").find("span").removeClass("disabled");
-    destroy(data1);
-    current_page=1;
-    $(".currentPage").html(current_page);
-    data1.UserId="123";
-    data1.PageSize="10";
-    data1.Page=current_page;
-    data1.ContentFlowFlag=flowflag;
-    if($(".new_cate li").size()>"0"){
-      $(document).find(".new_cate li").each(function(){
-        var pId=$(this).attr("pid");
-        var id=$(this).attr("id");
-        if(pId=="channel"){
-          data1.CatalogsId=$(this).attr("id");
-        }else{
-          data1.SourceId=$(this).attr("id");
-        }
-      });
-    }
+    anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
     if(($(".startPubTime").val())&&($(".endPubTime").val())){
       data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
       data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
     }
     getContentList(data1);
   });
-  $(document).on("click",".cate_img",function(){//点击取消所选的筛选条件
+  /*点击取消所选的筛选条件*/
+  $(document).on("click",".cate_img",function(){
     $(".page").find("span").removeClass("disabled");
-    destroy(data1);
-    current_page=1;
-    $(".currentPage").html(current_page);
-    data1.UserId="123";
-    data1.PageSize="10";
-    data1.Page=current_page;
-    data1.ContentFlowFlag=flowflag;
-    if($(".new_cate li").size()>"0"){
-      $(document).find(".new_cate li").each(function(){
-        var pId=$(this).attr("pid");
-        var id=$(this).attr("id");
-        if(pId=="channel"){
-          data1.CatalogsId=$(this).attr("id");
-        }else{
-          data1.SourceId=$(this).attr("id");
-        }
-      });
-    }else{
-      optfy=1;//未选中具体筛选条件前翻页
+    anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
+    if($(".new_cate li").size()<="0"){
+      optfy=1;//选中具体筛选条件后翻页
     }
     if(($(".startPubTime").val())&&($(".endPubTime").val())){
       data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
@@ -369,26 +335,9 @@ $(function(){
     }else{
       optfy=2;//选中具体筛选条件后翻页
       $(".page").find("span").removeClass("disabled");
-      destroy(data1);
-      current_page=1;
-      $(".currentPage").html(current_page);
-      data1.UserId="123";
-      data1.PageSize="10";
-      data1.Page=current_page;
-      data1.ContentFlowFlag=flowflag;
+      anew(flowflag,current_page);
       data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
       data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-      if($(".new_cate li").size()>"0"){
-        $(document).find(".new_cate li").each(function(){
-          var pId=$(this).attr("pid");
-          var id=$(this).attr("id");
-          if(pId=="channel"){
-            data1.CatalogsId=$(this).attr("id");
-          }else{
-            data1.SourceId=$(this).attr("id");
-          }
-        });
-      }
       getContentList(data1);
     }
   });
@@ -396,6 +345,14 @@ $(function(){
   $(".clean").on("click",function(){
     $(".startPubTime,.endPubTime").val("");
     $(".page").find("span").removeClass("disabled");
+    anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
+    if($(".new_cate li").size()<="0"){
+      optfy=1;//选中具体筛选条件后翻页
+    }
+    getContentList(data1);
+  });
+  /*在每次加载具体的资源列表时候的公共方法*/
+  function anew(flowflag,current_page){
     destroy(data1);
     current_page=1;
     $(".currentPage").html(current_page);
@@ -414,20 +371,93 @@ $(function(){
           data1.SourceId=$(this).attr("id");
         }
       });
+    }
+  }
+  
+  /*s--全局播放器*/
+  /*全局播放器面板的展开*/
+  $(document).on("click",".glp_mini",function(){
+    if(audioList.length==0){
+      alert("当前列表无可播放的节目，请选择其他页面");
+      return;
     }else{
-      optfy=1;//选中具体筛选条件后翻页
+      $(this).css({"left":'-60px',"transition" :"all 0.1s ease 0s"});
+      $(this).siblings(".glp_block").css({"left":'0px',"transition" :"all 0.1s ease 0s"});
     }
-    getContentList(data1);
   });
-  /*清空*/
-  function clear(){
-    $(".ri_top3_con,.totalPage").html("");
-    $(".toPage").val("");
-  }
-  /*销毁obj对象的key-value*/
-  function destroy(obj){
-    for(var key in obj){//清空对象
-      delete obj[key];
+  /*实时获取播放时长和改变进度条进度*/
+  $(".audio")[0].addEventListener("timeupdate",function(){
+    if(!isNaN(this.duration)){
+      //播放进度条
+      var progressValue = this.currentTime/this.duration*($(".player_progressbar").width());
+      $('.player_circle')[0].style.left = parseInt(progressValue) + 'px';
+      $(".player_playbar").css("width",progressValue+"px");
+      //播放时长
+      if(formatTime(Math.floor(this.currentTime))!=0){
+        $(".sound_position").text(formatTime(Math.floor(this.currentTime)));
+      }
+    };
+  },false);
+  /*实现播放快进和后退*/
+  $(".player_progressbar").on("click",function(event){
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var x = e.pageX || e.clientX + scrollX;
+    var pleft=x-335;
+    var clickPlayTime=pleft*($(".audio")[0].duration)/$(".player_progressbar").width();
+    $('.player_circle')[0].style.left = parseInt(pleft) + 'px';
+    $(".player_playbar").css("width",pleft+"px");
+    $('.audio')[0].currentTime=clickPlayTime;
+    $(".sound_position").text(formatTime(Math.floor(clickPlayTime)));
+  });
+  /*实现音量的增大和减小*/
+  $(".volume_progressbar").on("click",function(event){
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var x = e.pageX || e.clientX + scrollX;
+    var pleft=x-770;
+    var clickVolume=pleft*($(".audio")[0].volume)/$(".volume_progressbar").width();
+    $('.volume_circle')[0].style.left = parseInt(pleft) + 'px';
+    $(".volume_playbar").css("width",pleft+"px");
+    $('.audio')[0].volume=clickVolume;
+  });
+  /*点击播放器面板上的上一首按钮*/
+  $(document).on("click",".prevBtn",function(){
+    if(listNum<=0){
+      alert("当前已经是第一个节目了");
+      return false;
+    }else{
+      listNum--;
+//    console.log("上一个"+listNum);
+      for(var i=0;i<audioList.length;i++){
+        if(listNum==i){
+          $(".audio").attr({"src":audioList[listNum].playUrl});
+          $(".player_panel .title").html(audioList[listNum].title);
+          $(".sound_position").html("00:00");
+          getTime();
+          return;
+        }
+      }
     }
-  }
+  });
+  /*点击播放器面板上的下一首按钮*/
+  $(document).on("click",".nextBtn",function(){
+    if(listNum>=audioList.length-1){
+      alert("当前已经是最后一个节目了");
+      return false;
+    }else{
+      listNum++;
+//    console.log("下一个"+listNum);
+      for(var i=0;i<audioList.length;i++){
+        if(listNum==i){
+          $(".audio").attr({"src":audioList[listNum].playUrl});
+          $(".player_panel .title").html(audioList[listNum].title);
+          $(".sound_position").html("00:00");
+          getTime();
+          return;
+        }
+      }
+    }
+  });
+  /*e--全局播放器*/
 });
