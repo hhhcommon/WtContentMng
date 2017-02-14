@@ -25,6 +25,7 @@ import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.person.service.PersonService;
+import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.service.BroadcastProService;
 import com.woting.content.manage.channel.service.ChannelContentService;
@@ -111,7 +112,7 @@ public class QueryService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		sql = "SELECT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,"
+		sql = "SELECT DISTINCT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,"
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,"
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,"
 				+ "(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,"
@@ -231,21 +232,31 @@ public class QueryService {
 			
 			if (ids.length()>3) {
 				ids = ids.substring(3);
-//				sql = "SELECT pers.id,pers.pName,persf.resId from wt_Person pers LEFT JOIN wt_Person_Ref persf ON pers.id = persf.personId "
-//						+ "where "+ids;
-//				ps = conn.prepareStatement(sql);
-//				rs = ps.executeQuery();
-//				while (rs != null && rs.next()) {
-//					for (Map<String, Object> map : list2seq) {
-//						if (map.get("ContentId").equals(rs.getString("resId"))) {
-//							map.put("PersonId", rs.getString("id"));
-//							map.put("PersonName", rs.getString("pName"));
-//						}
-//					}
-//				}
-//				
-//				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-//	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+				sql = "SELECT pers.id,pers.pName,persf.resId from wt_Person pers LEFT JOIN wt_Person_Ref persf ON pers.id = persf.personId "
+						+ " where "+ids;
+				ps = conn.prepareStatement(sql);
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					for (Map<String, Object> map : list2seq) {
+						if (map.get("ContentId").equals(rs.getString("resId"))) {
+							Map<String, Object> permap = new HashMap<>();
+							permap.put("PerId", rs.getString("id"));
+							permap.put("PerName", rs.getString("pName"));
+							permap.put("RefName", "主播");
+							if (map.containsKey("ContentPersons")) {
+								List<Map<String, Object>> pers = (List<Map<String, Object>>) map.get("ContentPersons");
+								pers.add(permap);
+							} else {
+								List<Map<String, Object>> pers = new ArrayList<>();
+								pers.add(permap);
+								map.put("ContentPersons", pers);
+							}
+						}
+					}
+				}
+				
+				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 	            
 				sql = "SELECT kws.id,kws.kwName,kwsf.resId from wt_KeyWord kws LEFT JOIN wt_Kw_Res kwsf ON kws.id = kwsf.kwId "
 						+ "where "+ids.replace("persf", "kwsf")
@@ -265,6 +276,61 @@ public class QueryService {
 								List<Map<String, Object>> kws = new ArrayList<>();
 								kws.add(kwmap);
 								map.put("KeyWords", kws);
+							}
+						}
+					}
+				}
+				
+				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            
+				sql = "SELECT ch.id,cha.assetId,cha.pubName,ch.channelName,cha.flowFlag,cha.pubTime from wt_ChannelAsset cha LEFT JOIN wt_Channel ch ON cha.channelId = ch.id "
+						+ " where "+ids.replace("persf.resId", "cha.assetId")
+						+ " ORDER BY cha.pubTime asc";
+				ps = conn.prepareStatement(sql);
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					for (Map<String, Object> map : list2seq) {
+						if (map.get("ContentId").equals(rs.getString("assetId"))) {
+							Map<String, Object> chamap = new HashMap<>();
+							chamap.put("FlowFlag", rs.getInt("flowFlag"));
+							chamap.put("ChannelName", rs.getString("channelName"));
+							chamap.put("ChannelId", rs.getString("id"));
+							chamap.put("PubTime", rs.getTimestamp("pubTime"));
+							if (map.containsKey("ContentPubChannels")) {
+								List<Map<String, Object>> chas = (List<Map<String, Object>>) map.get("ContentPubChannels");
+								chas.add(chamap);
+							} else {
+								List<Map<String, Object>> chas = new ArrayList<>();
+								chas.add(chamap);
+								map.put("ContentPubChannels", chas);
+							}
+						}
+					}
+				}
+				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
+	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
+	            
+	            sql = "SELECT resd.resId,resd.dictMid,resd.dictDid,dd.ddName,resd.refName from wt_ResDict_Ref resd , plat_DictD dd where resd.dictDid = dd.id and resd.dictMid = '3' "
+						+ " and ("+ids.replace("persf.resId", "resd.resId")
+						+ ") ORDER BY resd.cTime asc";
+				ps = conn.prepareStatement(sql);
+				rs = ps.executeQuery();
+				while (rs != null && rs.next()) {
+					for (Map<String, Object> map : list2seq) {
+						if (map.get("ContentId").equals(rs.getString("resId"))) {
+							Map<String, Object> catamap = new HashMap<>();
+							catamap.put("CataDid", rs.getString("dictDid"));
+							catamap.put("CataMName", rs.getString("refName"));
+							catamap.put("CataTitle", rs.getString("ddName"));
+							catamap.put("CataMid", rs.getString("dictMid"));
+							if (map.containsKey("ContentCatalogs")) {
+								List<Map<String, Object>> catas = (List<Map<String, Object>>) map.get("ContentCatalogs");
+								catas.add(catamap);
+							} else {
+								List<Map<String, Object>> catas = new ArrayList<>();
+								catas.add(catamap);
+								map.put("ContentCatalogs", catas);
 							}
 						}
 					}
@@ -426,6 +492,12 @@ public class QueryService {
 		case "pass":
 			flowFlag = 2;
 			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为通过
+			//订阅推送
+			for (Map<String, Object> map : contentIds) {
+				if (map.get("MediaType").equals("AUDIO")) {
+					new SubscribeThread(map.get("Id")+"").start();
+				}
+			}
 			break;
 		case "nopass":
 			flowFlag = 3;

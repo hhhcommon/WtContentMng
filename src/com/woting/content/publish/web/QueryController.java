@@ -31,6 +31,7 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/getContents.do")
 	@ResponseBody
 	public Map<String, Object> getContents(HttpServletRequest request) {
@@ -93,11 +94,23 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 //		String userId = (String) m.get("UserId");
-		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
-		String id = (String) m.get("ContentId");
+		int pageSize = 10;
+		try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+		int page = 1;
+		try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+		String contentId = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无内容Id");
+			return map;
+		}
 		String mediatype = m.get("MediaType")+"";
-		Map<String, Object> mapdetail = queryService.getContentInfo(pagesize, page, id, mediatype);
+		if (StringUtils.isNullOrEmptyOrSpace(mediatype) || mediatype.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无内容类型");
+			return map;
+		}
+		Map<String, Object> mapdetail = queryService.getContentInfo(pageSize, page, contentId, mediatype);
 		if (mediatype.equals("wt_SeqMediaAsset")) {
 			if (mapdetail.get("audio") != null) {
 				map.put("ContentDetail", mapdetail.get("sequ"));

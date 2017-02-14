@@ -443,7 +443,7 @@ public class MediaService {
 				List<Map<String, Object>> personlist = makePersonList("wt_SeqMediaAsset", sma.getId());
 				Map<String, Object> smap = ContentUtils.convert2Sma(sma.toHashMap(), personlist, catalist, pubChannelList, null);
 				// 标签处理
-				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId("'" + sma.getId() + "'",
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId(sma.getId(),
 						"wt_SeqMediaAsset");
 				if (kws != null && kws.size() > 0) {
 					smap.put("ContentKeyWords", kws);

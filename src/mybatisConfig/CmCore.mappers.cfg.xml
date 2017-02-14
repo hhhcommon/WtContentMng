@@ -19,6 +19,7 @@
     <typeAlias alias="complexref"    type="com.woting.cm.core.complexref.persis.po.ComplexRefPo"/>
     <typeAlias alias="person"         type="com.woting.cm.core.person.persis.po.PersonPo"/>
     <typeAlias alias="personref"      type="com.woting.cm.core.person.persis.po.PersonRefPo"/>
+    <typeAlias alias="subscribe"      type="com.woting.cm.core.subscribe.persis.po.SubscribePo"/>
    </typeAliases>
   <!-- SQL文件设置 -->
   <mappers>
@@ -34,5 +35,6 @@
     <mapper resource="com/woting/cm/core/complexref/persis/sql/ComplexRef.mapper.xml"/>
     <mapper resource="com/woting/cm/core/person/persis/sql/Person.mapper.xml"/>
     <mapper resource="com/woting/cm/core/person/persis/sql/PersonRef.mapper.xml"/>
+    <mapper resource="com/woting/cm/core/subscribe/persis/sql/Subscribe.mapper.xml"/>
   </mappers>
 </configuration>
