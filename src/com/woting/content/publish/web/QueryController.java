@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.publish.service.QueryService;
@@ -24,6 +26,7 @@ import com.woting.content.publish.service.QueryService;
 public class QueryController {
 	@Resource
 	private QueryService queryService;
+	
 
 	/**
 	 * 查询列表信息
@@ -255,7 +258,7 @@ public class QueryController {
 	}
 	
 	/**
-	 * 分享页的分页加载请求
+	 * 搜索内容请求
 	 * 
 	 * @param request
 	 * @return

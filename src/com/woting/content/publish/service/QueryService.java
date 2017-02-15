@@ -1056,4 +1056,9 @@ public class QueryService {
 		mapall.put("Count", numall);
 		return mapall;
 	}
+
+	public Map<String, Object> getPersonStatus() {
+		
+		return null;
+	}
 }
