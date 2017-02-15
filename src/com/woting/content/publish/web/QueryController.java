@@ -253,4 +253,64 @@ public class QueryController {
 		map = queryService.getZJSubPage(contentId, page);
 		return map;
 	}
+	
+	/**
+	 * 分享页的分页加载请求
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/content/searchContents.do")
+	@ResponseBody
+	public Map<String, Object> getSearchContents(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String searchWord = m.get("SearchWord") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(searchWord) || searchWord.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无搜索内容");
+			return map;
+		}
+		String flowFlag = m.get("ContentFlowFlag") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1013");
+			map.put("Message", "无发布状态");
+			return map;
+		}
+		String mediaType = null;
+		if (m.containsKey("MediaType")) 
+			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
+		String channelId = null;
+		if (m.containsKey("ChannelId"))
+			channelId = (String) m.get("CatalogsId");
+		String publisherId = null; 
+		if (m.containsKey("PublisherId"))
+			publisherId = (String) m.get("SourceId");
+		Timestamp begincontentpubtime = null;
+		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
+			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
+		Timestamp endcontentpubtime = null;
+		if (m.containsKey("EndContentPubTime") && m.get("EndContentPubTime")!=null && !m.get("EndContentPubTime").equals("null"))
+			endcontentpubtime =  new Timestamp(Long.valueOf(m.get("EndContentPubTime")+""));
+		Timestamp begincontentctime = null;
+		if (m.containsKey("BeginContentCTime") && m.get("BeginContentCTime")!=null && !m.get("BeginContentCTime").equals("null"))
+			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
+		Timestamp endcontentctime = null;
+		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
+			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
+		//得到每页记录数
+        int pageSize=10;
+        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+        //得到当前页数
+        int page=1;
+        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+		Map<String, Object> retM = queryService.getSearchContentList(searchWord, flowFlag, page, pageSize, mediaType, channelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+		if (retM!=null) {
+			map.put("ReturnType", "1001");
+			map.put("ResultInfo", retM);
+		} else {
+			map.put("ReturnType", "1011");
+		}
+		return map;
+	}
 }
