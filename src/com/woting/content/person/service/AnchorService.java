@@ -15,7 +15,7 @@ public class AnchorService {
 	@Resource(name = "dataSource")
 	private DataSource DataSource;
 
-	public Map<String, Object> getPersonList(String sourceId, String statusType, int page, int pageSize) {
+	public Map<String, Object> getPersonList(String searchWord,String sourceId, String statusType, int page, int pageSize) {
 		Map<String, Object> mapall = new HashMap<>();
 		List<Map<String, Object>> ls = new ArrayList<>();
 		Connection conn = null;
@@ -32,6 +32,9 @@ public class AnchorService {
 			}
 			if (statusType!=null) {
 				sql += " and dd.id = '"+statusType+"'";
+			}
+			if (searchWord!=null) {
+				sql += " and (pers.id LIKE '%"+searchWord+"%' OR pers.pName LIKE '%"+searchWord+"%' OR pers.phoneNum LIKE '%"+searchWord+"%')";
 			}
 			sql += " ORDER BY pers.cTime DESC"
 			+" LIMIT "+(page-1)*pageSize+","+(page*pageSize);
@@ -51,6 +54,9 @@ public class AnchorService {
 			if (statusType !=null) {
 				sql += " and dd.id = '"+statusType+"'";
 			}
+			if (searchWord!=null) {
+				sql += " and (pers.id LIKE '%"+searchWord+"%' OR pers.pName LIKE '%"+searchWord+"%' OR pers.phoneNum LIKE '%"+searchWord+"%')";
+			}
 			sql += " ORDER BY pers.cTime DESC"
 			+" LIMIT "+(page-1)*pageSize+","+(page*pageSize);
 			ps = conn.prepareStatement(sql);
@@ -66,6 +72,7 @@ public class AnchorService {
 				m.put("PersonStatusId", rs.getString("did"));
 				m.put("PersonStatus", rs.getString("ddName"));
 				m.put("PersonImg", rs.getString("portrait"));
+				m.put("CTime", rs.getTimestamp("cTime"));
 				ls.add(m);
 			}
 			if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
