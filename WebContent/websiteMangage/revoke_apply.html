@@ -521,7 +521,7 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nopass_container{
   width:575px;
-  height:500px;
+  height:450px;
   position: fixed;
   top:20px;
   background: #fff;
@@ -551,9 +551,6 @@ body{-moz-user-select: none;overflow-x: auto;}
   text-align: center;
   margin: 10px 20px;
 }
-.nopass_content{
-  /*height: 440px;*/
-}
 .nc_con1{
   width:100%;
   height:75px;
@@ -578,11 +575,11 @@ body{-moz-user-select: none;overflow-x: auto;}
   color:#007FFF;
 }
 .nc_txt3{
-  height:110px;
+  position: relative;
+  overflow: hidden;
 }
 .nc_txt4{
   position: relative;
-  top: 10px;
   float: left;
 }
 .other_reason{
@@ -590,14 +587,15 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nc_con3{
   position: relative;
-  margin: 0px 20px 20px;
   overflow: hidden;
+  margin: 58px 20px 20px;
 }
 .nc_checkimg{
   width:18px;
   height:18px;
 }
 .nc_txt5{
+  opacity: 0;
   margin: 6px 20px 10px 340px;
 }
 .nc_reasons  li img,.nc_txt5 img{
@@ -617,6 +615,7 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nc_reasons{
   overflow: hidden;
+  margin:15px 0px;
 }
 .nc_reasons li{
   width: auto;
@@ -942,7 +941,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <!--s:全局播放器-->
   <div class="globalplayer">
-    <audio src="" class="audio" controls loop autoplay="autoplay" style="display: none;"></audio>
+    <audio src="" class="audio" controls autoplay="autoplay" style="display: none;"></audio>
     <!--s:收起状态-->
     <div class="glp_mini">
       <img class="sound_face" src="img/launch.png">
@@ -1010,7 +1009,7 @@ body{-moz-user-select: none;overflow-x: auto;}
       </ul>
       <div class="nc_txt3">
         <span class="nc_txt4">其他原因：</span>
-        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+        <textarea name="" rows="6" cols="62" class="other_reason"></textarea>
       </div>
     </div>
     <div class="nc_con3">

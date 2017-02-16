@@ -1,6 +1,6 @@
 $(function(){
   var rootPath=getRootPath();
-  var flowflag="1";
+  var flowflag="2";
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
@@ -111,7 +111,7 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var cptime=resultData.ResultList[i].ContentTime;
-      var listbox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' contentChannelId='+resultData.ResultList[i].ChannelId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
+      var listbox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
                     '<img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                     '<div class="rtcl_img fl">'+
                       '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
@@ -170,8 +170,8 @@ $(function(){
       }else{
         $(".anchor_name").eq(i).text("暂无");
       }
-      if(resultData.ResultList[i].ContentSource){
-        $(".source_form").eq(i).text(resultData.ResultList[i].ContentSource);
+      if(resultData.ResultList[i].ContentPublisher){
+        $(".source_form").eq(i).text(resultData.ResultList[i].ContentPublisher);
       }else{
         $(".source_form").eq(i).text("未知");
       }
@@ -185,6 +185,7 @@ $(function(){
         $(".rtcl_con_tag1s").eq(i).append(li);
       }
     }
+    console.log(audioList);
   }
   /*待审核内容--同意撤回*/
   $(".rto_pass").on("click",function(){
@@ -301,6 +302,12 @@ $(function(){
       }     
     });
   })
+  /*点击全部播放*/
+  $(".rto_play").on("click",function(){
+    $(".audio").attr({"src":audioList[0].playUrl});
+    $(".player_panel .title").html(audioList[0].title);
+    $(".audio")[0].play();
+  });
   /*根据不同的筛选条件得到不同的节目列表*/
   $(document).on("click",".trig_item,.trig_item_li",function(){
     optfy=2;//选中具体筛选条件后翻页
@@ -398,6 +405,10 @@ $(function(){
       }
     };
   },false);
+  /*监控audio是否播放完毕,播放完毕后自动播放下一首*/
+  $(".audio")[0].addEventListener("ended",function(){ 
+    $(".nextBtn").click();
+  },false);
   /*实现播放快进和后退*/
   $(".player_progressbar").on("click",function(event){
     var e = event || window.event;
@@ -427,6 +438,7 @@ $(function(){
       alert("当前已经是第一个节目了");
       return false;
     }else{
+      reset();
       listNum--;
 //    console.log("上一个"+listNum);
       for(var i=0;i<audioList.length;i++){
@@ -446,6 +458,7 @@ $(function(){
       alert("当前已经是最后一个节目了");
       return false;
     }else{
+      reset();
       listNum++;
 //    console.log("下一个"+listNum);
       for(var i=0;i<audioList.length;i++){
@@ -460,4 +473,52 @@ $(function(){
     }
   });
   /*e--全局播放器*/
+  /*s--搜索*/
+  $(document).keydown(function(e){//键盘上的事件
+    e = e || window.event;
+    var keycode = e.which ? e.which : e.keyCode;
+    if(keycode == 13){//键盘上的enter
+      loadSearchList();//加载搜索列表
+    }
+  });
+  $(".ri_top_li2_img").on("click",function(){
+    loadSearchList();//加载搜索列表
+  });
+  function loadSearchList(){
+    var searchWord=$(".ri_top_li2_inp").val();
+    if(searchWord==""){
+      alert("请输入搜索内容");
+      $(".ri_top_li2_inp").focus();
+    }else{
+      destroy(data1);
+      data1.UserId="123";
+      data1.ContentFlowFlag=flowflag;
+      data1.PageSize="10";
+      data1.SearchWord=searchWord;
+//    function getContentList(dataParam){
+        $.ajax({
+          type:"POST",
+          url:rootPath+"CM/content/searchContents.do",
+          dataType:"json",
+          data:JSON.stringify(data1),
+          success:function(resultData){
+//          clear();
+//          contentCount=resultData.AllCount;
+//          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
+//          $(".totalPage").text(contentCount);
+//          if(resultData.ReturnType == "1001"){
+//            loadContentList(resultData);//加载来源的筛选条件
+//          }else{
+//            $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+//          }
+          },
+          error:function(jqXHR){
+            alert("发生错误："+ jqXHR.status);
+          }
+        });
+//    }
+    }
+  }
+  /*e--搜索*/
+  
 });

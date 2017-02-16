@@ -112,7 +112,7 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var cptime=resultData.ResultList[i].ContentTime;
-      var listbox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' contentChannelId='+resultData.ResultList[i].ChannelId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
+      var listbox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
                     '<img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                     '<div class="rtcl_img fl">'+
                       '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
@@ -148,6 +148,12 @@ $(function(){
                     '<span class="audio_time fl"></span>'+
                   '</div>';
       $(".ri_top3_con").append(listbox);
+      if(resultData.ResultList[i].ContentPubChannels){
+        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
+          var li='<li class="rtcl_con_channel2 fl" channelId='+resultData.ResultList[i].ContentPubChannels[j].ChannelId+'>'+resultData.ResultList[i].ContentPubChannels[j].ChannelName+'</li>';
+          $(".rtcl_con_channel1s").eq(i).append(li);
+        }
+      }
       $(".audio_time").eq(i).text(getLocalTime(cptime)); 
       if(resultData.ResultList[i].ContentPlayUrl){
         var audioObj={};
@@ -161,11 +167,6 @@ $(function(){
         getTime();
         $(".rtc_listBox").eq(i).addClass("playurl");
       }
-      if(resultData.ResultList[i].ChannelName){
-        $(".rtcl_con_channel1s").eq(i).text(resultData.ResultList[i].ChannelName);
-      }else{
-        $(".rtcl_con_channel1s").eq(i).text("暂无");
-      }
       if(resultData.ResultList[i].MediaSize){
         $(".sequ_sum").eq(i).text(resultData.ResultList[i].MediaSize);
       }else{
@@ -176,8 +177,8 @@ $(function(){
       }else{
         $(".anchor_name").eq(i).text("暂无");
       }
-      if(resultData.ResultList[i].ContentSource){
-        $(".source_form").eq(i).text(resultData.ResultList[i].ContentSource);
+      if(resultData.ResultList[i].ContentPublisher){
+        $(".source_form").eq(i).text(resultData.ResultList[i].ContentPublisher);
       }else{
         $(".source_form").eq(i).text("未知");
       }        
@@ -424,6 +425,7 @@ $(function(){
       alert("当前已经是第一个节目了");
       return false;
     }else{
+      reset();
       listNum--;
 //    console.log("上一个"+listNum);
       for(var i=0;i<audioList.length;i++){
@@ -443,6 +445,7 @@ $(function(){
       alert("当前已经是最后一个节目了");
       return false;
     }else{
+      reset();
       listNum++;
 //    console.log("下一个"+listNum);
       for(var i=0;i<audioList.length;i++){

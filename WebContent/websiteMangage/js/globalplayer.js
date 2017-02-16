@@ -3,6 +3,13 @@ function clear(){
   $(".ri_top3_con,.totalPage").html("");
   $(".toPage").val("");
 }
+/*播放过程中切换节目进行复位*/
+function reset(){
+  $(".playerBtn").removeClass("playing").attr("src","img/play.png");
+  $('.player_circle')[0].style.left ='0px';
+  $(".player_playbar").css("width","0px");
+  $(".playerBtn").click();
+}
 /*销毁obj对象的key-value*/
 function destroy(obj){
   for(var key in obj){//清空对象
