@@ -70,7 +70,7 @@ public class PersonService {
 				orstr = orstr.substring(3);
 			}
 		}
-		m.put("orByClause", orstr);
+		m.put("ByClause", orstr);
 		m.put("personId", personId);
 		List<PersonRefPo> pfs = personRefDao.queryForList("getListBy", m);
 		if (pfs!=null && pfs.size()>0) {

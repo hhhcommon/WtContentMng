@@ -130,11 +130,18 @@ public class AnchorService {
 	public Map<String, Object> getPersonContentList(String personId, String mediaType, int sortType, int page, int pageSize) {
 		List<PersonRefPo> perfs = new ArrayList<>();
 		long all = 0;
-		if (mediaType==null) perfs = personService.getPersonRefByPIdAndMediaType(personId, null);
-		else if (mediaType.equals("SEQU")) perfs = personService.getPersonRefByPIdAndMediaType(personId, "wt_SeqMediaAsset");
+		if (mediaType.equals("SEQU")) perfs = personService.getPersonRefByPIdAndMediaType(personId, "wt_SeqMediaAsset");
 		else if (mediaType.equals("AUDIO")) perfs = personService.getPersonRefByPIdAndMediaType(personId, "wt_MediaAsset");
+		String maIds = "";
+		String smaIds = "";
 		if (perfs!=null && perfs.size()>0) {
 			all = perfs.size();
+			for (PersonRefPo personRefPo : perfs) {
+				if (mediaType.equals("AUDIO")) maIds += " or ma.id = '"+personRefPo.getResId()+"'";
+				else if(mediaType.equals("SEQU")) smaIds += " or sma.id = '"+personRefPo.getResId()+"'";
+			}
+		}
+		if (sortType==1) {
 			
 		}
 		return null;

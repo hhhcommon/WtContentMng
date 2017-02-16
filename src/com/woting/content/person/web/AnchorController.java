@@ -73,7 +73,7 @@ public class AnchorController {
 			map.put("Message", "无主播Id");
 			return map;
 		}
-		String mediaType = null;
+		String mediaType = "SEQU";
 		try {mediaType=(String) m.get("MediaType");} catch(Exception e) {}
 		int sortType = 1;
 		try {sortType= (int) m.get("SortType");} catch(Exception e) {}

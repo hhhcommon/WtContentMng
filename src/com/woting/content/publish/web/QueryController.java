@@ -27,7 +27,6 @@ public class QueryController {
 	@Resource
 	private QueryService queryService;
 	
-
 	/**
 	 * 查询列表信息
 	 * 
@@ -41,7 +40,7 @@ public class QueryController {
 		long begtime = System.currentTimeMillis();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String catalogsid = null;
+		String ChannelId = null;
 		String flowFlag = null;
 		String publisherId = null;
 		String mediaType = null;
@@ -54,8 +53,8 @@ public class QueryController {
 		int pagesize = m.get("PageSize") == null ? 10 : Integer.valueOf((String) m.get("PageSize"));
 		if (m.containsKey("MediaType")) 
 			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
-		if (m.containsKey("CatalogsId"))
-			catalogsid = (String) m.get("CatalogsId");
+		if (m.containsKey("ChannelId"))
+			ChannelId = (String) m.get("ChannelId");
 		if (m.containsKey("ContentFlowFlag"))
 			flowFlag = m.get("ContentFlowFlag") == null ? null : m.get("ContentFlowFlag")+"";
 		if (m.containsKey("SourceId"))
@@ -69,7 +68,7 @@ public class QueryController {
 		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
 			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
 		if (page > 0 && pagesize > 0) {
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, mediaType, catalogsid, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, mediaType, ChannelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
 			List<Map<String, Object>> list = (List<Map<String, Object>>)maplist.get("List");
 			if (list.size() > 0) {
 				map.put("ResultList", maplist.get("List"));
