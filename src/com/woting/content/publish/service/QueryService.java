@@ -120,19 +120,19 @@ public class QueryService {
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,"
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,"
 				+ "(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,"
-				+ "ch.assetId,c.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg,per.id personId,per.pName "
-				+ "from wt_ChannelAsset ch "
-				+ "LEFT JOIN wt_Person_Ref perf "
-				+ "ON ch.assetId = perf.resId and ch.assetType = perf.resTableName "
-				+ "LEFT JOIN wt_Person per "
-				+ "on perf.personId = per.Id "
-				+ "LEFT JOIN wt_Channel c "
-				+ "ON ch.channelId = c.id "
-				+ "LEFT JOIN wt_MediaAsset ma "
-				+ "ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset' "
-				+ "LEFT JOIN wt_SeqMediaAsset sma "
-				+ "ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
-				+ "where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+				+ " ch.assetId,c.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg,per.id personId,per.pName "
+				+ " from wt_ChannelAsset ch "
+				+ " LEFT JOIN wt_Person_Ref perf "
+				+ " ON ch.assetId = perf.resId and ch.assetType = perf.resTableName "
+				+ " LEFT JOIN wt_Person per "
+				+ " on perf.personId = per.Id "
+				+ " LEFT JOIN wt_Channel c "
+				+ " ON ch.channelId = c.id "
+				+ " LEFT JOIN wt_MediaAsset ma "
+				+ " ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset' "
+				+ " LEFT JOIN wt_SeqMediaAsset sma "
+				+ " ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
+				+ " where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
 		if (mediaType!=null) {
 			if (mediaType.equals("SEQU")) sql += " and ch.assetType = 'wt_SeqMediaAsset'";
 			else if(mediaType.equals("AUDIO")) sql += " and ch.assetType = 'wt_MediaAsset'";

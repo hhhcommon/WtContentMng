@@ -41,6 +41,7 @@
   <select id="getListBy" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_Person_Ref
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="orByClause!=null"> and (${orByClause})</if>
   </select>
   
   <delete id="deleteByMap" parameterType="java.util.Map">

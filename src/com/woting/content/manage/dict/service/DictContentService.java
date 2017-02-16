@@ -140,6 +140,10 @@ public class DictContentService {
 		return dictrefDao.getInfoObject("getInfo", m);
 	}
 	
+	public void updataDictRefInfo(DictRefResPo dictRefResPo) {
+		dictrefDao.update(dictRefResPo);
+	}
+	
 	/**
      * 删除字典关联表里的信息
      * @param id

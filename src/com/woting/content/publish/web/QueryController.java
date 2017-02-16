@@ -287,7 +287,7 @@ public class QueryController {
 		if (m.containsKey("ChannelId"))
 			channelId = (String) m.get("CatalogsId");
 		String publisherId = null; 
-		if (m.containsKey("PublisherId"))
+		if (m.containsKey("SourceId"))
 			publisherId = (String) m.get("SourceId");
 		Timestamp begincontentpubtime = null;
 		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))

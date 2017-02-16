@@ -57,6 +57,28 @@ public class PersonService {
 		return null;
 	}
 	
+	public List<PersonRefPo> getPersonRefByPIdAndMediaType(String personId, String resTableNames) {
+		Map<String, Object> m = new HashMap<>();
+		String orstr = " resTableName = 'wt_SeqMediaAsset' or resTableName = 'wt_MediaAsset'";
+		if (resTableNames!=null) {
+			String[] tableNames = resTableNames.split(",");
+			if (tableNames.length>0) {
+				orstr = "";
+				for (String str : tableNames) {
+					orstr += " or resTableName = '"+str+"'";
+				}
+				orstr = orstr.substring(3);
+			}
+		}
+		m.put("orByClause", orstr);
+		m.put("personId", personId);
+		List<PersonRefPo> pfs = personRefDao.queryForList("getListBy", m);
+		if (pfs!=null && pfs.size()>0) {
+			return pfs;
+		}
+		return null;
+	}
+	
 	public List<Map<String, Object>> getPersonByPId(String resId, String resTableName) {
 		List<PersonRefPo> pfs = getPersonRefsBy(resTableName, resId);
 		if (pfs!=null && pfs.size()>0) {
