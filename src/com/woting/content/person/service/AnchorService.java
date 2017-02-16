@@ -11,7 +11,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import com.greenpineyu.fel.parser.FelParser.array_return;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
+import com.woting.cm.core.person.persis.po.PersonRefPo;
+import com.woting.cm.core.person.service.PersonService;
 import com.woting.content.manage.dict.service.DictContentService;
 
 public class AnchorService {
@@ -19,6 +22,8 @@ public class AnchorService {
 	private DataSource DataSource;
 	@Resource
 	private DictContentService dictContentService;
+	@Resource
+	private PersonService personService;
 
 	public Map<String, Object> getPersonList(String searchWord,String sourceId, String statusType, int page, int pageSize) {
 		Map<String, Object> mapall = new HashMap<>();
@@ -119,6 +124,15 @@ public class AnchorService {
 		if (ls.size()>0) {
 			return ls;
 		}
+		return null;
+	}
+
+	public Map<String, Object> getPersonContentList(String personId, String mediaType, int sortType, int page, int pageSize) {
+		List<PersonRefPo> perfs = new ArrayList<>();
+		if (mediaType==null) personService.getPersonRefByPIdAndMediaType(personId, null);
+		else if (mediaType.equals("SEQU")) personService.getPersonRefByPIdAndMediaType(personId, "wt_SeqMediaAsset");
+		else if (mediaType.equals("AUDIO")) personService.getPersonRefByPIdAndMediaType(personId, "wt_MediaAsset");
+		
 		return null;
 	}
 
