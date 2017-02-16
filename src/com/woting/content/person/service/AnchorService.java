@@ -11,9 +11,14 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import com.woting.cm.core.dict.persis.po.DictRefResPo;
+import com.woting.content.manage.dict.service.DictContentService;
+
 public class AnchorService {
 	@Resource(name = "dataSource")
 	private DataSource DataSource;
+	@Resource
+	private DictContentService dictContentService;
 
 	public Map<String, Object> getPersonList(String searchWord,String sourceId, String statusType, int page, int pageSize) {
 		Map<String, Object> mapall = new HashMap<>();
@@ -88,6 +93,33 @@ public class AnchorService {
 		mapall.put("List", ls);
 		mapall.put("Count", numall);
 		return mapall;
+	}
+
+	public List<Map<String, Object>> updatePersonStatus(String personIds, String statusType) {
+		String[] pIds = personIds.split(",");
+		List<Map<String, Object>> ls = new ArrayList<>();
+		if (pIds.length>0) {
+			for (String pId : pIds) {
+				Map<String, Object> map = new HashMap<>();
+				map.put("dictMid", "10");
+				map.put("resId", pId);
+				DictRefResPo dPo = dictContentService.getDictRefResInfo(map);
+				if (dPo!=null) {
+					dPo.setDictDid(statusType);
+					dictContentService.updataDictRefInfo(dPo);
+				} else {
+					Map<String, Object> m = new HashMap<>();
+					m.put("PersonId", pId);
+					m.put("NewStatus", statusType);
+					m.put("Message", "对应关系不存在");
+					ls.add(m);
+				}
+			}
+		}
+		if (ls.size()>0) {
+			return ls;
+		}
+		return null;
 	}
 
 }
