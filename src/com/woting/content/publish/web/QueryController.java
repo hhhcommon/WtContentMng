@@ -309,11 +309,14 @@ public class QueryController {
         try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
 		Map<String, Object> retM = queryService.getSearchContentList(searchWord, flowFlag, page, pageSize, mediaType, channelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
 		if (retM!=null) {
-			map.put("ReturnType", "1001");
-			map.put("ResultInfo", retM);
-		} else {
-			map.put("ReturnType", "1011");
-		}
+			List<Map<String, Object>> ls = (List<Map<String, Object>>) retM.get("List");
+			if (ls!=null && ls.size()>0) {
+				map.put("ReturnType", "1001");
+			    map.put("ResultInfo", retM);
+			    return map;
+			} 
+		} 
+		map.put("ReturnType", "1011");
 		return map;
 	}
 }
