@@ -10,6 +10,8 @@ $(function(){
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";
   
+  /*日期处理--日历插件*/
+  $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
   /*翻页*/
   $(".pagination span").on("click",function(){
     var data_action=$(this).attr("data_action");
@@ -68,11 +70,10 @@ $(function(){
     data1.UserId="123";
     data1.ContentFlowFlag=flowflag;
     data1.PageSize="10";
+    data1.MediaType="AUDIO";
     searchWord=$(".ri_top_li2_inp").val();
     if(seaFy==1){//seaFy=1未搜索关键词前翻页
-      if(optfy==1){//optfy=1未选中具体筛选条件前翻页
-        data1.Page=current_page;
-      }else{//optfy=2选中具体筛选条件后翻页
+      if(optfy==2){//optfy=2选中具体筛选条件后翻页
         var catalogsId=null;
         var sourceId=null;
         $(document).find(".new_cate li").each(function(){
@@ -86,15 +87,13 @@ $(function(){
             }
           }
         });
-        data1.Page=current_page;
         data1.CatalogsId=catalogsId;
         data1.SourceId=sourceId;
       }
+      data1.Page=current_page;
       getContentList(data1);
     }else{//seaFy=2搜索列表加载出来后翻页
-      if(optfy==1){//optfy=1未选中具体筛选条件前翻页
-        data1.Page=current_page;
-      }else{//optfy=2选中具体筛选条件后翻页
+      if(optfy==2){//optfy=2选中具体筛选条件后翻页
         var catalogsId=null;
         var sourceId=null;
         $(document).find(".new_cate li").each(function(){
@@ -108,10 +107,10 @@ $(function(){
             }
           }
         });
-        data1.Page=current_page;
         data1.CatalogsId=catalogsId;
         data1.SourceId=sourceId;
       }
+      data1.Page=current_page;
       data1.SearchWord=searchWord;
       getSearchList(data1);
     }
@@ -121,6 +120,7 @@ $(function(){
   data1.ContentFlowFlag=flowflag;
   data1.Page=current_page;
   data1.PageSize="10";
+  data1.MediaType="AUDIO";
   getContentList(data1);
   function getContentList(dataParam){
     $.ajax({
@@ -192,10 +192,10 @@ $(function(){
         getTime();
         $(".rtc_listBox").eq(i).addClass("playurl");
       }
-      if(resultData.ResultList[i].MediaType=="wt_SeqMediaAsset"){
-        $(".sequ_name").eq(i).text("该内容已经是专辑");
-      }else if(resultData.ResultList[i].MediaType=="wt_MediaAsset"){
+      if(resultData.ResultList[i].ContentSeqName){
         $(".sequ_name").eq(i).attr({"contentSeqId":resultData.ResultList[i].ContentSeqId}).text(resultData.ResultList[i].ContentSeqName);
+      }else{
+        $(".sequ_name").eq(i).text("未知");
       }
       if(resultData.ResultList[i].MediaSize){
         $(".sequ_sum").eq(i).text(resultData.ResultList[i].MediaSize);
@@ -347,36 +347,27 @@ $(function(){
   });
   /*根据不同的筛选条件得到不同的节目列表*/
   $(document).on("click",".trig_item,.trig_item_li",function(){
-    debugger;
     optfy=2;//选中具体筛选条件后翻页
+    anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
+    if(($(".startPubTime").val())&&($(".endPubTime").val())){
+      data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
+      data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+    }
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
-      $(".page").find("span").removeClass("disabled");
-      anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
-      if(($(".startPubTime").val())&&($(".endPubTime").val())){
-        data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-        data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-      }
       getContentList(data1);
     }else{
       seaFy=2;//seaFy=2搜索列表加载出来后翻页
-      $(".page").find("span").removeClass("disabled");
-      anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
-      if(($(".startPubTime").val())&&($(".endPubTime").val())){
-        data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-        data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-      }
       data1.SearchWord=searchWord;
       getSearchList(data1);
     }
   });
   /*点击取消所选的筛选条件*/
   $(document).on("click",".cate_img",function(){
-    $(".page").find("span").removeClass("disabled");
-    anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
     if($(".new_cate li").size()<="0"){
       optfy=1;//未选中具体筛选条件前翻页
     }
+    anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
     if(($(".startPubTime").val())&&($(".endPubTime").val())){
       data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
       data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
@@ -399,7 +390,6 @@ $(function(){
       $(".startPubTime,.endPubTime").val("");
     }else{
       optfy=2;//选中具体筛选条件后翻页
-      $(".page").find("span").removeClass("disabled");
       anew(flowflag,current_page);
       data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
       data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
@@ -416,7 +406,6 @@ $(function(){
   /*点击筛选条件日期附近的清除按钮*/
   $(".clean").on("click",function(){
     $(".startPubTime,.endPubTime").val("");
-    $(".page").find("span").removeClass("disabled");
     anew(flowflag,current_page);//在每次加载具体的资源列表时候的公共方法
     if($(".new_cate li").size()<="0"){
       optfy=1;//未选中具体筛选条件前翻页
@@ -432,7 +421,7 @@ $(function(){
   });
   /*在每次加载具体的资源列表时候的公共方法*/
   function anew(flowflag,current_page){
-    debugger;
+    $(".page").find("span").removeClass("disabled");
     destroy(data1);
     current_page=1;
     $(".currentPage").html(current_page);
@@ -440,6 +429,7 @@ $(function(){
     data1.PageSize="10";
     data1.Page=current_page;
     data1.ContentFlowFlag=flowflag;
+    data1.MediaType="AUDIO";
     if($(".new_cate li").size()>"0"){
       optfy=2;//选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
@@ -644,10 +634,10 @@ $(function(){
         getTime();
         $(".rtc_listBox").eq(i).addClass("playurl");
       }
-      if(resultData.ResultInfo.List[i].MediaType=="wt_SeqMediaAsset"){
-        $(".sequ_name").eq(i).text("该内容已经是专辑");
-      }else if(resultData.ResultInfo.List[i].MediaType=="wt_MediaAsset"){
+      if(resultData.ResultInfo.List[i].ContentSeqName){
         $(".sequ_name").eq(i).attr({"contentSeqId":resultData.ResultInfo.List[i].ContentSeqId}).text(resultData.ResultInfo.List[i].ContentSeqName);
+      }else{
+        $(".sequ_name").eq(i).text("未知");
       }
       if(resultData.ResultInfo.List[i].MediaSize){
         $(".sequ_sum").eq(i).text(resultData.ResultInfo.List[i].MediaSize);
