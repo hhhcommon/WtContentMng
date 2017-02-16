@@ -7,13 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
@@ -115,6 +111,7 @@ public class SubscribeThread extends Thread {
 				                dataMap.put("NewMediaList", newMediaList);
 				                MapContent mc=new MapContent(dataMap);
 				                nMsg.setMsgContent(mc);
+				                dataMap.put("_AFFIRMTYPE", "3");
 				                dataMap.put("_TOUSERS", ownerIds);
 				                sco.addSendMsg(nMsg);
 				                System.out.println("订阅推送信息"+JsonUtils.objToJson(nMsg));

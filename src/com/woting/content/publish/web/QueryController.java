@@ -284,7 +284,7 @@ public class QueryController {
 			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
 		String channelId = null;
 		if (m.containsKey("ChannelId"))
-			channelId = (String) m.get("CatalogsId");
+			channelId = (String) m.get("ChannelId");
 		String publisherId = null; 
 		if (m.containsKey("SourceId"))
 			publisherId = (String) m.get("SourceId");
