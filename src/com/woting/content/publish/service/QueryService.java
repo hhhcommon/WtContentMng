@@ -852,9 +852,9 @@ public class QueryService {
 			else sql = sql.replace("#ChannelIdCase#", "");
 			if (publisherId!=null) sql = sql.replace("#PublisherId#", "and cha.publisherId = "+publisherId);
 			else sql = sql.replace("#PublisherId#", "");
-			if (begincontentpubtime!=null) sql = sql.replace("#BeginPubTimeCase#", "and cha.pubTime > "+begincontentctime);
+			if (begincontentpubtime!=null) sql = sql.replace("#BeginPubTimeCase#", "and cha.pubTime > '"+begincontentctime+"'");
 			else sql = sql.replace("#BeginPubTimeCase#", "");
-			if (endcontentpubtime!=null) sql = sql.replace("#EndPubTime#", "and cha.pubTime < "+endcontentpubtime);
+			if (endcontentpubtime!=null) sql = sql.replace("#EndPubTime#", "and cha.pubTime < '"+endcontentpubtime+"'");
 			else sql = sql.replace("#EndPubTime#", "");
 			if (mediaType==null) sql = sql.replace("#MediaType#", "");
 			else if(mediaType.equals("AUDIO")) sql = sql.replace("#MediaType#", "and cha.assetType='wt_MediaAsset'");
