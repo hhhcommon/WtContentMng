@@ -516,6 +516,7 @@ $(function(){
     e = e || window.event;
     var keycode = e.which ? e.which : e.keyCode;
     if(keycode == 13){//键盘上的enter
+      //每次搜索时都要清除筛选条件，search的优先级大于filters
       searchList();//加载搜索列表
     }
   });
