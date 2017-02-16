@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+  <title>主播--节目详情页</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+	
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;background: #fff;}
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.fl{
+  float: left;
+}
+.detail{
+  width:1090px;
+  min-width:850px;
+  height:auto;
+  margin:auto;
+  border:1px solid red;
+}
+.detail_content{
+  width:100%;
+  height:auto;
+}
+.dc_top{
+  width:100%;
+  height:400px;
+}
+.detail_title,.source{
+  width:100%;
+  height: 25px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-left:20px;
+  float: left;
+}
+.dct_left,.dct_right{
+  width:515px;
+  margin-left: 20px;
+  padding:0px 0px 15px 20px;
+  border:1px solid red;
+  height: 303px;
+}
+.dctl_title,.dctr_title{
+  color:#000;
+  font-weight:bolder;
+}
+.binfo{
+  width:330px;
+  height:25px;
+  line-height: 25px;
+}
+.cw{
+  color: #000;
+  font-weight:bold;
+}
+.picture{
+  width:100px;
+  height:100px;
+  border:1px solid red;
+  position: absolute;
+  margin-top:-20px;
+  margin-left: 370px;
+}
+.sign,.brief{
+  padding-right:20px;
+  overflow: hidden;
+}
+.sign1,.brief1{
+  display: inline-block;
+  overflow: hidden;
+  margin-left: 55px;
+  margin-top: -20px;
+  line-height: 25px;
+}
+.picture1{
+  display: block;
+  width:70px;
+  height:70px;
+}
+.picture1 img,.idphoto1  div img,.dcbl_img img{
+  width:100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+.idphoto1{
+  display: block;
+  width:110px;
+  height:110px;
+  border:1px solid red;
+}
+.gallery > div{
+  width:110px;
+  height:110px;
+  position: relative;
+  float: left;
+}
+.gallery > div > img{
+  width: 110px;
+  transition: .1s transform;
+  transform: translateZ(0);
+}
+.gallery > div:hover{
+  z-index: 1;
+}
+.gallery > div:hover > img{
+  transform: scale(1.5, 1.5);
+  transition: .3s transform;
+}
+.cf:before, .cf:after{
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.cf:after{
+  clear: both;
+}
+.dc_bottom{
+  width: calc( 100% - 40px);
+  height: auto;
+  margin-left: 20px;
+  border: 1px solid #000;
+}
+.dcb_title{
+  padding: 20px 0px 0px 0px;
+}
+.dcb_con1{
+  width: 100%;
+  height: 40px;
+  background: #f5f5f5;
+  border: 1px solid #dedede;
+  overflow: hidden;
+}
+.dcbc_txt{
+  width: 100px;
+  height: 20px;
+  line-height: 20px;
+  color: #000;
+  margin-top: 10px;
+  font-size: 16px;
+  font-family: "微软雅黑";
+  text-align: center;
+}
+.dcbc_txt1{
+  margin: 10px 420px 0px 0px;
+}
+.dcbc_txt2{
+  border-left: 2px solid #d8d8d8;
+}
+.dcbc_txt3{
+  border-left: 2px solid #d8d8d8;
+}
+.dcbc_txt4{
+  width:200px;
+  border-left: 2px solid #d8d8d8;
+}
+.dcb_con2{
+  width: 100%;
+  overflow: auto;
+}
+.dcb_listBox{
+  width: calc(100% - 15px );
+  height: 145px;
+  margin-left: 15px;
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+}
+.dcbl_img{
+  width: 80px;
+  height: 80px;
+  margin-top: 15px;
+  margin-right: 15px;
+  border: 1px solid black;
+}
+.dcbl_con{
+  width: 415px;
+  height: 100%;
+  float: left;
+  color: rgb(173,172,172);
+}
+.dcbl_con_p{
+  color: #000;
+  font-size: 14px;
+  font-weight: bolder;
+  margin-top: 15px;
+}
+.dcbl_con_tags,.dcbl_con_desc{
+  overflow: hidden;
+  width: 415px;
+  color: #000;
+}
+.dcbl_con_tag1{
+  font-weight: bolder;
+}
+.dcbl_con_tag1s{
+  overflow: hidden;
+  position: relative;
+  margin-left: 5px;
+  width: 365px;
+}
+.dcbl_con_tag2{
+  padding: 0px 5px;
+}
+.dcbl_con_desc1{
+  margin-top: 5px;
+  font-weight: bolder;
+}
+.dcbl_con_desc2{
+  position: relative;
+  margin-left: 10px;
+  margin-top: 7px;
+  width: 360px;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.channels,.playcount,.episodes{
+  color: #000;
+  padding: 0px 10px;
+  text-align: center;
+  position: relative;
+  top: 45px;
+  width: 110px;
+}
+.episodes{
+  text-indent:-50px;
+}
+.time{
+  color: #000;
+  width: 190px;
+  text-align: center;
+  position: relative;
+  top: 45px;
+  text-indent:-35px;
+}
+.playcount{
+  text-indent:-35px;
+}
+</style>
+<body>
+<div class="detail">
+  <div class="containers">
+    <div class="detail_content">
+      <div class="dc_top">
+        <div class="detail_title">主播管理>主播列表>田小草</div>
+        <div class="source">来自&nbsp;主播平台注册用户</div>
+        <div class="dct_left fl">
+          <h3 class="dctl_title">基本资料</h3>
+          <div class="binfo">
+            <span>用&nbsp;&nbsp;户&nbsp;&nbsp;Id:</span>
+            <span class="userId cw">uuid_0005</span>
+          </div>
+          <div class="picture">
+            <span>头像:</span>
+            <div class="picture1"><img src="" alt="个人头像"/></div>
+          </div>
+          <div class="binfo">
+            <span>昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称:</span>
+            <span class="nickname cw">田小草</span>
+          </div>
+          <div class="binfo">
+            <span>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别:</span>
+            <span class="sex cw">女</span>
+          </div>
+          <div class="binfo">
+            <span>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机:</span>
+            <span class="phone cw">18456214152</span>
+          </div>
+          <div class="binfo">
+            <span>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱:</span>
+            <span class="email cw">4567894564@qq.com</span>
+          </div>
+          <div class="sign">
+            <span>个人签名:</span>
+            <span class="sign1 cw">个人签名个人签名个人人签名个人签名个人签名
+                      人签名个人签名个人签名人签名个人签名个人签名签名个人签名个人签名个人签名</span>
+          </div>
+          <div class="brief">
+            <span>个人简介:</span>
+            <span class="brief1 cw">个人简介个人简介个人人简介个人简介个人简介个人简介个
+                      简介个人简介个人简介个人人简介个人简介个人简介人简介个人简介个人简介个人简介个
+                      个人简介个简介个人简介个人简介个人简介</span>
+          </div>
+        </div>
+        <div class="dct_right fl">
+          <h3 class="dctr_title">认证资料</h3>
+          <div class="realname binfo">
+            <span>真实姓名:</span>
+            <span class="realname1 cw">张杨果而</span>
+          </div>
+          <div class="phnumber binfo">
+            <span>联系地址:</span>
+            <span class="phnumber1 cw">北京市东花市北里20号楼6单元501室</span>
+          </div>
+          <div class="zipcode binfo">
+            <span>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编:</span>
+            <span class="zipcode1 cw">461200</span>
+          </div>
+          <div class="idcode binfo">
+            <span>身份证号:</span>
+            <span class="idcode1 cw">461200123456789456</span>
+          </div>
+          <div class="idphoto">
+            <span class="fl">身份证照片:</span>
+            <div class="idphoto1 fl gallery cf">
+              <div>
+                <img src="" alt="身份证照片" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dc_bottom">
+        <div class="dcb_title cw">
+          <span class="dcbt1">天之行专辑(50)</span>
+          <span class="dcbt2">节目(620)</span>
+        </div>
+        <div class="dcb_con1">
+          <span class="dcbc_txt fl dcbc_txt1">所有专辑</span>
+          <span class="dcbc_txt fl dcbc_txt2">栏目</span>
+          <span class="dcbc_txt fl dcbc_txt3">播放量</span>
+          <span class="dcbc_txt fl dcbc_txt3">集数</span>
+          <span class="dcbc_txt fl dcbc_txt4">最近更新时间</span>
+        </div>
+        <div class="dcb_con2">
+          <div class="dcb_listBox">
+            <div class="dcbl_img fl">
+              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
+            </div>
+            <div class="dcbl_con fl">
+              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
+              <div class="dcbl_con_tags">
+                <span class="dcbl_con_tag1 fl">标签：</span>
+                <ul class="dcbl_con_tag1s fl">
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                </ul>
+              </div>
+              <div class="dcbl_con_desc">
+                <span class="dcbl_con_desc1 fl">简介：</span>
+                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
+                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
+                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
+                                声新鲜血液。
+                </span>
+              </div>
+            </div>
+            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
+            <span class="playcount fl">643</span>
+            <span class="episodes fl">5</span>
+            <span class="time fl">2017-2-14 13:12:32</span>
+          </div>
+          <div class="dcb_listBox">
+            <div class="dcbl_img fl">
+              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
+            </div>
+            <div class="dcbl_con fl">
+              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
+              <div class="dcbl_con_tags">
+                <span class="dcbl_con_tag1 fl">标签：</span>
+                <ul class="dcbl_con_tag1s fl">
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                </ul>
+              </div>
+              <div class="dcbl_con_desc">
+                <span class="dcbl_con_desc1 fl">简介：</span>
+                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
+                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
+                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
+                                声新鲜血液。
+                </span>
+              </div>
+            </div>
+            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
+            <span class="playcount fl">643</span>
+            <span class="episodes fl">5</span>
+            <span class="time fl">2017-2-14 13:12:32</span>
+          </div>
+          <div class="dcb_listBox">
+            <div class="dcbl_img fl">
+              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
+            </div>
+            <div class="dcbl_con fl">
+              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
+              <div class="dcbl_con_tags">
+                <span class="dcbl_con_tag1 fl">标签：</span>
+                <ul class="dcbl_con_tag1s fl">
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                </ul>
+              </div>
+              <div class="dcbl_con_desc">
+                <span class="dcbl_con_desc1 fl">简介：</span>
+                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
+                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
+                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
+                                声新鲜血液。
+                </span>
+              </div>
+            </div>
+            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
+            <span class="playcount fl">643</span>
+            <span class="episodes fl">5</span>
+            <span class="time fl">2017-2-14 13:12:32</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
