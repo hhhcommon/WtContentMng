@@ -846,19 +846,19 @@ public class QueryService {
 					+ " where kws.kwName LIKE '%"+searchWord+"%' and kwsf.kwId = kws.id and cha.assetType = kwsf.resTableName and kwsf.resId = cha.assetId #FlowFlagCase# #ChannelIdCase# #PublisherId# #MediaType# #BeginPubTimeCase# #EndPubTime#)) res"
 					+ " ORDER BY res.sort ,res.pubTime DESC) ress"
 					+ " GROUP BY ress.assetId ORDER BY ress.sort ,ress.pubTime DESC";
-			if (flowFlag!=null) sql = sql.replace("#FlowFlagCase#", "and cha.flowFlag = "+flowFlag);
+			if (flowFlag!=null) sql = sql.replace("#FlowFlagCase#", " and cha.flowFlag = "+flowFlag);
 			else sql = sql.replace("#FlowFlagCase#", "");
-			if (channelId!=null) sql = sql.replace("#ChannelIdCase#", "and cha.channelId = "+channelId);
+			if (channelId!=null) sql = sql.replace("#ChannelIdCase#", " and cha.channelId = '"+channelId+"'");
 			else sql = sql.replace("#ChannelIdCase#", "");
-			if (publisherId!=null) sql = sql.replace("#PublisherId#", "and cha.publisherId = "+publisherId);
+			if (publisherId!=null) sql = sql.replace("#PublisherId#", " and cha.publisherId = '"+publisherId+"'");
 			else sql = sql.replace("#PublisherId#", "");
-			if (begincontentpubtime!=null) sql = sql.replace("#BeginPubTimeCase#", "and cha.pubTime > '"+begincontentctime+"'");
+			if (begincontentpubtime!=null) sql = sql.replace("#BeginPubTimeCase#", " and cha.pubTime > '"+begincontentctime+"'");
 			else sql = sql.replace("#BeginPubTimeCase#", "");
-			if (endcontentpubtime!=null) sql = sql.replace("#EndPubTime#", "and cha.pubTime < '"+endcontentpubtime+"'");
+			if (endcontentpubtime!=null) sql = sql.replace("#EndPubTime#", " and cha.pubTime < '"+endcontentpubtime+"'");
 			else sql = sql.replace("#EndPubTime#", "");
 			if (mediaType==null) sql = sql.replace("#MediaType#", "");
-			else if(mediaType.equals("AUDIO")) sql = sql.replace("#MediaType#", "and cha.assetType='wt_MediaAsset'");
-			else if(mediaType.equals("SEQU")) sql = sql.replace("#MediaType#", "and cha.assetType='wt_SeqMediaAsset'");
+			else if(mediaType.equals("AUDIO")) sql = sql.replace("#MediaType#", " and cha.assetType='wt_MediaAsset'");
+			else if(mediaType.equals("SEQU")) sql = sql.replace("#MediaType#", " and cha.assetType='wt_SeqMediaAsset'");
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			String maIds = "";
