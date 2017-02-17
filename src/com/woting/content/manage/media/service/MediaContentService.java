@@ -24,6 +24,7 @@ import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
+import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.woting.passport.UGA.persis.pojo.UserPo;
@@ -496,8 +497,7 @@ public class MediaContentService {
 									mediaService.updateCha(cha);
 								}
 							}
-						} else
-							return false;
+						} else return false;
 						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'",
 								"wt_MediaAsset");
 						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
@@ -512,6 +512,7 @@ public class MediaContentService {
 							}
 						} else
 							return false;
+						new SubscribeThread(mediaId).start();
 						return true;
 					}
 				}

@@ -46,6 +46,14 @@ public class PersonService {
 		return null;
 	}
 	
+	public int getPersonRefsByPIdAndResTableName(String personId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resTableName", resTableName);
+		m.put("personId", personId);
+		return personRefDao.getCount("getCount", m);
+		
+	}
+	
 	public List<PersonRefPo> getPersonRefByPId(String personId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("resTableName", resTableName);
