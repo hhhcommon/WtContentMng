@@ -26,6 +26,33 @@ public class AnchorController {
 	 * @param request
 	 * @return
 	 */
+	@RequestMapping(value = "/person/getPersonInfo.do")
+	@ResponseBody
+	public Map<String, Object> getPersonInfo(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String personId = m.get("PersonId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(personId) || personId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无主播Id");
+			return map;
+		}
+		Map<String, Object> retM = anchorService.getPersonInfo(personId);
+		if (retM!=null) {
+			map.put("ReturnType", "1001");
+			map.put("ResultInfo", retM);
+			return map;
+		} 
+		map.put("ReturnType", "1011");
+		return map;
+	}
+	
+	/**
+	 * 获得主播列表请求
+	 * 
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/person/getPersons.do")
 	@ResponseBody
 	public Map<String, Object> getPersons(HttpServletRequest request) {

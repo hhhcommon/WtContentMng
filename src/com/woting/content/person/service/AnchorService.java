@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
+import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
 import com.woting.content.manage.dict.service.DictContentService;
@@ -349,6 +350,34 @@ public class AnchorService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Map<String, Object> getPersonInfo(String personId) {
+		PersonPo po = personService.getPersonPoById(personId);
+		if (po!=null) {
+			Map<String, Object> m = new HashMap<>();
+			int smanum = personService.getPersonRefsByPIdAndResTableName(personId, "wt_SeqMediaAsset");
+			int manum = personService.getPersonRefsByPIdAndResTableName(personId, "wt_MediaAsset");
+			m.put("PersonId", personId);
+			m.put("PersonNick", po.getpName());
+			m.put("PersonName", po.getpName());
+			m.put("SeqMediaSize", smanum);
+			m.put("MediaSize", manum);
+			m.put("PersonAge", po.getAge());
+			m.put("PersonPhone", po.getPhoneNum());
+			m.put("PersonImg", po.getPortrait());
+			m.put("PersonEmail", po.getEmail());
+			m.put("PersonDesc", po.getDescn());
+			m.put("PersonSign", po.getDescn());
+			m.put("PersonAddress", "北京");
+			m.put("PostCode", "100000");
+			m.put("IDNumber", "478XX645X56622X4X454X5");
+			m.put("IDImg", null);
+			m.put("CTime", po.getcTime());
+			m.put("Publisher", po.getpSource());
+			return m;
 		}
 		return null;
 	}
