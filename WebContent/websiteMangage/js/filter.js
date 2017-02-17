@@ -321,17 +321,17 @@ function getLocalTime(cptime){
   cptime=new Date(parseInt(cptime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");  
   return cptime;
 }
-/*点击跳到对应的详情页*/
-$(document).on("click",".rtc_listBox .rtcl_img",function(){
-  var contentId=$(this).parent(".rtc_listBox").attr("contentid");
-  var seqId=$(this).siblings(".sequ_name").attr("contentseqid");
-  if($(this).parent(".rtc_listBox").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
-    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
-  }else if($(this).parent(".rtc_listBox").attr("mediatype")=="wt_MediaAsset"){//节目
-    $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
-  }else{//电台
-    
-  }
-  $("#myIframe", parent.document).hide();
-  $("#newIframe", parent.document).show();
-});
+///*节目管理--点击跳到对应的详情页*/
+//$(document).on("click",".rtc_listBox .rtcl_img",function(){
+//var contentId=$(this).parent(".rtc_listBox").attr("contentid");
+//var seqId=$(this).siblings(".sequ_name").attr("contentseqid");
+//if($(this).parent(".rtc_listBox").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
+//  $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
+//}else if($(this).parent(".rtc_listBox").attr("mediatype")=="wt_MediaAsset"){//节目
+//  $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+//}else{//电台
+//  
+//}
+//$("#myIframe", parent.document).hide();
+//$("#newIframe", parent.document).show();
+//});

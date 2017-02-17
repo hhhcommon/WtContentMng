@@ -11,8 +11,10 @@
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="css/globalplayer.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
+  <script src="js/globalplayer.js"></script>
   
 </head>
 <style>
@@ -75,13 +77,13 @@ body{overflow: auto;background: #fff;}
 .dcl_jmcontent12{
   overflow: hidden;
   height: auto;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 .dcl_jmcontent1{
   float: left;
   width:180px;
   height:180px;
-  position: absolute;
+  position: relative;
   margin-top:20px;
 }
 .dcl_jmcontent1 img{
@@ -125,6 +127,7 @@ body{overflow: auto;background: #fff;}
 }
 .dcl_jmcontent2 .comZj{
   color:#0077c7;
+  cursor: pointer;
 }
 .tagss{
 	overflow: hidden;
@@ -165,7 +168,6 @@ body{overflow: auto;background: #fff;}
   height:30px;
   color: #fff;
   cursor: pointer;
-  margin-top:10px;
   text-align: center;
   line-height:30px;
   float: left;
@@ -458,7 +460,7 @@ body{overflow: auto;background: #fff;}
               </div>
             </div>
             <div class="dcl_jmcontent3">
-          		<span class="revoke">撤回</span>
+          		<span class="revoke" opetype="revoke">撤回</span>
           		<span class="player">播放</span>
           	</div>
           	<div class="dcl_jmcontent4"></div>
@@ -528,6 +530,46 @@ body{overflow: auto;background: #fff;}
       </div>
     </div>
   </div>
+  <!--s:全局播放器-->
+  <div class="globalplayer">
+    <audio src="" class="audio" controls style="display: none;"></audio>
+    <!--s:收起状态-->
+    <div class="glp_mini">
+      <img class="sound_face" src="img/launch.png">
+    </div>
+    <!--e:收起状态-->
+    <!--s:展开状态-->
+    <div class="glp_block">
+      <div class="glp_panel">
+        <div class="controls">
+          <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
+          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+          <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
+        </div>
+        <div class="player_panel">
+          <a href="#" class="title" title=""></a>
+          <div>
+            <span class="time sound_position">00:00</span>
+            <div class="player_progressbar">
+              <div class="player_playbar"></div>
+              <div class="player_circle"></div>  
+            </div>
+            <span class="time sound_duration"></span>
+          </div>
+        </div>
+        <div class="volume_panel">
+          <img src="img/volume.png" alt="音量图标" class="volume_img"/>
+          <div class="volume_progressbar">
+            <div class="volume_playbar"></div>
+            <div class="volume_circle"></div> 
+          </div>
+        </div>
+        <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
+      </div>
+    </div>
+    <!--e:展开状态-->
+  </div>
+  <!--e:全局播放器-->
 </div>
 <!--s:不通过-->
 <div class="nopass_masker"></div>
@@ -606,14 +648,29 @@ body{overflow: auto;background: #fff;}
   function fillJmDetail(resultData){
     $(".detail_title").html("节目管理> 已发布> "+resultData.ContentDetail.ContentName);
     $(".dcl_jmcontent2 .title h3").html(resultData.ContentDetail.ContentName);
+    $(".dcl_jmcontent2 .title h3").attr("contentId",resultData.ContentDetail.ContentId);
     $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
     $(".cctime").html(resultData.ContentDetail.CTime);
     $(".comZj").html(!resultData.ContentDetail.ContentSeqName?"【自定义专辑】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
-    if(resultData.ContentDetail.ContentCatalogs!=null){
-      for(var i=0;i<resultData.ContentDetail.ContentCatalogs.length;i++){
-        var li='<li class="newli"><span class="newspan" catalogId='+resultData.ContentDetail.ContentCatalogs[i].CataDid+'>'+resultData.ContentDetail.ContentCatalogs[i].CataTitle+'</span></li>';
+    $(".comZj").attr({"seqId":resultData.ContentDetail.ContentSeqId});
+    if(resultData.ContentDetail.ContentKeyWord){
+      for(var i=0;i<resultData.ContentDetail.ContentKeyWord.length;i++){
+        var li='<li class="newli"><span class="newspan" tagId='+resultData.ContentDetail.ContentKeyWord[i].TagId+'>'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</span></li>';
         $(".tags").append(li);
       }
+    }
+    if(resultData.ContentDetail.ContentPubChannels){
+      var chId,chStr="";
+      for(var i=0;i<resultData.ContentDetail.ContentPubChannels.length;i++){
+        if((chId=="")||(chStr=="")){
+          chId=resultData.ContentDetail.ContentPubChannels[i].ChannelId;
+          chStr=resultData.ContentDetail.ContentPubChannels[i].ChannelName;
+        }else{
+          chId+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelId;
+          chStr+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelName;
+        }
+      }
+      $(".dcl_jmcontent2 .title h3").attr({"channelId":chId});
     }
     $(".play2").html(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
     $(".love2").html(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
@@ -621,6 +678,9 @@ body{overflow: auto;background: #fff;}
     $(".share2").html(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
     $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
     $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
+    $(".audio").attr({"src":resultData.ContentDetail.ContentPlay});
+    $(".player_panel .title").text(resultData.ContentDetail.ContentName);
+    getTime();
   }
   /*同专辑下的所有节目*/
   var data2={"UserId":"123",
@@ -655,5 +715,97 @@ body{overflow: auto;background: #fff;}
       $(".dcr_jmlist").append(list);
     }
   }
+  
+  /*s--播放*/
+  /*点击播放*/
+  $(".player").on("click",function(){
+    $(".playerBtn").click();
+    if($(".playerBtn").hasClass("playing")){
+      $(".player").text("暂停");
+    }else{
+      $(".player").text("播放");
+    }
+  });
+  /*全局播放器面板的展开*/
+  $(".glp_mini").on("click",function(){
+    $(this).css({"left":'-60px',"transition" :"all 0.1s ease 0s"});
+    $(this).siblings(".glp_block").css({"left":'0px',"transition" :"all 0.1s ease 0s"});
+  });
+  /*实时获取播放时长和改变进度条进度*/
+  $(".audio")[0].addEventListener("timeupdate",function(){
+    if(!isNaN(this.duration)){
+      //播放进度条
+      var progressValue = this.currentTime/this.duration*($(".player_progressbar").width());
+      $('.player_circle')[0].style.left = parseInt(progressValue) + 'px';
+      $(".player_playbar").css("width",progressValue+"px");
+      //播放时长
+      if(formatTime(Math.floor(this.currentTime))!=0){
+        $(".sound_position").text(formatTime(Math.floor(this.currentTime)));
+      }
+    };
+  },false);
+  /*实现播放快进和后退*/
+  $(".player_progressbar").on("click",function(event){
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var x = e.pageX || e.clientX + scrollX;
+    var pleft=x-335;
+    var clickPlayTime=pleft*($(".audio")[0].duration)/$(".player_progressbar").width();
+    $('.player_circle')[0].style.left = parseInt(pleft) + 'px';
+    $(".player_playbar").css("width",pleft+"px");
+    $('.audio')[0].currentTime=clickPlayTime;
+    $(".sound_position").text(formatTime(Math.floor(clickPlayTime)));
+  });
+  /*实现音量的增大和减小*/
+  $(".volume_progressbar").on("click",function(event){
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var x = e.pageX || e.clientX + scrollX;
+    var pleft=x-770;
+    var clickVolume=pleft*($(".audio")[0].volume)/$(".volume_progressbar").width();
+    $('.volume_circle')[0].style.left = parseInt(pleft) + 'px';
+    $(".volume_playbar").css("width",pleft+"px");
+    $('.audio')[0].volume=clickVolume;
+  });
+  /*e--播放*/
+ 
+  /*s--撤回*/
+  $(".revoke").on("click",function(){
+    var data3={};
+    var contentIds=[];
+    var contentObj={};
+    contentObj.Id=$(".dcl_jmcontent2 .title h3").attr("contentId");
+    contentObj.ChannelIds=$(".dcl_jmcontent2 .title h3").attr("channelId");
+    contentObj.MediaType="AUDIO";
+    contentIds.push(contentObj);
+    data3.UserId="123";
+    data3.ContentIds=contentIds;
+    data3.OpeType=$(this).attr("opetype");
+    $.ajax({
+      type: "POST",
+      url:rootPath+"CM/content/updateContentStatus.do",
+      dataType:"json",
+      data:JSON.stringify(data3),
+      success: function(resultData){
+        if(resultData.ReturnType=="1001"){
+          alert("撤回成功");
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error: function(jqXHR){
+        alert("获取数据发生错误："+jqXHR.status);
+      }     
+    });
+  });
+  /*e--撤回*/
+ 
+  /*点击专辑名称跳到专辑详情页*/
+  $(".comZj").on("click",function(){
+    var seqId=$(this).attr("seqid");
+    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+seqId});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show();
+  });
 </script>
 </html>
