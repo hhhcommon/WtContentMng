@@ -127,6 +127,7 @@ public class AnchorService {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getPersonContentList(String personId, String mediaType, int sortType, int page, int pageSize) {
 		Map<String, Object> mapall = new HashMap<>();
 		List<PersonRefPo> perfs = new ArrayList<>();
@@ -145,8 +146,8 @@ public class AnchorService {
 				for (PersonRefPo personRefPo : perfs) {
 					ids += " or persf.resId = '"+personRefPo.getResId()+"'";
 				}
+				conn = DataSource.getConnection();
 				if (sortType==1) {
-					conn = DataSource.getConnection();
 				     sql = "SELECT res.*,mapc.playCount FROM"
 				     		+ " (SELECT perf.personId,perf.resId,perf.resTableName,"
 				     		+ " (CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maTitle WHEN 'wt_SeqMediaAsset' THEN sma.smaTitle END) title, "
@@ -238,6 +239,7 @@ public class AnchorService {
 					sql += " and "+ids.replace("persf", "cha").substring(3)
 							+ " ORDER BY ch.sort DESC, ch.pubTime DESC LIMIT "+(page-1)*pageSize+","+(page*pageSize);
 					try {
+						ps = conn.prepareStatement(sql);
 						rs = ps.executeQuery();
 						while (rs != null && rs.next()) {
 							Map<String, Object> oneDate = new HashMap<String, Object>();
