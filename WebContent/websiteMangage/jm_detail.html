@@ -802,8 +802,8 @@ body{overflow: auto;background: #fff;}
  
   /*点击专辑名称跳到专辑详情页*/
   $(".comZj").on("click",function(){
-    var seqId=$(this).attr("seqid");
-    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+seqId});
+    var seqIds=$(this).attr("seqId");
+    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+seqIds});
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
   });
