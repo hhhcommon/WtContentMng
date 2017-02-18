@@ -262,6 +262,7 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/searchContents.do")
 	@ResponseBody
 	public Map<String, Object> getSearchContents(HttpServletRequest request) {

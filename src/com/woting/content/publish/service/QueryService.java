@@ -19,6 +19,8 @@ import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
@@ -51,6 +53,8 @@ public class QueryService {
 	private BroadcastProService broadcastProService;
 	@Resource
 	private MediaContentService mediaContentService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
 
 	/**
 	 * 查询列表
@@ -187,7 +191,7 @@ public class QueryService {
 				oneDate.put("PersonId", rs.getString("personId"));
 				oneDate.put("PersonName", rs.getString("pName"));
 				oneDate.put("MediaSize", 1);
-				ids += " or persf.resId = '"+rs.getString("assetId")+"'";//TODO
+				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
 				if (rs.getString("assetType").equals("wt_MediaAsset")) {
 					maids += " or mId = '"+rs.getString("assetId")+"'";
 				}
@@ -588,10 +592,11 @@ public class QueryService {
 			for (ChannelAssetPo channelAssetPo : chas) {
 				try {
 					channelAssetPo.setFlowFlag(flowFlag);
-				    if (flowFlag==2) {
-					    channelAssetPo.setPubTime(new Timestamp(System.currentTimeMillis()));
-				    }
+				    if (flowFlag==2) channelAssetPo.setPubTime(new Timestamp(System.currentTimeMillis()));
 				    mediaService.updateCha(channelAssetPo);
+				    if (flowFlag==2) updateChannelAssetProgress(channelAssetPo.getId(), null, 1, null);
+				    else if(flowFlag==3) updateChannelAssetProgress(channelAssetPo.getId(), null, 2, null);
+				    else if(flowFlag==4) updateChannelAssetProgress(channelAssetPo.getId(), null, 1, null);
 				    num++;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -1057,8 +1062,17 @@ public class QueryService {
 		return mapall;
 	}
 
-	public Map<String, Object> getPersonStatus() {
-		
-		return null;
+	private void updateChannelAssetProgress(String channelAssetId, String checkId, int reFlowFlag, String reDescn) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("chaId", channelAssetId);
+		m.put("reFloeFlag", 0);
+		ChannelAssetProgressPo chap = channelAssetProgressService.getChannelAssetProgress(m);
+		if (chap!=null) {
+			chap.setCheckerId(null);
+			chap.setReFlowFlag(reFlowFlag);
+			chap.setReDescn(reDescn);
+			chap.setModifyTime(new Timestamp(System.currentTimeMillis()));
+			channelAssetProgressService.updateChannelAssetProgress(chap);
+		}
 	}
 }

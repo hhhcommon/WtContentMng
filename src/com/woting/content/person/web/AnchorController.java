@@ -53,6 +53,7 @@ public class AnchorController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/person/getPersons.do")
 	@ResponseBody
 	public Map<String, Object> getPersons(HttpServletRequest request) {
@@ -89,6 +90,7 @@ public class AnchorController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/person/getPersonContents.do")
 	@ResponseBody
 	public Map<String, Object> getPersonContents(HttpServletRequest request) {

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
@@ -43,6 +45,8 @@ public class SeqContentService {
 	private ComplexRefService complexRefService;
 	@Resource
 	private PersonService personService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
 
 	/**
 	 * 查询主播的资源列表
@@ -411,12 +415,15 @@ public class SeqContentService {
 				List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
 				if (chas != null && chas.size() > 0) {
 					for (ChannelAssetPo cha : chas) {
-						cha.setFlowFlag(flowflag);
-						if (flowflag == 2) {
+						if (flowflag!=2) {
+							cha.setFlowFlag(1);
+							cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+						} else {
 							cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 						}
 						// 发布专辑
 						mediaService.updateCha(cha);
+						insertChannelAssetProgress(cha.getId(), 1, null);
 					}
 					// 发布专辑下级节目
 					for (MediaAssetPo mediaAssetPo : malist) {
@@ -429,8 +436,19 @@ public class SeqContentService {
 					map.put("Message", "专辑发布失败");
 				}
 			} else {
-				map.put("ReturnType", "1011");
-				map.put("Message", "修改失败");
+				if (flowflag==4) {
+					List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
+					if (chas != null && chas.size() > 0) {
+						for (ChannelAssetPo channelAssetPo : chas) {
+							insertChannelAssetProgress(channelAssetPo.getId(), 2, null);
+							map.put("ReturnType", "1001");
+							map.put("Message", "申请撤回成功");
+						}
+					}
+				} else {
+					map.put("ReturnType", "1011");
+					map.put("Message", "修改失败");
+				}
 			}
 		}
 		return map;
@@ -480,5 +498,14 @@ public class SeqContentService {
 			}
 		}
 		return null;
+	}
+	
+	private void insertChannelAssetProgress(String channelAssetId,int applyFlowFlag, String applyDescn) {
+		ChannelAssetProgressPo cPo = new ChannelAssetProgressPo();
+		cPo.setId(SequenceUUID.getPureUUID());
+		cPo.setChaId(channelAssetId);
+		cPo.setApplyFlowFlag(applyFlowFlag);
+		cPo.setApplyDescn(applyDescn);
+		channelAssetProgressService.insertChannelAssetProgress(cPo);
 	}
 }

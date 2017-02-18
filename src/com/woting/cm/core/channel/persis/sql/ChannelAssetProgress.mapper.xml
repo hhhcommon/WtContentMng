@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="A_CHANNELASSETPROGRESS">
+  <!-- 对象定义:栏目 -->
+  <resultMap id="BaseResultMap" type="channelAssetProgress">
+    <id     column="id"            property="id"            jdbcType="VARCHAR"/>
+    <result column="chaId"         property="chaId"         jdbcType="VARCHAR"/>
+    <result column="checkerId"     property="checkerId"     jdbcType="VARCHAR"/>
+    <result column="applyFlowFlag" property="applyFlowFlag" jdbcType="INTEGER"/>
+    <result column="reFlowFlag"    property="reFlowFlag"    jdbcType="INTEGER"/>
+    <result column="applyDescn"    property="applyDescn"    jdbcType="VARCHAR"/>
+    <result column="reDescn"       property="reDescn"       jdbcType="VARCHAR"/>
+    <result column="cTime"         property="cTime"         jdbcType="TIMESTAMP"/>
+    <result column="modifyTime"    property="modifyTime"    jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <!-- 所有列 -->
+  <sql id="Base_Column_List">
+    id, chaId, checkerId, applyFlowFlag, reFlowFlag, applyDescn, reDescn, cTime, modifyTime
+  </sql>
+
+  <!-- 条件子句 -->
+  <sql id="WhereClauseByEntiey">
+    <where>
+      <trim prefix="(" suffix=")" prefixOverrides="and">
+        <if test="id!=null">and id=#{id,jdbcType=VARCHAR}</if>
+        <if test="chaId!=null">and chaId=#{chaId,jdbcType=VARCHAR}</if>
+        <if test="checkerId!=null">and checkerId=#{checkerId,jdbcType=VARCHAR}</if>
+        <if test="applyFlowFlag!=null">and applyFlowFlag=#{applyFlowFlag,jdbcType=INTEGER}</if>
+        <if test="reFlowFlag!=null">and reFlowFlag=#{reFlowFlag,jdbcType=INTEGER}</if>
+        <if test="applyDescn!=null">and applyDescn=#{applyDescn,jdbcType=VARCHAR}</if>
+        <if test="reDescn!=null">and reDescn=#{reDescn,jdbcType=VARCHAR}</if>
+        <if test="cTime!=null">and cTime=#{cTime,jdbcType=TIMESTAMP}</if>
+        <if test="modifyTime!=null">and modifyTime=#{modifyTime,jdbcType=TIMESTAMP}</if>
+      </trim>
+    </where>
+  </sql>
+
+  <!-- 获得记录条数-->
+  <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(*) from wt_ChannelAssetProgress <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+
+  <!-- 获得列表 -->
+  <select id="getList" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/>from wt_ChannelAssetProgress <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+
+  <!-- 获得一条数据 -->
+  <select id="getInfo" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/>from wt_ChannelAssetProgress <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+
+  <!-- 新增数据 -->
+  <insert id="insert" parameterType="java.util.Map">
+    insert into wt_ChannelAssetProgress
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="chaId!=null">chaId,</if>
+      <if test="checkerId!=null">checkerId,</if>
+      <if test="applyFlowFlag!=null">applyFlowFlag,</if>
+      <if test="reFlowFlag!=null">reFlowFlag,</if>
+      <if test="applyDescn!=null">applyDescn,</if>
+      <if test="reDescn!=null">reDescn,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="chaId!=null">#{chaId,jdbcType=VARCHAR},</if>
+      <if test="checkerId!=null">#{checkerId,jdbcType=VARCHAR},</if>
+      <if test="applyFlowFlag!=null">#{applyFlowFlag,jdbcType=INTEGER},</if>
+      <if test="reFlowFlag!=null">#{reFlowFlag,jdbcType=INTEGER},</if>
+      <if test="applyDescn!=null">#{applyDescn,jdbcType=VARCHAR},</if>
+      <if test="reDescn!=null">#{reDescn,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+
+  <!-- 修改 根据主键-->
+  <update id="update" parameterType="java.util.Map">
+    update wt_ChannelAssetProgress
+    <set>
+      <if test="checkerId!=null">checkerId=#{ownerType,jdbcType=VARCHAR},</if>
+      <if test="reFlowFlag!=null">reFlowFlag=#{reFlowFlag,jdbcType=INTEGER},</if>
+      <if test="reDescn!=null">reDescn=#{reDescn,jdbcType=VARCHAR},</if>
+      <if test="modifyTime!=null">modifyTime=#{modifyTime,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
+
+  <!-- 删除数据 -->
+  <delete id="delete" parameterType="java.lang.String">
+    delete from wt_ChannelAssetProgress where id=#{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="delByIds" parameterType="java.lang.String">
+    delete from wt_ChannelAssetProgress where ${value}
+  </delete>
+  <delete id="deleteByEntity" parameterType="java.util.Map">
+    delete from wt_ChannelAssetProgress <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+</mapper>

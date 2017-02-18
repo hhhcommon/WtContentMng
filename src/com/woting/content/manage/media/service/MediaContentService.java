@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
@@ -21,6 +23,7 @@ import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
+import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
@@ -33,7 +36,7 @@ import com.woting.passport.UGA.service.UserService;
 @Service
 public class MediaContentService {
 	@Resource
-	private com.woting.cm.core.media.service.MediaService mediaService;
+	private MediaService mediaService;
 	@Resource
 	private DictContentService dictContentService;
 	@Resource
@@ -46,6 +49,8 @@ public class MediaContentService {
 	private ComplexRefService complexRefService;
 	@Resource
 	private PersonService personService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
 
 	/**
 	 * 查询主播的资源列表
@@ -490,30 +495,40 @@ public class MediaContentService {
 						if (smachas != null && smachas.size() > 0) { // 判断节目绑定专辑是否发布
 							for (ChannelAssetPo cha : smachas) {
 								if (cha.getFlowFlag() != flowflag) {
-									cha.setFlowFlag(flowflag);
-									if (flowflag == 2) {
-										cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-									}
+									cha.setFlowFlag(1);
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+									mediaService.updateCha(cha);
+									insertChannelAssetProgress(cha.getId(), 1, null);
+								} else {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
 								}
 							}
 						} else return false;
-						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'",
-								"wt_MediaAsset");
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
 						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
 							for (ChannelAssetPo cha : machas) {
 								if (cha.getFlowFlag() != flowflag) {
-									cha.setFlowFlag(flowflag);
-									if (flowflag == 2) {
-										cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-									}
+									cha.setFlowFlag(1);
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+									mediaService.updateCha(cha);
+									insertChannelAssetProgress(cha.getId(), 1, null);
+								} else {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
 								}
 							}
-						} else
-							return false;
+						} else return false;
 						new SubscribeThread(mediaId).start();
 						return true;
+					} else if (flowflag == 4) {
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
+						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
+							for (ChannelAssetPo cha : machas) {
+								insertChannelAssetProgress(cha.getId(), 2, null);
+							}
+							return true;
+						} else return false;
 					}
 				}
 			}
@@ -553,5 +568,14 @@ public class MediaContentService {
 			}
 		}
 		return null;
+	}
+	
+	private void insertChannelAssetProgress(String channelAssetId,int applyFlowFlag, String applyDescn) {
+		ChannelAssetProgressPo cPo = new ChannelAssetProgressPo();
+		cPo.setId(SequenceUUID.getPureUUID());
+		cPo.setChaId(channelAssetId);
+		cPo.setApplyFlowFlag(applyFlowFlag);
+		cPo.setApplyDescn(applyDescn);
+		channelAssetProgressService.insertChannelAssetProgress(cPo);
 	}
 }
