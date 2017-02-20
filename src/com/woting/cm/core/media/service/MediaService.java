@@ -18,10 +18,12 @@ import com.woting.WtContentMngConstants;
 import com.woting.cm.core.broadcast.persis.po.BCLiveFlowPo;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.broadcast.service.BcLiveFlowService;
+import com.woting.cm.core.channel.mem._CacheChannel;
 import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
@@ -69,6 +71,10 @@ public class MediaService {
 	private ComplexRefService complexRefService;
 	@Resource
 	private PersonService personService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
+	
+	private _CacheChannel _cc=null;
 
 	private Map<String, Object> FlowFlagState = new HashMap<String, Object>() {
 		private static final long serialVersionUID = 1L;
@@ -90,6 +96,7 @@ public class MediaService {
 		channelAssetDao.setNamespace("A_CHANNELASSET");
 		channelDao.setNamespace("A_CHANNEL");
 		dictRefDao.setNamespace("A_DREFRES");
+        _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 	}
 
 	public MaSource getMasInfoByMasId(Map<String, Object> m) {
@@ -106,8 +113,24 @@ public class MediaService {
 		return smarefpo;
 	}
 
+	public List<SeqMaRefPo> getSeqMaRefBySid(String sid, int page, int pageSize) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("sid", sid);
+		m.put("LimitByClause", (page-1)*pageSize+","+(page*pageSize));
+		List<SeqMaRefPo> list = seqMaRefDao.queryForList("getS2MRefInfoBySId", m);
+		if (list!=null && list.size()>0) {
+			return list;
+		}
+		return list;
+	}
+	
 	public List<SeqMaRefPo> getSeqMaRefBySid(String sid) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("sid", sid);
 		List<SeqMaRefPo> list = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
+		if (list!=null && list.size()>0) {
+			return list;
+		}
 		return list;
 	}
 
@@ -637,6 +660,14 @@ public class MediaService {
 		List<ChannelAssetPo> chapolist = channelAssetDao.queryForList("getListByAssetIds", param);
 		return chapolist;
 	}
+	
+	public List<ChannelAssetPo> getCHAListByAssetIds(String assetIds, String assetType) {
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("assetType", assetType);
+		param.put("assetIds", assetIds);
+		List<ChannelAssetPo> chapolist = channelAssetDao.queryForList("getChannelAssetListByAssetIds", param);
+		return chapolist;
+	}
 
 	public List<Map<String, Object>> getCHAByAssetId(String assetIds, String assetType) {
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -644,8 +675,15 @@ public class MediaService {
 		param.put("assetIds", assetIds);
 		List<ChannelAssetPo> chpolist = channelAssetDao.queryForList("getListByAssetIds", param);
 		List<Map<String, Object>> chlist = new ArrayList<Map<String, Object>>();
+        if (_cc==null) _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
+
 		for (ChannelAssetPo chpo : chpolist) {
-			chlist.add(chpo.toHashMap());
+			Map<String, Object> chm = chpo.toHashMap();
+			if (_cc!=null) {
+                TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(chpo.getChannelId());
+                if (_c!=null) chm.put("channelName", _c.getNodeName());
+            }
+			chlist.add(chm);
 		}
 		return chlist;
 	}
@@ -816,6 +854,10 @@ public class MediaService {
 	public void removeResDictRef(String id) {
 		dictRefDao.delete("multiDelByResId", id);
 	}
+	
+	public void removeChannelAssetProgress(String assetId, String assetType) {
+		channelAssetProgressService.remove(assetId, assetType);
+	}
 
 	public void removeCha(String assetId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
@@ -836,6 +878,7 @@ public class MediaService {
 		removeKeyWordRes(id, "wt_MediaAsset");
 		removeCha(id, "wt_MediaAsset");
 		personService.remove(userId, "wt_MediaAsset", id);
+		removeChannelAssetProgress(id, "wt_MediaAsset");
 	}
 
 	public void removeSeqMedia(String userId, String id) {
@@ -857,6 +900,7 @@ public class MediaService {
 		removeCha(id, "wt_SeqMediaAsset");
 		removeMa2SmaBySid(id);
 		removeSma(id);
+		removeChannelAssetProgress(id, "wt_SeqMediaAsset");
 	}
 	
 	private List<Map<String, Object>> makePersonList(String resTableName, String resId) {

@@ -129,8 +129,13 @@
   </select>
   
   <select id="getListByAssetIds" resultMap="channelAssetMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_ChannelAsset cha
+    where cha.assetType=#{assetType,jdbcType=VARCHAR} and cha.assetId in (${assetIds})
+  </select>
+  
+  <select id="getChannelAssetListByAssetIds" resultMap="channelAssetMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ChannelAsset
-    where assetType=#{assetType,jdbcType=VARCHAR} and assetId in (${assetIds})
+    where assetType=#{assetType,jdbcType=VARCHAR} and (${assetIds})
   </select>
   
   <select id="getListBy" parameterType="java.util.Map" resultMap="channelAssetMap">

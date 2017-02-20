@@ -121,6 +121,7 @@
     delete from wt_ChannelAssetProgress where ${value}
   </delete>
   <delete id="deleteByEntity" parameterType="java.util.Map">
-    delete from wt_ChannelAssetProgress <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    delete from wt_ChannelAssetProgress where chaId in 
+    (select * from (select id from wt_ChannelAsset where assetId=#{assetId,jdbcType=VARCHAR} and assetType=#{assetType,jdbcType=VARCHAR}) 
   </delete>
 </mapper>

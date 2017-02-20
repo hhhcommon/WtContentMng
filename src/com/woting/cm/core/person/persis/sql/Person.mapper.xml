@@ -62,16 +62,16 @@
   <select id="getPersonsNum" resultType="java.lang.Integer" parameterType="java.util.Map">
     SELECT count(*) from plat_DictD dd,wt_ResDict_Ref refd,wt_Person pers 
 	WHERE refd.dictMid = '10' and dd.id = refd.dictDid and pers.id = refd.resId and refd.resTableName = 'wt_Person'
-	<if test="pSource!=null"> and (${pSource})</if>
-	<if test="dictDid!=null"> and (${dictDid})</if>
+	<if test="pSource!=null"> and pers.pSource = '${pSource}'</if>
+	<if test="dictDid!=null"> and dd.id = '${dictDid}'</if>
 	<if test="LikeByClause!=null"> and (${LikeByClause})</if>
   </select>
   
   <select id="getPersons" resultType="java.util.Map" parameterType="java.util.Map">
     SELECT pers.*,dd.id did,dd.ddName from plat_DictD dd,wt_ResDict_Ref refd,wt_Person pers 
 	WHERE refd.dictMid = '10' and dd.id = refd.dictDid and pers.id = refd.resId and refd.resTableName = 'wt_Person'
-	<if test="pSource!=null"> and (${pSource})</if>
-	<if test="dictDid!=null"> and (${dictDid})</if>
+	<if test="pSource!=null"> and pers.pSource = '${pSource}'</if>
+	<if test="dictDid!=null"> and dd.id = '${dictDid}'</if>
 	<if test="LikeByClause!=null"> and (${LikeByClause})</if>
 	<if test="OrderByClause!=null"> order by ${OrderByClause}</if>
 	<if test="LimitByClause!=null"> ${LimitByClause} </if>
@@ -81,7 +81,7 @@
     SELECT res.*,mapc.playCount 
 	FROM 
 	(SELECT perf.personId,perf.resId,perf.resTableName, 
-	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maTitle WHEN 'wt_SeqMediaAsset' THEN sma.smaTitle END) title,  
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maTitle WHEN 'wt_SeqMediaAsset' THEN sma.smaTitle END) title, 
 	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maImg WHEN 'wt_SeqMediaAsset' THEN sma.smaImg END) img, 
 	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maPublisher WHEN 'wt_SeqMediaAsset' THEN sma.smaPublisher END) publisher, 
 	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.descn WHEN 'wt_SeqMediaAsset' THEN sma.descn END) descn, 

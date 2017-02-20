@@ -565,7 +565,11 @@ public class MediaContentController {
 				map.put("Message", "无专辑id信息");
 				return map;
 			}
-			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, 2);
+			int flowFlag = 2;
+			try {flowFlag=Integer.parseInt(m.get("ContentFlowFlag")+"");} catch(Exception e) {};
+			String descn = null;
+			try {descn=m.get("ApplyDescn").toString();} catch(Exception e) {};
+			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, flowFlag,descn);
 			if (isok) {
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");

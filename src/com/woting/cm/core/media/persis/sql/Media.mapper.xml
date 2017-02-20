@@ -367,9 +367,10 @@
     select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR} limit 1
   </select>
   
-   <select id="getS2MRefInfoBySId" parameterType="java.lang.String" resultMap="seqMaRefMap">
+   <select id="getS2MRefInfoBySId" parameterType="java.util.Map" resultMap="seqMaRefMap">
     select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where sid=#{sid,jdbcType=VARCHAR}
     order by columnNum DESC
+    <if test="LimitByClause!=null">limit ${LimitByClause}</if>
   </select>
   
   <select id="getSmaMediaSize" parameterType="java.util.Map" resultType="java.util.Map">

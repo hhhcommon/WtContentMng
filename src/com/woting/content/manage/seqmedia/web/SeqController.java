@@ -523,7 +523,11 @@ public class SeqController {
 				map.put("Message", "无专辑id信息");
 				return map;
 			}
-			map = seqContentService.modifySeqStatus(userId, smaid, null, 2);
+			int flowFlag = 2;
+			try {flowFlag=Integer.parseInt(m.get("ContentFlowFlag")+"");} catch(Exception e) {};
+			String descn = null;
+			try {descn=m.get("ApplyDescn").toString();} catch(Exception e) {};
+			map = seqContentService.modifySeqStatus(userId, smaid, null, flowFlag, descn);
 			if (map != null) {
 				return map;
 			} else {
