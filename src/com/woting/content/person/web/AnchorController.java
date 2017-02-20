@@ -105,7 +105,7 @@ public class AnchorController {
 		String mediaType = "SEQU";
 		try {mediaType=(String) m.get("MediaType");} catch(Exception e) {}
 		int sortType = 1;
-		try {sortType= (int) m.get("SortType");} catch(Exception e) {}
+		try {sortType= Integer.parseInt( m.get("SortType")+"");} catch(Exception e) {}
 		//得到每页记录数
         int pageSize=10;
         try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
