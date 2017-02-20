@@ -31,6 +31,7 @@ import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.broadcast.service.BroadcastProService;
 import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.content.manage.media.service.MediaContentService;
 import com.woting.content.publish.utils.CacheUtils;
@@ -55,6 +56,8 @@ public class QueryService {
 	private MediaContentService mediaContentService;
 	@Resource
 	private ChannelAssetProgressService channelAssetProgressService;
+	@Resource
+	private DictContentService dictContentService;
 
 	/**
 	 * 查询列表
@@ -889,7 +892,7 @@ public class QueryService {
 					if (map.get("MediaType").equals("wt_SeqMediaAsset")) {
 						smaIds += " or smaf.sId = '"+map.get("ContentId")+"'";
 					}
-					ids += " or persf.resId = '"+map.get("ContentId")+"'";
+					ids += " or perf.resId = '"+map.get("ContentId")+"'";
 				}
 			}
 			if (maIds.length()>0) {
@@ -943,60 +946,51 @@ public class QueryService {
 			}
             if (ids.length()>3) {
 				ids = ids.substring(3);
-				sql = "SELECT pers.id,pers.pName,persf.resId from wt_Person pers LEFT JOIN wt_Person_Ref persf ON pers.id = persf.personId "
-						+ " where "+ids;
-				ps = conn.prepareStatement(sql);
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
-					for (Map<String, Object> map : ls) {
-						if (map.get("ContentId").equals(rs.getString("resId"))) {
-							Map<String, Object> permap = new HashMap<>();
-							permap.put("PerId", rs.getString("id"));
-							permap.put("PerName", rs.getString("pName"));
-							permap.put("RefName", "主播");
-							if (map.containsKey("ContentPersons")) {
-								List<Map<String, Object>> pers = (List<Map<String, Object>>) map.get("ContentPersons");
-								pers.add(permap);
-							} else {
-								List<Map<String, Object>> pers = new ArrayList<>();
-								pers.add(permap);
-								map.put("ContentPersons", pers);
+				List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(ids, mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				if (perls!=null) {
+					for (Map<String, Object> m1 : ls) {
+						for (Map<String, Object> m2 : perls) {
+							if (m1.get("ContentId").equals(m2.get("resId"))) {
+								Map<String, Object> df = new HashMap<>();
+								df.put("RefName", "主播");
+								df.put("PerId", m2.get("resId"));
+								df.put("PerName", m2.get("pName"));
+								if (m1.containsKey("ContentPersons")) {
+									List<Map<String, Object>> dfls = (List<Map<String, Object>>) m1.get("ContentPersons");
+									dfls.add(df);
+								} else {
+									List<Map<String, Object>> dfls = new ArrayList<>();
+									dfls.add(df);
+									m1.put("ContentPersons", dfls);
+								}
 							}
 						}
 					}
 				}
-				
-				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 	            
-				sql = "SELECT kws.id,kws.kwName,kwsf.resId from wt_KeyWord kws LEFT JOIN wt_Kw_Res kwsf ON kws.id = kwsf.kwId "
-						+ "where "+ids.replace("persf", "kwsf")
-						+ " order by kwsf.cTime ASC";
-				ps = conn.prepareStatement(sql);
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
-					for (Map<String, Object> map : ls) {
-						if (map.get("ContentId").equals(rs.getString("resId"))) {
-							Map<String, Object> kwmap = new HashMap<>();
-							kwmap.put("TagName", rs.getString("kwName"));
-							kwmap.put("TagId", rs.getString("id"));
-							if (map.containsKey("KeyWords")) {
-								List<Map<String, Object>> kws = (List<Map<String, Object>>) map.get("KeyWords");
-								kws.add(kwmap);
-							} else {
-								List<Map<String, Object>> kws = new ArrayList<>();
-								kws.add(kwmap);
-								map.put("KeyWords", kws);
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordsByIds(ids.replace("perf", "kws"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				if (kws!=null) {
+					for (Map<String, Object> m1 : ls) {
+						for (Map<String, Object> m2 : kws) {
+							if (m1.get("ContentId").equals(m2.get("resId"))) {
+								Map<String, Object> kw = new HashMap<>();
+								kw.put("KwName", m2.get("kwName"));
+								kw.put("CTime", m2.get("cTime"));
+								if (m1.containsKey("ContentKeyWords")) {
+									List<Map<String, Object>> kwls = (List<Map<String, Object>>) m1.get("ContentKeyWords");
+									kwls.add(kw);
+								} else {
+									List<Map<String, Object>> kwls = new ArrayList<>();
+									kwls.add(kw);
+									m1.put("ContentKeyWords", kwls);
+								}
 							}
 						}
 					}
 				}
-				
-				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 	            
 				sql = "SELECT ch.id,cha.assetId,cha.pubName,ch.channelName,cha.flowFlag,cha.pubTime from wt_ChannelAsset cha LEFT JOIN wt_Channel ch ON cha.channelId = ch.id "
-						+ " where "+ids.replace("persf.resId", "cha.assetId")
+						+ " where "+ids.replace("perf.resId", "cha.assetId")
 						+ " ORDER BY cha.pubTime asc";
 				ps = conn.prepareStatement(sql);
 				rs = ps.executeQuery();
@@ -1022,32 +1016,28 @@ public class QueryService {
 				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
 	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 	            
-	            sql = "SELECT resd.resId,resd.dictMid,resd.dictDid,dd.ddName,resd.refName from wt_ResDict_Ref resd , plat_DictD dd where resd.dictDid = dd.id and resd.dictMid = '3' "
-						+ " and ("+ids.replace("persf.resId", "resd.resId")
-						+ ") ORDER BY resd.cTime asc";
-				ps = conn.prepareStatement(sql);
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
-					for (Map<String, Object> map : ls) {
-						if (map.get("ContentId").equals(rs.getString("resId"))) {
-							Map<String, Object> catamap = new HashMap<>();
-							catamap.put("CataDid", rs.getString("dictDid"));
-							catamap.put("CataMName", rs.getString("refName"));
-							catamap.put("CataTitle", rs.getString("ddName"));
-							catamap.put("CataMid", rs.getString("dictMid"));
-							if (map.containsKey("ContentCatalogs")) {
-								List<Map<String, Object>> catas = (List<Map<String, Object>>) map.get("ContentCatalogs");
-								catas.add(catamap);
-							} else {
-								List<Map<String, Object>> catas = new ArrayList<>();
-								catas.add(catamap);
-								map.put("ContentCatalogs", catas);
+	            List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(ids.replace("perf.resId", "resd.resId"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				if (dictrefs!=null) {
+					for (Map<String, Object> m1 : ls) {
+						for (Map<String, Object> m2 : dictrefs) {
+							if (m1.get("ContentId").equals(m2.get("resId"))) {
+								Map<String, Object> df = new HashMap<>();
+								df.put("CataDid", m2.get("dictDid"));
+								df.put("CataMName", "内容分类");
+								df.put("CataTitle", m2.get("ddName"));
+								df.put("CataMId", m2.get("dictMid"));
+								if (m1.containsKey("ContentCatalogs")) {
+									List<Map<String, Object>> dfls = (List<Map<String, Object>>) m1.get("ContentCatalogs");
+									dfls.add(df);
+								} else {
+									List<Map<String, Object>> dfls = new ArrayList<>();
+									dfls.add(df);
+									m1.put("ContentCatalogs", dfls);
+								}
 							}
 						}
 					}
 				}
-				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 			}
 			conn.close(); conn=null;
 		} catch (Exception e) {
@@ -1061,7 +1051,7 @@ public class QueryService {
 		mapall.put("Count", numall);
 		return mapall;
 	}
-
+	
 	private void updateChannelAssetProgress(String channelAssetId, String checkId, int reFlowFlag, String reDescn) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("chaId", channelAssetId);
@@ -1074,5 +1064,154 @@ public class QueryService {
 			chap.setModifyTime(new Timestamp(System.currentTimeMillis()));
 			channelAssetProgressService.updateChannelAssetProgress(chap);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getAppRevocationList(int applyFlowFlag, int reFlowFlag, int page, int pageSize,
+			String mediaType, String channelId, String publisherId, Timestamp begincontentpubtime,
+			Timestamp endcontentpubtime, Timestamp begincontentctime, Timestamp endcontentctime) {
+		String mediastr = " (cha.assetType = 'wt_SeqMediaAsset' or cha.assetType = 'wt_MediaAsset') ";
+		if (mediaType!=null && mediaType.equals("SEQU")) mediastr = " cha.assetType = 'wt_SeqMediaAsset'"; 
+		else if (mediaType!=null && mediaType.equals("AUDIO")) mediastr = " cha.assetType = 'wt_MediaAsset'";
+		List<Map<String, Object>> ls = channelAssetProgressService.getChannelAssetProgresBy(channelId, publisherId, mediastr, applyFlowFlag, reFlowFlag, page, pageSize);
+		if (ls!=null) {
+			Map<String, Object> retM = new HashMap<>();
+			List<Map<String, Object>> retLs = new ArrayList<>();
+			Map<String, Object> channelMap = new HashMap<>();
+			String assetIds = "";
+			long nums = 0;
+			for (Map<String, Object> m : ls) {
+				Map<String, Object> chm = new HashMap<>();
+				chm.put("FlowFlage", m.get("flowFlag"));
+				chm.put("ChannelName",m.get("channelName"));
+				chm.put("PubTime", m.get("pubTime"));
+				chm.put("ChannelId", m.get("channelId"));
+				String assetId = m.get("assetId")+"";
+				if (!assetIds.contains(assetId)) {
+					assetIds += " or id = '"+assetId+"'";
+					Map<String, Object> reM = new HashMap<>();
+					reM.put("ContentId", assetId);
+					reM.put("ContentPubTime", m.get("pubTime"));
+					retLs.add(reM);
+					nums++;
+				}
+				if (channelMap.containsKey(assetId)) {
+					List<Map<String, Object>> chal = (List<Map<String, Object>>) channelMap.get(assetId);
+					chal.add(chm);
+				} else {
+					List<Map<String, Object>> chal = new ArrayList<>();
+					chal.add(chm);
+					channelMap.put(assetId, chal);
+				}
+			}
+			retM.put("AllCount", nums);
+			if (mediaType.equals("AUDIO")) {
+				List<Map<String, Object>> mas = mediaService.getMaInfosByIds(assetIds.substring(3).replace("id", "ma.id"));
+				if (mas!=null) {
+					for (Map<String, Object> m1 : retLs) {
+						for (Map<String, Object> m2 : mas) {
+							if (m1.get("ContentId").equals(m2.get("id"))) {
+								m1.put("ContentName", m2.get("maTitle"));
+								m1.put("ContentImg", m2.get("maImg"));
+								m1.put("ContentPublisher", m2.get("maPublisher"));
+								m1.put("ContentPlayURI", m2.get("playURI"));
+								m1.put("ContentPlayCount", m2.get("playCount"));
+								m1.put("ContentDesc", m2.get("descn"));
+								m1.put("CTime", m2.get("cTime"));
+								m1.put("MediaType", "wt_MediaAsset");
+							}
+						}
+					}
+				}
+			} else if (mediaType.equals("SEQU")) {
+				List<Map<String, Object>> smas = mediaService.getSmaInfosByIds(assetIds.substring(3).replace("id", "sma.id"));
+				if (smas!=null) {
+					for (Map<String, Object> m1 : retLs) {
+						for (Map<String, Object> m2 : smas) {
+							if (m1.get("ContentId").equals(m2.get("id"))) {
+								m1.put("ContentName", m2.get("smaTitle"));
+								m1.put("ContentImg", m2.get("smaImg"));
+								m1.put("ContentPublisher", m2.get("smaPublisher"));
+								m1.put("MediaSize", m2.get("num"));
+								m1.put("ContentPlayCount", m2.get("playCount"));
+								m1.put("ContentDesc", m2.get("descn"));
+								m1.put("CTime", m2.get("cTime"));
+								m1.put("MediaType", "wt_SeqMediaAsset");
+							}
+						}
+					}
+				}
+			}
+			for (Map<String, Object> map : retLs) {
+				map.put("ContentPubChannels", channelMap.get(map.get("ContentId")));
+			}
+			List<Map<String, Object>> kws = keyWordProService.getKeyWordsByIds(assetIds.substring(3).replace("id", "kws.resId"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+			if (kws!=null) {
+				for (Map<String, Object> m1 : retLs) {
+					for (Map<String, Object> m2 : kws) {
+						if (m1.get("ContentId").equals(m2.get("resId"))) {
+							Map<String, Object> kw = new HashMap<>();
+							kw.put("KwName", m2.get("kwName"));
+							kw.put("CTime", m2.get("cTime"));
+							if (m1.containsKey("ContentKeyWords")) {
+								List<Map<String, Object>> kwls = (List<Map<String, Object>>) m1.get("ContentKeyWords");
+								kwls.add(kw);
+							} else {
+								List<Map<String, Object>> kwls = new ArrayList<>();
+								kwls.add(kw);
+								m1.put("ContentKeyWords", kwls);
+							}
+						}
+					}
+				}
+			}
+			
+			List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(assetIds.replace("id", "resd.resId").substring(3), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+			if (dictrefs!=null) {
+				for (Map<String, Object> m1 : retLs) {
+					for (Map<String, Object> m2 : dictrefs) {
+						if (m1.get("ContentId").equals(m2.get("resId"))) {
+							Map<String, Object> df = new HashMap<>();
+							df.put("CataDid", m2.get("dictDid"));
+							df.put("CataMName", "内容分类");
+							df.put("CataTitle", m2.get("ddName"));
+							df.put("CataMId", m2.get("dictMid"));
+							if (m1.containsKey("ContentCatalogs")) {
+								List<Map<String, Object>> dfls = (List<Map<String, Object>>) m1.get("ContentCatalogs");
+								dfls.add(df);
+							} else {
+								List<Map<String, Object>> dfls = new ArrayList<>();
+								dfls.add(df);
+								m1.put("ContentCatalogs", dfls);
+							}
+						}
+					}
+				}
+			}
+			List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(assetIds.replace("id", "perf.resId").substring(3), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+			if (perls!=null) {
+				for (Map<String, Object> m1 : retLs) {
+					for (Map<String, Object> m2 : perls) {
+						if (m1.get("ContentId").equals(m2.get("resId"))) {
+							Map<String, Object> df = new HashMap<>();
+							df.put("RefName", "主播");
+							df.put("PerId", m2.get("resId"));
+							df.put("PerName", m2.get("pName"));
+							if (m1.containsKey("ContentPersons")) {
+								List<Map<String, Object>> dfls = (List<Map<String, Object>>) m1.get("ContentPersons");
+								dfls.add(df);
+							} else {
+								List<Map<String, Object>> dfls = new ArrayList<>();
+								dfls.add(df);
+								m1.put("ContentPersons", dfls);
+							}
+						}
+					}
+				}
+			}
+			retM.put("List", retLs);
+			return retM;
+		}
+		return null;
 	}
 }

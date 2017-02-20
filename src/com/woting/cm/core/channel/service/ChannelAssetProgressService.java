@@ -1,5 +1,7 @@
 package com.woting.cm.core.channel.service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -26,5 +28,31 @@ public class ChannelAssetProgressService {
 	
 	public void updateChannelAssetProgress(ChannelAssetProgressPo cPo) {
 		channelAssetProgressDao.update(cPo);
+	}
+	
+	public List<Map<String, Object>> getChannelAssetProgresBy(String channelId, String sourceId, String mediaType, int applyFlowFlag, int reFlowFlag, int page, int pageSize) {
+		Map<String, Object> m = new HashMap<>();
+		String whereClauseBy = "";
+		if (channelId!=null) {
+			whereClauseBy += " and cha.channelId = '"+channelId+"'";
+		}
+		if (sourceId!=null) {
+			whereClauseBy += " and cha.publisherId = '"+sourceId+"'";
+		}
+		if (mediaType!=null) {
+			whereClauseBy += " and ("+mediaType+")";
+		}
+		m.put("whereClauseBy", whereClauseBy);
+		
+		if (applyFlowFlag!=0) {
+			m.put("applyFlowFlag", applyFlowFlag);
+		}
+		m.put("reFlowFlag", reFlowFlag);
+		m.put("limitClauseBy", " limit "+(page-1)*pageSize+","+page*pageSize);
+		List<Map<String, Object>> ls = channelAssetProgressDao.queryForListAutoTranform("getListBy", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
 	}
 }

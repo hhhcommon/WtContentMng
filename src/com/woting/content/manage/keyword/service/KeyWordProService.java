@@ -138,4 +138,15 @@ public class KeyWordProService {
 		}
 		return null;
 	}
+	
+	public List<Map<String, Object>> getKeyWordsByIds(String ids, String mediaType) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("ids", ids);
+		m.put("resTableName", mediaType);
+		List<Map<String, Object>> ls = keyWordBaseService.getKeyWordsByIdsAndResTableName(m);
+		if (ls!=null) {
+			return ls;
+		}
+		return null;
+	}
 }

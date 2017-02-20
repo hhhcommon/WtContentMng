@@ -47,6 +47,15 @@
     <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
   
+  <!-- 获得记录条数-->
+  <select id="getKeyWordBy" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT kws.resId,kw.kwName,kws.cTime FROM wt_KeyWord kw
+    LEFT JOIN wt_Kw_Res kws
+    ON kw.id = kws.kwId and kws.resTableName = #{resTableName,jdbcType=VARCHAR}
+    WHERE (${ids})
+    ORDER BY kws.cTime DESC
+  </select>
+  
   <insert id="insertKeyWordList" parameterType="map">
     insert into wt_KeyWord(id, ownerId, ownerType, sort, isValidate, kwName, nPy, descn, cTime) values
       <foreach collection="list" item="list" index="index" separator=",">

@@ -87,6 +87,15 @@
     <if test="orderByClause!=null">order by ${orderByClause}</if>
   </select>
   
+  <select id="getListByResIdsAndResTableName" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT resd.resId,resd.dictMid,resd.dictDid,dd.ddName,resd.refName 
+    from wt_ResDict_Ref resd , plat_DictD dd 
+    where resd.dictDid = dd.id and resd.dictMid = '3' 
+    and resd.resTableName = #{resTableName,jdbcType=VARCHAR}
+    and (${resIds})
+    ORDER BY resd.cTime asc
+  </select>
+  
   <select id="getListByResId" resultMap="dictRefResMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ResDict_Ref where resId=#{resId,jdbcType=VARCHAR}
   </select>

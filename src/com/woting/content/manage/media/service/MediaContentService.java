@@ -473,6 +473,7 @@ public class MediaContentService {
 								macha.setChannelId(cha.getChannelId());
 								macha.setPublisherId("0");
 								macha.setCheckerId("1");
+								macha.setPubName(ma.getMaTitle());
 								macha.setFlowFlag(flowflag);
 								macha.setAssetId(ma.getId());
 								macha.setAssetType("wt_MediaAsset");

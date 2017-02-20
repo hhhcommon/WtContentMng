@@ -281,7 +281,7 @@ public class QueryController {
 			return map;
 		}
 		String mediaType = null;
-		if (m.containsKey("MediaType")) 
+		if (m.containsKey("MediaType"))
 			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
 		String channelId = null;
 		if (m.containsKey("ChannelId"))
@@ -308,6 +308,62 @@ public class QueryController {
         int page=1;
         try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
 		Map<String, Object> retM = queryService.getSearchContentList(searchWord, flowFlag, page, pageSize, mediaType, channelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+		if (retM!=null) {
+			List<Map<String, Object>> ls = (List<Map<String, Object>>) retM.get("List");
+			if (ls!=null && ls.size()>0) {
+				map.put("ReturnType", "1001");
+			    map.put("ResultInfo", retM);
+			    return map;
+			} 
+		} 
+		map.put("ReturnType", "1011");
+		return map;
+	}
+	
+	/**
+	 * 搜索内容请求
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/content/getAppRevocation.do")
+	@ResponseBody
+	public Map<String, Object> getAppRevocation(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String mediaType = null;
+		if (m.containsKey("MediaType")) 
+			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
+		String channelId = null;
+		if (m.containsKey("ChannelId"))
+			channelId = (String) m.get("ChannelId");
+		String publisherId = null;
+		if (m.containsKey("SourceId"))
+			publisherId = (String) m.get("SourceId");
+		Timestamp begincontentpubtime = null;
+		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
+			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
+		Timestamp endcontentpubtime = null;
+		if (m.containsKey("EndContentPubTime") && m.get("EndContentPubTime")!=null && !m.get("EndContentPubTime").equals("null"))
+			endcontentpubtime =  new Timestamp(Long.valueOf(m.get("EndContentPubTime")+""));
+		Timestamp begincontentctime = null;
+		if (m.containsKey("BeginContentCTime") && m.get("BeginContentCTime")!=null && !m.get("BeginContentCTime").equals("null"))
+			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
+		Timestamp endcontentctime = null;
+		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
+			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
+		int applyFlowFlag = 1;
+        try {applyFlowFlag=Integer.parseInt(m.get("ApplyFlowFlag")+"");} catch(Exception e) {};
+        int reFlowFlag = 0;
+        try {reFlowFlag=Integer.parseInt(m.get("ReFlowFlag")+"");} catch(Exception e) {};
+		//得到每页记录数
+        int pageSize=10;
+        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+        //得到当前页数
+        int page=1;
+        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+		Map<String, Object> retM = queryService.getAppRevocationList(applyFlowFlag, reFlowFlag, page, pageSize, mediaType, channelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
 		if (retM!=null) {
 			List<Map<String, Object>> ls = (List<Map<String, Object>>) retM.get("List");
 			if (ls!=null && ls.size()>0) {
