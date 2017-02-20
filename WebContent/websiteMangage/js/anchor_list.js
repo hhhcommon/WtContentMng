@@ -38,6 +38,10 @@ $(function(){
   }
   /*获取主播列表*/
   var data2={};
+  data2.UserId="123";
+  data2.PageSize="10";
+  data2.Page=current_page;
+  data2.SearchWord="";
   getPersonsList(data2);
   function getPersonsList(dataParam){
     $.ajax({
@@ -74,7 +78,7 @@ $(function(){
                 '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
                 '<span class="ric_txt31 fl ellipsis" style="width:110px;">'+perId+'</span>'+
                 '<span class="ric_txt32 fl ellipsis">'+phNum+'</span>'+
-                '<span class="ric_txt33 fl c07 ellipsis">'+perName+'</span>'+
+                '<span class="ric_txt33 fl c07 ellipsis person_name" perid='+perId+'>'+perName+'</span>'+
                 '<span class="ric_txt34 fl ellipsis">'+reaName+'</span>'+
                 '<span class="ric_txt35 fl ellipsis">'+idNumber+'</span>'+
                 '<span class="ric_txt36 fl ellipsis">'+perSource+'</span>'+
@@ -139,16 +143,51 @@ $(function(){
       }
     }
   });
-  //判断在点击翻页之前是否选择了筛选条件
+  //判断在点击翻页之前是否进行了搜索查询
   function opts(seaFy){
-      
+    destroy(data2);
+    data2.UserId="123";
+    data2.PageSize="10";
+    data2.Page=current_page;
+    data2.SearchWord=$(".ri_top_li2_inp").val();
+    getPersonsList(data2);
   }
-
+  /*s--搜索的键盘事件*/
+  $(document).keydown(function(e){//键盘上的事件
+    e = e || window.event;
+    var keycode = e.which ? e.which : e.keyCode;
+    if(keycode == 13){//键盘上的enter
+      $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
+      $(".startPubTime,.endPubTime").val("");
+      $("#source,#channel").show();
+      searchList();//加载搜索列表
+    }
+  });
+  $(".ri_top_li2_img").on("click",function(){
+    $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
+    $(".startPubTime,.endPubTime").val("");
+    $(".cate_img").click();
+    searchList();//加载搜索列表
+  });
+  /*e--搜索的键盘事件*/
+  /*点击主播昵称--进入主播详情页*/
+  $(document).on("click",".person_name",function(){
+    var perid=$(this).attr("perid");
+    $("#newIframe", parent.document).attr({"src":"anchor_detail.html?personId="+perid});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show();
+  });
 
 
   /*清空*/
   function clear(){
     $(".ric_con2_content,.totalPage").html("");
     $(".toPage").val("");
+  }
+  /*销毁obj对象的key-value*/
+  function destroy(obj){
+    for(var key in obj){//清空对象
+      delete obj[key];
+    }
   }
 });

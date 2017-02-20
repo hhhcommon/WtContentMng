@@ -22,7 +22,7 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;background: #fff;}
-.ellipsis {
+.ellipsis{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -434,4 +434,42 @@ body{overflow: auto;background: #fff;}
   </div>
 </div>
 </body>
+<script>
+$(function(){
+  var href=$("#newIframe", parent.document).attr("src");
+  var personId=href.split('?')[1].split("=")[1];
+  var rootPath=getRootPath();
+  
+  var data1={ "UserId":"123",
+              "PersonId":personId
+  };
+  /*得到主播信息*/
+  getAnchorDetail(data1);
+  function getAnchorDetail(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/person/getPersonInfo.do",
+      dataType:"json",
+      async:false,
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillAnchorDetail(resultData);//填充专辑数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  //填充主播数据
+  function fillAnchorDetail(resultData){
+    var pername=resultData.Resultinfo.Pername?resultData.Resultinfo.Pername:"暂无";
+    $(".detail_title").text("主播管理>主播列表>"+pername);
+    $(".userId").text(resultData.Resultinfo.Pername?resultData.Resultinfo.Pername:"暂无");
+  }
+});
+</script>
 </html>
