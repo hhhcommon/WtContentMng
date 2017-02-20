@@ -1,11 +1,11 @@
 $(function(){
   var rootPath=getRootPath();
-  var current_page="1";//当前页码
+  var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var data1={};
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchKey="";//搜索关键词
-  
+  var anchorFy=1;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
   
   
   /*获取主播的四个状态*/
@@ -49,14 +49,15 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        clear();
-        contentCount=resultData.ResultInfo.Count;
-        contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
-        $(".totalPage").text(contentCount);
         if(resultData.ReturnType=="1001"){
+          clear();
+          contentCount=resultData.ResultInfo.Count;
+          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
+          $(".totalPage").text(contentCount);
           loadPersonList(resultData);//加载主播列表
         }else{
-          alert("错误信息："+resultData.Message);
+          $(".totalPage").text("0");
+          $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到相关信息</div>");
         }
       },
       error:function(jqXHR){
@@ -96,8 +97,7 @@ $(function(){
   /*翻页*/
   $(".pagination span").on("click",function(){
     var data_action=$(this).attr("data_action");
-    searchWord=$(".ri_top_li2_inp").val();
-    if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
+    if($(".ri_top_li2_inp").val()==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
     }else{//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=2;
@@ -147,22 +147,43 @@ $(function(){
     destroy(data2);
     data2.UserId="123";
     data2.PageSize="10";
-    data2.Page=current_page;
-    data2.SearchWord=$(".ri_top_li2_inp").val();
-    getPersonsList(data2);
+    if(seaFy==2){//seaFy=2搜索列表加载出来后翻页
+      current_page=1;
+      data2.Page=current_page;
+      data2.SearchWord=$(".ri_top_li2_inp").val();
+    }else{
+      data2.Page=current_page;
+    }
+    getPersonsList(data2);  
   }
   /*s--搜索的键盘事件*/
   $(document).keydown(function(e){//键盘上的事件
     e = e || window.event;
     var keycode = e.which ? e.which : e.keyCode;
     if(keycode == 13){//键盘上的enter
-      getPersonsList(data2);
+      searchList();//加载搜索列表
     }
   });
   $(".ri_top_li2_img").on("click",function(){
-    getPersonsList(data2);
+    searchList();//加载搜索列表
   });
+  function searchList(){
+    if($(".ri_top_li2_inp").val()==""){
+      alert("请输入搜索内容");
+      $(".ri_top_li2_inp").focus();
+    }else{
+      destroy(data2);
+      data2.UserId="123";
+      data2.PageSize="10";
+      current_page="1";
+      data2.Page=current_page;
+      data2.SearchWord=$(".ri_top_li2_inp").val();
+      $(".currentPage").html(current_page);
+    }
+    getPersonsList(data2);  
+  }
   /*e--搜索的键盘事件*/
+ 
   /*点击主播昵称--进入主播详情页*/
   $(document).on("click",".person_name",function(){
     var perid=$(this).attr("perid");
@@ -170,8 +191,18 @@ $(function(){
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
   });
-
-
+  
+  /*选中不同状态的主播--进行筛选*/
+  $(".dropdown_menu").on("click","li",function(){
+    var cataId=$(this).attr("catalogId");
+    destroy(data2);
+    data2.UserId="123";
+    data2.PageSize="10";
+    data2.Page=current_page;
+    data2.StatusType=cataId;
+    getPersonsList(data2);
+  });
+  
   /*清空*/
   function clear(){
     $(".ric_con2_content,.totalPage").html("");

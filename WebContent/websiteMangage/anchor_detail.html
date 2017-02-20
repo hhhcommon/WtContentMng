@@ -210,12 +210,13 @@ body{overflow: auto;background: #fff;}
   height: 100%;
   float: left;
   color: rgb(173,172,172);
+  margin-top: 15px;
 }
 .dcbl_con_p{
+  width:200px;
   color: #000;
   font-size: 14px;
   font-weight: bolder;
-  margin-top: 15px;
 }
 .dcbl_con_tags,.dcbl_con_desc{
   overflow: hidden;
@@ -224,39 +225,53 @@ body{overflow: auto;background: #fff;}
 }
 .dcbl_con_tag1{
   font-weight: bolder;
+  line-height: 25px;
 }
 .dcbl_con_tag1s{
   overflow: hidden;
   position: relative;
   margin-left: 5px;
   width: 365px;
+  margin-bottom:0px;
+  line-height: 25px;
 }
 .dcbl_con_tag2{
   padding: 0px 5px;
 }
 .dcbl_con_desc1{
-  margin-top: 5px;
+  line-height: 25px;
   font-weight: bolder;
 }
 .dcbl_con_desc2{
   position: relative;
-  margin-left: 10px;
-  margin-top: 7px;
+  line-height: 25px;
   width: 360px;
   word-break: break-all;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
-.channels,.playcount,.episodes{
+.playcount,.episodes{
   color: #000;
   padding: 0px 10px;
   text-align: center;
   position: relative;
-  top: 45px;
+  top:30px;
   width: 110px;
+}
+.channels{
+  width: 100px;
+  height: auto;
+  position: relative;
+  top: 30px;
+  overflow: hidden;
+}
+.dcbl_con_channel{
+  width: 100%;
+  line-height: 25px;
+  text-align: center;
 }
 .episodes{
   text-indent:-50px;
@@ -271,6 +286,9 @@ body{overflow: auto;background: #fff;}
 }
 .playcount{
   text-indent:-35px;
+}
+.c7{
+  color:#0077c7;
 }
 </style>
 <body>
@@ -357,7 +375,7 @@ body{overflow: auto;background: #fff;}
           <span class="dcbc_txt fl dcbc_txt4">最近更新时间</span>
         </div>
         <div class="dcb_con2">
-          <div class="dcb_listBox">
+          <!--<div class="dcb_listBox">
             <div class="dcbl_img fl">
               <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
             </div>
@@ -384,8 +402,8 @@ body{overflow: auto;background: #fff;}
             <span class="playcount fl">643</span>
             <span class="episodes fl">5</span>
             <span class="time fl">2017-2-14 13:12:32</span>
-          </div>
-          <div class="dcb_listBox">
+          </div>-->
+          <!--<div class="dcb_listBox">
             <div class="dcbl_img fl">
               <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
             </div>
@@ -411,8 +429,8 @@ body{overflow: auto;background: #fff;}
             <span class="playcount fl">643</span>
             <span class="episodes fl">5</span>
             <span class="time fl">2017-2-14 13:12:32</span>
-          </div>
-          <div class="dcb_listBox">
+          </div>-->
+          <!--<div class="dcb_listBox">
             <div class="dcbl_img fl">
               <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
             </div>
@@ -438,7 +456,7 @@ body{overflow: auto;background: #fff;}
             <span class="playcount fl">643</span>
             <span class="episodes fl">5</span>
             <span class="time fl">2017-2-14 13:12:32</span>
-          </div>
+          </div>-->
         </div>
       </div>
     </div>
@@ -526,8 +544,65 @@ $(function(){
   }
   //填充主播专辑
   function fillAnchorZJList(resultData){
-    
+    for(var i=0;i<resultData.ResultInfo.List.length;i++){
+      var conName=(resultData.ResultInfo.List[i].ContentName)?(resultData.ResultInfo.List[i].ContentName):("未知");
+      var desc=(resultData.ResultInfo.List[i].ContentDesc)?(resultData.ResultInfo.List[i].ContentDesc):("暂无");
+      var pcount=(resultData.ResultInfo.List[i].ContentPlayCount)?(resultData.ResultInfo.List[i].ContentPlayCount):("xx");
+      var msize=(resultData.ResultInfo.List[i].MediaSize)?(resultData.ResultInfo.List[i].MediaSize):("xx");
+      var cptime=(resultData.ResultInfo.List[i].ContentPubTime)?(resultData.ResultInfo.List[i].ContentPubTime):("0");
+      cptime=new Date(parseInt(cptime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");
+      var listbox= '<div class="dcb_listBox">'+
+                '<div class="dcbl_img fl">'+
+                  '<img src='+resultData.ResultInfo.List[i].ContentImg+' alt="节目图片">'+
+                '</div>'+
+                '<div class="dcbl_con fl">'+
+                  '<div class="dcbl_con_p ellipsis c7" contentId='+resultData.ResultInfo.List[i].ContentId+'>'+conName+'</div>'+
+                  '<div class="dcbl_con_tags">'+
+                    '<span class="dcbl_con_tag1 fl">标签：</span>'+
+                    '<ul class="dcbl_con_tag1s fl">'+
+//                    '<li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>'+
+//                    '<li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>'+
+                    '</ul>'+
+                  '</div>'+
+                  '<div class="dcbl_con_desc">'+
+                    '<span class="dcbl_con_desc1 fl">简介：</span>'+
+                    '<div class="dcbl_con_desc2 fl">'+desc+'</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="channels fl cw">'+
+                  '<span class="dcbl_con_channel fl">音乐</span>'+
+                '</div>'+
+                '<span class="playcount fl">'+pcount+'</span>'+
+                '<span class="episodes fl">'+msize+'</span>'+
+                '<span class="time fl">'+cptime+'</span>'+
+              '</div>';
+      $(".dcb_con2").append(listbox);
+      if(resultData.ResultInfo.List[i].ContentKeyWords){//有待修改
+        for(var j=0;j<resultData.ResultInfo.List[i].ContentKeyWords.length;j++){
+          var li='<li class="dcbl_con_tag2 fl>'+resultData.ResultInfo.List[i].ContentKeyWords[j].KwName+'</li>';
+          $(".dcbl_con_tag1s").eq(i).append(li);
+        }
+      }else{
+        $(".dcbl_con_tag1s").eq(i).html("<li>暂无</li>");
+      }
+      if(resultData.ResultInfo.List[i].ContentPubChannels){//有待修改
+        for(var j=0;j<resultData.ResultInfo.List[i].ContentPubChannels.length;j++){
+          var span='<span class="dcbl_con_channel fl" chId='+resultData.ResultInfo.List[i].ContentPubChannels[j].ChannelId+'>'+resultData.ResultInfo.List[i].ContentPubChannels[j].ChannelName+'</span>';
+          $(".channels").eq(i).append(span);
+        }
+      }else{
+        $(".channels").eq(i).html("<div>暂无</div>");
+      }
+    }
   }
+  /*点击专辑名称--进入专辑详情页*/
+ $(".dcbl_con_p").on("click",function(){
+  var contentid=$(this).attr("contentId");
+  $("#newIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+  $("#myIframe", parent.document).hide();
+  $("#newIframe", parent.document).show(); 
+ });
+ 
 });
 </script>
 </html>

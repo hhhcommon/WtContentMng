@@ -481,6 +481,7 @@ $(function(){
       data1.Page=current_page;
       data1.MediaType="AUDIO";
       data1.SearchWord=searchWord;
+      $(".currentPage").html(current_page);
     }
     getSearchList(data1);  
   }
