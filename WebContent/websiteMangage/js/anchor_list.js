@@ -1,6 +1,6 @@
 $(function(){
   var rootPath=getRootPath();
-  var current_page=1;//当前页码
+  var current_page="1";//当前页码
   var contentCount=0;//总页码数
   var data1={};
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
@@ -41,7 +41,6 @@ $(function(){
   data2.UserId="123";
   data2.PageSize="10";
   data2.Page=current_page;
-  data2.SearchWord="";
   getPersonsList(data2);
   function getPersonsList(dataParam){
     $.ajax({
@@ -157,17 +156,11 @@ $(function(){
     e = e || window.event;
     var keycode = e.which ? e.which : e.keyCode;
     if(keycode == 13){//键盘上的enter
-      $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
-      $(".startPubTime,.endPubTime").val("");
-      $("#source,#channel").show();
-      searchList();//加载搜索列表
+      getPersonsList(data2);
     }
   });
   $(".ri_top_li2_img").on("click",function(){
-    $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
-    $(".startPubTime,.endPubTime").val("");
-    $(".cate_img").click();
-    searchList();//加载搜索列表
+    getPersonsList(data2);
   });
   /*e--搜索的键盘事件*/
   /*点击主播昵称--进入主播详情页*/
