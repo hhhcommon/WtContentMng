@@ -228,4 +228,20 @@ public class ChannelContentService {
 		}
 		return null;
 	}
+	
+	public List<Map<String, Object>> getPersonContentList(Map<String, Object> m) {
+		List<Map<String, Object>> ls = channelAssetDao.queryForListAutoTranform("getPersonContentListBy", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
+	public List<Map<String, Object>> getChannelAssetsByAssetIdsAndAssetType(Map<String, Object> m) {
+		List<Map<String, Object>> chas = channelAssetDao.queryForListAutoTranform("getChannelAndChannelAssetBy", m);
+		if (chas!=null && chas.size()>0) {
+			return chas;
+		}
+		return null;
+	}
 }

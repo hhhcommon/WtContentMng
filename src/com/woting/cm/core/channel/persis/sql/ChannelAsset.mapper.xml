@@ -139,6 +139,35 @@
     <if test="sortByClause!=null">order by ${sortByClause}</if>
   </select>
   
+  <select id="getChannelAndChannelAssetBy" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT ch.id,cha.assetId,cha.pubName,ch.channelName,cha.flowFlag,cha.pubTime from wt_ChannelAsset cha LEFT JOIN wt_Channel ch ON cha.channelId = ch.id 
+    where (${ids}) and assetType=#{assetType,jdbcType=VARCHAR}
+    <if test="sortByClause!=null">order by ${sortByClause}</if>
+  </select>
+  
+  <select id="getPersonContentListBy" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT DISTINCT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,
+	(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,
+	(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,
+	(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,
+	ch.assetId,c.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.pubTime,ch.assetType,ch.pubName,ch.pubImg,per.id personId,per.pName 
+	from wt_ChannelAsset ch
+	LEFT JOIN wt_Person_Ref perf
+	ON ch.assetId = perf.resId and ch.assetType = perf.resTableName
+	LEFT JOIN wt_Person per
+	on perf.personId = per.Id
+	LEFT JOIN wt_Channel c
+	ON ch.channelId = c.id
+	LEFT JOIN wt_MediaAsset ma
+	ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset'
+	LEFT JOIN wt_SeqMediaAsset sma
+	ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset'
+	where <if test="mediaType!=null"> ${mediaType}</if>
+    <if test="ids!=null"> and (${ids})</if>
+    <if test="OrderBy!=null">order by ${OrderByClause}</if>
+    <if test="LimitByClause!=null">limit ${LimitByClause}</if>
+  </select>
+  
   <!-- 获得一条数据 -->
   <select id="getInfo" parameterType="java.util.Map" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>

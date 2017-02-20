@@ -1,21 +1,16 @@
 package com.woting.content.person.service;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
+import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
 
@@ -30,6 +25,8 @@ public class AnchorService {
 	private KeyWordProService keyWordProService;
 	@Resource
 	private MediaService mediaService;
+	@Resource
+	private ChannelContentService channelContentService;
 
 	public Map<String, Object> getPersonList(String searchWord,String sourceId, String statusType, int page, int pageSize) {
 		Map<String, Object> mapall = new HashMap<>();
@@ -110,21 +107,16 @@ public class AnchorService {
 		long numall = 0;
 		if (mediaType.equals("SEQU")) perfs = personService.getPersonRefByPIdAndMediaType(personId, "wt_SeqMediaAsset");
 		else if (mediaType.equals("AUDIO")) perfs = personService.getPersonRefByPIdAndMediaType(personId, "wt_MediaAsset");
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		String sql = "";
 		String ids = "";
+		Map<String, Object> param = new HashMap<>();
 		try {
 			if (perfs!=null && perfs.size()>0) {
 				numall = perfs.size();
 				for (PersonRefPo personRefPo : perfs) {
 					ids += " or persf.resId = '"+personRefPo.getResId()+"'";
 				}
-				conn = DataSource.getConnection();
 				if (sortType==1) {
 					 ids = "";
-			         Map<String, Object> param = new HashMap<>();
 			         param.put("personId", personId);
 			         param.put("mediaType", (mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"));
 			         param.put("OrderByClause", "mapc.playCount DESC");
@@ -175,85 +167,66 @@ public class AnchorService {
 						}
 					}
 			    } else { //TODO
-			    	sql = "SELECT DISTINCT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,"
-							+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,"
-							+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,"
-							+ "(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,"
-							+ " ch.assetId,c.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.pubTime,ch.assetType,ch.pubName,ch.pubImg,per.id personId,per.pName "
-							+ " from wt_ChannelAsset ch "
-							+ " LEFT JOIN wt_Person_Ref perf "
-							+ " ON ch.assetId = perf.resId and ch.assetType = perf.resTableName "
-							+ " LEFT JOIN wt_Person per "
-							+ " on perf.personId = per.Id "
-							+ " LEFT JOIN wt_Channel c "
-							+ " ON ch.channelId = c.id "
-							+ " LEFT JOIN wt_MediaAsset ma "
-							+ " ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset' "
-							+ " LEFT JOIN wt_SeqMediaAsset sma "
-							+ " ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset' "
-							+ " where ";
-					if (mediaType!=null) {
-						if (mediaType.equals("SEQU")) sql += " ch.assetType = 'wt_SeqMediaAsset'";
-						else if(mediaType.equals("AUDIO")) sql += " ch.assetType = 'wt_MediaAsset'";
-					}
-					sql += " and "+ids.replace("persf", "cha").substring(3)
-							+ " ORDER BY ch.sort DESC, ch.pubTime DESC LIMIT "+(page-1)*pageSize+","+(page*pageSize);
-					try {
-						ps = conn.prepareStatement(sql);
-						rs = ps.executeQuery();
-						while (rs != null && rs.next()) {
+			        param.clear();
+			        param.put("mediaType", mediaType.equals("SEQU")?" ch.assetType = 'wt_SeqMediaAsset'":" ch.assetType = 'wt_MediaAsset'");
+			        param.put("ids", ids.replace("persf.resId", "ch.assetId").substring(3));
+			        param.put("OrderByClause", " ch.sort DESC, ch.pubTime DESC");
+			        param.put("LimitByClause", (page-1)*pageSize+","+(page*pageSize));
+			        List<Map<String, Object>> chls = channelContentService.getPersonContentList(param);
+			        if (chls!=null) {
+			        	ids = "";
+			            for (Map<String, Object> map : chls) {
 							Map<String, Object> oneDate = new HashMap<String, Object>();
-							oneDate.put("id", rs.getString("id"));
-							oneDate.put("ChannelName", rs.getString("channelName"));
-							oneDate.put("ChannelId", rs.getString("channelId"));
-							oneDate.put("ContentName", rs.getString("pubName"));
-							oneDate.put("ContentId", rs.getString("assetId"));
-							oneDate.put("ContentPublisher", rs.getString("publisher"));
-							oneDate.put("MediaType", rs.getString("assetType"));
-							oneDate.put("ContentDesc", rs.getString("descn"));
-							oneDate.put("ContentImg", rs.getString("pubImg"));
-							oneDate.put("ContentFlowFlag", rs.getInt("flowFlag"));
-							oneDate.put("ContentSort", rs.getInt("sort"));
-							oneDate.put("ContentTime", rs.getTimestamp("time"));
-							oneDate.put("PersonId", rs.getString("personId"));
-							oneDate.put("PersonName", rs.getString("pName"));
-							oneDate.put("ContentPubTime", rs.getString("pubTime"));
+							oneDate.put("id", map.get("id"));
+							oneDate.put("ChannelName", map.get("channelName"));
+							oneDate.put("ChannelId", map.get("channelId"));
+							oneDate.put("ContentName", map.get("pubName"));
+							oneDate.put("ContentId", map.get("assetId"));
+							oneDate.put("ContentPublisher", map.get("publisher"));
+							oneDate.put("MediaType", map.get("assetType"));
+							oneDate.put("ContentDesc", map.get("descn"));
+							oneDate.put("ContentImg", map.get("pubImg"));
+							oneDate.put("ContentFlowFlag", map.get("flowFlag"));
+							oneDate.put("ContentSort", map.get("sort"));
+							oneDate.put("ContentTime", map.get("time"));
+							oneDate.put("PersonId", map.get("personId"));
+							oneDate.put("PersonName", map.get("pName"));
+							oneDate.put("ContentPubTime", map.get("pubTime"));
 							oneDate.put("MediaSize", 1);
 							ls.add(oneDate);
+							ids += " or persf.resId = '"+map.get("assetId")+"'";
 						}
-						if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-			            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-					} catch (Exception e) {}
+					}
 			    }
-				sql = "SELECT ch.id,cha.assetId,cha.pubName,ch.channelName,cha.flowFlag,cha.pubTime from wt_ChannelAsset cha LEFT JOIN wt_Channel ch ON cha.channelId = ch.id "
-						+ " where ("+ids.replace("persf.resId", "cha.assetId").substring(3)
-						+ ") and  cha.assetType ="+(mediaType.equals("SEQU")?"'wt_SeqMediaAsset'":"'wt_MediaAsset'")
-						+ " ORDER BY cha.pubTime asc";
-				ps = conn.prepareStatement(sql);
-				rs = ps.executeQuery();
-				while (rs != null && rs.next()) {
+	            
+	            param.clear();
+	            param.put("ids", ids.replace("persf.resId", "cha.assetId").substring(3));
+	            param.put("assetType", (mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"));
+	            param.put("sortByClause", " cha.pubTime asc");
+	            List<Map<String, Object>> cham = channelContentService.getChannelAssetsByAssetIdsAndAssetType(param);
+	            if (cham!=null) {
 					for (Map<String, Object> map : ls) {
-						if (map.get("ContentId").equals(rs.getString("assetId"))) {
-							Map<String, Object> chamap = new HashMap<>();
-							chamap.put("FlowFlag", rs.getInt("flowFlag"));
-							chamap.put("ChannelName", rs.getString("channelName"));
-							chamap.put("ChannelId", rs.getString("id"));
-							chamap.put("PubTime", rs.getTimestamp("pubTime"));
-							map.put("ContentPubTime", rs.getTimestamp("pubTime"));
-							if (map.containsKey("ContentPubChannels")) {
-								List<Map<String, Object>> chas = (List<Map<String, Object>>) map.get("ContentPubChannels");
-								chas.add(chamap);
-							} else {
-								List<Map<String, Object>> chas = new ArrayList<>();
-								chas.add(chamap);
-								map.put("ContentPubChannels", chas);
+						for (Map<String, Object> chm : cham) {
+							if (map.get("ContentId").equals(chm.get("assetId"))) {
+								Map<String, Object> chamap = new HashMap<>();
+								chamap.put("FlowFlag", chm.get("flowFlag"));
+								chamap.put("ChannelName", chm.get("channelName"));
+								chamap.put("ChannelId", chm.get("id"));
+								chamap.put("PubTime", chm.get("pubTime"));
+								map.put("ContentPubTime", chm.get("pubTime"));
+								if (map.containsKey("ContentPubChannels")) {
+									List<Map<String, Object>> chas = (List<Map<String, Object>>) map.get("ContentPubChannels");
+									chas.add(chamap);
+								} else {
+									List<Map<String, Object>> chas = new ArrayList<>();
+									chas.add(chamap);
+									map.put("ContentPubChannels", chas);
+								}
 							}
 						}
 					}
 				}
-				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
-	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-
+	            
 	            List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(ids.replace("persf.resId", "resd.resId").substring(3), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
 				if (dictrefs!=null) {
 					for (Map<String, Object> m1 : ls) {
