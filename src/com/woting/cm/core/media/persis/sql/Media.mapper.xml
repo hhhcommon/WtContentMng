@@ -329,6 +329,13 @@
     order by cTime desc
   </select>
   
+  <select id="getMaPlayAndSeqNameByMaIds" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT s.*,mas.playURI FROM 
+	(SELECT sma.id,sma.smaTitle,smaf.mId from wt_SeqMediaAsset sma,wt_SeqMA_Ref smaf where sma.id = smaf.sId and (${ids})) s
+	LEFT JOIN wt_MaSource mas
+	ON s.mId = mas.maId and mas.isMain = 1
+  </select>
+  
   <!-- 根据主播id获取 -->
   <select id="getMaList" parameterType="java.util.Map" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset <if test="_parameter!=null"><include refid="MediaAssetWhereClauseByEntiey"/></if> <if test="ids!=null"> and id in (${ids})</if>
@@ -363,6 +370,12 @@
    <select id="getS2MRefInfoBySId" parameterType="java.lang.String" resultMap="seqMaRefMap">
     select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where sid=#{sid,jdbcType=VARCHAR}
     order by columnNum DESC
+  </select>
+  
+  <select id="getSmaMediaSize" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT sId,COUNT(*) num from wt_SeqMA_Ref 
+	where ${ids}
+	GROUP BY sId
   </select>
   
   

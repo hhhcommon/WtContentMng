@@ -495,9 +495,10 @@ public class QueryService {
 	 * @param number
 	 * @param flowFlag
 	 * @param OpeType
+	 * @param reDescn 
 	 * @return
 	 */
-	public boolean modifyInfo(List<Map<String, Object>> contentIds, int number, String OpeType) {
+	public boolean modifyInfo(List<Map<String, Object>> contentIds, int number, String OpeType, String reDescn) {
 		int flowFlag = 0;
 		boolean isok = false;
 		switch (OpeType) {
@@ -506,7 +507,7 @@ public class QueryService {
 			break;
 		case "pass":
 			flowFlag = 2;
-			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为通过
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为通过
 			//订阅推送
 			for (Map<String, Object> map : contentIds) {
 				if (map.get("MediaType").equals("AUDIO")) {
@@ -516,11 +517,11 @@ public class QueryService {
 			break;
 		case "nopass":
 			flowFlag = 3;
-			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为未通过
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为未通过
 			break;
 		case "revoke":
 			flowFlag = 4;
-			isok = modifyStatus(contentIds, flowFlag); // 修改审核状态为撤回
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
 			break;
 		default:
 			break;
@@ -530,13 +531,14 @@ public class QueryService {
 
 	/**
 	 * 修改审核状态
+	 * @param reDescn 
 	 * 
 	 * @param id
 	 *            栏目发布表id
 	 * @param number
 	 * @return
 	 */
-	public boolean modifyStatus(List<Map<String, Object>> contentIds, int flowFlag) {
+	public boolean modifyStatus(List<Map<String, Object>> contentIds, int flowFlag, String reDescn) {
 		String wheresql = "";
 		String conid = "";
 		for (Map<String, Object> map : contentIds) {
@@ -597,9 +599,10 @@ public class QueryService {
 					channelAssetPo.setFlowFlag(flowFlag);
 				    if (flowFlag==2) channelAssetPo.setPubTime(new Timestamp(System.currentTimeMillis()));
 				    mediaService.updateCha(channelAssetPo);
-				    if (flowFlag==2) updateChannelAssetProgress(channelAssetPo.getId(), null, 1, null);
-				    else if(flowFlag==3) updateChannelAssetProgress(channelAssetPo.getId(), null, 2, null);
-				    else if(flowFlag==4) updateChannelAssetProgress(channelAssetPo.getId(), null, 1, null);
+				    // 修改栏目发布状态
+				    if (flowFlag==2) updateChannelAssetProgress(channelAssetPo.getId(), null, 1, reDescn);
+				    else if(flowFlag==3) updateChannelAssetProgress(channelAssetPo.getId(), null, 2, reDescn);
+				    else if(flowFlag==4) updateChannelAssetProgress(channelAssetPo.getId(), null, 1, reDescn);
 				    num++;
 				} catch (Exception e) {
 					e.printStackTrace();
