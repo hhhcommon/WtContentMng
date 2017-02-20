@@ -87,6 +87,26 @@ public class PersonService {
 		return null;
 	}
 	
+	public int getPersonsNum(Map<String, Object> m) {
+		return personDao.getCount("getPersonsNum", m);
+	}
+	
+	public List<Map<String, Object>> getPersons(Map<String, Object> m) {
+		List<Map<String, Object>> ls = personDao.queryForListAutoTranform("getPersons", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
+	public List<Map<String, Object>> getPersonContents(Map<String, Object> m) {
+		List<Map<String, Object>> ls = personDao.queryForListAutoTranform("getPersonContents", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
 	public List<Map<String, Object>> getPersonByPId(String resId, String resTableName) {
 		List<PersonRefPo> pfs = getPersonRefsBy(resTableName, resId);
 		if (pfs!=null && pfs.size()>0) {

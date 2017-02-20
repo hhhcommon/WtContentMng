@@ -886,4 +886,20 @@ public class MediaService {
 		}
 		return null;
 	}
+	
+	public List<Map<String, Object>> getMaPlayAndSeqNameByIds(Map<String, Object> m) {
+		List<Map<String, Object>> ls = mediaAssetDao.queryForListAutoTranform("getMaPlayAndSeqNameByMaIds", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+
+	public List<Map<String, Object>> getSmaMediaSize(Map<String, Object> param) {
+		List<Map<String, Object>> ls = mediaAssetDao.queryForListAutoTranform("getSmaMediaSize", param);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
 }

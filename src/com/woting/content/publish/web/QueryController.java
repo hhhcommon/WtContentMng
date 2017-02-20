@@ -183,6 +183,8 @@ public class QueryController {
 		if (StringUtils.isNullOrEmptyOrSpace(channelIds) || channelIds.toLowerCase().equals("null")) {
 			channelIds = null;
 		}
+		String reDescn = null;
+		try {reDescn=m.get("PageSize")+"";} catch(Exception e) {};
 		boolean isok = false;
 		if (opeType.equals("sort")) {
 			String numbers = (String) m.get("ContentSort");
@@ -195,10 +197,10 @@ public class QueryController {
 				map.put("Message", "无排序号");
 				return map;
 			}
-			isok = queryService.modifyInfo(contentIds, number, opeType);
+			isok = queryService.modifyInfo(contentIds, number, opeType, reDescn);
 		} else {
 			if (opeType.equals("pass") || opeType.equals("nopass") || opeType.equals("revoke")) {
-				isok = queryService.modifyInfo(contentIds, 0, opeType);
+				isok = queryService.modifyInfo(contentIds, 0, opeType, reDescn);
 			}
 		}
 		if (isok) {
@@ -339,8 +341,8 @@ public class QueryController {
 		if (m.containsKey("ChannelId"))
 			channelId = (String) m.get("ChannelId");
 		String publisherId = null;
-		if (m.containsKey("SourceId"))
-			publisherId = (String) m.get("SourceId");
+		if (m.containsKey("PubliusherId"))
+			publisherId = (String) m.get("PubliusherId");
 		Timestamp begincontentpubtime = null;
 		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
 			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
