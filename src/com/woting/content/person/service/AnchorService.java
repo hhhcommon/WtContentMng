@@ -165,7 +165,7 @@ public class AnchorService {
 							}
 						}
 					}
-			    } else { //TODO
+			    } else {
 			        param.clear();
 			        param.put("mediaType", mediaType.equals("SEQU")?" ch.assetType = 'wt_SeqMediaAsset'":" ch.assetType = 'wt_MediaAsset'");
 			        param.put("ids", ids.replace("persf.resId", "ch.assetId").substring(3));
@@ -269,6 +269,29 @@ public class AnchorService {
 						}
 					}
 				}
+				
+				List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(ids.replace("persf", "perf").substring(3), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				if (perls!=null) {
+					for (Map<String, Object> m1 : ls) {
+						for (Map<String, Object> m2 : perls) {
+							if (m1.get("ContentId").equals(m2.get("resId"))) {
+								Map<String, Object> df = new HashMap<>();
+								df.put("RefName", "主播");
+								df.put("PerId", m2.get("resId"));
+								df.put("PerName", m2.get("pName"));
+								if (m1.containsKey("ContentPersons")) {
+									List<Map<String, Object>> dfls = (List<Map<String, Object>>) m1.get("ContentPersons");
+									dfls.add(df);
+								} else {
+									List<Map<String, Object>> dfls = new ArrayList<>();
+									dfls.add(df);
+									m1.put("ContentPersons", dfls);
+								}
+							}
+						}
+					}
+				}
+				
 				mapall.put("List", ls);
 				mapall.put("Count", numall);
 				return mapall;

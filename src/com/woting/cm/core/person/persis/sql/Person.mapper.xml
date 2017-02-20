@@ -81,7 +81,7 @@
     SELECT res.*,mapc.playCount 
 	FROM 
 	(SELECT perf.personId,perf.resId,perf.resTableName, 
-	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maTitle WHEN 'wt_SeqMediaAsset' THEN sma.smaTitle END) title,  
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maTitle WHEN 'wt_SeqMediaAsset' THEN sma.smaTitle END) title, 
 	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maImg WHEN 'wt_SeqMediaAsset' THEN sma.smaImg END) img, 
 	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maPublisher WHEN 'wt_SeqMediaAsset' THEN sma.smaPublisher END) publisher, 
 	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.descn WHEN 'wt_SeqMediaAsset' THEN sma.descn END) descn, 
