@@ -232,7 +232,7 @@ public class SeqContentService {
 		}
 		String[] chaids = channelId.split(",");
 		for (String chaid : chaids) {
-			map = modifySeqStatus(userid, sma.getId(), chaid, 0);
+			map = modifySeqStatus(userid, sma.getId(), chaid, 0, null);
 		}
 		if (mediaService.getSmaInfoById(sma.getId()) != null) {
 			if (channelId.equals("null") || map.get("ReturnType").equals("1001"))
@@ -355,7 +355,7 @@ public class SeqContentService {
 				int flowflag = chas.get(0).getFlowFlag();
 				mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
 				for (String chaid : chaids) {
-					modifySeqStatus(userid, sma.getId(), chaid, flowflag);
+					modifySeqStatus(userid, sma.getId(), chaid, flowflag, null);
 				}
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
@@ -376,9 +376,10 @@ public class SeqContentService {
 	 *            创建专辑使用
 	 * @param flowflag
 	 *            0为创建专辑，2为发布专辑
+	 * @param descn 
 	 * @return
 	 */
-	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag) {
+	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag, String descn) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentId);
 		if (sma == null) {
@@ -423,11 +424,11 @@ public class SeqContentService {
 						}
 						// 发布专辑
 						mediaService.updateCha(cha);
-						insertChannelAssetProgress(cha.getId(), 1, null);
+						insertChannelAssetProgress(cha.getId(), 1, descn);
 					}
 					// 发布专辑下级节目
 					for (MediaAssetPo mediaAssetPo : malist) {
-						mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag);
+						mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag, descn);
 					}
 					map.put("ReturnType", "1001");
 					map.put("Message", "专辑发布成功");
@@ -440,7 +441,7 @@ public class SeqContentService {
 					List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
 					if (chas != null && chas.size() > 0) {
 						for (ChannelAssetPo channelAssetPo : chas) {
-							insertChannelAssetProgress(channelAssetPo.getId(), 2, null);
+							insertChannelAssetProgress(channelAssetPo.getId(), 2, descn);
 							map.put("ReturnType", "1001");
 							map.put("Message", "申请撤回成功");
 						}

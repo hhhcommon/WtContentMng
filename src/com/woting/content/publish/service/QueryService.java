@@ -412,7 +412,7 @@ public class QueryService {
 					"wt_SeqMediaAsset");
 			List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'" + sma.getId() + "'",
 					"wt_SeqMediaAsset");
-			List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId());
+			List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId(),page,pagesize);
 			List<Map<String, Object>> pmaps = personService.getPersonByPId(id, acttype);
 			Map<String, Object> smap = sma.toHashMap();
 			smap.put("count", listseqmaref.size());

@@ -265,10 +265,10 @@ public class MediaContentService {
 		}
 
 		// 新增栏目
-		modifyMediaStatus(userid, ma.getId(), smaPo.getId(), 0);
+		modifyMediaStatus(userid, ma.getId(), smaPo.getId(), 0, null);
 
 		if (flowFlag.equals("2")) {
-			modifyMediaStatus(userid, ma.getId(), seqid, 2);
+			modifyMediaStatus(userid, ma.getId(), seqid, 2, null);
 		}
 
 		if (mediaService.getMaInfoById(ma.getId()) != null) {
@@ -333,7 +333,7 @@ public class MediaContentService {
 		mediaService.updateMa(ma);
 
 		// 修改节目绑定栏目信息
-		modifyMediaStatus(userid, ma.getId(), seqmediaId, 0);
+		modifyMediaStatus(userid, ma.getId(), seqmediaId, 0, null);
 
 		// 删除标签
 		keyWordBaseService.deleteKeyWordRes(contentId, "wt_MediaAsset");
@@ -427,7 +427,7 @@ public class MediaContentService {
 		return map;
 	}
 
-	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag) {
+	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag, String descn) {
 		SeqMediaAssetPo sma = mediaService.getSmaInfoById(seqMediaId);
 		MediaAssetPo ma = mediaService.getMaInfoById(mediaId);
 		if (sma != null) {
@@ -499,7 +499,7 @@ public class MediaContentService {
 									cha.setFlowFlag(1);
 									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
-									insertChannelAssetProgress(cha.getId(), 1, null);
+									insertChannelAssetProgress(cha.getId(), 1, descn);
 								} else {
 									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
@@ -513,7 +513,7 @@ public class MediaContentService {
 									cha.setFlowFlag(1);
 									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
-									insertChannelAssetProgress(cha.getId(), 1, null);
+									insertChannelAssetProgress(cha.getId(), 1, descn);
 								} else {
 									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
@@ -526,7 +526,7 @@ public class MediaContentService {
 						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
 						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
 							for (ChannelAssetPo cha : machas) {
-								insertChannelAssetProgress(cha.getId(), 2, null);
+								insertChannelAssetProgress(cha.getId(), 2, descn);
 							}
 							return true;
 						} else return false;
