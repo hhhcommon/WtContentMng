@@ -408,10 +408,8 @@ public class QueryService {
 		Map<String, Object> seqData = new HashMap<String, Object>();// 存放专辑信息
 		SeqMediaAssetPo sma = mediaService.getSmaInfoById(id);
 		if (sma != null) {
-			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'" + sma.getId() + "'",
-					"wt_SeqMediaAsset");
-			List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'" + sma.getId() + "'",
-					"wt_SeqMediaAsset");
+			List<Map<String, Object>> catalist = mediaService.getResDictRefByResId("'" + sma.getId() + "'", "wt_SeqMediaAsset");
+			List<Map<String, Object>> chlist = mediaService.getCHAByAssetId("'" + sma.getId() + "'", "wt_SeqMediaAsset");
 			List<SeqMaRefPo> listseqmaref = mediaService.getSeqMaRefBySid(sma.getId(),page,pagesize);
 			List<Map<String, Object>> pmaps = personService.getPersonByPId(id, acttype);
 			Map<String, Object> smap = sma.toHashMap();

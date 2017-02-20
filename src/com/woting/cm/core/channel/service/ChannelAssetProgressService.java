@@ -55,4 +55,11 @@ public class ChannelAssetProgressService {
 		}
 		return null;
 	}
+	
+	public void remove(String resId, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", resId);
+		m.put("assetType", resTableName);
+		channelAssetProgressDao.delete("deleteByEntity", m);
+	}
 }

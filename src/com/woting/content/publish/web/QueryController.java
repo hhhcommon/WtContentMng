@@ -184,7 +184,7 @@ public class QueryController {
 			channelIds = null;
 		}
 		String reDescn = null;
-		try {reDescn=m.get("PageSize")+"";} catch(Exception e) {};
+		try {reDescn=m.get("ReDescn").toString();} catch(Exception e) {};
 		boolean isok = false;
 		if (opeType.equals("sort")) {
 			String numbers = (String) m.get("ContentSort");

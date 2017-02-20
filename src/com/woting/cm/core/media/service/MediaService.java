@@ -23,6 +23,7 @@ import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.model.ChannelAsset;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.dict.mem._CacheDictionary;
@@ -70,6 +71,8 @@ public class MediaService {
 	private ComplexRefService complexRefService;
 	@Resource
 	private PersonService personService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
 	
 	private _CacheChannel _cc=null;
 
@@ -851,6 +854,10 @@ public class MediaService {
 	public void removeResDictRef(String id) {
 		dictRefDao.delete("multiDelByResId", id);
 	}
+	
+	public void removeChannelAssetProgress(String assetId, String assetType) {
+		channelAssetProgressService.remove(assetId, assetType);
+	}
 
 	public void removeCha(String assetId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
@@ -871,6 +878,7 @@ public class MediaService {
 		removeKeyWordRes(id, "wt_MediaAsset");
 		removeCha(id, "wt_MediaAsset");
 		personService.remove(userId, "wt_MediaAsset", id);
+		removeChannelAssetProgress(id, "wt_MediaAsset");
 	}
 
 	public void removeSeqMedia(String userId, String id) {
@@ -892,6 +900,7 @@ public class MediaService {
 		removeCha(id, "wt_SeqMediaAsset");
 		removeMa2SmaBySid(id);
 		removeSma(id);
+		removeChannelAssetProgress(id, "wt_SeqMediaAsset");
 	}
 	
 	private List<Map<String, Object>> makePersonList(String resTableName, String resId) {

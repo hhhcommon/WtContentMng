@@ -568,7 +568,7 @@ public class MediaContentController {
 			int flowFlag = 2;
 			try {flowFlag=Integer.parseInt(m.get("ContentFlowFlag")+"");} catch(Exception e) {};
 			String descn = null;
-			try {descn=m.get("ContentDescn")+"";} catch(Exception e) {};
+			try {descn=m.get("ApplyDescn").toString();} catch(Exception e) {};
 			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, flowFlag,descn);
 			if (isok) {
 				map.put("ReturnType", "1001");

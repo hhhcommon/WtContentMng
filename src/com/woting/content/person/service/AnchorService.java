@@ -134,33 +134,32 @@ public class AnchorService {
 					    	 m.put("CTime", pmp.get("cTime"));
 					    	 ids += " or persf.resId = '"+pmp.get("resId")+"'";
 					    	 ls.add(m);
-						}
-					}
-			         
-			         if (mediaType.equals("AUDIO")) {
-			        	param.clear();
-				        param.put("ids", ids.replace("persf.resId", "smaf.mId").substring(3));
-				        List<Map<String, Object>> mals = mediaService.getMaPlayAndSeqNameByIds(param);
-				        if (mals!=null) {
-				        	for (Map<String, Object> map : ls) {
-								for (Map<String, Object> mam : mals) {
-									if (map.get("ContentId").equals(mam.get("mId"))) {
-										map.put("ContentPlayUrl", mam.get("playURI"));
-										map.put("ContentSeqId", mam.get("id"));
-										map.put("ContentSeqName", mam.get("smaTitle"));
+						} 
+						if (mediaType.equals("AUDIO")) {
+				        	param.clear();
+					        param.put("ids", ids.replace("persf.resId", "smaf.mId").substring(3));
+					        List<Map<String, Object>> mals = mediaService.getMaPlayAndSeqNameByIds(param);
+					        if (mals!=null) {
+					        	for (Map<String, Object> map : ls) {
+									for (Map<String, Object> mam : mals) {
+										if (map.get("ContentId").equals(mam.get("mId"))) {
+											map.put("ContentPlayUrl", mam.get("playURI"));
+											map.put("ContentSeqId", mam.get("id"));
+											map.put("ContentSeqName", mam.get("smaTitle"));
+										}
 									}
 								}
 							}
-						}
-					} else if (mediaType.equals("SEQU")) {
-				        param.clear();
-				        param.put("ids", ids.replace("persf.resId", "sId").substring(3));
-				        List<Map<String, Object>> smas = mediaService.getSmaMediaSize(param);
-				        if (smas!=null) {
-				        	for (Map<String, Object> smam : smas) {
-								for (Map<String, Object> map : ls) {
-									if (map.get("ContentId").equals(smam.get("sId"))) {
-										map.put("MediaSize", smam.get("num"));
+						} else if (mediaType.equals("SEQU")) {
+					        param.clear();
+					        param.put("ids", ids.replace("persf.resId", "sId").substring(3));
+					        List<Map<String, Object>> smas = mediaService.getSmaMediaSize(param);
+					        if (smas!=null) {
+					        	for (Map<String, Object> smam : smas) {
+									for (Map<String, Object> map : ls) {
+										if (map.get("ContentId").equals(smam.get("sId"))) {
+											map.put("MediaSize", smam.get("num"));
+										}
 									}
 								}
 							}
