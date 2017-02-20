@@ -260,6 +260,16 @@ public class MediaService {
 		}
 		return null;
 	}
+	
+	public List<Map<String, Object>> getMaInfosByIds(String ids) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("ids", ids);
+		List<Map<String, Object>> mas = mediaAssetDao.queryForListAutoTranform("getMaInfoByIds", m);
+		if (mas!=null && mas.size()>0) {
+			return mas;
+		}
+		return null;
+	}	
 
 	// 根据主播id查询其所有单体资源
 	@SuppressWarnings("unchecked")
@@ -420,7 +430,6 @@ public class MediaService {
 				return list;
 			}
 		}
-
 		return null;
 	}
 
@@ -864,6 +873,16 @@ public class MediaService {
 		    List<Map<String, Object>> personlist = new ArrayList<>();
 		    personlist.add(pom);
 		    return personlist;
+		}
+		return null;
+	}
+
+	public List<Map<String, Object>> getSmaInfosByIds(String ids) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("ids", ids);
+		List<Map<String, Object>> ls = mediaAssetDao.queryForListAutoTranform("getSMaInfoByIds", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
 		}
 		return null;
 	}

@@ -46,8 +46,6 @@ public class AnchorService {
 			if (searchWord!=null) {
 				sql += " and (pers.id LIKE '%"+searchWord+"%' OR pers.pName LIKE '%"+searchWord+"%' OR pers.phoneNum LIKE '%"+searchWord+"%')";
 			}
-			sql += " ORDER BY pers.cTime DESC"
-			+" LIMIT "+(page-1)*pageSize+","+(page*pageSize);
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs != null && rs.next()) {

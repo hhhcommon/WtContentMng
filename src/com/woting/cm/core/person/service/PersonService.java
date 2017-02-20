@@ -109,6 +109,17 @@ public class PersonService {
 		return null;
 	}
 	
+	public List<Map<String, Object>> getPersonsByResIdsAndResTableName(String resIds, String resTableName) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resIds", resIds);
+		m.put("resTableName", resTableName);
+		List<Map<String, Object>> ls = personDao.queryForListAutoTranform("getListByResIdsAndResTableName", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
 	public PersonPo getPersonPoById(String id) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("id", id);

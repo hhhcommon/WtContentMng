@@ -307,6 +307,23 @@
     select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
   
+  <select id="getMaInfoByIds" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT ma.id,ma.maTitle,ma.maImg,ma.maPublisher,ma.descn,ma.cTime,mas.playURI,(CASE WHEN mapc.playCount IS NULL THEN 0 ELSE mapc.playCount END) playCount from wt_MediaAsset ma 
+    LEFT JOIN wt_MaSource mas
+    ON ma.id = mas.maId and mas.isMain = 1
+    LEFT JOIN wt_MediaPlayCount mapc
+    ON mapc.resId = ma.id and mapc.resTableName = 'wt_MediaAsset'
+    WHERE (${ids})
+  </select>
+  
+  <select id="getSMaInfoByIds" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT sma.id,sma.smaTitle,sma.smaImg,sma.smaPublisher,sma.descn,sma.cTime,(CASE WHEN mapc.playCount IS NULL THEN 0 ELSE mapc.playCount END) playCount ,
+    (SELECT COUNT(*) from wt_SeqMA_Ref where sId = sma.id) num
+    from wt_SeqMediaAsset sma
+    LEFT JOIN wt_MediaPlayCount mapc ON mapc.resId = sma.id and mapc.resTableName = 'wt_SeqMediaAsset' 
+    WHERE (${ids})
+  </select>
+  
   <select id="getMaListBySmaId" parameterType="java.lang.String" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where id in (select mId from wt_SeqMA_Ref where sId=#{sId,jdbcType=VARCHAR})
     order by cTime desc

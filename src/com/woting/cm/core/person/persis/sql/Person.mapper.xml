@@ -59,4 +59,13 @@
     select <include refid="Base_Column_List"/> from wt_Person <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   
+  <select id="getListByResIdsAndResTableName" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT perf.resId,per.id,per.pName,per.pSource
+    from wt_Person per,wt_Person_Ref perf
+    where perf.personId = per.id
+    and  perf.resTableName = #{resTableName,jdbcType=VARCHAR}
+    and (${resIds})
+    ORDER BY perf.cTime asc
+  </select>
+  
 </mapper>

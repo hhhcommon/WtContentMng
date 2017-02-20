@@ -134,4 +134,12 @@ public class KeyWordBaseService {
 		m.put("resTableName", resTableName);
 		keyWordResDao.delete("deleteByEntity", m);
 	}
+
+	public List<Map<String, Object>> getKeyWordsByIdsAndResTableName(Map<String, Object> m) {
+		List<Map<String, Object>> ls = keyWordDao.queryForListAutoTranform("getKeyWordBy", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
 }
