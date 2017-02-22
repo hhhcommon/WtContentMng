@@ -336,8 +336,8 @@ public class SocketClient {
                             registerMsg.setFromType(1);
                             registerMsg.setToType(1);
                             registerMsg.setPCDType(0);
-                            registerMsg.setUserId("AppEngin0001");
-                            registerMsg.setDeviceId("AppEnginServer000000000000000001");
+                            registerMsg.setUserId("AppCM0000001");
+                            registerMsg.setDeviceId("AppConMnServer000000000000000001");
                             registerMsg.setSendTime(System.currentTimeMillis());
 
                             msg4Send=registerMsg.toBytes();

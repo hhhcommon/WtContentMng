@@ -485,7 +485,9 @@ public class MediaService {
 				if (cps != null && cps.size() > 0) {
 					smap.put("ContentMemberTypes", cps);
 				}
-				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", sma.getId());
+				Map<String, Object> param = new HashMap<>();
+				param.put("sid", sma.getId());
+				List<SeqMaRefPo> l = seqMaRefDao.queryForList("getS2MRefInfoBySId", param);
 				if (smap.containsKey("ContentPubChannels")) {
 					List<Map<String, Object>> chas = (List<Map<String, Object>>) smap.get("ContentPubChannels");
 					if (chas != null && chas.size() > 0) {

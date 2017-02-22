@@ -199,7 +199,7 @@ public class QueryController {
 			}
 			isok = queryService.modifyInfo(contentIds, number, opeType, reDescn);
 		} else {
-			if (opeType.equals("pass") || opeType.equals("nopass") || opeType.equals("revoke")) {
+			if (opeType.equals("pass") || opeType.equals("nopass") || opeType.equals("revoke") || opeType.equals("revocation") || opeType.equals("norevocation")) {
 				isok = queryService.modifyInfo(contentIds, 0, opeType, reDescn);
 			}
 		}

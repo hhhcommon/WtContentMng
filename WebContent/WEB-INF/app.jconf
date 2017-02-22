@@ -1,6 +1,6 @@
 {
   //socket客户端配置信息
-  "logPath":"c:/opt/logs",
+  "logPath":"/opt/logs",
   "socketClient": {
     "ip":"123.56.254.75",            //服务端Ip
     "port":"16789",                  //服务端端口号

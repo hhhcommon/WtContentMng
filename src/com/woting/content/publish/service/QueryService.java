@@ -521,6 +521,14 @@ public class QueryService {
 			flowFlag = 4;
 			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
 			break;
+		case "revocation": //TODO
+//			flowFlag = 4;
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
+			break;
+		case "norevocation": //TODO
+//			flowFlag = 4;
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
+			break;
 		default:
 			break;
 		}
@@ -1214,5 +1222,9 @@ public class QueryService {
 			return retM;
 		}
 		return null;
+	}
+	
+	private void modifyRevocation(List<Map<String, Object>> contentIds, int flowFlag, String reDescn) {
+		
 	}
 }
