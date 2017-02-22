@@ -277,7 +277,7 @@ public class AnchorService {
 							if (m1.get("ContentId").equals(m2.get("resId"))) {
 								Map<String, Object> df = new HashMap<>();
 								df.put("RefName", "主播");
-								df.put("PerId", m2.get("resId"));
+								df.put("PerId", m2.get("id"));
 								df.put("PerName", m2.get("pName"));
 								if (m1.containsKey("ContentPersons")) {
 									List<Map<String, Object>> dfls = (List<Map<String, Object>>) m1.get("ContentPersons");
