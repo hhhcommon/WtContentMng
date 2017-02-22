@@ -1,6 +1,6 @@
 $(function(){
   var rootPath=getRootPath();
-  var flowflag="2";
+  var flowflag="1";
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
@@ -155,6 +155,17 @@ $(function(){
                     '<span class="audio_time fl"></span>'+
                   '</div>';
       $(".ri_top3_con").append(listbox);
+      if(resultData.ResultList[i].ContentPubChannels){
+        var chIds="";//发布栏目的id集合
+        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
+          if(chIds==""){
+            chIds=resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }else{
+            chIds+=","+resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }
+        }
+        $(".rtcl_img").eq(i).attr("chIds",chIds);
+      }
       $(".audio_time").eq(i).text(getLocalTime(cptime));
       if(resultData.ResultList[i].ContentPlayUrl){
         var audioObj={};
@@ -206,7 +217,7 @@ $(function(){
         if($(this).attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
         }
-        contentList.ChannelIds=$(this).attr("contentchannelid");
+        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
         contentIds.push(contentList);
       }
     });
@@ -245,9 +256,11 @@ $(function(){
     }
   });
   /*待审核内容--不予发布*/
+  var contentids=[];
   $(".rto_nopass").on("click",function(){
+    contentids=[];
     $(".nc_txt1").text(" ");
-    var contentIds=[];
+    $(".other_reason").val(" ");
     $(".ri_top3_con .rtc_listBox").each(function(){
       if($(this).children(".rtcl_img_check").hasClass("checkbox1")){//未选中
         
@@ -257,11 +270,11 @@ $(function(){
         if($(this).attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
         }
-        contentList.ChannelIds=$(this).attr("contentchannelid");
-        contentIds.push(contentList);
+        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
+        contentids.push(contentList);
       }
     });
-    if(contentIds.length==0){//未选中内容
+    if(contentids.length==0){//未选中内容
       alert("请先选中内容再进行操作");
       return;
     }else{
@@ -272,16 +285,32 @@ $(function(){
       $(".nopass_container").css({"left":left+"px"});
       $(".nopass_masker").css({"height":height}).show();
       $("body").css({"overflow-x":"hidden"});
-      $(".nc_txt1").text("选择了"+contentIds.length+"个节目，您确认所选的节目不予发布么？");
+      $(".nc_txt1").text("选择了"+contentids.length+"个节目，您确认所选的节目不予发布么？");
       $(".nopass_container").show();
     }
   });
   //点击不通过原因页面的确定
   $(".nc_txt7").on("click",function(){
+    var reDesc=[];
+    $(".nc_reasons .nc_checkimg").each(function(){
+      if($(this).hasClass("checkbox1")){//未选中这个原因
+        
+      }else{//选中这个原因
+        var red={};
+        red.ReDescn=$(this).siblings(".nc_txt2").text();
+        reDesc.push(red);
+      }
+    });
+    if($(".other_reason").val()!=" "){
+      var red={};
+      red.ReDescn=$(".other_reason").val();
+      reDesc.push(red);
+    }
     var data4={
                 UserId:"123",
-                ContentIds:contentIds,
-                OpeType:$(".nopass").attr("opetype")
+                ContentIds:contentids,
+                OpeType:$(".rto_nopass").attr("opetype"),
+                ReDescn:reDesc
     };
     $.ajax({
       type: "POST",
@@ -290,7 +319,11 @@ $(function(){
       data:JSON.stringify(data1),
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("不通过的具体原因提交成功");
+          alert("具体原因提交成功");
+          $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+          $(".nopass_masker,.nopass_container").hide();
+          $("body").css({"overflow-x":"auto"});
+          getContentList(data1);
         }else{
           alert(resultData.Message);
         }

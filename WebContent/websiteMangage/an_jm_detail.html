@@ -11,8 +11,10 @@
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="css/globalplayer.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
+  <script src="js/globalplayer.js"></script>
   
 </head>
 <style>
@@ -308,13 +310,20 @@ body{overflow: auto;background: #fff;}
   height: auto;
   padding-bottom: 20px;
 }
+.list1_con_name,.list1_con_num,.list1_con_time{
+  width: 180px;
+}
 </style>
 <body>
 <div class="detail">
   <div class="containers">
     <div class="detail_content">
       <div class="dc_left1">
-        <div class="detail_title">主播管理> 主播列表> 田小草> [详解-道德经] > [详解-道德经]-圣人居功不自傲1 </div>
+        <div class="detail_title">主播管理> 主播列表> 
+          <span class="pername"></span>
+          <span class="zjname"></span>
+          <span class="jmname"></span>
+        </div>
         <div class="dc_left">
           <div class="dcl_jmcontent">
             <div class="dcl_jmcontent12">
@@ -323,24 +332,24 @@ body{overflow: auto;background: #fff;}
               </div>
               <div class="dcl_jmcontent2">
                 <div class="title">
-                  <h3 class="ellipsis">[详解-道德经]-圣人居功不自傲1</h3>
+                  <h3 class="ellipsis"></h3>
                 </div>
-                <p class="ctime">最近更新时间：<span class="cctime">2017-01-07 15:35:35</span></p>
-                <p>来自专辑<span class="comZj">[详解-道德经]万经之王.齐家治国.修身处世宝典</span></p>
+                <p class="ctime">最近更新时间：<span class="cctime"></span></p>
+                <p>来自专辑<span class="comZj"></span></p>
                 <div class="tagss">
                   <span>标签：</span>
                   <ul class="tags">
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
+                    <!--<li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>-->
                   </ul>
                 </div>
                 <ul class="act">
                   <li class="play">
                     <img class="play1" src="img/act1.png" alt="" />
-                    <span class="play2">65</span>
+                    <span class="play2"></span>
                   </li>
                   <li class="love">
                     <img class="love1" src="img/act3.png" alt="" />
@@ -361,9 +370,8 @@ body{overflow: auto;background: #fff;}
                 </ul>
               </div>
             </div>
-            <div class="player">播放</div>
-            <div class="dcl_jmcontent4">播放播放播放播放播放播放播放播放播放播放播放
-                     播放播放播放播放播放播放播放播放播放播放播放播放播放播放播放播放</div>
+            <div class="player">播放节目</div>
+            <div class="dcl_jmcontent4"></div>
           </div>
         </div>
       </div>
@@ -374,7 +382,25 @@ body{overflow: auto;background: #fff;}
         </div>
         <div class="dc_right">
           <div class="dcr_jmlist">
-            <div class="dcr_jmlist1">
+            <!--<div class="dcr_jmlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name ellipsis">
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num ellipsis">
+                  <span>播放次数 ： </span>
+                  <span>8</span>
+                </p>
+                <p class="list1_con_time ellipsis">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+            <!--<div class="dcr_jmlist1">
               <div class="list1_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -391,8 +417,8 @@ body{overflow: auto;background: #fff;}
                   <span>2016-10-08 10:47:35</span>
                 </p>
               </div>
-            </div>
-            <div class="dcr_jmlist1">
+            </div>-->
+            <!--<div class="dcr_jmlist1">
               <div class="list1_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -409,51 +435,75 @@ body{overflow: auto;background: #fff;}
                   <span>2016-10-08 10:47:35</span>
                 </p>
               </div>
-            </div>
-            <div class="dcr_jmlist1">
-              <div class="list1_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="list1_con">
-                <p class="list1_con_name">
-                  <span>双份的阳光</span>
-                </p>
-                <p class="list1_con_num">
-                  <span>播放次数 ： </span>
-                  <span>8</span>
-                </p>
-                <p class="list1_con_time">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-            </div>
+            </div>-->
           </div> 
         </div>
       </div>
     </div>
   </div>
+  <!--s:全局播放器-->
+  <div class="globalplayer">
+    <audio src="" class="audio" controls style="display: none;"></audio>
+    <!--s:收起状态-->
+    <div class="glp_mini">
+      <img class="sound_face" src="img/launch.png">
+    </div>
+    <!--e:收起状态-->
+    <!--s:展开状态-->
+    <div class="glp_block">
+      <div class="glp_panel">
+        <div class="controls">
+          <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
+          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+          <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
+        </div>
+        <div class="player_panel">
+          <a href="#" class="title" title=""></a>
+          <div>
+            <span class="time sound_position">00:00</span>
+            <div class="player_progressbar">
+              <div class="player_playbar"></div>
+              <div class="player_circle"></div>  
+            </div>
+            <span class="time sound_duration"></span>
+          </div>
+        </div>
+        <div class="volume_panel">
+          <img src="img/volume.png" alt="音量图标" class="volume_img"/>
+          <div class="volume_progressbar">
+            <div class="volume_playbar"></div>
+            <div class="volume_circle"></div> 
+          </div>
+        </div>
+        <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
+      </div>
+    </div>
+    <!--e:展开状态-->
+  </div>
+  <!--e:全局播放器-->
 </div>
 </body>
-<!--<script>
+<script>
   var rootPath=getRootPath();
   function getUrlParam(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
     var r = window.location.search.substr(1).match(reg);  //匹配目标参数
     if (r != null) return unescape(r[2]); //返回参数值
   }
-  var seqId=getUrlParam('seqId');
-  var contentId=getUrlParam('contentId');
+  var seqId=getUrlParam('zjId');
+  var audioId=getUrlParam('jmId');
+  var perName=getUrlParam('perName');
+  var perId=getUrlParam('personId');
+  
   var data1={"UserId":"123",
-             "ContentFlowFlag":"2",
              "Page":"1",
              "PageSize":"10",
-             "ContentId":contentId,
+             "ContentId":audioId,
              "MediaType":"wt_MediaAsset"
   };
   /*得到节目信息*/
-  getZjDetail(data1);
-  function getZjDetail(dataParam){
+  getJmDetail(data1);
+  function getJmDetail(dataParam){
     $.ajax({
       type:"POST",
       url:rootPath+"CM/content/getContentInfo.do",
@@ -477,23 +527,25 @@ body{overflow: auto;background: #fff;}
   }
   //填充节目数据
   function fillJmDetail(resultData){
-    $(".detail_title").html("节目管理> 已发布> "+resultData.ContentDetail.ContentName);
-    $(".dcl_jmcontent2 .title h3").html(resultData.ContentDetail.ContentName);
+    $(".pername").text(perName+">");
+    $(".zjname").text(resultData.ContentDetail.ContentSeqName?resultData.ContentDetail.ContentSeqName+">":"暂无>");
+    $(".jmname").text(resultData.ContentDetail.ContentName?resultData.ContentDetail.ContentName:"暂无");
     $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
-    $(".cctime").html(resultData.ContentDetail.CTime);
-    $(".comZj").html(!resultData.ContentDetail.ContentSeqName?"【自定义专辑】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
-    if(resultData.ContentDetail.ContentCatalogs!=null){
-      for(var i=0;i<resultData.ContentDetail.ContentCatalogs.length;i++){
-        var li='<li class="newli"><span class="newspan" catalogId='+resultData.ContentDetail.ContentCatalogs[i].CataDid+'>'+resultData.ContentDetail.ContentCatalogs[i].CataTitle+'</span></li>';
+    $(".dcl_jmcontent2 .title h3").text(resultData.ContentDetail.ContentName?resultData.ContentDetail.ContentName:"暂无");
+    $(".cctime").text(resultData.ContentDetail.CTime?resultData.ContentDetail.CTime:"未知");
+    $(".comZj").text(!resultData.ContentDetail.ContentSeqName?"【自定义专辑名称】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
+    if(resultData.ContentDetail.ContentKeyWord){
+      for(var i=0;i<resultData.ContentDetail.ContentKeyWord.length;i++){
+        var li='<li class="newspan">'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</li>';
         $(".tags").append(li);
       }
     }
-    $(".play2").html(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
-    $(".love2").html(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
-    $(".download2").html(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
-    $(".share2").html(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
-    $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
-    $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
+    $(".play2").text(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
+    $(".love2").text(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
+    $(".download2").text(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
+    $(".share2").text(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
+    $(".intransit2").text(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
+    $(".dcl_jmcontent4").text(!resultData.ContentDetail.ContentDesc?"暂无":resultData.ContentDetail.ContentDesc);
   }
   /*同专辑下的所有节目*/
   var data2={"UserId":"123",
@@ -503,7 +555,7 @@ body{overflow: auto;background: #fff;}
              "ContentId":seqId,
              "MediaType":"wt_SeqMediaAsset"
   };
-  getZjDetail(data2);
+  getJmDetail(data2);
   //填充专辑下的节目列表
   function fillJmList(resultData){
     for(var i=0;i<resultData.SubList.length;i++){
@@ -515,11 +567,11 @@ body{overflow: auto;background: #fff;}
                     '<p class="list1_con_name ellipsis">'+
                       '<span>'+resultData.SubList[i].ContentName+'</span>'+
                     '</p>'+
-                    '<p class="list1_con_num">'+
+                    '<p class="list1_con_num ellipsis">'+
                       '<span>播放次数 ： </span>'+
                       '<span>'+resultData.SubList[i].PlayCount+'</span>'+
                     '</p>'+
-                    '<p class="list1_con_time">'+
+                    '<p class="list1_con_time ellipsis">'+
                       '<span>时间 ：</span>'+
                       '<span>'+resultData.SubList[i].CTime+'</span>'+
                     '</p>'+
@@ -528,5 +580,59 @@ body{overflow: auto;background: #fff;}
       $(".dcr_jmlist").append(list);
     }
   }
-</script>-->
+  
+  /*s--播放*/
+  /*点击播放*/
+  $(".player").on("click",function(){
+    $(".playerBtn").click();
+    if($(".playerBtn").hasClass("playing")){
+      $(".player").text("暂停");
+    }else{
+      $(".player").text("播放节目");
+    }
+  });
+  /*全局播放器面板的展开*/
+  $(".glp_mini").on("click",function(){
+    $(this).css({"left":'-60px',"transition" :"all 0.1s ease 0s"});
+    $(this).siblings(".glp_block").css({"left":'0px',"transition" :"all 0.1s ease 0s"});
+  });
+  /*实时获取播放时长和改变进度条进度*/
+  $(".audio")[0].addEventListener("timeupdate",function(){
+    if(!isNaN(this.duration)){
+      //播放进度条
+      var progressValue = this.currentTime/this.duration*($(".player_progressbar").width());
+      $('.player_circle')[0].style.left = parseInt(progressValue) + 'px';
+      $(".player_playbar").css("width",progressValue+"px");
+      //播放时长
+      if(formatTime(Math.floor(this.currentTime))!=0){
+        $(".sound_position").text(formatTime(Math.floor(this.currentTime)));
+      }
+    };
+  },false);
+  /*实现播放快进和后退*/
+  $(".player_progressbar").on("click",function(event){
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var x = e.pageX || e.clientX + scrollX;
+    var pleft=x-335;
+    var clickPlayTime=pleft*($(".audio")[0].duration)/$(".player_progressbar").width();
+    $('.player_circle')[0].style.left = parseInt(pleft) + 'px';
+    $(".player_playbar").css("width",pleft+"px");
+    $('.audio')[0].currentTime=clickPlayTime;
+    $(".sound_position").text(formatTime(Math.floor(clickPlayTime)));
+  });
+  /*实现音量的增大和减小*/
+  $(".volume_progressbar").on("click",function(event){
+    var e = event || window.event;
+    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
+    var x = e.pageX || e.clientX + scrollX;
+    var pleft=x-770;
+    var clickVolume=pleft*($(".audio")[0].volume)/$(".volume_progressbar").width();
+    $('.volume_circle')[0].style.left = parseInt(pleft) + 'px';
+    $(".volume_playbar").css("width",pleft+"px");
+    $('.audio')[0].volume=clickVolume;
+  });
+  /*e--播放*/
+ 
+</script>
 </html>

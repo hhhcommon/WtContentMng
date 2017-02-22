@@ -156,6 +156,17 @@ $(function(){
                     '<span class="audio_time fl"></span>'+
                   '</div>';
       $(".ri_top3_con").append(listbox);
+      if(resultData.ResultList[i].ContentPubChannels){
+        var chIds="";//发布栏目的id集合
+        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
+          if(chIds==""){
+            chIds=resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }else{
+            chIds+=","+resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }
+        }
+        $(".rtcl_img").eq(i).attr("chIds",chIds);
+      }
       $(".audio_time").eq(i).text(getLocalTime(cptime));
       if(resultData.ResultList[i].ContentPlayUrl){
         var audioObj={};
@@ -196,8 +207,11 @@ $(function(){
     }
   } 
   /*已发布内容--撤回*/
+  var contentIds=[];
   $(".rto_nopass").on("click",function(){
-    var contentIds=[];
+    contentIds=[];
+    $(".nc_txt1").text(" ");
+    $(".other_reason").val(" ");
     $(".ri_top3_con .rtc_listBox").each(function(){
       if($(this).children(".rtcl_img_check").hasClass("checkbox1")){//未选中
         
@@ -207,7 +221,7 @@ $(function(){
         if($(this).attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
         }
-        contentList.ChannelIds=$(this).attr("contentchannelid");
+        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
         contentIds.push(contentList);
       }
     });
@@ -228,10 +242,25 @@ $(function(){
   });
   //点击不通过原因页面的确定
   $(".nc_txt7").on("click",function(){
+    var reDesc=[];
+    $(".nc_reasons .nc_checkimg").each(function(){
+      if($(this).hasClass("checkbox1")){//未选中这个原因
+        
+      }else{//选中这个原因
+        var red={};
+        red.ReDescn=$(this).siblings(".nc_txt2").text();
+        reDesc.push(red);
+      }
+    });
+    if($(".other_reason").val()!=" "){
+      var red={};
+      red.ReDescn=$(".other_reason").val();
+      reDesc.push(red);
+    }
     var data2={
                 UserId:"123",
                 ContentIds:contentIds,
-                OpeType:$(".nopass").attr("opetype")
+                OpeType:$(".rto_nopass").attr("opetype")
     };
     $.ajax({
       type: "POST",
@@ -240,12 +269,10 @@ $(function(){
       data:JSON.stringify(data2),
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("不通过的具体原因提交成功");
-          anew(flowflag);//在每次加载具体的资源列表时候的公共方法
-          if(($(".startPubTime").val())&&($(".endPubTime").val())){
-            data1.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-            data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-          }
+          alert("具体原因提交成功");
+          $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+          $(".nopass_masker,.nopass_container").hide();
+          $("body").css({"overflow-x":"auto"});
           getContentList(data1);
         }else{
           alert(resultData.Message);
