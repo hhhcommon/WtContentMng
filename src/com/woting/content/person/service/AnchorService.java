@@ -1,12 +1,16 @@
 package com.woting.content.person.service;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+
+import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.cm.core.person.persis.po.PersonLimitPo;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
@@ -82,8 +86,43 @@ public class AnchorService {
 				map.put("resId", pId);
 				DictRefResPo dPo = dictContentService.getDictRefResInfo(map);
 				if (dPo!=null) {
-					dPo.setDictDid(statusType);
-					dictContentService.updataDictRefInfo(dPo);
+					if (dPo.getDictDid()!=statusType) {
+						if (statusType.equals("zbzt01")) {
+							dPo.setDictDid(statusType);
+						    dictContentService.updataDictRefInfo(dPo);
+						    PersonLimitPo pLimitPo = personService.getPersonLimitByTime(pId);
+						    if (pLimitPo!=null) {
+								pLimitPo.setLmTime(new Timestamp(System.currentTimeMillis()));
+								personService.updatePersonLimit(pLimitPo);
+							}
+						} else {
+							long date =0;
+							if (statusType.equals("zbzt02")) { //禁言一周 七天
+								date = System.currentTimeMillis()/(1000*3600*24)*(1000*3600*24)+7*1000*3600*24; //待恢复时间
+							} else if (statusType.equals("zbzt03")) { //禁言一月 30天
+								date = System.currentTimeMillis()/(1000*3600*24)*(1000*3600*24)+30*1000*3600*24; //待恢复时间
+							} else if (statusType.equals("zbzt04")) { //永久禁言  253402271999000  9999年12月31日 23时59分59秒
+								date = 253402271999000l; //待恢复时间
+							}
+							PersonLimitPo pLimitPo = personService.getPersonLimitByTime(pId);
+							if (pLimitPo!=null) {
+								pLimitPo.setLmTime(new Timestamp(System.currentTimeMillis()));
+								personService.updatePersonLimit(pLimitPo);
+							}
+							pLimitPo = new PersonLimitPo();
+							pLimitPo.setId(SequenceUUID.getPureUUID());
+							pLimitPo.setDictDid(statusType);
+							pLimitPo.setPersonId(pId);
+							pLimitPo.setLmTime(new Timestamp(date));
+							personService.insertPersonLimit(pLimitPo);
+						} 
+					} else {
+						Map<String, Object> m = new HashMap<>();
+						m.put("PersonId", pId);
+						m.put("NewStatus", statusType);
+						m.put("Message", "对应关系已存在");
+						ls.add(m);
+					}
 				} else {
 					Map<String, Object> m = new HashMap<>();
 					m.put("PersonId", pId);

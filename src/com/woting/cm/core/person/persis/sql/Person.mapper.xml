@@ -68,7 +68,7 @@
   </select>
   
   <select id="getPersons" resultType="java.util.Map" parameterType="java.util.Map">
-    SELECT pers.*,dd.id did,dd.ddName from plat_DictD dd,wt_ResDict_Ref refd,wt_Person pers 
+    SELECT pers.*,dd.id did,dd.ddName,refd.id refId,refd.cTime limitTime from plat_DictD dd,wt_ResDict_Ref refd,wt_Person pers 
 	WHERE refd.dictMid = '10' and dd.id = refd.dictDid and pers.id = refd.resId and refd.resTableName = 'wt_Person'
 	<if test="pSource!=null"> and pers.pSource = '${pSource}'</if>
 	<if test="dictDid!=null"> and dd.id = '${dictDid}'</if>

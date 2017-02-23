@@ -90,7 +90,7 @@ public class SubscribeThread extends Thread {
 								if (owners.size()==1) {
 									us = owners;
 								} else {
-									 us = owners.subList(i*1000, owners.size()<(i+1)*1000?owners.size()-1:(i+1)*1000);
+									 us = owners.subList(i*1000, owners.size()<(i+1)*1000?owners.size():(i+1)*1000);
 								}
 								String ownerIds = "";
 								for (Map<String, Object> map : us) {
