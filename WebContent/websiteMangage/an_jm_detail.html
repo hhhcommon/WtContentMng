@@ -13,6 +13,7 @@
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="css/globalplayer.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="js/globalplayer.js"></script>
   
@@ -62,6 +63,7 @@ body{overflow: auto;background: #fff;}
   float: right;
   margin-right:10px;
   font-weight: bold;
+  cursor: pointer;
 }
 .detail_content{
   width:100%;
@@ -134,6 +136,7 @@ body{overflow: auto;background: #fff;}
 }
 .dcl_jmcontent2 .comZj{
   color:#0077c7;
+  cursor: pointer;
 }
 .tagss{
   overflow: hidden;
@@ -304,6 +307,7 @@ body{overflow: auto;background: #fff;}
 .list1_con_name{
   color: #0077c7;
   font-weight: bold;
+  cursor: pointer;
 }
 .dcl_jmcontent12{
   overflow: hidden;
@@ -485,15 +489,13 @@ body{overflow: auto;background: #fff;}
 </body>
 <script>
   var rootPath=getRootPath();
-  function getUrlParam(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-    if (r != null) return unescape(r[2]); //返回参数值
-  }
-  var seqId=getUrlParam('zjId');
-  var audioId=getUrlParam('jmId');
-  var perName=getUrlParam('perName');
-  var perId=getUrlParam('personId');
+  var seqId=getUrlParam(window.location.href,'zjId');
+  var audioId=getUrlParam(window.location.href,'jmId');
+  var perName=getUrlParam(window.location.href,'perName');
+  perName=decodeURIComponent(perName);
+  var perId=getUrlParam(window.location.href,'personId');
+  var mp3List=[];//音乐播放列表
+  var listNum=0;//控制播放节目的序号
   
   var data1={"UserId":"123",
              "Page":"1",
@@ -514,10 +516,11 @@ body{overflow: auto;background: #fff;}
           if(dataParam.MediaType=="wt_MediaAsset"){
             fillJmDetail(resultData);//填充节目数据
           }else{
+            $(".dcr_jmlist").html(" ");
             fillJmList(resultData);//填充专辑下的节目列表
           }
         }else{
-          alert(resultData.Message);
+          alert("没有更多节目了");
         }
       },
       error:function(XHR){
@@ -528,7 +531,9 @@ body{overflow: auto;background: #fff;}
   //填充节目数据
   function fillJmDetail(resultData){
     $(".pername").text(perName+">");
+    $(".pername").attr("perId",perId).attr("pername",perName);
     $(".zjname").text(resultData.ContentDetail.ContentSeqName?resultData.ContentDetail.ContentSeqName+">":"暂无>");
+    $(".zjname").attr("seqId",seqId);
     $(".jmname").text(resultData.ContentDetail.ContentName?resultData.ContentDetail.ContentName:"暂无");
     $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
     $(".dcl_jmcontent2 .title h3").text(resultData.ContentDetail.ContentName?resultData.ContentDetail.ContentName:"暂无");
@@ -564,7 +569,7 @@ body{overflow: auto;background: #fff;}
                     '<img src='+resultData.SubList[i].ContentImg+' alt="节目图片" />'+
                   '</div>'+
                   '<div class="list1_con">'+
-                    '<p class="list1_con_name ellipsis">'+
+                    '<p class="list1_con_name ellipsis" contentId='+resultData.SubList[i].ContentId+'>'+
                       '<span>'+resultData.SubList[i].ContentName+'</span>'+
                     '</p>'+
                     '<p class="list1_con_num ellipsis">'+
@@ -578,7 +583,16 @@ body{overflow: auto;background: #fff;}
                   '</div>'+
                 '</div>';
       $(".dcr_jmlist").append(list);
+      var audioObj={};
+      audioObj.title=resultData.SubList[i].ContentName;
+      audioObj.playUrl=resultData.SubList[i].ContentPlay;
+      mp3List.push(audioObj);
     }
+    $(".audio").attr({"src":""});
+    $(".player_panel .title").html("");
+    $(".player_panel .title").html(mp3List[0].title);
+    $(".audio").attr("src",mp3List[0].playUrl);
+    getTime();
   }
   
   /*s--播放*/
@@ -633,6 +647,37 @@ body{overflow: auto;background: #fff;}
     $('.audio')[0].volume=clickVolume;
   });
   /*e--播放*/
- 
+  
+  /*点击节目列表里节目的名称，跳到节目详情页*/
+  $(document).on("click",".list1_con_name",function(){
+    var jmid=$(this).attr("contentId");
+    var personId=$(".pername").attr("perId");
+    var contentId=$(".zjname").attr("seqId");
+    pername=$(".pername").attr("pername");
+    $("#newIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show(); 
+  });
+  /*点击专辑名称，跳到专辑详情页*/
+  $(document).on("click",".comZj",function(){
+    var personId=$(".pername").attr("perId");
+    var contentid=$(".zjname").attr("seqId");
+    $("#newIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show(); 
+  });
+  /*点击更多--加载下一批节目*/
+  var moreNum=1;//记录点击的次数
+  $(".more").on("click",function(){
+    moreNum++;
+    var data3={"UserId":"123",
+             "ContentFlowFlag":"2",
+             "Page":moreNum,
+             "PageSize":"10",
+             "ContentId":seqId,
+             "MediaType":"wt_SeqMediaAsset"
+  };
+  getJmDetail(data3);
+  });
 </script>
 </html>

@@ -14,6 +14,7 @@
   <link href="css/globalplayer.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="js/globalplayer.js"></script>
 </head>
@@ -445,9 +446,10 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 .list1_con_name{
   color: #0077c7;
   font-weight: bold;
+  cursor: pointer;
 }
 .list1_con_name,.list1_con_num,.list1_con_time{
-    width: 180px;
+  width: 180px;
 }
 .ellipsis{
   overflow: hidden;
@@ -681,15 +683,10 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 </body>
 <script>
   var rootPath=getRootPath();
-  function getUrlParam(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-    if (r != null) return unescape(r[2]); //返回参数值
-  }
   var mp3List=[];//音乐播放列表
   var listNum=0;//控制播放节目的序号
-  var personId=getUrlParam('personId');
-  var contentId=getUrlParam('contentId');
+  var personId=getUrlParam(window.location.href,'personId');
+  var contentId=getUrlParam(window.location.href,'contentId');
   
   /*得到专辑信息*/
   var data1={"UserId":"123",
@@ -708,7 +705,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
       async:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType =="1001"){
           fillZjDetail(resultData);//填充专辑数据
         }else{
           alert(resultData.Message);
@@ -798,9 +795,10 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
+          $(".dcr_zjlist").html(" ");
           fillZjList(resultData);//填充专辑列表数据
         }else{
-          alert(resultData.Message);
+          alert("没有更多专辑了");
         }
       },
       error:function(XHR){
@@ -810,7 +808,6 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   }
   //填充专辑列表数据
   function fillZjList(resultData){
-    debugger;
     for(var i=0;i<resultData.ResultInfo.List.length;i++){
       var ctime=resultData.ResultInfo.List[i].CTime;
       ctime=new Date(parseInt(ctime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");  
@@ -819,7 +816,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                 '<img src='+resultData.ResultInfo.List[i].ContentImg+' alt="节目图片" />'+
               '</div>'+
               '<div class="list1_con">'+
-                '<p class="list1_con_name ellipsis">'+
+                '<p class="list1_con_name ellipsis" contentId='+resultData.ResultInfo.List[i].ContentId+'>'+
                   '<span>'+resultData.ResultInfo.List[i].ContentName+'</span>'+
                 '</p>'+
                 '<p class="list1_con_num ellipsis">'+
@@ -836,7 +833,8 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
       if(resultData.ResultInfo.List[i].ContentPersons){
         for(var j=0;j<resultData.ResultInfo.List[i].ContentPersons.length;j++){
           if(resultData.ResultInfo.List[i].ContentPersons[j].PerId==personId){
-            console.log(resultData.ResultInfo.List[i].ContentPersons[j].PerName);
+            $(".pername").attr("pername",resultData.ResultInfo.List[i].ContentPersons[j].PerName);
+            $(".pername").attr("perid",resultData.ResultInfo.List[i].ContentPersons[j].PerId);
             $(".pername").text(resultData.ResultInfo.List[i].ContentPersons[j].PerName+">");
             return false;
           }
@@ -850,6 +848,11 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   $(".player").on("click",function(){
     $(".audio").attr({"src":mp3List[0].playUrl});
     $(".player_panel .title").html(mp3List[0].title);
+    $(".audio")[0].play();
+    $(".list_content1").eq(0).addClass("playing");
+    $(".list_content1").eq(0).siblings(".list_content1").children(".list_content1_div").children(".list_content1_play").css({"background-position":"0px -154x"});
+    $(".list_content1").eq(0).children(".list_content1_div").children(".list_content1_play").css({"background-position":"0px -324px"});
+    $(".playerBtn").addClass("playing").attr("src","img/pause.png");
     $(".audio")[0].play();
   });
   /*全局播放器面板的展开*/
@@ -957,13 +960,30 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   /*点击节目列表--跳到节目详情页*/
   $(document).on("click",".list_content1_a",function(){
     var jmid=$(this).parent(".list_content1_div").parent(".list_content1").attr("conId");
-    var pername=$(".pername").text();
-    console.log(jmid,pername);
-    return;
+    var pername=$(".pername").attr("pername");
     $("#newIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show(); 
   });
-  
+  /*点击专辑名称，跳到专辑详情页*/
+  $(document).on("click",".list1_con_name",function(){
+    var personId=$(".pername").attr("perid");
+    var contentid=$(this).attr("contentId");
+    $("#newIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show(); 
+  });
+  /*点击更多--加载下一批专辑*/
+  var moreNum=1;//记录点击的次数
+  $(".more").on("click",function(){
+    moreNum++;
+    var data4={"UserId":"123",
+               "PersonId":personId,
+               "Page":moreNum,
+               "PageSize":"3",
+               "MediaType":"SEQU"
+    };
+    getZjList(data4);
+  });
 </script>
 </html>

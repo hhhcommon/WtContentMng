@@ -13,6 +13,7 @@
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="css/globalplayer.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="js/globalplayer.js"></script>
   
@@ -303,8 +304,9 @@ body{overflow: auto;background: #fff;}
   padding-left:10px;
 }
 .list1_con_name{
-	color: #000;
+	color:#0077c7;
 	font-weight: bold;
+	cursor: pointer;
 }
 /*不通过样式*/
 .nopass_masker{
@@ -405,7 +407,6 @@ body{overflow: auto;background: #fff;}
   color:#000;
   background:#0077c7;
 }
-
 </style>
 <body>
 <div class="detail">
@@ -606,23 +607,17 @@ body{overflow: auto;background: #fff;}
 </body>
 <script>
   var rootPath=getRootPath();
-  function getUrlParam(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
-    if (r != null) return unescape(r[2]); //返回参数值
-  }
-  var seqId=getUrlParam('seqId');
-  var contentId=getUrlParam('contentId');
+  var seqId=getUrlParam(window.location.href,'seqId');
+  var contentId=getUrlParam(window.location.href,'contentId');
   var data1={"UserId":"123",
-             "ContentFlowFlag":"2",
              "Page":"1",
              "PageSize":"10",
              "ContentId":contentId,
              "MediaType":"wt_MediaAsset"
   };
   /*得到节目信息*/
-  getZjDetail(data1);
-  function getZjDetail(dataParam){
+  getJmDetail(data1);
+  function getJmDetail(dataParam){
     $.ajax({
       type:"POST",
       url:rootPath+"CM/content/getContentInfo.do",
@@ -690,7 +685,7 @@ body{overflow: auto;background: #fff;}
              "ContentId":seqId,
              "MediaType":"wt_SeqMediaAsset"
   };
-  getZjDetail(data2);
+  getJmDetail(data2);
   //填充专辑下的节目列表
   function fillJmList(resultData){
     for(var i=0;i<resultData.SubList.length;i++){
@@ -699,7 +694,7 @@ body{overflow: auto;background: #fff;}
                     '<img src='+resultData.SubList[i].ContentImg+' alt="节目图片" />'+
                   '</div>'+
                   '<div class="list1_con">'+
-                    '<p class="list1_con_name ellipsis">'+
+                    '<p class="list1_con_name ellipsis" contentId='+resultData.SubList[i].ContentId+'>'+
                       '<span>'+resultData.SubList[i].ContentName+'</span>'+
                     '</p>'+
                     '<p class="list1_con_num">'+
@@ -804,6 +799,14 @@ body{overflow: auto;background: #fff;}
   $(".comZj").on("click",function(){
     var seqIds=$(this).attr("seqId");
     $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+seqIds});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show();
+  });
+  /*点击专辑列表里面的节目名称跳到节目详情页*/
+  $(document).on("click",".list1_con_name",function(){
+    var seqIds=$(".comZj").attr("seqId");
+    var contentIds=$(this).attr("contentId");
+    $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentIds+"&&seqId="+seqIds});
     $("#myIframe", parent.document).hide();
     $("#newIframe", parent.document).show();
   });

@@ -1,6 +1,6 @@
 $(function(){
   var rootPath=getRootPath();
-  var flowflag="3";
+  var flowflag="2";
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
@@ -66,7 +66,8 @@ $(function(){
   function opts(seaFy){
     destroy(data1);
     data1.UserId="123";
-    data1.ContentFlowFlag=flowflag;
+    data1.ApplyFlowFlag=flowflag;
+    data1.ReFlowFlag="0";
     data1.PageSize="10";
     data1.Page=current_page;
     searchWord=$(".ri_top_li2_inp").val();
@@ -92,14 +93,15 @@ $(function(){
   }
   /*得到资源列表*/
   data1.UserId="123";
-  data1.ContentFlowFlag=flowflag;
+  data1.ApplyFlowFlag=flowflag;
+  data1.ReFlowFlag="0";
   data1.Page=current_page;
   data1.PageSize="10";
   getContentList(data1);
   function getContentList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"CM/content/getContents.do",
+      url:rootPath+"CM/content/getAppRevocation.do",
       dataType:"json",
       async:false,
       data:JSON.stringify(dataParam),
@@ -418,7 +420,8 @@ $(function(){
     data1.UserId="123";
     data1.PageSize="10";
     data1.Page=current_page;
-    data1.ContentFlowFlag=flowflag;
+    data1.ApplyFlowFlag=flowflag;
+    data1.ReFlowFlag="0";
     if($(".new_cate li").size()>"0"){
       optfy=2;//选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
@@ -546,7 +549,8 @@ $(function(){
     }else{
       destroy(data1);
       data1.UserId="123";
-      data1.ContentFlowFlag=flowflag;
+      data1.ApplyFlowFlag=flowflag;
+      data1.ReFlowFlag="0";
       data1.PageSize="10";
       current_page="1";
       data1.Page=current_page;

@@ -65,7 +65,6 @@ $(document).on("click",".trig_item",function(){//选中某一项
     })
     console.log("隐藏的数目=="+i);
     if(i==sl){
-      $(".ri_top2").removeClass("border1").addClass("border2"); 
       $(".ri_top_li4").hide();
     }else{
       $(".ri_top_li4").show();
@@ -73,7 +72,7 @@ $(document).on("click",".trig_item",function(){//选中某一项
     if($(".all").is(':hidden')) $(".all").show();
   }
 });
-$(document).on("click",".trig_item_li",function(){
+$(document).on("click",".trig_item_li",function(){//选中二级栏目里面的一级栏目
   var pname=$(this).parent(".chnels").attr("data_name");
   var id=$(this).attr("id")
   var newFilter='<li class="cate" pId="channel" id='+id+'>'+
@@ -133,7 +132,6 @@ $(document).on("click",".btns_sub",function(){//点击多选之后的确定
   })
   console.log("隐藏的数目=="+i);
   if(i==sl){
-    $(".ri_top2").removeClass("border1").addClass("border2"); 
     $(".ri_top_li4").hide();
   }else{
     $(".ri_top_li4").show();
@@ -152,10 +150,6 @@ $(document).on("click",".cate_img",function(){//所有筛选条件里面的取�
   var pId=$(this).parent(".cate").attr("pId");
   $("#"+pId).children(".btns").hide();
   $("#"+pId).children(".check_more").show();
-  if($(".ri_top2").hasClass("border2")){
-    $(".ri_top2").removeClass("border2").addClass("border1");
-    $(".ri_top_li4").show();
-  }
   $("#"+pId).show();
   if($(".all").children(".new_cate").children("li").length<=0){
     $(".all").hide();
@@ -199,7 +193,7 @@ $(document).on("click",".nopass_masker,.nh_span2",function(){//点击遮罩层�
   $(".nopass_masker,.nopass_container").hide();
   $("body").css({"overflow-x":"auto"});
 });
-$(document).on("mouseenter","#channel .chnel",function(){
+$(document).on("mouseenter","#channel .chnel",function(){//鼠标放在一级栏目上
   overChannel=true;
   var pid=$(this).attr("data_idx");
   $(".chnels").each(function(){
@@ -217,7 +211,7 @@ $(document).on("mouseenter","#channel .chnel",function(){
     } 
   })
 });
-$(document).on("mouseleave","#channel .chnel",function(){
+$(document).on("mouseleave","#channel .chnel",function(){//鼠标离开一级栏目
   overChannel=false;
   setTimeout(function(){
     if(overChannel) return;
@@ -225,7 +219,7 @@ $(document).on("mouseleave","#channel .chnel",function(){
     $(".chnels").css({"top":"39px"}).hide();
   },200)
 });
-$(document).on("mouseenter","#channel .chnels",function(){
+$(document).on("mouseenter","#channel .chnels",function(){//鼠标放在二级栏目上
   overChannel=true;
   var pid=$(this).attr("data_idx");
   $(".chnel").each(function(){
@@ -237,7 +231,7 @@ $(document).on("mouseenter","#channel .chnels",function(){
     }
   })
 });
-$(document).on("mouseleave","#channel .chnels",function(){
+$(document).on("mouseleave","#channel .chnels",function(){//鼠标离开二级栏目
   overChannel=false;
   setTimeout(function(){
     if(overChannel) return;

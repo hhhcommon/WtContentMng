@@ -12,6 +12,7 @@
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
 	
 </head>
@@ -48,6 +49,7 @@ body{overflow: auto;background: #fff;}
   width:100%;
   height: 25px;
   color: #000;
+  font-weight:bold;
   font-size: 14px;
   margin-top: 20px;
   padding-left:20px;
@@ -59,10 +61,12 @@ body{overflow: auto;background: #fff;}
   padding:0px 0px 15px 20px;
   border:1px solid #dedede;
   height: 303px;
+  font-size: 14px;
 }
 .dctl_title,.dctr_title{
   color:#000;
   font-weight:bolder;
+  padding: 11px 0px 4px;
 }
 .binfo{
   width:330px;
@@ -150,6 +154,7 @@ body{overflow: auto;background: #fff;}
 }
 .dcb_title{
   padding: 20px 0px 0px 5px;
+  font-size:14px;
 }
 .dcbt0{
   margin-left:-3px;
@@ -190,6 +195,7 @@ body{overflow: auto;background: #fff;}
 .dcb_con2{
   width: 100%;
   overflow: auto;
+  font-size:14px;
 }
 .dcb_listBox{
   width: calc(100% - 15px );
@@ -197,6 +203,7 @@ body{overflow: auto;background: #fff;}
   margin-left: 15px;
   border-bottom: 1px solid #dedede;
   cursor: pointer;
+  overflow: hidden;
 }
 .dcbl_img{
   width: 80px;
@@ -301,28 +308,28 @@ body{overflow: auto;background: #fff;}
         <div class="dct_left fl">
           <h3 class="dctl_title">基本资料</h3>
           <div class="binfo">
-            <span>用&nbsp;&nbsp;户&nbsp;&nbsp;Id:</span>
-            <span class="userId cw ellipsis"></span>
+            <span class="fl">用&nbsp;&nbsp;户&nbsp;&nbsp;Id:</span>
+            <span class="userId cw ellipsis fl"></span>
           </div>
           <div class="picture">
-            <span>头像:</span>
+            <span class="fl">头像:</span>
             <div class="picture1"><img src="" alt="个人头像"/></div>
           </div>
           <div class="binfo">
-            <span>昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称:</span>
-            <span class="nickname cw ellipsis"></span>
+            <span class="fl">昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称:</span>
+            <span class="nickname cw ellipsis fl"></span>
           </div>
           <div class="binfo">
-            <span>性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别:</span>
-            <span class="sex cw ellipsis"></span>
+            <span class="fl">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别:</span>
+            <span class="sex cw ellipsis fl"></span>
           </div>
           <div class="binfo">
-            <span>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机:</span>
-            <span class="phone cw ellipsis"></span>
+            <span class="fl">手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机:</span>
+            <span class="phone cw ellipsis fl"></span>
           </div>
           <div class="binfo">
-            <span>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱:</span>
-            <span class="email cw ellipsis"></span>
+            <span class="fl">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱:</span>
+            <span class="email cw ellipsis fl"></span>
           </div>
           <div class="sign">
             <span class="sign0 fl">个人签名:</span>
@@ -336,20 +343,20 @@ body{overflow: auto;background: #fff;}
         <div class="dct_right fl">
           <h3 class="dctr_title">认证资料</h3>
           <div class="realname binfo">
-            <span>真实姓名:</span>
-            <span class="realname1 cw ellipsis"></span>
+            <span class="fl">真实姓名:</span>
+            <span class="realname1 cw ellipsis fl"></span>
           </div>
           <div class="phnumber binfo">
-            <span>联系地址:</span>
-            <span class="phnumber1 cw ellipsis"></span>
+            <span class="fl">联系地址:</span>
+            <span class="phnumber1 cw ellipsis fl"></span>
           </div>
           <div class="zipcode binfo">
-            <span>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编:</span>
-            <span class="zipcode1 cw ellipsis"></span>
+            <span class="fl">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编:</span>
+            <span class="zipcode1 cw ellipsis fl"></span>
           </div>
           <div class="idcode binfo">
-            <span>身份证号:</span>
-            <span class="idcode1 cw ellipsis"></span>
+            <span class="fl">身份证号:</span>
+            <span class="idcode1 cw ellipsis fl"></span>
           </div>
           <div class="idphoto">
             <span class="fl idphoto0">身份证照片:</span>
@@ -465,8 +472,7 @@ body{overflow: auto;background: #fff;}
 </body>
 <script>
 $(function(){
-  var href=$("#newIframe", parent.document).attr("src");
-  var personId=href.split('?')[1].split("=")[1];
+  var personId=getUrlParam(window.location.href,'personId');
   var rootPath=getRootPath();
   var current_page="1";//当前页码
   

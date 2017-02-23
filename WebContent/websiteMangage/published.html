@@ -231,15 +231,6 @@ body{-moz-user-select: none;overflow-x: auto;}
   overflow: hidden;
   margin-top:15px;
 }
-.border1{
-  border: 1px solid #dedede; 
-}
-.border2{
-  border: 1px solid transparent; 
-}
-.attr:last-child{
-  border-bottom:none;
-}
 .attr{
   width:100%;
   position: relative;
@@ -422,7 +413,8 @@ body{-moz-user-select: none;overflow-x: auto;}
   height: 145px;
   margin-left: 15px;
   border-bottom: 1px solid #dedede;
-  cursor: pointer; 
+  cursor: pointer;
+  overflow:hidden; 
 }
 .rtcl_img_check{
   width:18px;
@@ -647,12 +639,7 @@ body{-moz-user-select: none;overflow-x: auto;}
         </ul>
         <div class="all">
           <div class="all_cate">所有分类 ></div>
-          <ul class="new_cate">
-            <li class="cate">
-              <span class="cate_desc"><span class="cate_desc_title">栏目：</span>电影电视</span>
-              <span class="cate_img">×</span>
-            </li>
-          </ul>
+          <ul class="new_cate"></ul>
         </div>
         <div class="ri_top2 border1">
           <div class="attr" id="channel">
