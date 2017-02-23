@@ -4,22 +4,34 @@ $(function(){
   var tag_sum=0;//定义添加的标签数量,最大是5
   var type=2;//type=1点击多选,type=2未点击多选
   var overChannel=false;
-  
-  $(document).on("mouseenter",".trig_item,.trig_item_li",function(){
-    $(this).children("a").css({"color":"#ffa634"});
-  })
-  $(document).on("mouseleave",".trig_item,.trig_item_li",function(){
-    $(this).children("a").css({"color":"#337ab7"});
-  })
-  
-  $(document).on("click",".check_more",function(){
+
+  $(document).on("click",".more1",function(){//点击更多
+    if($("#channel").children(".attrValues").children("ul").hasClass("h40")){
+      $("#channel").children(".attrValues").children("ul").removeClass("h40");
+      $(this).children("span").text("收起");
+    }else{
+      $("#channel").children(".attrValues").children("ul").addClass("h40");
+      $(this).children("span").text("更多");
+    }
+  });
+  $(document).on("click",".more3",function(){//点击多选
     type=1;
     $(this).siblings(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").show();
     $(this).hide();
     $(this).siblings(".btns").show();
   });
-  
-  $(document).on("click",".trig_item",function(){
+  $(document).on("click",".ri_top_li4",function(){//点击收起筛选
+    if($(this).children(".filter").text()=="收起筛选"){
+      $(this).children("img").attr({"src":"img/filter2.png"});
+      $(this).children(".filter").text("展开筛选");
+      $(".ri_top2").hide();
+    }else{
+      $(this).children("img").attr({"src":"img/filter1.png"});
+      $(this).children(".filter").text("收起筛选");
+      $(".ri_top2").show();
+    }
+  });
+  $(document).on("click",".trig_item",function(){//选中某一项
 //  debugger;
     var pId=$(this).parents(".attr").attr("id");
     var id=$(this).attr("id");
@@ -62,9 +74,7 @@ $(function(){
           i++;
         }
       })
-      console.log("I=="+i);
       if(i==sl){
-        $(".ri_top2").removeClass("border1").addClass("border2"); 
         $(".ri_top_li4").hide();
       }else{
         $(".ri_top_li4").show();
@@ -72,7 +82,7 @@ $(function(){
       if($(".all").is(':hidden')) $(".all").show();
     }
   });
-  $(document).on("click",".btns_sub",function(){
+  $(document).on("click",".btns_sub",function(){//点击多选里面的确定
 //  debugger;
     type=2;
     var pId=$(this).parents(".attr").attr("id");
@@ -83,9 +93,6 @@ $(function(){
     }
     if(pId=="album"){
       pTitle="所属专辑：";
-    }
-    if(pId=="channel"){
-      pTitle="所属栏目：";
     }
     var str=" ";
     var ids=" ";
@@ -123,21 +130,20 @@ $(function(){
     })
     console.log("I=="+i);
     if(i==sl){
-      $(".ri_top2").removeClass("border1").addClass("border2"); 
       $(".ri_top_li4").hide();
     }else{
       $(".ri_top_li4").show();
     }
     if($(".all").is(':hidden')) $(".all").show();
   });
-  $(document).on("click",".btns_can",function(){
+  $(document).on("click",".btns_can",function(){//点击多选里面的取消
     var pId=$(this).parents(".attr").attr("id"); 
     $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
     $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
     $(this).parent(".btns").hide();
     $(this).parent(".btns").siblings(".check_more").show();
   });
-  $(document).on("click",".cate_img",function(){
+  $(document).on("click",".cate_img",function(){//点击所有分类里面的取消
 //  debugger;
     $(this).parent(".cate").remove();
     var pId=$(this).parent(".cate").attr("pId");
@@ -152,7 +158,7 @@ $(function(){
       $(".all").hide();
     }
   });
-  $(document).on("mouseenter","#channel .chnel",function(){
+  $(document).on("mouseenter","#channel .chnel",function(){//鼠标放在一级栏目上
     overChannel=true;
     var pid=$(this).attr("data_idx");
     $(".chnels").each(function(){
@@ -160,19 +166,27 @@ $(function(){
         $(".chnels").hide();
         $("#channel .chnel").removeClass("trig_curr");
         $("#channel .chnel[data_idx="+pid+"]").addClass("trig_curr");
-        $(this).show();
+        if(pid>=0&&pid<=9){
+          $(this).css({"top":"39px"}).show();
+        }else if(pid>=10&&pid<=19){
+          $(this).css({"top":"79px"}).show();
+        }else if(pid>=20&&pid<=29){
+          $(this).css({"top":"119px"}).show();
+        }else{
+          $(this).css({"top":"159px"}).show();
+        }
       }
     })
   });
-  $(document).on("mouseleave","#channel .chnel",function(){
+  $(document).on("mouseleave","#channel .chnel",function(){//鼠标离开一级栏目
     overChannel=false;
     setTimeout(function(){
       if(overChannel) return;
       $("#channel .chnel").removeClass("trig_curr");
-      $(".chnels").hide();
+      $(".chnels").css({"top":"39px"}).hide();
     },200)
   });
-  $(document).on("mouseenter","#channel .chnels",function(){
+  $(document).on("mouseenter","#channel .chnels",function(){//鼠标放在二级栏目上
     overChannel=true;
     var pid=$(this).attr("data_idx");
     $(".chnel").each(function(){
@@ -184,7 +198,7 @@ $(function(){
       }
     })
   });
-  $(document).on("mouseleave","#channel .chnels",function(){
+  $(document).on("mouseleave","#channel .chnels",function(){//鼠标离开二级栏目
     overChannel=false;
     setTimeout(function(){
       if(overChannel) return;
@@ -192,7 +206,7 @@ $(function(){
       $("#channel .chnels").hide();
     },200)
   });
-  $(document).on("click",".trig_item_li",function(){
+  $(document).on("click",".trig_item_li",function(){//选中二级栏目里面的一级栏目
     var pname=$(this).parent(".chnels").attr("data_name");
     var newFilter='<li class="cate" pId="channel">'+
                     '<span class="cate_desc"><span class="cate_desc_title">所属栏目&gt;'+pname+'</span>'+"&gt;"+$(this).children(".ss1").text()+'</span>'+
@@ -204,17 +218,7 @@ $(function(){
     $("#channel").hide();
     if($(".all").is(':hidden')) $(".all").show();
   });
-  $(document).on("click",".ri_top_li4",function(){
-    if($(this).children(".filter").text()=="收起筛选"){
-      $(this).children("img").attr({"src":"img/filter2.png"});
-      $(this).children(".filter").text("展开筛选");
-      $(".ri_top2").hide();
-    }else{
-      $(this).children("img").attr({"src":"img/filter1.png"});
-      $(this).children(".filter").text("收起筛选");
-      $(".ri_top2").show();
-    }
-  });
+  
   /*点击取消，罩层和上传节目的页面消失*/
   $(".collapse-link,.cancel").on("click",function(){
     $("form")[0].reset();
@@ -467,6 +471,13 @@ $(function(){
     towctx.restore();
     $("#myCanvas,#myCanvasTow").hide();
     $("#cutImgId").attr({"src":""});
+  }
+  
+  //销毁obj对象的key-value
+  function destroy(obj){
+    for(var key in obj){//清空对象
+      delete obj[key];
+    }
   }
   
 })

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>节目管理(已发布--节目详情)</title>
+  <title>主播管理--节目详情</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">                                                              
@@ -44,13 +44,26 @@ body{overflow: auto;background: #fff;}
   padding-left:20px;
   float: left;
 }
-.my_title{
+.title_more{
+  overflow: hidden;
   height: 30px;
-  color: #000;
-  line-height: 30px;
   font-size: 14px;
+  margin-top: 80px;
+  line-height: 30px;
+  margin-left: 10px;
+  border-bottom: 2px solid #dedede;
+}
+.my_title{
+  color: #000;
+  float: left;
   font-weight: bold;
-  margin: 80px 0px 0px 10px;
+}
+.more{
+  color: #0077c7;
+  float: right;
+  margin-right:10px;
+  font-weight: bold;
+  cursor: pointer;
 }
 .detail_content{
   width:100%;
@@ -74,11 +87,6 @@ body{overflow: auto;background: #fff;}
   position: relative;
   border: 1px solid #dedede;
   overflow: hidden;
-}
-.dcl_jmcontent12{
-  overflow: hidden;
-  height: auto;
-  margin-bottom: 20px;
 }
 .dcl_jmcontent1{
   float: left;
@@ -131,11 +139,11 @@ body{overflow: auto;background: #fff;}
   cursor: pointer;
 }
 .tagss{
-	overflow: hidden;
-	position: relative;
+  overflow: hidden;
+  position: relative;
 }
 .tagss span{
-	float: left;
+  float: left;
 }
 .dcl_jmcontent2 ul{
   overflow: hidden;
@@ -160,11 +168,7 @@ body{overflow: auto;background: #fff;}
   white-space: nowrap;
   color: #000;
 }
-.dcl_jmcontent3{
-  overflow: hidden;
-}
-.dcl_jmcontent3 .revoke,.dcl_jmcontent3 .player{
-	margin-right: 50px;
+.player{
   width:85px;
   height:30px;
   color: #fff;
@@ -172,15 +176,10 @@ body{overflow: auto;background: #fff;}
   text-align: center;
   line-height:30px;
   float: left;
-}
-.dcl_jmcontent3 .revoke{
-	background: #0077c7;
-}
-.dcl_jmcontent3 .player{
-	background: #f60;
+  background: #f60;
 }
 .dcl_jmcontent4{
-	font-family: "微软雅黑";
+  font-family: "微软雅黑";
   color: #000;
   font-size: 16px;
   font-weight: 500;
@@ -275,7 +274,9 @@ body{overflow: auto;background: #fff;}
 .dc_right{
   width:300px;
   height:670px;
+  margin-top:10px;
   overflow: auto;
+  /*border:1px solid #dedede;*/
 }
 .dcr_jmlist{
   overflow: auto;
@@ -304,108 +305,17 @@ body{overflow: auto;background: #fff;}
   padding-left:10px;
 }
 .list1_con_name{
-	color:#0077c7;
-	font-weight: bold;
-	cursor: pointer;
-}
-/*不通过样式*/
-.nopass_masker{
-  width:100%;
-  position:fixed;
-  top:0;
-  left:0;
-  background: #000;
-  opacity: 0.5;
-  display: none;
-  z-index:100;
-}
-.nopass_container{
-  width:575px;
-  height:auto;
-  position: fixed;
-  top:20px;
-  background: #fff;
-  z-index:101;
-  display: none;
+  color: #0077c7;
+  font-weight: bold;
   cursor: pointer;
 }
-.nopass_head{
-  width:100%;
-  height:40px;
-  background:#DAE1EB;
-  color:#000;
-  font-weight:bolder;
+.dcl_jmcontent12{
   overflow: hidden;
+  height: auto;
+  padding-bottom: 20px;
 }
-.nh_span1{
-  font-size:16px;
-  float: left;
-  margin: 9px 20px;
-}
-.nh_span2{
-  font-size:20px;
-  float: right;
-  margin: 7px 20px;
-}
-.nopass_content{
-  /*height: 440px;*/
-}
-.nc_con1{
-  width:100%;
-  height:75px;
-  border-bottom:1px solid #dedede;
-}
-.nc_txt1{
-  color:#007FFF;
-  position: absolute;
-  font-weight:bold;
-  font-size: 15px;
-  margin: 25px 0px 25px 20px;
-}
-.nc_con2{
-  height:auto;
-  font-size:14px;
-  margin:30px 20px 0px 20px;
-}
-.black{
-  color:#000;
-}
-.blue{
-  color:#007FFF;
-}
-.nc_txt3{
-  height:110px;
-}
-.nc_txt4{
-  position: relative;
-  top: 10px;
-  float: left;
-}
-.other_reason{
-  float: left;
-}
-.nc_con3{
-  margin: 0px 20px 20px;
-  overflow: hidden;
-}
-.nc_checkimg{
-  width:18px;
-  height:18px;
-}
-.nc_txt5{
-  margin: 6px 20px 10px 340px;
-}
-.nc_txt6{
-  margin-left: 10px;
-  color: #000;
-}
-.nc_txt7{
-  width:80px;
-  height:30px;
-  text-align: center;
-  line-height: 30px;
-  color:#000;
-  background:#0077c7;
+.list1_con_name,.list1_con_num,.list1_con_time{
+  width: 180px;
 }
 </style>
 <body>
@@ -413,7 +323,11 @@ body{overflow: auto;background: #fff;}
   <div class="containers">
     <div class="detail_content">
       <div class="dc_left1">
-        <div class="detail_title">节目管理> 已发布> </div>
+        <div class="detail_title">主播管理> 主播列表> 
+          <span class="pername"></span>
+          <span class="zjname"></span>
+          <span class="jmname"></span>
+        </div>
         <div class="dc_left">
           <div class="dcl_jmcontent">
             <div class="dcl_jmcontent12">
@@ -429,11 +343,11 @@ body{overflow: auto;background: #fff;}
                 <div class="tagss">
                   <span>标签：</span>
                   <ul class="tags">
-                    <!--<li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>
-                    <li class="newli"><span class="newspan">自定义标签一</span></li>-->
+                    <!--<li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>
+                    <li class="newspan">自定义标签一</li>-->
                   </ul>
                 </div>
                 <ul class="act">
@@ -443,33 +357,33 @@ body{overflow: auto;background: #fff;}
                   </li>
                   <li class="love">
                     <img class="love1" src="img/act3.png" alt="" />
-                    <span class="love2"></span>
+                    <span class="love2">1</span>
                   </li>
                   <li class="download">
                     <img class="download1" src="img/act4.png" alt="" />
-                    <span class="download2"></span>
+                    <span class="download2">2</span>
                   </li>
                   <li class="share">
                     <img class="share1" src="img/act2.png" alt="" />
-                    <span class="share2"></span>
+                    <span class="share2">12</span>
                   </li>
                   <li class="intransit">
                     <img class="intransit1" src="img/act5.png" alt="" />
-                    <span class="intransit2"></span>
+                    <span class="intransit2">6</span>
                   </li>
                 </ul>
               </div>
             </div>
-            <div class="dcl_jmcontent3">
-          		<span class="revoke" opetype="revoke">撤回</span>
-          		<span class="player">播放</span>
-          	</div>
-          	<div class="dcl_jmcontent4"></div>
+            <div class="player">播放节目</div>
+            <div class="dcl_jmcontent4"></div>
           </div>
         </div>
       </div>
       <div class="dc_right1">
-        <div class="my_title">同专辑的节目</div>
+        <div class="title_more">
+          <div class="my_title">Ta的节目</div>
+          <div class="more">更多</div>
+        </div>
         <div class="dc_right">
           <div class="dcr_jmlist">
             <!--<div class="dcr_jmlist1">
@@ -477,14 +391,14 @@ body{overflow: auto;background: #fff;}
                 <img src="" alt="节目图片" />
               </div>
               <div class="list1_con">
-                <p class="list1_con_name">
+                <p class="list1_con_name ellipsis">
                   <span>双份的阳光</span>
                 </p>
-                <p class="list1_con_num">
+                <p class="list1_con_num ellipsis">
                   <span>播放次数 ： </span>
                   <span>8</span>
                 </p>
-                <p class="list1_con_time">
+                <p class="list1_con_time ellipsis">
                   <span>时间 ：</span>
                   <span>2016-10-08 10:47:35</span>
                 </p>
@@ -572,47 +486,21 @@ body{overflow: auto;background: #fff;}
   </div>
   <!--e:全局播放器-->
 </div>
-<!--s:不通过-->
-<div class="nopass_masker"></div>
-<div class="nopass_container">
-  <div class="nopass_head">
-    <span class="nh_span1">撤回</span>
-    <span class="nh_span2">×</span>
-  </div>
-  <div class="nopass_content">
-    <div class="nc_con1">
-      <span class="nc_txt1">选择了2个节目，您确认撤回所选的节目么？</span>
-    </div>
-    <div class="nc_con2">
-      <p class="nc_txt2 black">请告知主播具体的原因：</p>
-      <p class="nc_txt2">广告信息及垃圾信息</p>
-      <p class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</p>
-      <p class="nc_txt2 blue">虚构事实。隐瞒真相以误导、欺骗他人</p>
-      <p class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</p>
-      <div class="nc_txt3">
-        <span class="nc_txt4">其他原因：</span>
-        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
-      </div>
-    </div>
-    <div class="nc_con3">
-      <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl"/>
-        <span class="nc_txt6 fl">违规登记</span>
-      </div>
-      <div class="nc_txt7 fl">确定</div>
-    </div>
-  </div>
-</div>
-<!--e:不通过-->  
 </body>
 <script>
   var rootPath=getRootPath();
-  var seqId=getUrlParam(window.location.href,'seqId');
-  var contentId=getUrlParam(window.location.href,'contentId');
+  var seqId=getUrlParam(window.location.href,'zjId');
+  var audioId=getUrlParam(window.location.href,'jmId');
+  var perName=getUrlParam(window.location.href,'perName');
+  perName=decodeURIComponent(perName);
+  var perId=getUrlParam(window.location.href,'personId');
+  var mp3List=[];//音乐播放列表
+  var listNum=0;//控制播放节目的序号
+  
   var data1={"UserId":"123",
              "Page":"1",
              "PageSize":"10",
-             "ContentId":contentId,
+             "ContentId":audioId,
              "MediaType":"wt_MediaAsset"
   };
   /*得到节目信息*/
@@ -628,10 +516,11 @@ body{overflow: auto;background: #fff;}
           if(dataParam.MediaType=="wt_MediaAsset"){
             fillJmDetail(resultData);//填充节目数据
           }else{
+            $(".dcr_jmlist").html(" ");
             fillJmList(resultData);//填充专辑下的节目列表
           }
         }else{
-          alert(resultData.Message);
+          alert("没有更多节目了");
         }
       },
       error:function(XHR){
@@ -641,41 +530,27 @@ body{overflow: auto;background: #fff;}
   }
   //填充节目数据
   function fillJmDetail(resultData){
-    $(".detail_title").html("节目管理> 已发布> "+resultData.ContentDetail.ContentName);
-    $(".dcl_jmcontent2 .title h3").html(resultData.ContentDetail.ContentName);
-    $(".dcl_jmcontent2 .title h3").attr("contentId",resultData.ContentDetail.ContentId);
+    $(".pername").text(perName+">");
+    $(".pername").attr("perId",perId).attr("pername",perName);
+    $(".zjname").text(resultData.ContentDetail.ContentSeqName?resultData.ContentDetail.ContentSeqName+">":"暂无>");
+    $(".zjname").attr("seqId",seqId);
+    $(".jmname").text(resultData.ContentDetail.ContentName?resultData.ContentDetail.ContentName:"暂无");
     $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
-    $(".cctime").html(resultData.ContentDetail.CTime);
-    $(".comZj").html(!resultData.ContentDetail.ContentSeqName?"【自定义专辑】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
-    $(".comZj").attr({"seqId":resultData.ContentDetail.ContentSeqId});
+    $(".dcl_jmcontent2 .title h3").text(resultData.ContentDetail.ContentName?resultData.ContentDetail.ContentName:"暂无");
+    $(".cctime").text(resultData.ContentDetail.CTime?resultData.ContentDetail.CTime:"未知");
+    $(".comZj").text(!resultData.ContentDetail.ContentSeqName?"【自定义专辑名称】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
     if(resultData.ContentDetail.ContentKeyWord){
       for(var i=0;i<resultData.ContentDetail.ContentKeyWord.length;i++){
-        var li='<li class="newli"><span class="newspan" tagId='+resultData.ContentDetail.ContentKeyWord[i].TagId+'>'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</span></li>';
+        var li='<li class="newspan">'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</li>';
         $(".tags").append(li);
       }
     }
-    if(resultData.ContentDetail.ContentPubChannels){
-      var chId,chStr="";
-      for(var i=0;i<resultData.ContentDetail.ContentPubChannels.length;i++){
-        if((chId=="")||(chStr=="")){
-          chId=resultData.ContentDetail.ContentPubChannels[i].ChannelId;
-          chStr=resultData.ContentDetail.ContentPubChannels[i].ChannelName;
-        }else{
-          chId+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelId;
-          chStr+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelName;
-        }
-      }
-      $(".dcl_jmcontent2 .title h3").attr({"channelId":chId});
-    }
-    $(".play2").html(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
-    $(".love2").html(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
-    $(".download2").html(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
-    $(".share2").html(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
-    $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
-    $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
-    $(".audio").attr({"src":resultData.ContentDetail.ContentPlay});
-    $(".player_panel .title").text(resultData.ContentDetail.ContentName);
-    getTime();
+    $(".play2").text(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
+    $(".love2").text(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
+    $(".download2").text(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
+    $(".share2").text(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
+    $(".intransit2").text(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
+    $(".dcl_jmcontent4").text(!resultData.ContentDetail.ContentDesc?"暂无":resultData.ContentDetail.ContentDesc);
   }
   /*同专辑下的所有节目*/
   var data2={"UserId":"123",
@@ -697,18 +572,27 @@ body{overflow: auto;background: #fff;}
                     '<p class="list1_con_name ellipsis" contentId='+resultData.SubList[i].ContentId+'>'+
                       '<span>'+resultData.SubList[i].ContentName+'</span>'+
                     '</p>'+
-                    '<p class="list1_con_num">'+
+                    '<p class="list1_con_num ellipsis">'+
                       '<span>播放次数 ： </span>'+
                       '<span>'+resultData.SubList[i].PlayCount+'</span>'+
                     '</p>'+
-                    '<p class="list1_con_time">'+
+                    '<p class="list1_con_time ellipsis">'+
                       '<span>时间 ：</span>'+
                       '<span>'+resultData.SubList[i].CTime+'</span>'+
                     '</p>'+
                   '</div>'+
                 '</div>';
       $(".dcr_jmlist").append(list);
+      var audioObj={};
+      audioObj.title=resultData.SubList[i].ContentName;
+      audioObj.playUrl=resultData.SubList[i].ContentPlay;
+      mp3List.push(audioObj);
     }
+    $(".audio").attr({"src":""});
+    $(".player_panel .title").html("");
+    $(".player_panel .title").html(mp3List[0].title);
+    $(".audio").attr("src",mp3List[0].playUrl);
+    getTime();
   }
   
   /*s--播放*/
@@ -718,7 +602,7 @@ body{overflow: auto;background: #fff;}
     if($(".playerBtn").hasClass("playing")){
       $(".player").text("暂停");
     }else{
-      $(".player").text("播放");
+      $(".player").text("播放节目");
     }
   });
   /*全局播放器面板的展开*/
@@ -763,52 +647,37 @@ body{overflow: auto;background: #fff;}
     $('.audio')[0].volume=clickVolume;
   });
   /*e--播放*/
- 
-  /*s--撤回*/
-  $(".revoke").on("click",function(){
-    var data3={};
-    var contentIds=[];
-    var contentObj={};
-    contentObj.Id=$(".dcl_jmcontent2 .title h3").attr("contentId");
-    contentObj.ChannelIds=$(".dcl_jmcontent2 .title h3").attr("channelId");
-    contentObj.MediaType="AUDIO";
-    contentIds.push(contentObj);
-    data3.UserId="123";
-    data3.ContentIds=contentIds;
-    data3.OpeType=$(this).attr("opetype");
-    $.ajax({
-      type: "POST",
-      url:rootPath+"CM/content/updateContentStatus.do",
-      dataType:"json",
-      data:JSON.stringify(data3),
-      success: function(resultData){
-        if(resultData.ReturnType=="1001"){
-          alert("撤回成功");
-        }else{
-          alert(resultData.Message);
-        }
-      },
-      error: function(jqXHR){
-        alert("获取数据发生错误："+jqXHR.status);
-      }     
-    });
-  });
-  /*e--撤回*/
- 
-  /*点击专辑名称跳到专辑详情页*/
-  $(".comZj").on("click",function(){
-    var seqIds=$(this).attr("seqId");
-    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+seqIds});
-    $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).show();
-  });
-  /*点击专辑列表里面的节目名称跳到节目详情页*/
+  
+  /*点击节目列表里节目的名称，跳到节目详情页*/
   $(document).on("click",".list1_con_name",function(){
-    var seqIds=$(".comZj").attr("seqId");
-    var contentIds=$(this).attr("contentId");
-    $("#newIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentIds+"&&seqId="+seqIds});
+    var jmid=$(this).attr("contentId");
+    var personId=$(".pername").attr("perId");
+    var contentId=$(".zjname").attr("seqId");
+    pername=$(".pername").attr("pername");
+    $("#newIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
     $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).show();
+    $("#newIframe", parent.document).show(); 
+  });
+  /*点击专辑名称，跳到专辑详情页*/
+  $(document).on("click",".comZj",function(){
+    var personId=$(".pername").attr("perId");
+    var contentid=$(".zjname").attr("seqId");
+    $("#newIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+    $("#myIframe", parent.document).hide();
+    $("#newIframe", parent.document).show(); 
+  });
+  /*点击更多--加载下一批节目*/
+  var moreNum=1;//记录点击的次数
+  $(".more").on("click",function(){
+    moreNum++;
+    var data3={"UserId":"123",
+             "ContentFlowFlag":"2",
+             "Page":moreNum,
+             "PageSize":"10",
+             "ContentId":seqId,
+             "MediaType":"wt_SeqMediaAsset"
+  };
+  getJmDetail(data3);
   });
 </script>
 </html>

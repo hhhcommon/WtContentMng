@@ -22,7 +22,7 @@ $(function(){
           getChannelLabel(resultData);//得到栏目的筛选标签
         }
       },
-      error:function(XHR){
+      error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
       }
     });
@@ -31,28 +31,36 @@ $(function(){
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
     for(var i=0;i<resultData.ResultList.ChannelList.length;i++){
-      var filterChannel='<li class="trig_item chnel" data_idx='+i+' id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
-                          '<a  class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'</a>'+
-                        '</li>';
-      $("#channel .attrValues .av_ul").append(filterChannel); 
-      var fccg='<ul class="tab_cont_item chnels" data_idx='+i+' data_name='+resultData.ResultList.ChannelList[i].nodeName+' parentId='+resultData.ResultList.ChannelList[i].id+'></ul>';
-      $("#channel").append(fccg);
+      var li='<li class="trig_item chnel" data_idx='+i+' id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
+                '<div class="check_cate"></div>'+
+                '<a class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'</a>'+
+              '</li>';
+      var li_tab_ul='<ul class="tab_cont_item chnels" data_idx='+i+' data_name='+resultData.ResultList.ChannelList[i].nodeName+' pid='+resultData.ResultList.ChannelList[i].parentId+'></ul>';
+      $(".attrTabcon").append(li_tab_ul);
+      $("#channel .attrValues .av_ul").append(li);
       if(resultData.ResultList.ChannelList[i].isParent=="true"){
         for(var j=0;j<resultData.ResultList.ChannelList[i].children.length;j++){
-          var filterChannelChildren='<li class="trig_item_li">'+
-                                      '<a class="ss1" href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'</a>'+
-                                    '</li>';
-          $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
+          var li_tab_ul_li='<li class="trig_item_li" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+
+                              '<a class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].children[j].nodeName+'</a>'+
+                            '</li>';
+          $(".tab_cont_item").eq(i).append(li_tab_ul_li);
         }
       }else{
-        $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<li style='display:block;text-align:center;float:none;margin:0px auto;'>暂时没有二级栏目</li>");
+        var li_tab_ul_li='<li class="trig_item_li">'+
+                            '<a class="ss1" href="javascript:void(0)" >暂无二级栏目</a>'+
+                          '</li>';
+        $(".tab_cont_item").eq(i).append(li_tab_ul_li);                  
       }
     }
   }
   
   //00-3获取专辑列表
-  var dataParam={"DeviceId":"3279A27149B24719991812E6ADBA5584","MobileClass":"Chrome","UserId":"123","PCDType":"3","FlagFlow":"0","ChannelId":"0","ShortSearch":"false"};
-  getContentList(dataParam);
+  var zjData={};
+  zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
+  zjData.MobileClass="Chrome";
+  zjData.PCDType="3";
+  zjData.UserId="123";
+  getContentList(zjData);
   function getContentList(obj){
     $.ajax({
       type:"POST",
@@ -77,20 +85,6 @@ $(function(){
   function getSeqMediaList(resultData){
     $(".ri_top3_con").html("");//加载专辑列表时候先清空之前的内容
     for(var i=0;i<resultData.ResultList.length;i++){
-//    var chas = resultData.ResultList[i].ContentPubChannels;
-//    var status = '';
-//    if(!chas) status ='不存在';
-//    else status = chas[0].FlowFlagState;
-      if(resultData.ResultList[i].ContentPubChannels){
-        var channelds="";
-        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
-          if(channelds==""){
-            channelds=resultData.ResultList[i].ContentPubChannels[j].ChannelId;
-          }else{
-            channelds+=","+resultData.ResultList[i].ContentPubChannels[j].ChannelId;
-          }
-        }
-      }
       var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' channelId='+channelds+'>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
@@ -98,15 +92,15 @@ $(function(){
                       '<div class="rtcl_con">'+
                         '<p class="rtcl_con_name">'+
                           '<span>专辑名称 ：</span>'+
-                          '<span>'+resultData.ResultList[i].ContentName+'</span>'+
+                          '<span class="zjmc">'+resultData.ResultList[i].ContentName+'</span>'+
                         '</p>'+
                         '<p class="rtcl_con_num">'+
                           '<span>节目数量 ： </span>'+
-                          '<span>'+resultData.ResultList[i].SubCount+'</span>'+
+                          '<span class="jmnum">'+resultData.ResultList[i].SubCount+'</span>'+
                         '</p>'+
                         '<p class="rtcl_con_time">'+
                           '<span>时间 ：</span>'+
-                          '<span>'+resultData.ResultList[i].CTime+'</span>'+
+                          '<span class="ctime">'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
                       '<p class="zj_st" flowFlag='+resultData.ResultList[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList[i].ContentPubChannels[0].FlowFlagState+'</p>'+
@@ -118,15 +112,27 @@ $(function(){
                       '</div>'+
                     '</div>';
       $(".ri_top3_con").append(albumBox);
+      $(".rtc_listBox").children(".rtcl_con").children(".zjmc").eq(i).text(((resultData.ResultList[i].ContentName)?(resultData.ResultList[i].ContentName):"暂无"));
+      $(".rtc_listBox").children(".rtcl_con").children(".jmnum").eq(i).text(((resultData.ResultList[i].SubCount)?(resultData.ResultList[i].SubCount):"暂无"));
+      $(".rtc_listBox").children(".rtcl_con").children(".other").children(".ctime").eq(i).text(((resultData.ResultList[i].CTime)?(resultData.ResultList[i].CTime):"暂无"));
+      $(".rtc_listBox").children(".jm_st").eq(i).text(((resultData.ResultList[i].ContentPubChannels[0].FlowFlagState)?(resultData.ResultList[i].ContentPubChannels[0].FlowFlagState):"未知"));
+      if(resultData.ResultList[i].ContentPubChannels){
+        var channelds="";
+        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
+          if(channelds==""){
+            channelds=resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }else{
+            channelds+=","+resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }
+        }
+      }
       if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="0"){//提交
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="1"){//审核
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del,.zj_recal").removeClass("cf60").addClass("c173");
       }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="2"){//发布
         $("#op_Box"+i).children(".zj_recal").removeClass("c173").addClass("cf60");
-      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
-        $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
-      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//已撤回
+      }else if(resultData.ResultList[i].ContentPubChannels[0].FlowFlag=="4"){//撤回
         $("#op_Box"+i).children(".zj_edit,.zj_pub,.zj_del").removeClass("c173").addClass("cf60");
       }
     }
@@ -863,52 +869,22 @@ $(function(){
   });
   
   /*根据不同的筛选条件得到不同的专辑列表*/
-  var zjData={};
-  zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
-  zjData.MobileClass="Chrome";
-  zjData.PCDType="3";
-  zjData.UserId="123";
-  $(document).on("click",".trig_item",function(){
-    $(document).find(".new_cate li").each(function(){
-      var pId=$(this).attr("pid");
-      var id=$(this).attr("id");
-      if(pId!=null&&pId=="status"){
-        if(id=="5") {
-          zjData.FlowFlag='5';
-        }
-        if(id=="1") {
-          zjData.FlowFlag='1';
-        }
-        if(id=="2") {
-          zjData.FlowFlag='2';
-        }
-        if(id=="3") {
-          zjData.FlowFlag='3';
-        }
-      }
-      if(pId!=null&&pId=="channel"){
-        zjData.ChannelId=$(this).attr("id");
-      }
-    });
-    getContentList(zjData);
-  });
-  $(document).on("click",".cate_img",function(){
-    if($(".new_cate li").size()=="0"){
-      zjData.FlowFlag='0';
-      zjData.SeqMediaId='0';
-      zjData.ChannelId='0';
-    }else{
+  $(document).on("click",".trig_item,.trig_item_li,.cate_img",function(){//选中或取消某个筛选条件
+    destroy(zjData);
+    zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
+    zjData.MobileClass="Chrome";
+    zjData.PCDType="3";
+    zjData.UserId="123";
+    if($(".new_cate li").size()>"0"){
       $(document).find(".new_cate li").each(function(){
         var pId=$(this).attr("pid");
         var id=$(this).attr("id");
-        if(pId!="status"){
-          zjData.FlowFlag='0';
-        }
-        if(pId!="album"){
-          zjData.SeqMediaId='0';
-        }
-        if(pId!="channel"){
-          zjData.ChannelId='0';
+        if(pId=="status"){
+          zjData.FlowFlag=$(this).attr("id");
+        }else if(pId=="album"){
+          zjData.SeqMediaId=$(this).attr("id");
+        }else if(pId=="channel"){
+          zjData.ChannelId=$(this).attr("id");
         }
       });
     }

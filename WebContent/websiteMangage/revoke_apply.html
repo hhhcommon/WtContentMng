@@ -16,9 +16,10 @@
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
-  <script src="js/globalplayer.js"></script>
   <script src="js/filter.js"></script>
+  <script src="js/globalplayer.js"></script>
   <script src="js/revoke_apply.js"></script>
+  
 <style>
 /*全局样式*/
 *{margin: 0;padding: 0;}
@@ -120,7 +121,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   display: none;
 }
 .all_cate{
-  width:70px;
+  width:100px;
   height:25px;
   line-height:25px;
   float: left;
@@ -200,8 +201,8 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .btns_sub{
   color: #fff;
-  background: #ffa634;
-  border: 1px solid #ffa634;
+  background: #0077c7;
+  border: 1px solid #0077c7;
   display: inline-block;
   margin: 5px;
   border-radius: 2px;
@@ -230,15 +231,6 @@ body{-moz-user-select: none;overflow-x: auto;}
   height:auto;
   overflow: hidden;
   margin-top:15px;
-}
-.border1{
-  border: 1px solid #dedede; 
-}
-.border2{
-  border: 1px solid transparent; 
-}
-.attr:last-child{
-  border-bottom:none;
 }
 .attr{
   width:100%;
@@ -328,7 +320,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-top: 10px;
   padding: 0px 5px;
 }
-.ensure{
+.ensure,.clean{
   float:left;
   width: 36px;
   height: 21px;
@@ -398,7 +390,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   text-align: center;
 }
 .rth_txt1{
-  margin: 0px 420px 0px 10px;
+  margin: 10px 420px 0px 10px;
 }
 .rth_txt2{
   border-left:2px solid #d8d8d8;
@@ -423,6 +415,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-left: 15px;
   border-bottom: 1px solid #dedede;
   cursor: pointer;
+  overflow:hidden;
 }
 .rtcl_img_check{
   width:18px;
@@ -520,11 +513,12 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nopass_container{
   width:575px;
-  height:auto;
+  height:450px;
   position: fixed;
   top:20px;
   background: #fff;
   z-index:101;
+  overflow-y: auto;
   display: none;
   cursor: pointer;
 }
@@ -542,12 +536,12 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin: 9px 20px;
 }
 .nh_span2{
-  font-size:20px;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
   float: right;
-  margin: 7px 20px;
-}
-.nopass_content{
-  /*height: 440px;*/
+  text-align: center;
+  margin: 10px 20px;
 }
 .nc_con1{
   width:100%;
@@ -573,26 +567,31 @@ body{-moz-user-select: none;overflow-x: auto;}
   color:#007FFF;
 }
 .nc_txt3{
-  height:110px;
+  position: relative;
+  overflow: hidden;
 }
 .nc_txt4{
   position: relative;
-  top: 10px;
   float: left;
 }
 .other_reason{
   float: left;
 }
 .nc_con3{
-  margin: 0px 20px 20px;
+  position: relative;
   overflow: hidden;
+  margin: 58px 20px 20px;
 }
 .nc_checkimg{
   width:18px;
   height:18px;
 }
 .nc_txt5{
+  opacity: 0;
   margin: 6px 20px 10px 340px;
+}
+.nc_reasons  li img,.nc_txt5 img{
+  margin:0px;
 }
 .nc_txt6{
   margin-left: 10px;
@@ -608,84 +607,15 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nc_reasons{
   overflow: hidden;
+  margin:15px 0px;
 }
 .nc_reasons li{
   width: auto;
   float: left;
   margin-right: 20px;
 }
-.ellipsis{
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.rt_opt .page {
-  width: 360px;
-  height:30px;
-  margin:10px 0px 0px 50px;
-  background-color: #f3f3f4;
-  border-top: 1px solid #ccc;
-}
-.page .pagination {
-  display: inline-block;
-  margin: 0px;
-  border-radius: 4px;
-}
-.pagination i {
-  display: block;
-  float: left;
-  height:29px;
-  width: auto;
-  line-height: 30px;
-  color: black;
-  vertical-align: middle;
-  text-align: center;
-  padding: 0 2px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: bold;
-  background-color: #f3f3f4;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
-  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
-  background-image: linear-gradient(#f3f3f4, #f3f3f4);
-}
-.pagination span {
-  display: block;
-  float: left;
-  height: 29px;
-  width: 50px;
-  line-height: 30px;
-  color: #0077c7;
-  vertical-align: middle;
-  text-align: center;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  background-color: #f3f3f4;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
-  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
-  background-image: linear-gradient(#f3f3f4, #f3f3f4);
-}
-.gigantic.pagination input {
-  width: 55px;
-  margin-top: 5px;
-  height: 20px;
-  font-size: 12px;
-  background: white;
-  color: black;
-  text-align: center;
-  padding: 0 2px;
-  margin-left: -3px;
-  border: 1px solid #ccc;
-}
-.pagination span.disabled, .pagination span.disabled:hover, .pagination span.disabled:focus, .pagination span.disabled:active {
-  background-color: red;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
-  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
-  background-image: linear-gradient(#f3f3f4, #f3f3f4);
-  color: #A8A8A8;
-  cursor: default;
-  text-decoration:none;
+.nc_reasons li img{
+  margin:-3px 0px 0px 0px;
 }
 </style> 
 </head>
@@ -703,13 +633,8 @@ body{-moz-user-select: none;overflow-x: auto;}
           <li class="ri_top_li3"><span class="filter">收起筛选</span><img src="img/filter1.png" alt="收起筛选" /></li>
         </ul>
         <div class="all">
-          <div class="all_cate">所有分类 ></div>
-          <ul class="new_cate">
-            <li class="cate">
-              <span class="cate_desc"><span class="cate_desc_title">栏目：</span>电影电视</span>
-              <span class="cate_img">×</span>
-            </li>
-          </ul>
+          <div class="all_cate">所有筛选条件 ></div>
+          <ul class="new_cate"></ul>
         </div>
         <div class="ri_top2 border1">
           <div class="attr" id="channel">
@@ -789,6 +714,7 @@ body{-moz-user-select: none;overflow-x: auto;}
                 <span class="line">---</span>
                 <input type="text" class="input-sm form-control endPubTime" name="EndPubTime" value="" placeholder="输入结束日期"/>
                 <span class="ensure">确定</span>
+                <span class="clean">清除</span>
               </div>
             </div>
           </div>
@@ -798,7 +724,7 @@ body{-moz-user-select: none;overflow-x: auto;}
             <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
             <span class="rto_txt fl">全选</span>
             <span class="rto_pass fl" opetype="revoke">同意撤回</span>
-            <span class="rto_nopass fl">不予撤回</span>
+            <span class="rto_nopass fl" opetype="nopass">不予撤回</span>
             <div class="page fl">
               <div class="gigantic pagination">
                 <i class="currentPage">1</i><i>/</i><i class="totalPage"></i><i>页</i>
@@ -934,6 +860,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <!--s:全局播放器-->
   <div class="globalplayer">
+    <audio src="" class="audio" controls autoplay="autoplay" style="display: none;"></audio>
     <!--s:收起状态-->
     <div class="glp_mini">
       <img class="sound_face" src="img/launch.png">
@@ -944,23 +871,23 @@ body{-moz-user-select: none;overflow-x: auto;}
       <div class="glp_panel">
         <div class="controls">
           <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+          <img class="btn_player playerBtn playing" src="img/pause.png" alt="播放/暂停" />
           <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
         </div>
         <div class="player_panel">
-          <a href="#" class="title" title="">朝珠为啥只有清朝有</a>
+          <a href="#" class="title" title=""></a>
           <div>
-            <span class="time sound_position">08:20</span>
+            <span class="time sound_position"></span>
             <div class="player_progressbar">
               <div class="player_playbar"></div>
               <div class="player_circle"></div>  
             </div>
-            <span class="time sound_duration">15:20</span>
+            <span class="time sound_duration"></span>
           </div>
         </div>
         <div class="volume_panel">
           <img src="img/volume.png" alt="音量图标" class="volume_img"/>
-          <div class="volume-progressbar">
+          <div class="volume_progressbar">
             <div class="volume_playbar"></div>
             <div class="volume_circle"></div> 
           </div>
@@ -981,38 +908,38 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <div class="nopass_content">
     <div class="nc_con1">
-      <span class="nc_txt1">选择了2个节目，您确认所选的节目不予撤回么？</span>
+      <span class="nc_txt1"></span>
     </div>
     <div class="nc_con2">
       <p class="nc_txt2 black">请告知主播具体的原因：</p>
       <ul class="nc_reasons">
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
-          <span class="ct">付费节目</span>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="ct">付费节目1</span>
         </li>
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
-          <span class="ct">原因二</span>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="ct">付费节目2</span>
         </li>
         <li>
-          <img src="img/checkbox1.png" alt="" class="ck nc_checkimg"/>
-          <span class="ct">付费节目</span>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="ct">付费节目3</span>
         </li>
       </ul>
       <div class="nc_txt3">
         <span class="nc_txt4">其他原因：</span>
-        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+        <textarea name="" rows="6" cols="62" class="other_reason"></textarea>
       </div>
     </div>
     <div class="nc_con3">
       <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl"/>
+        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
         <span class="nc_txt6 fl">违规登记</span>
       </div>
       <div class="nc_txt7 fl">确定</div>
     </div>
   </div>
 </div>
-<!--e:不通过-->   
+<!--e:不通过--> 
 </body>
 </html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>身份认证</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <!--日历插件-->
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <script src="js/common_manage.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{-moz-user-select: none;overflow-x: auto;}
+.detail{
+  width:100%;
+  min-width:780px;
+  height:auto;
+  overflow: auto;
+  margin-bottom:20px;
+}
+.detail_title{
+  width: 100%;
+  height: 30px;
+  color: #000;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-left:20px;
+}
+.detail_content{
+  width:100%;
+  position: relative;
+  margin-top:20px;
+  height:550px;
+}
+@media (min-width: 768px){
+  .col-sm-10 {
+    width: calc(100% - 120px ) !important;
+  }
+}
+.row,.form-horizontal .form-group{
+  margin-left:3px !important;
+  margin-right:5px !important;
+}
+.col-sm-12{
+  padding-left:0px;
+}
+.form-horizontal .control-label{
+  font-size: 16px;
+  color: #000;
+  font-family: "微软雅黑";
+  text-align: center;
+  width: auto !important;
+}
+.control-label .ast {
+  color: #ffa634;
+}
+.nickname,.realname,.phone,.mail,.introduction{
+  width: 100%;
+  height: 35px;
+  color: #000;
+  border: 1px solid #dedede;
+}
+.signature{
+  width:100%;
+  min-height:50px;
+  border: 1px solid #dedede;
+  resize:none;
+  margin-bottom:-4px;
+}
+.birthday_container{
+  width:100%;
+  min-height:35px;
+}
+.year,.month,.day{
+  width: 90px;
+  height: 35px;
+  line-height: 35px;
+  padding-left: 8px;
+  border: 1px solid #dedede;
+  font-size: 15px;
+  color: #000 !important;
+  display: inline-block;
+  padding-right: 14px;
+}
+.sex{
+  width:100%;
+  height:35px;
+  overflow: hidden;
+}
+.male_div,.female_div,.secret_div{
+  float: left;
+  height:35px;
+  margin-right:55px;
+}
+input[type=checkbox]{
+  margin:7px 5px 0px 0px;
+}
+.male,.female,.secret{
+  width:20px;
+  height:20px;
+  margin-left:20px;
+  margin-top:7px;
+  float: left;
+  display: inline-block;
+}
+.male_span,.female_span,.secret_span{
+  color: #333;
+  padding: 7px 12px 0px 0px;
+  height: 25px;
+  float: left; 
+  font-size:14px;
+  display: inline-block;
+}
+.phone,.mail{
+  height:35px;
+  line-height:35px;
+}
+.saveSet{
+  width: 100px;
+  height: 30px;
+  border: 1px solid #dedede;
+  border-radius: 2px;
+  background: #ffa634;
+  color: #fff;
+  float: right;
+  margin-right: 20px;
+}
+.right_content{
+  width:30%;
+  height:auto;
+  float: left;
+}
+.portrait{
+  width:180px;
+  height:180px;
+  float: left;
+}
+.portrait img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.txt_p1{
+  margin-top:10px;
+  padding-left:10px; 
+}
+.replace_portrait{
+  width: 100px;
+  height: 30px;
+  background: #ffa634;
+  color: #fff;
+  font-family: "微软雅黑";
+  font-size: 16px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  margin-left: 185px;
+}
+.note{
+  padding-left: 15px;
+}
+.word{
+  width: calc(100% - 340px);
+  margin-left: 190px;
+}
+</style>
+<body onselectstart="return false">
+<div class="detail">
+  <div class="detail_title">首页> 身份认证</div>
+    <div class="detail_content">
+      <div class="containers">
+        <div class="row">
+          <div class="col-sm-12">
+            <form action="" class="form-horizontal">
+              <div class="form-group">
+                <div class="note">我是主播(电话:183311294655)</div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">真实姓名<span class="ast">*</span>：</label>
+                <div class="col-sm-10">
+                  <input type="text" class="nickname " placeholder="郭德刚">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:10px;">联系地址<span class="ast">*</span>：</label>
+                <div class="col-sm-10">
+                  <textarea class="signature" name="" placeholder="北京市朝阳区东花市20号楼12单元509室"></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">邮&emsp;&emsp;编<span class="ast">*</span>：</label>
+                <div class="col-sm-10">
+                  <input class="introduction" placeholder="110020">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">电子邮箱<span class="ast">*</span>：</label>
+                <div class="col-sm-10">
+                  <input type="text" class="realname " placeholder="18311294655@qq.com">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">身份证号<span class="ast">*</span>：</label>
+                <div class="col-sm-10">
+                  <input type="text" class="phone " placeholder="123456888897789">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="vertical-align:middle;margin-left: -15px;">身份证照片<span class="ast">*</span>：</label>
+                <div class="col-sm-10"> 
+                  <div class="portrait">
+                    <img src="img/a5.jpg" alt="" />
+                  </div>
+                  <div class="word">
+                    <p class="txt_p1">身份证将会进行人工审核，请务必遵循以下要求:</p>
+                    <p class="txt_p1">1:上传一张主播手持身份证原件的正面照片并确保本人面部完整出相</p>
+                    <p class="txt_p1">2:图像与文字显示清晰</p>
+                    <p class="txt_p1">3:图片格式为：png,jpg</p>
+                    <p class="txt_p1">4:图片大小不超过5M</p>
+                    <div class="replace_portrait">上传身份证</div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <input  class="saveSet" type="button" value="保存设置" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

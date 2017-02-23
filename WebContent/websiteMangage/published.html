@@ -16,8 +16,8 @@
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="js/filter.js"></script>
   <script src="js/globalplayer.js"></script>
-  <script src="js/filter.js"></script>	
   <script src="js/published.js"></script>
 <style>
 /*全局样式*/
@@ -231,15 +231,6 @@ body{-moz-user-select: none;overflow-x: auto;}
   overflow: hidden;
   margin-top:15px;
 }
-.border1{
-  border: 1px solid #dedede; 
-}
-.border2{
-  border: 1px solid transparent; 
-}
-.attr:last-child{
-  border-bottom:none;
-}
 .attr{
   width:100%;
   position: relative;
@@ -328,7 +319,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-top: 10px;
   padding: 0px 5px;
 }
-.ensure{
+.ensure,.clean{
   float:left;
   width: 36px;
   height: 21px;
@@ -422,7 +413,8 @@ body{-moz-user-select: none;overflow-x: auto;}
   height: 145px;
   margin-left: 15px;
   border-bottom: 1px solid #dedede;
-  cursor: pointer; 
+  cursor: pointer;
+  overflow:hidden; 
 }
 .rtcl_img_check{
   width:18px;
@@ -528,11 +520,12 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nopass_container{
   width:575px;
-  height:auto;
+  height:500px;
   position: fixed;
   top:20px;
   background: #fff;
   z-index:101;
+  overflow-y: auto;
   display: none;
   cursor: pointer;
 }
@@ -550,9 +543,12 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin: 9px 20px;
 }
 .nh_span2{
-  font-size:20px;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
   float: right;
-  margin: 7px 20px;
+  text-align: center;
+  margin: 10px 20px;
 }
 .nopass_content{
   /*height: 440px;*/
@@ -581,17 +577,21 @@ body{-moz-user-select: none;overflow-x: auto;}
   color:#007FFF;
 }
 .nc_txt3{
-  height:110px;
+  height:140px;
 }
 .nc_txt4{
   position: relative;
   top: 10px;
   float: left;
 }
+.nc_txt5{
+  margin: 6px 20px 10px 340px;
+}
 .other_reason{
   float: left;
 }
 .nc_con3{
+  position: relative;
   margin: 0px 20px 20px;
   overflow: hidden;
 }
@@ -599,8 +599,8 @@ body{-moz-user-select: none;overflow-x: auto;}
   width:18px;
   height:18px;
 }
-.nc_txt5{
-  margin: 6px 20px 10px 340px;
+.nc_reasons  li img,.nc_txt5 img{
+  margin:0px;
 }
 .nc_txt6{
   margin-left: 10px;
@@ -613,6 +613,14 @@ body{-moz-user-select: none;overflow-x: auto;}
   line-height: 30px;
   color:#000;
   background:#0077c7;
+}
+.nc_reasons{
+  overflow: hidden;
+}
+.nc_reasons li{
+  width: auto;
+  float: left;
+  margin: 5px 10px 5px 0px;
 }
 </style> 
 </head>
@@ -631,12 +639,7 @@ body{-moz-user-select: none;overflow-x: auto;}
         </ul>
         <div class="all">
           <div class="all_cate">所有分类 ></div>
-          <ul class="new_cate">
-            <li class="cate">
-              <span class="cate_desc"><span class="cate_desc_title">栏目：</span>电影电视</span>
-              <span class="cate_img">×</span>
-            </li>
-          </ul>
+          <ul class="new_cate"></ul>
         </div>
         <div class="ri_top2 border1">
           <div class="attr" id="channel">
@@ -716,6 +719,7 @@ body{-moz-user-select: none;overflow-x: auto;}
                 <span class="line">---</span>
                 <input type="text" class="input-sm form-control endPubTime" name="EndPubTime" value="" placeholder="输入结束日期"/>
                 <span class="ensure">确定</span>
+                <span class="clean">清除</span>
               </div>
             </div>
           </div>
@@ -724,8 +728,16 @@ body{-moz-user-select: none;overflow-x: auto;}
           <div class="rt_opt">
             <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
             <span class="rto_txt fl">全选</span>
-            <span class="rto_nopass fl">撤回</span>
-            <span class="rto_play fl">播放</span>
+            <span class="rto_nopass fl" opetype="revoke">撤回</span>
+            <span class="rto_play fl">全部播放</span>
+            <div class="page fl">
+              <div class="gigantic pagination">
+                <i class="currentPage">1</i><i>/</i><i class="totalPage"></i><i>页</i>
+                <span class="previous" data_action="previous">上一页</span>
+                <span class="next" data_action="next">下一页</span>
+                <span class="jump" data_action="toPage">跳至</span><input type="text" class="toPage" value="">
+              </div>
+            </div>
             <div class="pass_note">操作成功!通过的节目可在"已发布"中管理</div>
           </div>
           <div class="ri_top3_head">
@@ -736,7 +748,7 @@ body{-moz-user-select: none;overflow-x: auto;}
             <span class="rth_txt5 rth_txt">时间</span>
           </div>
           <div class="ri_top3_con">
-            <div class="rtc_listBox">
+            <!--<div class="rtc_listBox">
               <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
               <div class="rtcl_img fl">
                 <img src="" alt="节目图片" />
@@ -766,8 +778,8 @@ body{-moz-user-select: none;overflow-x: auto;}
               <span class="anchor_name fl">罗萨芬</span>
               <span class="source_form fl">喜马拉雅</span>
               <span class="audio_time fl">2017-01-07 &nbsp;&nbsp; 12:53:53</span>
-            </div>
-            <div class="rtc_listBox">
+            </div>-->
+            <!--<div class="rtc_listBox">
               <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
               <div class="rtcl_img fl">
                 <img src="" alt="节目图片" />
@@ -845,7 +857,7 @@ body{-moz-user-select: none;overflow-x: auto;}
               <span class="anchor_name fl">罗萨芬</span>
               <span class="source_form fl">喜马拉雅</span>
               <span class="audio_time fl">2017-01-07 &nbsp;&nbsp; 12:53:53</span>
-            </div>
+            </div>-->
           </div>
         </div>  
       </div>
@@ -853,6 +865,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <!--s:全局播放器-->
   <div class="globalplayer">
+    <audio src="" class="audio" controls autoplay="autoplay" style="display: none;"></audio>
     <!--s:收起状态-->
     <div class="glp_mini">
       <img class="sound_face" src="img/launch.png">
@@ -863,23 +876,23 @@ body{-moz-user-select: none;overflow-x: auto;}
       <div class="glp_panel">
         <div class="controls">
           <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+          <img class="btn_player playerBtn playing" src="img/pause.png" alt="播放/暂停" />
           <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
         </div>
         <div class="player_panel">
-          <a href="#" class="title" title="">朝珠为啥只有清朝有</a>
+          <a href="#" class="title" title=""></a>
           <div>
-            <span class="time sound_position">08:20</span>
+            <span class="time sound_position"></span>
             <div class="player_progressbar">
               <div class="player_playbar"></div>
               <div class="player_circle"></div>  
             </div>
-            <span class="time sound_duration">15:20</span>
+            <span class="time sound_duration"></span>
           </div>
         </div>
         <div class="volume_panel">
           <img src="img/volume.png" alt="音量图标" class="volume_img"/>
-          <div class="volume-progressbar">
+          <div class="volume_progressbar">
             <div class="volume_playbar"></div>
             <div class="volume_circle"></div> 
           </div>
@@ -900,22 +913,40 @@ body{-moz-user-select: none;overflow-x: auto;}
   </div>
   <div class="nopass_content">
     <div class="nc_con1">
-      <span class="nc_txt1">选择了2个节目，您确认撤回所选的节目么？</span>
+      <span class="nc_txt1"></span>
     </div>
     <div class="nc_con2">
       <p class="nc_txt2 black">请告知主播具体的原因：</p>
-      <p class="nc_txt2">广告信息及垃圾信息</p>
-      <p class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</p>
-      <p class="nc_txt2 blue">虚构事实。隐瞒真相以误导、欺骗他人</p>
-      <p class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</p>
+      <ul class="nc_reasons">
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">广告信息及垃圾信息</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">虚构事实。隐瞒真相以误导、欺骗他人</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</span>
+        </li>
+        <li>
+          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+        </li>
+      </ul>
       <div class="nc_txt3">
         <span class="nc_txt4">其他原因：</span>
-        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+        <textarea name="" rows="6" cols="62" class="other_reason"></textarea>
       </div>
     </div>
     <div class="nc_con3">
       <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl"/>
+        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
         <span class="nc_txt6 fl">违规登记</span>
       </div>
       <div class="nc_txt7 fl">确定</div>
@@ -924,279 +955,4 @@ body{-moz-user-select: none;overflow-x: auto;}
 </div>
 <!--e:不通过-->  
 </body>
-<script>
-$(function(){
-  /*
-   筛选条件js
-   * */
-  var overChannel=false;//鼠标是否放在栏目上
-  var type=2;//type=1点击多选,type=2未点击多选
-  $(document).on("click",".more1",function(){//点击更多
-    if($("#channel").children(".attrValues").children("ul").hasClass("h40")){
-      $("#channel").children(".attrValues").children("ul").removeClass("h40");
-      $(this).children("span").text("收起");
-    }else{
-      $("#channel").children(".attrValues").children("ul").addClass("h40");
-      $(this).children("span").text("更多");
-    }
-  });
-  $(document).on("click",".ri_top_li3",function(){//点击收起筛选
-    if($(this).children(".filter").text()=="收起筛选"){
-      $(this).children("img").attr({"src":"img/filter2.png"});
-      $(this).children(".filter").text("展开筛选");
-      $(".ri_top2").hide();
-    }else{
-      $(this).children("img").attr({"src":"img/filter1.png"});
-      $(this).children(".filter").text("收起筛选");
-      $(".ri_top2").show();
-    }
-  });
-  $(document).on("click",".more3",function(){//点击多选
-    type=1;
-    $(this).siblings(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").show();
-    $(this).hide();
-    $(this).siblings(".btns").show();
-  });
-  $(document).on("click",".trig_item",function(){//选中某一项
-    var pId=$(this).parents(".attr").attr("id");
-    var id=$(this).attr("id");
-    var pTitle='';
-    if(pId=="channel"){
-      pTitle="所属栏目：";
-    }
-    if(pId=="source"){
-      pTitle="来源：";
-    }
-    if(type=="1"){//点击多选后选中某一项
-    if($(this).children(".check_cate").css("background-position")=="-62px -414px"){
-      $(this).children(".check_cate").css({"background-position":"-41px -414px"});
-      $(this).removeAttr("selected");
-    }else{
-      $(this).children(".check_cate").css({"background-position":"-62px -414px"});
-      $(this).attr({"selected":"selected"});
-    }
-    }
-    if(type=="2"){//没有点击多选直接选中某一项
-      $(this).attr({"selected":"selected"});
-      var newFilter='<li class="cate" pId='+pId+' id='+id+'>'+
-		                    '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+$(this).children(".ss1").text()+'</span>'+
-		                    '<span class="cate_img">×</span>'+
-		                  '</li>';
-      $(".new_cate").append(newFilter);
-      $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
-      $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
-      $("#"+pId).hide();
-      var sl=$(".ri_top2").children(".attr").length;
-      var i=0;
-      $(".ri_top2 .attr").each(function(){
-        if($(this).is(":hidden")){
-          i++;
-        }
-      })
-      console.log("I=="+i);
-      if(i==sl){
-        $(".ri_top2").removeClass("border1").addClass("border2"); 
-        $(".ri_top_li4").hide();
-      }else{
-        $(".ri_top_li4").show();
-      }
-      if($(".all").is(':hidden')) $(".all").show();
-    }
-  });
-  $(document).on("click",".trig_item_li",function(){
-    var pname=$(this).parent(".chnels").attr("data_name");
-    var newFilter='<li class="cate" pId="channel">'+
-                    '<span class="cate_desc"><span class="cate_desc_title">所属栏目&gt;'+pname+'</span>'+"&gt;"+$(this).children(".ss1").text()+'</span>'+
-                    '<span class="cate_img">×</span>'+
-                  '</li>';
-    $(".new_cate").append(newFilter);
-    $("#channel").children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
-    $("#channel").children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
-    $("#channel").hide();
-    if($(".all").is(':hidden')) $(".all").show();
-  });
-  $(document).on("click",".btns_sub",function(){//点击多选之后的确定
-    type=2;
-    var pId=$(this).parents(".attr").attr("id");
-    var id=$(this).attr("id");
-    var pTitle='';
-    if(pId=="channel"){
-      pTitle="所属栏目：";
-    }
-    if(pId=="source"){
-      pTitle="来源：";
-    }
-    var str=" ";
-    var ids=" ";
-    $(this).parent().siblings(".attrValues").children(".av_ul").children(".trig_item").each(function(){
-      if(typeof($(this).attr("selected"))!="undefined"){
-        var txt=$(this).children(".ss1").text();
-        var id=$(this).attr("id");
-        if(str==" "){
-          str=txt;
-        }else{
-          str+=","+txt;
-        }
-        if(ids==" "){
-          ids=id;
-        }else{
-          ids+=","+id;
-        }
-      }
-    })
-    console.log(str,ids);
-    var newFilter='<li class="cate" pId='+pId+' id='+ids+'>'+
-                    '<span class="cate_desc"><span class="cate_desc_title">'+pTitle+'</span>'+str+'</span>'+
-                    '<span class="cate_img">×</span>'+
-                  '</li>';
-    $(".new_cate").append(newFilter);
-    $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
-    $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
-    $("#"+pId).hide();
-    var sl=$(".ri_top2").children(".attr").length;
-    var i=0;
-    $(".ri_top2 .attr").each(function(){
-      if($(this).is(":hidden")){
-        i++;
-      }
-    })
-    console.log("I=="+i);
-    if(i==sl){
-      $(".ri_top2").removeClass("border1").addClass("border2"); 
-      $(".ri_top_li4").hide();
-    }else{
-      $(".ri_top_li4").show();
-    }
-    if($(".all").is(':hidden')) $(".all").show();
-  });
-  $(document).on("click",".btns_can",function(){//点击多选之后的取消
-    var pId=$(this).parents(".attr").attr("id"); 
-    $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
-    $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");
-    $(this).parent(".btns").hide();
-    $(this).parent(".btns").siblings(".check_more").show();
-  });
-  $(document).on("click",".cate_img",function(){//所有分类里面的取消
-    $(this).parent(".cate").remove();
-    var pId=$(this).parent(".cate").attr("pId");
-    $("#"+pId).children(".btns").hide();
-    $("#"+pId).children(".check_more").show();
-    if($(".ri_top2").hasClass("border2")){
-      $(".ri_top2").removeClass("border2").addClass("border1");
-      $(".ri_top_li4").show();
-    }
-    $("#"+pId).show();
-    if($(".all").children(".new_cate").children("li").length<=0){
-      $(".all").hide();
-    }
-  });
-  $(document).on("click",".all_check",function(){//点击全选
-    if($(this).hasClass("checkbox1")){
-      $(".checkbox_img").attr({"src":"img/checkbox2.png"});
-      $(this).removeClass("checkbox1");
-    }else{
-      $(".checkbox_img").attr({"src":"img/checkbox1.png"});
-      $(this).addClass("checkbox1");
-    }
-  });
-  $(document).on("click",".rtcl_img_check",function(){//点击单个勾选框
-    if($(this).hasClass("checkbox1")){
-      $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
-    }else{
-      $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-    }
-  });
-  $(document).on("click",".rto_pass",function(){//点击通过
-    $(".pass_note").show();
-    setTimeout(function(){$(".pass_note").hide();},2000);
-  });
-  $(document).on("click",".rto_nopass",function(){//点击不通过
-    var height=$(".containers").height();
-    var width1=$(".nopass_masker").width();
-    var width2=$(".nopass_container").width();
-    var left=(width1-width2)/2;
-    $(".nopass_container").css({"left":left+"px"});
-    $(".nopass_masker").css({"height":height}).show();
-    $("body").css({"overflow-x":"hidden"});
-    $(".nopass_container").show();
-  });
-  $(window).resize(function(){//时刻监听着页面的变化
-    var height=$(".containers").height();
-    var width1=$(".nopass_masker").width();
-    var width2=$(".nopass_container").width();
-    var left=(width1-width2)/2;
-    if(left>=20){
-      $(".nopass_container").css({"left":left+"px"});
-    }else{
-      return;
-    }
-  })
-  $(".nopass_masker,.nh_span2").on("click",function(){//点击遮罩层或不通过页面上的取消按钮
-    $(".nopass_masker,.nopass_container").hide();
-    $("body").css({"overflow-x":"auto"});
-  });
-  
-  $(document).on("mouseenter","#channel .chnel",function(){
-    overChannel=true;
-    var pid=$(this).attr("data_idx");
-    $(".chnels").each(function(){
-      if(pid==$(this).attr("data_idx")){
-        $(".chnels").hide();
-        $("#channel .chnel").removeClass("trig_curr");
-        $("#channel .chnel[data_idx="+pid+"]").addClass("trig_curr");
-        $(this).show();
-      }
-    })
-  });
-  $(document).on("mouseleave","#channel .chnel",function(){
-    overChannel=false;
-    setTimeout(function(){
-      if(overChannel) return;
-      $("#channel .chnel").removeClass("trig_curr");
-      $(".chnels").hide();
-    },200)
-  });
-  $(document).on("mouseenter","#channel .chnels",function(){
-    overChannel=true;
-    var pid=$(this).attr("data_idx");
-    $(".chnel").each(function(){
-      if(pid==$(this).attr("data_idx")){
-        $("#channel .chnel").removeClass("trig_curr");
-        $(this).addClass("trig_curr");
-        $("#channel .chnels").hide();
-        $("#channel .chnels[data_idx="+pid+"]").show();
-      }
-    })
-  });
-  $(document).on("mouseleave","#channel .chnels",function(){
-    overChannel=false;
-    setTimeout(function(){
-      if(overChannel) return;
-      $("#channel .chnel").removeClass("trig_curr");
-      $("#channel .chnels").hide();
-    },200)
-  });
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /*日期处理*/
-  $(".input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
-  //--设置当前月份
-  $("input[name='StartPubTime']").val(getCurMonthFirstDay_format("yyyy-MM-dd"));
-  $("input[name='EndPubTime']").val(getCurMonthLastDay_format("yyyy-MM-dd"));
-  
-  
-  
-})
-  
-</script>
 </html>

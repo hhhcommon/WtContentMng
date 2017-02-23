@@ -11,5 +11,6 @@ var GLOBAL_DATA={
 //rootPath:"http://123.56.254.75:908/CM/"//"http://localhost:808/CM/"
 rootPath:"http://localhost:908/CM/"//"http://localhost:808/CM/"
 //rootPath:"http://123.56.254.75:908/CM/"//"http://localhost:808/CM/"
+//rootPath:"http://192.168.1.2:908/CM/"
 
 };
