@@ -523,11 +523,11 @@ public class QueryService {
 			break;
 		case "revocation": //TODO
 //			flowFlag = 4;
-			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 通过撤回
 			break;
 		case "norevocation": //TODO
 //			flowFlag = 4;
-			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
+			isok = modifyStatus(contentIds, flowFlag, reDescn); // 不通过撤回
 			break;
 		default:
 			break;

@@ -19,7 +19,7 @@ public class PersonService {
 	private MybatisDAO<PersonPo> personDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<PersonRefPo> personRefDao;
-	@Resource
+	@Resource(name = "defaultDAO")
 	private MybatisDAO<PersonLimitPo> personLimitDao;
 	
 	@PostConstruct
