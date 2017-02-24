@@ -192,7 +192,7 @@ public class PersonService {
 	public PersonLimitPo getPersonLimitByTime(String personId) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("personId", personId);
-		m.put("ByClause", " lmTime < '"+new Timestamp(System.currentTimeMillis())+"'");
+		m.put("ByClause", "'"+new Timestamp(System.currentTimeMillis())+"' < lmTime");
 		PersonLimitPo pLimitPo = personLimitDao.getInfoObject("getListBy", m);
 		if (pLimitPo!=null) {
 			return pLimitPo;
