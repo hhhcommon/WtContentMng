@@ -55,7 +55,7 @@
   <update id="updateLmTime" parameterType="java.util.Map">
     update wt_PersonLimit
     <set>
-      <if test="lmTime=null">lmTime=#{lmTime,jdbcType=TIMESTAMP},</if>
+      <if test="lmTime!=null">lmTime=#{lmTime,jdbcType=TIMESTAMP},</if>
     </set>
     where id=#{id,jdbcType=VARCHAR}
   </update>

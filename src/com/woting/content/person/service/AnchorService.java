@@ -48,9 +48,9 @@ public class AnchorService {
 				param.put("LikeByClause", "pers.id LIKE '%"+searchWord+"%' OR pers.pName LIKE '%"+searchWord+"%' OR pers.phoneNum LIKE '%"+searchWord+"%'");
 			}
             numall = personService.getPersonsNum(param);
-
             param.put("OrderByClause", " pers.cTime DESC");
-            param.put("LimitByClause", " LIMIT "+(page-1)*pageSize+","+(page*pageSize));
+            param.put("nowTime", new Timestamp(System.currentTimeMillis()).toString());
+            param.put("LimitByClause", " LIMIT "+(page-1)*pageSize+","+pageSize);
             List<Map<String, Object>> ls = personService.getPersons(param);
             if(ls!=null) {
             	for (Map<String, Object> map : ls) {
@@ -64,6 +64,7 @@ public class AnchorService {
     				m.put("PersonStatusId", map.get("did"));
     				m.put("PersonStatus", map.get("ddName"));
     				m.put("PersonImg", map.get("portrait"));
+    				m.put("RecoverTime", map.get("reTime"));
     				m.put("CTime", map.get("cTime"));
     				retLs.add(m);
 				}
@@ -98,11 +99,11 @@ public class AnchorService {
 						} else {
 							long date =0;
 							if (statusType.equals("zbzt02")) { //禁言一周 七天
-								date = System.currentTimeMillis()/(1000*3600*24)*(1000*3600*24)+7*1000*3600*24; //待恢复时间
+								date = System.currentTimeMillis()/(1000*3600*24)*(1000*3600*24)-8*3600*1000l+7*1000*3600*24l; //待恢复时间
 							} else if (statusType.equals("zbzt03")) { //禁言一月 30天
-								date = System.currentTimeMillis()/(1000*3600*24)*(1000*3600*24)+30*1000*3600*24; //待恢复时间
+								date = System.currentTimeMillis()/(1000*3600*24)*(1000*3600*24)-8*3600*1000l+30*1000*3600*24l; //待恢复时间
 							} else if (statusType.equals("zbzt04")) { //永久禁言  253402271999000  9999年12月31日 23时59分59秒
-								date = 253402271999000l; //待恢复时间
+								date = 2147443200000l; //待恢复时间
 							}
 							PersonLimitPo pLimitPo = personService.getPersonLimitByTime(pId);
 							if (pLimitPo!=null) {
@@ -115,6 +116,8 @@ public class AnchorService {
 							pLimitPo.setPersonId(pId);
 							pLimitPo.setLmTime(new Timestamp(date));
 							personService.insertPersonLimit(pLimitPo);
+							dPo.setDictDid(statusType);
+						    dictContentService.updataDictRefInfo(dPo);
 						} 
 					} else {
 						Map<String, Object> m = new HashMap<>();
