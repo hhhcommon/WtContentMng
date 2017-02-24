@@ -8,8 +8,9 @@
   <!-- D:\workIDE\projects\WtContentMng || D:\workIDE\work\WtContentMng || D:\WBWorkDir\WtContentMng -->
 
   <properties>
-    <projectDir>D:\WBWorkDir\WtContentMng</projectDir>
+    <projectDir>D:\workIDE\work\WtContentMng</projectDir>
   </properties>
+
 
   <parent>
   	<groupId>team.gm</groupId>

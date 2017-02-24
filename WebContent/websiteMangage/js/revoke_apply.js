@@ -4,6 +4,7 @@ $(function(){
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
+  var mediaType=1;//mediaType=1选中节目,mediaType=2选中专辑
   var data1={};
   var audioList=[];//节目播放列表
   var listNum=0;//控制播放节目的序号
@@ -70,6 +71,12 @@ $(function(){
     data1.ReFlowFlag="0";
     data1.PageSize="2";
     data1.Page=current_page;
+    $(".dropdown_menu li").each(function(){
+      if($(this).hasClass("selected")){
+        data1.MediaType=$(this).attr("mediatype");
+        return;
+      }
+    })
     searchWord=$(".ri_top_li2_inp").val();
     if(optfy==2){//optfy=2选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
@@ -97,7 +104,12 @@ $(function(){
   data1.ReFlowFlag="0";
   data1.Page=current_page;
   data1.PageSize="2";
-  data1.MediaType="AUDIO";
+  $(".dropdown_menu li").each(function(){
+    if($(this).hasClass("selected")){
+      data1.MediaType=$(this).attr("mediatype");
+      return;
+    }
+  })
   getContentList(data1);
   function getContentList(dataParam){
     $.ajax({
@@ -110,12 +122,12 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           clear();
           contentCount=resultData.ResultInfo.AllCount;
-          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
+          contentCount=(contentCount%2==0)?(contentCount/2):(Math.ceil(contentCount/2));
           $(".totalPage").text(contentCount);
           loadContentList(resultData);//加载资源列表
         }else{
           $(".totalPage").text("0");
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
         }
       },
       error:function(jqXHR){
@@ -324,10 +336,10 @@ $(function(){
       data:JSON.stringify(data4),
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("具体原因提交成功");
           $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker,.nopass_container").hide();
           $("body").css({"overflow-x":"auto"});
+          alert("具体原因提交成功");
           getContentList(data1);
         }else{
           alert(resultData.Message);
@@ -423,6 +435,12 @@ $(function(){
     data1.Page=current_page;
     data1.ApplyFlowFlag=flowflag;
     data1.ReFlowFlag="0";
+    $(".dropdown_menu li").each(function(){
+      if($(this).hasClass("selected")){
+        data1.MediaType=$(this).attr("mediatype");
+        return;
+      }
+    })
     if($(".new_cate li").size()>"0"){
       optfy=2;//选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
@@ -553,6 +571,12 @@ $(function(){
       data1.ApplyFlowFlag=flowflag;
       data1.ReFlowFlag="0";
       data1.PageSize="2";
+      $(".dropdown_menu li").each(function(){
+        if($(this).hasClass("selected")){
+          data1.MediaType=$(this).attr("mediatype");
+          return;
+        }
+      })
       current_page="1";
       data1.Page=current_page;
       data1.SearchWord=searchWord;
@@ -570,7 +594,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           clear();
           contentCount=resultData.ResultInfo.Count;
-          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
+          contentCount=(contentCount%2==0)?(contentCount/2):(Math.ceil(contentCount/2));
           $(".totalPage").text(contentCount);
           loadSearchList(resultData);//加载来源的筛选条件
         }else{
@@ -673,6 +697,9 @@ $(function(){
   });
   /*选中节目或专辑--进行筛选*/
   $(".dropdown_menu").on("click","li",function(){
+    $(this).parent(".dropdown_menu").addClass("dis");
+    $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"img/filter2.png"});
+    $(this).addClass("selected").siblings("li").removeClass("selected");
     destroy(data1);
     data1.UserId="123";
     data1.PageSize="2";
@@ -683,8 +710,9 @@ $(function(){
     $(".currentPage").html(current_page);
     data1.MediaType=$(this).attr('mediatype');
     getContentList(data1);
-    $(this).parent(".dropdown_menu").addClass("dis");
-    $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"img/filter2.png"});
-    $(this).addClass("selected").siblings("li").removeClass("selected");
   });
+  
+  
+  
+  
 });
