@@ -56,6 +56,43 @@ public class ChannelAssetProgressService {
 		return null;
 	}
 	
+	public int getChannelAssetProgresByCount(String channelId, String sourceId, String mediaType, int applyFlowFlag, int reFlowFlag) {
+		Map<String, Object> m = new HashMap<>();
+		String whereClauseBy = "";
+		if (channelId!=null) {
+			whereClauseBy += " and cha.channelId = '"+channelId+"'";
+		}
+		if (sourceId!=null) {
+			whereClauseBy += " and cha.publisherId = '"+sourceId+"'";
+		}
+		if (mediaType!=null) {
+			whereClauseBy += " and ("+mediaType+")";
+		}
+		m.put("whereClauseBy", whereClauseBy);
+		
+		if (applyFlowFlag!=0) {
+			m.put("applyFlowFlag", applyFlowFlag);
+		}
+		m.put("reFlowFlag", reFlowFlag);
+		int num = channelAssetProgressDao.getCount("getListByCount", m);
+		return num;
+	}
+	
+	public List<Map<String, Object>> getChannelAssetProgresBy(int applyFlowFlag, int reFlowFlag, String whereClauseBy, String limitClauseBy) {
+		Map<String, Object> m = new HashMap<>();
+		if (applyFlowFlag!=0) {
+			m.put("applyFlowFlag", applyFlowFlag);
+		}
+		m.put("reFlowFlag", reFlowFlag);
+		m.put("whereClauseBy", whereClauseBy);
+		m.put("limitClauseBy", limitClauseBy);
+		List<Map<String, Object>> ls = channelAssetProgressDao.queryForListAutoTranform("getListBy", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
 	public void remove(String resId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("assetId", resId);

@@ -48,20 +48,20 @@
   </select>
   
   <!-- 获得列表 -->
-  <select id="getListBy" resultType="java.util.HashMap" parameterType="java.util.Map">
-    SELECT cha.id,cha.assetId,cha.assetType,cha.flowFlag,cha.channelId,ch.channelName,cha.pubName,chap.cTime,cha.pubTime,chap.applyFlowFlag,chap.reFlowFlag FROM wt_ChannelAssetProgress chap
+  <select id="getListByCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    SELECT count(*) FROM (
+    SELECT cha.assetId FROM wt_ChannelAssetProgress chap
 	LEFT JOIN wt_ChannelAsset cha
 	ON chap.chaId = cha.id and chap.applyFlowFlag = #{applyFlowFlag,jdbcType=INTEGER}
 	LEFT JOIN wt_Channel ch
 	ON ch.id = cha.channelId
 	where chap.reFlowFlag = #{reFlowFlag,jdbcType=INTEGER}
 	<if test="whereClauseBy!=null"> ${whereClauseBy} </if>
-	ORDER BY cTime DESC
-	<if test="limitClauseBy!=null"> ${limitClauseBy} </if>
+	GROUP BY cha.assetId) res
   </select>
   
   <!-- 获得列表 -->
-  <select id="getContentsListBy" resultType="java.util.HashMap" parameterType="java.util.Map">
+  <select id="getListBy" resultType="java.util.HashMap" parameterType="java.util.Map">
     SELECT cha.id,cha.assetId,cha.assetType,cha.flowFlag,cha.channelId,ch.channelName,cha.pubName,chap.cTime,cha.pubTime,chap.applyFlowFlag,chap.reFlowFlag FROM wt_ChannelAssetProgress chap
 	LEFT JOIN wt_ChannelAsset cha
 	ON chap.chaId = cha.id and chap.applyFlowFlag = #{applyFlowFlag,jdbcType=INTEGER}

@@ -1,5 +1,6 @@
 package com.woting.cm.core.person.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.woting.cm.core.person.persis.po.PersonLimitPo;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 
@@ -17,11 +19,14 @@ public class PersonService {
 	private MybatisDAO<PersonPo> personDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<PersonRefPo> personRefDao;
+	@Resource(name = "defaultDAO")
+	private MybatisDAO<PersonLimitPo> personLimitDao;
 	
 	@PostConstruct
 	public void initParam() {
 	    personDao.setNamespace("A_PERSON");
 	    personRefDao.setNamespace("A_PERSONREF");
+	    personLimitDao.setNamespace("A_PERSONLIMIT");
 	}
 
 	public PersonRefPo getPersonRefBy(String resTableName, String resId) {
@@ -176,6 +181,29 @@ public class PersonService {
 		Map<String, Object> m = new HashMap<>();
 		m.put("list", pfs);
 		personRefDao.insert("insertList", m);
+	}
+	
+	public void insertPersonLimit(PersonLimitPo pLimitPo) {
+		if (pLimitPo!=null) {
+			personLimitDao.insert(pLimitPo);
+		}
+	}
+	
+	public PersonLimitPo getPersonLimitByTime(String personId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("personId", personId);
+		m.put("ByClause", " lmTime < '"+new Timestamp(System.currentTimeMillis())+"'");
+		PersonLimitPo pLimitPo = personLimitDao.getInfoObject("getListBy", m);
+		if (pLimitPo!=null) {
+			return pLimitPo;
+		}
+		return null;
+	}
+	
+	public void updatePersonLimit(PersonLimitPo pLimitPo) {
+		if (pLimitPo!=null) {
+			personLimitDao.update("updateLmTime",pLimitPo);
+		}
 	}
 	
 	public void remove(String personId, String resTableName, String resId) {

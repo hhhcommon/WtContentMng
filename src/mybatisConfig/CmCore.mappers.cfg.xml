@@ -19,6 +19,7 @@
     <typeAlias alias="complexref"    type="com.woting.cm.core.complexref.persis.po.ComplexRefPo"/>
     <typeAlias alias="person"         type="com.woting.cm.core.person.persis.po.PersonPo"/>
     <typeAlias alias="personref"      type="com.woting.cm.core.person.persis.po.PersonRefPo"/>
+    <typeAlias alias="personlimit"    type="com.woting.cm.core.person.persis.po.PersonLimitPo"/>
     <typeAlias alias="subscribe"      type="com.woting.cm.core.subscribe.persis.po.SubscribePo"/>
     <typeAlias alias="mediaplaycount" type="com.woting.cm.core.media.persis.po.MediaPlayCountPo"/>
     <typeAlias alias="channelAssetProgress" type="com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo"/>
@@ -37,6 +38,7 @@
     <mapper resource="com/woting/cm/core/complexref/persis/sql/ComplexRef.mapper.xml"/>
     <mapper resource="com/woting/cm/core/person/persis/sql/Person.mapper.xml"/>
     <mapper resource="com/woting/cm/core/person/persis/sql/PersonRef.mapper.xml"/>
+    <mapper resource="com/woting/cm/core/person/persis/sql/PersonLimit.mapper.xml"/>
     <mapper resource="com/woting/cm/core/subscribe/persis/sql/Subscribe.mapper.xml"/>
     <mapper resource="com/woting/cm/core/channel/persis/sql/ChannelAssetProgress.mapper.xml"/>
   </mappers>
