@@ -334,7 +334,7 @@ public class QueryController {
 	public Map<String, Object> getAppRevocation(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String mediaType = null;
+		String mediaType = "SEQU";
 		if (m.containsKey("MediaType")) 
 			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
 		String channelId = null;

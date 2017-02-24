@@ -1222,7 +1222,7 @@ public class QueryService {
 		return null;
 	}
 	
-	private void modifyRevocation(List<Map<String, Object>> contentIds, int i, String reDescn) {
+	private void modifyRevocation(List<Map<String, Object>> contentIds, int flowFlag, String reDescn) {
 		String wheresql = "";
 		String conid = "";
 		for (Map<String, Object> map : contentIds) {
@@ -1265,7 +1265,19 @@ public class QueryService {
 			conid = conid.substring(3);
 			conid = " (" + conid + ")";
 			wheresql += " and" + conid;
-			
+			Map<String, Object> m = new HashMap<String, Object>();
+			m.put("isValidate", 1);
+			m.put("flowFlag", 2);
+			if (wheresql.length()>3) {
+				m.put("wheresql", wheresql);
+			}
+			List<ChannelAssetPo> chas = mediaService.getChaBy(m);
+			if (chas!=null && chas.size()>0) {
+				if (flowFlag==1) {
+					
+				}
+				System.out.println(JsonUtils.objToJson(chas));
+			}
 		}
 		
 	}
