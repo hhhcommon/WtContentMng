@@ -522,12 +522,10 @@ public class QueryService {
 			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
 			break;
 		case "revocation": //TODO
-//			flowFlag = 4;
-			isok = modifyStatus(contentIds, flowFlag, reDescn); // 通过撤回
+			modifyRevocation(contentIds, 1, reDescn); // 通过撤回
 			break;
 		case "norevocation": //TODO
-//			flowFlag = 4;
-			isok = modifyStatus(contentIds, flowFlag, reDescn); // 不通过撤回
+			modifyRevocation(contentIds, 2, reDescn); // 不通过撤回
 			break;
 		default:
 			break;
@@ -1082,13 +1080,14 @@ public class QueryService {
 		String mediastr = " (cha.assetType = 'wt_SeqMediaAsset' or cha.assetType = 'wt_MediaAsset') ";
 		if (mediaType!=null && mediaType.equals("SEQU")) mediastr = " cha.assetType = 'wt_SeqMediaAsset'"; 
 		else if (mediaType!=null && mediaType.equals("AUDIO")) mediastr = " cha.assetType = 'wt_MediaAsset'";
+		Map<String, Object> retM = new HashMap<>();
+		long nums = channelAssetProgressService.getChannelAssetProgresByCount(channelId, publisherId, mediastr, applyFlowFlag, reFlowFlag);
+		retM.put("AllCount", nums);
 		List<Map<String, Object>> ls = channelAssetProgressService.getChannelAssetProgresBy(channelId, publisherId, mediastr, applyFlowFlag, reFlowFlag, page, pageSize);
 		if (ls!=null) {
-			Map<String, Object> retM = new HashMap<>();
 			List<Map<String, Object>> retLs = new ArrayList<>();
 			Map<String, Object> channelMap = new HashMap<>();
-			String assetIds = "";
-			long nums = 0;
+			String assetIds = "";			
 			for (Map<String, Object> m : ls) {
 				Map<String, Object> chm = new HashMap<>();
 				chm.put("FlowFlage", m.get("flowFlag"));
@@ -1102,7 +1101,6 @@ public class QueryService {
 					reM.put("ContentId", assetId);
 					reM.put("ContentPubTime", m.get("pubTime"));
 					retLs.add(reM);
-					nums++;
 				}
 				if (channelMap.containsKey(assetId)) {
 					List<Map<String, Object>> chal = (List<Map<String, Object>>) channelMap.get(assetId);
@@ -1224,7 +1222,51 @@ public class QueryService {
 		return null;
 	}
 	
-	private void modifyRevocation(List<Map<String, Object>> contentIds, int flowFlag, String reDescn) {
+	private void modifyRevocation(List<Map<String, Object>> contentIds, int i, String reDescn) {
+		String wheresql = "";
+		String conid = "";
+		for (Map<String, Object> map : contentIds) {
+			String channelIds = map.get("ChannelIds")+"";
+			String mediaType = "";
+		    if (map.get("MediaType").equals("SEQU")) {
+		    	mediaType = "wt_SeqMediaAsset";
+			} else if (map.get("MediaType").equals("AUDIO")) 
+				mediaType = "wt_MediaAsset";
+			else mediaType = null;
+		    if (!StringUtils.isNullOrEmptyOrSpace(channelIds) && !channelIds.equals("null")) {
+				String chaid = "";
+				String[] chaIds = channelIds.split(",");
+			    if (chaIds!=null && chaIds.length>0) {
+				    for (String str : chaIds) {
+					    chaid += " or channelId = '"+str+"'";
+				    }
+				    chaid = chaid.substring(3);
+				    chaid = " (" + chaid + ")";
+				    
+				    conid += " or ( assetId = '" + map.get("Id") + "'";
+				    if (mediaType!=null) {
+						conid +=  " and assetType = '" + mediaType + "'";
+					}
+				    conid += " and "+ chaid +")";
+			    } else {
+			    	conid += " or ( assetId = '" + map.get("Id") + "'";
+			    	if (mediaType!=null) {
+						conid += " and assetType = '" + mediaType + "' )";
+					} else conid += ")" ;
+			    }
+			} else {
+				conid += " or ( assetId = '" + map.get("Id") + "'";
+		    	if (mediaType!=null) {
+					conid += " and assetType = '" + mediaType + "' )";
+				} else conid += ")" ;
+			}
+		}
+		if (conid.length()>3) {
+			conid = conid.substring(3);
+			conid = " (" + conid + ")";
+			wheresql += " and" + conid;
+			
+		}
 		
 	}
 }
