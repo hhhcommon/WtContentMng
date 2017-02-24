@@ -69,7 +69,7 @@ $(function(){
     data1.UserId="123";
     data1.ApplyFlowFlag=flowflag;
     data1.ReFlowFlag="0";
-    data1.PageSize="2";
+    data1.PageSize="10";
     data1.Page=current_page;
     $(".dropdown_menu li").each(function(){
       if($(this).hasClass("selected")){
@@ -103,7 +103,7 @@ $(function(){
   data1.ApplyFlowFlag=flowflag;
   data1.ReFlowFlag="0";
   data1.Page=current_page;
-  data1.PageSize="2";
+  data1.PageSize="10";
   $(".dropdown_menu li").each(function(){
     if($(this).hasClass("selected")){
       data1.MediaType=$(this).attr("mediatype");
@@ -122,7 +122,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           clear();
           contentCount=resultData.ResultInfo.AllCount;
-          contentCount=(contentCount%2==0)?(contentCount/2):(Math.ceil(contentCount/2));
+          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
           $(".totalPage").text(contentCount);
           loadContentList(resultData);//加载资源列表
         }else{
@@ -431,7 +431,7 @@ $(function(){
     current_page="1";
     $(".currentPage").html(current_page);
     data1.UserId="123";
-    data1.PageSize="2";
+    data1.PageSize="10";
     data1.Page=current_page;
     data1.ApplyFlowFlag=flowflag;
     data1.ReFlowFlag="0";
@@ -570,7 +570,7 @@ $(function(){
       data1.UserId="123";
       data1.ApplyFlowFlag=flowflag;
       data1.ReFlowFlag="0";
-      data1.PageSize="2";
+      data1.PageSize="10";
       $(".dropdown_menu li").each(function(){
         if($(this).hasClass("selected")){
           data1.MediaType=$(this).attr("mediatype");
@@ -594,7 +594,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           clear();
           contentCount=resultData.ResultInfo.Count;
-          contentCount=(contentCount%2==0)?(contentCount/2):(Math.ceil(contentCount/2));
+          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
           $(".totalPage").text(contentCount);
           loadSearchList(resultData);//加载来源的筛选条件
         }else{
@@ -702,7 +702,7 @@ $(function(){
     $(this).addClass("selected").siblings("li").removeClass("selected");
     destroy(data1);
     data1.UserId="123";
-    data1.PageSize="2";
+    data1.PageSize="10";
     current_page="1";
     data1.Page=current_page;
     data1.ApplyFlowFlag=flowflag;
