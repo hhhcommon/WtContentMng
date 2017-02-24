@@ -522,10 +522,10 @@ public class QueryService {
 			isok = modifyStatus(contentIds, flowFlag, reDescn); // 修改审核状态为撤回
 			break;
 		case "revocation": //TODO
-			modifyRevocation(contentIds, 1, reDescn); // 通过撤回
+			isok = modifyRevocation(contentIds, 1, reDescn); // 通过撤回
 			break;
 		case "norevocation": //TODO
-			modifyRevocation(contentIds, 2, reDescn); // 不通过撤回
+			isok = modifyRevocation(contentIds, 2, reDescn); // 不通过撤回
 			break;
 		default:
 			break;
@@ -1221,7 +1221,7 @@ public class QueryService {
 		return null;
 	}
 	
-	private void modifyRevocation(List<Map<String, Object>> contentIds, int flowFlag, String reDescn) {
+	private boolean modifyRevocation(List<Map<String, Object>> contentIds, int flowFlag, String reDescn) {
 		String wheresql = "";
 		String conid = "";
 		for (Map<String, Object> map : contentIds) {
@@ -1237,61 +1237,60 @@ public class QueryService {
 				String[] chaIds = channelIds.split(",");
 			    if (chaIds!=null && chaIds.length>0) {
 				    for (String str : chaIds) {
-					    chaid += " or channelId = '"+str+"'";
+					    chaid += " or cha.channelId = '"+str+"'";
 				    }
 				    chaid = chaid.substring(3);
 				    chaid = " (" + chaid + ")";
 				    
-				    conid += " or ( assetId = '" + map.get("Id") + "'";
+				    conid += " or ( cha.assetId = '" + map.get("Id") + "'";
 				    if (mediaType!=null) {
-						conid +=  " and assetType = '" + mediaType + "'";
+						conid +=  " and cha.assetType = '" + mediaType + "'";
 					}
 				    conid += " and "+ chaid +")";
 			    } else {
-			    	conid += " or ( assetId = '" + map.get("Id") + "'";
+			    	conid += " or ( cha.assetId = '" + map.get("Id") + "'";
 			    	if (mediaType!=null) {
-						conid += " and assetType = '" + mediaType + "' )";
+						conid += " and cha.assetType = '" + mediaType + "' )";
 					} else conid += ")" ;
 			    }
 			} else {
-				conid += " or ( assetId = '" + map.get("Id") + "'";
+				conid += " or ( cha.assetId = '" + map.get("Id") + "'";
 		    	if (mediaType!=null) {
-					conid += " and assetType = '" + mediaType + "' )";
+					conid += " and cha.assetType = '" + mediaType + "' )";
 				} else conid += ")" ;
 			}
 		}
 		if (conid.length()>3) {
-			Map<String, Object> m = new HashMap<String, Object>();
 			conid = conid.substring(3);
 			conid = " (" + conid + ")";
 			wheresql += " and" + conid;
-			m.put("isValidate", 1);
-			m.put("flowFlag", 2);
-			if (wheresql.length()>3) {
-				m.put("wheresql", wheresql);
-			}
-			List<ChannelAssetPo> chas = mediaService.getChaBy(m);
-			if (chas!=null && chas.size()>0) {
-				String chaIds = "";
+			List<Map<String, Object>> ls = channelAssetProgressService.getChannelAssetProgresBy(2, 0, wheresql, null);
+			if (ls!=null && ls.size()>0) {
 				if (flowFlag==1) {
-					for (ChannelAssetPo channelAssetPo : chas) {
-						if (channelAssetPo.getFlowFlag()==2) {
-							chaIds += " or chap.chaId = '"+channelAssetPo.getId()+"'";
-						}
+					for (Map<String, Object> map : ls) {
+						ChannelAssetProgressPo cProgressPo = new ChannelAssetProgressPo();
+						cProgressPo.setId(map.get("chapId")+"");
+						cProgressPo.setReFlowFlag(1);
+						cProgressPo.setReDescn(reDescn);
+						cProgressPo.setModifyTime(new Timestamp(System.currentTimeMillis()));
+						channelAssetProgressService.updateChannelAssetProgress(cProgressPo);
+						ChannelAssetPo cAssetPo = new ChannelAssetPo();
+						cAssetPo.setId(map.get("id")+"");
+						cAssetPo.setFlowFlag(4);
+						mediaService.updateCha(cAssetPo);
 					}
-					if (chaIds.length()>3) {
-						chaIds = chaIds.substring(3);
-						List<Map<String, Object>> ls = channelAssetProgressService.getChannelAssetProgresBy(2, 0, " and ("+chaIds+")", null);
-						if (ls!=null && ls.size()>0) {
-							for (Map<String, Object> map : ls) {
-								
-							}
-						}
+				} else {
+					for (Map<String, Object> map : ls) {
+						ChannelAssetProgressPo cProgressPo = new ChannelAssetProgressPo();
+						cProgressPo.setId(map.get("chapId")+"");
+						cProgressPo.setReFlowFlag(2);
+						cProgressPo.setReDescn(reDescn);
+						cProgressPo.setModifyTime(new Timestamp(System.currentTimeMillis()));
+						channelAssetProgressService.updateChannelAssetProgress(cProgressPo);
 					}
 				}
-				System.out.println(JsonUtils.objToJson(chas));
 			}
 		}
-		
+		return true;
 	}
 }
