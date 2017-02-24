@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                   <td class="th add-th">序号</td>
-                  <td colspan="3"><input type="text" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" min="1" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th" style="position:absolute;top:139px;left:2px;">父分类</td>
@@ -337,7 +337,6 @@ function getRootNode() {
     $("#addCata").modal("hide");
     selectNode=2;//未选中节点
     return;
-//  $("#addCata").find(".modal-header>span:eq(1)").html("栏目");
   }else{
     alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
     nodePathStr=treeNode.attributes.pathName+"";
@@ -350,8 +349,7 @@ function getRootNode() {
     if(oPeType==1){
       $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
     }else{
-      $("#addCata").find(".modal-header>span:eq(0)").hide();
-      $("#addCata").find(".modal-header>span:eq(1)").hide();
+      $("#addCata").find(".modal-header>span").hide();
     }
     selectNode=1;//已选中节点
   }
@@ -459,8 +457,8 @@ function modChannel() {
               if(parseInt(sortNode.children[i].attributes.order)<parseInt(sortNode.children[j].attributes.order)){//降序排列（冒泡排序）
                 zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
               } else{
-			      alert("未进行交换"); 
-				}
+			          alert("未进行交换"); 
+				      }
             }
           }
         }
@@ -514,6 +512,7 @@ function cleanDialog() {
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });
+  $("#addCata").find(".modal-header>span").show();
   $("#all,#radio,#jm,#zj").prop("checked",false).prop("disabled",false);
 }
 </script>
