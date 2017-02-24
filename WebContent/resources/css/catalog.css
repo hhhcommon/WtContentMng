@@ -35,8 +35,6 @@
   left: 0;
   top: 0;
   width: 420px;
-  height: 100%;
-  border-right: 1px solid #ccc;
   overflow: hidden;
   padding-bottom: 30px;
 }
@@ -57,7 +55,9 @@
   width:calc(100% - 400px);
   background:white;
 }
-
+.ibox .ibox-content{
+  padding:0;
+} 
 /*模态窗口样式设置*/
 .my-mbody{
   background-color: #F8FAFB;

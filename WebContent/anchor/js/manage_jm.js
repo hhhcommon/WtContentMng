@@ -446,7 +446,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("成功删除节目");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -492,7 +492,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -539,7 +539,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("成功撤回节目");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -896,7 +896,7 @@ $(function(){
           alert("节目发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -1006,7 +1006,7 @@ $(function(){
           alert("节目发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件

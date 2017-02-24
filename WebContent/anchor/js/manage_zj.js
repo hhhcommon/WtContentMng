@@ -223,7 +223,7 @@ $(function(){
           alert("创建专辑成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载专辑列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -305,7 +305,7 @@ $(function(){
           alert("专辑信息修改成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载专辑列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -416,7 +416,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("成功删除专辑");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载专辑列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -456,7 +456,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("专辑发布成功");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载专辑列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -510,7 +510,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("成功撤回专辑");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载专辑列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -824,7 +824,7 @@ $(function(){
           alert("专辑发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载专辑列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
