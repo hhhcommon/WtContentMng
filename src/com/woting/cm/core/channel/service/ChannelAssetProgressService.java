@@ -48,7 +48,7 @@ public class ChannelAssetProgressService {
 			m.put("applyFlowFlag", applyFlowFlag);
 		}
 		m.put("reFlowFlag", reFlowFlag);
-		m.put("limitClauseBy", " limit "+(page-1)*pageSize+","+page*pageSize);
+		m.put("limitClauseBy", " limit "+(page-1)*pageSize+","+pageSize);
 		List<Map<String, Object>> ls = channelAssetProgressDao.queryForListAutoTranform("getListBy", m);
 		if (ls!=null && ls.size()>0) {
 			return ls;

@@ -1111,7 +1111,6 @@ public class QueryService {
 					channelMap.put(assetId, chal);
 				}
 			}
-			retM.put("AllCount", nums);
 			if (mediaType.equals("AUDIO")) {
 				List<Map<String, Object>> mas = mediaService.getMaInfosByIds(assetIds.substring(3).replace("id", "ma.id"));
 				if (mas!=null) {
@@ -1262,10 +1261,10 @@ public class QueryService {
 			}
 		}
 		if (conid.length()>3) {
+			Map<String, Object> m = new HashMap<String, Object>();
 			conid = conid.substring(3);
 			conid = " (" + conid + ")";
 			wheresql += " and" + conid;
-			Map<String, Object> m = new HashMap<String, Object>();
 			m.put("isValidate", 1);
 			m.put("flowFlag", 2);
 			if (wheresql.length()>3) {
@@ -1273,8 +1272,22 @@ public class QueryService {
 			}
 			List<ChannelAssetPo> chas = mediaService.getChaBy(m);
 			if (chas!=null && chas.size()>0) {
+				String chaIds = "";
 				if (flowFlag==1) {
-					
+					for (ChannelAssetPo channelAssetPo : chas) {
+						if (channelAssetPo.getFlowFlag()==2) {
+							chaIds += " or chap.chaId = '"+channelAssetPo.getId()+"'";
+						}
+					}
+					if (chaIds.length()>3) {
+						chaIds = chaIds.substring(3);
+						List<Map<String, Object>> ls = channelAssetProgressService.getChannelAssetProgresBy(2, 0, " and ("+chaIds+")", null);
+						if (ls!=null && ls.size()>0) {
+							for (Map<String, Object> map : ls) {
+								
+							}
+						}
+					}
 				}
 				System.out.println(JsonUtils.objToJson(chas));
 			}
