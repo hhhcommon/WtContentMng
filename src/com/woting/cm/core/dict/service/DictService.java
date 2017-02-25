@@ -291,7 +291,7 @@ public class DictService {
      * @return 1-修改成功；2-未找到字典组；3-对应的结点未找到；4-名称重复，同级重复；5-bCode重复，某分类下重复；6-与原信息相同，不必修改
      */
     @SuppressWarnings("unchecked")
-    public int updateDictDetail(DictDetail dd) {
+    public int updateDictDetail(DictDetail dd, boolean useBCodeAsKey) {
         CacheEle<_CacheDictionary> cache=((CacheEle<_CacheDictionary>)SystemCache.getCache(WtContentMngConstants.CACHE_DICT));
         _CacheDictionary cd=cache.getContent();
         synchronized (updateLock) {
@@ -334,7 +334,8 @@ public class DictService {
             //修改字典项
             try {
                 //数据库
-                dictDDao.update(dd.convert2Po());
+                if (!useBCodeAsKey) dictDDao.update(dd.convert2Po());
+                else dictDDao.update("updateByBCode", dd.convert2Po());
                 //缓存
                 if (dd.getNodeName()!=null&&!dd.getNodeName().equals(myInTree.getTnEntity().getNodeName()))  myInTree.getTnEntity().setNodeName(dd.getNodeName());
                 if (myInTree.getTnEntity().getOrder()!=dd.getOrder()) myInTree.getTnEntity().setOrder(dd.getOrder());
@@ -348,7 +349,7 @@ public class DictService {
                 }
                 return 1;
             } catch(Exception e) {
-                throw new Wtcm0301CException("新增字典项", e);
+                throw new Wtcm0301CException("修改字典项", e);
             }
         }
     }

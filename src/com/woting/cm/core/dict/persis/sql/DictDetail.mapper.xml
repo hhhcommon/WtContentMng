@@ -170,6 +170,29 @@
     where id=#{id,jdbcType=VARCHAR}
   </update>
 
+  <!-- 修改 根据BCode-->
+  <update id="updateByBCode" parameterType="java.util.Map">
+    update plat_DictD
+    <set>
+      <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
+      <if test="MId!=null">mId=#{MId,jdbcType=VARCHAR},</if>
+      <if test="parentId!=null">pId=#{parentId,jdbcType=VARCHAR},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="isValidate!=null and isValidate!=0">isValidate=#{isValidate,jdbcType=INTEGER},</if>
+      <if test="ddName!=null">ddName=#{ddName,jdbcType=VARCHAR},</if>
+      <if test="NPy!=null">nPy=#{NPy,jdbcType=VARCHAR},</if>
+      <if test="aliasName!=null">aliasName=#{aliasName,jdbcType=VARCHAR},</if>
+      <if test="anPy!=null">anPy=#{anPy,jdbcType=VARCHAR},</if>
+      <if test="BCode!=null">bCode=#{BCode,jdbcType=VARCHAR},</if>
+      <if test="DType!=null and DType!=0">dType=#{DType,jdbcType=INTEGER},</if>
+      <if test="DRef!=null">dRef=#{DRef,jdbcType=VARCHAR},</if>
+      <if test="desc!=null">descn=#{desc,jdbcType=VARCHAR},</if>
+      <if test="CTime!=null">cTime=#{CTime,jdbcType=TIMESTAMP},</if>
+      <if test="lmTime!=null">lmTime=#{lmTime,jdbcType=TIMESTAMP},</if>
+    </set>
+    where bCode=#{BCode,jdbcType=VARCHAR}
+  </update>
+
   <!-- 删除数据 -->
   <delete id="delete" parameterType="java.lang.String">
     delete from plat_DictD where id=#{id,jdbcType=VARCHAR}
