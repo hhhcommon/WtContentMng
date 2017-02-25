@@ -1,19 +1,21 @@
 package com.woting.content.publish.web;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.spiritdata.framework.util.RequestUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.publish.service.QueryService;
-import com.woting.passport.login.utils.RequestDataUtils;
-
 /**
  * 列表查询接口
  *
@@ -24,52 +26,64 @@ import com.woting.passport.login.utils.RequestDataUtils;
 public class QueryController {
 	@Resource
 	private QueryService queryService;
-
+	
 	/**
 	 * 查询列表信息
 	 * 
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/getContents.do")
 	@ResponseBody
 	public Map<String, Object> getContents(HttpServletRequest request) {
+		long begtime = System.currentTimeMillis();
 		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestDataUtils.getDataFromRequest(request);
-		String catalogsid = null;
-		int flowFlag = 0;
-		String source = null;
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String ChannelId = null;
+		String flowFlag = null;
+		String publisherId = null;
+		String mediaType = null;
 		Timestamp begincontentpubtime = null;
 		Timestamp endcontentpubtime = null;
 		Timestamp begincontentctime = null;
 		Timestamp endcontentctime = null;
 //		String userId = m.get("UserId")+"";
-		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
-		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		if (m.containsKey("CatalogsId"))
-			catalogsid = (String) m.get("CatalogsId");
+		int page = m.get("Page") == null ? 1 : Integer.valueOf(m.get("Page")+"");
+		int pagesize = m.get("PageSize") == null ? 10 : Integer.valueOf((String) m.get("PageSize"));
+		if (m.containsKey("MediaType")) 
+			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
+		if (m.containsKey("ChannelId"))
+			ChannelId = (String) m.get("ChannelId");
 		if (m.containsKey("ContentFlowFlag"))
-			flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
+			flowFlag = m.get("ContentFlowFlag") == null ? null : m.get("ContentFlowFlag")+"";
 		if (m.containsKey("SourceId"))
-			source = (String) m.get("SourceId");
-		if (m.containsKey("BeginContentPubTime"))
-			begincontentpubtime = Timestamp.valueOf(m.get("BeginContentPubTime")+"");
-		if (m.containsKey("EndContentPubTime"))
-			endcontentpubtime = Timestamp.valueOf(m.get("EndContentPubTime")+"");
-		if (m.containsKey("BeginContentCTime"))
-			begincontentctime = Timestamp.valueOf(m.get("BeginContentCTime")+"");
-		if (m.containsKey("EndContentCTime"))
-			endcontentctime = Timestamp.valueOf(m.get("EndContentCTime")+"");
-		if (flowFlag > 0 && page > 0 && pagesize > 0) {
-			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, catalogsid, source,
-					begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
-			map.put("ResultList", maplist.get("List"));
-			map.put("ReturnType", "1001");
-			map.put("ContentCount", maplist.get("Count"));
+			publisherId = (String) m.get("SourceId");
+		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
+			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
+		if (m.containsKey("EndContentPubTime") && m.get("EndContentPubTime")!=null && !m.get("EndContentPubTime").equals("null"))
+			endcontentpubtime =  new Timestamp(Long.valueOf(m.get("EndContentPubTime")+""));
+		if (m.containsKey("BeginContentCTime") && m.get("BeginContentCTime")!=null && !m.get("BeginContentCTime").equals("null"))
+			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
+		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
+			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
+		if (page > 0 && pagesize > 0) {
+			Map<String, Object> maplist = queryService.getContent(flowFlag, page, pagesize, mediaType, ChannelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+			List<Map<String, Object>> list = (List<Map<String, Object>>)maplist.get("List");
+			if (list.size() > 0) {
+				map.put("ResultList", maplist.get("List"));
+				map.put("ReturnType", "1001");
+				map.put("AllCount", maplist.get("Count"));
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无内容");
+				map.put("AllCount", maplist.get("Count"));
+			}
 		} else {
-			map.put("ReturnType", "1002");
+			map.put("ReturnType", "1012");
 			map.put("Message", "请求信息有误");
 		}
+		map.put("TestDurtion", System.currentTimeMillis()-begtime);
 		return map;
 	}
 
@@ -85,11 +99,23 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 //		String userId = (String) m.get("UserId");
-		int pagesize = m.get("PageSize") == null ? -1 : Integer.valueOf((String) m.get("PageSize"));
-		int page = m.get("Page") == null ? -1 : Integer.valueOf((String) m.get("Page"));
-		String id = (String) m.get("ContentId");
+		int pageSize = 10;
+		try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+		int page = 1;
+		try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+		String contentId = m.get("ContentId") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无内容Id");
+			return map;
+		}
 		String mediatype = m.get("MediaType")+"";
-		Map<String, Object> mapdetail = queryService.getContentInfo(pagesize, page, id, mediatype);
+		if (StringUtils.isNullOrEmptyOrSpace(mediatype) || mediatype.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无内容类型");
+			return map;
+		}
+		Map<String, Object> mapdetail = queryService.getContentInfo(pageSize, page, contentId, mediatype);
 		if (mediatype.equals("wt_SeqMediaAsset")) {
 			if (mapdetail.get("audio") != null) {
 				map.put("ContentDetail", mapdetail.get("sequ"));
@@ -127,24 +153,65 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/updateContentStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateContentStatus(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		int flowFlag = m.get("ContentFlowFlag") == null ? -1 : Integer.valueOf((String) m.get("ContentFlowFlag"));
 //		String userId = (String) m.get("UserId");
-		String ids = (String) m.get("Id");
-        if (m.get("ContentIds")!=null&&!StringUtils.isNullOrEmptyOrSpace(""+m.get("ContentsIds"))) {
-            ids=""+m.get("ContentIds");
-        } else {
-            if (m.get("ContentId")!=null&&!StringUtils.isNullOrEmptyOrSpace(""+m.get("ContentsId"))) {
-                ids=""+m.get("ContentId");
-            }
-        }
-		String numbers = (String) m.get("ContentSort");
-		String opeType = (String) m.get("OpeType");
-		Map<String, Object> map = queryService.modifyInfo(ids, numbers, flowFlag, opeType);
-		return map;
+		List<Map<String, Object>> contentIds = new ArrayList<>();
+		if (m.containsKey("ContentIds")) {
+			contentIds = (List<Map<String, Object>>) m.get("ContentIds");
+			if (contentIds==null || contentIds .size()==0) {
+				map.put("ReturnType", "1012");
+				map.put("Message", "无内容Id");
+				return map;
+			}
+		} else {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无内容Id");
+			return map;
+		}
+		String opeType = m.get("OpeType") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(opeType) || opeType.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1014");
+			map.put("Message", "无操作类型");
+			return map;
+		}
+		String channelIds = m.get("ChannelIds") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(channelIds) || channelIds.toLowerCase().equals("null")) {
+			channelIds = null;
+		}
+		String reDescn = null;
+		try {reDescn=m.get("ReDescn").toString();} catch(Exception e) {};
+		boolean isok = false;
+		if (opeType.equals("sort")) {
+			String numbers = (String) m.get("ContentSort");
+			int number = 0;
+			try {
+				number = Integer.valueOf(numbers);
+			} catch (Exception e) {
+				e.printStackTrace();
+				map.put("ReturnType", "1015");
+				map.put("Message", "无排序号");
+				return map;
+			}
+			isok = queryService.modifyInfo(contentIds, number, opeType, reDescn);
+		} else {
+			if (opeType.equals("pass") || opeType.equals("nopass") || opeType.equals("revoke") || opeType.equals("revocation") || opeType.equals("norevocation")) {
+				isok = queryService.modifyInfo(contentIds, 0, opeType, reDescn);
+			}
+		}
+		if (isok) {
+			map.put("ReturnType", "1001");
+			map.put("Message", "修改成功");
+			return map;
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "修改失败");
+			return map;
+		}
 	}
 
 	/**
@@ -161,40 +228,6 @@ public class QueryController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map = queryService.getConditionsInfo();
 		map.put("ReturnType", "1001");
-		return map;
-	}
-
-	/**
-	 * 发布所有已审核的节目 只用于测试用
-	 *
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/content/getShareHtml.do")
-	@ResponseBody
-	public Map<String, Object> getShareHtml(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		String contentId = m.get("ContentId")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无内容ID");
-			return map;
-		}
-		String mediaType = m.get("MediaType")+"";
-		if (StringUtils.isNullOrEmptyOrSpace(mediaType) || mediaType.toLowerCase().equals("null")) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "无内容类型");
-			return map;
-		}
-		boolean isok = queryService.getShareHtml(contentId, mediaType);
-		if (isok) {
-			map.put("ReturnType", "1001");
-			map.put("Message", "静态页面生成成功");
-		} else {
-			map.put("ReturnType", "1011");
-			map.put("Message", "静态页面生成失败");
-		}
 		return map;
 	}
 
@@ -222,6 +255,126 @@ public class QueryController {
 			return map;
 		}
 		map = queryService.getZJSubPage(contentId, page);
+		return map;
+	}
+	
+	/**
+	 * 搜索内容请求
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/content/searchContents.do")
+	@ResponseBody
+	public Map<String, Object> getSearchContents(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String searchWord = m.get("SearchWord") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(searchWord) || searchWord.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无搜索内容");
+			return map;
+		}
+		String flowFlag = m.get("ContentFlowFlag") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1013");
+			map.put("Message", "无发布状态");
+			return map;
+		}
+		String mediaType = null;
+		if (m.containsKey("MediaType"))
+			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
+		String channelId = null;
+		if (m.containsKey("ChannelId"))
+			channelId = (String) m.get("ChannelId");
+		String publisherId = null; 
+		if (m.containsKey("SourceId"))
+			publisherId = (String) m.get("SourceId");
+		Timestamp begincontentpubtime = null;
+		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
+			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
+		Timestamp endcontentpubtime = null;
+		if (m.containsKey("EndContentPubTime") && m.get("EndContentPubTime")!=null && !m.get("EndContentPubTime").equals("null"))
+			endcontentpubtime =  new Timestamp(Long.valueOf(m.get("EndContentPubTime")+""));
+		Timestamp begincontentctime = null;
+		if (m.containsKey("BeginContentCTime") && m.get("BeginContentCTime")!=null && !m.get("BeginContentCTime").equals("null"))
+			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
+		Timestamp endcontentctime = null;
+		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
+			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
+		//得到每页记录数
+        int pageSize=10;
+        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+        //得到当前页数
+        int page=1;
+        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+		Map<String, Object> retM = queryService.getSearchContentList(searchWord, flowFlag, page, pageSize, mediaType, channelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+		if (retM!=null) {
+			List<Map<String, Object>> ls = (List<Map<String, Object>>) retM.get("List");
+			if (ls!=null && ls.size()>0) {
+				map.put("ReturnType", "1001");
+			    map.put("ResultInfo", retM);
+			    return map;
+			} 
+		} 
+		map.put("ReturnType", "1011");
+		return map;
+	}
+	
+	/**
+	 * 搜索内容请求
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/content/getAppRevocation.do")
+	@ResponseBody
+	public Map<String, Object> getAppRevocation(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String mediaType = "SEQU";
+		if (m.containsKey("MediaType")) 
+			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
+		String channelId = null;
+		if (m.containsKey("ChannelId"))
+			channelId = (String) m.get("ChannelId");
+		String publisherId = null;
+		if (m.containsKey("PubliusherId"))
+			publisherId = (String) m.get("PubliusherId");
+		Timestamp begincontentpubtime = null;
+		if (m.containsKey("BeginContentPubTime") && m.get("BeginContentPubTime")!=null && !m.get("BeginContentPubTime").equals("null"))
+			begincontentpubtime = new Timestamp(Long.valueOf(m.get("BeginContentPubTime")+""));
+		Timestamp endcontentpubtime = null;
+		if (m.containsKey("EndContentPubTime") && m.get("EndContentPubTime")!=null && !m.get("EndContentPubTime").equals("null"))
+			endcontentpubtime =  new Timestamp(Long.valueOf(m.get("EndContentPubTime")+""));
+		Timestamp begincontentctime = null;
+		if (m.containsKey("BeginContentCTime") && m.get("BeginContentCTime")!=null && !m.get("BeginContentCTime").equals("null"))
+			begincontentctime =  new Timestamp(Long.valueOf(m.get("BeginContentCTime")+""));
+		Timestamp endcontentctime = null;
+		if (m.containsKey("EndContentCTime") && m.get("EndContentCTime")!=null && !m.get("EndContentCTime").equals("null"))
+			endcontentctime =  new Timestamp(Long.valueOf(m.get("EndContentCTime")+""));
+		int applyFlowFlag = 1;
+        try {applyFlowFlag=Integer.parseInt(m.get("ApplyFlowFlag")+"");} catch(Exception e) {};
+        int reFlowFlag = 0;
+        try {reFlowFlag=Integer.parseInt(m.get("ReFlowFlag")+"");} catch(Exception e) {};
+		//得到每页记录数
+        int pageSize=10;
+        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+        //得到当前页数
+        int page=1;
+        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+		Map<String, Object> retM = queryService.getAppRevocationList(applyFlowFlag, reFlowFlag, page, pageSize, mediaType, channelId, publisherId, begincontentpubtime, endcontentpubtime, begincontentctime, endcontentctime);
+		if (retM!=null) {
+			List<Map<String, Object>> ls = (List<Map<String, Object>>) retM.get("List");
+			if (ls!=null && ls.size()>0) {
+				map.put("ReturnType", "1001");
+			    map.put("ResultInfo", retM);
+			    return map;
+			} 
+		} 
+		map.put("ReturnType", "1011");
 		return map;
 	}
 }

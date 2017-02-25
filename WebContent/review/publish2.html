@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
+  <title>已审核</title>
   <meta name="keywords" content="">
   <meta name="description" content="">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
@@ -55,7 +55,7 @@
 		$(window).on("resize",function(){
 			$(".conTable").css({"height":$(".mainShow").height()-$(".itemSortBox").height()-$(".conTitle").height()-150});
 		});
-    //复选框和排序号输入框获取焦点时，阻止向上冒泡触发li标签的click事件
+    //复选框和排序号输入框获取焦点时，阻止向上冒泡触发listBox的click事件
     $(".actList").on("click","input",function(ev){
     	//阻止事件向上级冒泡
       ev.stopPropagation();
@@ -67,10 +67,16 @@
 			var data={
                 UserId: "zhangsan", 
                 ContentFlowFlag:flowFlag,
-                Id:$(this).parents(".listBox")[0].getAttribute("columnId"),
+                ChannelId:$(this).parents(".listBox")[0].getAttribute("channelid"),
+                ContentId:$(this).parents(".listBox")[0].getAttribute("actid"),
                 ContentSort:$(this).prev().val(),//js的获取属性值方法
                 OpeType:"sort"
               };
+			if($(this).parents(".listBox")[0].getAttribute("acttype")=="wt_MediaAsset"){//节目
+			  data.MediaType="AUDIO";
+			}else if($(this).parents(".listBox")[0].getAttribute("acttype")=="wt_SeqMediaAsset"){//专辑
+			  data.MediaType="SEQU";
+			}
 			commonAjax(url,data,$(".pubList>.actList"),getContentList);
 			//阻止事件向上级冒泡
 			ev.stopPropagation();
@@ -93,26 +99,48 @@
 		});
 		//审核处理
 		$("button[opeType]").on('click',function(){
-			var checkedList="";
+		  var mediaType="";//判断是节目还是专辑还是电台
+			var contentids=[];//选中的节目或专辑或电台的集合
 			$.each($("input[type='checkBox'][name!='all']:checked"),function(i,val){
-				checkedList+=val.parentNode.parentNode.getAttribute("columnId")+",";
+			  var content={};//选中的节目的集合
+			  var channelIdList=val.parentNode.parentNode.getAttribute("channelid");//栏目id
+        var contentIdList=val.parentNode.parentNode.getAttribute("actid");//节目或专辑或电台id
+        if($(this).parents(".listBox").attr("acttype")=="wt_MediaAsset"){
+          mediaType="AUDIO";
+        }else if($(this).parents(".listBox").attr("acttype")=="wt_SeqMediaAsset"){//专辑
+          mediaType="SEQU";
+        }
+        content.Id=contentIdList;
+        content.MediaType=mediaType;
+        content.ChannelIds=channelIdList;
+        contentids.push(content);
 			});
-			if(checkedList==""){
-				alert("您还没有选择任何节目！");
-				$("input[type='checkBox'][name='all']").prop({"checked":null});
-				return;
-			}
-			$("input[type='checkBox'][name='all']").prop({"checked":null});
-			var url=rootPath+"content/updateContentStatus.do";
 			var data={
-                UserId: "zhangsan", 
+                UserId:"zhangsan", 
                 ContentFlowFlag:flowFlag,
-                Id:checkedList,
-                OpeType:$(this).attr("opeType")
+                ContentIds:contentids,
+                OpeType:$(this).attr("opeType"),
 		          };
-			commonAjax(url,data,$(".pubList>.actList"),getContentList);
+      $.ajax({
+        type: "POST",
+        url:rootPath+"content/updateContentStatus.do",
+        dataType:"json",
+        data:JSON.stringify(data),
+        success: function(result){
+          if(result.ReturnType=="1001"){
+            alert("撤回成功");
+            $("input[type='checkBox'][name='all']").prop({"checked":null});
+            //判断是查询还是修改操作，调用不同的方法
+            getContentList(1,data.ContentFlowFlag);
+          }else{
+            alert(result.Message);
+          }
+        },
+        error: function(jqXHR){
+          obj.html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        }     
+		  });
 		});
-		
 		//专辑对应的单体列表播放控制
 		var audio=$("<audio></audio>")[0];
 		$(".table").on("click","span",function(){
@@ -171,9 +199,10 @@
         </div>
       </div>
        -->
-      <button type="button" class="btn selectBtn">查 询</button><!-- 
+      <button type="button" class="btn selectBtn">查 询</button>
+      <!-- 
       <a href="javascript:void(0)" class="searchMore" data-toggle="modal" data-target="#searchMore">更多条件&gt;&gt;</a>
-         -->
+      -->
     </div> 
     <!--显示主区域-->
     <div class="mainShow">
@@ -260,8 +289,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">
-              <span aria-hidden="true">×</span>
-              <span class="sr-only">Close</span>
+            <span aria-hidden="true">×</span>
+            <span class="sr-only">Close</span>
           </button>
         </div>
         <small class="font-bold">

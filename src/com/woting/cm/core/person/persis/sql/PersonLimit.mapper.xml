@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Etl与资源对应关系 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="A_PERSONLIMIT">
+  <!-- 对应关系 -->
+  <resultMap id="BaseResultMap" type="personlimit">
+    <id      column="id"             property="id"             jdbcType="VARCHAR"/>
+    <id      column="dictDid"        property="dictDid"        jdbcType="VARCHAR"/>
+    <result  column="personId"       property="personId"       jdbcType="VARCHAR"/>
+    <result  column="limitDescn"     property="limitDescn"     jdbcType="VARCHAR"/>
+    <result  column="cTime"          property="cTime"          jdbcType="TIMESTAMP"/>
+    <result  column="lmTime"         property="lmTime"         jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <!-- 所有列 -->
+  <sql id="Base_Column_List">
+    id, dictDid, personId, limitDescn, cTime, lmTime
+  </sql>
+  
+  <!-- 条件子句 -->
+  <sql id="WhereClauseByEntiey">
+    <where>
+      <trim prefix="(" suffix=")" prefixOverrides="and">
+        <if test="id!=null">and id=#{id,jdbcType=VARCHAR}</if>
+        <if test="dictDid!=null">and dictDid=#{dictDid,jdbcType=VARCHAR}</if>
+        <if test="personId!=null">and personId=#{personId,jdbcType=VARCHAR}</if>
+        <if test="limitDescn!=null">and limitDescn=#{limitDescn,jdbcType=VARCHAR}</if>
+        <if test="cTime!=null">and cTime=#{cTime,jdbcType=TIMESTAMP}</if>
+        <if test="lmTime!=null">and lmTime=#{lmTime,jdbcType=TIMESTAMP}</if>
+      </trim>
+    </where>
+  </sql>
+  
+  <!-- 新增 对应关系 -->
+  <insert id="insert" parameterType="java.util.Map">
+    insert into wt_PersonLimit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="dictDid!=null">dictDid,</if>
+      <if test="personId!=null">personId,</if>
+      <if test="limitDescn!=null">limitDescn,</if>
+      <if test="lmTime!=null">lmTime,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="dictDid!=null">#{dictDid,jdbcType=VARCHAR},</if>
+      <if test="personId!=null">#{personId,jdbcType=VARCHAR},</if>
+      <if test="limitDescn!=null">#{limitDescn,jdbcType=VARCHAR},</if>
+      <if test="lmTime!=null">#{lmTime,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+  
+  <!-- 修改 根据主键-->
+  <update id="updateLmTime" parameterType="java.util.Map">
+    update wt_PersonLimit
+    <set>
+      <if test="lmTime!=null">lmTime=#{lmTime,jdbcType=TIMESTAMP},</if>
+    </set>
+    where id=#{id,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getListBy" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_PersonLimit
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="ByClause!=null"> and (${ByClause})</if>
+  </select>
+  
+  <!-- 获得记录条数-->
+  <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(*) from wt_PersonLimit <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </select>
+  
+  <delete id="deleteByMap" parameterType="java.util.Map">
+    delete from wt_PersonLimit <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+  </delete>
+  
+</mapper>

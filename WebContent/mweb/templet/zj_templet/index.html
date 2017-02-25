@@ -6,9 +6,11 @@
   <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
   <meta name="keywords" content="#####sequdescn#####">
   <meta name="description" content="#####sequdescn#####">
+  <link rel="shortcut icon" href="../../../resources/images/favicon.ico" />
   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
   <link href="../../templet/zj_templet/css/index.css" text="text/css" rel="stylesheet" />
   <script src="../../templet/zj_templet/js/jquery-2.1.1.min.js"></script>
+  <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
   <script>
     $(document).bind('mobileinit',function(){
       $.mobile.changePage.defaults.changeHash = false;
@@ -22,7 +24,7 @@
   <script src="../../templet/zj_templet/js/index.js"></script>
 </head>
 <body>
-  <img style="width:0px;height:0px;opacity: 0;position:absolute ;" src="#####sequimgs#####" />
+  <img class="timg" style="width:0px;height:0px;opacity: 0;position:absolute;" src="#####sequimgs#####" />
   <div class="container">
     <!--头部开始-->
     <header>
@@ -83,41 +85,134 @@
           </div>
         </div>
         <div class="hide tc2 tc">
-          <ul class="comment">
-            <li class="ctList">
-              <div class="default"></div>
-              <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
-              <div class="listCon">
-                <p class="lcs">
-                  <span class="commentName">周杰伦</span>
-                  <span class="commentTime">2016-12-24</span>
-                </p>
-                <div class="commentContent">
-                                近给公司开发手机端网站，发现一个很厉害的插件
-                                近给公司开发手机端网站，发现一个很厉害的插件
-                                近给公司开发手机端网站，发现一个很厉害的插件
-                </div>
-              </div>
-            </li>
-            <li class="ctList">
-              <div class="default"></div>
-              <img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">
-              <div class="listCon">
-                <p class="lcs">
-                  <span class="commentName">周杰伦</span>
-                  <span class="commentTime">2016-12-24</span>
-                </p>
-                <div class="commentContent">
-                                近给公司开发手机端网站，发现一个很厉害的插件
-                                近给公司开发手机端网站，发现一个很厉害的插件
-                                近给公司开发手机端网站，发现一个很厉害的插件
-                </div>
-              </div>
-            </li>
-          </ul>
+          <ul class="comment"></ul>
         </div>
       </div>
     </div>
   </div>
 </body>
+<script>
+  var rootPath=getRootPath();
+  var tImg=$(".timg").attr("src");//分享的缩略图
+  var url=window.location.href.split('#')[0];
+  url=url.replace('&', '%26');
+  var data={
+    "DeviceId":"3279A27149B24719991812E6ADBA5584",
+    "PCDType":"3",
+    "MobileClass":"Chrome",
+    "SharePath":url
+  };
+  $.ajax({
+    url: rootPath+"share/getWXConfig.do",
+    type:"POST",
+    dataType:"json",
+    data:data,
+    success: function(resultData) {
+      if(resultData.ReturnType=="1001"){
+        getWXConfig(resultData);
+      }else{
+        return;
+      }
+    },
+    error: function(jqXHR){
+      alert("发生错误" + jqXHR.status);
+    }
+  });
+  function getWXConfig(resultData){
+    wx.config({
+      debug: false ,// 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+      appId:resultData.Result.AppId, // 必填，公众号的唯一标识
+      timestamp:resultData.Result.TimeStamp, // 必填，生成签名的时间戳
+      nonceStr:resultData.Result.NonceStr, // 必填，生成签名的随机串
+      signature:resultData.Result.Signature,// 必填，签名，见附录1
+      jsApiList: [
+        // 必填，所有要调用的 API 都要加到这个列表中
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQZone',
+        'onMenuShareQQ'
+      ]
+    });
+    wx.ready(function () { // 在这里调用 API
+      //批量隐藏功能按钮接口
+      wx.hideMenuItems({
+        menuList: [ // 要隐藏的菜单项，所有menu项见附录3
+          /*  
+            'menuItem:share:qq',
+            'menuItem:share:weiboApp'
+            'menuItem:openWithSafari',
+            'menuItem:openWithQQBrowser',
+            'menuItem:favorite',
+            'menuItem:share:facebook',
+            'menuItem:share:QZone',
+          */
+        ] 
+      });
+      //分享到朋友圈
+      wx.onMenuShareTimeline({
+        title:'#####sequname#####', // 分享标题
+        desc:'#####sequdescn#####', // 分享描述
+        link: url, // 分享链接
+        imgUrl: tImg, // 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享失败');
+        }
+      });
+      //分享给朋友
+      wx.onMenuShareAppMessage({
+        title:'#####sequname#####', // 分享标题
+        desc:'#####sequdescn#####', // 分享描述
+        link:url, // 分享链接
+        imgUrl: tImg, // 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享失败');
+        }
+      });
+      //分享到qq
+      wx.onMenuShareQQ({
+        title:'#####sequname#####', // 分享标题
+        desc:'#####sequdescn#####', // 分享描述
+        link:url, // 分享链接
+        imgUrl:tImg, // 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享qq成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享qq');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享qq失败');
+        }
+      });
+      //分享到qq空间
+      wx.onMenuShareQZone({
+        title:'#####sequname#####', // 分享标题
+        desc:'#####sequdescn#####', // 分享描述
+        link:url, // 分享链接
+        imgUrl:tImg,// 分享图标
+        success: function (){ // 用户确认分享后执行的回调函数
+//        alert('分享qq空间成功');
+        },
+        cancel: function (){ // 用户取消分享后执行的回调函数
+//        alert('取消分享qq空间');
+        },
+        fail: function(){ // 用户分享失败后执行的回调函数
+//        alert('分享qq空间失败');
+        }
+      });
+    })
+  }
+</script>
 </html>

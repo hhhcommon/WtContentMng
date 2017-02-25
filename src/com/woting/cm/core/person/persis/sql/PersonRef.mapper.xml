@@ -41,6 +41,12 @@
   <select id="getListBy" resultMap="BaseResultMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_Person_Ref
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="ByClause!=null"> and (${ByClause})</if>
+  </select>
+  
+  <!-- 获得记录条数-->
+  <select id="getCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(*) from wt_Person_Ref <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   
   <delete id="deleteByMap" parameterType="java.util.Map">

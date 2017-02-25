@@ -26,7 +26,7 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://www.wotingfm.com:908/CM/"; // 静态节目content.html路径头信息
+	private static String jmurlrootpath = "http://www.wotingfm.com/CM/"; // 静态节目content.html路径头信息
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
 
 	/**
@@ -118,7 +118,7 @@ public abstract class CacheUtils {
 			htmlstr = htmlstr.replace("#####sequtag#####", "");
 		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequdescn#####",mapsequ.get("ContentDesc").toString() == null ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequdescn#####",mapsequ.get("ContentDesc") == null || mapsequ.get("ContentDesc").toString().length()<1 ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../templet/zj_templet/imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
 		        .replace("#####mediatype#####", "SEQU")
@@ -144,6 +144,7 @@ public abstract class CacheUtils {
 	 * @param map
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private static void createJMHtml(String path, Map<String, Object> map) {
 		//读取节目html模版
 		String htmlstr = readFile(rootpath + templetpath + "/jm_templet/index.html");
@@ -162,7 +163,7 @@ public abstract class CacheUtils {
 		        .replace("#####audioplay#####", map.get("ContentPlay")+"")
 				.replace("#####audioid#####", map.get("ContentId")+"")
 				.replace("#####audiotime#####", map.get("ContentTimes")+"")
-				.replace("#####audiodescn#####", (map.get("ContentDesc")+"").equals("null")?"":map.get("ContentDesc")+"")
+				.replace("#####audiodescn#####", map.get("ContentDesc")==null || map.get("ContentDesc").equals("null") || map.get("ContentDesc").toString().length()<1 ? "欢迎大家收听"+map.get("ContentName")+"" :map.get("ContentDesc")+"")
 				.replace("#####audioseq#####", map.get("ContentSeqName")+"")
 				.replace("#####audiosource#####", map.get("ContentPub")+"");
 		writeFile(htmlstr, path);

@@ -87,6 +87,38 @@
       </trim>
     </where>
   </sql>
+  
+  <!-- 点击量 -->
+    <resultMap id="mediaplaycountmap" type="mediaplaycount">
+		<id     column="id"            property="id"            jdbcType="VARCHAR" />
+		<result column="resTableName"  property="resTableName"  jdbcType="VARCHAR" />
+		<result column="resId"         property="resId"         jdbcType="VARCHAR" />
+		<result column="playCount"     property="playCount"     jdbcType="BIGINT" />
+		<result column="publisher"     property="publisher"     jdbcType="VARCHAR" />
+		<result column="cTime"         property="cTime"         jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<insert id="insertMediaPlayCount" parameterType="java.util.Map">
+    insert into wt_MediaPlayCount
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="resId!=null">resId,</if>
+      <if test="resTableName!=null">resTableName,</if>
+      <if test="playCount!=null">playCount,</if>
+      <if test="publisher!=null">publisher,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="resId!=null">#{resId,jdbcType=VARCHAR},</if>
+      <if test="resTableName!=null">#{resTableName,jdbcType=VARCHAR},</if>
+      <if test="playCount!=null">#{playCount,jdbcType=BIGINT},</if>
+      <if test="publisher!=null">#{publisher,jdbcType=VARCHAR},</if>
+    </trim>
+  </insert>
+	
+	<sql id="Base_MediaPlayCount_List">
+		id, resTableName, resId, playCount, publisher, cTime
+	</sql>
 
   <!-- 专辑 -->
   <resultMap id="seqMediaAssetMap" type="seqMediaAsset">
@@ -275,9 +307,33 @@
     select <include refid="Base_Media_List"/>from wt_MediaAsset where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
   
+  <select id="getMaInfoByIds" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT ma.id,ma.maTitle,ma.maImg,ma.maPublisher,ma.descn,ma.cTime,mas.playURI,(CASE WHEN mapc.playCount IS NULL THEN 0 ELSE mapc.playCount END) playCount from wt_MediaAsset ma 
+    LEFT JOIN wt_MaSource mas
+    ON ma.id = mas.maId and mas.isMain = 1
+    LEFT JOIN wt_MediaPlayCount mapc
+    ON mapc.resId = ma.id and mapc.resTableName = 'wt_MediaAsset'
+    WHERE (${ids})
+  </select>
+  
+  <select id="getSMaInfoByIds" parameterType="java.util.Map" resultType="java.util.HashMap">
+    SELECT sma.id,sma.smaTitle,sma.smaImg,sma.smaPublisher,sma.descn,sma.cTime,(CASE WHEN mapc.playCount IS NULL THEN 0 ELSE mapc.playCount END) playCount ,
+    (SELECT COUNT(*) from wt_SeqMA_Ref where sId = sma.id) num
+    from wt_SeqMediaAsset sma
+    LEFT JOIN wt_MediaPlayCount mapc ON mapc.resId = sma.id and mapc.resTableName = 'wt_SeqMediaAsset' 
+    WHERE (${ids})
+  </select>
+  
   <select id="getMaListBySmaId" parameterType="java.lang.String" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/>from wt_MediaAsset where id in (select mId from wt_SeqMA_Ref where sId=#{sId,jdbcType=VARCHAR})
     order by cTime desc
+  </select>
+  
+  <select id="getMaPlayAndSeqNameByMaIds" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT s.*,mas.playURI FROM 
+	(SELECT sma.id,sma.smaTitle,smaf.mId from wt_SeqMediaAsset sma,wt_SeqMA_Ref smaf where sma.id = smaf.sId and (${ids})) s
+	LEFT JOIN wt_MaSource mas
+	ON s.mId = mas.maId and mas.isMain = 1
   </select>
   
   <!-- 根据主播id获取 -->
@@ -311,8 +367,16 @@
     select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR} limit 1
   </select>
   
-   <select id="getS2MRefInfoBySId" parameterType="java.lang.String" resultMap="seqMaRefMap">
+   <select id="getS2MRefInfoBySId" parameterType="java.util.Map" resultMap="seqMaRefMap">
     select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where sid=#{sid,jdbcType=VARCHAR}
+    order by columnNum DESC
+    <if test="LimitByClause!=null">limit ${LimitByClause}</if>
+  </select>
+  
+  <select id="getSmaMediaSize" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT sId,COUNT(*) num from wt_SeqMA_Ref 
+	where ${ids}
+	GROUP BY sId
   </select>
   
   

@@ -107,7 +107,7 @@ public class KeyWordBaseService {
 	
 	public List<KeyWordPo> getKeyWordsByAssetId (String assetId, String resTableName) {
 		Map<String, Object> m = new HashMap<>();
-		m.put("resIds", assetId);
+		m.put("resIds", "'"+assetId+"'");
 		m.put("resTableName", resTableName);
 		List<KeyWordResPo> kwres = keyWordResDao.queryForList("getKeyWordResByResId", m);
 		if (kwres!=null && kwres.size()>0) {
@@ -133,5 +133,13 @@ public class KeyWordBaseService {
 		m.put("resId", assetId);
 		m.put("resTableName", resTableName);
 		keyWordResDao.delete("deleteByEntity", m);
+	}
+
+	public List<Map<String, Object>> getKeyWordsByIdsAndResTableName(Map<String, Object> m) {
+		List<Map<String, Object>> ls = keyWordDao.queryForListAutoTranform("getKeyWordBy", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
 	}
 }

@@ -190,7 +190,7 @@
       <if test="CTime!=null">cTime=#{CTime,jdbcType=TIMESTAMP},</if>
       <if test="lmTime!=null">lmTime=#{lmTime,jdbcType=TIMESTAMP},</if>
     </set>
-    where bCode=#{BCode,jdbcType=VARCHAR}
+    where bCode=#{BCode,jdbcType=VARCHAR} and mId=#{MId,jdbcType=VARCHAR}
   </update>
 
   <!-- 删除数据 -->

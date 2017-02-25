@@ -31,8 +31,8 @@ $(function(){
     }else{
       if($(".playControl").hasClass("play")){//处于播放状态
         $(document).find(".state").each(function(i,val){
-          if(val.className!="state"){
-            $(val).removeClass("playGif").addClass("playPng");
+          if($(this).hasClass("playGif")){
+            $(this).removeClass("playGif").addClass("playPng");
             return false;
           }
         });
@@ -40,7 +40,7 @@ $(function(){
         audio.pause();
       }else{
         $(document).find(".state").each(function(i,val){
-          if(val.className!="state"){
+          if($(this).hasClass("playPng")){
             $(val).removeClass("playPng").addClass("playGif");
             return false;
           }
@@ -52,17 +52,17 @@ $(function(){
   });
   
   //实时获取播放时长和改变进度条进度
-    audio.addEventListener("timeupdate",function(){
-      if(!isNaN(this.duration)){
-        //播放进度条
-        var progressValue = this.currentTime/this.duration*($(".currentMusicBar").width());
-        $('.currentMusicBarRound')[0].style.left = parseInt(progressValue) + 'px';
-        //播放时长
-        if(formatTime(Math.floor(this.currentTime))!=0){
-          $(".playTime").text(formatTime(Math.floor(this.currentTime)));
-        }
-      };
-    },false);
+  audio.addEventListener("timeupdate",function(){
+    if(!isNaN(this.duration)){
+      //播放进度条
+      var progressValue = this.currentTime/this.duration*($(".currentMusicBar").width());
+      $('.currentMusicBarRound')[0].style.left = parseInt(progressValue) + 'px';
+      //播放时长
+      if(formatTime(Math.floor(this.currentTime))!=0){
+        $(".playTime").text(formatTime(Math.floor(this.currentTime)));
+      }
+    };
+  },false);
   
   //推荐声音列表的播放控制
   $(".ulBox").on("click",".listBox",function(){
@@ -91,9 +91,9 @@ $(function(){
     }else{
       $(".playControl").removeClass("play");
     }
-    if($(this).index()=="0"){//点击上一个
+    if($(this).index()=="0"){//上一个按钮变成灰色
       $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
-    }else if($(this).index()==len){//点击下一个
+    }else if($(this).index()==len){//下一个按钮变成灰色
       $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
     }else{
       $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
@@ -110,13 +110,16 @@ $(function(){
     $('.currentMusicBarRound')[0].style.left="0px";
     var src=$(this).children(".audioImg").attr("src");
     $(".boximg").css({"background-image":"url("+src+")"});
+    var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
+    comment(contentId);//加载评论列表
   });
   
   //点击上一个
   $(".previous").on("click",function(){
     $(document).find(".state").each(function(i,val){
-      if(val.className!="state"){
+      if($(this).hasClass("playGif")){
         if(i<=0){
+          alert("当前已经是第一首了");
           return false;
         }else if(i==1){
           $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
@@ -125,23 +128,26 @@ $(function(){
           $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
         }
         listNum=i-1;
-        $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
-        $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
-        $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
-        $(".listBox").eq(listNum).children(".listCon").children(".span").css({"color":"#ffa364"});
-        $(".playTime").text("00:00");
-        $('.currentMusicBarRound')[0].style.left="0px";
-        $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
-        $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
-        $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
-        $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
-        $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
-        var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
-        $(".box").css({"background-image":"url("+src+")"});
-        audio.src=$(".listBox").eq(listNum).attr("data_src");
-        audioPlay($(".listBox").eq(listNum),audio,true);
-        $(".playControl").addClass("play");
-        return false;
+        if(listNum>=0){
+          $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
+          $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
+          $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
+          $(".listBox").eq(listNum).children(".listCon").children(".span").css({"color":"#ffa364"});
+          $(".playTime").text("00:00");
+          $('.currentMusicBarRound')[0].style.left="0px";
+          $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
+          $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
+          $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
+          $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
+          $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
+          var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
+          $(".box").css({"background-image":"url("+src+")"});
+          audio.src=$(".listBox").eq(listNum).attr("data_src");
+          audioPlay($(".listBox").eq(listNum),audio,true);
+          $(".playControl").addClass("play");
+          var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
+          comment(contentId);//加载评论列表
+        }
       }
     });
   });
@@ -151,10 +157,11 @@ $(function(){
   $(".next").on("click",function(){
     if(isList){
       $(document).find(".state").each(function(i,val){
-        if(val.className!="state"){
+        if($(this).hasClass("playGif")){
           //判断是否为最后一个
           //如果有正在播放的列表，那么播放下一条，如果没有，则播放第一条
           if(i>=$(".listBox").length-1){
+            alert("当前已经是最后一个节目了");
             return false;
           }
           if(i==$(".listBox").length-2){
@@ -166,26 +173,30 @@ $(function(){
           $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
           $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
           listNum=i+1;
-          return false;
         }
       })
     }else{
       $(audio).removeAttr("id");
       isList=true;
+      listNum=0;
     }
-    $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
-    $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
-    $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
-    $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
-    $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
-    $(".playTime").text("00:00");
-    $('.currentMusicBarRound')[0].style.left="0px";
-    $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
-    var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
-    $(".box").css({"background-image":"url("+src+")"});
-    audio.src=$(".listBox").eq(listNum).attr("data_src");
-    audioPlay($(".listBox").eq(listNum),audio,true);
-    $(".playControl").addClass("play");
+    if(listNum<=$(".listBox").length){
+      $(".detail").children(".dp1").children(".dpspan").text($(".listBox").eq(listNum).attr("dz"));
+      $(".detail").children(".dp2").children(".dpspan").text($(".listBox").eq(listNum).attr("ds"));
+      $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
+      $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
+      $(".palyCtrlBox").children("h4").text($(".listBox").eq(listNum).children(".listCon").children(".span").text());
+      $(".playTime").text("00:00");
+      $('.currentMusicBarRound')[0].style.left="0px";
+      $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
+      var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
+      $(".box").css({"background-image":"url("+src+")"});
+      audio.src=$(".listBox").eq(listNum).attr("data_src");
+      audioPlay($(".listBox").eq(listNum),audio,true);
+      $(".playControl").addClass("play");
+      var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
+      comment(contentId);//加载评论列表
+    }
   });
   
   //请求推荐资源列表
@@ -207,8 +218,7 @@ $(function(){
     data:JSON.stringify(_data),
     success: function(resultData) {
       var resultData=eval('(' + resultData.Data + ')');
-      if (resultData.ReturnType=="1001"){
-        console.log(resultData);
+      if(resultData.ReturnType=="1001"){
         loadRecomList(resultData);
       }else{
         return;
@@ -219,9 +229,43 @@ $(function(){
     }
   });
   
+  //请求查看评论
+  var contentId=eval('('+$("audio").attr("jmOpenApp").split("=")[1]+')').ContentId;
+  comment(contentId);
+  function comment(contentId){
+    var data={
+          "RemoteUrl":"http://www.wotingfm.com:808/wt/discuss/article/getList.do",
+          "IMEI":"3279A27149B24719991812E6ADBA5583",
+          "PCDType":"3",
+          "ContentId":contentId,
+          "MediaType":"AUDIO",
+          "Page":"1",
+          "PageSize":"20"
+    };
+    $.ajax({
+      url: rootPath+"common/jsonp.do",
+      type:"POST",
+      dataType:"json",
+      data:JSON.stringify(data),
+      success: function(resultData) {
+        var resultData=eval('(' + resultData.Data + ')');
+        if (resultData.ReturnType=="1001"){
+          loadCommentList(resultData);
+        }else{
+          $(".comment").html("");
+          $(".comment").append("<li class='noComment'>暂无评论</li>");
+          $(".noComment").css({"height":$(".ulBox").height()});
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
   //打开APP或下载
   $(".downLoad,.like").click(function(){
-    window.location=$("#jmAudio").attr("jmOpenApp");
+    window.location.href=$(audio).attr("jmOpenApp");
     window.setTimeout(function () {
       window.location.href= "http://www.wotingfm.com/download/WoTing.apk";
     },2000);
@@ -338,6 +382,39 @@ $(function(){
       $(".contentT").eq(i).attr({"fullTime":formatTime(Math.round(contentTime))}); 
     }
   }
+  
+  //加载评论列表
+  function loadCommentList(resultData){
+    $(".comment").html("");
+    for(var i=0;i<resultData.AllCount;i++){
+      var commentTime=resultData.DiscussList[i].Time;
+      var commentList='<li class="ctList" commentId='+resultData.DiscussList[i].Id+'>'+
+                        '<div class="default"></div>'+
+                        '<img src="http://qingting-pic.b0.upaiyun.com/www/UpYunImage/06d4dd215d2c3bd6d305c78065015552.png" class="audioImg" alt="节目图片">'+
+                        '<div class="listCon">'+
+                          '<p class="lcs">'+
+                            '<span class="commentName">'+resultData.DiscussList[i].UserInfo.UserName+'</span>'+
+                            '<span class="commentTime"></span>'+
+                          '</p>'+
+                          '<div class="commentContent">'+resultData.DiscussList[i].Discuss+'</div>'+
+                       '</div>'+
+                      '</li>';
+      $(".comment").append(commentList);
+      $(".commentTime").eq(i).text(formatCommentDate(commentTime));
+    }
+  }
+  
+  //评论时间转换
+  function formatCommentDate(tt){ 
+    var date = new Date(parseInt(tt));
+    Y = date.getFullYear() + '-';
+    M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    D = date.getDate() + ' ';
+    h = date.getHours() + ':';
+    m = date.getMinutes() + ':';
+    s = date.getSeconds(); 
+    return Y+M+D+h+m+s;
+  } 
   
   //推荐和评论的切换
   $(".tj .tjh4").on("click",function(){

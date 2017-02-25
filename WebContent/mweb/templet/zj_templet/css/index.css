@@ -319,3 +319,7 @@ header .downLoad{
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.noComment{
+  padding-top:10px;
+  text-align:center;
+}

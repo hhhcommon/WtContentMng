@@ -249,6 +249,7 @@ header .downLoad{
 .ctList{
   width:100%;
   height:auto;
+  min-height:90px;
   padding:8px 6px 8px 16px;
   border-bottom:1px solid #dedede;
 }
@@ -266,7 +267,7 @@ header .downLoad{
 }
 .commentTime{
   margin-left: 15px;
-  font-size: 14px;
+  font-size: 13px;
 }
 .commentContent{
   font-size: 14px;
@@ -372,7 +373,10 @@ header .downLoad{
 .dn{
   display: none;
 }
-
+.noComment{
+  padding-top: 10px;
+  text-align:center;
+}
 
 
 

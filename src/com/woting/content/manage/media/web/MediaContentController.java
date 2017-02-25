@@ -565,7 +565,11 @@ public class MediaContentController {
 				map.put("Message", "无专辑id信息");
 				return map;
 			}
-			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, 2);
+			int flowFlag = 2;
+			try {flowFlag=Integer.parseInt(m.get("ContentFlowFlag")+"");} catch(Exception e) {};
+			String descn = null;
+			try {descn=m.get("ApplyDescn").toString();} catch(Exception e) {};
+			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, flowFlag,descn);
 			if (isok) {
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
@@ -623,9 +627,7 @@ public class MediaContentController {
 				map.put("Message", "无法获取需要的参数");
 			} else {
 				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei()) && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1 : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
 					mp.setImei(request.getSession().getId());
 				}
 				mUdk = mp.getUserDeviceKey();

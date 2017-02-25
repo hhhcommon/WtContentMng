@@ -433,7 +433,7 @@ header .downLoad{
   font-size: 14px;
   height: 45px;
   line-height: 45px;
-  padding: 0px 10px;
+  padding: 0px 0px 0px 10px;
   overflow: hidden;
   color:#959595;
   border-bottom: 1px solid #ddd;
@@ -447,10 +447,26 @@ header .downLoad{
   text-overflow: ellipsis;
 }
 .lbt{
-  float: right;
-  padding-right: 10px;
+  float: left;
+  padding-right: 0px;
+}
+.lbz{
+  width: auto;
+  height: 25px;
+  margin-top: 10px;
+  line-height: 28px;
+  padding: 0px 2px;
+  margin-left: 3%;
+  float: left;
+  color:#fff;
+  background:#f60;
+  display: none;
 }
 .nojmd{
   text-align: center;
   margin-top:20px;
+}
+.noComment{
+  padding-top:10px;
+  text-align:center;
 }

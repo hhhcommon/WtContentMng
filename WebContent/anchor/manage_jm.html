@@ -45,7 +45,6 @@ body{overflow: auto;-moz-user-select: none; }
 .ri_top{
   width:100%;
   height:50px;
-  overflow: hidden;
 }
 .ri_top_li1{
   width:156px;
@@ -104,26 +103,27 @@ body{overflow: auto;-moz-user-select: none; }
 .ri_top2{
   width:100%;
   height:auto;
-  overflow: hidden;
+  position: relative;
   margin-top:15px;
 }
 .border1{
-  border: 1px solid #dedede; 
+  /*border: 1px solid #dedede;*/ 
 }
 .border2{
   border: 1px solid transparent; 
 }
 .attr:last-child{
-  border-bottom:none;
+  /*border-bottom:none;*/
 }
 .attr{
   position: relative;
   width:100%;
-  float: left;
-  border-bottom:1px solid #dedede;
+  border: 1px solid #dedede;
+  /*border-top: 1px solid #dedede;
+  border-left: 1px solid #dedede;
+  border-right: 1px solid #dedede;*/
 }
 .attrKey{
-  display: block;
   overflow: hidden;
   float: left;
   width:88px;
@@ -136,16 +136,17 @@ body{overflow: auto;-moz-user-select: none; }
   background: #f5f5f5;
 }
 .attrValues {
-  position:relative;
-  float: left;
+  margin-left: 88px;
+  padding-right: 100px;
   overflow: hidden;
 }
 .attrValues .av-gather{
   overflow: hidden;
-  position: relative;
-  height:40px;
   margin-bottom:0px;
 }
+#album .av_ul{
+  min-height:40px;
+} 
 .trig_item{
   display: block;
   float: left;
@@ -158,19 +159,21 @@ body{overflow: auto;-moz-user-select: none; }
 .trig_curr{
   height:41px;
   position:relative;
-  z-index:2;
-  border:1px solid #dedede;
+  z-index:12;
+  border:1px solid #999;
   border-bottom:medium none;
-  background: #dedede;
+  background: #fff;
   color:#f60;
 }
-.tab_cont_item{
-  width:100%;
-  border:1px solid #dedede;
-  position: relative;
-  left:0px;
+.tab_cont_item {
+  position: absolute;
+  left: 0;
+  top: 39px;
+  width: 100%;
+  border: 1px solid #999;
+  background: #fff;
   display: none;
-  overflow: hidden;
+  z-index: 10;
 }
 .tab_cont_item li{
   float:left;
@@ -222,7 +225,7 @@ body{overflow: auto;-moz-user-select: none; }
 }
 .ri_top3_con{
   width:100%;
-  position: absolute;
+  position: relative;
   overflow:hidden;
 }
 .rtc_listBox{
@@ -261,7 +264,7 @@ body{overflow: auto;-moz-user-select: none; }
 .jm_st{
   float: right;
   line-height: 110px;
-  margin-right:140px;
+  margin-right:110px;
   color:#000;
 }
 .op_type{
@@ -271,7 +274,6 @@ body{overflow: auto;-moz-user-select: none; }
 .op_type p{
   cursor: pointer;
   margin:5px 0px 0px 0px;
-  color: rgb(173,172,172);
 }
 /*遮罩层*/
 .mask{
@@ -289,6 +291,7 @@ body{overflow: auto;-moz-user-select: none; }
   width:100%;
   height:auto;
   border:1px solid #dedede;
+  position: relative;
   overflow: hidden;
   margin-top:15px;
   padding:0px 0px 10px 0px;
@@ -351,28 +354,12 @@ body{overflow: auto;-moz-user-select: none; }
   background-position: -41px -414px;
   display: none;
 }
-.check_more {
-  display: inline-block;
-  float: right;
-  margin-right: 40px;
-  height: 22px;
-  margin-top:8px;
-  margin-bottom:8px;
-  line-height: 22px;
-  border: 1px solid #ddd;
-  padding: 0px 5px 0px 5px;
-  position: relative;
-  background: #fff;
-  color: #333;
-  cursor: pointer;
-}
 .ss1{
   float:left;
 }
 .btns{
   width: 100%;
   height: 30px;
-  float: left;
   margin-top: 10px;
   display: none; 
   text-align: center;
@@ -503,6 +490,37 @@ body{overflow: auto;-moz-user-select: none; }
   float: left;
   margin-left:3px;
 }
+.cf60{
+ color:#f60; 
+}
+.c173{
+  color:rgb(173,172,172);
+}
+.h40{
+  height: 40px;
+}
+.more1{
+  top: 5px;
+  right: 10px;
+  width: 110px;
+  height: auto;
+  line-height: 22px;
+  overflow: hidden;
+}
+.check_more{
+  position: absolute;
+  top: 10px;
+  right: 30px;
+  width: 30px;
+  border: 1px solid #dedede;
+  height: auto;
+  line-height: 20px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.attrTabcon{
+  overflow: hidden;
+}
 </style>
 <body class="laydate_body" onselectstart="return false">
 <div class="content">
@@ -530,14 +548,14 @@ body{overflow: auto;-moz-user-select: none; }
                 <li class="trig_item" id="5"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
                 <li class="trig_item" id="1"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
                 <li class="trig_item" id="2"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
-                <li class="trig_item" id="3"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
+                <li class="trig_item" id="4"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
               </ul>
             </div>
             <div class="btns">
               <span class="btns_sub">确定</span>
               <span class="btns_can">取消</span>
             </div>
-            <span class="check_more">多选</span>
+            <span class="check_more more3">多选</span>
           </div>
           <div class="attr" id="album">
             <div class="attrKey">所属专辑 :</div>
@@ -548,13 +566,17 @@ body{overflow: auto;-moz-user-select: none; }
               <span class="btns_sub">确定</span>
               <span class="btns_can">取消</span>
             </div>
-            <span class="check_more">多选</span>
+            <span class="check_more more3">多选</span>
           </div>
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
-              <ul class="av-gather av_ul"></ul>
+              <ul class="av-gather av_ul h40"></ul>
             </div>
+            <div class="more1">
+              <span class="check_more more2">更多</span>
+            </div>
+            <div class="attrTabcon"></div>
           </div>
         </div> 
         <div class="ri_top3">

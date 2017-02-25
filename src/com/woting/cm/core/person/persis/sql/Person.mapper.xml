@@ -59,4 +59,53 @@
     select <include refid="Base_Column_List"/> from wt_Person <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   
+  <select id="getPersonsNum" resultType="java.lang.Integer" parameterType="java.util.Map">
+    SELECT count(*) from plat_DictD dd,wt_ResDict_Ref refd,wt_Person pers 
+	WHERE refd.dictMid = '10' and dd.id = refd.dictDid and pers.id = refd.resId and refd.resTableName = 'wt_Person'
+	<if test="pSource!=null"> and pers.pSource = '${pSource}'</if>
+	<if test="dictDid!=null"> and dd.id = '${dictDid}'</if>
+	<if test="LikeByClause!=null"> and (${LikeByClause})</if>
+  </select>
+  
+  <select id="getPersons" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT pers.*,dd.id did,dd.ddName,refd.id refId,refd.cTime limitTime,pl.lmTime reTime from plat_DictD dd,wt_ResDict_Ref refd,wt_Person pers 
+    LEFT JOIN wt_PersonLimit pl
+    ON pl.personId = pers.id and '${nowTime}' &lt; pl.lmTime
+	WHERE refd.dictMid = '10' and dd.id = refd.dictDid and pers.id = refd.resId and refd.resTableName = 'wt_Person'
+	<if test="pSource!=null"> and pers.pSource = '${pSource}'</if>
+	<if test="dictDid!=null"> and dd.id = '${dictDid}'</if>
+	<if test="LikeByClause!=null"> and (${LikeByClause})</if>
+	<if test="OrderByClause!=null"> order by ${OrderByClause}</if>
+	<if test="LimitByClause!=null"> ${LimitByClause} </if>
+  </select>
+  
+  <select id="getPersonContents" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT res.*,mapc.playCount 
+	FROM 
+	(SELECT perf.personId,perf.resId,perf.resTableName, 
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maTitle WHEN 'wt_SeqMediaAsset' THEN sma.smaTitle END) title, 
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maImg WHEN 'wt_SeqMediaAsset' THEN sma.smaImg END) img, 
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.maPublisher WHEN 'wt_SeqMediaAsset' THEN sma.smaPublisher END) publisher, 
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.descn WHEN 'wt_SeqMediaAsset' THEN sma.descn END) descn, 
+	(CASE perf.resTableName WHEN 'wt_MediaAsset' THEN ma.cTime WHEN 'wt_SeqMediaAsset' THEN sma.cTime END) cTime 
+	FROM wt_Person_Ref perf 
+	LEFT JOIN wt_MediaAsset ma 
+	ON ma.id = perf.resId and perf.resTableName = 'wt_MediaAsset' 
+	LEFT JOIN wt_SeqMediaAsset sma 
+	ON sma.id = perf.resId and perf.resTableName = 'wt_SeqMediaAsset' 
+	where perf.personId = '${personId}' and perf.resTableName = '${mediaType}') res ,wt_MediaPlayCount mapc 
+	where mapc.resId = res.resId and  mapc.resTableName = res.resTableName 
+	<if test="OrderByClause!=null"> order by ${OrderByClause}</if>
+	<if test="LimitByClause!=null"> limit ${LimitByClause} </if>
+  </select>
+  
+  <select id="getListByResIdsAndResTableName" resultType="java.util.Map" parameterType="java.util.Map">
+    SELECT perf.resId,per.id,per.pName,per.pSource
+    from wt_Person per,wt_Person_Ref perf
+    where perf.personId = per.id
+    and  perf.resTableName = #{resTableName,jdbcType=VARCHAR}
+    and (${resIds})
+    ORDER BY perf.cTime asc
+  </select>
+  
 </mapper>

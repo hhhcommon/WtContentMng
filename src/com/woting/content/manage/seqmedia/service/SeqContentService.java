@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
@@ -43,6 +45,8 @@ public class SeqContentService {
 	private ComplexRefService complexRefService;
 	@Resource
 	private PersonService personService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
 
 	/**
 	 * 查询主播的资源列表
@@ -228,7 +232,7 @@ public class SeqContentService {
 		}
 		String[] chaids = channelId.split(",");
 		for (String chaid : chaids) {
-			map = modifySeqStatus(userid, sma.getId(), chaid, 0);
+			map = modifySeqStatus(userid, sma.getId(), chaid, 0, null);
 		}
 		if (mediaService.getSmaInfoById(sma.getId()) != null) {
 			if (channelId.equals("null") || map.get("ReturnType").equals("1001"))
@@ -255,7 +259,7 @@ public class SeqContentService {
 			String pubTime) {
 		if (personService.getPersonPoById(userid) != null) {
 			Map<String, Object> map = new HashMap<String, Object>();
-			SeqMediaAsset sma = mediaService.getSmaInfoById(contentid);
+			SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentid);
 			if (sma != null) {
 				sma.setSmaTitle(contentname);
 				if (contentimg != null & !contentimg.toLowerCase().equals("null")) {
@@ -351,7 +355,7 @@ public class SeqContentService {
 				int flowflag = chas.get(0).getFlowFlag();
 				mediaService.removeCha(sma.getId(), "wt_SeqMediaAsset");
 				for (String chaid : chaids) {
-					modifySeqStatus(userid, sma.getId(), chaid, flowflag);
+					modifySeqStatus(userid, sma.getId(), chaid, flowflag, null);
 				}
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
@@ -372,11 +376,12 @@ public class SeqContentService {
 	 *            创建专辑使用
 	 * @param flowflag
 	 *            0为创建专辑，2为发布专辑
+	 * @param descn 
 	 * @return
 	 */
-	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag) {
+	public Map<String, Object> modifySeqStatus(String userid, String contentId, String channelId, int flowflag, String descn) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
+		SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentId);
 		if (sma == null) {
 			map.put("ReturnType", "1013");
 			map.put("Message", "专辑不存在");
@@ -392,7 +397,7 @@ public class SeqContentService {
 			cha.setIsValidate(1);
 			cha.setPubImg(sma.getSmaImg());
 			cha.setPubName(sma.getSmaTitle());
-			cha.setPublisherId(userid);
+			cha.setPublisherId("0");
 			cha.setCheckerId("1");
 			cha.setSort(0);
 			cha.setInRuleIds("etl");
@@ -411,16 +416,19 @@ public class SeqContentService {
 				List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
 				if (chas != null && chas.size() > 0) {
 					for (ChannelAssetPo cha : chas) {
-						cha.setFlowFlag(flowflag);
-						if (flowflag == 2) {
+						if (flowflag!=2) {
+							cha.setFlowFlag(1);
+							cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+						} else {
 							cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 						}
 						// 发布专辑
 						mediaService.updateCha(cha);
+						insertChannelAssetProgress(cha.getId(), 1, descn);
 					}
 					// 发布专辑下级节目
 					for (MediaAssetPo mediaAssetPo : malist) {
-						mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag);
+						mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag, descn);
 					}
 					map.put("ReturnType", "1001");
 					map.put("Message", "专辑发布成功");
@@ -429,8 +437,19 @@ public class SeqContentService {
 					map.put("Message", "专辑发布失败");
 				}
 			} else {
-				map.put("ReturnType", "1011");
-				map.put("Message", "修改失败");
+				if (flowflag==4) {
+					List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
+					if (chas != null && chas.size() > 0) {
+						for (ChannelAssetPo channelAssetPo : chas) {
+							insertChannelAssetProgress(channelAssetPo.getId(), 2, descn);
+							map.put("ReturnType", "1001");
+							map.put("Message", "申请撤回成功");
+						}
+					}
+				} else {
+					map.put("ReturnType", "1011");
+					map.put("Message", "修改失败");
+				}
 			}
 		}
 		return map;
@@ -459,12 +478,12 @@ public class SeqContentService {
 		if (personService.getPersonPoById(userId) != null) {
 			PersonRefPo poref = personService.getPersonRefBy("wt_SeqMediaAsset", contentId);
 			if (poref.getPersonId().equals(userId)) {
-				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_SeqMediaAsset");
+				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId("0", contentId, "wt_SeqMediaAsset");
 				if (chas != null && chas.size() > 0) {
-					SeqMediaAsset sma = mediaService.getSmaInfoById(contentId);
+					SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentId);
 					if (sma != null) {
 						List<SeqMediaAssetPo> smas = new ArrayList<>();
-						smas.add(sma.convert2Po());
+						smas.add(sma);
 						List<Map<String, Object>> ls = mediaService.makeSmaListToReturn(smas);
 						if (ls != null && ls.size() > 0) {
 							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(contentId);
@@ -480,5 +499,14 @@ public class SeqContentService {
 			}
 		}
 		return null;
+	}
+	
+	private void insertChannelAssetProgress(String channelAssetId,int applyFlowFlag, String applyDescn) {
+		ChannelAssetProgressPo cPo = new ChannelAssetProgressPo();
+		cPo.setId(SequenceUUID.getPureUUID());
+		cPo.setChaId(channelAssetId);
+		cPo.setApplyFlowFlag(applyFlowFlag);
+		cPo.setApplyDescn(applyDescn);
+		channelAssetProgressService.insertChannelAssetProgress(cPo);
 	}
 }

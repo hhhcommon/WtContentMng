@@ -116,7 +116,11 @@
 
   <!-- 获得列表 -->
   <select id="getList" parameterType="java.util.Map" resultMap="channelAssetMap">
-    select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if> <if test="channelIds!=null"> and channelId in (${channelIds})</if>
+    select <include refid="Base_Column_List"/>from wt_ChannelAsset 
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="wheresql!=null"> ${wheresql}</if>
+    <if test="channelIds!=null"> and channelId in (${channelIds})</if>
+    <if test="sortByClause!=null">order by ${sortByClause}</if>
   </select>
   
   <select id="getListByFlowFlag" resultMap="channelAssetMap" parameterType="java.util.Map">
@@ -125,14 +129,48 @@
   </select>
   
   <select id="getListByAssetIds" resultMap="channelAssetMap" parameterType="java.util.Map">
+    select <include refid="Base_Column_List"/> from wt_ChannelAsset cha
+    where cha.assetType=#{assetType,jdbcType=VARCHAR} and cha.assetId in (${assetIds})
+  </select>
+  
+  <select id="getChannelAssetListByAssetIds" resultMap="channelAssetMap" parameterType="java.util.Map">
     select <include refid="Base_Column_List"/> from wt_ChannelAsset
-    where assetType=#{assetType,jdbcType=VARCHAR} and assetId in (${assetIds})
+    where assetType=#{assetType,jdbcType=VARCHAR} and (${assetIds})
   </select>
   
   <select id="getListBy" parameterType="java.util.Map" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
     <if test="wheresql!=null"> ${wheresql}</if>
     <if test="sortByClause!=null">order by ${sortByClause}</if>
+  </select>
+  
+  <select id="getChannelAndChannelAssetBy" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT ch.id,cha.assetId,cha.pubName,ch.channelName,cha.flowFlag,cha.pubTime from wt_ChannelAsset cha LEFT JOIN wt_Channel ch ON cha.channelId = ch.id 
+    where (${ids}) and assetType=#{assetType,jdbcType=VARCHAR}
+    <if test="sortByClause!=null">order by ${sortByClause}</if>
+  </select>
+  
+  <select id="getPersonContentListBy" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT DISTINCT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,
+	(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,
+	(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,
+	(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,
+	ch.assetId,c.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.pubTime,ch.assetType,ch.pubName,ch.pubImg,per.id personId,per.pName 
+	from wt_ChannelAsset ch
+	LEFT JOIN wt_Person_Ref perf
+	ON ch.assetId = perf.resId and ch.assetType = perf.resTableName
+	LEFT JOIN wt_Person per
+	on perf.personId = per.Id
+	LEFT JOIN wt_Channel c
+	ON ch.channelId = c.id
+	LEFT JOIN wt_MediaAsset ma
+	ON ch.assetId = ma.id and ch.assetType = 'wt_MediaAsset'
+	LEFT JOIN wt_SeqMediaAsset sma
+	ON ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset'
+	where <if test="mediaType!=null"> ${mediaType}</if>
+    <if test="ids!=null"> and (${ids})</if>
+    <if test="OrderBy!=null">order by ${OrderByClause}</if>
+    <if test="LimitByClause!=null">limit ${LimitByClause}</if>
   </select>
   
   <!-- 获得一条数据 -->
@@ -194,14 +232,12 @@
   <update id="update" parameterType="java.util.Map">
     update wt_ChannelAsset
     <set>
-      <if test="id!=null">id=#{id,jdbcType=VARCHAR},</if>
       <if test="channelId!=null">channelId=#{channelId,jdbcType=VARCHAR},</if>
-      <if test="assetType!=null">assetType=#{assetType,jdbcType=VARCHAR},</if>
       <if test="assetId!=null">assetId=#{assetId,jdbcType=VARCHAR},</if>
       <if test="publisherId!=null">publisherId=#{publisherId,jdbcType=VARCHAR},</if>
       <if test="checkerId!=null">checkerId=#{checkerId,jdbcType=VARCHAR},</if>
       <if test="isValidate!=null and isValidate!=0">isValidate=#{isValidate,jdbcType=INTEGER},</if>
-      <if test="sort!=null and sort!=0">sort=#{sort,jdbcType=INTEGER},</if>
+      <if test="sort!=null">sort=#{sort,jdbcType=INTEGER},</if>
       <if test="pubName!=null">pubName=#{pubName,jdbcType=VARCHAR},</if>
       <if test="pubImg!=null">pubImg=#{pubImg,jdbcType=VARCHAR},</if>
       <if test="flowFlag!=null and flowFlag!=0">flowFlag=#{flowFlag,jdbcType=VARCHAR},</if>

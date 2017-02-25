@@ -4,11 +4,12 @@ var current_page=1;
 var isSelect=false;
 //获取查询条件列表，节目分类和来源
 function getConditions(){
+  var data={UserId: "zhangsan"};
 	$.ajax({
     type: "POST",    
     url:rootPath+"content/getConditions.do",
     dataType: "json",
-    data:{UserId: "zhangsan"},
+    data:JSON.stringify(data),
     success: function(ConditionsList){
       if(ConditionsList.ReturnType=="1001"){
         ConditionsListLoad(ConditionsList);
@@ -35,10 +36,10 @@ function commonAjax(url,data,obj,callback){
       	obj.html(""); //再重新创建新的数据集时，先清空之前的
       	//判断是查询还是修改操作，调用不同的方法
       	if(data.OpeType){
-      		callback(1,data.ContentFlowFlag);
-      	}else{
-      		callback(ContentList);
-      	}
+          callback(1,data.ContentFlowFlag);
+        }else{
+          callback(ContentList);
+        }
       }else{
       	obj.html("<div style='text-align:left;height:300px;padding:20px;padding-top:140px;'>"+ContentList.Message+"</div>");
       }  
@@ -61,7 +62,7 @@ function getContentList(current_page,flowFlag,isSelect){
         	SourceId:$(".source option:selected").attr("sourceId"),
           Page:current_page,
           PageSize:"10"
-        };
+      };
 	}else{
 		//基础的按状态查询
 		data={
@@ -69,7 +70,7 @@ function getContentList(current_page,flowFlag,isSelect){
           ContentFlowFlag:flowFlag,
           Page:current_page,
           PageSize:"10"
-	      };
+	    };
 	}
 	commonAjax(url,data,$(".pubList>.actList"),ContentListLoad);
 }
@@ -101,8 +102,11 @@ function ContentListLoad(actList){
   var actListLength=actList.ResultList.length;
   if(!actList||contentCount==0||!actList.ResultList||actListLength==0){
     $(".actList").html("<div style='text-align:center;height:500px;line-height:300px;'>没有找到您要的节目,您可以更换查询条件试试哦！</div>");
+    $(".pubDetail .conBox").children(".actThumb").attr({"src":""});
+    $(".pubDetail .conBox").children(".actTitle,.actSource,.actPubTime,.vjName,.actDesn,.cloumn").html("");
+    $(document).find(".pubDetail .conBox").css({"display":"none"});
   }else{
-	  //声明下面需要创建的节点，以便添加内容和添加到文档中
+	  //声明下面需要创建的节点，以便添加内容到文档中
 	  var actListDiv,listDiv,checkDiv,checkInput,imgDiv,thumbImg,conDiv,conH,conHspan,conP1,conP2,conSpan1,conSpan2;
 	  var sortDiv,sortInput,sortBtn;
 	  //actListDiv=$("<div class='actList'></div>");
@@ -112,7 +116,8 @@ function ContentListLoad(actList){
 	    listDiv.attr({
 	      actId:actList.ResultList[i].ContentId,
 	      actType:actList.ResultList[i].MediaType,
-	      columnId:actList.ResultList[i].Id
+	      columnId:actList.ResultList[i].Id,
+	      channelId:actList.ResultList[i].ContentChannelId
 	    });
       checkDiv=$("<div class='listCheck'>");
       checkInput=$("<input type='checkBox' name='' />");

@@ -6,7 +6,6 @@
   <packaging>war</packaging>
   <!-- 配置编码格式，与eclpse的IDE环境编码格式匹配 -->
   <!-- D:\workIDE\projects\WtContentMng || D:\workIDE\work\WtContentMng || D:\WBWorkDir\WtContentMng -->
-
   <properties>
     <projectDir>D:\workIDE\projects\WtContentMng</projectDir>
   </properties>
@@ -19,6 +18,12 @@
   </parent>
 
   <dependencies>
+    <!-- 表达式运算 -->
+    <dependency>
+      <groupId>org.eweb4j</groupId>
+      <artifactId>fel</artifactId>
+      <version>0.8</version>
+    </dependency>
     <!-- 图片处理 -->
     <dependency>
       <groupId>net.coobird</groupId>

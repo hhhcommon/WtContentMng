@@ -24,7 +24,7 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{-moz-user-select: none;}
+body{-moz-user-select: none;overflow-x: auto;}
 .detail{
   width:100%;
   min-width:780px;
@@ -71,7 +71,6 @@ body{-moz-user-select: none;}
   font-family: "微软雅黑";
   text-align: center;
   width: auto !important;
-  padding-top: 12px;
 }
 .control-label .ast {
   color: #ffa634;
@@ -87,6 +86,7 @@ body{-moz-user-select: none;}
   min-height:50px;
   border: 1px solid #dedede;
   resize:none;
+  margin-bottom: -4px;
 }
 .birthday_container{
   width:100%;
@@ -128,8 +128,8 @@ input[type=checkbox]{
   color: #333;
   padding: 7px 12px 0px 0px;
   height: 25px;
-   float: left; 
-   font-size:14px;
+  float: left; 
+  font-size:14px;
   display: inline-block;
 }
 .phone,.mail{
@@ -162,12 +162,12 @@ input[type=checkbox]{
   background-size:100% 100%;
 }
 .txt_p1{
- margin-top:10px;
- padding-left: 40px; 
+  margin-top:10px;
+  padding-left: 40px; 
 }
 .txt_p2{
- margin-top:10px;
- padding-left:10px; 
+  margin-top:10px;
+  padding-left:10px; 
 }
 .replace_portrait{
   width: 100px;
@@ -179,6 +179,7 @@ input[type=checkbox]{
   text-align: center;
   line-height: 30px;
   cursor: pointer;
+  margin-left:33px;
 }
 .dropdown-menu{
   min-width: 90px;
@@ -218,31 +219,31 @@ input[type=checkbox]{
             <form action="" class="form-horizontal">
               <div class="form-group">
                 <label class="col-sm-2 control-label">昵&emsp;&emsp;称<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:5px;">
+                <div class="col-sm-10">
                   <input type="text" class="nickname " placeholder="我是主播">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:16px;">个人签名<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:10px;">
-                  <textarea class="signature" name="" rows="" cols=""></textarea>
+                <label class="col-sm-2 control-label" style="margin-top:10px;">个人签名<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
+                  <textarea class="signature" name=""></textarea>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:16px;">个人简介<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:10px;">
-                  <textarea class="introduction" name="" rows="" cols=""></textarea>
+                <label class="col-sm-2 control-label" style="margin-top:10px;">个人简介<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
+                  <textarea class="introduction" name="" ></textarea>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">真实姓名<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:5px;">
+                <div class="col-sm-10">
                   <input type="text" class="realname " placeholder="我是主播">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:5px;">出生日期<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:10px;">
+                <label class="col-sm-2 control-label">出生日期<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
                   <div class="birthday_container" id="div_container">  
                     <div class="btn-group">
                       <a href="#" class="year date" data-toggle="dropdown">年<span class="caret"></span></a>
@@ -260,8 +261,8 @@ input[type=checkbox]{
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:5px;">性&emsp;&emsp;别<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:10px;">
+                <label class="col-sm-2 control-label">性&emsp;&emsp;别<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
                   <div class="sex">  
                     <div class="male_div">
                       <input type="checkbox" class="male"/>
@@ -280,13 +281,13 @@ input[type=checkbox]{
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">手&emsp;&emsp;机<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-top:5px;">
+                <div class="col-sm-10">
                   <input type="text" class="phone " placeholder="123456888897789">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">邮&emsp;&emsp;箱<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:15px;padding-top:5px;">
+                <div class="col-sm-10" style="padding-left:15px;">
                   <input type="text" class="mail" placeholder="邮箱">
                 </div>
               </div>

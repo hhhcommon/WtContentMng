@@ -43,7 +43,6 @@ body{overflow: auto;-moz-user-select: none;}
 .ri_top{
   width:100%;
   height:50px;
-  overflow: hidden;
 }
 .ri_top_li1{
   width:156px;
@@ -100,28 +99,29 @@ body{overflow: auto;-moz-user-select: none;}
 }
 /*中间右侧区域样式2*/
 .ri_top2{
-  width:100%;
-  height:auto;
-  overflow: hidden;
-  margin-top:15px;
+  width: 100%;
+  height: auto;
+  position: relative;
+  margin-top: 15px;
 }
 .border1{
-  border: 1px solid #dedede; 
+  /*border: 1px solid #dedede;*/ 
 }
 .border2{
   border: 1px solid transparent; 
 }
 .attr:last-child{
-  border-bottom:none;
+  /*border-bottom:none;*/
 }
 .attr{
   position: relative;
   width:100%;
-  float: left;
-  border-bottom:1px solid #dedede;
+  border: 1px solid #dedede;
+  /*border-top: 1px solid #dedede;
+  border-left: 1px solid #dedede;
+  border-right: 1px solid #dedede;*/
 }
 .attrKey{
-  display: block;
   overflow: hidden;
   float: left;
   width:88px;
@@ -134,14 +134,12 @@ body{overflow: auto;-moz-user-select: none;}
   background: #f5f5f5;
 }
 .attrValues {
-  position:relative;
-  float: left;
+  margin-left: 88px;
+  padding-right: 100px;
   overflow: hidden;
 }
 .attrValues .av-gather{
   overflow: hidden;
-  position: relative;
-  height:40px;
   margin-bottom:0px;
 }
 .trig_item{
@@ -156,19 +154,21 @@ body{overflow: auto;-moz-user-select: none;}
 .trig_curr{
   height:41px;
   position:relative;
-  z-index:2;
-  border:1px solid #dedede;
+  z-index:12;
+  border:1px solid #999;
   border-bottom:medium none;
-  background: #dedede;
+  background:#fff;
   color:#f60;
 }
-.tab_cont_item{
-  width:100%;
-  border:1px solid #dedede;
-  position: relative;
-  left:0px;
+.tab_cont_item {
+  position: absolute;
+  left: 0;
+  top: 39px;
+  width: 100%;
+  border: 1px solid #999;
+  background: #fff;
   display: none;
-  overflow: hidden;
+  z-index: 10;
 }
 .tab_cont_item li{
   float:left;
@@ -183,7 +183,6 @@ body{overflow: auto;-moz-user-select: none;}
 .ri_top3{
   width:100%;
   height:auto;
-  overflow: hidden;
   margin-top:15px;
 }
 .ri_top3_head{
@@ -221,7 +220,7 @@ body{overflow: auto;-moz-user-select: none;}
 }
 .ri_top3_con{
   width:100%;
-  position: absolute;
+  position: relative;
   overflow: auto;
 }
 .rtc_listBox{
@@ -257,7 +256,7 @@ body{overflow: auto;-moz-user-select: none;}
 .zj_st{
   float: right;
   line-height: 110px;
-  margin-right:140px;
+  margin-right:110px;
   color:#000;
 }
 .op_type{
@@ -267,7 +266,6 @@ body{overflow: auto;-moz-user-select: none;}
 .op_type p{
   cursor: pointer;
   margin:5px 0px 0px 0px;
-  color: rgb(173,172,172);
 }
 /*遮罩层*/
 .mask{
@@ -294,6 +292,7 @@ body{overflow: auto;-moz-user-select: none;}
   width:100%;
   height:auto;
   border:1px solid #dedede;
+  position: relative;
   overflow: hidden;
   margin-top:15px;
   padding:0px 0px 10px 0px;
@@ -356,28 +355,12 @@ body{overflow: auto;-moz-user-select: none;}
   background-position: -41px -414px;
   display: none;
 }
-.check_more {
-  display: inline-block;
-  float: right;
-  margin-right: 40px;
-  height: 22px;
-  margin-top:8px;
-  margin-bottom:8px;
-  line-height: 22px;
-  border: 1px solid #ddd;
-  padding: 0px 5px 0px 5px;
-  position: relative;
-  background: #fff;
-  color: #333;
-  cursor: pointer;
-}
 .ss1{
   float:left;
 }
 .btns{
   width: 100%;
   height: 30px;
-  float: left;
   margin-top: 10px;
   display: none; 
   text-align: center;
@@ -508,6 +491,170 @@ body{overflow: auto;-moz-user-select: none;}
   float: left;
   margin-left:3px;
 }
+.cf60{
+ color:#ffa634; 
+}
+.c173{
+  color:rgb(173,172,172);
+}
+.channelsbox{
+  width:100%;
+  height:auto;
+  overflow: hidden;
+}
+.channelBox{
+  width:calc(100% - 41px);
+  height:auto;
+  min-height: 41px;
+  overflow: hidden;
+  float: left;
+  padding: 0px;
+  border:1px solid #dedede;
+}
+.channelimg1{
+  float: left;
+  height: 41px;
+  cursor: pointer;
+}
+.channelBox .channel_bq{
+  height: 30px;
+  line-height: 30px;
+  background: url("img/auto.png");
+  background-position: 0 -113px;
+  padding: 5px 0px 0px 15px;
+  margin-left: 6px;
+  float: left;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+.channelBox .channel_bq span {
+  background: url("img/auto.png");
+  background-position: right -118px;
+  padding-right: 8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 28px;
+}
+.channel_bq img{
+  position: absolute;
+  top:0px;
+  right:0px;
+}
+.channelBox1{
+  width: 100%;
+  float: left;
+  margin-top: -10px;
+  border-left: 1px solid #dedede;
+  border-right: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
+  display: none;
+}
+.cBox1_nav{
+  width: 100%;
+  height: 35px;
+  border-bottom:1px solid #dedede;
+}
+.cBox1_nav div{
+  float: left;
+  width: 50%;
+  height: 35px;
+  line-height:35px;
+  text-align: center;
+  cursor: pointer;
+}
+.cBox1_con{
+  position: relative;
+}
+.cBox1_conF{
+  width: 100%;
+  height: auto;
+}
+.cBox1_conS{
+  width: 100%;
+  height: auto;
+  display: none;
+  overflow: hidden;
+}
+.cBox1_conF1{
+  overflow: hidden;
+  padding: 10px 0px 0px 10px;
+}
+.cBox1_conF1 span{
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  margin-top:-15px;
+  color:#000;
+  font-weight:bolder;
+}
+.cul{
+  width: calc(100% - 60px);
+  overflow: hidden;
+  float: right;
+  margin-bottom: 0px;
+}
+.cul li{
+  width: 80px;
+  float: left;
+  height: 25px;
+  margin:2px;
+  line-height: 25px;
+  text-align: center;
+  cursor: pointer;
+}
+.cBox1_conS li{
+  width:80px;
+  float: left;
+  height: 25px;
+  margin:2px;
+  line-height: 25px;
+  text-align: center;
+  margin-top:10px;
+  cursor: pointer;
+}
+.active{
+  background:#D2D2D2;
+}
+.selectedF{
+  color:#fff;
+  background:#ffa634;
+}
+.chsec{
+  text-align: center;
+}
+.cBox1_conS .center{
+  text-align: center;
+  width:100%;
+  float: none;
+}
+.h40{
+  height: 40px;
+}
+.more1{
+  top: 5px;
+  right: 10px;
+  width: 110px;
+  height: auto;
+  line-height: 22px;
+  overflow: hidden;
+}
+.check_more{
+  position: absolute;
+  top: 10px;
+  right: 30px;
+  width: 30px;
+  border: 1px solid #dedede;
+  height: auto;
+  line-height: 20px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.attrTabcon{
+  overflow: hidden;
+}
+
 </style>
 <body onselectstart="return false">
 <div class="content">
@@ -535,20 +682,24 @@ body{overflow: auto;-moz-user-select: none;}
                 <li class="trig_item" id="5"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
                 <li class="trig_item" id="1"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
                 <li class="trig_item" id="2"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
-                <li class="trig_item" id="3"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
+                <li class="trig_item" id="4"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
               </ul>
             </div>
             <div class="btns">
               <span class="btns_sub">确定</span>
               <span class="btns_can">取消</span>
             </div>
-            <span class="check_more">多选</span>
+            <span class="check_more more3">多选</span>
           </div>
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
-              <ul class="av-gather av_ul"></ul>
+              <ul class="av-gather av_ul h40"></ul>
             </div>
+            <div class="more1">
+              <span class="check_more more2">更多</span>
+            </div>
+            <div class="attrTabcon"></div>
           </div>
         </div>
         <div class="ri_top3">
@@ -630,7 +781,122 @@ body{overflow: auto;-moz-user-select: none;}
               <div class="form-group">
                 <label class="col-sm-2 control-label">发布栏目<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
-                  <select name="" class="upl_zj" autocomplete="off"></select>
+                  <div class="channelsbox">
+                    <ul class="channelBox">
+                      <!--<li class="channel_bq bqImg">
+                        <span>孤独fsda</span>
+                        <img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">
+                      </li>
+                      <li class="channel_bq bqImg">
+                        <span>孤独fsda</span>
+                        <img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">
+                      </li>
+                      <li class="channel_bq bqImg">
+                        <span>孤独fsda</span>
+                        <img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">
+                      </li>
+                      <li class="channel_bq bqImg">
+                        <span>孤独fsda</span>
+                        <img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">
+                      </li>
+                      <li class="channel_bq bqImg">
+                        <span>孤独</span>
+                        <img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">
+                      </li>-->
+                    </ul>
+                    <img class="channelimg1" src="img/upl_img4.png" alt="" />
+                    <div class="channelBox1">
+                      <div class="cBox1_nav">
+                        <div class="active">一级栏目</div>
+                        <div>二级栏目</div>
+                      </div>
+                      <div class="cBox1_con">
+                        <div class="cBox1_conF cBox1_conb">
+                          <div class="cBox1_conF1">
+                            <span>A-G</span>
+                            <ul class="cul cul_ag">
+                              <!--<li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>-->
+                            </ul> 
+                          </div>
+                          <div class="cBox1_conF1">
+                            <span>H-L</span>
+                            <ul class="cul cul_hl">
+                              <!--<li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>-->
+                            </ul>
+                          </div>
+                          <div class="cBox1_conF1">
+                            <span>M-S</span>
+                            <ul class="cul cul_ms">
+                              <!--<li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>-->
+                            </ul>
+                          </div>
+                          <div class="cBox1_conF1">
+                            <span>T-Z</span>
+                            <ul class="cul cul_tz">
+                              <!--<li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>
+                              <li>电台丛林</li>-->
+                            </ul>
+                          </div>
+                        </div>
+                        <ul class="cBox1_conS cBox1_conb">
+                          <li class="center">还未选择一级栏目</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <span class="more5">最多发布到5个栏目下面</span>
+                  <!--<select name="" class="upl_zj" autocomplete="off"></select>-->
+                  
                 </div>
               </div>
               <div class="form-group">

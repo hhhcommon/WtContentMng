@@ -32,21 +32,25 @@ $(function(){
   //00-2得到栏目的筛选标签
   function getChannelLabel(resultData){
     for(var i=0;i<resultData.ResultList.ChannelList.length;i++){
-      var filterChannel='<li class="trig_item chnel" data_idx='+i+' id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
-                          '<a  class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'</a>'+
-                        '</li>';
-      $("#channel .attrValues .av_ul").append(filterChannel); 
-      var fccg='<ul class="tab_cont_item chnels" data_idx='+i+' data_name='+resultData.ResultList.ChannelList[i].nodeName+' parentId='+resultData.ResultList.ChannelList[i].id+'></ul>';
-      $("#channel").append(fccg);
+      var li='<li class="trig_item chnel" data_idx='+i+' id='+resultData.ResultList.ChannelList[i].id+' pid='+resultData.ResultList.ChannelList[i].parentId+'>'+
+                '<div class="check_cate"></div>'+
+                '<a class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].nodeName+'</a>'+
+              '</li>';
+      var li_tab_ul='<ul class="tab_cont_item chnels" data_idx='+i+' data_name='+resultData.ResultList.ChannelList[i].nodeName+' pid='+resultData.ResultList.ChannelList[i].parentId+'></ul>';
+      $(".attrTabcon").append(li_tab_ul);
+      $("#channel .attrValues .av_ul").append(li);
       if(resultData.ResultList.ChannelList[i].isParent=="true"){
         for(var j=0;j<resultData.ResultList.ChannelList[i].children.length;j++){
-          var filterChannelChildren='<li class="trig_item_li">'+
-                                      '<a class="ss1" href="javascript:void(0)" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+resultData.ResultList.ChannelList[i].children[j].nodeName+'</a>'+
-                                    '</li>';
-          $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append(filterChannelChildren);
+          var li_tab_ul_li='<li class="trig_item_li" id='+resultData.ResultList.ChannelList[i].children[j].id+'>'+
+                              '<a class="ss1" href="javascript:void(0)">'+resultData.ResultList.ChannelList[i].children[j].nodeName+'</a>'+
+                            '</li>';
+          $(".tab_cont_item").eq(i).append(li_tab_ul_li);
         }
       }else{
-        $('ul[parentId='+resultData.ResultList.ChannelList[i].id+']').append("<li style='display:block;text-align:center;float:none;margin:0px auto;'>暂时没有二级栏目</li>");
+        var li_tab_ul_li='<li class="trig_item_li">'+
+                            '<a class="ss1" href="javascript:void(0)" >暂无二级栏目</a>'+
+                          '</li>';
+        $(".tab_cont_item").eq(i).append(li_tab_ul_li);                  
       }
     }
   }
@@ -63,15 +67,12 @@ $(function(){
   }
   
   //00-4获取节目列表
-  var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
-                  "MobileClass":"Chrome",
-                  "PCDType":"3",
-                  "UserId":"123",
-                  "SeqMediaId":"0",
-                  "ChannelId":"0",
-                  "FlowFlag":"0"
-  };
-  getContentList(dataParam);
+  var jmData={};
+  jmData.DeviceId="3279A27149B24719991812E6ADBA5584";
+  jmData.MobileClass="Chrome";
+  jmData.PCDType="3";
+  jmData.UserId="123";
+  getContentList(jmData);
   function getContentList(obj){
     $.ajax({
       type:"POST",
@@ -94,52 +95,51 @@ $(function(){
   
   //00-4.1得到节目列表
   function getMediaList(resultData){
-    $(".ri_top3_con").html("");//每次加载之前先清空
     for(var i=0;i<resultData.ResultList.AllCount;i++){
-      if(resultData.ResultList.List[i].ContentSeqName){
-        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
+      var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+' channelId='+channelds+'>'+
                         '<div class="rtcl_img">'+
                           '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
                         '</div>'+
                         '<div class="rtcl_con">'+
-                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
-                          '<p class="zj_name">'+resultData.ResultList.List[i].ContentSeqName+'</p>'+
+                          '<h4></h4>'+
+                          '<p class="zj_name"></p>'+
                           '<p class="other">'+
                             '<span>时间 ：</span>'+
-                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                            '<span class="ctime"></span>'+
                           '</p>'+
                         '</div>'+
-                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'>'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type">'+
-                          '<p class="jm_edit">编辑</p>'+
-                          '<p class="jm_pub">发布</p>'+
-                          '<p class="jm_del">删除</p>'+
-                          '<p class="jm_recal">撤回</p>'+
+                        '<p class="jm_st" flowFlag='+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag+'></p>'+
+                        '<div class="op_type" id="op_Box'+i+'">'+
+                          '<p class="jm_edit c173">编辑</p>'+
+                          '<p class="jm_pub c173">发布</p>'+
+                          '<p class="jm_del c173">删除</p>'+
+                          '<p class="jm_recal c173">撤回</p>'+
                         '</div>'+
                       '</div>';
-      }else{
-        var programBox= '<div class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
-                        '<div class="rtcl_img">'+
-                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
-                        '</div>'+
-                        '<div class="rtcl_con">'+
-                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
-                          '<p class="zj_name">暂未绑定专辑</p>'+
-                          '<p class="other">'+
-                            '<span>时间 ：</span>'+
-                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
-                          '</p>'+
-                        '</div>'+
-                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type">'+
-                          '<p class="jm_edit">编辑</p>'+
-                          '<p class="jm_pub">发布</p>'+
-                          '<p class="jm_del">删除</p>'+
-                          '<p class="jm_recal">撤回</p>'+
-                        '</div>'+
-                      '</div>';
+      $(".ri_top3_con").append(programBox);
+      $(".rtc_listBox").children(".rtcl_con").children("h4").eq(i).text(((resultData.ResultList.List[i].ContentName)?(resultData.ResultList.List[i].ContentName):"暂无"));
+      $(".rtc_listBox").children(".rtcl_con").children(".zj_name").eq(i).text(((resultData.ResultList.List[i].ContentSeqName)?(resultData.ResultList.List[i].ContentSeqName):"暂无"));
+      $(".rtc_listBox").children(".rtcl_con").children(".other").children(".ctime").eq(i).text(((resultData.ResultList.List[i].CTime)?(resultData.ResultList.List[i].CTime):"暂无"));
+      $(".rtc_listBox").children(".jm_st").eq(i).text(((resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState)?(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState):"未知"));
+      if(resultData.ResultList.List[i].ContentPubChannels){
+        var channelds="";
+        for(var j=0;j<resultData.ResultList.List[i].ContentPubChannels.length;j++){
+          if(channelds==""){
+            channelds=resultData.ResultList.List[i].ContentPubChannels[j].ChannelId;
+          }else{
+            channelds+=","+resultData.ResultList.List[i].ContentPubChannels[j].ChannelId;
+          }
+        }
       }
-      $(".ri_top3_con").append(programBox);     
+      if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="0"){//提交
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="1"){//审核
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del,.jm_recal").removeClass("cf60").addClass("c173");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="2"){//发布
+        $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
+      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="4"){//撤回
+        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      }
     }
   }
   
@@ -156,8 +156,8 @@ $(function(){
    $(document).on("click",".jm_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
     var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
-    if(flowFlag=="1"||flowFlag=="2") {
-      alert("当前状态不支持编辑状态");
+    if(flowFlag=="1"||flowFlag=="2") {//1审核2发布
+      alert("当前状态不支持编辑操作");
       return;
     }else{
       subType=2;
@@ -419,10 +419,16 @@ $(function(){
  
   //44-1点击删除节目按钮
   $(document).on("click",".jm_del",function(){
-    $('.shade', parent.document).show();
-    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
-    del_jm(contentId);
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
+    if(flowFlag=="0"||flowFlag=="4") {//0提交4撤回
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      del_jm(contentId);
+    }else{
+      alert("当前节目不支持删除操作");
+      return;
+    }
   })
   function del_jm(contentId){
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -440,7 +446,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("成功删除节目");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -457,10 +463,16 @@ $(function(){
   
   //55-1点击发布节目按钮
   $(document).on("click",".jm_pub",function(){
-    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
-    $('.shade', parent.document).show();
-    pub_jm(contentId,contentSeqId);
+     var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
+     if(flowFlag=="1"||flowFlag=="2") {//1审核2发布
+      alert("当前状态不支持发布操作");
+      return;
+    }else{
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      $('.shade', parent.document).show();
+      pub_jm(contentId,contentSeqId);
+    }
   })
   function pub_jm(contentId,contentSeqId){
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -468,7 +480,8 @@ $(function(){
                "PCDType":"3",
                "UserId":"123",
                "ContentId":contentId,
-               "SeqMediaId":contentSeqId
+               "SeqMediaId":contentSeqId,
+               "ContentFlowFlag":"2"
     };
     $.ajax({
       type:"POST",
@@ -479,7 +492,7 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           alert("节目发布成功");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -496,31 +509,37 @@ $(function(){
   
   //66-1点击撤回节目按钮
   $(document).on("click",".jm_recal",function(){
-    $('.shade', parent.document).show();
-    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
-    var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
-    var flowFlag=$(this).parent(".optype").siblings(".jm_st").attr("flowFlag");
-    recal_jm(contentId,flowFlag);
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("flowFlag");
+    if(flowFlag=="2"){//0提交1审核2发布4撤回
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      var seqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      recal_jm(contentId,seqId);
+    }else{
+      alert("当前节目不支持撤回操作");
+      return;
+    }
   })
-  function recal_jm(contentId,flowFlag){
+  function recal_jm(contentId,seqId){
     var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
                "MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":"123",
                "ContentId":contentId,
-               "ContentFlowFlag":flowFlag,
-               "OpeType":"revoke"
+               "SeqMediaId":seqId,
+               "ContentFlowFlag":"4"
     };
+    console.log(_data);
     $.ajax({
       type:"POST",
-      url:rootPath+"content/updateContentStatus.do",
+      url:rootPath+"content/media/updateMediaStatus.do",
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("成功撤回节目");
           $('.shade', parent.document).hide();
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -534,9 +553,6 @@ $(function(){
       }
     });
   }
-  
-  
-  
   
   /*
        弹出页面上的方法
@@ -552,23 +568,27 @@ $(function(){
              "TagType":"1",
              "TagSize":"20"
   };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getTags.do",
-    dataType:"json",
-    data:JSON.stringify(data1),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getPubLabel(resultData);//得到上传节目页面公共标签元素
+  loadPubTag(data1);
+  function loadPubTag(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getTags.do",
+      dataType:"json",
+      data:JSON.stringify(data1),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getPubLabel(resultData);//得到上传节目页面公共标签元素
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
   
   //1.1得到上传节目页面公共标签元素
   function getPubLabel(resultData){
+    $(".gg_tag_con").html("");
     for(var i=0;i<resultData.AllCount;i++){
       var label='<li class="gg_tag_con1" tagType='+resultData.ResultList[i].TagOrg+' tagId='+resultData.ResultList[i].TagId+'>'+
                   '<input type="checkbox" class="gg_tag_con1_check" />'+
@@ -578,6 +598,11 @@ $(function(){
       $(".gg_tag_con").append(label); 
     }
   }
+  
+  //1.2请求更换一批公共标签
+  $(document).on("click",".gg_tag .hyp",function(){
+    loadPubTag(data1);
+  })
   
   //2上传节目页面获取我的标签
   var data2={"DeviceId":"3279A27149B24719991812E6ADBA5584",
@@ -590,23 +615,27 @@ $(function(){
              "TagType":"2",
              "TagSize":"20"
   };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getTags.do",
-    dataType:"json",
-    data:JSON.stringify(data2),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getMyLabel(resultData);//得到上传节目页面我的标签元素
+  loadMyTag(data2);
+  function loadMyTag(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getTags.do",
+      dataType:"json",
+      data:JSON.stringify(data2),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          getMyLabel(resultData);//得到上传节目页面我的标签元素
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
       }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+    });
+  }
   
   //2.1得到上传节目页面我的标签元素
   function getMyLabel(resultData){
+    $(".my_tag_con").html("");
     for(var i=0;i<resultData.AllCount;i++){
       var label='<li class="my_tag_con1" tagType='+resultData.ResultList[i].TagOrg+' tagId='+resultData.ResultList[i].TagId+'>'+
                   '<input type="checkbox" class="my_tag_con1_check" />'+
@@ -615,6 +644,11 @@ $(function(){
       $(".my_tag_con").append(label); 
     }
   }
+  
+  //2.2请求更换一批我的标签
+  $(document).on("click",".my_tag .hyp",function(){
+    loadMyTag(data2);
+  })
   
   //3.点击上传文件
   $(".upl_wj").on("click",function(){
@@ -862,7 +896,7 @@ $(function(){
           alert("节目发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -972,7 +1006,7 @@ $(function(){
           alert("节目发布成功");
           $(".mask,.add").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(dataParam);//重新加载节目列表
+          getContentList(jmData);//重新加载节目列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
@@ -1020,74 +1054,22 @@ $(function(){
   });
   
   /*根据不同的筛选条件得到不同的节目列表*/
-  var jmData={};
-  jmData.DeviceId="3279A27149B24719991812E6ADBA5584";
-  jmData.MobileClass="Chrome";
-  jmData.PCDType="3";
-  jmData.UserId="123";
-  $(document).on("click",".trig_item",function(){
-    $(document).find(".new_cate li").each(function(){
-      debugger;
-      if($(".new_cate li").size()>="0"){
+  $(document).on("click",".trig_item,.trig_item_li,.cate_img",function(){//选中或取消某个筛选条件
+    destroy(jmData);
+    jmData.DeviceId="3279A27149B24719991812E6ADBA5584";
+    jmData.MobileClass="Chrome";
+    jmData.PCDType="3";
+    jmData.UserId="123";
+    if($(".new_cate li").size()>"0"){
+      $(document).find(".new_cate li").each(function(){
         var pId=$(this).attr("pid");
         var id=$(this).attr("id");
         if(pId=="status"){
-          if(id=="5") {
-            jmData.FlowFlag='5';
-          }else{
-            jmData.FlowFlag=id;
-          }
-          if(id=="1") {
-            jmData.FlowFlag='1';
-          }else{
-            jmData.FlowFlag=id;
-          }
-          if(id=="2") {
-            jmData.FlowFlag='2';
-          }else{
-            jmData.FlowFlag=id;
-          }
-          if(id=="3") {
-            jmData.FlowFlag='3';
-          }else{
-            jmData.FlowFlag=id;
-          }
-        }
-        if(pId=="album"){
+          jmData.FlowFlag=$(this).attr("id");
+        }else if(pId=="album"){
           jmData.SeqMediaId=$(this).attr("id");
-        }
-        if(pId=="channel"){
+        }else if(pId=="channel"){
           jmData.ChannelId=$(this).attr("id");
-        }
-      }
-    });
-    getContentList(jmData);
-  });
-  $(document).on("click",".cate_img",function(){
-    debugger;
-    if($(".new_cate li").size()<="0"){
-      jmData.FlowFlag='0';
-      jmData.SeqMediaId='0';
-      jmData.ChannelId='0';
-    }else{
-      $(document).find(".new_cate li").each(function(){
-        debugger;
-        var pId=$(this).attr("pid");
-        var id=$(this).attr("id");
-        if(pId!="status"){
-          jmData.FlowFlag='0';
-        }else{
-          jmData.FlowFlag=id;
-        }
-        if(pId!="album"){
-          jmData.SeqMediaId='0';
-        }else{
-          jmData.FlowFlag=id;
-        }
-        if(pId!="channel"){
-          jmData.ChannelId='0';
-        }else{
-          jmData.FlowFlag=id;
         }
       });
     }

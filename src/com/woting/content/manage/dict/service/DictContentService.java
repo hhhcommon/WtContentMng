@@ -140,6 +140,27 @@ public class DictContentService {
 		return dictrefDao.getInfoObject("getInfo", m);
 	}
 	
+	public void updataDictRefInfo(DictRefResPo dictRefResPo) {
+		dictrefDao.update(dictRefResPo);
+	}
+	
+	/**
+	 * 查询内容的分类信息，默认Mid为3
+	 * @param ids
+	 * @param mediaType
+	 * @return
+	 */
+	public List<Map<String, Object>> getDictRefListByIdsAndMeidaType(String ids, String mediaType) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("resIds", ids);
+		m.put("resTableName", mediaType);
+		List<Map<String, Object>> ls = dictrefDao.queryForListAutoTranform("getListByResIdsAndResTableName", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
 	/**
      * 删除字典关联表里的信息
      * @param id

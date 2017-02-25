@@ -37,12 +37,13 @@ public class ChannelContentService {
 			put("0", "已提交");
 			put("1", "审核");
 			put("2", "发布");
-			put("3", "撤回");
+			put("3", "未通过");
 			put("4", "撤回");
 			put("已提交", "5");
 			put("审核", "1");
 			put("发布", "2");
-			put("撤回", "3");
+			put("未通过", "3");
+			put("撤回", "4");
 		}
 	};
 	
@@ -74,7 +75,7 @@ public class ChannelContentService {
 	public Map<String, Object> getFiltrateByUserId(String userid, String mediatype, List<Map<String, Object>> flowflags, List<Map<String, Object>> channelIds,
 			List<Map<String, Object>> seqMediaIds) {
     	Map<String, Object> m = new HashMap<>();
-    	m.put("publisherId", userid);
+    	m.put("publisherId", "0");
     	String wheresql = "";
     	if (flowflags!=null && flowflags.size()>0) {
     		String flowstr = "";
@@ -105,11 +106,18 @@ public class ChannelContentService {
 			mediaids = mediaids.substring(1);
 			wheresql +=" and assetId in ("+mediaids+")"; 
 		}
-    	if (wheresql.length()>3) {
-			m.put("wheresql", wheresql);
-		}
     	if (mediatype.equals("SeqMedia")) {
 			m.put("assetType", "wt_SeqMediaAsset");
+			wheresql += " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+				+ "' and resTableName = 'wt_SeqMediaAsset' )";
+		} else {
+			if (mediatype.equals("MediaAsset")) {
+				wheresql += " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
+						+ "' and resTableName = 'wt_SeqMediaAsset' )";
+			}
+		}
+    	if (wheresql.length()>3) {
+			m.put("wheresql", wheresql);
 		}
     	m.put("sortByClause", " cTime desc,pubTime desc");
     	List<ChannelAssetPo> l = channelAssetDao.queryForList("getListBy", m);
@@ -120,15 +128,19 @@ public class ChannelContentService {
     		List<Map<String, Object>> smam = new ArrayList<>();
     		List<Map<String, Object>> ffm = new ArrayList<>();
     		List<String> titles = new ArrayList<>();
+    		String contentName = "";
     		for (ChannelAssetPo chaPo : l) {
     			try {
 					if (mediatype.equals("MediaAsset") && chaPo.getAssetType().equals("wt_SeqMediaAsset")) {
-						Map<String, Object> m3 = new HashMap<>();
-						m3.put("PubName", chaPo.getPubName());
-						m3.put("FlowFlag", chaPo.getFlowFlag());
-						m3.put("PubId", chaPo.getAssetId());
-						m3.put("ChannelId", chaPo.getChannelId());
-						smam.add(m3);
+						if (!contentName.contains(chaPo.getPubName())) {
+							contentName += chaPo.getPubName();
+						    Map<String, Object> m3 = new HashMap<>();
+						    m3.put("PubName", chaPo.getPubName());
+						    m3.put("FlowFlag", chaPo.getFlowFlag());
+						    m3.put("PubId", chaPo.getAssetId());
+						    m3.put("ChannelId", chaPo.getChannelId());
+						    smam.add(m3);
+						}
 					}
 	    			
 	    			boolean fmIsOk = true;
@@ -213,6 +225,22 @@ public class ChannelContentService {
 		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m);
 		if (chas!=null && chas.size()>0) {
 			return chas.get(0);
+		}
+		return null;
+	}
+	
+	public List<Map<String, Object>> getPersonContentList(Map<String, Object> m) {
+		List<Map<String, Object>> ls = channelAssetDao.queryForListAutoTranform("getPersonContentListBy", m);
+		if (ls!=null && ls.size()>0) {
+			return ls;
+		}
+		return null;
+	}
+	
+	public List<Map<String, Object>> getChannelAssetsByAssetIdsAndAssetType(Map<String, Object> m) {
+		List<Map<String, Object>> chas = channelAssetDao.queryForListAutoTranform("getChannelAndChannelAssetBy", m);
+		if (chas!=null && chas.size()>0) {
+			return chas;
 		}
 		return null;
 	}

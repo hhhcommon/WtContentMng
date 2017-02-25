@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
+import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.complexref.persis.po.ComplexRefPo;
 import com.woting.cm.core.complexref.service.ComplexRefService;
 import com.woting.cm.core.keyword.persis.po.KeyWordPo;
@@ -17,13 +19,15 @@ import com.woting.cm.core.keyword.persis.po.KeyWordResPo;
 import com.woting.cm.core.keyword.service.KeyWordBaseService;
 import com.woting.cm.core.media.model.MaSource;
 import com.woting.cm.core.media.model.MediaAsset;
-import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
+import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
+import com.woting.cm.core.media.service.MediaService;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
+import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.woting.passport.UGA.persis.pojo.UserPo;
@@ -32,7 +36,7 @@ import com.woting.passport.UGA.service.UserService;
 @Service
 public class MediaContentService {
 	@Resource
-	private com.woting.cm.core.media.service.MediaService mediaService;
+	private MediaService mediaService;
 	@Resource
 	private DictContentService dictContentService;
 	@Resource
@@ -45,6 +49,8 @@ public class MediaContentService {
 	private ComplexRefService complexRefService;
 	@Resource
 	private PersonService personService;
+	@Resource
+	private ChannelAssetProgressService channelAssetProgressService;
 
 	/**
 	 * 查询主播的资源列表
@@ -137,14 +143,14 @@ public class MediaContentService {
 
 		// 保存单体资源
 		mediaService.saveMa(ma);
-		SeqMediaAsset sma;
+		SeqMediaAssetPo smaPo;
 		// 保存专辑与单体媒体对应表
 		if (seqid != null) {
-			sma = mediaService.getSmaInfoById(seqid);
-			mediaService.bindMa2Sma(ma, sma);
+			smaPo = mediaService.getSmaInfoById(seqid);
+			mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 		} else {
-			sma = mediaService.getSmaInfoById("user::" + userid);
-			if (sma == null) {
+			smaPo = mediaService.getSmaInfoById("user::" + userid);
+			if (smaPo == null) {
 				String smaName = "";
 				if (user.getUserName() != null) {
 					smaName = user.getUserName();
@@ -156,10 +162,10 @@ public class MediaContentService {
 				seqid = "user::" + userid;
 				seqContentService.addSeqMediaInfo(seqid, userid, smaName + "的默认专辑", "cn36", null, null, null, null,
 						null);
-				sma = mediaService.getSmaInfoById(seqid);
-				mediaService.bindMa2Sma(ma, sma);
+				smaPo = mediaService.getSmaInfoById(seqid);
+				mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 			} else {
-				mediaService.bindMa2Sma(ma, sma);
+				mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 			}
 		}
 
@@ -259,10 +265,10 @@ public class MediaContentService {
 		}
 
 		// 新增栏目
-		modifyMediaStatus(userid, ma.getId(), sma.getId(), 0);
+		modifyMediaStatus(userid, ma.getId(), smaPo.getId(), 0, null);
 
 		if (flowFlag.equals("2")) {
-			modifyMediaStatus(userid, ma.getId(), seqid, 2);
+			modifyMediaStatus(userid, ma.getId(), seqid, 2, null);
 		}
 
 		if (mediaService.getMaInfoById(ma.getId()) != null) {
@@ -304,7 +310,7 @@ public class MediaContentService {
 			}
 		}
 
-		MediaAsset ma = mediaService.getMaInfoById(contentId);
+		MediaAssetPo ma = mediaService.getMaInfoById(contentId);
 		if (contentname != null && !contentname.toLowerCase().equals("null")) { // 修改节目名称
 			ma.setMaTitle(contentname);
 		}
@@ -327,7 +333,7 @@ public class MediaContentService {
 		mediaService.updateMa(ma);
 
 		// 修改节目绑定栏目信息
-		modifyMediaStatus(userid, ma.getId(), seqmediaId, 0);
+		modifyMediaStatus(userid, ma.getId(), seqmediaId, 0, null);
 
 		// 删除标签
 		keyWordBaseService.deleteKeyWordRes(contentId, "wt_MediaAsset");
@@ -421,9 +427,9 @@ public class MediaContentService {
 		return map;
 	}
 
-	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag) {
-		SeqMediaAsset sma = mediaService.getSmaInfoById(seqMediaId);
-		MediaAsset ma = mediaService.getMaInfoById(mediaId);
+	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag, String descn) {
+		SeqMediaAssetPo sma = mediaService.getSmaInfoById(seqMediaId);
+		MediaAssetPo ma = mediaService.getMaInfoById(mediaId);
 		if (sma != null) {
 			SeqMaRefPo seqmapo = mediaService.getSeqMaRefByMId(mediaId);
 			if (seqmapo != null) {
@@ -439,7 +445,7 @@ public class MediaContentService {
 								ChannelAssetPo macha = new ChannelAssetPo();
 								macha.setId(SequenceUUID.getPureUUID());
 								macha.setChannelId(cha.getChannelId());
-								macha.setPublisherId(userid);
+								macha.setPublisherId("0");
 								macha.setCheckerId("1");
 								macha.setAssetId(ma.getId());
 								macha.setAssetType("wt_MediaAsset");
@@ -465,8 +471,9 @@ public class MediaContentService {
 								ChannelAssetPo macha = new ChannelAssetPo();
 								macha.setId(SequenceUUID.getPureUUID());
 								macha.setChannelId(cha.getChannelId());
-								macha.setPublisherId(userid);
+								macha.setPublisherId("0");
 								macha.setCheckerId("1");
+								macha.setPubName(ma.getMaTitle());
 								macha.setFlowFlag(flowflag);
 								macha.setAssetId(ma.getId());
 								macha.setAssetType("wt_MediaAsset");
@@ -489,30 +496,40 @@ public class MediaContentService {
 						if (smachas != null && smachas.size() > 0) { // 判断节目绑定专辑是否发布
 							for (ChannelAssetPo cha : smachas) {
 								if (cha.getFlowFlag() != flowflag) {
-									cha.setFlowFlag(flowflag);
-									if (flowflag == 2) {
-										cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-									}
+									cha.setFlowFlag(1);
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+									mediaService.updateCha(cha);
+									insertChannelAssetProgress(cha.getId(), 1, descn);
+								} else {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
 								}
 							}
-						} else
-							return false;
-						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'",
-								"wt_MediaAsset");
+						} else return false;
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
 						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
 							for (ChannelAssetPo cha : machas) {
 								if (cha.getFlowFlag() != flowflag) {
-									cha.setFlowFlag(flowflag);
-									if (flowflag == 2) {
-										cha.setPubTime(new Timestamp(System.currentTimeMillis()));
-									}
+									cha.setFlowFlag(1);
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+									mediaService.updateCha(cha);
+									insertChannelAssetProgress(cha.getId(), 1, descn);
+								} else {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
 									mediaService.updateCha(cha);
 								}
 							}
-						} else
-							return false;
+						} else return false;
+						new SubscribeThread(mediaId).start();
 						return true;
+					} else if (flowflag == 4) {
+						List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
+						if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
+							for (ChannelAssetPo cha : machas) {
+								insertChannelAssetProgress(cha.getId(), 2, descn);
+							}
+							return true;
+						} else return false;
 					}
 				}
 			}
@@ -537,12 +554,12 @@ public class MediaContentService {
 		if (personService.getPersonPoById(userId) != null) {
 			PersonRefPo poref = personService.getPersonRefBy("wt_MediaAsset", contentId);
 			if (poref.getPersonId().equals(userId)) {
-				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId(userId, contentId, "wt_MediaAsset");
+				List<ChannelAssetPo> chas = mediaService.getChaByAssetIdAndPubId("0", contentId, "wt_MediaAsset");
 				if (chas != null && chas.size() > 0) {
-					MediaAsset ma = mediaService.getMaInfoById(contentId);
+					MediaAssetPo ma = mediaService.getMaInfoById(contentId);
 					if (ma != null) {
 						List<MediaAssetPo> mas = new ArrayList<>();
-						mas.add(ma.convert2Po());
+						mas.add(ma);
 						List<Map<String, Object>> rem = mediaService.makeMaListToReturn(mas);
 						if (rem != null && rem.size() > 0) {
 							return rem.get(0);
@@ -552,5 +569,14 @@ public class MediaContentService {
 			}
 		}
 		return null;
+	}
+	
+	private void insertChannelAssetProgress(String channelAssetId,int applyFlowFlag, String applyDescn) {
+		ChannelAssetProgressPo cPo = new ChannelAssetProgressPo();
+		cPo.setId(SequenceUUID.getPureUUID());
+		cPo.setChaId(channelAssetId);
+		cPo.setApplyFlowFlag(applyFlowFlag);
+		cPo.setApplyDescn(applyDescn);
+		channelAssetProgressService.insertChannelAssetProgress(cPo);
 	}
 }
