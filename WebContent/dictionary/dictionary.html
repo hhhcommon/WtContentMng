@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                   <td class="th add-th">ID</td>
-                  <td colspan="3"><input id="number" name="number" class="form-control" type="text" placeholder="ID" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input id="number" name="number" class="form-control" type="text" placeholder="id" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">频率范围</td>
@@ -93,7 +93,7 @@
                   <td class="th add-th">序号</td>
                   <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" min="1" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
-                <tr style="display: none;">
+                <tr>
                   <td class="th add-th">编号</td>
                   <td colspan="3"><input id="nodeCode" name="nodeCode" class="form-control" type="text" placeholder="编号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
@@ -198,7 +198,6 @@ $(function() {
       $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
       $("#addCata").find("tr:eq(3)").show();
       $("#nodeNames").val((treeNode.name)?(treeNode.name):"");
-      $("#number").val((treeNode.id)?(treeNode.id):"");
       $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
       $("#nodeCode").val((treeNode.attributes.id)?(treeNode.attributes.id):"");
       $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
@@ -207,8 +206,6 @@ $(function() {
       $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
       $("#shade").css({"display":"block"});
       $("#addCata").modal("show");
-      alert(treeNode.name);
-      alert(treeNode.attributes.newId);
     }
   });
   //2.3-点击删除按钮，删除已有的频道
