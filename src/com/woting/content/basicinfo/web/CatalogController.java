@@ -154,7 +154,7 @@ public class CatalogController {
             dd.setMId(catalogType);
             String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
             if (!StringUtils.isNullOrEmptyOrSpace(catalogId)) dd.setParentId(catalogId);
-            String cId=(m.get("NewId")==null?null:m.get("NewId")+"");
+            String cId=(data.get("NewId")==null?null:data.get("NewId")+"");
             if (!StringUtils.isNullOrEmptyOrSpace(cId)) dd.setId(cId);
             dd.setDdName(name);
             dd.setAliasName((data.get("AliasName")==null?null:data.get("AliasName")+""));
