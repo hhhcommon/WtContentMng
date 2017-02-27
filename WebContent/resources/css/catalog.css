@@ -34,7 +34,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 420px;
+  width: 400px;
   overflow: hidden;
   padding-bottom: 30px;
 }
@@ -51,8 +51,8 @@
   position:absolute;
   right:0;
   top:0;
-  height:100%;
   width:calc(100% - 400px);
+  height: 100%;
   background:white;
 }
 .ibox .ibox-content{

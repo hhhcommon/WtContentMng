@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>分类管理</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
@@ -43,10 +43,10 @@
         <!--动态加载电台分类详情-->
         <div class="col-sm-12">
           <div class="ibox float-e-margins">
-            <h5>分类详情</h5>
+            <!--<h5>分类详情</h5>
             <div class="ibox-content">
               <ul class="detail"></ul>
-            </div>
+            </div>-->
           </div>
         </div>
       </div>
@@ -75,12 +75,19 @@
                   <td colspan="3"><input id="aliasName" name="aliasName" class="form-control" type="text" placeholder="别名" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
-                  <td class="th add-th">分类父亲</td>
-                  <td colspan="3"><select class="form-control" id="nodeParent" placeholder="父ID" style="width:380px;margin-bottom:0px;"></select></td>
+                  <td class="th add-th">分类父级</td>
+                  <td colspan="3">
+                    <div style="width:450px;height:36px;">
+                      <input type="text" class="form-control" id="nodeParent" name="nodeParent" placeholder="父分类id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;">
+                      <input type="text" class="form-control" id="nodeParents" name="nodeParents" placeholder="父分类名字" aria-required="true" style="width:330px;margin-bottom:0px;">
+                      <div id='chooseParent'>选择父分类</div>
+                    </div>
+                    <ul id="cataTrees" class="ztree"></ul>
+                  </td>
                 </tr>
                 <tr>
                   <td class="th add-th">序号</td>
-                  <td colspan="3"><input type="text" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">业务编码</td>
@@ -103,7 +110,7 @@
   </div>
 </body>
 <script>
-var zTreeObj,treeNode,rootNode,nodePathStr;
+var zTreeObj,treeNode,rootNode,nodePathStr,modalNode;
 var rootPath=getRootPath();
 var oPeType=1;//1新增，2修改
 var selectNode=1;//1选中节点，2未选中节点
@@ -133,7 +140,29 @@ $(function() {
       }
     }
   });
-
+  //0.2--初始化弹出框的树
+  zTreeObjs=$.fn.zTree.init($("#cataTrees"), {
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:onClick
+    }
+  });
+  
   //1-加载数据
   //1.1-加载树
   loadTree(loadTreeData);
@@ -145,7 +174,7 @@ $(function() {
     oPeType=1;
     getRootNode();
     if(selectNode==2){//未选中节点
-      alert("请先选中分类在进行操作");
+      alert("请先选中分类再进行操作");
       return;
     }else{
       $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
@@ -159,7 +188,7 @@ $(function() {
     oPeType=2;
     getRootNode();
     if(selectNode==2){//未选中节点
-      alert("请先选中分类在进行操作");
+      alert("请先选中分类再进行操作");
       return;
     }else{
       $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
@@ -168,7 +197,8 @@ $(function() {
       $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
       $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
       $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
-      $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");
+      $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//分类父级的id
+      $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//分类父级的名字
       $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
       $("#shade").css({"display":"block"});
       $("#addCata").modal("show");
@@ -181,7 +211,7 @@ $(function() {
       alert("请先选中分类在进行操作");
       return;
     }else{
-      delCatalog();
+      beforeRemove();
     }
   });
   //2.4-点击提交按钮，提交表单
@@ -197,7 +227,12 @@ $(function() {
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
   });
+  //2.6-点击选择父分类，弹出的修改界面出现树形分类
+  $("#chooseParent").on("click",function(){
+    $("#cataTrees").slideDown("slow");
+  });  
 });
+
 
 /**
  * 加载树
@@ -217,6 +252,7 @@ function loadTree(loadData) {
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
           zTreeObj.addNodes(null,jsonData.Data,false);
+          zTreeObjs.addNodes(null,jsonData.Data,false);
         }
         loadRecursion(index);
       },
@@ -248,21 +284,9 @@ function getRootNode() {
     if(oPeType==1){
       $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
     }else{
-      $("#addCata").find(".modal-header>span:eq(1)").html(modPathNames);
-      channelParentIdListLoad();//加载父id的方法
+      $("#addCata").find(".modal-header>span").hide();
     }
     selectNode=1;//已选中节点
-  }
-}
-
-/*加载所有节点的ID*/
-function channelParentIdListLoad(){
-  var allNodes=zTreeObj.transformToArray(zTreeObj.getNodes());//获取树的所有节点
-  var opt;
-  for(var i=0;i<allNodes.length;i++){
-    opt=$("<option></option>");
-    opt.text(allNodes[i].id);
-    $("#nodeParent").append(opt);
   }
 }
 
@@ -274,6 +298,7 @@ function addCatalog() {
       "Name":$("#nodeNames").val(),
       "BCode":$("#nodeCode").val(),
       "AliasName":$("#aliasName").val(),
+      "Sort":$("#sort").val(),
       "Descn":$("#nodeDescn").val()
     }
   };
@@ -290,15 +315,16 @@ function addCatalog() {
             id:resultData.CatagoryId,
             name:$("#nodeNames").val(),
             attributes:{
+              sort:$("#sort").val(),
               bCode:$("#nodeCode").val(),
               aliasName:$("#aliasName").val(),
               desc:$("#nodeDescn").val(),
-              pathName:treeNode.attributes.pathName+"/"+$("#nodeNames").val(),
-              mId:treeNode.attributes.mId
+              pathName:treeNode.attributes.pathName+"/"+$("#nodeNames").val()
             }
           }
         );
         cleanDialog();
+        alert("添加成功！");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -309,6 +335,19 @@ function addCatalog() {
   })
 }
 
+/*点击弹出窗里面的树上的节点*/
+function onClick(event, treeId, treeNode) {
+  var node=zTreeObjs.getSelectedNodes();//获取模态框里zTree当前被选中的节点数据集合
+  modalNode=node[0];//当前选中的节点
+  if(modalNode.id==modalNode.attributes.mId){//分类父级是根节点
+    $("#nodeParent").val("0").attr("selectId",modalNode.id);
+  }else{
+    $("#nodeParent").val(modalNode.id).attr("selectId",modalNode.id);
+  }
+  $("#nodeParents").val(modalNode.name);
+  $("#cataTrees").slideUp("slow");
+};
+
 /*修改已有分类的方法*/
 function modCatalog() {
   var modInfo={
@@ -318,6 +357,7 @@ function modCatalog() {
       "Name":$("#nodeNames").val(),
       "ParentId":$("#nodeParent").val(),
       "AliasName":$("#aliasName").val(),
+      "Sort":$("#sort").val(),
       "BCode":$("#nodeCode").val(),
       "Descn":$("#nodeDescn").val()
     }
@@ -334,23 +374,11 @@ function modCatalog() {
           treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
         }
-        if(modInfo.Data.AliasName!=treeNode.attributes.aliasName) treeNode.attributes.aliasName=$("#aliasName").val();
-        if(modInfo.Data.BCode!=treeNode.attributes.bCode) treeNode.attributes.bCode=$("#nodeCode").val();
-        if(modInfo.Data.Sort!=treeNode.attributes.order) {//顺序改变
-          treeNode.attributes.order=$("#sort").val();
-          var sortNode=treeNode.getParentNode();//获取当前选中分类的父分类
-          var sLength=sortNode.children.length;//当前选中分类的父分类的所有子分类
-          for(var i=0;i<sLength;i++){
-            for(var j=i;j<sLength;j++){
-              if(sortNode.children[i].attributes.order<sortNode.children[j].attributes.order){//降序排列（冒泡排序）
-                zTreeObj.moveNode(sortNode.children[i],sortNode.children[j],"prev");
-              }
-            }
-          }
-        }
-        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//父节点改变
+        var parentChanged=0;
+        if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//分类父级改变
+          parentChanged=1;
           treeNode.attributes.parentId=$("#nodeParent").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
+          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").attr("selectId"), null);
           if(!treeNode.children){//选中的分类下面无其他分类
             zTreeObj.moveNode(targetNode,treeNode,"inner");
           }else{//选中的分类下面含有其他分类
@@ -360,8 +388,25 @@ function modCatalog() {
             zTreeObj.moveNode(targetNode,treeNode,"inner");
           }
         }
+        if((modInfo.Data.Sort!=treeNode.attributes.order)||(parentChanged==1)) {//顺序改变
+          treeNode.attributes.order=$("#sort").val();
+          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").attr("selectId"), null);
+          if(targetNode.children){//当前选中分类的父分类的所有子分类存在
+            var sLength=targetNode.children.length;//当前选中分类的父分类的所有子分类
+            for(var i=0;i<sLength;i++){
+              for(var j=i;j<sLength;j++){
+                if(parseInt(targetNode.children[i].attributes.order)<parseInt(targetNode.children[j].attributes.order)){//降序排列（冒泡排序）
+                  zTreeObj.moveNode(targetNode.children[i],targetNode.children[j],"prev");
+                }
+              }
+            }
+          }
+        }
+        if(modInfo.Data.AliasName!=treeNode.attributes.aliasName) treeNode.attributes.aliasName=$("#aliasName").val();
+        if(modInfo.Data.BCode!=treeNode.attributes.bCode) treeNode.attributes.bCode=$("#nodeCode").val();
         if(modInfo.Data.Descn!=treeNode.attributes.desc) treeNode.attributes.desc=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
+        alert("修改成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -371,6 +416,15 @@ function modCatalog() {
     }
   })
 };
+
+//删除节点的时候验证是否删除
+function beforeRemove(){
+  if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
+    delCatalog();
+  }else{
+    alert("成功取消删除");
+  }
+}
 
 /*删除已有分类的方法*/
 function delCatalog() {
@@ -383,6 +437,7 @@ function delCatalog() {
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         zTreeObj.removeNode(treeNode);
+        alert("删除成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -398,6 +453,7 @@ function cleanDialog() {
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });
+  $("#addCata").find(".modal-header>span").show();
 }
 </script>
 </html>

@@ -31,9 +31,7 @@ $(function(){
       }else{
         current_page--;
         $(".toPage").val("");
-        $(".currentPage").text(current_page);
-        $(".page").find("span").removeClass("disabled");
-        opts(seaFy);
+        opts(seaFy,current_page);
         return ;
       }
     }else if(data_action=="next"){
@@ -44,9 +42,7 @@ $(function(){
       }else{
         current_page++;
         $(".toPage").val("");
-        $(".currentPage").text(current_page);
-        $(".page").find("span").removeClass("disabled");
-        opts(seaFy);
+        opts(seaFy,current_page);
         return ;
       }
     }else{ //跳至进行输入合理数字范围检测
@@ -56,21 +52,20 @@ $(function(){
         return false;
       }else{
         current_page = $(".toPage").val();
-        $(".currentPage").text(current_page);
-        $(".page").find("span").removeClass("disabled");
-        opts(seaFy);
+        opts(seaFy,current_page);
         return;
       }
     }
   });
   //判断在点击翻页之前是否选择了筛选条件
-  function opts(seaFy){
+  function opts(seaFy,current_page){
     destroy(data1);
     data1.UserId="123";
     data1.ApplyFlowFlag=flowflag;
     data1.ReFlowFlag="0";
     data1.PageSize="10";
     data1.Page=current_page;
+    $(".currentPage").text(current_page);
     $(".dropdown_menu li").each(function(){
       if($(this).hasClass("selected")){
         data1.MediaType=$(this).attr("mediatype");
@@ -119,14 +114,15 @@ $(function(){
       async:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
+        clear();
         if(resultData.ReturnType == "1001"){
-          clear();
           contentCount=resultData.ResultInfo.AllCount;
           contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
           $(".totalPage").text(contentCount);
           loadContentList(resultData);//加载资源列表
         }else{
           $(".totalPage").text("0");
+          $(".page").find("span").addClass("disabled");
           $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
         }
       },
@@ -426,7 +422,6 @@ $(function(){
   });
   /*在每次加载具体的资源列表时候的公共方法*/
   function anew(flowflag){
-    $(".page").find("span").removeClass("disabled");
     destroy(data1);
     current_page="1";
     $(".currentPage").html(current_page);
@@ -591,14 +586,15 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(dataParam),
       success:function(resultData){
+        clear();
         if(resultData.ReturnType == "1001"){
-          clear();
           contentCount=resultData.ResultInfo.Count;
           contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
           $(".totalPage").text(contentCount);
           loadSearchList(resultData);//加载来源的筛选条件
         }else{
           $(".totalPage").text("0");
+          $(".page").find("span").addClass("disabled");
           $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
         }
       },

@@ -2,6 +2,7 @@
 function clear(){
   $(".ri_top3_con,.totalPage").html("");
   $(".toPage").val("");
+  $(".page").find("span").removeClass("disabled");
 }
 /*播放过程中切换节目进行复位*/
 function reset(){

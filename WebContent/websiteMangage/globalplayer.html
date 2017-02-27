@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>全局播放器</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">                                                                     
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="css/globalplayer.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="globalplayer.js"></script>
+</head>
+<body>
+<!--s:全局播放器-->
+<div class="globalplayer">
+  <audio src="" class="audio" controls style="display: none;"></audio>
+  <!--s:收起状态-->
+  <div class="glp_mini">
+    <img class="sound_face" src="img/launch.png">
+  </div>
+  <!--e:收起状态-->
+  <!--s:展开状态-->
+  <div class="glp_block">
+    <div class="glp_panel">
+      <div class="controls">
+        <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
+        <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
+        <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
+      </div>
+      <div class="player_panel">
+        <a href="#" class="title" title=""></a>
+        <div>
+          <span class="time sound_position">00:00</span>
+          <div class="player_progressbar">
+            <div class="player_playbar"></div>
+            <div class="player_circle"></div>  
+          </div>
+          <span class="time sound_duration"></span>
+        </div>
+      </div>
+      <div class="volume_panel">
+        <img src="img/volume.png" alt="音量图标" class="volume_img"/>
+        <div class="volume_progressbar">
+          <div class="volume_playbar"></div>
+          <div class="volume_circle"></div> 
+        </div>
+      </div>
+      <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
+    </div>
+  </div>
+  <!--e:展开状态-->
+</div>
+<!--e:全局播放器-->
+</body>
+</html>

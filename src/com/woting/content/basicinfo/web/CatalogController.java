@@ -132,6 +132,7 @@ public class CatalogController {
                 return map;
             }
             String catalogType=(m.get("CatalogType")==null?null:m.get("CatalogType")+"");
+            String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
             if (StringUtils.isNullOrEmptyOrSpace(catalogType)) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数[CatalogType]");
@@ -152,10 +153,7 @@ public class CatalogController {
             //1-组织参数
             DictDetail dd=new DictDetail(); //字典项业务对象
             dd.setMId(catalogType);
-            String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
             if (!StringUtils.isNullOrEmptyOrSpace(catalogId)) dd.setParentId(catalogId);
-            String cId=(m.get("NewId")==null?null:m.get("NewId")+"");
-            if (!StringUtils.isNullOrEmptyOrSpace(cId)) dd.setId(cId);
             dd.setDdName(name);
             dd.setAliasName((data.get("AliasName")==null?null:data.get("AliasName")+""));
             dd.setBCode((data.get("BCode")==null?null:data.get("BCode")+""));
@@ -223,7 +221,6 @@ public class CatalogController {
                 map.put("Message", "参数解释错误");
                 return map;
             }
-
             String catalogType=(m.get("CatalogType")==null?null:m.get("CatalogType")+"");
             String catalogId=(m.get("CatalogId")==null?null:m.get("CatalogId")+"");
             if (StringUtils.isNullOrEmptyOrSpace(catalogType)) {
@@ -236,23 +233,20 @@ public class CatalogController {
                 map.put("Message", "无法获取需要的参数[CatalogId]");
                 return map;
             }
-
             Map<String,Object> data=(Map<String,Object>)m.get("Data");
             if (data==null||data.isEmpty()) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数[Data]");
                 return map;
             }
-
             //1-组织参数
             DictDetail dd=new DictDetail(); //字典项业务对象
-            dd.setId(catalogId);
             dd.setMId(catalogType);
+            dd.setId(catalogId);
             dd.setDdName(data.get("Name")==null?null:data.get("Name")+"");;
             dd.setParentId((data.get("ParentId")==null?null:data.get("ParentId")+""));
             dd.setAliasName((data.get("AliasName")==null?null:data.get("AliasName")+""));
             dd.setBCode((data.get("BCode")==null?null:data.get("BCode")+""));
-            
             try {
                 dd.setOrder((data.get("Sort")==null?0:Integer.parseInt(data.get("Sort")+"")));
             } catch (Exception e) {
@@ -269,9 +263,8 @@ public class CatalogController {
                 return map;
             }
             dd.setDesc((data.get("Descn")==null?null:data.get("Descn")+""));
-            boolean useBCodeAsKey=(m==null||m.get("UseBCodeAsKey")==null)?false:true;
             //2-修改字典项
-            int ret=dictService.updateDictDetail(dd, useBCodeAsKey);
+            int ret=dictService.updateDictDetail(dd);
             if (ret==1) {
                 map.put("ReturnType", "1001");
             } else if (ret==2) {
