@@ -5,8 +5,8 @@
 	<title>选题推荐</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
@@ -25,8 +25,8 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 .subject{
   position: absolute;
-  width:100%;
-  min-width:780px;
+  width: 1084px;
+  min-width: 780px;
   height:auto;
   background: white;
 }
@@ -69,7 +69,6 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   float: left;
   margin-left:20px;
   margin-top:20px;
-  box-shadow: 0px -1px 1px rgb(222,222,222);
 }
 .ibox{
   padding:10px;
@@ -479,14 +478,15 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 </div>
 </body>
 <script>  
-  $(".subject").on("click",".col",function(){
-//  alert();
-//  var index=$(this).index();
-//  alert('topic'+index+'.html');
-//  $("#myIframe", parent.document).hide();
-//  $("#newIframe", parent.document).attr({"src":'topic'+index+'.html'}).show();
-    $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).attr({"src":'topics.html'}).show();
-  })
+$(".row").click(function(){
+  alert();
+  $("#myIframe",parent.document).hide();
+  $(".tab_main",parent.document).show();
+  $(".tab_mainNav",parent.document).append('<a href="javascript:;" class="tab_ainNav_a" data_id="">topic0</a>').show();
+  $(".tab_mainContent",parent.document).append('<iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topic0.html" data_id="topic0.html"frameborder="0"  seamless></iframe>');
+  $(".tab_iframe",parent.document).show(); 
+});
+
+
 </script>
 </html>

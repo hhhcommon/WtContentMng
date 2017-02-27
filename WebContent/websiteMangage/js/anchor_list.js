@@ -67,6 +67,8 @@ $(function(){
   }
   function loadPersonList(resultData){
     for(var i=0;i<resultData.ResultInfo.List.length;i++){
+      var recovetime=resultData.ResultInfo.List[i].RecoverTime;
+      recovetime=new Date(parseInt(recovetime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");  
       var perId=(resultData.ResultInfo.List[i].PersonId)?(resultData.ResultInfo.List[i].PersonId):("主播ID");
       var phNum=(resultData.ResultInfo.List[i].PhoneNum)?(resultData.ResultInfo.List[i].PhoneNum):("000000000000");
       var perName=(resultData.ResultInfo.List[i].PersonName)?(resultData.ResultInfo.List[i].PersonName):("昵称");
@@ -86,7 +88,7 @@ $(function(){
                 '<span class="ric_txt39 fl dis mark">!</span>'+
                 '<div class="mark_notes fl dis">'+
                   '<div class="square">'+
-                    '<span class="mark_time fl c07 ellipsis">2017-11-15 12:12:21</span>'+
+                    '<span class="mark_time fl c07 ellipsis">'+recovetime+'</span>'+
                     '<span class="mark_note fl ellipsis">恢复正常使用</span>'+
                   '</div>'+
                 '</div>'+

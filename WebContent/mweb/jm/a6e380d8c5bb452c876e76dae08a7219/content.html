@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>音频播放测试</title>
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+  <meta name="keywords" content="音频播放测试">
+  <meta name="description" content="音频播放测试">
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+  <link href="../../templet/jm_templet/css/index.css" text="text/css" rel="stylesheet" />
+  <script src="../../templet/jm_templet/js/jquery-2.1.1.min.js"></script>
+  <script>
+    $(document).bind('mobileinit',function(){
+      $.mobile.changePage.defaults.changeHash = false;
+      $.mobile.hashListeningEnabled = false;
+      $.mobile.pushStateEnabled = false;
+    });
+  </script> 
+  <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+  <script src="../../../resources/js/mainPage.js"></script>
+  <script src="../../../resources/js/context.utils.js"></script>
+  <script src="../../templet/jm_templet/js/index.js"></script>
+</head>
+<body>
+  <img style="width:0px;height:0px;opacity: 0;" src="http://www.wotingfm.com:908/CM//dataCenter/group03/0d5ba198e46347cea8d185076df6a2ba.300_300.png" />
+  <div class="container">
+    <!--头部开始-->
+    <header>
+      <div id="logo"><img src="../../templet/jm_templet/imgs/logo2.png" /></div>
+      <div class="downLoad">打开收听</div>
+    </header>
+    <!--播放控制界面-->
+    <div class="palyCtrlBox">
+      <h4>音频播放测试</h4>
+      <img src="" alt="" />
+      <div class="box" >
+        <div class="boximg" style="background-image: url(http://www.wotingfm.com:908/CM//dataCenter/group03/0d5ba198e46347cea8d185076df6a2ba.300_300.png)"></div>
+        <img src="../../templet/jm_templet/imgs/jm.png"/>
+        <a href="javascript:void(0);" class="playControl"></a>
+        <a href="javascript:void(0);" class="previous"></a>
+        <a href="javascript:void(0);" class="next"></a>
+      </div>
+      <div class="conPlay">
+        <span class="playTime"></span>
+        <div class="currentMusicBar">
+          <div class="currentMusicBarRound"></div>
+        </div>
+        <span class="fullTime"></span>
+      </div>
+      <audio src="http://www.wotingfm.com:908/CM//dataCenter/group01/8418ea1b3ff04e369de044247cd96fbb.mp3" id="jmAudio" jmOpenApp="com.woting.htmlcallback://AUDIO?jsonStr={'ContentId':'a6e380d8c5bb452c876e76dae08a7219'}"></audio>
+    </div>
+    <div class="detail">
+      <div class="dt">
+        <img class="xq" src="../../templet/jm_templet/imgs/xq.png" alt="" />
+        <span>节目详情</span>
+      </div>
+      <p class="dp1"><span class="ft_ccc">主播:</span><span class="dpspan">麽麽</span></p>
+      <p class="dp2"><span class="ft_ccc">专辑:</span><span class="dpspan">3333</span></p>  
+      <p class="dp3"><span class="ft_ccc">来源:</span><span class="dpspan">我听科技</span></p> 
+      <p class="dp4">
+        <span class="ft_ccc jj">简介:</span>
+        <span class="js dpspan">音频播放测试</span>
+      </p>
+    </div>
+    <!--相关推荐列表-->
+    <div class="tj">
+      <h4>相关推荐</h4>
+    </div>
+    <div class="audioList">
+      <ul class="ulBox"></ul>
+    </div>
+  </div>
+  appId: '<?php echo $signPackage["appId"];?>', // 必填，公众号的唯一标识<br>
+  timestamp: <?php echo $signPackage["timestamp"];?>, // 必填，生成签名的时间戳<br>
+  nonceStr: '<?php echo $signPackage["nonceStr"];?>', // 必填，生成签名的随机串<br>
+  signature: '<?php echo $signPackage["signature"];?>',// 必填，签名，见附录1<br>
+</body>
+<script>
+  wx.config({
+    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: '', // 必填，公众号的唯一标识
+    timestamp: , // 必填，生成签名的时间戳
+    nonceStr: '', // 必填，生成签名的随机串
+    signature: '',// 必填，签名，见附录1
+    jsApiList: [
+      // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+      'onMenuShareTimeline',
+      'onMenuShareAppMessage',
+//    'onMenuShareQQ',
+//    'onMenuShareQZone',
+//    'onMenuShareWeibo'
+    ]
+  });
+  wx.ready(function(){
+    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+    
+  });
+  wx.error(function(res){
+    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+
+  });
+  wx.onMenuShareTimeline({//分享给朋友圈
+    title: '我听科技', // 分享标题
+    desc: '欢迎来到我听科技', // 分享描述
+    link: '', // 分享链接
+    imgUrl: 'http://wotingfm.com:908/CM/resources/images/default.png', // 分享图标
+    success: function () { 
+      // 用户确认分享后执行的回调函数
+    },
+    cancel: function () { 
+      // 用户取消分享后执行的回调函数
+    }
+  });
+  wx.onMenuShareAppMessage({//分享给朋友
+    title: '我听科技', // 分享标题
+    desc: '欢迎来到我听科技', // 分享描述
+    link: '', // 分享链接
+    imgUrl: 'http://wotingfm.com:908/CM/resources/images/default.png',  // 分享图标
+    type: 'link', // 分享类型,music、video或link，不填默认为link
+    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+    success: function () { 
+      // 用户确认分享后执行的回调函数
+    },
+    cancel: function () { 
+      // 用户取消分享后执行的回调函数
+    }
+  });
+</script>
+</html>

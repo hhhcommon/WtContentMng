@@ -222,11 +222,36 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
   margin-left:47%;
   margin-top:20%;
 }
-.tab_mainContent{
+.tab_main{
   position: relative;
   width:100%;
-  height:auto;
+  height:100%;
+  overflow: auto;
   display: none;
+}
+.tab_mainNav{
+  width: 100%;
+  height: 40px;
+  overflow: hidden;
+}
+.tab_ainNav_a{
+  display: block;
+  float: left;
+  border-right: solid 1px #eee;
+  padding: 0 15px;
+  line-height: 40px;
+}
+.tab_mainContent{
+  position: relative;
+  width: 100%;
+  height: calc(100% - 40px);
+}
+.tab_iframe{
+  display: none;
+}
+.active{
+  background:#ccc;
+  display: block;
 }
 </style>
 </head>
@@ -324,16 +349,16 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
       <div class="row J_mainContent" id="content-main">
         <iframe class="J_iframe" id="myIframe" name="iframe0" width="100%" height="100%" src="anchor_home.html" frameborder="0"  seamless></iframe>
         <iframe class="J_iframe" id="newIframe" name="iframe0" width="100%" height="100%" src="" frameborder="0"  seamless></iframe>
-        <div class="tab_mainContent">
+        <div class="tab_main">
           <div class="tab_mainNav">
-            <a href="javascript:;" class="tab_ainNav_a" data_id=""></a>
-            <a href="javascript:;" class="tab_ainNav_a" data_id=""></a>
-            <a href="javascript:;" class="tab_ainNav_a" data_id=""></a>
+            <!--<a href="javascript:;" class="tab_ainNav_a active" data_id="">topic0</a>
+            <a href="javascript:;" class="tab_ainNav_a" data_id="">topic1</a>
+            <a href="javascript:;" class="tab_ainNav_a" data_id="">topics</a>-->
           </div>
           <div class="tab_mainContent"> 
-            <iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topic0.html" frameborder="0"  seamless></iframe>
-            <iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topic1.html" frameborder="0"  seamless></iframe>
-            <iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topics.html" frameborder="0"  seamless></iframe>
+            <!--<iframe class="tab_iframe active" name="iframe1" width="100%" height="100%" src="topic0.html" data_id="topic0.html" frameborder="0"  seamless></iframe>
+            <iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topic1.html" data_id="topic1.html"frameborder="0"  seamless></iframe>
+            <iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topics.html" data_id="topics.html" frameborder="0"  seamless></iframe>-->
           </div>
         </div>
       </div>
@@ -373,6 +398,14 @@ $(function(){
     $("#myIframe").show();
     $("#newIframe").hide();
   });
+  
+  //tab切换
+  $(document).on("click",".tab_ainNav_a",function(){
+    $(this).addClass("active").siblings().removeClass("active");
+    $(".tab_mainContent .tab_iframe").hide().eq($(".tab_ainNav_a").index(this)).show(); 
+  })
+  
+  
 })
   
 </script>
