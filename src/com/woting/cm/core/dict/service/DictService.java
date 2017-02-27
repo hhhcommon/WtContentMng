@@ -270,7 +270,7 @@ public class DictService {
         }
 
         //插入字典项
-        dd.setId(SequenceUUID.getUUIDSubSegment(0));
+        if (StringUtils.isNullOrEmptyOrSpace(dd.getId())) dd.setId(SequenceUUID.getUUIDSubSegment(0));
         dd.setCTime(new Timestamp(System.currentTimeMillis()));
         try {
             //数据库
