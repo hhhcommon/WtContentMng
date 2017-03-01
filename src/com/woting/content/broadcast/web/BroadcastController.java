@@ -10,6 +10,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -850,135 +853,26 @@ public class BroadcastController {
 		return map;
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "getBroadcastList.do")
 	@ResponseBody
 	public Map<String, Object> getBroadcastList(HttpServletRequest request) {
-		// 数据收集处理==1
-		ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-		alPo.setApiName("5.4.5--/content/bc/updateBcProgramme.do");
-		alPo.setObjType("005");// 用户组对象
-		alPo.setDealFlag(1);// 处理成功
-		alPo.setOwnerType(201);
-		alPo.setOwnerId("--");
-
 		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String datastr = JsonUtils.objToJson(m);
+		Map<String, String> datas = (Map<String, String>) JsonUtils.jsonToObj(datastr, Map.class);
+		Document doc = null;
 		try {
-			// 0-获取参数
-			String userId = "";
-			MobileUDKey mUdk = null;
-			Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-			alPo.setReqParam(JsonUtils.objToJson(m));
-			if (m == null || m.size() == 0) {
-				map.put("ReturnType", "0000");
-				map.put("Message", "无法获取需要的参数");
-			} else {
-				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
-					mp.setImei(request.getSession().getId());
-				}
-				mUdk = mp.getUserDeviceKey();
-				if (mUdk != null) {
-					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/updateBroadcast.do");
-					if ((retM.get("ReturnType") + "").equals("2003")) {
-						map.put("ReturnType", "200");
-						map.put("Message", "需要登录");
-					} else {
-						map.putAll(retM);
-						if ((retM.get("ReturnType") + "").equals("1001"))
-							map.remove("ReturnType");
-					}
-					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
-				} else {
-					map.put("ReturnType", "0000");
-					map.put("Message", "无法获取需要的参数");
-				}
-			}
-			// 数据收集处理==2
-			if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
-				alPo.setOwnerId(map.get("UserId") + "");
-			} else {
-				// 过客
-				if (mUdk != null)
-					alPo.setOwnerId(mUdk.getDeviceId());
-				else
-					alPo.setOwnerId("0");
-			}
-			if (mUdk != null) {
-				alPo.setDeviceType(mUdk.getPCDType());
-				alPo.setDeviceId(mUdk.getDeviceId());
-			}
-			if (m != null) {
-				if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
-					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
-						alPo.setExploreVer(m.get("MobileClass") + "");
-					}
-					if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
-						alPo.setExploreName(m.get("exploreName") + "");
-					}
-				} else {
-					if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
-						alPo.setDeviceClass(m.get("MobileClass") + "");
-					}
-				}
-			}
-			if (map.get("ReturnType") != null)
-				return map;
-
-			// 1-得到模式Id
-			String catalogType = (m.get("CatalogType") == null ? null : m.get("CatalogType") + "");
-			if (StringUtils.isNullOrEmptyOrSpace(catalogType))
-				catalogType = "-1";
-			// 2-得到字典项Id或父栏目Id
-			String catalogId = (m.get("CatalogId") == null ? null : m.get("CatalogId") + "");
-			if (StringUtils.isNullOrEmptyOrSpace(catalogId))
-				catalogId = null;
-			Map<String, Object> contents = broadcastProService.getBroadcasts(catalogType, catalogId);
-			if (contents != null && contents.size() > 0) {
-				map.put("ResultList", contents);
-				map.put("ReturnType", "1001");
-			} else {
-				map.put("ReturnType", "1011");
-				map.put("Message", "没有查到任何内容");
-			}
-			return map;
-		} catch (Exception e) {
+			doc = Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true)
+					.data(datas).timeout(100000).post();
+		} catch (IOException e) {
 			e.printStackTrace();
-			map.put("ReturnType", "T");
-			map.put("TClass", e.getClass().getName());
-			map.put("Message", StringUtils.getAllMessage(e));
-			alPo.setDealFlag(2);
-			return map;
-		} finally {
-			// 数据收集处理=3
-			alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
-			alPo.setReturnData(JsonUtils.objToJson(map));
-			try {
-				ApiGatherMemory.getInstance().put2Queue(alPo);
-			} catch (InterruptedException e) {
-			}
 		}
-		// Map<String, Object> map = new HashMap<String, Object>();
-		// Map<String, Object> m = RequestUtils.getDataFromRequest(request);
-		// String datastr = JsonUtils.objToJson(m);
-		// Map<String, String> datas = (Map<String, String>)
-		// JsonUtils.jsonToObj(datastr, Map.class);
-		// Document doc = null;
-		// try {
-		// doc =
-		// Jsoup.connect("http://123.56.254.75:808/wt/content/getContents.do").ignoreContentType(true)
-		// .data(datas).post();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-		// if (doc != null) {
-		// String elem = doc.body().html();
-		// elem = elem.replace("&quot;", "\"");
-		// map = (Map<String, Object>) JsonUtils.jsonToObj(elem, Map.class);
-		// }
-		// return map;
+		if (doc != null) {
+			String elem = doc.body().html();
+			elem = elem.replace("&quot;", "\"");
+			map = (Map<String, Object>) JsonUtils.jsonToObj(elem, Map.class);
+		}
+		return map;
 	}
 
 	@RequestMapping(value = "getBcInfo.do")
