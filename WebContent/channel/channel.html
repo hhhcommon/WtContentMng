@@ -75,13 +75,12 @@
                   <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" min="1" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
-                  <td class="th add-th" style="position:absolute;top:139px;left:2px;">栏目父级</td>
+                  <td class="th add-th">栏目父级</td>
                   <td colspan="3">
-                    <!--<select class="form-control" id="nodeParent" name="nodeParent" placeholder="父ID"></select>-->
-                    <div style="width:450px;height:36px;">
+                    <div style="width:450px;height:34px;margin:10px 0px;">
                     	<input type="text" class="form-control" id="nodeParent" name="nodeParent" placeholder="父栏目id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;">
                     	<input type="text" class="form-control" id="nodeParents" name="nodeParents" placeholder="父栏目名字" aria-required="true" style="width:330px;margin-bottom:0px;">
-                      <div id='chooseParent'>选择父栏目</div>
+                      <div id='chooseParent'>选择父级栏目</div>
                     </div>
                     <ul id="cataTrees" class="ztree"></ul>
                   </td>  
@@ -89,21 +88,21 @@
                 <tr>
                   <td class="th add-th">资源类型</td>
                   <td colspan="3">
-                    <input type="text" class="form-control" id="contentType" name="contentType" placeholder="资源类型" aria-required="true" style="width:450px;margin-bottom:-34px;display:none;">
+                    <input type="text" class="form-control" id="contentType" name="contentType" placeholder="资源类型" aria-required="true" style="width:450px;margin-bottom:-32px;display: none;">
                     <ul id="sourceType">
-                      <li>
+                      <li value="0">
                         <input id="all" type="checkbox" class="form-control" name="checkbox" value="0">
                         <span class="all">所有</span>
                       </li>
-                      <li>
+                      <li value="1">
                         <input id="radio" type="checkbox" class="form-control" name="checkbox" value="1">
                         <span class="radio">电台</span>
                       </li>
-                      <li>
+                      <li value="2">
                         <input id="jm" type="checkbox" class="form-control" name="checkbox" value="2">
                         <span class="jm">节目</span>
                       </li>
-                      <li>
+                      <li value="3">
                         <input id="zj" type="checkbox" class="form-control" name="checkbox" value="3">
                         <span class="zj">专辑</span>
                       </li>
@@ -130,7 +129,7 @@
 var zTreeObj,treeNode,rootNode,nodePathStr,modalNode;
 var values='';//checkbox选中后，资源类型contentType里面的值
 var rootPath=getRootPath();
-var oPeType=1;//1新增，2修改
+var oPeType="1";//1新增，2修改，3删除
 var selectNode=1;//1选中节点，2未选中节点
 //需要加载的栏目树的数据，以list方式给出
 var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
@@ -151,6 +150,9 @@ $(function() {
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
     },
+    async:{
+      enable:true//强行异步加载父节点的子节点
+    },
     data:{
       simpleData:{
         enable: true
@@ -170,6 +172,9 @@ $(function() {
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
     },
+    async:{
+      enable:true//强行异步加载父节点的子节点
+    },
     data:{
       simpleData:{
         enable: true
@@ -187,64 +192,22 @@ $(function() {
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的栏目
   $("#add").on("click",function(){
-    cleanDialog();
-    oPeType=1;
-    getRootNode();
-    if(selectNode==2){//未选中节点
-      alert("请先选中栏目在进行操作");
-      return;
-    }else{
-      $("#addCata").find(".modal-header>h4").html("添加栏目");
-      $("#addCata").find("tr:eq(2)").css({"display":"none"});
-      $("#shade").css({"display":"block"});
-      $("#addCata").modal("show");
-    }
+    cleanDialog();//清空模态框里面的数据
+    oPeType="1";//增加
+    getRootNode(oPeType);
   });
   //2.2-点击修改按钮，修改已有的栏目
   $("#mod").on("click",function(){
-    oPeType=2;
-    getRootNode();
-    if(selectNode==2){//未选中节点
-      alert("请先选中栏目在进行操作");
-      return;
-    }else{
-      $("#addCata").find(".modal-header>h4").html("修改栏目");
-      $("#addCata").find("tr:eq(2)").show();
-      $("#nodeNames").val(treeNode.name);
-      $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
-      $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//父节点的Id
-      $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//父节点的名字
-      $("#contentType").val((treeNode.attributes.contentType)?(treeNode.attributes.contentType):"");//资源类型value
-      //资源类型对应的checkbox的选中状态  
-      if(treeNode.attributes.contentType){
-        $("input[name='checkbox']").slice(0,4).prop("checked",false).prop("disabled",false);
-        $("input[name='checkbox']").each(function(){
-          if(treeNode.attributes.contentType.indexOf('0')>-1){
-            $("input[name='checkbox']").slice(0,4).prop("checked",true);
-            $("input[name='checkbox']").slice(1,4).prop("disabled",true);
-          }else{
-            for (var i=1;i<4;i++){
-              if(treeNode.attributes.contentType.indexOf(i)>-1){
-                $("input[name='checkbox']:eq("+i+")").prop("checked",true);
-              }
-            }
-          }
-        });
-      }
-      $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
-      $("#shade").css({"display":"block"});
-      $("#addCata").modal("show");
-    }
+    cleanDialog();//清空模态框里面的数据
+    oPeType="2";//修改
+    loadTree(loadTreeData);
+    getRootNode(oPeType);
   });
   //2.3-点击删除按钮，删除已有的栏目
   $("#del").on("click",function(){
-    getRootNode();
-    if(selectNode==2){//未选中节点
-      alert("请先选中栏目在进行操作");
-      return;
-    }else{
-      beforeRemove();
-    }
+    cleanDialog();//清空模态框里面的数据
+    oPeType="3";//删除
+    getRootNode(oPeType);
   });
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
@@ -258,12 +221,13 @@ $(function() {
   $("#save,.close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
+    $("#cataTrees").slideUp("slow");
   });
   //2.6-点击选择父栏目，弹出的修改界面出现树形栏目
   $("#chooseParent").on("click",function(){
     $("#cataTrees").slideDown("slow");
   });
-  //2.8-点击all，checkbox实现全选、全不选
+  //2.7-点击all，checkbox实现全选、全不选
   $("#all").on("click",function(){
     if(this.checked){
       $("input[name='checkbox']").each(function(){
@@ -283,20 +247,25 @@ $(function() {
       });
     }
   });
-  //2.9-点击其他checkbox实现选择
+  //2.8-点击其他checkbox实现选择
   $("#radio,#jm,#zj").on("click",function(){
-    values = '';//点击之前清空values的值
-    var checked=$("input[name='checkbox']:checked");
-    for(var i=0;i<checked.length;i++){
-      if(i<checked.length-1){
-        values+=checked[i].value+',';
-      }else{
-        values+=checked[i].value;
-      }
+    if(this.checked){
+      this.checked=true;
+    }else{
+      this.checked=false;
     }
+    values="";
+    $("input[name='checkbox']:checked").each(function(){
+      if(values==''){
+        values=$(this).parent("li").attr("value");
+      }else{
+        values+=","+$(this).parent("li").attr("value");
+      }
+    });
     $("#contentType").val(values);
   });
-  
+  //2.9-input输入框的提示功能关闭
+  $("input").attr("autocomplete","off");
 });  
 
 /**
@@ -316,8 +285,11 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-          zTreeObj.addNodes(null,jsonData.Data,false);
-          zTreeObjs.addNodes(null,jsonData.Data,false);
+          if(oPeType==2){
+            zTreeObjs.addNodes(null,jsonData.Data,false);
+          }else{
+            zTreeObj.addNodes(null,jsonData.Data,false);
+          }
         }
         loadRecursion(index);
       },
@@ -329,29 +301,24 @@ function loadTree(loadData) {
 }
 
 /*与选中节点有关的操作*/
-function getRootNode() {
+function getRootNode(oPeType){
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
   if(!treeNode){
     $("#shade").css({"display":"none"});
     $("#addCata").modal("hide");
     selectNode=2;//未选中节点
+    alert("请先选中节点");
     return;
   }else{
-    alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
     nodePathStr=treeNode.attributes.pathName+"";
     if(nodePathStr.indexOf("/")>=0){
       rootNode=nodePathStr.split("/")[0];
     }else{
       rootNode=treeNode.attributes.pathName;
     }
-    var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
-    if(oPeType==1){
-      $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
-    }else{
-      $("#addCata").find(".modal-header>span").hide();
-    }
     selectNode=1;//已选中节点
+    commonJudeg(oPeType);
   }
 }
 
@@ -379,14 +346,13 @@ function addChannel() {
             id:resultData.CatagoryId,
             name:$("#nodeNames").val(),
             attributes:{
-              sort:$("#sort").val(),
+              order:$("#sort").val(),
               parentId:treeNode.id,
               contentType:$("#contentType").val(),
               pathName:treeNode.attributes.pathName+"/"+$("#nodeNames").val()
             }
           }
         );
-        cleanDialog();
         alert("添加成功!");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
@@ -402,7 +368,15 @@ function addChannel() {
 function onClick(event, treeId, treeNode) {
   var node=zTreeObjs.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
   modalNode=node[0]; //当前选中的节点
-  $("#nodeParent").val(modalNode.id).attr("selectId",modalNode.id);
+  var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
+  var childNodes = zTreeObj.transformToArray(nodes[0]);//获取ztree当前被选中节点的子节点的id集合     
+  for(i = 0; i < childNodes.length; i++) {   
+    if(modalNode.id==childNodes[i].id){//父子节点是同一节点,或模态框里面选中的父节点是自己的子节点
+      alert("当前栏目不支持作为父级栏目，请选择其他栏目");
+      return false;
+    }
+  }     
+  $("#nodeParent").val(modalNode.id);
   $("#nodeParents").val(modalNode.name);
   $("#cataTrees").slideUp("slow");
 };
@@ -437,9 +411,9 @@ function modChannel() {
           parentChanged=1;
           treeNode.attributes.parentId=$("#nodeParent").val();
           var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
-          if(!treeNode.children){//选中的栏目下面无其他栏目
+          if(!treeNode.children){//选中的要移动的栏目下面无其他栏目
             zTreeObj.moveNode(targetNode,treeNode,"inner");
-          }else{//选中的栏目下面含有其他栏目
+          }else{//选中的要移动的栏目下面含有其他栏目
             for(var i=0;i<treeNode.children.length;i++){
               zTreeObj.moveNode(treeNode,treeNode.children[i],"inner");
             }
@@ -448,8 +422,8 @@ function modChannel() {
         }
         if(modInfo.Data.Sort!=treeNode.attributes.order||parentChanged==1) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").attr("selectId"), null);
-          if(targetNode.children){//当前选中频道的父频道的所有子频道存在
+          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
+          if(targetNode.children){//当前选中栏目的父级栏目的所有子栏目存在
             var sLength=targetNode.children.length;//当前选中栏目的父栏目的所有子栏目
             for(var i=0;i<sLength;i++){
               for(var j=i;j<sLength;j++){
@@ -473,15 +447,6 @@ function modChannel() {
     }
   })
 };
-
-//删除节点的时候验证是否删除
-function beforeRemove(){
-  if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
-    delChannel();
-  }else{
-    alert("成功取消删除");
-  }
-}
 
 /*删除已有栏目的方法*/
 function delChannel() {
@@ -510,8 +475,71 @@ function cleanDialog() {
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });
-  $("#addCata").find(".modal-header>span").show();
+  $("#cataTrees").html(" ");//清空模态框里面的ztree
   $("#all,#radio,#jm,#zj").prop("checked",false).prop("disabled",false);
+}
+
+/*增删改的公共判断*/
+function commonJudeg(oPeType){
+  if(treeNode.level>=1){//非根节点支持增删改
+    switch(oPeType){
+      case "1": $("#addCata").find(".modal-header>h4").html("添加栏目");
+                $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+                $("#addCata").find("tr:eq(2)").hide();
+                $("#shade").css({"display":"block"});
+                $("#addCata").modal("show");
+                break;
+      case "2": $("#addCata").find(".modal-header>h4").html("修改栏目");
+                $("#addCata").find("tr:eq(2)").show();
+                $("#catalogBelong,#nodePath").hide();
+                $("#nodeNames").val(treeNode.name);
+                $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
+                $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//父节点的Id
+                $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//父节点的名字
+                $("#contentType").val((treeNode.attributes.contentType)?(treeNode.attributes.contentType):"");//资源类型value
+                //资源类型对应的checkbox的选中状态  
+                if(treeNode.attributes.contentType){
+                  $("input[name='checkbox']").slice(0,4).prop("checked",false).prop("disabled",false);
+                  $("input[name='checkbox']").each(function(){
+                    if(treeNode.attributes.contentType.indexOf('0')>-1){
+                      $("input[name='checkbox']").slice(0,4).prop("checked",true);
+                      $("input[name='checkbox']").slice(1,4).prop("disabled",true);
+                    }else{
+                      for (var i=1;i<4;i++){
+                        if(treeNode.attributes.contentType.indexOf(i)>-1){
+                          $("input[name='checkbox']:eq("+i+")").prop("checked",true);
+                        }
+                      }
+                    }
+                  });
+                }
+                $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
+                $("#shade").css({"display":"block"});
+                $("#addCata").modal("show");
+                break;
+      case "3": if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
+                  delChannel();
+                }else{
+                  alert("成功取消删除");
+                }
+                break;
+    }
+  }else if(treeNode.level==0){//根节点只支持增
+    switch(oPeType){
+      case "1": $("#addCata").find(".modal-header>h4").html("添加栏目");
+                $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+                $("#addCata").find("tr:eq(2)").hide();
+                $("#shade").css({"display":"block"});
+                $("#addCata").modal("show");
+                break;
+      case "2": alert("当前节点不支持修改操作，请选择他的子节点进行操作");
+                return false;
+                break;
+      case "3": alert("当前节点不支持删除操作，请选择他的子节点进行操作");
+                return false;
+                break;
+    }
+  }
 }
 </script>
 </html>

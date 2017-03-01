@@ -13,7 +13,6 @@
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
-  <script src="js/common_manage.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
 </head>
 <style>
@@ -29,6 +28,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   min-width: 780px;
   height:auto;
   background: white;
+  border:1px solid #dedede;
 }
 .header{
   padding-left:20px;
@@ -51,12 +51,13 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   margin: 8px 0px 8px 20px;
 }
 .hearder_img{
-  width: 20px;
-  height: 20px;
+  width:16px;
+  height:16px;
   position: absolute;
   float: left;
-  margin-top: 10px;
-  margin-left: -23px;
+  margin-top:12px;
+  opacity: 0.3;
+  margin-left: -22px;
 }
 .row{
   margin-right: 0px;
@@ -94,7 +95,6 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   width: 312px;
   height: 200px;
   margin: 15px 0px;
-  border:1px solid black;
 }
 .ibox_content img{
   width: 100%;
@@ -240,7 +240,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   <div class="header">
     <span class="hearder_span">选题推荐</span>
     <input class="header_ipt" type="text" />
-    <img class="hearder_img" src="" alt="搜索按钮" />
+    <img class="hearder_img" src="img/search1.png" alt="搜索按钮" />
   </div>
   <div class="row">
     <div class="col">
@@ -479,7 +479,6 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 </body>
 <script>  
 $(".row").click(function(){
-  alert();
   $("#myIframe",parent.document).hide();
   $(".tab_main",parent.document).show();
   $(".tab_mainNav",parent.document).append('<a href="javascript:;" class="tab_ainNav_a" data_id="">topic0</a>').show();
