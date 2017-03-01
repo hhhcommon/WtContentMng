@@ -600,7 +600,7 @@ public class BroadcastProService {
 		if (Dictds!=null && Dictds.size()>0) {
 			for (TreeNode<? extends TreeNodeBean> treeNode : Dictds) {
 				if (treeNode.getChildCount()>0) {
-					cataids += getCataIds(root);
+					cataids += getCataIds(treeNode);
 				}else {
 					cataids+=",'"+treeNode.getId()+"'";
 				}
