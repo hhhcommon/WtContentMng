@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>电台管理</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
@@ -150,10 +150,10 @@
 }
 #chooseArea ,#chooseRadio{
   width: 100px;
-  height: 32px;
+  height: 30px;
   margin-left:20px;
   font-size: 12px;
-  line-height: 32px;
+  line-height: 30px;
   float: left;
   text-align: center;
   cursor: pointer;
@@ -192,9 +192,9 @@
 }
 ._li{
   position: relative;
-  width:60px;
-  height:30px;
-  line-height:30px;
+  padding:0px 4px;
+  height:25px;
+  line-height:25px;
   text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -213,19 +213,20 @@
 .playPaths{
   width: 450px;
   min-height: 80px;
+  margin: 13px 0px;
   border: 1px solid #dedede;
 }
 .playPathList{
-  width: 448px;
   height: 80px;
   margin: 0px;
   overflow: hidden;
   position: relative;
 }
 .playPath{
-  width:450px;
+  width:440px !important;
   height:30px;
   float: left;
+  margin:4px;
   margin-bottom:0px !important;
   padding: 4px 6px;
   border: 1px solid #dedede;
@@ -235,20 +236,20 @@
   height: 20px;
   float: left;
   position: relative;
-  top: 10px;
-  left: 20px;
+  top: 6px;
+  left: 15px;
 }
 .note{
   display: inline-block;
   float: left;
   position: relative;
-  top: 17px;
+  top: 13px;
   left: 25px;
 }
 .bcSource{
   width:170px !important;
   height:30px;
-  margin-top:10px;
+  margin: 4px;
   float: left;
   padding: 4px 6px;
   border: 1px solid #dedede;
@@ -256,8 +257,8 @@
 .addplayPath,.delplayPath{
   width: 80px;
   position: relative;
-  top: 10px;
-  left: 55px;
+  top: 5px;
+  left: 49px;
   height: 30px;
   line-height: 30px;
   float: left;
@@ -439,7 +440,7 @@
                     <div class="playPaths">
                       <div class="playPathList">
                         <input type="text" class="playPath" placeholder="播放地址" aria-required="true" autocomplete="off">
-                        <input type="text" class="bcSource" placeholder="地址所属平台"/>
+                        <input type="text" class="bcSource" placeholder="播放地址所属平台"/>
                         <input type="checkbox" name="isMain" class="isMain" />
                         <span class="note">是否设为主播放地址</span>
                         <div class="addplayPath">添加播放地址</div>
@@ -475,7 +476,7 @@
                 </tr>
                 <tr>
                   <td class="th add-th">详细信息</td>
-                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;margin-top:13px;"></textarea></td>
+                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;margin-top:10px;"></textarea></td>
                 </tr>
               </table>
             </form>
@@ -527,7 +528,9 @@
 <script >
 var zTreeObj,zTreeObjs,treeNode,rootNode,nodePathStr,modalNode;
 var rootPath=getRootPath();
-var oPeType=1;//1新增，2修改
+var userid="423007cf1fb1";//app用户的id
+var imei="46BEA3E454EF2A7EACA873F0F30A1F1A";//app用户的IMEI
+var oPeType="1";//1新增，2修改,3删除
 var clickName="";//area点击行政区划，radio点击电台分类
 var BcPlayPaths=[];//播放地址
 
@@ -546,6 +549,9 @@ $(function() {
     },
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    async:{
+      enable:true//强行异步加载父节点的子节点
     },
     data:{
       simpleData:{
@@ -570,6 +576,9 @@ $(function() {
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
     },
+    async:{
+      enable:true//强行异步加载父节点的子节点
+    },
     data:{
       simpleData:{
         enable: true
@@ -593,6 +602,9 @@ $(function() {
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
     },
+    async:{
+      enable:true//强行异步加载父节点的子节点
+    },
     data:{
       simpleData:{
         enable: true
@@ -611,8 +623,8 @@ $(function() {
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
-    cleanDialog();
-    oPeType=1;
+    cleanDialog();//清空数据
+    oPeType="1";//新增
     $("#addCata").find(".modal-header>h4").html("添加电台分类");
     var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
     loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
@@ -700,7 +712,7 @@ $(function() {
     fileReader.readAsDataURL($(this)[0].files[0]);
     var oMyForm = new FormData();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("UserId", "123");
+    oMyForm.append("UserId", userid);
     oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
     oMyForm.append("MobileClass", "Chrome");
     oMyForm.append("PCDType", "3");
@@ -811,9 +823,9 @@ function reqDetailList(event, treeId, treeNode){
   treeNode=nodes[0]; //当前选中的节点
   //alert("加载详情选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name+"当前选中节点的根节点:"+treeNode.attributes.mId);
   var _data={
-    "IMEI":"3279A27149B24719991812E6ADBA5583",
+    "IMEI":imei,
     "PCDType":"3",
-    "UserId":"46BEA3E454EF2A7EACA873F0F30A1F1A",
+    "UserId":userid,
     "CatalogType":treeNode.attributes.mId,
     "CatalogId":treeNode.id,
     "MediaType":"RADIO",
@@ -965,7 +977,7 @@ function addBroadcast(){
     var addInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
-      "UserId":"123",
+      "UserId":userid,
       "BcTitle":$("#nodeNames").val(),
       "BcImg":$(".upfile").attr("value"),
       "BcAreaId":$("#nodeArea").attr("value"),
@@ -1003,7 +1015,7 @@ function getBcInfoForMod(bcId){
   var _data={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
-      "UserId":"123",
+      "UserId":userid,
       "BcId":bcId
   }
   $.ajax({
@@ -1081,7 +1093,7 @@ function modBroadcast(){
   var modInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
-      "UserId":"123",
+      "UserId":userid,
       "BcId":$(".bcId").attr("value"),
       "BcTitle":$("#nodeNames").val(),
       "BcImg":$(".upfile").attr("value"),
@@ -1129,7 +1141,7 @@ function delBroadcast(check){
   var delInfo={
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
-    "UserId":"123",
+    "UserId":userid,
     "Ids":check
   };
   $.ajax({
@@ -1237,7 +1249,7 @@ function getBcProgramme(){
       var _data={
         "DeviceId":"3279A27149B24719991812E6ADBA5584",
         "PCDType":"3",
-        "UserId":"123",
+        "UserId":userid,
         "BcId":bcId
       };
       $.ajax({
@@ -1359,7 +1371,7 @@ $(".commitPro").on("click",function(){
   var _data={
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
-    "UserId":"123",
+    "UserId":userid,
     "BcId":$("#proName").attr("bcid"),
     "ProgrammeList":ProgrammeList
   };

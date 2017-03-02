@@ -31,11 +31,12 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 body{overflow: auto;-moz-user-select: none; }
 .content{
   position: relative;
-  width:100%;
+  width:1084px;
   min-width:780px;
-  height:100%;
+  height:auto;
+  border:1px solid #dedede;
 }
-.content .container .row{
+.content .containers .row{
   position: absolute;
   height: 100%;
   margin-left:0px;
@@ -106,22 +107,13 @@ body{overflow: auto;-moz-user-select: none; }
   position: relative;
   margin-top:15px;
 }
-.border1{
-  /*border: 1px solid #dedede;*/ 
-}
 .border2{
   border: 1px solid transparent; 
-}
-.attr:last-child{
-  /*border-bottom:none;*/
 }
 .attr{
   position: relative;
   width:100%;
   border: 1px solid #dedede;
-  /*border-top: 1px solid #dedede;
-  border-left: 1px solid #dedede;
-  border-right: 1px solid #dedede;*/
 }
 .attrKey{
   overflow: hidden;
@@ -264,7 +256,7 @@ body{overflow: auto;-moz-user-select: none; }
 .jm_st{
   float: right;
   line-height: 110px;
-  margin-right:110px;
+  margin-right:100px;
   color:#000;
 }
 .op_type{
@@ -524,7 +516,7 @@ body{overflow: auto;-moz-user-select: none; }
 </style>
 <body class="laydate_body" onselectstart="return false">
 <div class="content">
-  <div class="container">
+  <div class="containers">
     <div class="row">
       <div class="col-md-12 con_right">
         <ul class="ri_top">

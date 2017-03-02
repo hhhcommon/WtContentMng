@@ -77,7 +77,7 @@
                 <tr>
                   <td class="th add-th">分类父级</td>
                   <td colspan="3">
-                    <div style="width:450px;height:36px;">
+                    <div style="width:450px;height:34px;">
                       <input type="text" class="form-control" id="nodeParent" name="nodeParent" placeholder="父分类id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;">
                       <input type="text" class="form-control" id="nodeParents" name="nodeParents" placeholder="父分类名字" aria-required="true" style="width:330px;margin-bottom:0px;">
                       <div id='chooseParent'>选择父分类</div>
@@ -87,7 +87,7 @@
                 </tr>
                 <tr>
                   <td class="th add-th">序号</td>
-                  <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" min="0" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
                   <td class="th add-th">业务编码</td>
@@ -112,7 +112,7 @@
 <script>
 var zTreeObj,treeNode,rootNode,nodePathStr,modalNode;
 var rootPath=getRootPath();
-var oPeType=1;//1新增，2修改
+var oPeType="1";//1新增，2修改,3删除
 var selectNode=1;//1选中节点，2未选中节点
 //需要加载的分类树的数据，以list方式给出
 //var loadTreeData=[{CatalogType:"1",TreeViewType:"zTree"}, {CatalogType:"3",TreeViewType:"zTree"}, {CatalogType:"2",TreeViewType:"zTree"}, {CatalogType:"4",TreeViewType:"zTree"}, {CatalogType:"5",TreeViewType:"zTree"}];
@@ -122,7 +122,7 @@ var loadTreeData=[{CatalogType:"4",TreeViewType:"zTree"}, {CatalogType:"5",TreeV
 $(function() {
   //0-初始化页面
   //0.1-初始化树样式
-  zTreeObj=$.fn.zTree.init($("#cataTree"), {
+  zTreeObj=$.fn.zTree.init($("#cataTree"),{
     view:{
       selectedMulti: false//是否允许同时选中多个节点
     },
@@ -133,6 +133,9 @@ $(function() {
     },
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    async:{
+      enable:true//强行异步加载父节点的子节点
     },
     data:{
       simpleData:{
@@ -141,7 +144,7 @@ $(function() {
     }
   });
   //0.2--初始化弹出框的树
-  zTreeObjs=$.fn.zTree.init($("#cataTrees"), {
+  zTreeObjs=$.fn.zTree.init($("#cataTrees"),{
     view:{
       selectedMulti: false//是否允许同时选中多个节点
     },
@@ -152,6 +155,9 @@ $(function() {
     },
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    async:{
+      enable:true//强行异步加载父节点的子节点
     },
     data:{
       simpleData:{
@@ -170,49 +176,22 @@ $(function() {
   //2-初始化按钮
   //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
-    cleanDialog();
-    oPeType=1;
-    getRootNode();
-    if(selectNode==2){//未选中节点
-      alert("请先选中分类再进行操作");
-      return;
-    }else{
-      $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
-      $("#addCata").find("tr:eq(2)").css({"display":"none"});
-      $("#shade").css({"display":"block"});
-      $("#addCata").modal("show");
-    }
+    cleanDialog();//清空模态框里面的数据
+    oPeType="1";//增加
+    getRootNode(oPeType);
   });
   //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
-    oPeType=2;
-    getRootNode();
-    if(selectNode==2){//未选中节点
-      alert("请先选中分类再进行操作");
-      return;
-    }else{
-      $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
-      $("#addCata").find("tr:eq(2)").show();
-      $("#nodeNames").val(treeNode.name);
-      $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
-      $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
-      $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
-      $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//分类父级的id
-      $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//分类父级的名字
-      $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
-      $("#shade").css({"display":"block"});
-      $("#addCata").modal("show");
-    }
+    cleanDialog();//清空模态框里面的数据
+    oPeType="2";//修改
+    loadTree(loadTreeData);
+    getRootNode(oPeType);
   });
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
-    getRootNode();
-    if(selectNode==2){//未选中节点
-      alert("请先选中分类在进行操作");
-      return;
-    }else{
-      beforeRemove();
-    }
+    cleanDialog();//清空模态框里面的数据
+    oPeType="3";//删除
+    getRootNode(oPeType);
   });
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
@@ -226,11 +205,14 @@ $(function() {
   $("#save,.close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
+    $("#cataTrees").slideUp("slow");
   });
   //2.6-点击选择父分类，弹出的修改界面出现树形分类
   $("#chooseParent").on("click",function(){
     $("#cataTrees").slideDown("slow");
-  });  
+  });
+  //2.7-input输入框的提示功能关闭
+  $("input").attr("autocomplete","off");
 });
 
 
@@ -251,8 +233,11 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-          zTreeObj.addNodes(null,jsonData.Data,false);
-          zTreeObjs.addNodes(null,jsonData.Data,false);
+          if(oPeType==2){
+            zTreeObjs.addNodes(null,jsonData.Data,false);
+          }else{
+            zTreeObj.addNodes(null,jsonData.Data,false);
+          }
         }
         loadRecursion(index);
       },
@@ -264,29 +249,24 @@ function loadTree(loadData) {
 }
 
 /*与选中节点有关的操作*/
-function getRootNode() {
+function getRootNode(oPeType){
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
   if(!treeNode){
     $("#shade").css({"display":"none"});
     $("#addCata").modal("hide");
     selectNode=2;//未选中节点
+    alert("请先选中节点");
     return;
   }else{
-    alert("当前选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name);
     nodePathStr=treeNode.attributes.pathName+"";
     if(nodePathStr.indexOf("/")>=0){
       rootNode=nodePathStr.split("/")[0];
     }else{
       rootNode=treeNode.attributes.pathName;
     }
-    var modPathNames=nodePathStr.substring(0,nodePathStr.lastIndexOf('\/'));
-    if(oPeType==1){
-      $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
-    }else{
-      $("#addCata").find(".modal-header>span").hide();
-    }
     selectNode=1;//已选中节点
+    commonJudeg(oPeType);
   }
 }
 
@@ -315,7 +295,9 @@ function addCatalog() {
             id:resultData.CatagoryId,
             name:$("#nodeNames").val(),
             attributes:{
-              sort:$("#sort").val(),
+              order:$("#sort").val(),
+              parentId:treeNode.id,
+              mId:treeNode.attributes.mId,
               bCode:$("#nodeCode").val(),
               aliasName:$("#aliasName").val(),
               desc:$("#nodeDescn").val(),
@@ -323,7 +305,6 @@ function addCatalog() {
             }
           }
         );
-        cleanDialog();
         alert("添加成功！");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
@@ -336,14 +317,18 @@ function addCatalog() {
 }
 
 /*点击弹出窗里面的树上的节点*/
-function onClick(event, treeId, treeNode) {
+function onClick(event, treeId,treeNode) {
   var node=zTreeObjs.getSelectedNodes();//获取模态框里zTree当前被选中的节点数据集合
   modalNode=node[0];//当前选中的节点
-  if(modalNode.id==modalNode.attributes.mId){//分类父级是根节点
-    $("#nodeParent").val("0").attr("selectId",modalNode.id);
-  }else{
-    $("#nodeParent").val(modalNode.id).attr("selectId",modalNode.id);
-  }
+  var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
+  var childNodes = zTreeObj.transformToArray(nodes[0]);//获取ztree当前被选中节点的子节点的id集合     
+  for(i = 0; i < childNodes.length; i++) {   
+    if(modalNode.id==childNodes[i].id){//父子节点是同一节点,或模态框里面选中的父节点是自己的子节点
+      alert("当前栏目不支持作为父级栏目，请选择其他栏目");
+      return false;
+    }
+  }     
+  $("#nodeParent").val(modalNode.id);
   $("#nodeParents").val(modalNode.name);
   $("#cataTrees").slideUp("slow");
 };
@@ -373,15 +358,15 @@ function modCatalog() {
           var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
           treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
-        }
+        } 
         var parentChanged=0;
         if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//分类父级改变
           parentChanged=1;
           treeNode.attributes.parentId=$("#nodeParent").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").attr("selectId"), null);
-          if(!treeNode.children){//选中的分类下面无其他分类
+          var targetNode=zTreeObj.getNodeByParam("id",$("#nodeParent").val(),null);
+          if(!treeNode.children){//选中的要移动的分类下面无其他分类
             zTreeObj.moveNode(targetNode,treeNode,"inner");
-          }else{//选中的分类下面含有其他分类
+          }else{//选中的要移动的分类下面含有其他分类
             for(var i=0;i<treeNode.children.length;i++){
               zTreeObj.moveNode(treeNode,treeNode.children[i],"inner");
             }
@@ -390,7 +375,7 @@ function modCatalog() {
         }
         if((modInfo.Data.Sort!=treeNode.attributes.order)||(parentChanged==1)) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").attr("selectId"), null);
+          var targetNode=zTreeObj.getNodeByParam("id",$("#nodeParent").val(),null);
           if(targetNode.children){//当前选中分类的父分类的所有子分类存在
             var sLength=targetNode.children.length;//当前选中分类的父分类的所有子分类
             for(var i=0;i<sLength;i++){
@@ -416,15 +401,6 @@ function modCatalog() {
     }
   })
 };
-
-//删除节点的时候验证是否删除
-function beforeRemove(){
-  if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
-    delCatalog();
-  }else{
-    alert("成功取消删除");
-  }
-}
 
 /*删除已有分类的方法*/
 function delCatalog() {
@@ -453,7 +429,54 @@ function cleanDialog() {
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });
-  $("#addCata").find(".modal-header>span").show();
+  $("#cataTrees").html(" ");//清空模态框里面的ztree
+}
+/*增删改的公共判断*/
+function commonJudeg(oPeType){
+  if(treeNode.level>=1){//非根节点支持增删改
+    switch(oPeType){
+      case "1": $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
+                $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+                $("#addCata").find("tr:eq(2)").hide();
+                $("#shade").css({"display":"block"});
+                $("#addCata").modal("show");
+                break;
+      case "2": $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
+                $("#catalogBelong,#nodePath").hide();
+                $("#addCata").find("tr:eq(2)").show();
+                $("#nodeNames").val(treeNode.name);
+                $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
+                $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
+                $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
+                $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//分类父级的id
+                $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//分类父级的名字
+                $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
+                $("#shade").css({"display":"block"});
+                $("#addCata").modal("show");
+                break;
+      case "3": if(confirm("确认删除 节点 -- " + treeNode.name + " 吗？")){
+                  delCatalog();
+                }else{
+                  alert("成功取消删除");
+                }
+                break;
+    }
+  }else if(treeNode.level==0){//根节点只支持增
+    switch(oPeType){
+      case "1": $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
+                $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+                $("#addCata").find("tr:eq(2)").hide();
+                $("#shade").css({"display":"block"});
+                $("#addCata").modal("show");
+                break;
+      case "2": alert("当前节点不支持修改操作，请选择他的子节点进行操作");
+                return false;
+                break;
+      case "3": alert("当前节点不支持删除操作，请选择他的子节点进行操作");
+                return false;
+                break;
+    }
+  }
 }
 </script>
 </html>

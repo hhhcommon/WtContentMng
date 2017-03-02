@@ -26,15 +26,16 @@
 .mainArea{
   height: calc(100% - 40px);
   width: 100%;
-  position: absolute;
+  position: relative;
   overflow: auto;
 }
 /*分类列表*/
 .catListArea{
-  position: absolute;
+  position: relative;
   left: 0;
   top: 0;
   width: 400px;
+  float: left;
   overflow: hidden;
   padding-bottom: 30px;
 }
@@ -48,11 +49,12 @@
 }
 /*内容详情*/
 .catDetailArea{
-  position:absolute;
-  right:0;
+  position:relative;
+  left:0;
   top:0;
   width:calc(100% - 400px);
   height: 100%;
+  float: left;
   background:white;
 }
 .ibox .ibox-content{

@@ -31,11 +31,15 @@ a:hover{color:#ffa634;}
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;-moz-user-select: none;}
 .content{
-  width:100%;
+  position: relative;
+  width:1084px;
   min-width:780px;
   height:auto;
+  border:1px solid #dedede;
 }
-.content .container .row{
+.content .containers .row{
+  position: absolute;
+  height: 100%;
   margin-left:0px;
   margin-right:0px;
   position: inherit;
@@ -658,7 +662,7 @@ body{overflow: auto;-moz-user-select: none;}
 </style>
 <body onselectstart="return false">
 <div class="content">
-  <div class="container">
+  <div class="containers">
     <div class="row">
       <div class="col-md-12 con_right">
         <ul class="ri_top">
