@@ -1,6 +1,10 @@
 {
   //socket客户端配置信息
-  "logPath":"/opt/logs",
+  "serverIdentify":{
+    "serverType":"CMEngin", //不能大于12个字符
+    "serverName":"MainServer"
+  },
+  "logPath":"c:/opt/logs",
   "socketClient": {
     "ip":"123.56.254.75",            //服务端Ip
     "port":"16789",                  //服务端端口号

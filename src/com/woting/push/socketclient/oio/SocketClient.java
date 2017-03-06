@@ -74,8 +74,8 @@ public class SocketClient {
         try {
             if (msg instanceof MsgNormal) {
                 ((MsgNormal)msg).setPCDType(0);
-                ((MsgNormal)msg).setUserId("AppCM0000001");
-                ((MsgNormal)msg).setDeviceId("AppConMnServer000000000000000001");//获得本机信息（CPU号）
+                ((MsgNormal)msg).setUserId(scc.getServerType());
+                ((MsgNormal)msg).setDeviceId(scc.getServerName());//获得本机信息（CPU号）
             }
             msg.setSendTime(System.currentTimeMillis());
             sendMsgQueue.offer(msg.toBytes());
