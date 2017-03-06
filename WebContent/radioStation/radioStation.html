@@ -282,6 +282,7 @@
   height:100%;
   min-height:520px;
   background: #fff;
+  padding-bottom:50px;
 }
 .radioName{
   width:100%;
@@ -331,16 +332,15 @@
   float: left;
   text-align: left;
   display: inline-block;
+  padding:0px 2px;
 }
 .clspan1{
-  width:auto;
   font-size:16px;
   border:none;
   white-space: nowrap;
   text-overflow: ellipsis;
   background: #fff;
 }
-.clspan2,.clspan3{width:75px;}
 .clspan2{margin-left:100px;}
 .clspan3{margin-left:10px;}
 .proBtns{
@@ -363,11 +363,21 @@
 .newadd{
   float: right;
   position: absolute;
-  top: 40px;
+  top: 45px;
   right: 70px;
+  padding: 5px;
+  border-radius: 5px;
+  color: #000;
+  border: 1px solid #dedede;
+  cursor: pointer;
 }
 .delPro{
   margin-left:3px;
+}
+.modal-footer button{
+  color: #0077c7;
+  background: #fff;
+  border: 1px solid #dedede;
 }
 </style>
 </head>
@@ -429,7 +439,7 @@
                     <div class="upl_pt">
                       <input class="upfile" type="file" />
                       <div class="previewImg">
-                        <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover">
+                        <img class="defaultImg" src="http://wotingfm.com/CM/resources/images/default.png" alt="font cover">
                       </div>
                     </div>
                   </td>
@@ -482,8 +492,8 @@
             </form>
           </div>
           <div class="modal-footer" style="margin-top:60px;">
-            <button id="save" type="button" class="btn btn-primary" style="position: absolute;left:513px;">提交</button>
-            <button type="button" class="btn btn-white cancel" data-dismiss="modal">关闭</button>
+            <button id="save" type="button" class="btn" style="position: absolute;left:513px;">提交</button>
+            <button type="button" class="btn cancel" data-dismiss="modal">关闭</button>
           </div>
         </div>
       </div>
@@ -497,7 +507,7 @@
             <span class="sr-only">Close</span>
           </button>
           <h4 class="modal-title" id="proName" style="margin-bottom:5px;"></h4>
-          <button class="newadd">新增</button>
+          <div class="newadd">新增</div>
         </div>
         <div class="pro_ctitle">
           <h4 class="active">周一</h4>
@@ -535,7 +545,7 @@ var clickName="";//area点击行政区划，radio点击电台分类
 var BcPlayPaths=[];//播放地址
 
 //初始化方法：页面加载完成后执行
-$(function() {
+$(function(){
   //0-初始化页面
   //0.1-初始化页面树样式
   zTreeObj=$.fn.zTree.init($("#cataTree"),{
@@ -559,7 +569,7 @@ $(function() {
       }
     },
     callback:{
-      onClick:reqDetailList
+      onClick:reqDetailList//选中页面上某一分类，加载对应的列表详情
     }
   });
   
@@ -617,67 +627,93 @@ $(function() {
   
   //1-加载数据
   //1.1-加载页面上的树
-  var loadTreeData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
+  var loadTreeData=[{CatalogType:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
   loadTree(zTreeObj,loadTreeData);
   
   //2-初始化按钮
-  //2.1-点击添加按钮，增加新的分类
+  //2.1-点击添加按钮，增加新的电台
   $("#add").on("click",function(){
     cleanDialog();//清空数据
     oPeType="1";//新增
     $("#addCata").find(".modal-header>h4").html("添加电台分类");
     var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
     loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
-    var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+    var loadAreaData=[{CatalogType:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
     loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
     $("#shade").css({"display":"block"});
     $("#addCata").modal("show");
   });
   
-  //2.2-点击修改按钮，修改已有的分类
+  //2.2-点击修改按钮，修改已选中的电台详情
   $("#mod").on("click",function(){
+    var check_num=0;//被选中的checkbox的数量
+    var bcId=" ";
     $(document).find("input[type='checkbox']").each(function(){
       if($(this).is(':checked')){
-        cleanDialog();
-        oPeType=2;
-        var bcId=$(this).parent().parent(".listBox").attr("contentid");
-        getBcInfoForMod(bcId);//为修改得到详细的电台信息
-        var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
-        loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
-        var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
-        loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
-        $("#shade").css({"display":"block"});
-        $("#addCata").modal("show"); 
+        check_num++;
+        bcId=$(this).parent().parent(".listBox").attr("contentid");
       }
-    })
+    });
+    if(check_num>1){
+      alert("修改只支持单选，请重新选择要修改的电台");
+      $("input[type='checkbox']").attr("checked",false); 
+      return;
+    }else if(check_num==0){
+      alert("在修改之前请选择要修改的电台");
+      return;
+    }else{
+      cleanDialog();//清空数据
+      oPeType="2";//修改
+      getBcInfoForMod(bcId);//为修改得到详细的电台信息
+      var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
+      loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
+      var loadAreaData=[{CatalogType:"2",RelLevel:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
+      loadTree(areaObj,loadAreaData);//加载弹出页面上行政区划的树
+    }
   });
   
   //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
-    var check="";
+    oPeType="3";//删除
+    var check_num=0;//被选中的checkbox的数量
+    var checkId="";
     var catalogType="";
     var catalogId="";
     $(document).find("input[type='checkbox']").each(function(){
       if($(this).is(':checked')){
-        var  contentid=$(this).parent().parent(".listBox").attr("contentid");
-        if(check==""){
-          check=contentid;
-        }else{
-          check+=","+contentid;
-        }
-        catalogType=$(this).parent().parent(".listBox").attr("selectnodemid");
-        catalogId=$(this).parent().parent(".listBox").attr("selectnodeid");
+        check_num++;
       }
     });
-    beforeRemove(check);
+    if(check_num<=0){
+      alert("在修改之前请选择要修改的电台");
+      return;
+    }else{
+      $(document).find("input[type='checkbox']").each(function(){
+        if($(this).is(':checked')){
+          var  contentid=$(this).parent().parent(".listBox").attr("contentid");
+          if(checkId==""){
+            checkId=contentid;
+          }else{
+            checkId+=","+contentid;
+          }
+          catalogType=$(this).parent().parent(".listBox").attr("selectnodemid");
+          catalogId=$(this).parent().parent(".listBox").attr("selectnodeid");
+        }
+      });
+      if(confirm("确认删除这些电台 吗？")){
+        delBroadcast(checkId,catalogType,catalogId);
+      }else{
+        alert("成功取消删除");
+      }
+    }
   });
   
   //2.4-点击提交按钮，提交表单
   $("#save").on("click",function(){
     if(oPeType=="1"){
-      addBroadcast();
+      addBroadcast();//增加电台
     }else{
-      modBroadcast();
+      modBroadcast();//修改电台
     }
   })
   
@@ -728,9 +764,10 @@ $(function() {
       dataType:"json",
       //表单提交前进行验证
       success: function (opeResult){
-        if(opeResult.ful[0].success=="TRUE"){
-          _this.attr("value",opeResult.ful[0].FilePath);
+        if(opeResult.Success==true){
+          _this.attr("value",opeResult.FilePath);
         }else{
+          alert(000);
           alert(opeResult.err);
         }
       },
@@ -776,7 +813,7 @@ $(function() {
     $(".playPaths").append(newPath);
   });
   
-  //2.91--设为主播放地址的时候选中勾选框(只能选择一个checkbox)
+  //2.9--设为主播放地址的时候选中勾选框(只能选择一个checkbox)
   $(document).on("click","input[name='isMain']",function(){
     $("input[name='isMain']").prop({"checked":false});
     $(this).prop({"checked":true});
@@ -821,7 +858,6 @@ function loadTree(obj,loadData) {
 function reqDetailList(event, treeId, treeNode){
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
-  //alert("加载详情选中节点的id："+treeNode.id+"当前选中节点的名字:"+treeNode.name+"当前选中节点的根节点:"+treeNode.attributes.mId);
   var _data={
     "IMEI":imei,
     "PCDType":"3",
@@ -838,14 +874,21 @@ function reqDetailList(event, treeId, treeNode){
     url:rootPath+"content/bc/getBroadcastList.do",
     dataType: "json",
     data:JSON.stringify(_data),
+    beforeSend: function(){
+      $("#mod,#del,#sear,#programme").attr("disabled","disabled");//只能进行添加操作
+      $(".detail,.radio_tit,.radio_sum").html("");
+      $(".detail").html('<p style="font-size:20px;margin-top:10px;text-align:center;">数据加载中...</p>');
+    },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         $(".detail,.radio_tit,.radio_sum").html("");
         getZtreeRootPath(treeNode);//得到当前选中节点的根路径
         loadDetailList(treeNode,resultData);
+        $("#mod,#del,#sear,#programme").removeAttr("disabled");//工具栏可以进行任意操作
       }else{
         $(".radio_tit,.radio_sum").html("");
-        $(".detail").html('<p style="font-size:20px;text-align:center;">暂时没有电台</p>');
+        $(".detail").html('<p style="font-size:20px;margin-top:10px;text-align:center;">暂时没有电台</p>');
+      
       }
     },
     error: function(jqXHR){
@@ -887,16 +930,31 @@ function getZtreeRootPath(treeNode){//关键代码，通过treeNode遍历父亲�
 /*点击弹出窗里面的树上的节点*/
 function onClick(event, treeId, treeNode){
   if(clickName=="radio"){//点击电台分类
-    var node=radioObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
+    var node=radioObj.getSelectedNodes();//获取模态框里zTree当前被选中的节点数据集合
     modalNode=node[0]; //当前选中的节点
     if(modalNode.id=="1"){
       alert("请在当前分类下的子分类进行操作");
+      return;
     }else{
-      var radioLi='<li class="_li" id='+modalNode.id+'>'+
-                    '<span>'+modalNode.name+'</span>'+
-                    '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
-                  '</li>';
-      $(".radio_ul").append(radioLi); 
+      var isSame=false;
+      if($(document).find(".radio_ul ._li").length>0){
+        $(document).find(".radio_ul ._li").each(function(){
+          if($(this).attr("id")==modalNode.id){
+            isSame=true;
+            alert("你要选择的分类已经存在，请选择其他的分类！");
+            return;
+          }else{
+            isSame=false;
+          }
+        });
+      }
+      if(isSame==false){
+        var radioLi='<li class="_li" id='+modalNode.id+'>'+
+                      '<span>'+modalNode.name+'</span>'+
+                      '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
+                    '</li>';
+        $(".radio_ul").append(radioLi);
+      }
       $("#chooseRadio").text("选择分类");
       $("#radioTree").slideUp("slow");
     }
@@ -904,15 +962,30 @@ function onClick(event, treeId, treeNode){
     var node=areaObj.getSelectedNodes();//获取 模态框里zTree当前被选中的节点数据集合
     modalNode=node[0]; //当前选中的节点
     if((modalNode.id!="2")&&(modalNode.id!="9")){
-      var areaLi='<li class="_li" id='+modalNode.id+'>'+
+      var isSame=false;
+      if($(document).find(".area_ul ._li").length>0){
+        $(document).find(".area_ul ._li").each(function(){
+          if($(this).attr("id")==modalNode.id){
+            isSame=true;
+            alert("你要选择的分类已经存在，请选择其他的分类！");
+            return;
+          }else{
+            isSame=false;
+          }
+        });
+      }
+      if(isSame==false){
+        var areaLi='<li class="_li" id='+modalNode.id+'>'+
                     '<span>'+modalNode.name+'</span>'+
                     '<img class="_img" src="../anchor/img/upl_img2.png" alt="取消" />'+
                   '</li>';
-      $(".area_ul").append(areaLi);
+        $(".area_ul").append(areaLi);
+      }
       $("#chooseArea").text("选择区域");
       $("#areaTree").slideUp("slow");
     }else{
       alert("请在当前分类下的子分类进行操作");
+      return;
     }
   }
 };
@@ -975,9 +1048,9 @@ function addBroadcast(){
     return;
   }else{
     var addInfo={
-      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "DeviceId":imei,
       "PCDType":"3",
-      "UserId":userid,
+      "UserId":"123",
       "BcTitle":$("#nodeNames").val(),
       "BcImg":$(".upfile").attr("value"),
       "BcAreaId":$("#nodeArea").attr("value"),
@@ -987,20 +1060,24 @@ function addBroadcast(){
       "BcDescn":$("#nodeDescn").val()
     };
   }
-  console.log(addInfo);
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/addBroadcast.do",
     dataType: "json",
     data:JSON.stringify(addInfo),
+    beforeSend: function(){
+      $(".modal-footer button").attr("disabled","disabled");
+    },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
-        cleanDialog();
         alert("添加成功!");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
+        $(".modal-footer button").removeAttr("disabled");
+        $(document).find("input[type='checkbox']").removeAttr("checked");
         reqDetailList(event,$("#nodeArea").attr("value"));
       }else{
+        $(".modal-footer button").removeAttr("disabled");
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
     },
@@ -1015,7 +1092,7 @@ function getBcInfoForMod(bcId){
   var _data={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
-      "UserId":userid,
+      "UserId":"123",
       "BcId":bcId
   }
   $.ajax({
@@ -1082,6 +1159,8 @@ function loadModData(resultData){
   }
   var des=resultData.ResultInfo[0].ContentDesc;
   $("#nodeDescn").val((des=="null")?"":des);
+  $("#shade").css({"display":"block"});
+  $("#addCata").modal("show"); 
 }
 
 /*修改已有分类的方法*/
@@ -1093,7 +1172,7 @@ function modBroadcast(){
   var modInfo={
       "DeviceId":"3279A27149B24719991812E6ADBA5584",
       "PCDType":"3",
-      "UserId":userid,
+      "UserId":"123",
       "BcId":$(".bcId").attr("value"),
       "BcTitle":$("#nodeNames").val(),
       "BcImg":$(".upfile").attr("value"),
@@ -1103,21 +1182,24 @@ function modBroadcast(){
       "BcPublisher":$("#publisher").val(),
       "BcDescn":$("#nodeDescn").val()
   };
-  console.log(modInfo);
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/updateBroadcast.do",
     dataType: "json",
     data:JSON.stringify(modInfo),
+    beforeSend: function(){
+      $(".modal-footer button").attr("disabled","disabled");
+    },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("修改成功");
-        $(document).find("input[type='checkbox']").removeAttr("checked");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
+        $(".modal-footer button").removeAttr("disabled");
+        $(document).find("input[type='checkbox']").removeAttr("checked");
         reqDetailList(event,$("#nodeArea").attr("value"));
-        cleanDialog();
       }else{
+        $(".modal-footer button").removeAttr("disabled");
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
     },
@@ -1127,32 +1209,28 @@ function modBroadcast(){
   })
 };
 
-//删除节点的时候验证是否删除
-function beforeRemove(check){
-  if(confirm("确认删除这些电台 吗？")){
-    delBroadcast(check);
-  }else{
-    alert("成功取消删除");
-  }
-}
-
 /*删除已有分类的方法*/
-function delBroadcast(check){
+function delBroadcast(checkId,catalogType,catalogId){
   var delInfo={
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
-    "UserId":userid,
-    "Ids":check
+    "UserId":"123",
+    "Ids":checkId,
+    "CatalogType":catalogType,
+    "CatalogId":catalogId
   };
   $.ajax({
     type: "POST",    
     url:rootPath+"content/bc/delBc.do",
     dataType: "json",
     data:JSON.stringify(delInfo),
+    beforeSend: function(){
+      $("#mod,#del,#sear,#programme").attr("disabled","disabled");//只能进行添加操作
+    },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("删除成功!");
-        removing(check);//删除成功后从页面上移走
+        removing(checkId);//删除成功后从页面上移走
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -1162,10 +1240,9 @@ function delBroadcast(check){
     }
   })
 };
-
-/*删除成功后从页面上移走*/
-function removing(check){
-  var checks=check.split(",");
+//删除成功后从页面上移走
+function removing(checkId){
+  var checks=checkId.split(",");
   for(var i=0;i<checks.length;i++){
     $(document).find(".detail .listBox").each(function(){
       var contentId=$(this).attr("contentid");
@@ -1176,7 +1253,7 @@ function removing(check){
   }
 }
 
-/*清空分类界面方法*/
+/*清空模态框里面的数据方法*/
 function cleanDialog(){
   $("form")[0].reset();
   $(".newImg").remove();
@@ -1208,7 +1285,7 @@ $(document).on("click","._img",function(){
 
 
 /*
- 节目单管理页面
+ 节目单管理页面--s
  * */
 $("#programme").on("click",function(){
   getBcProgramme();//得到电台节目单信息
@@ -1240,47 +1317,59 @@ $(".cancelPro,#programmeMg .close").on("click",function(){
 
 /*得到电台节目单信息*/
 function getBcProgramme(){
+  var check_num=0;//被选中的checkbox的数量
+  var bcId=" ";
+  var bcName=" "
   $(document).find("input[type='checkbox']").each(function(){
     if($(this).is(':checked')){
-      var bcId=$(this).parent().parent(".listBox").attr("contentid");
-      var bcName=$(this).parent().siblings(".listCon").children("h3").text();
-      $("#proName").text(bcName);
-      $("#proName").attr({"bcId":bcId});
-      var _data={
-        "DeviceId":"3279A27149B24719991812E6ADBA5584",
-        "PCDType":"3",
-        "UserId":userid,
-        "BcId":bcId
-      };
-      $.ajax({
-        type: "POST",    
-        url:rootPath+"content/bc/getBcProgramme.do",
-        dataType: "json",
-        data:JSON.stringify(_data),
-        success: function(resultData){
-          if(resultData.ReturnType=="1001"){
-            loadBcProgramme(resultData);//加载电台节目单信息
-          }else{
-            alert("当前电台没有节目单");
-          }
-        },
-        error: function(jqXHR){
-          alert("发生错误" + jqXHR.status);
-        }
-      })
-      $("#programmeMg,#shade").show();
+      check_num++;
+      bcId=$(this).parent().parent(".listBox").attr("contentid");
+      bcName=$(this).parent().siblings(".listCon").children("h3").text();
     }
   });
+  if(check_num>1){
+    alert("节目单管理只支持单选，请重新选择电台");
+    $("input[type='checkbox']").attr("checked",false); 
+    return;
+  }else if(check_num==0){
+    alert("在点击之前请选择电台");
+    return;
+  }else{
+    $("#proName").text(bcName).attr({"bcId":bcId});
+    var _data={
+      "DeviceId":"3279A27149B24719991812E6ADBA5584",
+      "PCDType":"3",
+      "UserId":"123",
+      "BcId":bcId
+    };
+    $.ajax({
+      type: "POST",    
+      url:rootPath+"content/bc/getBcProgramme.do",
+      dataType: "json",
+      data:JSON.stringify(_data),
+      success: function(resultData){
+        if(resultData.ReturnType=="1001"){
+          loadBcProgramme(resultData);//加载电台节目单信息
+        }else{
+          $(".content").html("<div class='remove' style='text-align:center;font-size:16px;margin-top: 10px;'>当前电台没有节目单</div>");
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    })
+    $("#programmeMg,#shade").show();
+  }
 }
 
 /*加载电台节目单信息*/
 function loadBcProgramme(resultData){
-  $(".content").html("");//先清空数据
+  $(".content").html("<div class='remove' style='text-align:center;font-size:16px;margin-top: 10px;'>当前电台没有节目单</div>");
   for(var i=0;i<resultData.ResultInfo.length;i++){
     var newPro= '<div class="conlist" bcId='+resultData.ResultInfo[i].BcId+' week='+resultData.ResultInfo[i].WeekDay+'>'+
-                  '<input type="text" class="clspan1" value="'+resultData.ResultInfo[i].Title+'">'+
-                  '<input type="text" class="clspan2 date" value="'+resultData.ResultInfo[i].BeginTime+'">'+
-                  '<input type="text" class="clspan3 date" value="'+resultData.ResultInfo[i].EndTime+'">'+
+                  '<input type="text" class="clspan1" placeholder="输入节目单的标题" value="'+resultData.ResultInfo[i].Title+'">'+
+                  '<input type="text" class="clspan2 date" placeholder="输入节目单的开始时间" value="'+resultData.ResultInfo[i].BeginTime+'">'+
+                  '<input type="text" class="clspan3 date" placeholder="输入节目单的结束时间" value="'+resultData.ResultInfo[i].EndTime+'">'+
                   '<div class="buttons">'+
                     '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
                     '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
@@ -1288,29 +1377,42 @@ function loadBcProgramme(resultData){
                 '</div>';
     var w= resultData.ResultInfo[i].WeekDay;           
     switch(w){
-      case 1:
-        $("#week1").append(newPro);
-        break;
-      case 2:
-        $("#week2").append(newPro);
-        break;
-      case 3:
-        $("#week3").append(newPro);
-        break;
-      case 4:
-        $("#week4").append(newPro);
-        break;
-      case 5:
-        $("#week5").append(newPro);
-        break;
-      case 6:
-        $("#week6").append(newPro);
-        break;
-      case 7:
-        $("#week7").append(newPro);
-        break;
-      default:
-        break;
+      case 1: if($("#week1").children(".conlist").length<=0){
+                $("#week1").html("");
+              }
+              $("#week1").append(newPro);
+              break;
+      case 2: if($("#week2").children(".conlist").length<=0){
+                $("#week2").html("");
+              }
+              $("#week2").append(newPro);
+              break;
+      case 3: if($("#week3").children(".conlist").length<=0){
+                $("#week3").html("");
+              }
+              $("#week3").append(newPro);
+              break;
+      case 4: if($("#week4").children(".conlist").length<=0){
+                $("#week4").html("");
+              }
+              $("#week4").append(newPro);
+              break;
+      case 5: if($("#week5").children(".conlist").length<=0){
+                $("#week5").html("");
+              }
+              $("#week5").append(newPro);
+              break;
+      case 6: if($("#week6").children(".conlist").length<=0){
+                $("#week6").html("");
+              }
+              $("#week6").append(newPro);
+              break;
+      case 7: if($("#week7").children(".conlist").length<=0){
+                $("#week7").html("");
+              }
+              $("#week7").append(newPro);
+              break;
+      default:break;
     }
   }
   timeHS();//时分秒插件
@@ -1319,9 +1421,9 @@ function loadBcProgramme(resultData){
 /*点击每个节目单的新增，增加新的节目*/
 function addPro(addPro){
   var newPro= '<div class="conlist" >'+
-                  '<input type="text" class="clspan1" value="">'+
-                  '<input type="text" class="clspan2 date" value="">'+
-                  '<input type="text" class="clspan3 date" value="">'+
+                  '<input type="text" class="clspan1" placeholder="输入节目单的标题" value="">'+
+                  '<input type="text" class="clspan2 date" placeholder="输入节目单的开始时间" value="">'+
+                  '<input type="text" class="clspan3 date" placeholder="输入节目单的结束时间" value="">'+
                   '<div class="buttons">'+
                     '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
                     '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
@@ -1334,9 +1436,9 @@ function addPro(addPro){
 /*点击标题处的新增*/
 $(".newadd").on("click",function(){
   var newPro= '<div class="conlist" >'+
-                  '<input type="text" class="clspan1" value="">'+
-                  '<input type="text" class="clspan2 date" value="">'+
-                  '<input type="text" class="clspan3 date" value="">'+
+                  '<input type="text" class="clspan1" placeholder="输入节目单的标题" value="">'+
+                  '<input type="text" class="clspan2 date" placeholder="输入节目单的开始时间" value="">'+
+                  '<input type="text" class="clspan3 date" placeholder="输入节目单的结束时间" value="">'+
                   '<div class="buttons">'+
                     '<input type="button"  class="addPro" value="新增" onclick="addPro(this)">'+
                     '<input type="button"  class="delPro" value="删除" onclick="delPro(this)">'+
@@ -1367,11 +1469,10 @@ $(".commitPro").on("click",function(){
       })
     }
   }
-  console.log(ProgrammeList);
   var _data={
     "DeviceId":"3279A27149B24719991812E6ADBA5584",
     "PCDType":"3",
-    "UserId":userid,
+    "UserId":"123",
     "BcId":$("#proName").attr("bcid"),
     "ProgrammeList":ProgrammeList
   };
@@ -1395,6 +1496,7 @@ $(".commitPro").on("click",function(){
     }
   });
 });
+
 /*时分秒插件*/
 function timeHS(){
   $(document).find('.date').datetimepicker({
@@ -1403,5 +1505,9 @@ function timeHS(){
     step:5
   });
 }
+
+/*
+ 节目单管理页面--e
+ * */
 </script>
 </html>

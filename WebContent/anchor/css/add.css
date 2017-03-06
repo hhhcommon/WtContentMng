@@ -83,6 +83,7 @@ li{list-style: none;}
   width:220px;
   height:18px;
   float: left;
+  border-radius: 7px;
   display: none;
 }
 .sonProgress{
@@ -94,6 +95,7 @@ li{list-style: none;}
   font-size:16px; 
   color:#fff;
   font-weight:bold;
+  border-radius: 7px;
 }
 .uploadStatus{
   width:49px;
