@@ -413,20 +413,37 @@ $(function(){
     var x = e.pageX || e.clientX + scrollX;
     var pleft=x-335;
     var clickPlayTime=pleft*($(".audio")[0].duration)/$(".player_progressbar").width();
+    console.log(clickPlayTime);
     $('.player_circle')[0].style.left = parseInt(pleft) + 'px';
     $(".player_playbar").css("width",pleft+"px");
     $('.audio')[0].currentTime=clickPlayTime;
     $(".sound_position").text(formatTime(Math.floor(clickPlayTime)));
+  });
+  /*实现静音*/
+  var clickVolume="1";//音量大小
+  var volumeLeft=" ";//音量的小圆点距离左边的距离
+  $(".volume_img").on("click",function(event){
+    if($(this).hasClass("no_mute")){
+      $(this).removeClass("no_mute").attr("src","img/mute.png");
+      $('.audio')[0].volume="0";
+      $('.volume_circle')[0].style.left ='0px';
+      $(".volume_playbar").css("width","0px");
+    }else{
+      $(this).addClass("no_mute").attr("src","img/volume.png");
+      $('.volume_circle')[0].style.left = parseInt(volumeLeft) + 'px';
+      $(".volume_playbar").css("width",volumeLeft+"px");
+      $('.audio')[0].volume=clickVolume;
+    }
   });
   /*实现音量的增大和减小*/
   $(".volume_progressbar").on("click",function(event){
     var e = event || window.event;
     var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
     var x = e.pageX || e.clientX + scrollX;
-    var pleft=x-770;
-    var clickVolume=pleft*($(".audio")[0].volume)/$(".volume_progressbar").width();
-    $('.volume_circle')[0].style.left = parseInt(pleft) + 'px';
-    $(".volume_playbar").css("width",pleft+"px");
+    volumeLeft=x-770;
+    clickVolume=volumeLeft/$(".volume_progressbar").width();
+    $('.volume_circle')[0].style.left = parseInt(volumeLeft) + 'px';
+    $(".volume_playbar").css("width",volumeLeft+"px");
     $('.audio')[0].volume=clickVolume;
   });
   /*点击播放器面板上的上一首按钮*/
