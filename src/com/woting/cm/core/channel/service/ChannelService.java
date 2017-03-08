@@ -295,6 +295,12 @@ public class ChannelService {
         }
     }
     
+    public void updateChannel(ChannelPo cPo) {
+    	if (cPo!=null) {
+			channelDao.update(cPo);
+		}
+    }
+    
     public List<Map<String, Object>> getSeqPublishedList() {
     	List<Map<String, Object>> ms = new ArrayList<>();
     	Map<String, Object> m = new HashMap<>();
