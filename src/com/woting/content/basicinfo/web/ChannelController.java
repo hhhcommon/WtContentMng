@@ -21,6 +21,7 @@ import com.spiritdata.framework.util.StringUtils;
 import com.woting.WtContentMngConstants;
 import com.woting.cm.core.channel.mem._CacheChannel;
 import com.woting.cm.core.channel.model.Channel;
+import com.woting.cm.core.channel.persis.po.ChannelPo;
 import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.common.model.Owner;
 
@@ -323,4 +324,38 @@ public class ChannelController {
             return map;
         }
     }
+    
+    /**
+	 * 搜索内容请求
+	 * 
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/updateChannelPo.do")
+	@ResponseBody
+	public Map<String, Object> updateChannelImg(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		//1-得到模式Id
+        String chanelId=(m.get("ChannelId")==null?null:m.get("ChannelId")+"");
+        if (StringUtils.isNullOrEmptyOrSpace(chanelId)) {
+        	map.put("ReturnType", "1011");
+        	map.put("Message", "无法获得栏目Id");
+            return map;
+        }
+        //2-得到字典项Id或父栏目Id
+        String channelImg=(m.get("ChannelImg")==null?null:m.get("ChannelImg")+"");
+        if (StringUtils.isNullOrEmptyOrSpace(channelImg)) {
+        	map.put("ReturnType", "1012");
+        	map.put("Message", "无法获得栏目图片");
+            return map;
+        }
+        String channeldescn=(m.get("ChannelDesc")==null?null:m.get("ChannelDesc")+"");
+        ChannelPo cPo = new ChannelPo();
+        cPo.setId(chanelId);
+        cPo.setChannelImg(channelImg);
+        cPo.setDescn(channeldescn);
+        channelService.updateChannel(cPo);
+        return map;
+	}
 }
