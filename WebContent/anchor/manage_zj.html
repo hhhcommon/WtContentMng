@@ -20,7 +20,6 @@
   <!--裁剪图片的插件-->
   <script src="js/photoClip/pic.js"></script>
   <script src="js/photoClip/lrz.pc.min.js"></script>
-  <script src="js/photoClip/jquery.imgareaselect.min.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -108,22 +107,13 @@ body{overflow: auto;-moz-user-select: none;}
   position: relative;
   margin-top: 15px;
 }
-.border1{
-  /*border: 1px solid #dedede;*/ 
-}
 .border2{
   border: 1px solid transparent; 
-}
-.attr:last-child{
-  /*border-bottom:none;*/
 }
 .attr{
   position: relative;
   width:100%;
   border: 1px solid #dedede;
-  /*border-top: 1px solid #dedede;
-  border-left: 1px solid #dedede;
-  border-right: 1px solid #dedede;*/
 }
 .attrKey{
   overflow: hidden;
@@ -187,7 +177,45 @@ body{overflow: auto;-moz-user-select: none;}
 .ri_top3{
   width:100%;
   height:auto;
-  margin-top:15px;
+  margin-top:20px;
+}
+.fl{
+  float: left;
+}
+.rt_opt{
+  height:50px;
+  background:rgb(252,244,234);
+  overflow: hidden;
+}
+.rto_check{
+  margin:15px 10px 15px 20px;
+  width:18px;
+  height:18px;
+  cursor: pointer; 
+}
+.rto_txt{
+  font-size: 16px;
+  margin: 13px 0px 15px;
+  color: #FFA634;
+}
+.rto_delete,.rto_revoke,.rto_submit{
+  margin-left:50px;
+  width:85px;
+  height:30px;
+  color: #fff;
+  cursor: pointer;
+  margin-top:10px;
+  text-align: center;
+  line-height:30px;
+}
+.rto_submit{
+  background:#FFA634;
+}
+.rto_revoke{
+  background:rgb(149,139,129);
+}
+.rto_delete{
+  background:rgb(200,61,13);
 }
 .ri_top3_head{
   width:100%;
@@ -228,7 +256,7 @@ body{overflow: auto;-moz-user-select: none;}
   overflow: auto;
 }
 .rtc_listBox{
-  width:97%;
+  width:100%;
   height:110px;
   border-bottom:1px solid #dedede;
   position:relative;
@@ -240,7 +268,6 @@ body{overflow: auto;-moz-user-select: none;}
   height:80px;
   width:80px;
   margin-top:15px;
-  margin-left:20px;
   margin-right:10px;
   border:1px solid #dedede;
   float: left;
@@ -257,15 +284,24 @@ body{overflow: auto;-moz-user-select: none;}
   padding:15px 10px;
   color:rgb(173,172,172);
 }
+.rtcl_con h4,.rtcl_con p,.rtcl_con div{
+  width: 400px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rtcl_con_num{
+  margin-bottom: 10px;
+}
 .zj_st{
   float: right;
   line-height: 110px;
-  margin-right:110px;
+  margin-right:130px;
   color:#000;
 }
 .op_type{
   float: right;
-  margin-right:-140px;
+  margin-right:-155px;
   margin-top: 15px;
 }
 .op_type p{
@@ -273,7 +309,7 @@ body{overflow: auto;-moz-user-select: none;}
   margin:5px 0px 0px 0px;
 }
 /*遮罩层*/
-.mask{
+.mask_zj,.mask_jm{
   width:100%;
   height:1100px;
   position: absolute;
@@ -396,112 +432,6 @@ body{overflow: auto;-moz-user-select: none;}
   text-align: center;
   cursor: pointer;
 }
-/*裁剪图片时的遮罩层*/
-.mask_clip{
-  width:100%;
-  height:1100px;
-  position: absolute;
-  top:0px;
-  left:0px;
-  z-index:1020;
-  background:rgba(0,0,0,0.5);
-  display: none;
-}
-/*裁剪图片时的弹出层*/
-.container_clip{
-  width: 100%;
-  height:540px;
-  position: fixed;
-  font-family: 微软雅黑;
-  top:0px;
-  left:0px;
-  z-index:1050;
-  background: #fff;
-  overflow: auto;
-  display: none;
-}
-.cc_title{
-  width: 100%;
-  height: 30px;
-  line-height: 30px;
-  font-size: 16px;
-  padding: 5px 0px 5px 20px;
-  font-family: "微软雅黑";
-}
-.container_clip p {
-  line-height: 12px;
-  line-height: 0px;
-  height: 0px;
-  margin:10px 0px 0px 0px;
-  color: #bbb
-}
-.imgAction{
-  width:402px;
-  height:500px;
-  margin-left:20px;
-  position: relative;
-  float: left;
-  border:1px solid #aaa;
-}
-.upload_pic,.picFile{
-  margin-left: 10px;
-  background: #ffa634;
-  border-radius: 3px;
-  cursor: pointer;
-}
-.item {
-  margin-top: 60px;
-}
-#anniuDiv{
-  margin-top:15px;
-}
-.clipOver {
-  width: 200px;
-  height: 240px;
-  position: relative;
-  top: 0px;
-  left: 0px;
-  float: left;
-  margin-left: 20px;
-}
-.cropped{
-  width: 200px;
-  height: 200px;
-  position: absolute;
-  border: 1px #ddd solid;
-  text-align: center;
-}
-.action1{
-  position: absolute;
-  top: 220px;
-}
-#btnSave,#resetId{
-  float: left;
-  margin-left: 10px;
-  background: #ffa634;
-  border: 0px solid transparent;
-  border-radius: 3px;
-  font-size: 20px;
-  cursor: pointer;
-}
-.btn-success,
-.btn-success:hover,
-.btn-success:focus,
-.btn-success:active, 
-.btn-success.active, 
-.open .dropdown-toggle.btn-success {
-  background-color: #ffa634;
-  border-color: #ffa634;
-  color: #fff;
-  float: left;
-  margin-left:3px;
-}
-.cf60{
- color:#ffa634; 
-}
-.c173{
-  color:rgb(173,172,172);
-}
 .channelsbox{
   width:100%;
   height:auto;
@@ -610,7 +540,8 @@ body{overflow: auto;-moz-user-select: none;}
   cursor: pointer;
 }
 .cBox1_conS li{
-  width:100%;
+  padding:0px 10px;
+  float: left;
   height: 25px;
   margin:2px;
   line-height: 25px;
@@ -632,9 +563,6 @@ body{overflow: auto;-moz-user-select: none;}
   text-align: center;
   width:100%;
   float: none;
-}
-.h40{
-  height: 40px;
 }
 .more1{
   top: 5px;
@@ -658,7 +586,12 @@ body{overflow: auto;-moz-user-select: none;}
 .attrTabcon{
   overflow: hidden;
 }
-
+.ric_img_check{
+  width: 18px;
+  height: 18px;
+  margin: 44px 20px;
+  cursor: pointer;
+}
 </style>
 <body onselectstart="return false">
 <div class="content">
@@ -679,22 +612,6 @@ body{overflow: auto;-moz-user-select: none;}
           <ul class="new_cate"></ul>
         </div>
         <div class="ri_top2 border1">
-          <div class="attr" id="status" ids="zjstatus">
-            <div class="attrKey">专辑状态 :</div>
-            <div class="attrValues">
-              <ul class="av-gather av_ul">
-                <li class="trig_item" id="5"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">已保存</a></li>
-                <li class="trig_item" id="1"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">审核</a></li>
-                <li class="trig_item" id="2"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">发布</a></li>
-                <li class="trig_item" id="4"><div class="check_cate"></div><a class="ss1" href="javascript:void(0)">撤回</a></li>
-              </ul>
-            </div>
-            <div class="btns">
-              <span class="btns_sub">确定</span>
-              <span class="btns_can">取消</span>
-            </div>
-            <span class="check_more more3">多选</span>
-          </div>
           <div class="attr" id="channel">
             <div class="attrKey">所属栏目 :</div>
             <div class="attrValues">
@@ -707,9 +624,23 @@ body{overflow: auto;-moz-user-select: none;}
           </div>
         </div>
         <div class="ri_top3">
+          <div class="rt_opt">
+            <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
+            <span class="rto_txt fl">全选</span>
+            <span class="rto_revoke fl opetype" type="revoke">撤回专辑</span>
+            <span class="rto_delete fl opetype" type="delete">删除专辑</span>
+            <div class="page fl">
+              <div class="gigantic pagination">
+                <i class="currentPage">1</i><i>/</i><i class="totalPage">0</i><i>页</i>
+                <span class="previous" data_action="previous">上一页</span>
+                <span class="next" data_action="next">下一页</span>
+                <span class="jump" data_action="toPage">跳至</span><input type="text" class="toPage" value="">
+              </div>
+            </div>
+          </div>
           <div class="ri_top3_head">
             <span class="rth_al">全部专辑</span>
-            <span class="rth_st">专辑状态</span>
+            <span class="rth_st">节目数量</span>
             <span class="rth_op">相关操作</span>
           </div>
           <div class="ri_top3_con"></div>
@@ -719,9 +650,9 @@ body{overflow: auto;-moz-user-select: none;}
   </div>
 </div> 
 <!--遮罩层-->
-<div class="mask"></div>
-<!--上传节目-->
-<div class="add">
+<div class="mask_zj"></div>
+<!--创建专辑-->
+<div class="add_zj">
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
@@ -750,7 +681,7 @@ body{overflow: auto;-moz-user-select: none;}
                 <label class="col-sm-2 control-label">专辑封面<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <div class="upl_pt">
-                    <div class="previewImg">
+                    <div class="previewImg" isDefaultImg="true">
                       <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
                     </div>
                     <img class="upl_pt_img" src="img/upl_img3.png" alt="" name="upl_pt_img" />
@@ -965,6 +896,140 @@ body{overflow: auto;-moz-user-select: none;}
       <button  id="resetId"  class="btn btn-success" >取消</button>
     </div>
   </div>
+</div>
+<!--遮罩层-->
+<div class="mask_jm"></div>  
+<!--新增节目-->
+<div class="add_jm">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+          <div class="ibox-title iboxtitle">
+            <h4>上传节目</h4>
+            <div class="ibox-tools">
+              <a class="collapse-link">
+                <i class="fa fa-times"></i>
+              </a>
+            </div>
+          </div>
+          <div class="ibox-content">
+            <form class="form-horizontal">
+              <input type="text" class="jmId" style="display:none;" value="" />
+              <input type="text" class="timeLong" style="display:none;" value="" />
+              <div class="form-group">
+                <label class="col-sm-2 control-label">上传文件<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="upl_wj">
+                    <img class="upl_wj_img" src="img/upl_img1.png" alt="" />
+                  </div>
+                  <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
+                  <audio class="audio" preload="auto" src="" style="display:none;"></audio>
+                  <div class="upl_yp">
+                    <input type="text" class="yp_mz" >
+                    <div class="parentProgress">
+                      <div class="sonProgress"></div>
+                    </div>
+                    <div class="uploadStatus">上传成功</div>
+                    <img class="cancelUpload" src="img/upl_img2.png" alt="" />
+                  </div>
+                  <div class="upl_wj_p1">
+                    <span>支持 MP3、M4A的文件格式，文件≤100兆。</span>
+                                                            如上传内容存在色情、赌博或侵犯第三方合法权益等违反法律法规或公序良俗内容的，我听有权将节目下架。
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">节目名称<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="upl_mc">
+                    <input type="text" class="uplTitle" placeholder="标题" maxlength="40">
+                    <p>建议使用简洁明了的标题，请不要包含任何多余信息（如专辑标题、日期）；不超过40个字哦~</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">节目配图<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="upl_pt">
+                    <div class="previewImg">
+                      <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
+                    </div>
+                    <img class="upl_pt_img" src="img/upl_img3.png" alt="" />
+                    <div class="img_uploadStatus">上传成功</div>
+                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
+                    <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <select name="" class="upl_zj" autocomplete="off"></select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="tag_box">
+                    <ul class="upl_bq"></ul>
+                    <div class="input_tag">
+                      <input type="text" class="tag_txt" placeholder="添加自定义标签" maxlength="6"/>
+                    </div>
+                  </div>
+                  <div class="my_tag">
+                    <h5>我的标签</h5>
+                    <span class="hyp">换一批</span>
+                    <ul class="my_tag_con"></ul>
+                  </div>
+                  <div class="gg_tag">
+                    <h5>公共标签</h5>
+                    <span class="hyp">换一批</span>
+                    <ul class="gg_tag_con"></ul>
+                  </div>
+                  <p>最多添加5个标签，单个标签最长6个汉字，按回车确认</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">节目简介：</label>
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
+                  <div class="upl_desc">
+                    <textarea type="text" class="uplDecn" placeholder="关于节目内容的简单介绍"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">创作方式：</label>
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
+                  <div class="upl_czfs">
+                    <ul class="czfs_tag"></ul>
+                    <div class="czfs_div">
+                      <select name="" class="change_czfs" autocomplete="off"></select>
+                      <input type="text" class="czfs_author_ipt" placeholder="输入对应的作者,可自定义创作方式"/>
+                    </div>
+                    <p>可选择多个创作方式，并输入对应的作者， 按"enter"添加创作方式</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">定时发布：</label>
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
+                  <input class="form-control layer-date laydate-icon" style="max-width:240px;float:left;" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:20px;">
+                <div class="btn_group">
+                  <input type="button" class="submit" id="submitBtn" value="保存"/>
+                  <input type="button" class="cancel" id="cancelBtn" value="取消"/>
+                  <input type="button" class="pub" id="pubBtn" value="提交"/>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
 </div>
 </body>
 </html>

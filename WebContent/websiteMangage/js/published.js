@@ -12,6 +12,7 @@ $(function(){
   
   /*日期处理--日历插件*/
   $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
+  
   /*翻页*/
   $(".pagination span").on("click",function(){
     var data_action=$(this).attr("data_action");
