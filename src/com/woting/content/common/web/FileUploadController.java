@@ -67,7 +67,8 @@ public class FileUploadController extends UploadController {
 					} else {
 						if (purpose.equals("4")) { // 栏目图处理
 							try {
-								
+								String img100_100path = FileNameUtils.concatPath(path, newname + ".100_100.png");
+								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
