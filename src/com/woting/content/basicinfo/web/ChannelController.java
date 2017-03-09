@@ -238,6 +238,7 @@ public class ChannelController {
             c.setOrder((data.get("Sort")==null?0:Integer.parseInt(data.get("Sort")+"")));
             c.setContentType((data.get("ContentType")==null?"0":data.get("ContentType")+""));
             c.setDescn((data.get("Descn")==null?null:data.get("Descn")+""));
+            c.setChannelImg((data.get("Img")==null?null:data.get("Img")+""));
             //2-修改字典项
             int ret=channelService.updateChannel(c);
             if (ret==1) {

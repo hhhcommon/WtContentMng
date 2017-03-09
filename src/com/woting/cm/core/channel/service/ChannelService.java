@@ -197,7 +197,8 @@ public class ChannelService {
      * @param c
      * @return 1-修改成功；2-对应的结点未找到；3-名称重复，同级重复；4-与原信息相同，不必修改
      */
-    public int updateChannel(Channel c) {
+    @SuppressWarnings("unchecked")
+	public int updateChannel(Channel c) {
         CacheEle<_CacheChannel> cache=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL));
         _CacheChannel cc=cache.getContent();
         synchronized (updateLock) {
@@ -213,6 +214,7 @@ public class ChannelService {
               &&(c.getOwner()==null||(c.getOwner()!=null&&c.getOwner().equals(myInTree.getTnEntity().getOwner())))
               &&(c.getDescn()==null||(c.getDescn()!=null&&c.getDescn().equals(myInTree.getTnEntity().getDescn())))
               &&(c.getParentId()==null||(c.getParentId()!=null&&c.getParentId().equals(myInTree.getTnEntity().getParentId())))
+              &&(c.getChannelImg()==null||(c.getChannelImg()!=null&&c.getChannelImg().equals(myInTree.getTnEntity().getChannelImg())))
               ) {
               return 4;
             }
@@ -246,6 +248,7 @@ public class ChannelService {
                 if (myInTree.getTnEntity().getOrder()!=c.getOrder()) myInTree.getTnEntity().setOrder(c.getOrder());
                 if (c.getContentType()!=null&&!c.getContentType().equals(myInTree.getTnEntity().getContentType())) myInTree.getTnEntity().setContentType(c.getContentType());
                 if (c.getDescn()!=null&&!c.getDescn().equals(myInTree.getTnEntity().getDescn())) myInTree.getTnEntity().setDescn(c.getDescn());
+                if (c.getChannelImg()!=null&&!c.getChannelImg().equals(myInTree.getTnEntity().getChannelImg())) myInTree.getTnEntity().setChannelImg(c.getChannelImg());
                 if (changeFather) {
                     TreeNode<? extends TreeNodeBean> delNode=myInTree.getParent().removeChild(myInTree.getId());
                     parentNode.addChild(delNode);
