@@ -356,6 +356,7 @@ public class ChannelController {
         cPo.setChannelImg(channelImg);
         cPo.setDescn(channeldescn);
         channelService.updateChannel(cPo);
+        map.put("ReturnType", "1001");
         return map;
 	}
 }
