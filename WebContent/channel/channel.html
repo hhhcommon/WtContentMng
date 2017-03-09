@@ -304,6 +304,7 @@ $(function() {
   $(".upload_img").on("click",function(){
     $(".upl_img").click();
   })
+  var img100="";//转换成100*100的图片
   $('.upl_img').on('change', function(){
     var oMyForm = new FormData();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
@@ -333,13 +334,12 @@ $(function() {
       //表单提交前进行验证
       success: function (resultData){
         if(resultData.Success==true){
-          debugger;
-          alert("图片上传成功！");
-          $(".upl_img").attr("value",resultData.FilePath);
+          img100=(resultData.FilePath).replace(".png",".100_100.png");
+          $(".upl_img").attr("value",img100);
           if($(".defaultImg").css("display")!="none"){
             $(".defaultImg").css({"display":"none"});
           }
-          var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
+          var newImg =$("<img class='newImg' src="+img100+" alt='front cover' />");
           if($(".previewImg").children().length>1){
             $(".previewImg img:last").replaceWith(newImg);
           }else{
@@ -484,9 +484,7 @@ function modChannel() {
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         alert("图片修改成功");
-        if(modImg.ChannelImg!=treeNode.attributes.ChannelImg){//图片有所改变
-          treeNode.attributes.ChannelImg=modImg.ChannelImg;
-        }
+        treeNode.attributes.ChannelImg=modImg.ChannelImg;
       }else{
         alert(resultData.Message);
       }
@@ -589,7 +587,7 @@ function cleanDialog() {
   });
   $("#cataTrees").html(" ");//清空模态框里面的ztree
   $("#all,#radio,#jm,#zj").prop("checked",false).prop("disabled",false);
-  $(".upl_img").attr("value"," ");
+  $(".upl_img").attr("value","http://wotingfm.com/CM/resources/images/default.png");
   $(".newImg").remove();
   $(".defaultImg").attr({"src":"http://wotingfm.com/CM/resources/images/default.png"}).show();
 }
