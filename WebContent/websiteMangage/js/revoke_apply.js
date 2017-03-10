@@ -185,10 +185,10 @@ $(function(){
         $(".rtcl_con_channels").eq(i).attr("chIds",chIds);
       }
       $(".audio_time").eq(i).text(getLocalTime(cptime)); 
-      if(resultData.ResultInfo.List[i].ContentPlayUrl){
+      if(resultData.ResultInfo.List[i].ContentPlayURI){
         var audioObj={};
         audioObj.title=resultData.ResultInfo.List[i].ContentName;
-        audioObj.playUrl=resultData.ResultInfo.List[i].ContentPlayUrl;
+        audioObj.playUrl=resultData.ResultInfo.List[i].ContentPlayURI;
         audioList.push(audioObj);
         $(".audio").attr({"src":""});
         $(".player_panel .title").html("");
@@ -486,15 +486,31 @@ $(function(){
     $('.audio')[0].currentTime=clickPlayTime;
     $(".sound_position").text(formatTime(Math.floor(clickPlayTime)));
   });
+  /*实现静音*/
+  var clickVolume="1";//音量大小
+  var volumeLeft=" ";//音量的小圆点距离左边的距离
+  $(".volume_img").on("click",function(event){
+    if($(this).hasClass("no_mute")){
+      $(this).removeClass("no_mute").attr("src","img/mute.png");
+      $('.audio')[0].volume="0";
+      $('.volume_circle')[0].style.left ='0px';
+      $(".volume_playbar").css("width","0px");
+    }else{
+      $(this).addClass("no_mute").attr("src","img/volume.png");
+      $('.volume_circle')[0].style.left = parseInt(volumeLeft) + 'px';
+      $(".volume_playbar").css("width",volumeLeft+"px");
+      $('.audio')[0].volume=clickVolume;
+    }
+  });
   /*实现音量的增大和减小*/
   $(".volume_progressbar").on("click",function(event){
     var e = event || window.event;
     var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
     var x = e.pageX || e.clientX + scrollX;
-    var pleft=x-770;
-    var clickVolume=pleft*($(".audio")[0].volume)/$(".volume_progressbar").width();
-    $('.volume_circle')[0].style.left = parseInt(pleft) + 'px';
-    $(".volume_playbar").css("width",pleft+"px");
+    volumeLeft=x-770;
+    clickVolume=volumeLeft/$(".volume_progressbar").width();
+    $('.volume_circle')[0].style.left = parseInt(volumeLeft) + 'px';
+    $(".volume_playbar").css("width",volumeLeft+"px");
     $('.audio')[0].volume=clickVolume;
   });
   /*点击播放器面板上的上一首按钮*/
@@ -650,10 +666,10 @@ $(function(){
         }
       }
       $(".audio_time").eq(i).text(getLocalTime(cptime)); 
-      if(resultData.ResultInfo.List[i].ContentPlayUrl){
+      if(resultData.ResultInfo.List[i].ContentPlayURI){
         var audioObj={};
         audioObj.title=resultData.ResultInfo.List[i].ContentName;
-        audioObj.playUrl=resultData.ResultInfo.List[i].ContentPlayUrl;
+        audioObj.playUrl=resultData.ResultInfo.List[i].ContentPlayURI;
         audioList.push(audioObj);
         $(".audio").attr({"src":""});
         $(".player_panel .title").html("");
@@ -662,6 +678,7 @@ $(function(){
         getTime();
         $(".rtc_listBox").eq(i).addClass("playurl");
       }
+      console.log(audioObj);
       if(resultData.ResultInfo.List[i].MediaSize){
         $(".sequ_sum").eq(i).text(resultData.ResultInfo.List[i].MediaSize);
       }else{

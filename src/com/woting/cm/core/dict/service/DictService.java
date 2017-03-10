@@ -235,7 +235,7 @@ public class DictService {
                 drr.buildFromPo(drrPo);
                 DictModel dm=cd.dictModelMap.get(drrPo.getDictMid());
                 drr.setDm(dm);
-                TreeNode<DictDetail> dd=(TreeNode<DictDetail>)dm.dictTree.findNode(drrPo.getDictDid());
+                TreeNode<TreeNodeBean> dd=(TreeNode<TreeNodeBean>)dm.dictTree.findNode(drrPo.getDictDid());
                 drr.setDd(dd);
                 ret.add(drr);
             }

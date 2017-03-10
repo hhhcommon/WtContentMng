@@ -115,11 +115,11 @@ var imgStroke = (function(){
 		var x = null,y = null;
 		/**获取鼠标相对于文档(页面)的位置**/ 
 		if(event.changedTouches){
-			x=event.changedTouches[0].pageX;  
-			y=event.changedTouches[0].pageY;  
+			x=event.changedTouches[0].pageX-80;  
+			y=event.changedTouches[0].pageY-80;  
 		}else{
-			x=event.pageX;    
-			y=event.pageY;    
+			x=event.pageX-80;    
+			y=event.pageY-80;    
 		}  
 		var canvas = event.target;  
 		var loc = getPointOnCanvas(canvas, x, y);  
@@ -136,11 +136,11 @@ var imgStroke = (function(){
 		var x = null,y = null;
 		/**获取鼠标相对于文档(页面)的位置**/
 		if(event.changedTouches){
-			x=event.changedTouches[0].pageX;  
-			y=event.changedTouches[0].pageY;  
+			x=event.changedTouches[0].pageX-80;  
+			y=event.changedTouches[0].pageY-80;  
 		}else{
-			x=event.pageX;     
-			y=event.pageY;    
+			x=event.pageX-80;     
+			y=event.pageY-80;    
 		}
 		var canvas = event.target;  
 		var loc = getPointOnCanvas(canvas, x, y);  

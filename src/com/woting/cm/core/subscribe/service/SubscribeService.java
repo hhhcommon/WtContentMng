@@ -252,4 +252,12 @@ public class SubscribeService {
 		}
 		return null;
 	}
+	
+	public void removeSubscribe(String sId) {
+		if (sId!=null) {
+			Map<String, Object> m = new HashMap<>();
+			m.put("sId", sId);
+			subscribeDao.delete("delete", m);
+		}
+	}
 }

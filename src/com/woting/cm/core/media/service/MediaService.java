@@ -41,6 +41,7 @@ import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.person.persis.po.PersonPo;
 import com.woting.cm.core.person.persis.po.PersonRefPo;
 import com.woting.cm.core.person.service.PersonService;
+import com.woting.cm.core.subscribe.service.SubscribeService;
 import com.woting.cm.core.utils.ContentUtils;
 import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
@@ -73,6 +74,8 @@ public class MediaService {
 	private PersonService personService;
 	@Resource
 	private ChannelAssetProgressService channelAssetProgressService;
+	@Resource
+	private SubscribeService subscribeService;
 	
 	private _CacheChannel _cc=null;
 
@@ -127,7 +130,7 @@ public class MediaService {
 	public List<SeqMaRefPo> getSeqMaRefBySid(String sid) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("sid", sid);
-		List<SeqMaRefPo> list = seqMaRefDao.queryForList("getS2MRefInfoBySId", sid);
+		List<SeqMaRefPo> list = seqMaRefDao.queryForList("getS2MRefInfoBySId", m);
 		if (list!=null && list.size()>0) {
 			return list;
 		}
@@ -892,6 +895,7 @@ public class MediaService {
 			}
 		}
 		personService.remove(userId, "wt_SeqMediaAsset", id);
+		subscribeService.removeSubscribe(id);
 		removeResDictRef(id);
 		if (getCHAInfoByAssetId(id) != null) { // 删除与专辑绑定的下级节目栏目信息
 			for (SeqMaRefPo seqMaRefPo : l) {

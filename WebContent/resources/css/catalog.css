@@ -186,3 +186,8 @@ ul,li{
 a:link,a:visited{
   text-direction:none;
 }
+.modal-footer button{
+  color: #0077c7;
+  background: #fff;
+  border: 1px solid #dedede;
+}

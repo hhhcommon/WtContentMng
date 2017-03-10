@@ -64,6 +64,15 @@ public class FileUploadController extends UploadController {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
+					} else {
+						if (purpose.equals("4")) { // 栏目图处理
+							try {
+								String img100_100path = FileNameUtils.concatPath(path, newname + ".100_100.png");
+								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
 					}
 				}
 			}
@@ -146,7 +155,12 @@ public class FileUploadController extends UploadController {
 				} else {
 					if (purpose.equals("3")) { // 轮播图处理
 						m.put("FileName", newname);
-						m.put("Path", "/group03");
+						m.put("Path", "/group04");
+					} else {
+						if (purpose.equals("4")) { // 栏目图处理
+							m.put("FileName", newname);
+							m.put("Path", "/group04");
+						}
 					}
 				}
 			}

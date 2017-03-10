@@ -65,7 +65,7 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
   width:120px;
   height:20px;
   position: absolute;
-  top:175px;
+  top:190px;
   margin-left:35px;
 }
 .h6_div h6{
@@ -166,14 +166,14 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
   margin-left:0px;
 }
 .dcr_jmdesc{
-  width:calc(100% -20px);
+  width:calc(100% - 20px);
   position: relative;
   float: left;
   margin-left:20px;
 }
 .dcr_jmcontent2 p{
   font-size:14px;
-  margin-top:20px;
+  margin-top:7px;
 }
 .dcr_jmcontent2 p span{
   font-size:15px;
@@ -192,7 +192,7 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
   padding:0px 0px 0px 15px;
   float: left;
   position: relative;
-  margin:10px 8px 0px 0px;
+  margin:5px 8px 0px 0px;
   display: inline-block;
   cursor: pointer;
 }
@@ -205,12 +205,11 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
   white-space: nowrap;
   line-height: 27px;
 }
-.dcr_jmdesc p{
+.dcr_jmdesc .dcr_jmdesc_p1{
   color:#000;
   font-size:14px;
-}
-.dcr_jmdesc .dcr_jmdesc_p1{
-  margin-top:35px;
+  lien-height:25px;
+  padding: 10px 0px 0px 0px;
 }
 .dc_right1{
   width:770px;
@@ -236,7 +235,7 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
   margin-left:15px;
 }
 .dctb3{
-  margin-left:614px;
+  margin-left:608px;
   margin-top:0px;
 }
 .line1{
@@ -316,9 +315,9 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
               </div>
             </div>
             <div class="dcr_jmdesc">
-              <p class="dcr_jmdesc_p1"></p>
-              <p class="dcr_jmdesc_p2">感谢您的聆听~</p>
-              <p class="dcr_jmdesc_p3">原创节目欢迎评论，分享，打赏哦~</p>
+              <div class="dcr_jmdesc_p1"></div>
+              <!--<p class="dcr_jmdesc_p2">感谢您的聆听~</p>
+              <p class="dcr_jmdesc_p3">原创节目欢迎评论，分享，打赏哦~</p>-->
             </div>  
           </div>
           <div class="dc_right_bottom">
@@ -395,7 +394,7 @@ $(function(){
       }
     }
     $(".ctime").html(resultData.Result.CTime);
-    $(".dcr_jmdesc .dcr_jmdesc_p1").html(resultData.Result.ContentDesc);
+    $(".dcr_jmdesc .dcr_jmdesc_p1").html(resultData.Result.ContentDesc?resultData.Result.ContentDesc:"暂无");
     $("#audio").attr({"src":resultData.Result.ContentPlay});
     getTime();//调用加载数据
   }
