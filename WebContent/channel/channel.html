@@ -45,6 +45,20 @@
     background: #333;
     cursor: pointer;
   }
+  .mask_gif{
+    width: 100px;
+    height: 100px;
+    position: relative;
+    background: rgba(0,0,0,0.6);
+    display: none;
+  }
+  .mask_gif img{
+    width: 25px;
+    height: 25px;
+    position: relative;
+    margin-top: -120px;
+    margin-left: 32px;
+  }
   </style>
 </head>
 <body style="overflow:hidden;">
@@ -140,7 +154,10 @@
                       <img class="defaultImg" src="http://wotingfm.com/CM/resources/images/default.png" alt="font cover" />
                     </div>
                     <div class="upload_img">上传图片</div>
-                  <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value="http://wotingfm.com/CM/resources/images/default.png"/>
+                    <div class="mask_gif">
+                      <img src="../anchor/img/waiting_circle.gif" alt="图片上传等待" />
+                    </div>
+                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value="http://wotingfm.com/CM/resources/images/default.png"/>
                   </td>
                 </tr>
                 <tr>
@@ -331,6 +348,9 @@ $(function() {
       processData: false,
       contentType: false,
       dataType:"json",
+      beforeSend: function(){
+        $(".mask_gif").show();
+      },
       //表单提交前进行验证
       success: function (resultData){
         if(resultData.Success==true){
@@ -344,7 +364,10 @@ $(function() {
             $(".previewImg img:last").replaceWith(newImg);
           }else{
             $(".previewImg").append(newImg);
-          } 
+          }
+          setTimeout(function(){
+            $(".mask_gif").hide();
+          },200);
         }else{
           alert(resultData.err);
         }
@@ -472,33 +495,13 @@ function onClick(event, treeId, treeNode) {
 
 /*修改已有栏目的方法*/
 function modChannel() {
-  var modImg={//修改栏目图片
-    "ChannelId":treeNode.id,
-    "ChannelImg":$(".upl_img").attr("value")
-  };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"baseinfo/updateChannelPo.do",
-    dataType:"json",
-    data:JSON.stringify(modImg),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        alert("图片修改成功");
-        treeNode.attributes.ChannelImg=modImg.ChannelImg;
-      }else{
-        alert(resultData.Message);
-      }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
   var modInfo={//修改栏目信息
     "ChannelId":treeNode.id,
     "Data":{
       "Name":$("#nodeNames").val(),
       "ParentId":$("#nodeParent").val(),
       "Owner":{"OwnerType":"100","OwnerId":"cm"},
+      "Img":$(".upl_img").attr("value"),
       "Sort":$("#sort").val(),
       "ContentType":$("#contentType").val(),
       "Descn":$("#nodeDescn").val()
@@ -543,6 +546,9 @@ function modChannel() {
               }
             }
           }
+        }
+        if(treeNode.attributes.ChannelImg!=modInfo.Data.Img){//图片改变
+          treeNode.attributes.ChannelImg=modInfo.Data.Img;
         }
         if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
         if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
