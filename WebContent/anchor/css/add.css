@@ -16,6 +16,20 @@ input,textarea{
   bottom:0px;
   overflow-y: auto;
 }
+.mask_gif{
+  width: 100px;
+  height: 100px;
+  position: relative;
+  background: rgba(0,0,0,0.6);
+  display: none;
+}
+.mask_gif img{
+  width: 25px;
+  height: 25px;
+  position: relative;
+  margin-top: -120px;
+  margin-left: 32px;
+}
 .form-horizontal .form-group {
   margin-left: 0px !important; 
 } 

@@ -524,7 +524,7 @@ public class SocketClient {
                     mba=Arrays.copyOfRange(ba, 0, i);
                     lastReceiveTime=System.currentTimeMillis();
                     if (mba==null||mba.length<3) break; //若没有得到任何内容
-                    if (ba[0]=='B'&&ba[1]=='^'&&ba[2]=='^') {
+                    if (ba[0]=='b'&&ba[1]=='^'&&ba[2]=='^') {
                         logger.debug("B======");
                     } else {
                         try {
