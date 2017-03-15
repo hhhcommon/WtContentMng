@@ -11,7 +11,7 @@
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="css/globalplayer.css" rel="stylesheet">
+  <link  href="../anchor/css/pagination.css" rel="stylesheet"/>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
@@ -19,12 +19,14 @@
   <script src="js/filter.js"></script>
   <script src="js/globalplayer.js"></script>
   <script src="js/publish_apply.js"></script>
+  <!--翻页插件-->
+  <script src="../anchor/js/pagination.min.js"></script>
 <style>
 /*全局样式*/
 *{margin: 0;padding: 0;}
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
-body{-moz-user-select: none;overflow-x: auto;}
+body{height:auto;-moz-user-select: none;overflow-x: auto;}
 #wrapper{
   width:100%;
 }
@@ -359,20 +361,13 @@ body{-moz-user-select: none;overflow-x: auto;}
   margin-left:50px;
   width:85px;
   height:30px;
-  color: #fff;
+  background: #ddd;
+  color:#000;
+  border:none;
   cursor: pointer;
   margin-top:10px;
   text-align: center;
   line-height:30px;
-}
-.rto_pass{
-  background: #0077c7;
-}
-.rto_nopass{
-  background: darkred;
-}
-.rto_play{
-  background: #f60;
 }
 .ri_top3_head{
   width:100%;
@@ -524,7 +519,7 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .nopass_container{
   width:575px;
-  height:500px;
+  height:480px;
   position: fixed;
   top:20px;
   background: #fff;
@@ -554,12 +549,9 @@ body{-moz-user-select: none;overflow-x: auto;}
   text-align: center;
   margin: 10px 20px;
 }
-.nopass_content{
-  /*height: 440px;*/
-}
 .nc_con1{
   width:100%;
-  height:75px;
+  height:50px;
   border-bottom:1px solid #dedede;
 }
 .nc_txt1{
@@ -567,18 +559,18 @@ body{-moz-user-select: none;overflow-x: auto;}
   position: absolute;
   font-weight:bold;
   font-size: 15px;
-  margin: 25px 0px 25px 20px;
+  margin: 15px 0px 15px 20px;
 }
 .nc_con2{
   height:auto;
   font-size:14px;
-  margin:30px 20px 0px 20px;
+  margin:10px 20px 0px 20px;
 }
 .black{
   color:#000;
 }
 .nc_txt3{
-  height:140px;
+  height:100px;
 }
 .nc_txt4{
   position: relative;
@@ -587,6 +579,8 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .other_reason{
   float: left;
+  height: 80px;
+  border: 1px solid #dedede;
 }
 .nc_con3{
   position: relative;
@@ -613,6 +607,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   text-align: center;
   line-height: 30px;
   color:#000;
+  border:none;
   background:#0077c7;
 }
 .nc_reasons{
@@ -622,6 +617,37 @@ body{-moz-user-select: none;overflow-x: auto;}
   width: auto;
   float: left;
   margin: 5px 10px 5px 0px;
+}
+#kkpager{
+  padding: 20px 140px 20px 20px;
+}
+.audioIframe{
+  position: relative;
+  top:-10px;
+  bottom: 0px;
+  display: none;
+}
+#audioIframe{
+  height:100px;
+}
+.locker{
+  position: relative;
+  right: 10px;
+  top: -40px;
+  float: right;
+  width: 50px;
+  height: 15px;
+  background: center no-repeat;
+  background-size: cover;
+  background-image:url("http://sss.qingting.fm/www/images/locker-bg@2x.png");
+  cursor: pointer;
+}
+.locker .locker_btn{
+  width: 50px;
+  height: 18px;
+  background: center no-repeat;
+  background-size: 12px 12px;
+  background-image:url("http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png");
 }
 </style> 
 </head>
@@ -729,17 +755,9 @@ body{-moz-user-select: none;overflow-x: auto;}
           <div class="rt_opt">
             <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
             <span class="rto_txt fl">全选</span>
-            <span class="rto_pass fl opetype" opetype="pass">通过</span>
-            <span class="rto_nopass fl opetype" opetype="nopass">不通过</span>
-            <span class="rto_play fl">全部播放</span>
-            <div class="page fl">
-              <div class="gigantic pagination">
-                <i class="currentPage">1</i><i>/</i><i class="totalPage"></i><i>页</i>
-                <span class="previous" data_action="previous">上一页</span>
-                <span class="next" data_action="next">下一页</span>
-                <span class="jump" data_action="toPage">跳至</span><input type="text" class="toPage" value="">
-              </div>
-            </div>
+            <button class="rto_pass fl opetype" disabled opetype="pass">通过</button>
+            <button class="rto_nopass fl opetype" disabled opetype="nopass">不通过</button>
+            <button class="rto_play fl opetype" disabled>全部播放</button>
             <div class="pass_note">操作成功!通过的节目可在"已发布"中管理</div>
           </div>
           <div class="ri_top3_head">
@@ -862,50 +880,17 @@ body{-moz-user-select: none;overflow-x: auto;}
             </div>-->
           </div>
         </div>  
+        <div id="kkpager"></div>
+        <div class="locker">
+          <div class="locker_btn locked"></div>
+        </div>
       </div>
     </div>
   </div>
-  <!--s:全局播放器-->
-  <div class="globalplayer">
-    <audio src="" class="audio" controls autoplay="autoplay" style="display:none;"></audio>
-    <!--s:收起状态-->
-    <div class="glp_mini">
-      <img class="sound_face" src="img/launch.png">
-    </div>
-    <!--e:收起状态-->
-    <!--s:展开状态-->
-    <div class="glp_block">
-      <div class="glp_panel">
-        <div class="controls">
-          <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-          <img class="btn_player playerBtn playing" src="img/pause.png" alt="播放/暂停" />
-          <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
-        </div>
-        <div class="player_panel">
-          <a href="#" class="title" title=""></a>
-          <div>
-            <span class="time sound_position">00:00</span>
-            <div class="player_progressbar">
-              <div class="player_playbar"></div>
-              <div class="player_circle"></div>  
-            </div>
-            <span class="time sound_duration"></span>
-          </div>
-        </div>
-        <div class="volume_panel">
-          <img src="img/volume.png" alt="音量图标" class="volume_img no_mute"/>
-          <div class="volume_progressbar">
-            <div class="volume_playbar"></div>
-            <div class="volume_circle"></div> 
-          </div>
-        </div>
-        <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
-      </div>
-    </div>
-    <!--e:展开状态-->
-  </div>
-  <!--e:全局播放器-->
-</div> 
+</div>
+<div class="audioIframe">
+  <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="globalplayer.html" frameborder="0"  seamless></iframe>
+</div>
 <!--s:不通过-->
 <div class="nopass_masker"></div>
 <div class="nopass_container">
@@ -943,7 +928,7 @@ body{-moz-user-select: none;overflow-x: auto;}
       </ul>
       <div class="nc_txt3">
         <span class="nc_txt4">其他原因：</span>
-        <textarea name="" rows="6" cols="62" class="other_reason"></textarea>
+        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
       </div>
     </div>
     <div class="nc_con3">
@@ -951,7 +936,7 @@ body{-moz-user-select: none;overflow-x: auto;}
         <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
         <span class="nc_txt6 fl">违规登记</span>
       </div>
-      <div class="nc_txt7 fl">确定</div>
+      <button class="nc_txt7 fl">确定</button>
     </div>
   </div>
 </div>
