@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>登录</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/mainPage.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+html,body{height:100%;overflow-x: auto;font-family: "微软雅黑";}
+.wrapper{
+  width:100%;
+  height:100%;
+  position: absolute;
+  background-image:url("img/bg.jpg");
+  background-size:100% 100%;
+}
+.header{
+  width:100%;
+  height:80px;
+  background: #ffa634;
+}
+.header img{
+  background-size:100% 100%;
+}
+.containers{
+  width:450px;
+  margin:80px auto;
+  background: #fff;
+}
+.nav_tabs{
+  padding: 20px 0px;
+  text-align: center;
+  font-size: 24px;
+  color: #e0e0e0;
+}
+.navtab_link{
+  width: 220px;
+  display: inline-block;
+  cursor: pointer;
+}
+.line{
+  width: 1px;
+  height: 24px;
+  border: 1px solid #e0e0e0;
+}
+.active{
+  color:#FFA634;
+}
+.con_tabs{
+  width: 100%;
+  padding: 0px 40px 20px;
+}
+.dis{
+  display: none;
+}
+.div1,.div2,.div4,.div7{
+  width:100%;
+  height:40px;
+  margin-top:15px;
+}
+.div1 span,.div2 span,.div7 span{
+  width:50px;
+  height:100%;
+  color: #000;
+  font-size:16px;
+}
+.div1 input,.div2 input,.div7 input{
+  width:318px;
+  height:100%;
+  padding:2px 7px;
+}
+.div3{
+  width:100%;
+  height:20px;
+  margin:15px 0px;
+  cursor: pointer;
+}
+.div3 img{
+  width: 20px;
+  height: 20px;
+  margin-left: 45px;
+  margin-top: -4px;
+}
+.fg_pw{
+  margin-left: 185px;
+}
+.div3 span,.div3 a{
+  color:#000;
+}
+.div3 span:hover,.div3 a:hover{
+  color:#f60;
+}
+.login_btn,.register_btn{
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  display: block;
+  text-align: center;
+  background:#ffa634;
+  color:#fff;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+}
+.div5{
+  width: 100%;
+  height: 50px;
+  margin-top:25px;
+  overflow: hidden;
+}
+.div5 .line1{
+  width:60px;
+  height:2px;
+  margin-top:22px;
+  background: #dedede;
+  float: left;
+}
+.div5 img{
+  width: 42px;
+  height: 42px;
+  float: left;
+  background-size: 100% 100%;
+  margin-left: 16px;
+  margin-right: 22px;
+}
+form{
+  margin-bottom: 25px;
+}
+.mask_gif{
+  width: 450px;
+  height: 395px;
+  position: absolute;
+  background: rgba(0,0,0,0.6);
+  display: none;
+}
+.mask_gif img{
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  margin-top: 130px;
+  margin-left: 190px;
+}
+</style>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <img src="img/logo1.png" alt="logo" />
+    </div>
+    <div class="containers">
+      <div class="mask_gif">
+        <img src="img/waiting_circle.gif" alt="图片上传等待" />
+      </div>
+      <div class="nav_tabs">
+        <span class="navtab_link active">登录</span>
+        <span class="line"></span>
+        <span class="navtab_link">注册</span>
+      </div>
+      <div class="con_tabs">
+        <div class="login_area con_tab">
+          <form id="login_form">
+            <div class="div1">
+              <span>账&nbsp;&nbsp;&nbsp;号</span>
+              <input type="text" placeholder="请输入账号" />
+            </div>
+            <div class="div2">
+              <span>密&nbsp;&nbsp;&nbsp;码</span>
+              <input type="password" placeholder="请输入密码" />
+            </div>
+            <div class="div3">
+              <img src="img/checkbox1.png" alt="" class="keep checkbox1" />
+              <span>记住密码</span>
+              <a class="fg_pw" href="#">忘记密码?</a>
+            </div>
+            <div class="div4">
+              <input type="button" value="登  录" class="login_btn"/>
+            </div>
+            <div class="div5">
+              <span class="line1"></span>
+              <img class="wechat" src="img/wechat.jpg" alt="微信" />
+              <img class="mblog" src="img/mblog.jpg" alt="微博" />
+              <img class="qq" src="img/qq.jpg" alt="qq" />
+              <span class="line1"></span>
+            </div>
+          </form>
+        </div>
+        <div class="register_area con_tab dis">
+          <form id="register_form">
+            <div class="div1">
+              <span>账&nbsp;&nbsp;&nbsp;号</span>
+              <input type="text" placeholder="手机号" />
+            </div>
+            <div class="div2">
+              <span>昵&nbsp;&nbsp;&nbsp;称</span>
+              <input type="text" placeholder="中英文均可，最长9个字符" maxlength="9"/>
+            </div>
+            <div class="div7">
+              <span>密&nbsp;&nbsp;&nbsp;码</span>
+              <input type="password" placeholder="6~20位数字，字母和字符，字母不区分大小写" />
+            </div>
+            <div class="div4">
+              <input type="button" value="注  册" class="register_btn"/>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+<script>
+$(function(){
+  var rootPath=getRootPath();
+  
+  /*登录与注册的切换*/
+  $(".navtab_link").on("click",function(){
+    var index=$(this).index();
+    $(this).addClass("active").siblings(".navtab_link").removeClass("active");
+    $(".con_tabs .con_tab").eq($('.navtab_link').index(this)).removeClass("dis").siblings().addClass("dis");
+    $("#register_form")[0].reset();
+    $("#login_form")[0].reset();
+  });
+  
+  /*s--登录*/
+  var deviceId="";
+  var pcdType=3;
+  function setDeviceId(sessionId){
+    deviceId=sessionId;
+  }
+  //点击登录
+  $(".login_btn").on("click",function(){
+    var sMobile=$.trim($("#login_form .div1 input").val());
+    var sPassword=$.trim($("#login_form .div2 input").val());
+    if(!sMobile){
+      alert("账号不能为空");
+      $("#login_form .div1 input").val("").focus(); 
+      return false; 
+    }
+    if(!sPassword){
+      alert("密码不能为空");
+      $("#login_form .div2 input").val("").focus(); 
+      return false; 
+    }
+    var login_data={};
+    login_data.IMEI=deviceId;
+    login_data.PCDType=pcdType;
+    login_data.UserName=sMobile;
+    login_data.Password=sPassword;
+    if($(".keep").hasClass(".checkox1")) login_data.Remember="no";
+    else login_data.Remember="yes";
+    $.ajax({
+      type:"POST",
+      url:rootPath+"passport/user/mlogin.do",
+      dataType:"json",
+      data:JSON.stringify(login_data),
+      beforeSend:function(){
+        $(".mask_gif").show();
+      },
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          alert("祝贺您登录成功！");
+          var logSuccessName=returnData.UserInfo.UserName;
+          var logSuccessId=returnData.UserInfo.UserId;
+          window.location.href="./anchor_index.html?userName="+logSuccessName+"&&userId="+logSuccessId;
+        }else{
+          alert("账号或密码有误"+returnData.Message);
+        }
+        $(".mask_gif").hide();
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  //点击勾选框，记住密码
+  $(".keep").on("click",function(){
+    if($(this).hasClass("checkbox1")){//未选中
+      $(this).removeClass("checkbox1").attr({"src":"img/checkbox2.png"});
+    }else{//已选中
+      $(this).addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+    }
+  });
+  //点击忘记密码
+  $(".fg_pw").on("click",function(){
+    window.location.href="./forgetPassword.html";
+  });
+  //第三方登录--微信登录
+  $(".wechat").on("click",function(){
+    alert("欢迎使用微信登录");
+  });
+  //第三方登录--微博登录
+  $(".mblog").on("click",function(){
+    alert("欢迎使用微博登录");
+  });
+  //第三方登录--qq登录
+  $(".qq").on("click",function(){
+    alert("欢迎使用qq登录");
+  });
+  //清空登录内容
+  function clearLoginForm(){
+    $("#login_form .div1 input").val("");
+    $(".#login_form .div2 input").val("");
+    $(".keep").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+  }
+  /*e--登录*/
+ 
+  /*s--注册*/
+  $(".register_btn").on("click",function(){
+    var sMobile=$.trim($("#register_form .div1 input").val());
+    var sNick=$.trim($("#register_form .div2 input").val());
+    var sPassword=$.trim($("#register_form .div7 input").val());
+    if(!sMobile){
+      alert("账号不能为空");
+      $("#register_form .div1 input").val("").focus(); 
+      return false; 
+    }
+    if(!sNick){
+      alert("昵称不能为空");
+      $("#register_form .div2 input").val("").focus(); 
+      return false; 
+    }else{
+      var myreg = /^[\u4e00-\u9fa5a-zA-Z0-9_]{1,9}$/;
+      if(!(myreg.test(sNick))){ 
+        alert("昵称输入不合法，请重新输入"); 
+        $("#register_form .div2 input").val("").focus(); 
+        return false; 
+      } 
+    }
+    if(!sPassword){
+      alert("密码不能为空");
+      $("#register_form .div7 input").val("").focus(); 
+      return false; 
+    }else{
+      var myreg = /(^[a-z]+$|^[A-Z]+$|^\d+$|^_+$)/;
+      if((!(myreg.test(sPassword)))||sPassword.length<6||sPassword.length>20){ 
+        alert("密码输入不合法，请重新输入"); 
+        $("#register_form .div7 input").val("").focus(); 
+        return false; 
+      }
+    }
+    var register_data={};
+    register_data.IMEI=deviceId;
+    register_data.PCDType=pcdType;
+    register_data.Password=sPassword;
+    register_data.UserName=sNick;
+    register_data.NickName=sNick;
+    $.ajax({
+      type:"POST",
+      url:rootPath+"passport/user/register.do",
+      dataType:"json",
+      data:JSON.stringify(register_data),
+      beforeSend:function(){
+        $(".mask_gif").show();
+      },
+      success:function(returnData){
+        if(returnData.ReturnType=="1001"){
+          alert("祝贺您注册成功！");
+          var logSuccessName=register_data.UserName;
+          var logSuccessId=returnData.UserId;
+          window.location.href="./anchor_index.html?userName="+logSuccessName+"&&userId="+logSuccessId;
+        }else{
+          alert("信息有误"+returnData.Message);
+        }
+        $(".mask_gif").hide();
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  //清空注册内容
+  function clearLoginForm(){
+    $("#login_form .div1 input").val("");
+    $(".#login_form .div2 input").val("");
+    $(".keep").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+  }
+  /*e--注册*/
+
+});
+</script>
+</html>

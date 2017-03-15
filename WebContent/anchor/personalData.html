@@ -15,7 +15,7 @@
   <script src="../resources/js/context.utils.js"></script>
   <!--日历插件-->
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
-  <script src="js/common_manage.js"></script>
+  <!--<script src="js/common_manage.js"></script>-->
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
 </head>
 <style>
@@ -25,6 +25,10 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{-moz-user-select: none;overflow-x: auto;}
+input{padding:0px 4px;}
+.col-sm-10{
+  padding-left:0px;
+}
 .detail{
   width:1084px;
   min-width:780px;
@@ -39,7 +43,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   color: #000;
   font-size: 14px;
   margin-top: 20px;
-  padding-left:20px;
+  padding-left:15px;
 }
 .detail_content{
   width:100%;
@@ -50,6 +54,7 @@ body{-moz-user-select: none;overflow-x: auto;}
 @media (min-width: 768px){
   .col-sm-10 {
     width: calc(100% - 120px ) !important;
+    padding-left: 0px;
   }
 }
 .left_content{
@@ -60,8 +65,7 @@ body{-moz-user-select: none;overflow-x: auto;}
 }
 .left_content .row,
 .form-horizontal .form-group{
-  margin-left:-5px !important;
-  margin-right:5px !important;
+  margin:0px 0px 15px !important;
 }
 .col-sm-12{
   padding-left:0px;
@@ -72,6 +76,8 @@ body{-moz-user-select: none;overflow-x: auto;}
   font-family: "微软雅黑";
   text-align: center;
   width: auto !important;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 .control-label .ast {
   color: #ffa634;
@@ -144,8 +150,9 @@ input[type=checkbox]{
   border-radius: 2px;
   background: #ffa634;
   color: #fff;
-  float: right;
-  margin-right: 20px;
+  float: left;
+  margin-left: 85px;
+  margin-top:25px;
 }
 .right_content{
   width:30%;
@@ -212,7 +219,7 @@ input[type=checkbox]{
 </style>
 <body onselectstart="return false">
 <div class="detail">
-  <div class="detail_title">首页> 个人资料</div>
+  <div class="detail_title">账号设置> 个人资料</div>
     <div class="detail_content">
       <div class="left_content container">
       	<div class="row">
@@ -222,43 +229,6 @@ input[type=checkbox]{
                 <label class="col-sm-2 control-label">昵&emsp;&emsp;称<span class="ast">*</span>：</label>
                 <div class="col-sm-10">
                   <input type="text" class="nickname " placeholder="我是主播">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:10px;">个人签名<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10">
-                  <textarea class="signature" name=""></textarea>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:10px;">个人简介<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10">
-                  <textarea class="introduction" name="" ></textarea>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">真实姓名<span class="ast">*</span>：</label>
-                <div class="col-sm-10">
-                  <input type="text" class="realname " placeholder="我是主播">
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">出生日期<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10">
-                  <div class="birthday_container" id="div_container">  
-                    <div class="btn-group">
-                      <a href="#" class="year date" data-toggle="dropdown">年<span class="caret"></span></a>
-                      <ul class="dropdown-menu year_menu" role="menu"></ul>
-                    </div>
-                    <div class="btn-group">
-                      <a href="#" class="month date" data-toggle="dropdown">月<span class="caret"></span></a>
-                      <ul class="dropdown-menu month_menu" role="menu"></ul>
-                    </div>
-                    <div class="btn-group">
-                      <a href="#" class="day date" data-toggle="dropdown">日<span class="caret"></span></a>
-                      <ul class="dropdown-menu day_menu" role="menu"></ul>
-                    </div>  
-                  </div>  
                 </div>
               </div>
               <div class="form-group">
@@ -281,15 +251,46 @@ input[type=checkbox]{
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label">手&emsp;&emsp;机<span class="ast">*</span>：</label>
+                <label class="col-sm-2 control-label">电&emsp;&emsp;话<span class="ast">*</span>：</label>
                 <div class="col-sm-10">
                   <input type="text" class="phone " placeholder="123456888897789">
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label">邮&emsp;&emsp;箱<span style="color:#fff;">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:15px;">
+                <div class="col-sm-10">
                   <input type="text" class="mail" placeholder="邮箱">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:10px;">个人签名<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
+                  <textarea class="signature" name=""></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label" style="margin-top:10px;">个人简介<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
+                  <textarea class="introduction" name="" ></textarea>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">出生日期<span style="color:#fff;">*</span>：</label>
+                <div class="col-sm-10">
+                  <div class="birthday_container" id="div_container">  
+                    <div class="btn-group">
+                      <a href="#" class="year date" data-toggle="dropdown">年<span class="caret"></span></a>
+                      <ul class="dropdown-menu year_menu" role="menu"></ul>
+                    </div>
+                    <div class="btn-group">
+                      <a href="#" class="month date" data-toggle="dropdown">月<span class="caret"></span></a>
+                      <ul class="dropdown-menu month_menu" role="menu"></ul>
+                    </div>
+                    <div class="btn-group">
+                      <a href="#" class="day date" data-toggle="dropdown">日<span class="caret"></span></a>
+                      <ul class="dropdown-menu day_menu" role="menu"></ul>
+                    </div>  
+                  </div>  
                 </div>
               </div>
               <div class="form-group">
@@ -349,7 +350,7 @@ $(function(){
       var date = new Date();
       var nowYear = date.getFullYear();//获取当前的年
       var con="";
-      for(var i=nowYear;i>=nowYear-20;i--){
+      for(var i=nowYear;i>=nowYear-50;i--){
         con+="<li><a href='javascript:void(0)' value="+i+">"+i+"年</a></li>";
       }
       $(".year_menu").append(con);

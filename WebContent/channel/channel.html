@@ -22,6 +22,44 @@
   <script src="../resources/plugins/hplus/js/content.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/js/common.utils.js"></script>
+  <style>
+  .previewImg{
+    width: 100px;
+    height: 100px;
+    float: left;
+    border: 1px solid #dedede;
+  }
+  .previewImg img,.newImg{
+    width:100%;
+    height: 100%;
+    background-size:100% 100%;
+  }
+  .upload_img{
+    width: 80px;
+    height: 20px;
+    margin: 40px 10px;
+    border-radius: 10px;
+    text-align: center;
+    float: left;
+    color: #fff;
+    background: #333;
+    cursor: pointer;
+  }
+  .mask_gif{
+    width: 100px;
+    height: 100px;
+    position: relative;
+    background: rgba(0,0,0,0.6);
+    display: none;
+  }
+  .mask_gif img{
+    width: 25px;
+    height: 25px;
+    position: relative;
+    margin-top: -120px;
+    margin-left: 32px;
+  }
+  </style>
 </head>
 <body style="overflow:hidden;">
   <div style="height:100%">
@@ -107,6 +145,19 @@
                         <span class="zj">专辑</span>
                       </li>
                     </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="th add-th">栏目图片</td>
+                  <td colspan="3">
+                    <div class="previewImg">
+                      <img class="defaultImg" src="http://wotingfm.com/CM/resources/images/default.png" alt="font cover" />
+                    </div>
+                    <div class="upload_img">上传图片</div>
+                    <div class="mask_gif">
+                      <img src="../anchor/img/waiting_circle.gif" alt="图片上传等待" />
+                    </div>
+                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value="http://wotingfm.com/CM/resources/images/default.png"/>
                   </td>
                 </tr>
                 <tr>
@@ -266,6 +317,67 @@ $(function() {
   });
   //2.9-input输入框的提示功能关闭
   $("input").attr("autocomplete","off");
+  //2.10-上传图片
+  $(".upload_img").on("click",function(){
+    $(".upl_img").click();
+  })
+  var img100="";//转换成100*100的图片
+  $('.upl_img').on('change', function(){
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass","Chrome");
+    oMyForm.append("PCDType","3");
+    oMyForm.append("UserId","123");
+    oMyForm.append("Purpose","4");
+    oMyForm.append("SrcType","1");
+    var filePath=$(this).val();
+    var _this=$(this);
+    if(($(this)[0].files[0].size)/1048576>1){//判断图片大小是否大于1M
+      alert("图片过大，请选择合适的图片上传！");
+    }else{
+      requestUpload(_this,oMyForm);
+    }
+  });
+  function requestUpload(_this,oMyForm){
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      beforeSend: function(){
+        $(".mask_gif").show();
+      },
+      //表单提交前进行验证
+      success: function (resultData){
+        if(resultData.Success==true){
+          img100=(resultData.FilePath).replace(".png",".100_100.png");
+          $(".upl_img").attr("value",img100);
+          if($(".defaultImg").css("display")!="none"){
+            $(".defaultImg").css({"display":"none"});
+          }
+          var newImg =$("<img class='newImg' src="+img100+" alt='front cover' />");
+          if($(".previewImg").children().length>1){
+            $(".previewImg img:last").replaceWith(newImg);
+          }else{
+            $(".previewImg").append(newImg);
+          }
+          setTimeout(function(){
+            $(".mask_gif").hide();
+          },200);
+        }else{
+          alert(resultData.err);
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  };
+  
 });  
 
 /**
@@ -383,12 +495,13 @@ function onClick(event, treeId, treeNode) {
 
 /*修改已有栏目的方法*/
 function modChannel() {
-  var modInfo={
+  var modInfo={//修改栏目信息
     "ChannelId":treeNode.id,
     "Data":{
       "Name":$("#nodeNames").val(),
       "ParentId":$("#nodeParent").val(),
       "Owner":{"OwnerType":"100","OwnerId":"cm"},
+      "Img":$(".upl_img").attr("value"),
       "Sort":$("#sort").val(),
       "ContentType":$("#contentType").val(),
       "Descn":$("#nodeDescn").val()
@@ -434,6 +547,9 @@ function modChannel() {
             }
           }
         }
+        if(treeNode.attributes.ChannelImg!=modInfo.Data.Img){//图片改变
+          treeNode.attributes.ChannelImg=modInfo.Data.Img;
+        }
         if(modInfo.Data.ContentType!=treeNode.attributes.contentType) treeNode.attributes.contentType=$("#contentType").val();
         if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
@@ -477,6 +593,9 @@ function cleanDialog() {
   });
   $("#cataTrees").html(" ");//清空模态框里面的ztree
   $("#all,#radio,#jm,#zj").prop("checked",false).prop("disabled",false);
+  $(".upl_img").attr("value","http://wotingfm.com/CM/resources/images/default.png");
+  $(".newImg").remove();
+  $(".defaultImg").attr({"src":"http://wotingfm.com/CM/resources/images/default.png"}).show();
 }
 
 /*增删改的公共判断*/
@@ -513,6 +632,7 @@ function commonJudeg(oPeType){
                     }
                   });
                 }
+                $(".defaultImg").attr({"src":treeNode.attributes.channelImg}).show();
                 $("#nodeDescn").val((treeNode.attributes.descn)?(treeNode.attributes.descn):"");
                 $("#shade").css({"display":"block"});
                 $("#addCata").modal("show");
