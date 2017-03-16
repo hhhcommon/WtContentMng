@@ -5,17 +5,14 @@
   <title>修改手机号</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
-  <!--日历插件-->
-  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
-  <script src="js/common_manage.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -24,9 +21,8 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{-moz-user-select: none;overflow-x: auto;}
+input{padding:0px 4px;}
 .detail{
-  width:1084px;
-  min-width:780px;
   height:auto;
   overflow: auto;
   margin-bottom:20px;
@@ -44,7 +40,7 @@ body{-moz-user-select: none;overflow-x: auto;}
   height:300px;
   width:500px;
   margin-left:20px;
-  border:1px solid #dedede;
+  margin-top:30px;
 }
 .form-horizontal .form-group{
   margin-left:0;
@@ -57,10 +53,9 @@ body{-moz-user-select: none;overflow-x: auto;}
 .form-horizontal{
   width:362px;
   height:auto;
-  margin:40px auto;
 }
 .label_div{
-  width: 105px;
+  width: 92px;
   height: 30px;
   line-height: 30px;
   font-weight: 600;
@@ -71,9 +66,6 @@ body{-moz-user-select: none;overflow-x: auto;}
   font-family: "微软雅黑";
   float: left;
 }
-.txtr{
-  text-align: right;
-}
 .label_div .ast {
   color: #ffa634;
 }
@@ -83,7 +75,6 @@ body{-moz-user-select: none;overflow-x: auto;}
   float: left;
 }
 .phone_ipt1{
-  width:155px;
   height:35px;
   float: left;
 }
@@ -91,32 +82,27 @@ body{-moz-user-select: none;overflow-x: auto;}
   width:100%;
   height:35px;
 }
-.phone1{
-  width:100%;
+.codeval{
+  width:120px;
   height:35px;
+  float: left;
 }
-.captcha1,.captcha2{
-  width: 95px;
+.ver_code{
+  width:130px;
   height: 35px;
   line-height: 35px;
   text-align: center;
   border: none;
   margin-left: 5px;
   font-size: 14px;
+  border:none;
   font-family: "微软雅黑";
   font-weight: 500;
   float: left;
-}
-.captcha1{
   color: #fff;
   background: #ffa634;
-  display: none;
 }
-.captcha2{
-  color: #000;
-  background:#777;
-}
-.confirm,.cancel{
+.confirm{
   width:90px;
   height:35px;
   border: none;
@@ -127,42 +113,81 @@ body{-moz-user-select: none;overflow-x: auto;}
   float: left;
 }
 .confirm{
-  margin-left:45px;
+  margin-left:105px;
   background: #ffa634;
-}
-.cancel{
-  background: #000;
-  margin-left:40px;
 }
 </style>
 <body onselectstart="return false">
   <div class="detail">
-    <div class="detail_title">首页> 修改手机号</div>
+    <div class="detail_title">账号设置> 修改手机号</div>
     <div class="containers">
       <form class="form-horizontal">
         <div class="form-group">
-          <div class="label_div">输入新手机号<span class="ast">*</span>：</div>
+          <div class="label_div">输入手机号<span class="ast">*</span>：</div>
           <div class="phone_ipt">
             <input type="text" class="phone"/>
           </div>
         </div>
         <div class="form-group">
-          <div class="label_div txtr">输入验证码<span class="ast">*</span>：</div>
+          <div class="label_div">输入验证码<span class="ast">*</span>：</div>
           <div class="phone_ipt1">
-            <input type="text" class="phone1"/>
+            <input class="codeval phone1" type="text" placeholder="验证码" />
+            <input type="button" class="ver_code" value="获取验证码"/>
           </div>
-          <div class="captcha1">获取验证码</div>
-          <div class="captcha2"><span class="captcha2_span1">22</span><span class="captcha2_span2">s后重新发送</span></div>
         </div>
         <div class="form-group">
-          <input  class="confirm" type="button" value="确认" />
-          <input  class="cancel" type="button" value="取消" />
+          <input  class="confirm" type="button" value="保存设置" />
         </div>
       </form> 
     </div>
   </div>   
 </body>
 <script>
- 
+$(function(){
+  //对于发送验证码这块暂时不支持
+  var rootPath=getRootPath();
+  
+  var uid=$(".login_user span",parent.document).attr("userid");
+  var deviceId="";
+  var pcdType=3;
+  
+  $(".confirm").on("click",function(){
+    var sMobile=$.trim($(".phone").val());
+    if(!sMobile){
+      alert("手机号不能为空");
+      $(".phone").val("").focus(); 
+      return false; 
+    }else{
+      var myreg=/^1[3|4|5|7|8][0-9]{9}$/;
+      if(!(myreg.test(sMobile))){ 
+        alert("手机号输入不合法，请重新输入"); 
+        $(".phone").val("").focus(); 
+        return false; 
+      }else{
+        var data1={};
+        data1.IMEI=deviceId;
+        data1.PCDType=pcdType;
+        data1.UserId=uid;
+        data1.PhoneNum=sMobile;
+        $.ajax({
+          type:"POST",
+          url:rootPath+"passport/user/updateUserInfo.do",
+          dataType:"json",
+          data:JSON.stringify(data1),
+          success: function(returnData){
+            if(returnData.ReturnType=="1001"){
+              alert("手机号码修改成功");
+            }else{
+              alert(returnData.Message);
+            }
+          },
+          error:function(jqXHR){
+            alert("发生错误" + jqXHR.status);
+          }
+        }); 
+      }
+    }
+  });
+});
 </script>
 </html>

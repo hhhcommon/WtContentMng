@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>频道管理</title>
+  <title>举报管理</title>
   <meta name="keywords" content="我听，我享听">
   <meta name="description" content="我听，我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
@@ -27,9 +27,9 @@
   <div style="height:100%">
     <!--菜单栏-->
     <div class="toobarArea">
-      <button type="button" id="add" opeType="claAdd" class="btn" style="margin-right:3px;">添加</button>
-      <button type="button" id="mod" opeType="claMod" class="btn" style="margin-right:3px;">修改</button>
-      <button type="button" id="del" opeType="claDel" class="btn" style="margin-right:3px;">删除</button>
+      <button type="button" id="add" opeType="claAdd" class="btn"  style="margin-right:3px;">添加</button>
+      <button type="button" id="mod" opeType="claMod" class="btn"  style="margin-right:3px;">修改</button>
+      <button type="button" id="del" opeType="claDel" class="btn"  style="margin-right:3px;">删除</button>
     </div>
     <!--显示主区域-->
     <div class="mainArea">
@@ -60,35 +60,42 @@
           <div class="modal-header" style="padding-bottom:5px;">
             <button type="button" class="close" id="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" style="margin-bottom:5px;"></h4>
-            <span id="catalogBelong">频道属于：</span>
+            <span id="catalogBelong">举报属于：</span>
             <span id="nodePath"></span>
           </div>
           <div class="modal-body my-mbody" style="padding-bottom:0px; 15px;">
             <form id="verOperForm" enctype ="multipart/form-data">
               <table>
                 <tr>
-                  <td class="th add-th">频道代号</td>
-                  <td colspan="3"><input id="number" name="number" class="form-control" type="text" placeholder="频道代号" aria-required="true" style="margin-bottom:0px;"></td>
-                </tr>
-                <tr>
                   <td class="th add-th">名称</td>
                   <td colspan="3"><input type="text" class="form-control" id="nodeNames" name="nodeNames" placeholder="名称" aria-required="true" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
-                  <td class="th add-th">频率范围</td>
-                  <td colspan="3"><input id="aliasName" name="aliasName" class="form-control" type="text" placeholder="频率范围" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td class="th add-th">别名</td>
+                  <td colspan="3"><input id="aliasName" name="aliasName" class="form-control" type="text" placeholder="别名" aria-required="true" style="margin-bottom:0px;"></td>
+                </tr>
+                <tr>
+                  <td class="th add-th">分类父级</td>
+                  <td colspan="3">
+                    <div style="width:450px;height:34px;">
+                      <input type="text" class="form-control" id="nodeParent" name="nodeParent" placeholder="父分类id" aria-required="true" style="width:330px;margin-bottom:0px;display:none;">
+                      <input type="text" class="form-control" id="nodeParents" name="nodeParents" placeholder="父分类名字" aria-required="true" style="width:330px;margin-bottom:0px;">
+                      <div id='chooseParent'>选择父分类</div>
+                    </div>
+                    <ul id="cataTrees" class="ztree"></ul>
+                  </td>
                 </tr>
                 <tr>
                   <td class="th add-th">序号</td>
-                  <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" min="1" placeholder="序号" aria-required="true" style="margin-bottom:0px;"></td>
-                </tr>
-                <tr style="display: none;">
-                  <td class="th add-th">编号</td>
-                  <td colspan="3"><input id="nodeCode" name="nodeCode" class="form-control" type="text" placeholder="编号" aria-required="true" style="margin-bottom:0px;"></td>
+                  <td colspan="3"><input type="number" class="form-control" id="sort" name="sort" placeholder="序号" aria-required="true" min="0" style="margin-bottom:0px;"></td>
                 </tr>
                 <tr>
-                  <td class="th add-th">频率描述</td>
-                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="频率描述" aria-required="true" style="margin-bottom:0px;margin-top:13px;"></textarea></td>
+                  <td class="th add-th">业务编码</td>
+                  <td colspan="3"><input id="nodeCode" name="nodeCode" class="form-control" type="text" placeholder="业务编码" aria-required="true" style="margin-bottom:0px;"></td>
+                </tr>
+                <tr>
+                  <td class="th add-th">详细信息</td>
+                  <td colspan="3"><textarea id="nodeDescn" name="nodeDescn" class="form-control" type="text" placeholder="详细信息" aria-required="true" style="margin-bottom:0px;margin-top:13px;"></textarea></td>
                 </tr>
               </table>
             </form>
@@ -103,18 +110,19 @@
   </div>
 </body>
 <script>
-var zTreeObj,treeNode,rootNode,nodePathStr;
+var zTreeObj,treeNode,rootNode,nodePathStr,modalNode;
 var rootPath=getRootPath();
-var oPeType="1";//1新增，2修改，3删除
+var oPeType="1";//1新增，2修改,3删除
 var selectNode=1;//1选中节点，2未选中节点
 //需要加载的分类树的数据，以list方式给出
-var loadTreeData=[{CatalogType:"11",TreeViewType:"zTree"}];
+
+var loadTreeData=[{CatalogType:"12",TreeViewType:"zTree"}];
 
 //初始化方法：页面加载完成后执行
 $(function() {
   //0-初始化页面
   //0.1-初始化树样式
-  zTreeObj=$.fn.zTree.init($("#cataTree"), {
+  zTreeObj=$.fn.zTree.init($("#cataTree"),{
     view:{
       selectedMulti: false//是否允许同时选中多个节点
     },
@@ -123,16 +131,41 @@ $(function() {
       showRemoveBtn: false,//是否显示删除按钮
       showRenameBtn: false//是否显示编辑名称按钮
     },
-    async:{
-      enable:true//强行异步加载父节点的子节点
-    },
     check:{
       enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    async:{
+      enable:true//强行异步加载父节点的子节点
     },
     data:{
       simpleData:{
         enable: true
       }
+    }
+  });
+  //0.2--初始化弹出框的树
+  zTreeObjs=$.fn.zTree.init($("#cataTrees"),{
+    view:{
+      selectedMulti: false//是否允许同时选中多个节点
+    },
+    edit:{
+      enable: true,//是否开启异步模式
+      showRemoveBtn: false,//是否显示删除按钮
+      showRenameBtn: false//是否显示编辑名称按钮
+    },
+    check:{
+      enable: false//设置 zTree的节点上是否显示 checkbox / radio
+    },
+    async:{
+      enable:true//强行异步加载父节点的子节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:onClick
     }
   });
   
@@ -141,20 +174,22 @@ $(function() {
   loadTree(loadTreeData);
   
   //2-初始化按钮
-  //2.1-点击添加按钮，增加新的频道
+  //2.1-点击添加按钮，增加新的分类
   $("#add").on("click",function(){
     cleanDialog();//清空模态框里面的数据
-    oPeType="1";//新增
+    oPeType="1";//增加
     getRootNode(oPeType);
   });
-  //2.2-点击修改按钮，修改已有的频道
+  //2.2-点击修改按钮，修改已有的分类
   $("#mod").on("click",function(){
     cleanDialog();//清空模态框里面的数据
     oPeType="2";//修改
+    loadTree(loadTreeData);
     getRootNode(oPeType);
   });
-  //2.3-点击删除按钮，删除已有的频道
+  //2.3-点击删除按钮，删除已有的分类
   $("#del").on("click",function(){
+    cleanDialog();//清空模态框里面的数据
     oPeType="3";//删除
     getRootNode(oPeType);
   });
@@ -170,8 +205,13 @@ $(function() {
   $("#save,.close,#shade,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
+    $("#cataTrees").slideUp("slow");
   });
-  //2.6-input输入框的提示功能关闭
+  //2.6-点击选择父分类，弹出的修改界面出现树形分类
+  $("#chooseParent").on("click",function(){
+    $("#cataTrees").slideDown("slow");
+  });
+  //2.7-input输入框的提示功能关闭
   $("input").attr("autocomplete","off");
 });
 
@@ -193,7 +233,11 @@ function loadTree(loadData) {
       data: loadData[index++],
       success: function(jsonData){
         if(jsonData.ReturnType=="1001") {
-          zTreeObj.addNodes(null,jsonData.Data,false);
+          if(oPeType==2){
+            zTreeObjs.addNodes(null,jsonData.Data,false);
+          }else{
+            zTreeObj.addNodes(null,jsonData.Data,false);
+          }
         }
         loadRecursion(index);
       },
@@ -205,7 +249,7 @@ function loadTree(loadData) {
 }
 
 /*与选中节点有关的操作*/
-function getRootNode(oPeType) {
+function getRootNode(oPeType){
   var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
   treeNode=nodes[0]; //当前选中的节点
   if(!treeNode){
@@ -226,11 +270,11 @@ function getRootNode(oPeType) {
   }
 }
 
-/*增加新频道的方法*/
-function addCatalog(){
+/*增加新分类的方法*/
+function addCatalog() {
   var myreg= /[\u4e00-\u9fa5]/; 
-  if(myreg.test($.trim($("#number").val()))){
-    alert("频道代号中不能包含汉字");
+  if(myreg.test($.trim($("#nodeCode").val()))){
+    alert("业务编码中不能包含汉字");
     $("#nodeCode").val(" ");
     return false;
   }
@@ -238,7 +282,6 @@ function addCatalog(){
     "CatalogType":treeNode.attributes.mId,
     "Data":{
       "Name":$("#nodeNames").val(),
-      "NewId":$("#number").val(),
       "BCode":$("#nodeCode").val(),
       "AliasName":$("#aliasName").val(),
       "Sort":$("#sort").val(),
@@ -258,9 +301,9 @@ function addCatalog(){
             id:resultData.CatagoryId,
             name:$("#nodeNames").val(),
             attributes:{
-              mId:treeNode.attributes.mId,
               order:$("#sort").val(),
-              newId:$("#number").val(),
+              parentId:treeNode.id,
+              mId:treeNode.attributes.mId,
               bCode:$("#nodeCode").val(),
               aliasName:$("#aliasName").val(),
               desc:$("#nodeDescn").val(),
@@ -279,9 +322,32 @@ function addCatalog(){
   })
 }
 
-/*修改已有频道的方法*/
-function modCatalog(){
-  if($("#nodeParent").val()==11){//父级是根节点，parentId=0
+/*点击弹出窗里面的树上的节点*/
+function onClick(event, treeId,treeNode) {
+  var node=zTreeObjs.getSelectedNodes();//获取模态框里zTree当前被选中的节点数据集合
+  modalNode=node[0];//当前选中的节点
+  var nodes=zTreeObj.getSelectedNodes();//获取 zTree 当前被选中的节点数据集合
+  var childNodes = zTreeObj.transformToArray(nodes[0]);//获取ztree当前被选中节点的子节点的id集合     
+  for(i = 0; i < childNodes.length; i++) {   
+    if(modalNode.id==childNodes[i].id){//父子节点是同一节点,或模态框里面选中的父节点是自己的子节点
+      alert("当前节点不支持作为父级节点，请选择其他节点");
+      return false;
+    }
+  }     
+  $("#nodeParent").val(modalNode.id);
+  $("#nodeParents").val(modalNode.name);
+  $("#cataTrees").slideUp("slow");
+};
+
+/*修改已有分类的方法*/
+function modCatalog() {
+  var myreg= /[\u4e00-\u9fa5]/; 
+  if(myreg.test($.trim($("#nodeCode").val()))){
+    alert("业务编码中不能包含汉字");
+    $("#nodeCode").val(" ");
+    return false;
+  }
+  if($("#nodeParent").val()==12){//父级是根节点，parentId=0
     $("#nodeParent").val("0");
   }
   var modInfo={
@@ -291,7 +357,6 @@ function modCatalog(){
       "Name":$("#nodeNames").val(),
       "ParentId":$("#nodeParent").val(),
       "AliasName":$("#aliasName").val(),
-      "UseBCodeAsKey":"false",
       "Sort":$("#sort").val(),
       "BCode":$("#nodeCode").val(),
       "Descn":$("#nodeDescn").val()
@@ -308,12 +373,12 @@ function modCatalog(){
           var modPathName=nodePathStr.substring(0, nodePathStr.lastIndexOf('\/'));
           treeNode.attributes.pathName=modPathName;
           treeNode.name=$("#nodeNames").val();
-        }
+        } 
         if(modInfo.Data.Sort!=treeNode.attributes.order) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
-          var targetNode=zTreeObj.getNodeByParam("id","11", null);
-          if(targetNode.children){//当前根节点的所有子节点
-            var sLength=targetNode.children.length;
+          var targetNode=zTreeObj.getNodeByParam("id",$("#nodeParent").val(),null);
+          if(targetNode.children){//当前选中分类的父分类的所有子分类存在
+            var sLength=targetNode.children.length;//当前选中分类的父分类的所有子分类
             for(var i=0;i<sLength;i++){
               for(var j=i;j<sLength;j++){
                 if(parseInt(targetNode.children[i].attributes.order)<parseInt(targetNode.children[j].attributes.order)){//降序排列（冒泡排序）
@@ -338,8 +403,8 @@ function modCatalog(){
   })
 };
 
-/*删除已有频道的方法*/
-function delCatalog(){
+/*删除已有分类的方法*/
+function delCatalog() {
   var delInfo={"CatalogType":treeNode.attributes.mId,"CatalogId":treeNode.id,};
   $.ajax({
     type: "POST",    
@@ -365,23 +430,24 @@ function cleanDialog() {
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });
+  $("#cataTrees").html(" ");//清空模态框里面的ztree
 }
-
 /*增删改的公共判断*/
 function commonJudeg(oPeType){
-  if(treeNode.level>=1){//非根节点只支持删改
+  if(treeNode.level>=1){//非根节点支持增删改
     switch(oPeType){
       case "1": alert("当前节点不支持新增操作，请选择他的父级节点进行操作");
                 return false;
                 break;
       case "2": $("#addCata").find(".modal-header>h4").html("修改"+rootNode);
-                $("#addCata").find("tr:eq(0)").hide();
-                $("#addCata").find(".modal-header>span").hide();
-                $("#nodeNames").val((treeNode.name)?(treeNode.name):"");
+                $("#catalogBelong,#nodePath").hide();
+                $("#addCata").find("tr:eq(2)").hide();
+                $("#nodeNames").val(treeNode.name);
                 $("#aliasName").val((treeNode.attributes.aliasName)?(treeNode.attributes.aliasName):"");
-                $("#number").val((treeNode.id)?(treeNode.id):"");
-                $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
                 $("#nodeCode").val((treeNode.attributes.bCode)?(treeNode.attributes.bCode):"");
+                $("#sort").val((treeNode.attributes.order)?(treeNode.attributes.order):"");
+                $("#nodeParent").val((treeNode.attributes.parentId)?(treeNode.attributes.parentId):"");//分类父级的id
+                $("#nodeParents").val((treeNode.getParentNode().name)?(treeNode.getParentNode().name):"");//分类父级的名字
                 $("#nodeDescn").val((treeNode.attributes.desc)?(treeNode.attributes.desc):"");
                 $("#shade").css({"display":"block"});
                 $("#addCata").modal("show");
@@ -395,10 +461,9 @@ function commonJudeg(oPeType){
     }
   }else if(treeNode.level==0){//根节点只支持增
     switch(oPeType){
-      case "1": $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
-                $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
-                $("#addCata").find(".modal-header>span").show();
-                $("#addCata").find("tr:eq(0)").show();
+      case "1": $("#addCata").find(".modal-header>h4").html("添加"+rootNode);
+                $("#addCata").find(".modal-header>span:eq(1)").html(treeNode.attributes.pathName);
+                $("#addCata").find("tr:eq(2)").hide();
                 $("#shade").css({"display":"block"});
                 $("#addCata").modal("show");
                 break;

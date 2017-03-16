@@ -15,7 +15,6 @@
   <script src="../resources/js/context.utils.js"></script>
   <!--日历插件-->
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
-  <!--<script src="js/common_manage.js"></script>-->
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
 </head>
 <style>
@@ -216,6 +215,21 @@ input[type=checkbox]{
 .birthday_container .dropdown:nth-child(3){
   margin-left:1%;
 }
+.mask_gif{
+  width: 180px;
+  height: 180px;
+  position: relative;
+  top:-180px;
+  background: rgba(0,0,0,0.6);
+  display: none;
+}
+.mask_gif img{
+  width: 25px;
+  height: 25px;
+  position: relative;
+  margin-top: 60px;
+  margin-left: 70px;
+}
 </style>
 <body onselectstart="return false">
 <div class="detail">
@@ -228,7 +242,7 @@ input[type=checkbox]{
               <div class="form-group">
                 <label class="col-sm-2 control-label">昵&emsp;&emsp;称<span class="ast">*</span>：</label>
                 <div class="col-sm-10">
-                  <input type="text" class="nickname " placeholder="我是主播">
+                  <input type="text" class="nickname" placeholder="我是主播">
                 </div>
               </div>
               <div class="form-group">
@@ -236,15 +250,15 @@ input[type=checkbox]{
                 <div class="col-sm-10">
                   <div class="sex">  
                     <div class="male_div">
-                      <input type="checkbox" class="male"/>
+                      <input type="checkbox" class="male" name="sexx"/>
                       <span class="male_span">男</span>
                     </div>
                     <div class="female_div">
-                      <input type="checkbox" class="female"/>
+                      <input type="checkbox" class="female" name="sexx"/>
                       <span class="female_span">女</span>
                     </div>
                     <div class="secret_div">
-                      <input type="checkbox" class="secret"/>
+                      <input type="checkbox" class="secret" name="sexx"/>
                       <span class="secret_span">保密</span>
                     </div>
                   </div>  
@@ -253,7 +267,7 @@ input[type=checkbox]{
               <div class="form-group">
                 <label class="col-sm-2 control-label">电&emsp;&emsp;话<span class="ast">*</span>：</label>
                 <div class="col-sm-10">
-                  <input type="text" class="phone " placeholder="123456888897789">
+                  <input type="text" class="phone" placeholder="123456888897789">
                 </div>
               </div>
               <div class="form-group">
@@ -265,13 +279,13 @@ input[type=checkbox]{
               <div class="form-group">
                 <label class="col-sm-2 control-label" style="margin-top:10px;">个人签名<span style="color:#fff;">*</span>：</label>
                 <div class="col-sm-10">
-                  <textarea class="signature" name=""></textarea>
+                  <textarea class="signature"></textarea>
                 </div>
               </div>
               <div class="form-group">
                 <label class="col-sm-2 control-label" style="margin-top:10px;">个人简介<span style="color:#fff;">*</span>：</label>
                 <div class="col-sm-10">
-                  <textarea class="introduction" name="" ></textarea>
+                  <textarea class="introduction"></textarea>
                 </div>
               </div>
               <div class="form-group">
@@ -301,16 +315,19 @@ input[type=checkbox]{
         </div>
       </div>
       <div class="right_content">
-       <h3>我的头像：</h3>
-       <div class="portrait">
-         <img src="img/a5.jpg" alt="" />
-       </div>
-       <p class="txt_p1">文加大小≤1兆</p>
-       <p class="txt_p2">支持JPG.PNG的文件格式</p>
-       <div class="replace_portrait">替换头像</div>
+        <h3>我的头像：</h3>
+        <div class="portrait">
+          <img src="img/a5.jpg" alt="" class="defaultImg"/>
+        </div>
+        <div class="mask_gif">
+          <img src="img/waiting_circle.gif" alt="图片上传等待" />
+        </div>
+        <input type="file" class="upl_img" style="display: none;" value="img/a5.jpg"/>
+        <p class="txt_p1">文加大小≤1兆</p>
+        <p class="txt_p2">支持JPG.PNG的文件格式</p>
+        <div class="replace_portrait">替换头像</div>
       </div>
     </div>
-    
   </div>
 </body>
 <script>
@@ -350,7 +367,7 @@ $(function(){
       var date = new Date();
       var nowYear = date.getFullYear();//获取当前的年
       var con="";
-      for(var i=nowYear;i>=nowYear-50;i--){
+      for(var i=nowYear;i>=nowYear-100;i--){
         con+="<li><a href='javascript:void(0)' value="+i+">"+i+"年</a></li>";
       }
       $(".year_menu").append(con);
@@ -371,10 +388,10 @@ $(function(){
     var $year = obj.children(".btn-group").children(".year_menu");  
     var $month = obj.children(".btn-group").children(".month_menu");  
     var $day = obj.children(".btn-group").children(".day_menu");
-    $day.empty();  
-    var selectedYear = $year.children(".selected").children("a").attr("value");  
-    var selectedMonth = $month.children(".selected").children("a").attr("value");  
-    console.log(selectedYear,selectedMonth);
+    //$day.empty();  
+    var selectedYear=$year.children(".selected").children("a").attr("value");  
+    var selectedMonth=$month.children(".selected").children("a").attr("value");
+    var selectedDay=$day.children(".selected").children("a").attr("value"); 
     if(selectedMonth == 2 && $.fn.birthday.IsRunYear(selectedYear)){//如果是闰年  
       var con ="";  
       for(var i = 1; i <= 29; i++){  
@@ -398,6 +415,213 @@ $(function(){
     day:"day"  
   };  
   $(".birthday_container").birthday();  
-})
+});
+$(function(){
+  var rootPath=getRootPath();
+  
+  var uid=$(".login_user span",parent.document).attr("userid");
+  var deviceId="";
+  var pcdType=3;
+  
+  var data1={};
+  data1.IMEI=deviceId;
+  data1.PCDType=pcdType;
+  data1.UserId=uid;
+  getUserInfo(data1);//得到个人资料数据
+  function getUserInfo(data1){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"passport/user/getUserInfo.do",
+      dataType:"json",
+      data:JSON.stringify(data1),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          fillPersonData(returnData);//填充个人数据
+        }else{
+          alert(returnData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  //填充个人数据
+  function fillPersonData(returnData){
+    $(".nickname").val(returnData.UserInfo.NickName?returnData.UserInfo.NickName:"暂无"); 
+    if(!returnData.UserInfo.Sex){//性别保密
+      $("input[name='sexx']").removeAttr("checked");
+      $(".secret").prop("checked",true);
+    }else{
+      $("input[name='sexx']").removeAttr("checked");
+      if(returnData.UserInfo.Sex=="女") $(".female").prop("checked",false);
+      else $(".male").prop("checked",false);
+    }
+    $(".phone").val(returnData.UserInfo.PhoneNum?returnData.UserInfo.PhoneNum:"保密");
+    $(".mail").val(returnData.UserInfo.Mail?returnData.UserInfo.Mail:"保密");
+    $(".signature").val(returnData.UserInfo.UserSign?returnData.UserInfo.UserSign:"暂无");
+    $(".introduction").val(returnData.UserInfo.Descn?returnData.UserInfo.Descn:"暂无");
+    if(returnData.UserInfo.Birthday){
+      var dates=returnData.UserInfo.Birthday;
+      formatDate(dates);//时间戳转换生日
+    }
+    if(returnData.UserInfo.PortraitBig){
+      $(".portrait img").attr("src",returnData.UserInfo.PortraitBig);
+    }
+  }
+  //时间戳转换生日
+  function formatDate(now){
+    var now = new Date(now);
+    var year=now.getFullYear();     
+    var month=now.getMonth()+1;     
+    var day=now.getDate();     
+    $(".year_menu li").each(function(){
+      if(year==$(this).children("a").attr("value")){
+        $(this).addClass("selected");
+        var txt=$(this).children("a").html();
+        $(this).parent().siblings(".date").html(txt);
+        var _this=$(this).parent().parent().parent();
+        $.fn.birthday.change(_this);
+        return false;
+      }
+    });
+    $(".month_menu li").each(function(){
+      if(month==$(this).children("a").attr("value")){
+        $(this).addClass("selected");
+        var txt=$(this).children("a").html();
+        $(this).parent().siblings(".date").html(txt);
+        var _this=$(this).parent().parent().parent();
+        $.fn.birthday.change(_this);
+        return false;
+      }
+    });
+    $(".day_menu li").each(function(){
+      if(day==$(this).children("a").attr("value")){
+        $(this).addClass("selected");
+        var txt=$(this).children("a").html();
+        $(this).parent().siblings(".date").html(txt);
+        var _this=$(this).parent().parent().parent();
+        $.fn.birthday.change(_this);
+        return false;
+      }
+    });
+  }     
+
+  /*s--点击替换头像*/
+  $(".replace_portrait").on("click",function(){
+    $(".upl_img").click();
+  });
+  $(".upl_img").change(function(){
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("MobileClass","Chrome");
+    oMyForm.append("PCDType","3");
+    oMyForm.append("UserId","123");
+    oMyForm.append("Purpose","1");
+    oMyForm.append("SrcType","1");
+    var filePath=$(this).val();
+    var _this=$(this);
+    requestUpload(_this,oMyForm);
+  });
+  function requestUpload(_this,oMyForm){
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      beforeSend: function(){
+        $(".mask_gif").show();
+      },
+      //表单提交前进行验证
+      success: function (resultData){
+        if(resultData.Success==true){
+          $(".upl_img").attr("value",resultData.FilePath);
+          if($(".defaultImg").css("display")!="none"){
+            $(".defaultImg").css({"display":"none"});
+          }
+          var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
+          if($(".portrait").children().length>1){
+            $(".portrait img:last").replaceWith(newImg);
+          }else{
+            $(".portrait").append(newImg);
+          }
+          setTimeout(function(){
+            $(".mask_gif").hide();
+          },200);
+        }else{
+          alert(resultData.err);
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  };
+  /*e--点击替换头像*/
+  
+  /*s--点击保存设置*/
+  $(".saveSet").on("click",function(){
+    var data2={};
+    data2.IMEI=deviceId;
+    data2.PCDType=pcdType;
+    data2.NickName=$.trim($(".nickname").val());
+    $("input[name='sexx']").each(function(){//性别id--待定
+      if($(this).prop("checked")){
+        data2.SexDictId=$(this).attr("sexId");
+        return;
+      }
+    });
+    data2.PhoneNum=$.trim($(".phone").val());
+    data2.MailAddr=$.trim($(".mail").val());
+    data2.UserSign=$.trim($(".signature").val());
+    data2.UserDescn=$.trim($(".introduction").val());//描述待定
+    //生日转换时间戳
+    var yeartxt,monthtxt,daytxt,timestr="";
+    $(".year_menu li").each(function(){
+      if($(this).hasClass("selected")){
+        yeartxt=$(this).children("a").attr("value");
+        return false;
+      }
+    });
+    $(".month_menu li").each(function(){
+      if($(this).hasClass("selected")){
+        monthtxt=$(this).children("a").attr("value");
+        return false;
+      }
+    });
+    $(".day_menu li").each(function(){
+      if($(this).hasClass("selected")){
+        daytxt=$(this).children("a").attr("value");
+        return false;
+      }
+    });
+    timestr=new Date(yeartxt+"/"+monthtxt+"/"+daytxt).getTime();
+    data2.Birthday=timestr;
+    $.ajax({
+      type:"POST",
+      url:rootPath+"passport/user/updateUserInfo.do",
+      dataType:"json",
+      data:JSON.stringify(data2),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          alert("个人资料修改成功");
+          getUserInfo(data1);//得到个人资料数据
+        }else{
+          alert(returnData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  });
+  
+  /*e--点击保存设置*/
+  
+});
 </script>
 </html>

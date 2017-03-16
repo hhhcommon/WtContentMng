@@ -1,90 +1,22 @@
-/*翻页样式*/
-.ellipsis{
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.page {
-  width: 360px;
-  height:30px;
-  margin:10px 0px 0px 50px;
-  background-color: #f3f3f4;
-  border-top: 1px solid #ccc;
-}
-.page .pagination {
-  display: inline-block;
-  margin: 0px;
-  border-radius: 4px;
-}
-.pagination i {
-  display: block;
-  float: left;
-  height:29px;
-  width: auto;
-  line-height: 30px;
-  color: black;
-  vertical-align: middle;
-  text-align: center;
-  padding: 0 2px;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: bold;
-  background-color: #f3f3f4;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
-  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
-  background-image: linear-gradient(#f3f3f4, #f3f3f4);
-}
-.pagination span {
-  display: block;
-  float: left;
-  height: 29px;
-  width: 50px;
-  line-height: 30px;
-  color: #0077c7;
-  vertical-align: middle;
-  text-align: center;
-  font-size: 12px;
-  font-weight: bold;
-  cursor: pointer;
-  background-color: #f3f3f4;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
-  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
-  background-image: linear-gradient(#f3f3f4, #f3f3f4);
-}
-.gigantic.pagination input {
-  width: 55px;
-  margin-top: 5px;
-  height: 20px;
-  font-size: 12px;
-  background: white;
-  color: black;
-  text-align: center;
-  padding: 0 2px;
-  margin-left: -3px;
-  border: 1px solid #ccc;
-}
-.pagination span.disabled, .pagination span.disabled:hover, .pagination span.disabled:focus, .pagination span.disabled:active {
-  background-color: red;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #f3f3f4), color-stop(100%, #f3f3f4));
-  background-image: -webkit-linear-gradient(#f3f3f4, #f3f3f4);
-  background-image: linear-gradient(#f3f3f4, #f3f3f4);
-  color: #A8A8A8;
-  cursor: default;
-  text-decoration:none;
-}
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+body{height:auto;-moz-user-select: none;overflow:hidden;}
 /*全局播放器样式*/
 .play_iframe{
-  width: 100%;
+  width: 1050px;
   height: 100px;
   position: fixed;
   bottom: 18px;
 }
 .globalplayer{
   width: 100%;
+  height:100%;
   cursor: pointer;
   position: fixed;
   left: 0;
-  bottom:100px;
+  top:0px;
+  bottom:0px;
   z-index: 99;
   user-select: none;
   -webkit-user-select: none;
@@ -112,17 +44,24 @@
   width:100%;
   height:100px;
   white-space: nowrap;
-  left:-1080px;
-  right: 0;
+  left:0;
+  right:0;
   bottom: 0;
-  border-radius: 0 4px 4px 0;
   background-color: #000;
-  opacity: 0.65;
-  filter: alpha(opacity=65);
+  opacity: 0.85;
+  filter: alpha(opacity=85);
 }
 .glp_panel{
+  width:840px;
+  height:100px;
+  position:relative;
+  margin:0px auto;
   overflow: hidden;
-  padding: 0px 0px 0px 20px;
+}
+.controls{
+  width:190px;
+  height:100px;
+  float: left;
 }
 .btn_prev,.btn_next{
   width:30px;
@@ -135,18 +74,15 @@
   width:66px;
   height:66px;
   float: left;
-  margin:17px 50px;
+  margin:17px 30px;
   background-size:100% 100%;
 }
 .player_panel{
-  display: inline-block;
   float: left;
-  width: 390px;
+  width: 350px;
   height: 60px;
-  margin:20px 45px 0px;
+  margin:20px 30px 0px;
   color: #fff;
-  line-height: 1px;
-  vertical-align: middle;
 }
 .player_panel .title{
   display: block;
@@ -193,14 +129,11 @@
   vertical-align: middle;
 }
 .volume_panel{
-  display: inline-block;
   float: left;
   width: 200px;
   height: 60px;
-  margin: 20px 0px 20px 0px;
+  margin: 20px 0px;
   color: #fff;
-  line-height: 1px;
-  vertical-align: middle;
 }
 .volume_img{
   width:30px;
@@ -235,11 +168,4 @@
   top: -2px;
   background: #fff;
   border-radius: 10px;
-}
-.fold_panel_img{
-  float: left;
-  width:16px;
-  height:28px;
-  position: absolute;
-  margin: 35px 0px 35px 85px;
 }

@@ -777,21 +777,31 @@ $(function(){
       $(this).removeClass("checkbox1");
       $(".ri_top3_con .rtc_listBox").each(function(){
         $(this).children(".ric_img_check").removeClass("checkbox1");
-      }); 
+      });
+      $(".opetype").removeAttr("disabled").css("color","#fff");
+      $(".rto_submit").css({"background":"#FFA634"});
+      $(".rto_revoke").css({"background":"rgb(149,139,129)"});
+      $(".rto_delete").css({"background":"rgb(200,61,13)"}); 
     }else{
       $(".checkbox_img").attr({"src":"img/checkbox1.png"});
       $(this).addClass("checkbox1");
       $(".ri_top3_con .rtc_listBox").each(function(){
         $(this).children(".ric_img_check").addClass("checkbox1");
-      }); 
+      });
+      $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
     }
   });
   //点击单个勾选框
   $(document).on("click",".ric_img_check",function(){
     if($(this).hasClass("checkbox1")){
       $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+      $(".opetype").removeAttr("disabled").css("color","#fff");
+      $(".rto_submit").css({"background":"#FFA634"});
+      $(".rto_revoke").css({"background":"rgb(149,139,129)"});
+      $(".rto_delete").css({"background":"rgb(200,61,13)"});
     }else{
       $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+      $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
     }
   });
   /*e--批量操作，点击勾选框*/

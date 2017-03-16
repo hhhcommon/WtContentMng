@@ -495,6 +495,9 @@ function onClick(event, treeId, treeNode) {
 
 /*修改已有栏目的方法*/
 function modChannel() {
+  if($("#nodeParent").val()==4||$("#nodeParent").val()==5){//父级是根节点，parentId=0
+    $("#nodeParent").val("0");
+  }
   var modInfo={//修改栏目信息
     "ChannelId":treeNode.id,
     "Data":{

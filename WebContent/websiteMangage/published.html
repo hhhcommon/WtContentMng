@@ -11,20 +11,22 @@
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="css/globalplayer.css"/>
+  <link  href="../anchor/css/pagination.css" rel="stylesheet"/>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
   <script src="js/filter.js"></script>
   <script src="js/globalplayer.js"></script>
-  <script src="js/published.js"></script>
+  <script src="js/publish_apply.js"></script>
+  <!--翻页插件-->
+  <script src="../anchor/js/pagination.min.js"></script>
 <style>
 /*全局样式*/
 *{margin: 0;padding: 0;}
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
-body{-moz-user-select: none;overflow-x: auto;}
+body{height:auto;-moz-user-select: none;overflow-x: auto;}
 #wrapper{
   width:100%;
 }
@@ -622,6 +624,37 @@ body{-moz-user-select: none;overflow-x: auto;}
   float: left;
   margin: 5px 10px 5px 0px;
 }
+#kkpager{
+  padding: 20px 140px 20px 20px;
+}
+.audioIframe{
+  position: relative;
+  top:-10px;
+  bottom: 0px;
+  display: none;
+}
+#audioIframe{
+  height:100px;
+}
+.locker{
+  position: relative;
+  right: 10px;
+  top: -40px;
+  float: right;
+  width: 50px;
+  height: 15px;
+  background: center no-repeat;
+  background-size: cover;
+  background-image:url("http://sss.qingting.fm/www/images/locker-bg@2x.png");
+  cursor: pointer;
+}
+.locker .locker_btn{
+  width: 50px;
+  height: 18px;
+  background: center no-repeat;
+  background-size: 12px 12px;
+  background-image:url("http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png");
+}
 </style> 
 </head>
 <body class="laydate_body" onselectstart="return false">
@@ -730,14 +763,6 @@ body{-moz-user-select: none;overflow-x: auto;}
             <span class="rto_txt fl">全选</span>
             <span class="rto_nopass fl" opetype="revoke">撤回</span>
             <span class="rto_play fl">全部播放</span>
-            <div class="page fl">
-              <div class="gigantic pagination">
-                <i class="currentPage">1</i><i>/</i><i class="totalPage"></i><i>页</i>
-                <span class="previous" data_action="previous">上一页</span>
-                <span class="next" data_action="next">下一页</span>
-                <span class="jump" data_action="toPage">跳至</span><input type="text" class="toPage" value="">
-              </div>
-            </div>
             <div class="pass_note">操作成功!通过的节目可在"已发布"中管理</div>
           </div>
           <div class="ri_top3_head">
@@ -859,51 +884,18 @@ body{-moz-user-select: none;overflow-x: auto;}
               <span class="audio_time fl">2017-01-07 &nbsp;&nbsp; 12:53:53</span>
             </div>-->
           </div>
-        </div>  
+        </div>
+        <div id="kkpager"></div>
+        <div class="locker">
+          <div class="locker_btn locked"></div>
+        </div>
       </div>
     </div>
   </div>
-  <!--s:全局播放器-->
-  <div class="globalplayer">
-    <audio src="" class="audio" controls autoplay="autoplay" style="display: none;"></audio>
-    <!--s:收起状态-->
-    <div class="glp_mini">
-      <img class="sound_face" src="img/launch.png">
-    </div>
-    <!--e:收起状态-->
-    <!--s:展开状态-->
-    <div class="glp_block">
-      <div class="glp_panel">
-        <div class="controls">
-          <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-          <img class="btn_player playerBtn playing" src="img/pause.png" alt="播放/暂停" />
-          <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
-        </div>
-        <div class="player_panel">
-          <a href="#" class="title" title=""></a>
-          <div>
-            <span class="time sound_position"></span>
-            <div class="player_progressbar">
-              <div class="player_playbar"></div>
-              <div class="player_circle"></div>  
-            </div>
-            <span class="time sound_duration"></span>
-          </div>
-        </div>
-        <div class="volume_panel">
-          <img src="img/volume.png" alt="音量图标" class="volume_img no_mute"/>
-          <div class="volume_progressbar">
-            <div class="volume_playbar"></div>
-            <div class="volume_circle"></div> 
-          </div>
-        </div>
-        <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
-      </div>
-    </div>
-    <!--e:展开状态-->
-  </div>
-  <!--e:全局播放器-->
 </div> 
+<div class="audioIframe">
+  <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="globalplayer.html" frameborder="0"  seamless></iframe>
+</div>
 <!--s:不通过-->
 <div class="nopass_masker"></div>
 <div class="nopass_container">
