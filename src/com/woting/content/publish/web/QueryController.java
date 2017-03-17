@@ -117,7 +117,7 @@ public class QueryController {
 		}
 		Map<String, Object> mapdetail = queryService.getContentInfo(pageSize, page, contentId, mediatype);
 		if (mediatype.equals("wt_SeqMediaAsset")) {
-			if (mapdetail.get("audio") != null) {
+			if (mapdetail!=null && mapdetail.get("audio") != null) {
 				map.put("ContentDetail", mapdetail.get("sequ"));
 				map.put("SubList", mapdetail.get("audio"));
 				map.put("ReturnType", "1001");
@@ -127,7 +127,7 @@ public class QueryController {
 			}
 		} else {
 			if (mediatype.equals("wt_MediaAsset")) {
-				if (map.isEmpty()) {
+				if (mapdetail!=null && map.isEmpty()) {
 					map.put("ContentDetail", mapdetail);
 					map.put("ReturnType", "1001");
 				} else {
@@ -135,7 +135,7 @@ public class QueryController {
 					map.put("Message", "没有相关内容 ");
 				}
 			} else {
-				if (mediatype.equals("wt_Broadcast")) {
+				if (mapdetail!=null && mediatype.equals("wt_Broadcast")) {
 					map.put("SubList", mapdetail);
 					map.put("ReturnType", "1001");
 				} else {
