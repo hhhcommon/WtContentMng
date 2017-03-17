@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-  <title>主播--节目详情页</title>
+  <title>主播--详情页</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">                                                              
@@ -14,7 +14,6 @@
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
-	
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -73,6 +72,10 @@ body{overflow: auto;background: #fff;}
   height:25px;
   line-height: 25px;
 }
+.binfo span:nth-child(2){
+  width:230px;
+  padding-left:10px;
+}
 .cw{
   color:#000;
   font-weight:bold;
@@ -97,6 +100,7 @@ body{overflow: auto;background: #fff;}
   width: 415px;
   position: relative;
   margin-left: 60px;
+  padding-left:10px;
   overflow: hidden;
 }
 .idphoto{
@@ -601,13 +605,12 @@ $(function(){
       }
     }
   }
+  
   /*点击专辑名称--进入专辑详情页*/
- $(".dcbl_con_p").on("click",function(){
-  var contentid=$(this).attr("contentId");
-  $("#newIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
-  $("#myIframe", parent.document).hide();
-  $("#newIframe", parent.document).show(); 
- });
+  $(".dcbl_con_p").on("click",function(){
+    var contentid=$(this).attr("contentId");
+    $("#myIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+  });
  
 });
 </script>
