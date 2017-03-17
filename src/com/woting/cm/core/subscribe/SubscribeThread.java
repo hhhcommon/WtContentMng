@@ -79,7 +79,7 @@ public class SubscribeThread extends Thread {
 				        if (ext!=null) mediaInfo.put("ContentPlayType", ext.contains("/flv")?"flv":ext.replace(".", "")); 
 				        else  mediaInfo.put("ContentPlayType", null);
 						mediaInfo.put("ContentPubTime", rs.getTimestamp("pubTime"));
-						seqMediaInfo.put("MediaType", "AUDIO");
+						mediaInfo.put("MediaType", "AUDIO");
 						newMediaList.add(mediaInfo);
 						
 						if (sc!=null) {
@@ -99,8 +99,8 @@ public class SubscribeThread extends Thread {
 								ownerIds = ownerIds.substring(1);
 								MsgNormal nMsg=new MsgNormal();
 				                nMsg.setMsgId(SequenceUUID.getUUIDSubSegment(4));
-				                nMsg.setFromType(1);
-				                nMsg.setToType(1);
+				                nMsg.setFromType(0);
+				                nMsg.setToType(0);
 				                nMsg.setMsgType(0);
 				                nMsg.setAffirm(0);
 				                nMsg.setBizType(0x04);
