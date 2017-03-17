@@ -217,6 +217,7 @@ public class QueryService {
 							map.put("ContentPlayUrl", rs.getString("playURI"));
 							map.put("ContentSeqId", rs.getString("id"));
 							map.put("ContentSeqName", rs.getString("smaTitle"));
+							
 						}
 					}
 				}
