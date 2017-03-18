@@ -327,9 +327,7 @@ function getLocalTime(cptime){
 
 /*清空*/
 function clear(){
-  $(".ri_top3_con,.totalPage").html("");
-  $(".toPage").val("");
-  $(".page").find("span").removeClass("disabled");
+  $(".ri_top3_con").html("");
   $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
 }
 

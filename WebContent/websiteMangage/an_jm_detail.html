@@ -500,17 +500,13 @@ $(function(){
       type:"POST",
       url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
+      async:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
-          if(dataParam.MediaType=="wt_MediaAsset"){
-            fillJmDetail(resultData);//填充节目数据
-          }else{
-            $(".dcr_jmlist").html(" ");
-            fillJmList(resultData);//填充专辑下的节目列表
-          }
+        if(resultData.ReturnType =="1001"){
+          fillJmDetail(resultData);//填充节目数据
         }else{
-          alert("没有更多节目了");
+          alert(returnData.Message);
         }
       },
       error:function(XHR){
@@ -542,6 +538,12 @@ $(function(){
     $(".share2").text(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
     $(".intransit2").text(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
     $(".dcl_jmcontent4").text(!resultData.ContentDetail.ContentDesc?"暂无":resultData.ContentDetail.ContentDesc);
+    if(resultData.ContentDetail.ContentPlay){
+      var audioObj={};
+      audioObj.title=resultData.ContentDetail.ContentName;
+      audioObj.playUrl=resultData.ContentDetail.ContentPlay;
+      audioList.push(audioObj);
+    }
   }
   
   /*同专辑下的所有节目*/
@@ -575,12 +577,6 @@ $(function(){
                   '</div>'+
                 '</div>';
       $(".dcr_jmlist").append(list);
-      if(resultData.SubList[i].ContentPlay){
-        var audioObj={};
-        audioObj.title=resultData.SubList[i].ContentName;
-        audioObj.playUrl=resultData.SubList[i].ContentPlay;
-        audioList.push(audioObj);
-      }
     }
   }
   

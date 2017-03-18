@@ -114,6 +114,11 @@ body{overflow: auto;background: #fff;}
   width:70px;
   height:70px;
 }
+.picture1 img{
+  -moz-border-radius: 50%; /* Firefox */
+  -webkit-border-radius: 50%; /* Safari 和 Chrome */
+  border-radius: 50%; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+}
 .picture1 img,.idphoto1  div img,.dcbl_img img{
   width:100%;
   height: 100%;
@@ -121,18 +126,17 @@ body{overflow: auto;background: #fff;}
 }
 .idphoto1{
   display: block;
-  width:110px;
-  height:110px;
+  width:100px;
+  height:100px;
   margin-top:5px;
 }
 .gallery > div{
-  width:110px;
-  height:110px;
+  width:100px;
+  height:100px;
   position: relative;
-  float: left;
 }
 .gallery > div > img{
-  width: 110px;
+  width: 100%;
   transition: .1s transform;
   transform: translateZ(0);
 }
@@ -140,8 +144,13 @@ body{overflow: auto;background: #fff;}
   z-index: 1;
 }
 .gallery > div:hover > img{
-  transform: scale(1.5, 1.5);
-  transition: .3s transform;
+  width:110%;
+  margin-left:-5%;
+  margin-top:-5%;
+}
+.gallery > div > img{
+  width:100%;
+  transition:0.4s ease-in-out;
 }
 .cf:before, .cf:after{
   display: table;
@@ -366,7 +375,7 @@ body{overflow: auto;background: #fff;}
             <span class="fl idphoto0">身份证照片:</span>
             <div class="idphoto1 fl gallery cf">
               <div class="idPic">
-                <img src="" alt="身份证照片" />
+                <img src="../anchor/img/a5.jpg" alt="身份证照片" />
               </div>
             </div>
           </div>

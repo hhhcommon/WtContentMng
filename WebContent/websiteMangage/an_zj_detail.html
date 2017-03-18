@@ -259,6 +259,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   border: 1px solid #00458A;
 }
 .list_content1{
+  width:100%;
   height:30px;
   line-height:30px;
   border-bottom:1px solid #676a6c;
@@ -284,7 +285,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   white-space: nowrap;
 }
 .act{
-  width:280px;
+  width:240px;
   overflow: hidden;
 }
 .act li{
@@ -329,11 +330,6 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   width:100%;
   height: auto;
 }
-.list_content1{
-  height:30px;
-  border-bottom:1px solid #676a6c;
-  overflow: hidden;
-}
 .playcount{
   position: absolute;
 }
@@ -343,7 +339,6 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 .list_content1_a{
   font-size:15px;
   color: #0077c7;
-  width:240px;
   cursor: pointer;
 }
 .list_content1_span2,.list_content1_span3{
@@ -360,7 +355,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   padding-left:10px;
 }
 .list_time{
-  width: 120px;
+  width: 160px;
   text-align: right;
   margin-left: 10px;
 }
@@ -694,7 +689,7 @@ $(function(){
       async:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType =="1001"){
+        if(resultData.ReturnType=="1001"){
           fillZjDetail(resultData);//填充专辑数据
         }else{
           alert(resultData.Message);
