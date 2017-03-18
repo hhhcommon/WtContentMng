@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.springframework.data.redis.connection.convert.LongToBooleanConverter;
+
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
@@ -146,8 +148,8 @@ public class MediaService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> getMaListByPubId(String userid, String flowflag, String channelid,
-			String seqmediaid) {
+	public Map<String, Object> getMaListByPubId(String userid, String flowflag, String channelid, String seqmediaid, int page, int pagesize) {
+		Map<String, Object> retMap = new HashMap<>();
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		Map<String, Object> m1 = new HashMap<>();
 		if (!flowflag.equals("0")) {
@@ -181,8 +183,11 @@ public class MediaService {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
 			m1.put("wheresql", wheresql);
+			m1.put("groupByClause", " assetId,assetType");
 			m1.put("sortByClause", " pubTime,cTime");
-			m1.remove("channelIds");
+			m1.put("LimitByClause", (page-1)*pagesize+","+pagesize);
+			m1.remove("channelIds"); // TODO
+			long allCount = channelAssetDao.getCount("getListCount", m1);
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m1);
 			if (chas != null && chas.size() > 0) {
 				String assetIds = "";
@@ -204,13 +209,11 @@ public class MediaService {
 							}
 							resids = resids.substring(1);
 							List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
-							List<Map<String, Object>> pubChannelList = channelContentService
-									.getChannelAssetList(chapolist);
+							List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
 							for (MediaAssetPo mediaAssetPo : listpo) {
 								MediaAsset ma = new MediaAsset();
 								ma.buildFromPo(mediaAssetPo);
-								Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null,
-										pubChannelList, null);
+								Map<String, Object> m = ContentUtils.convert2Ma(ma.toHashMap(), null, null, pubChannelList, null);
 								m.put("ContentSeqId", sma.getId());
 								m.put("ContentSeqName", sma.getSmaTitle());
 								if (m.containsKey("ContentPubChannels")) {
@@ -227,7 +230,11 @@ public class MediaService {
 						}
 					}
 				}
-				return list;
+				if (list!=null && list.size()>0) {
+					retMap.put("List", list);
+					retMap.put("allCount", allCount);
+					return retMap;
+				} else return null;
 			}
 		}
 		m1.put("assetType", "wt_MediaAsset");
@@ -238,8 +245,11 @@ public class MediaService {
 			wheresql += " and channelId in ("+m1.get("channelIds")+")";
 		}
 		m1.put("wheresql", wheresql);
+		m1.put("groupByClause", " assetId,assetType");
 		m1.put("sortByClause", " pubTime,cTime");
+		m1.put("LimitByClause", (page-1)*pagesize+","+pagesize);
 		m1.remove("channelIds");
+		long allCount = channelAssetDao.getCount("getListCount", m1);
 		List<ChannelAssetPo> chas = channelAssetDao.queryForList("getList", m1);
 		if (chas != null && chas.size() > 0) {
 			String assetIds = "";
@@ -282,7 +292,11 @@ public class MediaService {
 					list.add(m);
 				}
 			}
-			return list;
+			if (list!=null && list.size()>0) {
+				retMap.put("List", list);
+				retMap.put("allCount", allCount);
+				return retMap;
+			} else return null;
 		}
 		return null;
 	}
@@ -371,7 +385,7 @@ public class MediaService {
 		return null;
 	}
 
-	public List<Map<String, Object>> getSmaListByPubId(String userid) {
+	public List<Map<String, Object>> getSmaListByPubId(String userid, int page, int pagesize) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
 		Map<String, Object> m = new HashMap<>();
@@ -383,7 +397,9 @@ public class MediaService {
 			m.put("assetType", "wt_SeqMediaAsset");
 			m.put("wheresql", " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
 					+ "' and resTableName = 'wt_SeqMediaAsset')");
+			m.put("groupByClause", " assetId,assetType");
 			m.put("sortByClause", " pubTime,cTime");
+			m.put("LimitByClause", (page-1)*pagesize+","+pagesize);
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m);
 			if (chas != null && chas.size() > 0) {
 				String ids = "";
@@ -403,7 +419,7 @@ public class MediaService {
 		return null;
 	}
 
-	public List<Map<String, Object>> getSmaListByPubId(String userid, String flowflag, String channelid) {
+	public List<Map<String, Object>> getSmaListByPubId(String userid, String flowflag, String channelid, int page, int pagesize) {
 		Map<String, Object> m1 = new HashMap<>();
 		m1.put("id", userid);
 		if (personService.getPersonPoById(userid) != null) {
@@ -431,7 +447,6 @@ public class MediaService {
 					m1.put("channelIds", "'" + channelid + "'");
 				}
 			}
-			
 			m1.put("isValidate", "1");
 			m1.put("publisherId", "0");
 			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid + "' and resTableName = 'wt_SeqMediaAsset')";
@@ -439,7 +454,9 @@ public class MediaService {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
 			m1.put("wheresql", wheresql);
+			m1.put("groupByClause", " assetId,assetType");
 			m1.put("sortByClause", " pubTime,cTime");
+			m1.put("LimitByClause", (page-1)*pagesize+","+pagesize);
 			m1.remove("channelIds");
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m1);
 			if (chas != null && chas.size() > 0) {

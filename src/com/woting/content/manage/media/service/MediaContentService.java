@@ -59,16 +59,15 @@ public class MediaContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public Map<String, Object> getMediaContents(String userid, String flowflag, String channelid, String seqmediaid) {
+	public Map<String, Object> getMediaContents(String userid, String flowflag, String channelid, String seqmediaid, int page, int pageSize) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		list = mediaService.getMaListByPubId(userid, flowflag, channelid, seqmediaid);
-		if (list != null && list.size() > 0) {
-			map.put("List", list);
-			map.put("AllCount", list.size());
+		Map<String, Object> retMap = mediaService.getMaListByPubId(userid, flowflag, channelid, seqmediaid, page, pageSize);
+		if (retMap != null) {
+			map.put("ResultList", retMap.get("List"));
+			map.put("AllCount", retMap.get("allCount"));
 			map.put("ReturnType", "1001");
-		}
-		return map;
+			return map;
+		} else return null;
 	}
 
 	/**
