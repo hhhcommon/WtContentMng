@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +36,12 @@ public class SocketClient {
     FileOutputStream sendLogFile=null;
     FileOutputStream recvLogFile=null;
 
-    private ConcurrentLinkedQueue<byte[]> sendMsgQueue; //要发送的消息队列
+    private LinkedBlockingQueue<byte[]> sendMsgQueue; //要发送的消息队列
 
     private int nextReConnIndex; //重连策略下一个执行序列;
 
     private volatile boolean toBeStop=false;
     private volatile boolean isClose=false;
-    private volatile boolean isRegister=false;//是否注册了
     private volatile long lastReceiveTime; //最后收到服务器消息时间
     private volatile Object socketSendLock=new Object();//发送锁
 
@@ -51,7 +50,7 @@ public class SocketClient {
         nextReConnIndex=0;
         this.scc=scc;
         if (StringUtils.isNullOrEmptyOrSpace(scc.getServerType())||StringUtils.isNullOrEmptyOrSpace(scc.getServerType())) throw new Exception("未能获得服务器标识");
-        sendMsgQueue=new ConcurrentLinkedQueue<byte[]>();//初始化传送队列
+        sendMsgQueue=new LinkedBlockingQueue<byte[]>();//初始化传送队列
     }
     /**
      * 设置当前重连策略的Index，通过这个方法提供一个更灵活的设置重连策略
@@ -152,7 +151,6 @@ public class SocketClient {
             try { socket.close(); } catch (Exception e) {};
             socket=null;
         }
-        isRegister=false;
 
         isClose=false;
     }
@@ -178,7 +176,6 @@ public class SocketClient {
                     this.workStop();
                     logger.debug("已有相同Id的服务器登录，关闭此服务器与消息中心的连接");
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -189,19 +186,17 @@ public class SocketClient {
     //健康监控线程
     private class HealthWatch extends TimerTask {
         public void run() { //主线程监控连接
-            while (!toBeStop) {//检查线程的健康状况
-                try {
-                    if (!socketOk()||(System.currentTimeMillis()-lastReceiveTime>scc.getExpireTime())) {//连接失败了
-                        if (reConn==null||!reConn.isAlive()) {
-                            closeSocketAll();
-                            reConn=new ReConn("重连", nextReConnIndex);//此线程在健康监护线程中启动
-                            reConn.setDaemon(true);
-                            reConn.start();
-                        }
+            try {
+                if (!toBeStop&&(!socketOk()||(System.currentTimeMillis()-lastReceiveTime>scc.getExpireTime()))) {//连接失败了
+                    if (reConn==null||!reConn.isAlive()) {
+                        closeSocketAll();
+                        reConn=new ReConn("重连", nextReConnIndex);//此线程在健康监护线程中启动
+                        reConn.setDaemon(true);
+                        reConn.start();
                     }
-                } catch(Exception e) {
-                    e.printStackTrace();
                 }
+            } catch(Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -279,6 +274,22 @@ public class SocketClient {
                         sendMsg.setDaemon(true);
                         sendMsg.start();
 
+                        //发送一条注册消息
+                        MsgNormal registerMsg=new MsgNormal();
+                        registerMsg.setMsgId(SequenceUUID.getPureUUID());
+                        registerMsg.setMsgType(0);
+                        registerMsg.setAffirm(0);
+                        registerMsg.setBizType(15);
+                        registerMsg.setCmdType(0);
+                        registerMsg.setCommand(0);
+                        registerMsg.setFromType(1);
+                        registerMsg.setToType(1);
+                        registerMsg.setPCDType(0);
+                        registerMsg.setUserId(scc.getServerType());
+                        registerMsg.setDeviceId(scc.getServerName());
+                        registerMsg.setSendTime(System.currentTimeMillis());
+                        addSendMsg(registerMsg);
+                        
                         break;//若连接成功了，则结束此进程
                     } else {//未连接成功
                         try { sleep(curReConnIntervalTime); } catch (InterruptedException e) {};//间隔策略时间
@@ -335,38 +346,7 @@ public class SocketClient {
             logger.debug(this.getName()+"线程启动");
             while (!toBeStop&&socketOk()&&!isClose) {
                 try {
-                    byte[] msg4Send=null;
-                    if (socketOut!=null&&!socket.isOutputShutdown()&&!isRegister) {
-                        synchronized (socketSendLock) {
-                            //构造注册消息
-                            MsgNormal registerMsg=new MsgNormal();
-                            registerMsg.setMsgId(SequenceUUID.getPureUUID());
-                            registerMsg.setMsgType(0);
-                            registerMsg.setAffirm(0);
-                            registerMsg.setBizType(15);
-                            registerMsg.setCmdType(0);
-                            registerMsg.setCommand(0);
-                            registerMsg.setFromType(1);
-                            registerMsg.setToType(1);
-                            registerMsg.setPCDType(0);
-                            registerMsg.setUserId(scc.getServerType());
-                            registerMsg.setDeviceId(scc.getServerName());
-                            registerMsg.setSendTime(System.currentTimeMillis());
-
-                            msg4Send=registerMsg.toBytes();
-                            socketOut.write(msg4Send);
-                            socketOut.flush();
-                            if (sendLogFile!=null) {
-                                sendLogFile.write((DateUtils.convert2LongLocalStr(new Date())+"::>>").getBytes());
-                                sendLogFile.write(msg4Send);
-                                sendLogFile.write(13);
-                                sendLogFile.write(10);
-                                sendLogFile.flush();
-                            }
-                            isRegister=true;
-                        }
-                    }
-                    msg4Send=sendMsgQueue.poll();
+                    byte[] msg4Send=sendMsgQueue.take();
                     if (msg4Send==null) continue;
                     if (socketOut!=null&&!socket.isOutputShutdown()) {
                         synchronized (socketSendLock) {
@@ -397,7 +377,6 @@ public class SocketClient {
 
     //接收消息线程
     private class ReceiveMsg extends Thread {
-        private int _headLen=36;
         protected ReceiveMsg(String name) {
             super.setName(name);
         }
@@ -405,12 +384,7 @@ public class SocketClient {
             byte[] ba=new byte[2048];
             byte[] mba=null;
             int i=0;
-            short _dataLen=-3;
             boolean hasBeginMsg=false; //是否开始了一个消息
-            int isAck=-1;
-            int isRegist=0;
-            int msgType=-1;//消息类型
-            int isCtlAck=0, tempFlag=0, fieldFlag=0, countFlag=0;
             byte[] endMsgFlag={0x00,0x00,0x00};
             while(!toBeStop&&socketOk()&&!isClose) {
                 try {
@@ -446,71 +420,7 @@ public class SocketClient {
                                 for (int n=1;n<=i;n++) ba[n-1]=ba[n];
                                 --i;
                             }
-                        } else {
-                            if (msgType==-1) msgType=MessageUtils.decideMsg(ba);
-                            if (msgType==0) {//0=控制消息(一般消息)
-                                if (isAck==-1&&i==12) {
-                                    tempFlag=i;
-                                    if ((ba[2]&0x80)==0x80) isAck=1; else isAck=0;
-                                    if (isAck==1) countFlag=1; else countFlag=0;
-
-                                    if (((ba[i-1]>>4)&0x0F)==0x0F) isRegist=1;
-                                    else
-                                    if (((ba[i-1]>>4)|0x00)==0x00) isCtlAck=1;
-                                }
-                                if (isAck!=-1) {
-                                    if (isCtlAck==1) {
-                                        if (fieldFlag==0&&((endMsgFlag[1]=='|'&&endMsgFlag[2]=='|')||(i-tempFlag-countFlag)==32)) {
-                                            countFlag=1;
-                                            tempFlag=i;
-                                            fieldFlag=1;
-                                        } else
-                                        if (fieldFlag==1&&(i-tempFlag)>countFlag&&(ba[i-countFlag]==0||(endMsgFlag[1]=='|'&&endMsgFlag[2]=='|')||(i-tempFlag-countFlag)==12)) {
-                                            countFlag=0;
-                                            tempFlag=i;
-                                            fieldFlag=2;
-                                        } else
-                                        if (fieldFlag==2&&((endMsgFlag[1]=='|'&&endMsgFlag[2]=='|')||(i-tempFlag-countFlag)==32)) {
-                                            break;//通用回复消息读取完毕
-                                        }
-                                    } else if (isRegist==1) {
-                                        if (fieldFlag==0&&(i-tempFlag)>countFlag&&((endMsgFlag[1]=='|'&&endMsgFlag[2]=='|')||(i-tempFlag-countFlag)==32)) {
-                                            countFlag=1;
-                                            tempFlag=i;
-                                            fieldFlag=1;
-                                        } else
-                                        if (fieldFlag==1&&(i-tempFlag)>countFlag&&((ba[i-countFlag]==0||(endMsgFlag[1]=='|'&&endMsgFlag[2]=='|')||(i-tempFlag-countFlag)==12))) {
-                                            countFlag=0;
-                                            tempFlag=i;
-                                            fieldFlag=2;
-                                        } else
-                                        if (fieldFlag==2&&((endMsgFlag[1]=='|'&&endMsgFlag[2]=='|')||(i-tempFlag-countFlag)==32)) {
-                                            break;//注册消息完成
-                                        }
-                                    } else { //一般消息
-                                        if (fieldFlag==0&&endMsgFlag[1]=='^'&&endMsgFlag[2]=='^') {
-                                            fieldFlag=1;
-                                            tempFlag=0;
-                                        } else
-                                        if (fieldFlag==1&&(++tempFlag)==2) {
-                                            _dataLen=(short)(((endMsgFlag[2]<<8)|endMsgFlag[1]&0xff));
-                                            tempFlag=0;
-                                            fieldFlag=2;
-                                        } else
-                                        if (fieldFlag==2&&(++tempFlag)==_dataLen) break;
-                                    }
-                                }
-                            } else if (msgType==1) {//1=媒体消息
-                                if (isAck==-1) {
-                                    if (((ba[2]&0x80)==0x80)&&((ba[2]&0x40)==0x00)) isAck=1; else isAck=0;
-                                } else if (isAck==1) {//是回复消息
-                                    if (i==_headLen+1) break;
-                                } else if (isAck==0) {//是一般媒体消息
-                                    if (i==_headLen+2) _dataLen=(short)(((ba[_headLen+1]<<8)|ba[_headLen]&0xff));
-                                    if (_dataLen>=0&&i==_dataLen+_headLen+2) break;
-                                }
-                            }
-                        }
+                        } else if (endMsgFlag[1]=='^'&&endMsgFlag[2]=='^') break;
                     }
                     if (recvLogFile!=null) {
                         long cur=System.currentTimeMillis();
@@ -520,11 +430,10 @@ public class SocketClient {
                         recvLogFile.flush();
                     }//一条消息读取完成
 
-                    //
                     mba=Arrays.copyOfRange(ba, 0, i);
                     lastReceiveTime=System.currentTimeMillis();
                     if (mba==null||mba.length<3) break; //若没有得到任何内容
-                    if (ba[0]=='b'&&ba[1]=='^'&&ba[2]=='^') {
+                    if (ba[0]=='B'&&ba[1]=='^'&&ba[2]=='^') {
                         logger.debug("B======");
                     } else {
                         try {
@@ -544,12 +453,7 @@ public class SocketClient {
                     endMsgFlag[1]=0x00;
                     endMsgFlag[2]=0x00;
                     i=0;
-                    _dataLen=-3;
                     hasBeginMsg=false;
-                    isAck=-1;
-                    isRegist=0;
-                    msgType=-1;
-                    isCtlAck=0;tempFlag=0;fieldFlag=0;countFlag=0;
                 } catch(Exception e) {
                     logger.debug(this.getName()+":"+StringUtils.getAllMessage(e));
                     if (e instanceof SocketException) {
