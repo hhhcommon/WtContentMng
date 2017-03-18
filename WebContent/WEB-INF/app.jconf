@@ -1,7 +1,7 @@
 {
   //socket客户端配置信息
   "serverIdentify":{
-    "serverType":"CMEngin", //不能大于12个字符
+    "serverType":"CMEngintest", //不能大于12个字符
     "serverName":"MainServer"
   },
   "logPath":"c:/opt/logs",

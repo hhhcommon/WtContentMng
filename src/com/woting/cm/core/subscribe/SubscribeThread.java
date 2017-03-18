@@ -82,6 +82,7 @@ public class SubscribeThread extends Thread {
 						mediaInfo.put("MediaType", "AUDIO");
 						newMediaList.add(mediaInfo);
 						
+						System.out.println(JsonUtils.objToJson(seqMediaInfo));
 						if (sc!=null) {
 							 //通知消息
 							int pages = owners.size()/1000+1;
@@ -114,8 +115,10 @@ public class SubscribeThread extends Thread {
 				                dataMap.put("_AFFIRMTYPE", "3");
 				                dataMap.put("_TOUSERS", ownerIds);
 				                sco.addSendMsg(nMsg);
-				                System.out.println("订阅推送信息"+JsonUtils.objToJson(nMsg));
+				                System.out.println("订阅推送信息======================"+JsonUtils.objToJson(nMsg));
 							}
+						} else {
+							System.out.println("scoke为null");
 						}
 					}
 					if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};

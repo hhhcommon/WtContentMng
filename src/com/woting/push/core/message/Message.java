@@ -10,7 +10,7 @@ public abstract class Message implements Comparable<Message>, Serializable {
     private static final long serialVersionUID=-5568855516574485564L;
 
     public final static byte[] END_FIELD={'|', '|'}; //字段结束标识||
-    public final static byte[] END_HEAD={'^', '^'}; //消息头结束标识^^
+    public final static byte[] END_MSG={'^', '^'}; //消息结束标识^^
     public final static byte[] BEGIN_CTL={'|', '^'}; //控制消息开始|^
     public final static byte[] BEGIN_MDA={'^', '|'}; //媒体消息开始^|
     public final static int _MAXLENGTH=20480; //最大字节数
@@ -19,7 +19,7 @@ public abstract class Message implements Comparable<Message>, Serializable {
     protected int affirm; //是否需要确认;0不需要1需要控制回复2不需要控制回复，需要业务回复3需要控制回复和业务回复
     protected long sendTime; //发送时间
 
-    //1服务器；0设备
+    //手机=1;设备=2;PC端=3;服务器=0
     protected int fromType; //从那类设备来
     protected int toType; //到那类设备去
 
