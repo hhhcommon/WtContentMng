@@ -42,6 +42,7 @@ public class ChannelAssetProgressService {
 		if (mediaType!=null) {
 			whereClauseBy += " and ("+mediaType+")";
 		}
+		whereClauseBy += " GROUP BY cha.assetId ";
 		m.put("whereClauseBy", whereClauseBy);
 		
 		if (applyFlowFlag!=0) {

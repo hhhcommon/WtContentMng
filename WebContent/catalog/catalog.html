@@ -272,6 +272,12 @@ function getRootNode(oPeType){
 
 /*增加新分类的方法*/
 function addCatalog() {
+  var myreg= /[\u4e00-\u9fa5]/; 
+  if(myreg.test($.trim($("#nodeCode").val()))){
+    alert("业务编码中不能包含汉字");
+    $("#nodeCode").val(" ");
+    return false;
+  }
   var addInfo={
     "CatalogType":treeNode.attributes.mId,
     "Data":{
@@ -324,7 +330,7 @@ function onClick(event, treeId,treeNode) {
   var childNodes = zTreeObj.transformToArray(nodes[0]);//获取ztree当前被选中节点的子节点的id集合     
   for(i = 0; i < childNodes.length; i++) {   
     if(modalNode.id==childNodes[i].id){//父子节点是同一节点,或模态框里面选中的父节点是自己的子节点
-      alert("当前栏目不支持作为父级栏目，请选择其他栏目");
+      alert("当前分类不支持作为父级分类，请选择其他分类");
       return false;
     }
   }     
@@ -335,6 +341,15 @@ function onClick(event, treeId,treeNode) {
 
 /*修改已有分类的方法*/
 function modCatalog() {
+  var myreg= /[\u4e00-\u9fa5]/; 
+  if(myreg.test($.trim($("#nodeCode").val()))){
+    alert("业务编码中不能包含汉字");
+    $("#nodeCode").val(" ");
+    return false;
+  }
+  if($("#nodeParent").val()==4||$("#nodeParent").val()==5){//父级是根节点，parentId=0
+    $("#nodeParent").val("0");
+  }
   var modInfo={
     "CatalogType":treeNode.attributes.mId,
     "CatalogId":treeNode.id,

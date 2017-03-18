@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>主播管理--节目详情</title>
+  <title>节目管理(主播--节目详情)</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">                                                              
@@ -15,8 +15,6 @@
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
-  <script src="js/globalplayer.js"></script>
-  
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -317,6 +315,32 @@ body{overflow: auto;background: #fff;}
 .list1_con_name,.list1_con_num,.list1_con_time{
   width: 180px;
 }
+.audioIframe{
+  position: relative;
+  height:auto;
+  display: none;
+}
+#audioIframe{
+  height:100px;
+}
+.locker{
+  position:relative;
+  margin-left: 90%;
+  margin-top: -13px;
+  width: 50px;
+  height: 15px;
+  background: center no-repeat;
+  background-size: cover;
+  background-image:url("http://sss.qingting.fm/www/images/locker-bg@2x.png");
+  cursor: pointer;
+}
+.locker .locker_btn{
+  width: 50px;
+  height: 18px;
+  background: center no-repeat;
+  background-size: 12px 12px;
+  background-image:url("http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png");
+}
 </style>
 <body>
 <div class="detail">
@@ -445,46 +469,12 @@ body{overflow: auto;background: #fff;}
       </div>
     </div>
   </div>
-  <!--s:全局播放器-->
-  <div class="globalplayer">
-    <audio src="" class="audio" controls style="display: none;"></audio>
-    <!--s:收起状态-->
-    <div class="glp_mini">
-      <img class="sound_face" src="img/launch.png">
-    </div>
-    <!--e:收起状态-->
-    <!--s:展开状态-->
-    <div class="glp_block">
-      <div class="glp_panel">
-        <div class="controls">
-          <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-          <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
-          <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
-        </div>
-        <div class="player_panel">
-          <a href="#" class="title" title=""></a>
-          <div>
-            <span class="time sound_position">00:00</span>
-            <div class="player_progressbar">
-              <div class="player_playbar"></div>
-              <div class="player_circle"></div>  
-            </div>
-            <span class="time sound_duration"></span>
-          </div>
-        </div>
-        <div class="volume_panel">
-          <img src="img/volume.png" alt="音量图标" class="volume_img no_mute"/>
-          <div class="volume_progressbar">
-            <div class="volume_playbar"></div>
-            <div class="volume_circle"></div> 
-          </div>
-        </div>
-        <img src="img/fold.png" alt="折叠面板" class="fold_panel_img"/>
-      </div>
-    </div>
-    <!--e:展开状态-->
+  <div class="locker">
+    <div class="locker_btn locked"></div>
   </div>
-  <!--e:全局播放器-->
+  <div class="audioIframe">
+    <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="globalplayer.html" frameborder="0"  seamless></iframe>
+  </div>
 </div>
 </body>
 <script>
@@ -494,9 +484,9 @@ body{overflow: auto;background: #fff;}
   var perName=getUrlParam(window.location.href,'perName');
   perName=decodeURIComponent(perName);
   var perId=getUrlParam(window.location.href,'personId');
-  var mp3List=[];//音乐播放列表
+  var audioList=[];//音乐播放列表
   var listNum=0;//控制播放节目的序号
-  
+$(function(){  
   var data1={"UserId":"123",
              "Page":"1",
              "PageSize":"10",
@@ -510,17 +500,13 @@ body{overflow: auto;background: #fff;}
       type:"POST",
       url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
+      async:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
-          if(dataParam.MediaType=="wt_MediaAsset"){
-            fillJmDetail(resultData);//填充节目数据
-          }else{
-            $(".dcr_jmlist").html(" ");
-            fillJmList(resultData);//填充专辑下的节目列表
-          }
+        if(resultData.ReturnType =="1001"){
+          fillJmDetail(resultData);//填充节目数据
         }else{
-          alert("没有更多节目了");
+          alert(returnData.Message);
         }
       },
       error:function(XHR){
@@ -528,6 +514,7 @@ body{overflow: auto;background: #fff;}
       }
     });
   }
+  
   //填充节目数据
   function fillJmDetail(resultData){
     $(".pername").text(perName+">");
@@ -551,7 +538,14 @@ body{overflow: auto;background: #fff;}
     $(".share2").text(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
     $(".intransit2").text(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
     $(".dcl_jmcontent4").text(!resultData.ContentDetail.ContentDesc?"暂无":resultData.ContentDetail.ContentDesc);
+    if(resultData.ContentDetail.ContentPlay){
+      var audioObj={};
+      audioObj.title=resultData.ContentDetail.ContentName;
+      audioObj.playUrl=resultData.ContentDetail.ContentPlay;
+      audioList.push(audioObj);
+    }
   }
+  
   /*同专辑下的所有节目*/
   var data2={"UserId":"123",
              "ContentFlowFlag":"2",
@@ -583,86 +577,8 @@ body{overflow: auto;background: #fff;}
                   '</div>'+
                 '</div>';
       $(".dcr_jmlist").append(list);
-      var audioObj={};
-      audioObj.title=resultData.SubList[i].ContentName;
-      audioObj.playUrl=resultData.SubList[i].ContentPlay;
-      mp3List.push(audioObj);
     }
-    $(".audio").attr({"src":""});
-    $(".player_panel .title").html("");
-    $(".player_panel .title").html(mp3List[0].title);
-    $(".audio").attr("src",mp3List[0].playUrl);
-    getTime();
   }
-  
-  /*s--播放*/
-  /*点击播放*/
-  $(".player").on("click",function(){
-    $(".playerBtn").click();
-    if($(".playerBtn").hasClass("playing")){
-      $(".player").text("暂停");
-    }else{
-      $(".player").text("播放节目");
-    }
-  });
-  /*全局播放器面板的展开*/
-  $(".glp_mini").on("click",function(){
-    $(this).css({"left":'-60px',"transition" :"all 0.1s ease 0s"});
-    $(this).siblings(".glp_block").css({"left":'0px',"transition" :"all 0.1s ease 0s"});
-  });
-  /*实时获取播放时长和改变进度条进度*/
-  $(".audio")[0].addEventListener("timeupdate",function(){
-    if(!isNaN(this.duration)){
-      //播放进度条
-      var progressValue = this.currentTime/this.duration*($(".player_progressbar").width());
-      $('.player_circle')[0].style.left = parseInt(progressValue) + 'px';
-      $(".player_playbar").css("width",progressValue+"px");
-      //播放时长
-      if(formatTime(Math.floor(this.currentTime))!=0){
-        $(".sound_position").text(formatTime(Math.floor(this.currentTime)));
-      }
-    };
-  },false);
-  /*实现播放快进和后退*/
-  $(".player_progressbar").on("click",function(event){
-    var e = event || window.event;
-    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
-    var x = e.pageX || e.clientX + scrollX;
-    var pleft=x-335;
-    var clickPlayTime=pleft*($(".audio")[0].duration)/$(".player_progressbar").width();
-    $('.player_circle')[0].style.left = parseInt(pleft) + 'px';
-    $(".player_playbar").css("width",pleft+"px");
-    $('.audio')[0].currentTime=clickPlayTime;
-    $(".sound_position").text(formatTime(Math.floor(clickPlayTime)));
-  });
-  /*实现静音*/
-  var clickVolume="1";//音量大小
-  var volumeLeft=" ";//音量的小圆点距离左边的距离
-  $(".volume_img").on("click",function(event){
-    if($(this).hasClass("no_mute")){
-      $(this).removeClass("no_mute").attr("src","img/mute.png");
-      $('.audio')[0].volume="0";
-      $('.volume_circle')[0].style.left ='0px';
-      $(".volume_playbar").css("width","0px");
-    }else{
-      $(this).addClass("no_mute").attr("src","img/volume.png");
-      $('.volume_circle')[0].style.left = parseInt(volumeLeft) + 'px';
-      $(".volume_playbar").css("width",volumeLeft+"px");
-      $('.audio')[0].volume=clickVolume;
-    }
-  });
-  /*实现音量的增大和减小*/
-  $(".volume_progressbar").on("click",function(event){
-    var e = event || window.event;
-    var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
-    var x = e.pageX || e.clientX + scrollX;
-    volumeLeft=x-770;
-    clickVolume=volumeLeft/$(".volume_progressbar").width();
-    $('.volume_circle')[0].style.left = parseInt(volumeLeft) + 'px';
-    $(".volume_playbar").css("width",volumeLeft+"px");
-    $('.audio')[0].volume=clickVolume;
-  });
-  /*e--播放*/
   
   /*点击节目列表里节目的名称，跳到节目详情页*/
   $(document).on("click",".list1_con_name",function(){
@@ -670,18 +586,16 @@ body{overflow: auto;background: #fff;}
     var personId=$(".pername").attr("perId");
     var contentId=$(".zjname").attr("seqId");
     pername=$(".pername").attr("pername");
-    $("#newIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
-    $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).show(); 
+    $("#myIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
   });
+  
   /*点击专辑名称，跳到专辑详情页*/
   $(document).on("click",".comZj",function(){
     var personId=$(".pername").attr("perId");
     var contentid=$(".zjname").attr("seqId");
-    $("#newIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
-    $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).show(); 
+    $("#myIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
   });
+  
   /*点击更多--加载下一批节目*/
   var moreNum=1;//记录点击的次数
   $(".more").on("click",function(){
@@ -692,8 +606,40 @@ body{overflow: auto;background: #fff;}
              "PageSize":"10",
              "ContentId":seqId,
              "MediaType":"wt_SeqMediaAsset"
-  };
-  getJmDetail(data3);
+    };
+    getJmDetail(data3);
   });
+  
+  /*点击全部播放*/
+  $(".player").on("click",function(){
+    var audios=window.frames["audioIframe"].document.getElementById("audio");
+    audios.setAttribute("src",audioList[0].playUrl);
+    var audioTitle=window.frames["audioIframe"].document.getElementsByClassName("title")[0];
+    audioTitle.innerHTML=audioList[0].title;
+    var audioPlay=window.frames["audioIframe"].document.getElementsByClassName("playerBtn")[0];
+    $(audioPlay).click();
+    $(".locker").click();
+  });
+  
+  /*页面重置时播放器面板的样式也随着变化*/
+  window.onresize=function(){
+    var w=$(".content").css("width");
+    $(".audioIframe").css("width",w);
+  }
+  
+  /*播放器面板出现与隐藏*/
+  $(document).on("click",".locker",function(){
+    if($(this).children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
+      $(".audioIframe").show();
+      $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-locked-hover@2x.png)"});
+      $(this).children(".locker_btn").removeClass("locked");
+    }else{//此时显示，点击之后隐藏
+      $(".audioIframe").hide();
+      $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png)"});
+      $(this).children(".locker_btn").addClass("locked");
+    }
+  });
+  
+});
 </script>
 </html>

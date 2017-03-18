@@ -79,9 +79,10 @@ public class SubscribeThread extends Thread {
 				        if (ext!=null) mediaInfo.put("ContentPlayType", ext.contains("/flv")?"flv":ext.replace(".", "")); 
 				        else  mediaInfo.put("ContentPlayType", null);
 						mediaInfo.put("ContentPubTime", rs.getTimestamp("pubTime"));
-						seqMediaInfo.put("MediaType", "AUDIO");
+						mediaInfo.put("MediaType", "AUDIO");
 						newMediaList.add(mediaInfo);
 						
+						System.out.println(JsonUtils.objToJson(seqMediaInfo));
 						if (sc!=null) {
 							 //通知消息
 							int pages = owners.size()/1000+1;
@@ -99,8 +100,8 @@ public class SubscribeThread extends Thread {
 								ownerIds = ownerIds.substring(1);
 								MsgNormal nMsg=new MsgNormal();
 				                nMsg.setMsgId(SequenceUUID.getUUIDSubSegment(4));
-				                nMsg.setFromType(1);
-				                nMsg.setToType(1);
+				                nMsg.setFromType(0);
+				                nMsg.setToType(0);
 				                nMsg.setMsgType(0);
 				                nMsg.setAffirm(0);
 				                nMsg.setBizType(0x04);
@@ -114,8 +115,10 @@ public class SubscribeThread extends Thread {
 				                dataMap.put("_AFFIRMTYPE", "3");
 				                dataMap.put("_TOUSERS", ownerIds);
 				                sco.addSendMsg(nMsg);
-				                System.out.println("订阅推送信息"+JsonUtils.objToJson(nMsg));
+				                System.out.println("订阅推送信息======================"+JsonUtils.objToJson(nMsg));
 							}
+						} else {
+							System.out.println("scoke为null");
 						}
 					}
 					if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};

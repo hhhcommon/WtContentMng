@@ -7,7 +7,6 @@ $(function(){
   var searchKey="";//搜索关键词
   var anchorFy=1;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
   
-  
   /*获取主播的四个状态*/
   data1.UserId="123";
   data1.CatalogType="10";
@@ -36,6 +35,7 @@ $(function(){
       }
     });
   }
+  
   /*获取主播列表*/
   var data2={};
   data2.UserId="123";
@@ -48,17 +48,21 @@ $(function(){
       url:rootPath+"CM/person/getPersons.do",
       dataType:"json",
       data:JSON.stringify(dataParam),
+      beforeSend: function(){
+        $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
+        $('.shade', parent.document).show();
+      },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           clear();
-          contentCount=resultData.ResultInfo.Count;
-          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
-          $(".totalPage").text(contentCount);
+          allCount=resultData.ResultInfo.Count;
+          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadPersonList(resultData);//加载主播列表
+          pagitionInit(contentCount,allCount,dataParam.Page);//初始化翻页插件
         }else{
-          $(".totalPage").text("0");
           $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到相关信息</div>");
         }
+        $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
@@ -78,12 +82,12 @@ $(function(){
       var perStatus=(resultData.ResultInfo.List[i].PersonStatus)?(resultData.ResultInfo.List[i].PersonStatus):("主播状态");
       var li= '<li class="ric_cc_listBox fl" psId='+resultData.ResultInfo.List[i].PersonStatusId+'>'+
                 '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
-                '<span class="ric_txt31 fl ellipsis" style="width:110px;">'+perId+'</span>'+
-                '<span class="ric_txt32 fl ellipsis">'+phNum+'</span>'+
-                '<span class="ric_txt33 fl c07 ellipsis person_name" perid='+perId+'>'+perName+'</span>'+
-                '<span class="ric_txt34 fl ellipsis">'+reaName+'</span>'+
-                '<span class="ric_txt35 fl ellipsis">'+idNumber+'</span>'+
-                '<span class="ric_txt36 fl ellipsis">'+perSource+'</span>'+
+                '<span class="fl ellipsis dis">'+perId+'</span>'+
+                '<span class="fl c07 ellipsis person_name" perid='+perId+' style="width:130px;padding-right: 5px;">'+perName+'</span>'+
+                '<span class="fl ellipsis" style="width:150px;padding:0px 5px;">'+reaName+'</span>'+
+                '<span class="fl ellipsis" style="width:155px;padding:0px 5px;">'+phNum+'</span>'+
+                '<span class="fl ellipsis" style="width:210px;padding:0px 2px;">'+idNumber+'</span>'+
+                '<span class="fl ellipsis" style="width:155px;padding:0px 2px;">'+perSource+'</span>'+
                 '<span class="fl st ellipsis">'+perStatus+'</span>'+
                 '<span class="ric_txt39 fl dis mark">!</span>'+
                 '<div class="mark_notes fl dis">'+
@@ -110,6 +114,7 @@ $(function(){
       }
     }
   }
+  
   /*鼠标放在感叹号上面提示*/
   $(document).on("mouseenter",".mark",function(){
     $(this).siblings(".mark_notes").removeClass("dis");
@@ -118,10 +123,56 @@ $(function(){
     $(this).siblings(".mark_notes").addClass("dis").delay(200);
   });
   
-  /*翻页*/
-  $(".pagination span").on("click",function(){
-    var data_action=$(this).attr("data_action");
-    if($(".ri_top_li2_inp").val()==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
+  /*s--翻页插件初始化*/
+  function pagitionInit(contentCount,allCount,current_page){
+    var totalPage=contentCount;
+    var totalRecords=allCount;
+    var pageNo=current_page;
+    //生成分页
+    //有些参数是可选的，比如lang，若不传有默认值
+    kkpager.generPageHtml({
+      pno : pageNo,
+      //总页码
+      total : totalPage,
+      //总数据条数
+      totalRecords : totalRecords,
+      //页码选项
+      lang : {
+        firstPageText : '首页',
+        firstPageTipText  : '首页',
+        lastPageText  : '尾页',
+        lastPageTipText : '尾页',
+        prePageText : '上一页',
+        prePageTipText  : '上一页',
+        nextPageText  : '下一页',
+        nextPageTipText : '下一页',
+        totalPageBeforeText : '共',
+        totalPageAfterText  : '页',
+        currPageBeforeText  : '当前第',
+        currPageAfterText : '页',
+        totalInfoSplitStr : '/',
+        totalRecordsBeforeText  : '共',
+        totalRecordsAfterText : '条数据',
+        gopageBeforeText  : '&nbsp;转到',
+        gopageButtonOkText  : '确定',
+        gopageAfterText : '页',
+        buttonTipBeforeText : '第',
+        buttonTipAfterText  : '页'
+      },
+      mode : 'click',//默认值是link，可选link或者click
+      click :function(current_page){//点击后的回调函数可自定义
+        this.selectPage(current_page);
+        pagitionBack(current_page);//翻页之后的回调函数
+        return false;
+      }
+    },true);
+  };
+  /*e--翻页插件初始化*/
+ 
+  //翻页之后的回调函数
+  function pagitionBack(current_page){
+    searchWord=$.trim($(".ri_top_li2_inp").val());
+    if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
     }else{//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=2;
@@ -134,55 +185,18 @@ $(function(){
         anchorFy=1;
       }
     });
-    if(data_action=="previous"){
-      if(current_page <= 1){
-        current_page=1;
-        $(".previous").addClass('disabled');
-        return false;
-      }else{
-        current_page--;
-        $(".toPage").val("");
-        $(".currentPage").text(current_page);
-        $(".page").find("span").removeClass("disabled");
-        opts(seaFy,anchorFy);
-        return ;
-      }
-    }else if(data_action=="next"){
-      if(current_page >= contentCount){
-        current_page=contentCount;
-        $(".next").addClass('disabled');
-        return false;
-      }else{
-        current_page++;
-        $(".toPage").val("");
-        $(".currentPage").text(current_page);
-        $(".page").find("span").removeClass("disabled");
-        opts(seaFy,anchorFy);
-        return ;
-      }
-    }else{ //跳至进行输入合理数字范围检测
-      var reg = new RegExp("^[0-9]*$");
-      if(!reg.test($(".toPage").val()) || $(".toPage").val()<1 || $(".toPage").val() > contentCount){  
-        alert("请输入有效页码！");
-        return false;
-      }else{
-        current_page = $(".toPage").val();
-        $(".currentPage").text(current_page);
-        $(".page").find("span").removeClass("disabled");
-        opts(seaFy,anchorFy);
-        return;
-      }
-    }
-  });
+    opts(seaFy,anchorFy,current_page);
+  }
+ 
   //判断在点击翻页之前是否进行了搜索查询
-  function opts(seaFy,anchorFy){
+  function opts(seaFy,anchorFy,current_page){
     destroy(data2);
     data2.UserId="123";
     data2.PageSize="10";
     if(seaFy==2){//seaFy=2搜索列表加载出来后翻页
       current_page=1;
       data2.Page=current_page;
-      data2.SearchWord=$(".ri_top_li2_inp").val();
+      data2.SearchWord=$.trim($(".ri_top_li2_inp").val());
     }else{
       data2.Page=current_page;
     }
@@ -197,6 +211,7 @@ $(function(){
     }
     getPersonsList(data2);  
   }
+  
   /*s--搜索的键盘事件*/
   $(document).keydown(function(e){//键盘上的事件
     e = e || window.event;
@@ -209,23 +224,23 @@ $(function(){
     searchList();//加载搜索列表
   });
   function searchList(){
+    searchWord=$.trim($(".ri_top_li2_inp").val());
     destroy(data2);
     data2.UserId="123";
     data2.PageSize="10";
     current_page="1";
     data2.Page=current_page;
-    $(".currentPage").html(current_page);
-    if($(".ri_top_li2_inp").val()==""){
+    if(searchWord==""){
       alert("请输入搜索内容");
       $(".ri_top_li2_inp").focus();
+      return;
     }else{
-      data2.SearchWord=$(".ri_top_li2_inp").val();
+      data2.SearchWord=searchWord;
     }
     $(".dropdown_menu li").each(function(){
       if($(this).hasClass("selected")){
         anchorFy=2;
-        var cataId=$(this).attr("catalogId");
-        data2.StatusType=cataId;
+        data2.StatusType=$(this).attr("catalogId");
         return false;
       }else{//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
         anchorFy=1;
@@ -238,9 +253,7 @@ $(function(){
   /*点击主播昵称--进入主播详情页*/
   $(document).on("click",".person_name",function(){
     var perid=$(this).attr("perid");
-    $("#newIframe", parent.document).attr({"src":"anchor_detail.html?personId="+perid});
-    $("#myIframe", parent.document).hide();
-    $("#newIframe", parent.document).show();
+    $("#myIframe", parent.document).attr({"src":"anchor_detail.html?personId="+perid});
   });
   
   /*选中不同状态的主播--进行筛选*/
@@ -250,13 +263,11 @@ $(function(){
     data2.PageSize="10";
     current_page="1";
     data2.Page=current_page;
-    $(".currentPage").html(current_page);
-    if($(".ri_top_li2_inp").val()){
-      data2.SearchWord=$(".ri_top_li2_inp").val();
+    if($.trim($(".ri_top_li2_inp").val())){
+      data2.SearchWord=$.trim($(".ri_top_li2_inp").val());
     }
     anchorFy=2;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
-    var cataId=$(this).attr("catalogId");
-    data2.StatusType=cataId;
+    data2.StatusType=$(this).attr("catalogId");
     getPersonsList(data2);
     $(this).parent(".dropdown_menu").addClass("dis");
     $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"img/filter2.png"});
@@ -265,8 +276,8 @@ $(function(){
   
   /*清空*/
   function clear(){
-    $(".ric_con2_content,.totalPage").html("");
-    $(".toPage").val("");
+    $(".ric_con2_content").html("");
+    $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
   }
   /*销毁obj对象的key-value*/
   function destroy(obj){
@@ -283,23 +294,37 @@ $(function(){
       $(this).removeClass("checkbox1");
       $(".ric_con2_content .ric_cc_listBox").each(function(){
         $(this).children(".ric_img_check").removeClass("checkbox1");
-      }); 
+      });
+      $(".ric_con1 button").removeAttr("disabled");
+      $(".gay_week").css({"color":"#fff","background":"#f60"});
+      $(".gay_month").css({"color":"#fff","background":"#0077c7"});
+      $(".gay_forever").css({"color":"#fff","background":"darkred"});
+      $(".gay_revoke").css({"color":"#fff","background":"darkgreen"});
     }else{
       $(".checkbox_img").attr({"src":"img/checkbox1.png"});
       $(this).addClass("checkbox1");
       $(".ric_con2_content .ric_cc_listBox").each(function(){
         $(this).children(".ric_img_check").addClass("checkbox1");
-      }); 
+      });
+      $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
     }
   });
+  
   /*点击单个勾选框*/
   $(document).on("click",".ric_img_check",function(){
     if($(this).hasClass("checkbox1")){
       $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+      $(".ric_con1 button").removeAttr("disabled");
+      $(".gay_week").css({"color":"#fff","background":"#f60"});
+      $(".gay_month").css({"color":"#fff","background":"#0077c7"});
+      $(".gay_forever").css({"color":"#fff","background":"darkred"});
+      $(".gay_revoke").css({"color":"#fff","background":"darkgreen"});
     }else{
       $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+      $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
     }
   });
+  
   /*改变主播的状态*/
   var data3={};
   $(".ric_con1 .ric_txt2").on("click",function(){
@@ -316,10 +341,7 @@ $(function(){
         }
       }
     });
-    if(perids==""){
-      alert("请先选中内容再进行操作");
-      return;
-    }else{
+    if(perids!=""){
       data3.UserId="123";
       data3.PersonIds=perids;
       data3.StatusType=statusType;
@@ -328,13 +350,17 @@ $(function(){
         url:rootPath+"CM/person/updatePersonStatus.do",
         dataType:"json",
         data:JSON.stringify(data3),
+        beforeSend: function(){
+          $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
+          $('.shade', parent.document).show();
+        },
         success:function(resultData){
           if(resultData.ReturnType=="1001"){
             getPersonsList(data2);//获取主播列表
           }else{
-            $(".totalPage").text("0");
             $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到相关信息</div>");
           }
+          $('.shade', parent.document).hide();
         },
         error:function(jqXHR){
           alert("发生错误："+ jqXHR.status);
