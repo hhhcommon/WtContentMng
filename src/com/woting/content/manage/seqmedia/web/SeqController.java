@@ -133,8 +133,14 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
+			//得到每页记录数
+	        int pageSize=10;
+	        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+	        //得到当前页数
+	        int page=1;
+	        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
 			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userId, flowflag, channelid,
-					shortsearch);
+					shortsearch, page, pageSize);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
 				c.remove("ReturnType");

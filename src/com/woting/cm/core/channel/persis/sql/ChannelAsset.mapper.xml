@@ -113,6 +113,14 @@
   <select id="existRefChannel" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(*) from wt_ChannelAsset where ${value}
   </select>
+ 
+  <select id="getListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(1) from
+    (select DISTINCT assetId,assetType from wt_ChannelAsset 
+    <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="wheresql!=null"> ${wheresql}</if>
+    <if test="channelIds!=null"> and channelId in (${channelIds})</if>  ) ch
+  </select>
 
   <!-- 获得列表 -->
   <select id="getList" parameterType="java.util.Map" resultMap="channelAssetMap">
@@ -120,7 +128,9 @@
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
     <if test="wheresql!=null"> ${wheresql}</if>
     <if test="channelIds!=null"> and channelId in (${channelIds})</if>
-    <if test="sortByClause!=null">order by ${sortByClause}</if>
+    <if test="groupByClause!=null"> group by ${groupByClause}</if>
+    <if test="sortByClause!=null"> order by ${sortByClause}</if>
+    <if test="LimitByClause!=null"> limit ${LimitByClause}</if>
   </select>
   
   <select id="getListByFlowFlag" resultMap="channelAssetMap" parameterType="java.util.Map">
@@ -141,7 +151,9 @@
   <select id="getListBy" parameterType="java.util.Map" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
     <if test="wheresql!=null"> ${wheresql}</if>
-    <if test="sortByClause!=null">order by ${sortByClause}</if>
+    <if test="groupByClause!=null"> group by ${groupByClause}</if>
+    <if test="sortByClause!=null"> order by ${sortByClause}</if>
+    <if test="LimitByClause!=null"> limit ${LimitByClause}</if>
   </select>
   
   <select id="getChannelAndChannelAssetBy" parameterType="java.util.Map" resultType="java.util.Map">

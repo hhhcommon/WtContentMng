@@ -82,33 +82,36 @@ public class QueryService {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String sql = "select count(*) from wt_ChannelAsset ch "
-				+ "where (ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset') ";
+		String sql = "SELECT COUNT(*) FROM(select DISTINCT assetId from wt_ChannelAsset"
+				+ " where ";
 		if (mediaType!=null) {
-			if (mediaType.equals("SEQU")) sql += " and ch.assetType = 'wt_SeqMediaAsset'";
-			else if(mediaType.equals("AUDIO")) sql += " and ch.assetType = 'wt_MediaAsset'";
+			if (mediaType.equals("SEQU")) sql += " assetType = 'wt_SeqMediaAsset'";
+			else if(mediaType.equals("AUDIO")) sql += " assetType = 'wt_MediaAsset'";
+		} else {
+			sql += " (assetType = 'wt_MediaAsset' or assetType = 'wt_SeqMediaAsset')";
 		}
 		if (flowFlag!=null) {
-			sql += " and ch.flowFlag = "+flowFlag;
+			sql += " and flowFlag = "+flowFlag;
 		}
 		if (channelId!=null) {
-			sql += " and ch.channelId = '"+channelId+"'";
+			sql += " and channelId = '"+channelId+"'";
 		}
 		if (publisherId!=null) {
-			sql += " and ch.publisherId = '"+publisherId+"'";
+			sql += " and publisherId = '"+publisherId+"'";
 		}
 		if (beginpubtime!=null) {
-			sql += " and ch.pubTime >= '"+beginpubtime+"'";
+			sql += " and pubTime >= '"+beginpubtime+"'";
 		}
 		if (endpubtime!=null) {
-			sql += " and ch.pubTime <= '"+endpubtime+"'";
+			sql += " and pubTime <= '"+endpubtime+"'";
 		}
 		if (beginctime!=null) {
-			sql += " and ch.cTime >= '"+beginctime+"'";
+			sql += " and cTime >= '"+beginctime+"'";
 		}
 		if (endctime!=null) {
-			sql += " and ch.cTime <= '"+endctime+"'";
+			sql += " and cTime <= '"+endctime+"'";
 		}
+		sql += " ) ch";
 		try {
 			conn = DataSource.getConnection();
 			ps = conn.prepareStatement(sql);
@@ -116,10 +119,8 @@ public class QueryService {
 			while (rs != null && rs.next()) {
 				numall = rs.getLong(1);
 			}
-			
 			if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
-            
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -169,6 +170,7 @@ public class QueryService {
 		sql += " ) ch ";
 		sql += " LEFT JOIN wt_MediaAsset ma ON (ch.assetId=ma.id and ch.assetType = 'wt_MediaAsset')"
 				+ " LEFT JOIN wt_SeqMediaAsset sma ON (ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset')";
+		sql += " GROUP BY ch.assetId,ch.assetType";
 		try {
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();

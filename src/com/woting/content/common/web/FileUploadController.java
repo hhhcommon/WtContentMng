@@ -147,19 +147,19 @@ public class FileUploadController extends UploadController {
 			String newname = SequenceUUID.getPureUUID() + ".png";
 			if (purpose.equals("1")) { // 用户头像处理
 				m.put("FileName", newname);
-				m.put("Path", "/group03");
+				m.put("Path", "/userimg");
 			} else {
 				if (purpose.equals("2")) { // 内容图片处理
 					m.put("FileName", newname);
-					m.put("Path", "/group03");
+					m.put("Path", "/contentimg");
 				} else {
 					if (purpose.equals("3")) { // 轮播图处理
 						m.put("FileName", newname);
-						m.put("Path", "/group04");
+						m.put("Path", "/contentimg");
 					} else {
 						if (purpose.equals("4")) { // 栏目图处理
 							m.put("FileName", newname);
-							m.put("Path", "/group04");
+							m.put("Path", "/contentimg");
 						}
 					}
 				}
@@ -169,7 +169,7 @@ public class FileUploadController extends UploadController {
 				m.put("Model", "2");
 				String newname = SequenceUUID.getPureUUID();
 				m.put("FileName", newname);
-				m.put("Path", "/group01");
+				m.put("Path", "/contentmedia");
 			}
 		}
 		m.putAll(rqtParams);

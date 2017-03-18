@@ -132,11 +132,15 @@ public class MediaContentController {
 			if (StringUtils.isNullOrEmptyOrSpace(seqmediaid) || seqmediaid.toLowerCase().equals("null")) {
 				seqmediaid = "0";
 			}
-			Map<String, Object> c = mediaContentService.getMediaContents(userId, flowflag, channelid, seqmediaid);
+			//得到每页记录数
+	        int pageSize=10;
+	        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+	        //得到当前页数
+	        int page=1;
+	        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+			Map<String, Object> c = mediaContentService.getMediaContents(userId, flowflag, channelid, seqmediaid, page, pageSize);
 			if (c != null && c.size() > 0) {
-				map.put("ReturnType", c.get("ReturnType"));
-				c.remove("ReturnType");
-				map.put("ResultList", c);
+				map.putAll(c);
 			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有查到任何内容");
@@ -442,8 +446,7 @@ public class MediaContentController {
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = mediaContentService.updateMediaInfo(userId, contentId, contentname, contentimg, seqmediaId,
-					timelong, contenturi, tags, membertypes, contentdesc, pubTime);
+			map = mediaContentService.updateMediaInfo(userId, contentId, contentname, contentimg, seqmediaId, timelong, contenturi, tags, membertypes, contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
