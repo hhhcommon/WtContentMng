@@ -71,18 +71,18 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   margin-right: 0px;
   margin-left: 0px;
 }
-.ibox{
-  width:500px;
-  height:210px;
-  box-shadow:0 0 10px rgb(222,222,222);;
-  -moz-box-shadow:0 0 10px rgb(222,222,222);;
-  -webkit-box-shadow:0 0 10px rgb(222,222,222);; 
-  float: left;
+.iboxs{
+  width:510px;
+  height:240px;
+  box-shadow:0 0 10px rgb(222,222,222);
+  -moz-box-shadow:0 0 10px rgb(222,222,222);
+  -webkit-box-shadow:0 0 10px rgb(222,222,222);
   margin-left:20px;
   margin-top:20px;
 }
 .ibox_title{
   padding:15px;
+  cursor: pointer;
 }
 .f60{
   color: #f60;
@@ -98,9 +98,74 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 }
 .ibox_content1{
   padding:0px 15px;
-  border:1px solid red;
+  margin-top:15px;
+  height: 135px;
+  position: relative;
+  overflow: hidden;
 }
-
+.ibox_content2{
+  padding:15px 15px 0px;
+  height: 150px;
+  overflow: hidden;
+}
+.ibox_content2{
+  display: none;
+}
+.ibox_content2:before,.ibox_content2:after{
+  width:0px;
+  height:0px;
+  border:transparent solid;
+  position:r;
+  left:100%;
+  content:"";
+}
+.ibox_content2:before{
+  border-width: 10px;
+  border-bottom-color: #000;
+  position: relative;
+  left: 78px;
+  top: -26px;
+}
+.ibox_content2:after{
+  border-width: 8px;
+  border-bottom-color: #fff;
+  left: 80px;
+  top: -16px;
+}
+.ic2_chart{
+  width:100%;
+  height:100%;
+  position: relative;
+  top: -18px;
+  background:#000;
+}
+.ic_img{
+  width:185px;
+  height:125px;
+  background-size:100% 100%;
+}
+.ibox_cer{
+  width: 260px;
+  margin-left: 15px;
+  overflow: hidden;
+}
+.ic_li{
+  height:25px;
+}
+.square{
+  width: 0;
+  height: 0;
+  margin-top: 5px;
+  border-top: 8px solid transparent;
+  border-left: 10px solid #f60;
+  border-bottom: 7px solid transparent;
+}
+.viewpoint{
+  width:220px;
+  font-size: 14px;
+  line-height: 25px;
+  margin-left: 5px;
+}
 </style>
 <body class="laydate_body" onselectstart="return false">
 <div class="subject">
@@ -110,7 +175,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
     <img class="hearder_img" src="img/search1.png" alt="搜索按钮" />
   </div>
   <div class="row">
-    <div class="ibox">
+    <div class="iboxs fl">
       <div class="ibox_title ellipsis">
         <span class="f60 fl">#</span>
         <span class="it fl">韩国通过总统弹劾案朴槿惠即将停职</span>
@@ -118,50 +183,151 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
       </div>
       <div class="reason ellipsis">推荐理由：新浪、百度、搜狐、腾讯等网站热点新闻</div>
       <div class="ibox_content1">
-        <img src="img/a5.jpg" class=" fl" alt="选题图片" />
-        <ul class="ibox_footer">
+        <img src="img/a5.jpg" class="ic_img fl" alt="选题图片" />
+        <ul class="ibox_cer fl">
           <li class="ic_li">
-            <span class="square"></span>
-            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
           </li>
           <li class="ic_li">
-            <span class="square"></span>
-            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
           </li>
           <li class="ic_li">
-            <span class="square"></span>
-            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
           </li>
           <li class="ic_li">
-            <span class="square"></span>
-            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
           </li>
           <li class="ic_li">
-            <span class="square"></span>
-            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
-          </li>
-          <li class="ic_li">
-            <span class="square"></span>
-            <span href="###" class="viewpoint">朴槿惠弹劾案韩国经济</span>
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
           </li>
         </ul>
       </div>
-      <!--<div class="ibox_content2">
-        <img src="img/a5.jpg" alt="推荐图片" />
-      </div>-->
+      <div class="ibox_content2">
+        <div class="ic2_chart">图表数据</div>
+      </div>
+    </div>
+    <div class="iboxs fl">
+      <div class="ibox_title ellipsis">
+        <span class="f60 fl">#</span>
+        <span class="it fl">韩国通过总统弹劾案朴槿惠即将停职</span>
+        <span class="f60 fl">#</span>
+      </div>
+      <div class="reason ellipsis">推荐理由：新浪、百度、搜狐、腾讯等网站热点新闻</div>
+      <div class="ibox_content1">
+        <img src="img/a5.jpg" class="ic_img fl" alt="选题图片" />
+        <ul class="ibox_cer fl">
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+      <div class="ibox_content2">
+        <div class="ic2_chart">图表数据</div>
+      </div>
+    </div>
+    <div class="iboxs fl">
+      <div class="ibox_title ellipsis">
+        <span class="f60 fl">#</span>
+        <span class="it fl">韩国通过总统弹劾案朴槿惠即将停职</span>
+        <span class="f60 fl">#</span>
+      </div>
+      <div class="reason ellipsis">推荐理由：新浪、百度、搜狐、腾讯等网站热点新闻</div>
+      <div class="ibox_content1">
+        <img src="img/a5.jpg" class="ic_img fl" alt="选题图片" />
+        <ul class="ibox_cer fl">
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+      <div class="ibox_content2">
+        <div class="ic2_chart">图表数据</div>
+      </div>
+    </div>
+    <div class="iboxs fl">
+      <div class="ibox_title ellipsis">
+        <span class="f60 fl">#</span>
+        <span class="it fl">韩国通过总统弹劾案朴槿惠即将停职</span>
+        <span class="f60 fl">#</span>
+      </div>
+      <div class="reason ellipsis">推荐理由：新浪、百度、搜狐、腾讯等网站热点新闻</div>
+      <div class="ibox_content1">
+        <img src="img/a5.jpg" class="ic_img fl" alt="选题图片" />
+        <ul class="ibox_cer fl">
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+          <li class="ic_li">
+            <span class="square fl"></span>
+            <span href="###" class="viewpoint fl ellipsis">朴槿惠弹劾案韩国经济朴槿惠弹劾案韩国经济</span>
+          </li>
+        </ul>
+      </div>
+      <div class="ibox_content2">
+        <div class="ic2_chart">图表数据</div>
+      </div>
     </div>
   </div>
 </div>
 </body>
-<script>  
-$(".row").click(function(){
-  $("#myIframe",parent.document).hide();
-  $(".tab_main",parent.document).show();
-  $(".tab_mainNav",parent.document).append('<a href="javascript:;" class="tab_ainNav_a" data_id="">topic0</a>').show();
-  $(".tab_mainContent",parent.document).append('<iframe class="tab_iframe" name="iframe1" width="100%" height="100%" src="topic0.html" data_id="topic0.html"frameborder="0"  seamless></iframe>');
-  $(".tab_iframe",parent.document).show(); 
+<script>
+$(function(){
+  /*点击标题，进入专题页面*/
+  $(".ibox_title").on("click",function(){
+    $("#myIframe", parent.document).attr({"src":"special.html"});
+  });
 });
-
-
 </script>
 </html>
