@@ -41,11 +41,11 @@ public class ContentCLU extends AbstractCacheLifecycleUnit {
         } catch (Exception e) {
             logger.info("启动时加载{Wt内容平台}缓存出错", e);
         }
-//       try {
-//    	    loadCDict();
-//	   } catch (Exception e) {
-//		    logger.info("启动时加载{抓取内容平台}缓存出错", e);
-//	   }
+       try {
+    	    loadCDict();
+	   } catch (Exception e) {
+		    logger.info("启动时加载{抓取内容平台}缓存出错", e);
+	   }
    }
 
     @Override

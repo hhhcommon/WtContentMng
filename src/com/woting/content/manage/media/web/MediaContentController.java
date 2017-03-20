@@ -473,6 +473,7 @@ public class MediaContentController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/media/updateMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateMediaStatus(HttpServletRequest request) {
@@ -496,9 +497,7 @@ public class MediaContentController {
 				map.put("Message", "无法获取需要的参数");
 			} else {
 				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei()) && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1 : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
 					mp.setImei(request.getSession().getId());
 				}
 				mUdk = mp.getUserDeviceKey();
@@ -509,8 +508,7 @@ public class MediaContentController {
 						map.put("Message", "需要登录");
 					} else {
 						map.putAll(retM);
-						if ((retM.get("ReturnType") + "").equals("1001"))
-							map.remove("ReturnType");
+						if ((retM.get("ReturnType") + "").equals("1001")) map.remove("ReturnType");
 					}
 					userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
 				} else {
@@ -556,26 +554,19 @@ public class MediaContentController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String contentId = m.get("ContentId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(contentId) || contentId.toLowerCase().equals("null")) {
+			List<Map<String, Object>> updateList = (List<Map<String, Object>>) m.get("UpdateList");
+			if (updateList==null || updateList.size()==0) {
 				map.put("ReturnType", "1011");
-				map.put("Message", "无节目id信息");
-				return map;
-			}
-			String seqMediaId = m.get("SeqMediaId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(seqMediaId) || seqMediaId.toLowerCase().equals("null")) {
-				map.put("ReturnType", "1011");
-				map.put("Message", "无专辑id信息");
+				map.put("Message", "无内容内容");
 				return map;
 			}
 			int flowFlag = 2;
 			try {flowFlag=Integer.parseInt(m.get("ContentFlowFlag")+"");} catch(Exception e) {};
-			String descn = null;
-			try {descn=m.get("ApplyDescn").toString();} catch(Exception e) {};
-			boolean isok = mediaContentService.modifyMediaStatus(userId, contentId, seqMediaId, flowFlag,descn);
-			if (isok) {
+			List<Map<String, Object>> retLs = mediaContentService.modifyMediaStatus(userId, updateList, flowFlag);
+			if (retLs!=null && retLs.size()>0) {
 				map.put("ReturnType", "1001");
 				map.put("Message", "修改成功");
+				map.put("ResultList", retLs);
 				return map;
 			} else {
 				map.put("ReturnType", "1011");
@@ -688,13 +679,13 @@ public class MediaContentController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String contentid = m.get("ContentId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
+			String contentids = m.get("ContentIds") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(contentids) || contentids.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			map = mediaContentService.removeMediaAsset(userId, contentid);
+			map = mediaContentService.removeMediaAsset(userId, contentids);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

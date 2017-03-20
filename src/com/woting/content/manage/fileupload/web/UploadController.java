@@ -26,9 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.CacheEle;
-import com.spiritdata.framework.core.cache.SystemCache;
+
 import com.spiritdata.framework.ext.io.StringPrintWriter;
 import com.spiritdata.framework.util.FileNameUtils;
 import com.spiritdata.framework.util.ReflectUtils;
@@ -36,9 +34,9 @@ import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.manage.utils.Base64ImgUtils;
 
 public abstract class UploadController implements Controller, HandlerExceptionResolver {
-	private String systemPath = ((CacheEle<String>) (SystemCache.getCache(FConstants.APPOSPATH))).getContent();
+	private String systemPath = "";//((CacheEle<String>) (SystemCache.getCache(FConstants.APPOSPATH))).getContent();
 
-	private String _defaultPath = "/dataCenter";// 默认路径
+	private String _defaultPath = "/opt/dataCenter";// 默认路径
 	private String savePath = null;// 保存路径
 
 	private int storageModel = 0; // 存储方案，默认0，目前只有一种
