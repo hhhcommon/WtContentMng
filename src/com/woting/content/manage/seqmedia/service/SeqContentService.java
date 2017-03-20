@@ -1,5 +1,6 @@
 package com.woting.content.manage.seqmedia.service;
 
+import java.nio.channels.ScatteringByteChannel;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import com.greenpineyu.fel.parser.FelParser.conditionalOrExpression_return;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -374,7 +377,7 @@ public class SeqContentService {
 	 * @param channelId
 	 *            创建专辑使用
 	 * @param flowflag
-	 *            0为创建专辑，2为发布专辑
+	 *            0为创建专辑,2为发布专辑,4为撤回
 	 * @param descn 
 	 * @return
 	 */
@@ -453,18 +456,106 @@ public class SeqContentService {
 		}
 		return map;
 	}
-
-	public Map<String, Object> removeSeqMediaAsset(String userId, String contentid) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		mediaService.removeSeqMedia(userId, contentid);
-		if (mediaService.getSmaInfoById(contentid) != null) {
-			map.put("ReturnType", "1011");
-			map.put("Message", "专辑删除失败");
-		} else {
-			map.put("ReturnType", "1001");
-			map.put("Message", "专辑删除成功");
+	
+	public List<Map<String, Object>> modifySeqStatus(String userid, List<Map<String, Object>> updateList, int flowflag) {
+		if (updateList!=null && updateList.size()>0) {
+			List<Map<String, Object>> retList = new ArrayList<>();
+			for (Map<String, Object> map : updateList) {
+				try {
+					Map<String, Object> retMap = new HashMap<>();
+					String contentId = map.get("ContentId").toString();
+					String descn = null;
+					try {descn = map.get("ApplyDescn").toString();} catch (Exception e) {}
+					SeqMediaAssetPo sma = mediaService.getSmaInfoById(contentId);
+					if (sma == null) {
+						retMap.put("ReturnType", "1013");
+						retMap.put("ContentId", contentId);
+						retMap.put("Message", "专辑不存在");
+						retList.add(retMap);
+					}
+					if (flowflag == 2) {
+						List<MediaAssetPo> malist = mediaService.getMaListBySmaId(contentId);
+						if (flowflag == 2 && (malist == null || malist.size() == 0)) {
+							retMap.put("ReturnType", "1014");
+							retMap.put("ContentId", contentId);
+							retMap.put("Message", "专辑无下级单体");
+							retList.add(retMap);
+						}
+						List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
+						if (chas != null && chas.size() > 0) {
+							for (ChannelAssetPo cha : chas) {
+								if (flowflag!=2) {
+									cha.setFlowFlag(1);
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+								} else {
+									cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+								}
+								// 发布专辑
+								mediaService.updateCha(cha);
+								insertChannelAssetProgress(cha.getId(), 1, descn);
+							}
+							// 发布专辑下级节目
+							for (MediaAssetPo mediaAssetPo : malist) {
+								mediaContentService.modifyMediaStatus(userid, mediaAssetPo.getId(), contentId, flowflag, descn);
+							}
+							retMap.put("ReturnType", "1001");
+							retMap.put("Message", "专辑发布成功");
+							retMap.put("ContentId", contentId);
+							retList.add(retMap);
+						} else {
+							retMap.put("ReturnType", "1011");
+							retMap.put("Message", "专辑发布失败");
+							retMap.put("ContentId", contentId);
+							retList.add(retMap);
+						}
+					} else {
+						if (flowflag==4) {
+							List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
+							if (chas != null && chas.size() > 0) {
+								for (ChannelAssetPo channelAssetPo : chas) {
+									insertChannelAssetProgress(channelAssetPo.getId(), 2, descn);
+									retMap.put("ReturnType", "1001");
+									retMap.put("Message", "申请撤回成功");
+									retMap.put("ContentId", contentId);
+									retList.add(retMap);
+								}
+							}
+						} else {
+							retMap.put("ReturnType", "1011");
+							retMap.put("Message", "修改失败");
+							retMap.put("ContentId", contentId);
+							retList.add(retMap);
+						}
+					}
+			    } catch (Exception e) {
+				    continue;
+			    }
+		    }
+			return retList;
 		}
-		return map;
+		return null;
+	}
+
+	public List<Map<String, Object>> removeSeqMediaAsset(String userId, String contentids) {
+		String[] ids = contentids.split(",");
+		List<Map<String, Object>> retLs = new ArrayList<>();
+		for (String id : ids) {
+			try {
+				mediaService.removeSeqMedia(userId, id);
+			} catch (Exception e) {}
+			finally {
+				Map<String, Object> map = new HashMap<String, Object>();
+				if (mediaService.getSmaInfoById(id) != null) {
+					map.put("ContentId", id);
+					map.put("Message", "专辑删除失败");
+				} else {
+					map.put("ContentId", id);
+					map.put("Message", "专辑删除成功");
+				}
+				retLs.add(map);
+			}
+		}
+		return retLs;
 	}
 
 	public void removeMaToSmaRefInfo(String userId, String seqMediaId, String mediaAssetId) {
