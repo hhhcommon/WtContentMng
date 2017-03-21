@@ -19,6 +19,7 @@ public class CDictDetail extends TreeNodeBean implements Serializable, ModelSwap
     private String aliasName; //字典项别名
     private String anPy; //字典项别名拼音
     private String BCode; //字典项业务编码
+    private String publisher;
     private int DType; //字典项类型：1系统保留；2系统；3定义；4引用：其他字典项ID
     private String DRef; //字典项引用
     private String desc; //说明
@@ -87,6 +88,14 @@ public class CDictDetail extends TreeNodeBean implements Serializable, ModelSwap
 		BCode = bCode;
 	}
 
+	public String getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+
 	public int getDType() {
 		return DType;
 	}
@@ -131,6 +140,7 @@ public class CDictDetail extends TreeNodeBean implements Serializable, ModelSwap
 		this.isValidate=_po.getIsValidate();
 		this.setDdName(_po.getDdName());
 		this.setAliasName(_po.getAliasName());
+		this.setPublisher(_po.getPublisher());
 		this.CTime=_po.getcTime();
 	}
 
