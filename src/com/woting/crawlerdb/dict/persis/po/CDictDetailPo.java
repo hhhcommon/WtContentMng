@@ -19,6 +19,7 @@ public class CDictDetailPo extends BaseObject {
 	private String visitUrl;
 	private String schemeId;
 	private String schemeName;
+	private int crawlerNum;
 	private int isValidate;
 	private Timestamp cTime;
 	
@@ -99,6 +100,12 @@ public class CDictDetailPo extends BaseObject {
 	}
 	public void setIsValidate(int isValidate) {
 		this.isValidate = isValidate;
+	}
+	public int getCrawlerNum() {
+		return crawlerNum;
+	}
+	public void setCrawlerNum(int crawlerNum) {
+		this.crawlerNum = crawlerNum;
 	}
 	public Timestamp getcTime() {
 		return cTime;

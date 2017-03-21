@@ -1,5 +1,6 @@
 package com.woting.crawlerdb.dict.service;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,11 +11,19 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
 import com.spiritdata.framework.util.JsonUtils;
+import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
+import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.mem._CacheChannel;
+import com.woting.cm.core.channel.model.Channel;
+import com.woting.cm.core.channel.persis.po.ChannelMapRefPo;
+import com.woting.cm.core.channel.service.ChannelMapService;
 import com.woting.cm.core.dict.persis.po.DictDetailPo;
 import com.woting.cm.core.dict.persis.po.DictRefResPo;
 import com.woting.content.manage.dict.service.DictContentService;
@@ -35,12 +44,16 @@ public class CDictService {
 	private MybatisDAO<CDictDetailPo> cDictDDao;
 	@Resource(name = "defaultDAO_DB")
 	private MybatisDAO<CDictMasterPo> cDictMDao;
+	@Resource
+	private ChannelMapService channelMapService;
 	private _CacheCDictionary _cd = null;
+	private _CacheChannel _cc=null;
 
 	@PostConstruct
 	public void initParam() {
 		cDictDDao.setNamespace("A_CDICTD");
 		cDictMDao.setNamespace("A_CDICTM");
+        _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 	}
 	
 	/**
@@ -85,6 +98,7 @@ public class CDictService {
                 param.clear();
                 String tempDmId="";
                 param.put("mId", "3");
+                param.put("isValidate", 1);
                 List<CDictDetailPo> ddPage=cDictDDao.queryForList("getList", param);
                 List<CDictDetailPo> ddpol=new ArrayList<CDictDetailPo>();
                 ddpol.addAll(ddPage);
@@ -172,41 +186,59 @@ public class CDictService {
         }
     }
 
-	/**
-	 * 添加资源库与抓取库字典映射关系
-	 * @param dictmid
-	 * @param dictdid
-	 * @param cdictmid
-	 * @param cdictdid
-	 * @return 0：创建成功   1：已存在  2：创建失败
-	 */
-	public Map<String, Object> addCDDAndDDRef(String dictmid, String dictdid, String cdictmid, String cdictdid) {
-		String refname = "";
-		Map<String, Object> map = new HashMap<>();
-		if (dictmid.equals("3") && cdictmid.equals("3"))
-			refname = "外部分类-内容分类";
-		Map<String, Object> m = new HashMap<>();
-		m.put("refName", "外部分类-内容分类");
-		m.put("resTableName", "hotspot_DictD");
-		m.put("resId", cdictdid);
-		m.put("dictMid", dictmid);
-		m.put("dictDid", dictdid);
-		if(dictContentService.getDictRefResInfo(m)!=null) {
-			map.put("ReturnType", "1012");
-			map.put("Message", "已存在");
-			return map;
+	
+	@SuppressWarnings("unchecked")
+	public boolean addCDDAndDDRef(String applyType, String id, String refIds) {
+		_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
+		String[] ids = refIds.split(",");
+		if (ids!=null && ids.length>0) {
+			if (applyType.equals("1")) {
+				if (_cc!=null) {
+					TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(id);
+					if (_c!=null && _cd!=null) {
+						List<ChannelMapRefPo> chamaps = new ArrayList<>();
+						for (String did : ids) {
+							CDictDetail cdd = _cd.getCDictDetail("3", did);
+							if (cdd!=null) {
+								ChannelMapRefPo chamapref = new ChannelMapRefPo();
+								chamapref.setId(SequenceUUID.getPureUUID());
+								chamapref.setChannelId(id);
+								chamapref.setSrcDid(did);
+								chamapref.setSrcMid("3");
+								chamapref.setSrcName(cdd.getPublisher());
+								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
+								chamaps.add(chamapref);
+							}
+						}
+						channelMapService.insertList(chamaps);
+						return true;
+					}
+				}
+			} else {
+				if (_cd!=null) {
+					CDictDetail cdd = _cd.getCDictDetail("3", id);
+					if (cdd!=null && _cd!=null) {
+						List<ChannelMapRefPo> chamaps = new ArrayList<>();
+						for (String chaid  : ids) {
+							TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(chaid);
+							if (_c!=null) {
+								ChannelMapRefPo chamapref = new ChannelMapRefPo();
+								chamapref.setId(SequenceUUID.getPureUUID());
+								chamapref.setChannelId(chaid);
+								chamapref.setSrcDid(id);
+								chamapref.setSrcMid("3");
+								chamapref.setSrcName(cdd.getPublisher());
+								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
+								chamaps.add(chamapref);
+							}
+						}
+						channelMapService.insertList(chamaps);
+						return true;
+					}
+				}
+			}
 		}
-		map = dictContentService.insertResDictRef(refname, "hotspot_DictD", cdictdid, dictmid, dictdid);
-		if (map!=null) {
-			CDictDetailPo cdd = cDictDDao.getInfoObject("getInfo", cdictdid);
-			map.put("ReturnType", "1001");
-			map.put("Message", "添加成功");
-			map.put("Publisher", cdd.getPublisher());
-			DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			map.put("CTime", sd.format(System.currentTimeMillis()));
-			return map;
-		}
-		return null;
+		return false;
 	}
 
 	/**
@@ -217,74 +249,32 @@ public class CDictService {
 	 * @param sourcenum
 	 * @return
 	 */
-	public List<Map<String, Object>> getCCateResRef(String dictmid, String dictdid, String dictdname,String sourcenum) {
-		DictDetailPo ddp = new DictDetailPo();
-		CDictDetailPo cd = new CDictDetailPo();
-		List<Map<String, Object>> ms = new ArrayList<>();
-		Map<String, Object> m = new HashMap<>();
-		String refname = "外部分类-内容分类";
-		m.put("refName", refname);
-		List<DictRefResPo> drrs = new ArrayList<>();
-		if (sourcenum.equals("0")) {
-			if (dictdname.equals("null")) {
-				ddp = dictContentService.getDictDetailInfo(dictdid);
-				if (ddp==null) return null;
-			} else {
-				ddp = dictContentService.getDictDetailInfo(dictdid);
-				if(ddp==null || !ddp.getDdName().equals(dictdname))
-					return null;
-			}
-			m.put("dictMid", dictmid);
-			m.put("dictDid", dictdid);
-			m.put("orderByClause", "cTime desc");
-			drrs = dictContentService.getDictRefList(m);
-			if (drrs.size() > 0) {
-				for (DictRefResPo drr : drrs) {
-					Map<String, Object> mm = new HashMap<>();
-					cd = getCDictDInfo(drr.getResId());
-					if (cd == null)
-						continue;
-					mm.put("Id",drr.getId());
-					mm.put("Title", ddp.getDdName());
-					mm.put("SrcId", cd.getId());
-					mm.put("SrcTitle", cd.getDdName());
-					mm.put("Publisher", cd.getPublisher());
-					DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					mm.put("CTime", sd.format(drr.getCTime()));
-					ms.add(mm);
+	public List<Map<String, Object>> getCCateResRef(String applyType, String id, String publishers) {
+		List<Map<String, Object>> retLs = new ArrayList<>();
+		if (applyType.equals("1")) {
+			
+		} else {
+			List<ChannelMapRefPo> chamaprefs = channelMapService.getList(null, "3", id, null);
+			if (chamaprefs!=null && chamaprefs.size()>0) {
+				_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
+				CDictDetail cdd = _cd.getCDictDetail("3", id);
+				if (cdd!=null) {
+					for (ChannelMapRefPo chamaps : chamaprefs) {
+						Map<String, Object> m = new HashMap<>();
+						m.put("Id", chamaps.getId());
+						m.put("SrcDid", chamaps.getSrcDid());
+						m.put("SrcName", cdd.getNodeName());
+						m.put("SrcSource", cdd.getPublisher());
+						m.put("ChannelId", chamaps.getChannelId());
+						TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(id);
+						m.put("ChannelSource", "我听科技");
+						m.put("ChannelName", _c.getNodeName());
+						retLs.add(m);
+					}
 				}
 			}
 		}
-		if(sourcenum.equals("1")) {
-			if (dictdname.equals("null")) {
-				cd = getCDictDInfo(dictdid);
-				if (cd==null) return null;
-			} else {
-				cd = getCDictDInfo(dictdid);
-				if(cd==null || !cd.getDdName().equals(dictdname))
-					return null;
-			}
-			m.put("resId", dictdid);
-			m.put("orderByClause", "cTime desc");
-			drrs = dictContentService.getDictRefList(m);
-			if (drrs.size()>0) {
-				for (DictRefResPo drr : drrs) {
-					Map<String, Object> mm = new HashMap<>();
-					ddp = dictContentService.getDictDetailInfo(drr.getDictDid());
-					if(ddp==null)
-						continue;
-					mm.put("Id", drr.getId());
-					mm.put("Title", cd.getDdName());
-					mm.put("SrcId", ddp.getId());
-					mm.put("SrcTitle", ddp.getDdName());
-					mm.put("Publisher", "我听");
-					DateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					mm.put("CTime", sd.format(drr.getCTime()));
-					ms.add(mm);
-				}
-			}
-		}
-		return ms;
+		return null;
 	}
 
 	/**
