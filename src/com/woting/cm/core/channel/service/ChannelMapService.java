@@ -71,4 +71,8 @@ public class ChannelMapService {
 		}
 		channelMapRefDao.delete("deleteByEntity", m);
 	}
+	
+	public void deleteBy(String whereSql) {
+		channelMapRefDao.delete("delByIds", whereSql);
+	}
 }

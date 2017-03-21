@@ -329,15 +329,17 @@ public class CDictService {
 	 * @return
 	 */
 	public boolean delDictResRef(String ids) {
+		String valus = null;
+		String[] chamapids = ids.split(",");
+		if (chamapids!=null && chamapids.length>0) {
+			for (String id : chamapids) {
+				valus += " or id = '"+id+"'";
+			}
+			valus = valus.substring(3);
+			channelMapService.deleteBy(valus);
+			return true;
+		}
 		return false;
-//		String valus = 
-//		dictContentService.delDictRefRes(id);;
-//		Map<String, Object> m = new HashMap<>();
-//		m.put("id", id);
-//		if (dictContentService.getDictRefResInfo(m)!=null) {
-//			return false;
-//		}
-//		return true;
 	}
 	
 	public boolean saveCrawlerFile() {

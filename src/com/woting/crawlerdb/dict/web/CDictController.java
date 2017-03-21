@@ -182,7 +182,7 @@ public class CDictController {
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 		} else {
-			map.put("ReturnType", "1012");
+			map.put("ReturnType", "1011");
 			map.put("Message", "删除失败");
 		}
 		return map;
