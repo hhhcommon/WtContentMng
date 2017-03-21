@@ -529,7 +529,6 @@ $(function(){
   $(".save").on("click",function(){
     applyType=$(".modal_header").attr("applyType");
     modal_nodes=modalObj.getCheckedNodes(true);//得到模态框上被选中的节点集合
-    console.log(modal_nodes);
     if(modal_nodes.length>0){
       var nodes_id="";
       for(var i=0;i<modal_nodes.length;i++){
@@ -542,7 +541,6 @@ $(function(){
     }
     console.log(nodes_id);
     var node_id=$(".modal_cp").attr("nodeid");
-    console.log(node_id);
     addmap(applyType,node_id,nodes_id);
   });
   function addmap(applyType,node_id,nodes_id){
@@ -552,7 +550,7 @@ $(function(){
       type:"POST",    
       url: _url,
       dataType:"json",
-      data:_data,
+      data:JSON.stringify(_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
           alert("映射关系添加成功");
