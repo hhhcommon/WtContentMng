@@ -53,7 +53,6 @@ public class CDictService {
 	public void initParam() {
 		cDictDDao.setNamespace("A_CDICTD");
 		cDictMDao.setNamespace("A_CDICTM");
-        _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 	}
 	
 	/**
@@ -190,6 +189,7 @@ public class CDictService {
 	@SuppressWarnings("unchecked")
 	public boolean addCDDAndDDRef(String applyType, String id, String refIds) {
 		_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
+        _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 		String[] ids = refIds.split(",");
 		if (ids!=null && ids.length>0) {
 			if (applyType.equals("1")) {
@@ -249,12 +249,40 @@ public class CDictService {
 	 * @param sourcenum
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> getCCateResRef(String applyType, String id, String publishers) {
+        _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 		List<Map<String, Object>> retLs = new ArrayList<>();
 		if (applyType.equals("1")) {
-			
+			TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(id);
+			if (_c!=null) {
+				String whereSql = null;
+				if (publishers!=null) {
+					String[] ps = publishers.split(",");
+					for (String pstr : ps) {
+						whereSql += ",'"+pstr+"'";
+					}
+					whereSql = " srcName not in "+"("+whereSql.substring(1)+")";
+				}
+				List<ChannelMapRefPo> chamaprefs = channelMapService.getList(id, null, null, null, whereSql);
+				if (chamaprefs!=null && chamaprefs.size()>0) {
+					_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
+					for (ChannelMapRefPo chamaps : chamaprefs) {
+						Map<String, Object> m = new HashMap<>();
+						m.put("Id", chamaps.getId());
+						m.put("SrcDid", chamaps.getSrcDid());
+						CDictDetail cdd = _cd.getCDictDetail("3", chamaps.getSrcDid());
+						m.put("SrcName", cdd.getNodeName());
+						m.put("SrcSource", cdd.getPublisher());
+						m.put("ChannelId", id);
+						m.put("ChannelSource", "我听科技");
+						m.put("ChannelName", _c.getNodeName());
+						retLs.add(m);
+					}
+				}
+			}
 		} else {
-			List<ChannelMapRefPo> chamaprefs = channelMapService.getList(null, "3", id, null);
+			List<ChannelMapRefPo> chamaprefs = channelMapService.getList(null, "3", id, null, null);
 			if (chamaprefs!=null && chamaprefs.size()>0) {
 				_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
 				CDictDetail cdd = _cd.getCDictDetail("3", id);
@@ -273,6 +301,9 @@ public class CDictService {
 					}
 				}
 			}
+		}
+		if (retLs!=null && retLs.size()>0) {
+			return retLs;
 		}
 		return null;
 	}
@@ -297,14 +328,16 @@ public class CDictService {
 	 * @param id
 	 * @return
 	 */
-	public boolean delDictResRef(String id) {
-		dictContentService.delDictRefRes(id);;
-		Map<String, Object> m = new HashMap<>();
-		m.put("id", id);
-		if (dictContentService.getDictRefResInfo(m)!=null) {
-			return false;
-		}
-		return true;
+	public boolean delDictResRef(String ids) {
+		return false;
+//		String valus = 
+//		dictContentService.delDictRefRes(id);;
+//		Map<String, Object> m = new HashMap<>();
+//		m.put("id", id);
+//		if (dictContentService.getDictRefResInfo(m)!=null) {
+//			return false;
+//		}
+//		return true;
 	}
 	
 	public boolean saveCrawlerFile() {

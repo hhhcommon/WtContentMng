@@ -22,7 +22,7 @@ public class ChannelMapService {
 		channelMapRefDao.setNamespace("A_CHANNELMAPREF");
     }
 	
-	public List<ChannelMapRefPo> getList(String channelId, String srcMid, String srcDid, String srcName) {
+	public List<ChannelMapRefPo> getList(String channelId, String srcMid, String srcDid, String srcName, String whereSql) {
 		Map<String, Object> m = new HashMap<>();
 		if (channelId!=null) {
 			m.put("channelId", channelId);
@@ -35,6 +35,9 @@ public class ChannelMapService {
 		}
 		if (srcName!=null) {
 			m.put("srcName", srcName);
+		}
+		if (whereSql!=null) {
+			m.put("whereSql", whereSql);
 		}
 		List<ChannelMapRefPo> chamaps = channelMapRefDao.queryForList(m);
 		if (chamaps!=null && chamaps.size()>0) {
