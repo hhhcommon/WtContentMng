@@ -171,18 +171,18 @@ public class CDictController {
             map.put("Message", "参数为空");
             return map;
         }
-		String id = m.get("Id")+"";
-		if(id.equals("null")) {
+		String ids = m.get("Ids")+"";
+		if(ids.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "Id参数为空");
+            map.put("Message", "Ids参数为空");
             return map;
 		}
-		boolean isok = cDictService.delDictResRef(id);
+		boolean isok = cDictService.delDictResRef(ids);
 		if(isok) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 		} else {
-			map.put("ReturnType", "1012");
+			map.put("ReturnType", "1011");
 			map.put("Message", "删除失败");
 		}
 		return map;
