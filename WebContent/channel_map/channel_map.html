@@ -177,6 +177,13 @@ body{overflow: hidden;height:100%;padding:0px;}
   color:#fff;
   margin-left:10px;
 }
+.no{
+  width: auto;
+  position: absolute;
+  top: 50px;
+  padding: 10px 10px 10px 14px;
+  font-size: 16px;
+}
 </style>
 <body>
 <div class="wrapper wrapper-content" style="height:100%;">
@@ -198,6 +205,7 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="wt_content">
       <div class="fl ztree left" id="woting_tree"></div>
       <div class="right fl">
+        <div class="no dis">暂无映射关系</div>
         <table id='wt_table' data-toggle="table" data-height="246" data-show-refresh="true">
           <thead>
            <!--  <tr>
@@ -214,7 +222,7 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="ot_content">
       <div class="fl ztree left" id="other_tree"></div>
       <div class="right fl">
-        <div class="no">暂无映射关系</div>
+        <div class="no dis">暂无映射关系</div>
         <table id='ot_table' data-toggle="table" data-height="256">
           <thead>
             <!--<tr>
@@ -463,7 +471,8 @@ $(function(){
       data:JSON.stringify(_data),
       success: function(returnData){
         debugger;
-        $(".wt .right").html("");//清空数据
+        $('#wt_table').bootstrapTable('load',null);//清空数据
+        $(".no").addClass("dis");
         if(returnData.ReturnType=="1001"){
           $('#wt_table').bootstrapTable('load',returnData.ResultList);
           list=[];//清空数组
@@ -471,7 +480,7 @@ $(function(){
             list.push(returnData.ResultList[i].SrcDid);
           }
         }else{
-          
+          $(".no").removeClass("dis");
         }
       },
       error:function(jqXHR){
@@ -492,7 +501,8 @@ $(function(){
       data:JSON.stringify(_data),
       success: function(returnData){
         debugger;
-        $(".other .right").html("");//清空数据
+        $('#ot_table').bootstrapTable('load',null);//清空数据//清空数据
+        $(".no").addClass("dis");
         if(returnData.ReturnType=="1001"){
           $('#ot_table').bootstrapTable('load',returnData.ResultList);
           list=[];//清空数组
@@ -501,7 +511,7 @@ $(function(){
           }
           console.log(list);
         }else{
-          $(".other .right").html("暂无与我听平台的映射关系");
+          $(".no").removeClass("dis");
         }
       },
       error:function(jqXHR){
