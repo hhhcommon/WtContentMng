@@ -112,6 +112,17 @@ body{overflow: hidden;height:100%;padding:0px;}
   visibility: hidden;
   width: 0px;
 }
+#ot_table{
+  table-layout: fixed;
+}
+#ot_table thead tr th:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
+#ot_table tbody tr td:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
 .mask{
   width:100%;
   height:100%;
@@ -203,6 +214,7 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="ot_content">
       <div class="fl ztree left" id="other_tree"></div>
       <div class="right fl">
+        <div class="no">暂无映射关系</div>
         <table id='ot_table' data-toggle="table" data-height="256">
           <thead>
             <!--<tr>
@@ -269,13 +281,13 @@ body{overflow: hidden;height:100%;padding:0px;}
         field: 'Id',
         title: '映射关系id'
     }, {
-        field: 'pt_name',
+        field: 'SrcSource',
         title: '其他平台名称'
     }, {
-        field: 'ot_channel',
+        field: 'SrcName',
         title: '其他平台分类'
     }, {
-        field: 'wt_channel',
+        field: 'ChannelName',
         title: '我听分类'
     }]
   });
@@ -422,8 +434,10 @@ $(function(){
       data:JSON.stringify(loadWtData),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
+          debugger;
           modalObj.addNodes(null,returnData.Data.children,false);
           $(".modal_header").attr("applyType",applyType);
+          console.log(list);
           for(var i=0;i<list.length;i++){
             var node=modalObj.getNodeByParam("id",list[i], null);
             modalObj.setChkDisabled(node,true,false,false);
@@ -439,7 +453,6 @@ $(function(){
   var list=[];//存放对应的id
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
-    debugger;
     console.log(treeNode.id);
     var _url=rootPath+"common/getCCateRefs.do";
     var _data={"ApplyType":1,"Id":treeNode.id};
@@ -449,6 +462,7 @@ $(function(){
       dataType: "json",
       data:JSON.stringify(_data),
       success: function(returnData){
+        debugger;
         $(".wt .right").html("");//清空数据
         if(returnData.ReturnType=="1001"){
           $('#wt_table').bootstrapTable('load',returnData.ResultList);
@@ -456,6 +470,8 @@ $(function(){
           for(var i=0;i<returnData.ResultList.length;i++){
             list.push(returnData.ResultList[i].SrcDid);
           }
+        }else{
+          
         }
       },
       error:function(jqXHR){
@@ -465,6 +481,7 @@ $(function(){
   }
   //选中其他平台的分类，查询其他平台与我听的映射关系
   function selectOtherTreeNode(event, treeId, treeNode){
+    debugger;
     console.log(treeNode.id);
     var _url=rootPath+"common/getCCateRefs.do";
     var _data={"ApplyType":2,"Id":treeNode.id};
@@ -474,6 +491,7 @@ $(function(){
       dataType: "json",
       data:JSON.stringify(_data),
       success: function(returnData){
+        debugger;
         $(".other .right").html("");//清空数据
         if(returnData.ReturnType=="1001"){
           $('#ot_table').bootstrapTable('load',returnData.ResultList);
@@ -481,6 +499,9 @@ $(function(){
           for(var i=0;i<returnData.ResultList.length;i++){
             list.push(returnData.ResultList[i].SrcDid);
           }
+          console.log(list);
+        }else{
+          $(".other .right").html("暂无与我听平台的映射关系");
         }
       },
       error:function(jqXHR){
@@ -513,7 +534,7 @@ $(function(){
       }else{
         ot_path=other_node.attributes.pathName+"";//选中节点的路径
         ot_path=ot_path.replace("外源内容分类/"," ");
-        $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+ot_path+'"');
+        $(".modal_cp").attr("nodeid",other_node.id).text('你已经选择了"'+ot_path+'"');
         applyType=2;
         loadModalTree("其他平台",applyType);
       }
