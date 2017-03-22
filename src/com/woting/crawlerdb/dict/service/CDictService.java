@@ -198,14 +198,14 @@ public class CDictService {
 					if (_c!=null && _cd!=null) {
 						List<ChannelMapRefPo> chamaps = new ArrayList<>();
 						for (String did : ids) {
-							CDictDetail cdd = _cd.getCDictDetail("3", did);
+							TreeNode<CDictDetail> cdd = _cd.getCDictDetail("3", did);
 							if (cdd!=null) {
 								ChannelMapRefPo chamapref = new ChannelMapRefPo();
 								chamapref.setId(SequenceUUID.getPureUUID());
 								chamapref.setChannelId(id);
 								chamapref.setSrcDid(did);
 								chamapref.setSrcMid("3");
-								chamapref.setSrcName(cdd.getPublisher());
+								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
 								chamaps.add(chamapref);
 							}
@@ -216,7 +216,7 @@ public class CDictService {
 				}
 			} else {
 				if (_cd!=null) {
-					CDictDetail cdd = _cd.getCDictDetail("3", id);
+					TreeNode<CDictDetail> cdd = _cd.getCDictDetail("3", id);
 					if (cdd!=null && _cd!=null) {
 						List<ChannelMapRefPo> chamaps = new ArrayList<>();
 						for (String chaid  : ids) {
@@ -227,7 +227,7 @@ public class CDictService {
 								chamapref.setChannelId(chaid);
 								chamapref.setSrcDid(id);
 								chamapref.setSrcMid("3");
-								chamapref.setSrcName(cdd.getPublisher());
+								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
 								chamaps.add(chamapref);
 							}
@@ -271,12 +271,12 @@ public class CDictService {
 						Map<String, Object> m = new HashMap<>();
 						m.put("Id", chamaps.getId());
 						m.put("SrcDid", chamaps.getSrcDid());
-						CDictDetail cdd = _cd.getCDictDetail("3", chamaps.getSrcDid());
-						m.put("SrcName", cdd.getNodeName());
-						m.put("SrcSource", cdd.getPublisher());
+						TreeNode<CDictDetail> cdd = _cd.getCDictDetail("3", chamaps.getSrcDid());
+						m.put("SrcName", cdd.getTreePathName());
+						m.put("SrcSource", cdd.getTnEntity().getPublisher());
 						m.put("ChannelId", id);
 						m.put("ChannelSource", "我听科技");
-						m.put("ChannelName", _c.getNodeName());
+						m.put("ChannelName", _c.getTreePathName());
 						retLs.add(m);
 					}
 				}
@@ -285,18 +285,18 @@ public class CDictService {
 			List<ChannelMapRefPo> chamaprefs = channelMapService.getList(null, "3", id, null, null);
 			if (chamaprefs!=null && chamaprefs.size()>0) {
 				_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
-				CDictDetail cdd = _cd.getCDictDetail("3", id);
+				TreeNode<CDictDetail> cdd = _cd.getCDictDetail("3", id);
 				if (cdd!=null) {
 					for (ChannelMapRefPo chamaps : chamaprefs) {
 						Map<String, Object> m = new HashMap<>();
 						m.put("Id", chamaps.getId());
 						m.put("SrcDid", chamaps.getSrcDid());
-						m.put("SrcName", cdd.getNodeName());
-						m.put("SrcSource", cdd.getPublisher());
+						m.put("SrcName", cdd.getTreePathName());
+						m.put("SrcSource", cdd.getTnEntity().getPublisher());
 						m.put("ChannelId", chamaps.getChannelId());
 						TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(chamaps.getChannelId());
 						m.put("ChannelSource", "我听科技");
-						m.put("ChannelName", _c.getNodeName());
+						m.put("ChannelName", _c.getTreePathName());
 						retLs.add(m);
 					}
 				}
@@ -360,16 +360,14 @@ public class CDictService {
 						Map<String, Object> mm = new HashMap<>();
 						mm.put("crawlerDictmId", cdd.getmId());
 						String crawlerDictmName = "";
-						if(cdd.getmId().equals("3"))
-							crawlerDictmName = "内容分类";
+						if(cdd.getmId().equals("3")) crawlerDictmName = "内容分类";
 						mm.put("crawlerDictmName",crawlerDictmName);
 						mm.put("crawlerDictdId", cdd.getId());
 						mm.put("crawlerDictdName", cdd.getDdName());
 						mm.put("publisher", cdd.getPublisher());
 						mm.put("dictmId", dd.getMId());
 						String dictmName = "";
-						if(dd.getMId().equals("3"))
-							dictmName = "内容分类";
+						if(dd.getMId().equals("3")) dictmName = "内容分类";
 						mm.put("dictmName", dictmName);
 						mm.put("dictdId", drf.getDictDid());
 						mm.put("dictdName", dd.getDdName());

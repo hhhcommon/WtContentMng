@@ -37,12 +37,12 @@ public class _CacheCDictionary {
      * @return 元数据信息
      */
     @SuppressWarnings("unchecked")
-	public CDictDetail getCDictDetail(String cdictMid, String cdictDid) {
+	public TreeNode getCDictDetail(String cdictMid, String cdictDid) {
         if (cdictModelMap==null) return null;
         CDictModel dm=cdictModelMap.get(cdictMid);
         if (dm==null) return null;
         TreeNode<CDictDetail> ddTn=(TreeNode<CDictDetail>)dm.cdictTree.findNode(cdictDid);
         if (ddTn==null) return null;
-        return ddTn.getTnEntity();
+        return ddTn;
     }
 }
