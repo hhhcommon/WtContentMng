@@ -272,11 +272,11 @@ public class CDictService {
 						m.put("Id", chamaps.getId());
 						m.put("SrcDid", chamaps.getSrcDid());
 						TreeNode<CDictDetail> cdd = _cd.getCDictDetail("3", chamaps.getSrcDid());
-						m.put("SrcName", cdd.getTreePathName());
+						m.put("SrcName", cdd.getTreePathName().replace("外源内容分类/喜马拉雅/", "").replace("外源内容分类/蜻蜓/", ""));
 						m.put("SrcSource", cdd.getTnEntity().getPublisher());
 						m.put("ChannelId", id);
 						m.put("ChannelSource", "我听科技");
-						m.put("ChannelName", _c.getTreePathName());
+						m.put("ChannelName", _c.getTreePathName().replace("栏目根/", ""));
 						retLs.add(m);
 					}
 				}
@@ -291,12 +291,12 @@ public class CDictService {
 						Map<String, Object> m = new HashMap<>();
 						m.put("Id", chamaps.getId());
 						m.put("SrcDid", chamaps.getSrcDid());
-						m.put("SrcName", cdd.getTreePathName());
+						m.put("SrcName", cdd.getTreePathName().replace("外源内容分类/喜马拉雅/", "").replace("外源内容分类/蜻蜓/", ""));
 						m.put("SrcSource", cdd.getTnEntity().getPublisher());
 						m.put("ChannelId", chamaps.getChannelId());
 						TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(chamaps.getChannelId());
 						m.put("ChannelSource", "我听科技");
-						m.put("ChannelName", _c.getTreePathName());
+						m.put("ChannelName", _c.getTreePathName().replace("栏目根/", ""));
 						retLs.add(m);
 					}
 				}
