@@ -294,7 +294,7 @@ public class CDictService {
 						m.put("SrcName", cdd.getNodeName());
 						m.put("SrcSource", cdd.getPublisher());
 						m.put("ChannelId", chamaps.getChannelId());
-						TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(id);
+						TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(chamaps.getChannelId());
 						m.put("ChannelSource", "我听科技");
 						m.put("ChannelName", _c.getNodeName());
 						retLs.add(m);
@@ -329,14 +329,16 @@ public class CDictService {
 	 * @return
 	 */
 	public boolean delDictResRef(String ids) {
-		String valus = null;
+		String valus = "";
 		String[] chamapids = ids.split(",");
 		if (chamapids!=null && chamapids.length>0) {
 			for (String id : chamapids) {
 				valus += " or id = '"+id+"'";
 			}
 			valus = valus.substring(3);
-			channelMapService.deleteBy(valus);
+			Map<String, Object> m = new HashMap<>();
+			m.put("value", valus);
+			channelMapService.deleteBy(m);
 			return true;
 		}
 		return false;
