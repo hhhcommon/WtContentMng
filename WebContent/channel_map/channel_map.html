@@ -101,6 +101,17 @@ body{overflow: hidden;height:100%;padding:0px;}
   margin:10px 10px 0px 0px;;
   min-width: 580px;
 }
+#wt_table{
+  table-layout: fixed;
+}
+#wt_table thead tr th:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
+#wt_table tbody tr td:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
 .mask{
   width:100%;
   height:100%;
@@ -178,12 +189,13 @@ body{overflow: hidden;height:100%;padding:0px;}
       <div class="right fl">
         <table id='wt_table' data-toggle="table" data-height="246" data-show-refresh="true">
           <thead>
-            <!--<tr>
+           <!--  <tr>
               <th data-field="state" data-checkbox="true"></th>
-              <th data-field="wt_channel" data-align="">我听分类</th>
-              <th data-field="pt_name" data-align="">其他平台名称</th>
-              <th data-field="ot_channel" data-align="">其他平台分类</th>
-            </tr>-->
+              <th data-field="Id" data-align="" data-width='0'>映射关系Id</th>
+              <th data-field="ChannelName" data-align="">我听分类</th>
+              <th data-field="SrcSource" data-align="">其他平台名称</th>
+              <th data-field="SrcName" data-align="">其他平台分类</th>
+            </tr> -->
           </thead>
         </table>
       </div>  
@@ -191,10 +203,11 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="ot_content">
       <div class="fl ztree left" id="other_tree"></div>
       <div class="right fl">
-        <table id='ot_table' data-toggle="table" data-height="246">
+        <table id='ot_table' data-toggle="table" data-height="256">
           <thead>
             <!--<tr>
               <th data-field="state" data-checkbox="true"></th>
+              <th data-field="pt_name" data-align="">其他平台名称</th>
               <th data-field="pt_name" data-align="">其他平台名称</th>
               <th data-field="ot_channel" data-align="">其他平台分类</th>
               <th data-field="wt_channel" data-align="">我听分类</th>
@@ -227,45 +240,35 @@ body{overflow: hidden;height:100%;padding:0px;}
 </div>
 </body>
 <script>
-  $('#wt_table').bootstrapTable({ 
+	$('#wt_table').bootstrapTable({ 
     height:"256",
-    showRefresh: true,
     columns:[{
         field: 'state',
         checkbox: true
     }, {
-        field: 'wt_channel',
+        field: 'Id',
+        title: '映射关系id'
+    }, {
+        field: 'ChannelName',
         title: '我听分类'
     }, {
-        field: 'pt_name',
+        field: 'SrcSource',
         title: '其他平台名称'
     }, {
-        field: 'ot_channel',
+        field: 'SrcName',
         title: '其他平台分类'
-    }],
-    data:[{
-        id: 1,
-        wt_channel: '电影电视',
-        pt_name: '喜马拉雅',
-        ot_channel: '电视新闻'
-    }, {
-        id: 2,
-        wt_channel: '电影电视',
-        pt_name: '荔枝',
-        ot_channel: '电视新闻'
-    }, {
-        id:3,
-        wt_channel: '电影电视',
-        pt_name: '考拉',
-        ot_channel: '电视新闻'
     }]
   });
+  
   $('#ot_table').bootstrapTable({
     height:"256",
     columns:[{
         field: 'state',
         checkbox: true
     }, {
+        field: 'Id',
+        title: '映射关系id'
+    }, {
         field: 'pt_name',
         title: '其他平台名称'
     }, {
@@ -274,22 +277,6 @@ body{overflow: hidden;height:100%;padding:0px;}
     }, {
         field: 'wt_channel',
         title: '我听分类'
-    }],
-    data:[{
-        id: 1,
-        pt_name: '喜马拉雅',
-        ot_channel: '电视新闻',
-        wt_channel: '电影电视'
-    }, {
-        id: 2,
-        pt_name: '喜马拉雅',
-        ot_channel: '电视新闻',
-        wt_channel: '电影电视'
-    }, {
-        id:3,
-        pt_name: '喜马拉雅',
-        ot_channel: '电视新闻',
-        wt_channel: '电影电视'
     }]
   });
 </script>
@@ -387,7 +374,7 @@ $(function(){
       type:"POST",    
       url: _url,
       dataType:"json",
-      data:loadWtData,
+      data:JSON.stringify(loadWtData),
       success: function(returnData){
         if(returnData.ReturnType=="1001") {
           wtObj.addNodes(null,returnData.Data.children,false);
@@ -402,12 +389,12 @@ $(function(){
   loadOtherTree();
   function loadOtherTree(){
     var _url=rootPath+"baseinfo/getCCatalogTree4View.do";
-    var loadWtData=[{ChannelId:"",TreeViewType:"zTree"}];
+    var loadOtData=[{ChannelId:"",TreeViewType:"zTree"}];
     $.ajax({
       type:"POST",    
       url: _url,
       dataType:"json",
-      data:loadWtData,
+      data:JSON.stringify(loadOtData),
       success: function(returnData){
         if(returnData.ReturnType=="1001") {
           otherObj.addNodes(null,returnData.Data.children,false);
@@ -432,11 +419,15 @@ $(function(){
       type:"POST",    
       url: _url,
       dataType:"json",
-      data:loadWtData,
+      data:JSON.stringify(loadWtData),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
           modalObj.addNodes(null,returnData.Data.children,false);
           $(".modal_header").attr("applyType",applyType);
+          for(var i=0;i<list.length;i++){
+            var node=modalObj.getNodeByParam("id",list[i], null);
+            modalObj.setChkDisabled(node,true,false,false);
+          }
         }
       },
       error:function(jqXHR){
@@ -445,8 +436,10 @@ $(function(){
     });
   }
   
+  var list=[];//存放对应的id
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
+    debugger;
     console.log(treeNode.id);
     var _url=rootPath+"common/getCCateRefs.do";
     var _data={"ApplyType":1,"Id":treeNode.id};
@@ -454,17 +447,15 @@ $(function(){
       type: "POST",    
       url: _url,
       dataType: "json",
-      data:_data,
-      beforeSend: function(){  
-        $('#wt_table').append('<div class="loader"><div class="loader-inner ball-pulse"><div></div><div></div><div></div></div></div>');  
-      },
+      data:JSON.stringify(_data),
       success: function(returnData){
         $(".wt .right").html("");//清空数据
         if(returnData.ReturnType=="1001"){
-          setTimeout(function (){  
-            $('#table>div.loader').remove();  
-            $('#wt_table').bootstrapTable('load',returnData);
-          }, 2000);
+          $('#wt_table').bootstrapTable('load',returnData.ResultList);
+          list=[];//清空数组
+          for(var i=0;i<returnData.ResultList.length;i++){
+            list.push(returnData.ResultList[i].SrcDid);
+          }
         }
       },
       error:function(jqXHR){
@@ -481,11 +472,15 @@ $(function(){
       type: "POST",    
       url: _url,
       dataType: "json",
-      data:_data,
+      data:JSON.stringify(_data),
       success: function(returnData){
         $(".other .right").html("");//清空数据
         if(returnData.ReturnType=="1001"){
-          $('#ot_table').bootstrapTable('load',returnData);
+          $('#ot_table').bootstrapTable('load',returnData.ResultList);
+          list=[];//清空数组
+          for(var i=0;i<returnData.ResultList.length;i++){
+            list.push(returnData.ResultList[i].SrcDid);
+          }
         }
       },
       error:function(jqXHR){
@@ -513,6 +508,7 @@ $(function(){
         wt_path=wt_node.attributes.pathName+"";//选中节点的路径
         $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+wt_path+'"');
         applyType=1;
+        //获取与我听对应的映射关系
         loadModalTree("我听平台",applyType);
       }else{
         ot_path=other_node.attributes.pathName+"";//选中节点的路径
@@ -544,6 +540,11 @@ $(function(){
     addmap(applyType,node_id,nodes_id);
   });
   function addmap(applyType,node_id,nodes_id){
+    if(applyType==1){//添加我听与其他的映射关系
+      treeNode=wtObj.getNodeByParam("id",node_id, null);
+    }else{
+      treeNode=otherObj.getNodeByParam("id",node_id, null);
+    }
     var _url=rootPath+"common/addCCateRef.do";
     var _data={"ApplyType":applyType,"Id":node_id,"RefIds":nodes_id};
     $.ajax({
@@ -553,9 +554,11 @@ $(function(){
       data:JSON.stringify(_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
+          debugger;
           alert("映射关系添加成功");
           $(".mask").addClass("dis");
           $("#modal_tree").html(" ");
+          selectWotingTreeNode(event,node_id, treeNode);//重新调用一次
         }
       },
       error:function(jqXHR){
@@ -579,9 +582,9 @@ $(function(){
       var is=$(this).prop("checked");
       if(is==true){//这条数据被选中
         if(mapIds==""){
-          mapIds=$(this).attr("data-index");
+          mapIds=$(this).parent("td").next().text();
         }else{
-          mapIds+=","+$(this).attr("data-index");
+          mapIds+=","+$(this).parent("td").next().text();
         }
       }
     });
@@ -589,20 +592,20 @@ $(function(){
       alert("删除前需要先选中映射关系");
       return false;
     }else{
-      alert("ok");
       delmap(applyType,obj,mapIds);
     }
   });
   function delmap(applyType,obj,mapIds){
-    var _data={"Id":mapIds};
+    var _data={"Ids":mapIds};
     var _url=rootPath+"common/removeCCateRefs.do";
     $.ajax({
       type: "POST",    
       url: _url,
       dataType: "json",
-      data:_data,
+      data:JSON.stringify(_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001") {
+          alert("删除成功");
           $(obj).each(function(){
             var is=$(this).prop("checked");
             if(is==true){//这条数据被选中
