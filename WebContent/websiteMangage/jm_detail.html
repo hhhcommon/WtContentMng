@@ -646,6 +646,7 @@ $(function(){
       url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
       async:false,
+      cache:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
@@ -807,6 +808,7 @@ $(function(){
       type: "POST",
       url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
+      cache:false,
       data:JSON.stringify(data2),
       beforeSend:function(){
         $('.nc_txt7').attr("disabled","disabled");
@@ -837,12 +839,6 @@ $(function(){
   
   /*点击播放*/
   $(".player").on("click",function(){
-    var audios=window.frames["audioIframe"].document.getElementById("audio");
-    audios.setAttribute("src",audioList[0].playUrl);
-    var audioTitle=window.frames["audioIframe"].document.getElementsByClassName("title")[0];
-    audioTitle.innerHTML=audioList[0].title;
-    var audioPlay=window.frames["audioIframe"].document.getElementsByClassName("playerBtn")[0];
-    $(audioPlay).click();
     $(".locker").click();
   });
   

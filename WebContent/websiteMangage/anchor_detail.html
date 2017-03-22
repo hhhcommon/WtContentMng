@@ -500,6 +500,7 @@ $(function(){
       url:rootPath+"CM/person/getPersonInfo.do",
       dataType:"json",
       async:false,
+      cache:false, 
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
@@ -548,6 +549,7 @@ $(function(){
       url:rootPath+"CM/person/getPersonContents.do",
       dataType:"json",
       async:false,
+      cache:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){

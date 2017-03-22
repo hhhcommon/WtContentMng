@@ -17,6 +17,7 @@ $(function(){
       type:"POST",
       url:rootPath+"CM/common/getCatalogInfo.do",
       dataType:"json",
+      cache:false, 
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
@@ -47,6 +48,7 @@ $(function(){
       type:"POST",
       url:rootPath+"CM/person/getPersons.do",
       dataType:"json",
+      cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend: function(){
         $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
@@ -58,10 +60,12 @@ $(function(){
           allCount=resultData.ResultInfo.Count;
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadPersonList(resultData);//加载主播列表
-          pagitionInit(contentCount,allCount,dataParam.Page);//初始化翻页插件
         }else{
           $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到相关信息</div>");
+          allCount="0";
+          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
+        pagitionInit(contentCount,allCount,dataParam.Page);//初始化翻页插件
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
@@ -349,6 +353,7 @@ $(function(){
         type:"POST",
         url:rootPath+"CM/person/updatePersonStatus.do",
         dataType:"json",
+        cache:false, 
         data:JSON.stringify(data3),
         beforeSend: function(){
           $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
