@@ -537,29 +537,35 @@ public class MediaService {
 			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
 			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
 			for (MediaAssetPo ma : listpo) {
-				List<Map<String, Object>> personlist = makePersonList("wt_MediaAsset", ma.getId());
-				Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), personlist, catalist, pubChannelList, null);
-				SeqMaRefPo smaref = getSeqMaRefByMId(ma.getId());
-				SeqMediaAssetPo sma = getSmaInfoById(smaref.getSId());
-				mam.put("ContentSeqId", sma.getId());
-				mam.put("ContentSeqName", sma.getSmaTitle());
-				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId(ma.getId(), "wt_MediaAsset");
-				if (kws != null && kws.size() > 0) {
-					mam.put("ContentKeyWords", kws);
-				}
-				List<Map<String, Object>> cps = makeComplexRefList("wt_MediaAsset", ma.getId(), "4", null);
-				if (cps != null && cps.size() > 0) {
-					mam.put("ContentMemberTypes", cps);
-				}
-				if (mam.containsKey("ContentPubChannels")) {
-					List<Map<String, Object>> chas = (List<Map<String, Object>>) mam.get("ContentPubChannels");
-					if (chas != null && chas.size() > 0) {
-						for (Map<String, Object> map : chas) {
-							map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
+				if (ma!=null) {
+					try {
+						List<Map<String, Object>> personlist = makePersonList("wt_MediaAsset", ma.getId());
+						Map<String, Object> mam = ContentUtils.convert2Ma(ma.toHashMap(), personlist, catalist, pubChannelList, null);
+						SeqMaRefPo smaref = getSeqMaRefByMId(ma.getId());
+						SeqMediaAssetPo sma = getSmaInfoById(smaref.getSId());
+						mam.put("ContentSeqId", sma.getId());
+						mam.put("ContentSeqName", sma.getSmaTitle());
+		//				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId(ma.getId(), "wt_MediaAsset");
+		//				if (kws != null && kws.size() > 0) {
+		//					mam.put("ContentKeyWords", kws);
+		//				}
+						List<Map<String, Object>> cps = makeComplexRefList("wt_MediaAsset", ma.getId(), "4", null);
+						if (cps != null && cps.size() > 0) {
+							mam.put("ContentMemberTypes", cps);
 						}
+						if (mam.containsKey("ContentPubChannels")) {
+							List<Map<String, Object>> chas = (List<Map<String, Object>>) mam.get("ContentPubChannels");
+							if (chas != null && chas.size() > 0) {
+								for (Map<String, Object> map : chas) {
+									map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
+								}
+							}
+						}
+						list.add(mam);
+					} catch (Exception e) {
+						continue;
 					}
 				}
-				list.add(mam);
 			}
 		}
 		return list;
@@ -603,12 +609,10 @@ public class MediaService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Map<String, Object>> makeComplexRefList(String assetTableName, String assetId, String dictMID,
-			String dictDId) {
+	private List<Map<String, Object>> makeComplexRefList(String assetTableName, String assetId, String dictMID, String dictDId) {
 		List<ComplexRefPo> cps = complexRefService.getComplexRefList(assetTableName, assetId, dictMID, dictDId);
 		if (cps != null && cps.size() > 0) {
-			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT))
-					.getContent();
+			_CacheDictionary _cd = ((CacheEle<_CacheDictionary>) SystemCache.getCache(WtContentMngConstants.CACHE_DICT)).getContent();
 			DictModel dm = _cd.getDictModelById("4");
 			ZTree<DictDetail> eu1 = new ZTree<DictDetail>(dm.dictTree);
 			List<Map<String, Object>> rel = new ArrayList<>();
