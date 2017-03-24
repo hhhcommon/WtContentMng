@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
-import org.springframework.data.redis.connection.convert.LongToBooleanConverter;
 
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
@@ -536,7 +535,8 @@ public class MediaService {
 			List<Map<String, Object>> catalist = getResDictRefByResId(resids, "wt_MediaAsset");
 			List<ChannelAssetPo> chapolist = getCHAListByAssetId(resids, "wt_MediaAsset");
 			List<Map<String, Object>> pubChannelList = channelContentService.getChannelAssetList(chapolist);
-			for (MediaAssetPo ma : listpo) {
+			for (int i=0;i<listpo.size();i++) {
+				MediaAssetPo ma = listpo.get(i);
 				if (ma!=null) {
 					try {
 						List<Map<String, Object>> personlist = makePersonList("wt_MediaAsset", ma.getId());
@@ -545,10 +545,6 @@ public class MediaService {
 						SeqMediaAssetPo sma = getSmaInfoById(smaref.getSId());
 						mam.put("ContentSeqId", sma.getId());
 						mam.put("ContentSeqName", sma.getSmaTitle());
-		//				List<Map<String, Object>> kws = keyWordProService.getKeyWordListByAssetId(ma.getId(), "wt_MediaAsset");
-		//				if (kws != null && kws.size() > 0) {
-		//					mam.put("ContentKeyWords", kws);
-		//				}
 						List<Map<String, Object>> cps = makeComplexRefList("wt_MediaAsset", ma.getId(), "4", null);
 						if (cps != null && cps.size() > 0) {
 							mam.put("ContentMemberTypes", cps);
@@ -562,9 +558,7 @@ public class MediaService {
 							}
 						}
 						list.add(mam);
-					} catch (Exception e) {
-						continue;
-					}
+					} catch (Exception e) {e.printStackTrace();}
 				}
 			}
 		}
