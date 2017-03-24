@@ -1062,6 +1062,7 @@ $(function(){
       url:rootPath+"CM/content/getContents.do",
       dataType:"json",
       async:false,
+      cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend: function(){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
@@ -1073,10 +1074,12 @@ $(function(){
           allCount=resultData.AllCount;
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载资源列表
-          pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
         }else{
           $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+          allCount="0";
+          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
+        pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
@@ -1229,6 +1232,7 @@ $(function(){
       type: "POST",
       url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
+      cache:false, 
       data:JSON.stringify(data2),
       beforeSend:function(){
         $('.nc_txt7').attr("disabled","disabled");
@@ -1393,6 +1397,7 @@ $(function(){
       type:"POST",
       url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
+      cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
@@ -1404,10 +1409,12 @@ $(function(){
           allCount=resultData.ResultInfo.Count;
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadSearchList(resultData);//加载来源的筛选条件
-          pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
         }else{
           $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+          allCount="0";
+          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
+        pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
@@ -1452,7 +1459,6 @@ $(function(){
       $(".ri_top3_con").append(listbox);
       $(".audio_time").eq(i).text(getLocalTime(cptime));
       if(resultData.ResultInfo.List[i].ContentPlayUrl){
-        audioList=[];//每次加载数据之前先清空存数据的数组
         var audioObj={};
         audioObj.title=resultData.ResultInfo.List[i].ContentName;
         audioObj.playUrl=resultData.ResultInfo.List[i].ContentPlayUrl;
@@ -1495,18 +1501,11 @@ $(function(){
       $("#myIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
     }
   });
-  
+   
   /*点击全部播放*/
   $(".rto_play").on("click",function(){
-    var audios=window.frames["audioIframe"].document.getElementById("audio");
-    audios.setAttribute("src",audioList[0].playUrl);
-    var audioTitle=window.frames["audioIframe"].document.getElementsByClassName("title")[0];
-    audioTitle.innerHTML=audioList[0].title;
-    var audioPlay=window.frames["audioIframe"].document.getElementsByClassName("playerBtn")[0];
-    $(audioPlay).click();
     $(".locker").click();
   });
-  
 });
 </script>
 </html>

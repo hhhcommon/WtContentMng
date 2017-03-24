@@ -22,7 +22,7 @@
   <bean id="loginService" class="com.woting.passport.login.service.LoginServiceImpl"/>
   
   <bean name="/common/uploadCM.do" class="com.woting.content.common.web.FileUploadController">
-    <property name="_defaultPath" value="/dataCenter"/>  <!--保存的路径 -->
+    <property name="_defaultPath" value="/opt/dataCenter"/>  <!--保存的路径 -->
     <property name="storageModel" value="0"/>
   </bean>
 

@@ -256,6 +256,7 @@ function getChannelFilters(data1){
     type:"POST",
     url:rootPath+"CM/baseinfo/getChannelTree4View.do",
     dataType:"json",
+    cache:false, 
     data:JSON.stringify(data1),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
@@ -299,6 +300,7 @@ function getSourceFilters(data2){
     type:"POST",
     url:rootPath+"CM/content/getConditions.do",
     dataType:"json",
+    cache:false, 
     data:JSON.stringify(data2),
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
@@ -342,7 +344,7 @@ window.onresize=function(){
   var w=$(".content").css("width");
   $(".audioIframe").css("width",w);
 }
-
+  
 /*播放器面板出现与隐藏*/
 $(document).on("click",".locker",function(){
   if($(this).children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示

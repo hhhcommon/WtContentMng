@@ -129,6 +129,7 @@ $(function(){
       url:rootPath+"CM/content/getContents.do",
       dataType:"json",
       asyn:false,
+      cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend: function(){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
@@ -267,6 +268,7 @@ $(function(){
         type: "POST",
         url:rootPath+"CM/content/updateContentStatus.do",
         dataType:"json",
+        cache:false, 
         data:JSON.stringify(data2),
         beforeSend:function(){
           $('.rt_opt button').attr("disabled","disabled");
@@ -351,6 +353,7 @@ $(function(){
       type: "POST",
       url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
+      cache:false, 
       data:JSON.stringify(data1),
       beforeSend:function(){
         $('.nc_txt7').attr("disabled","disabled");
@@ -509,6 +512,7 @@ $(function(){
       type:"POST",
       url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
+      cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend: function(){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");

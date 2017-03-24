@@ -85,38 +85,33 @@ public class CDictController {
             map.put("Message", "参数为空");
             return map;
         }
-		String dictmid = m.get("DictMId")+"";
-		if(dictmid.equals("null")) {
+		String applyType = m.get("ApplyType")+"";
+		if(applyType.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "DictMId参数为空");
+            map.put("Message", "ApplyType参数为空");
             return map;
 		}
-		String dictdid = m.get("DictDId")+"";
-		if(dictdid.equals("null")) {
+		String id = m.get("Id")+"";
+		if(id.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "DictDId参数为空");
+            map.put("Message", "栏目Id参数为空");
             return map;
 		}
-		String cdictmid = m.get("CDictMId")+"";
-		if(cdictmid.equals("null")) {
+		String refIds = m.get("RefIds")+"";
+		if(refIds.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "CDictMId参数为空");
+            map.put("Message", "关联栏目Ids参数为空");
             return map;
 		}
-		String cdictdid = m.get("CDictDId")+"";
-		if(cdictdid.equals("null")) {
-			map.put("ReturnType", "1011");
-            map.put("Message", "CDictDId参数为空");
-            return map;
-		}
-		map = cDictService.addCDDAndDDRef(dictmid, dictdid, cdictmid, cdictdid);
-		if(map!=null) {
+		boolean isok = cDictService.addCDDAndDDRef(applyType, id, refIds);
+		if(isok) {
+			map.put("ReturnType", "1001");
+			return map;
+		} else {
+			map.put("ReturnType", "1013");
+			map.put("Message", "创建失败");
 			return map;
 		}
-		map = new HashMap<>();
-		map.put("ReturnType", "1013");
-		map.put("Message", "创建失败");
-		return map;
 	}
 	
 	/**
@@ -134,26 +129,22 @@ public class CDictController {
             map.put("Message", "参数为空");
             return map;
         }
-		String dictmid = m.get("DictMId")+"";
-		if(dictmid.equals("null")) {
+		String applyType = m.get("ApplyType")+"";
+		if(applyType.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "DictMId参数为空");
+            map.put("Message", "ApplyType为空");
             return map;
 		}
-		String dictdid = m.get("DictDId")+"";
-		if(dictdid.equals("null")) {
+		String id = m.get("Id")+"";
+		if(id.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "DictDId参数为空");
+            map.put("Message", "id参数为空");
             return map;
 		}
-		String sourcenum = m.get("SourceNum")+"";
-		if(sourcenum.equals("null")) {
-			map.put("ReturnType", "1011");
-            map.put("Message", "SourceNum参数为空");
-            return map;
-		}
-		String dictdname = m.get("DictDName")+"";
-		List<Map<String, Object>> res = cDictService.getCCateResRef(dictmid, dictdid, dictdname, sourcenum);
+		String publishers = null;
+		try {publishers = m.get("Publishers").toString();} catch (Exception e) {}
+
+		List<Map<String, Object>> res = cDictService.getCCateResRef(applyType, id, publishers);
 		if(res!=null && res.size()>0) {
 			map.put("ReturnType", "1001");
 			map.put("AllCount", res.size());
@@ -180,18 +171,18 @@ public class CDictController {
             map.put("Message", "参数为空");
             return map;
         }
-		String id = m.get("Id")+"";
-		if(id.equals("null")) {
+		String ids = m.get("Ids")+"";
+		if(ids.equals("null")) {
 			map.put("ReturnType", "1011");
-            map.put("Message", "Id参数为空");
+            map.put("Message", "Ids参数为空");
             return map;
 		}
-		boolean isok = cDictService.delDictResRef(id);
+		boolean isok = cDictService.delDictResRef(ids);
 		if(isok) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
 		} else {
-			map.put("ReturnType", "1012");
+			map.put("ReturnType", "1011");
 			map.put("Message", "删除失败");
 		}
 		return map;

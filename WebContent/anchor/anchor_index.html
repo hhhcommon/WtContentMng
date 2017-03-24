@@ -376,7 +376,6 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
     <div id="page-wrapper" class="gray-bg dashbard-1 con_right">
       <div class="row J_mainContent" id="content-main">
         <iframe class="J_iframe" id="myIframe" name="iframe0" width="100%" height="100%" src="anchor_home.html" frameborder="0"  seamless></iframe>
-        <iframe class="J_iframe" id="newIframe" name="iframe0" width="100%" height="100%" src="" frameborder="0"  seamless></iframe>
         <div class="tab_main">
           <div class="tab_mainNav">
             <!--<a href="javascript:;" class="tab_ainNav_a active" data_id="">topic0</a>
@@ -421,8 +420,6 @@ $(function(){
   //点击左侧导航菜单加载Iframe
   $(".navList").on("click",function(){
     $("#myIframe").attr({"src":$(this).children("a").attr("hrefs")});
-    $("#myIframe").show();
-    $("#newIframe").hide();
   });
   
   //tab切换

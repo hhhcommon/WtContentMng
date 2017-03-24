@@ -133,8 +133,14 @@ public class SeqController {
 			if (StringUtils.isNullOrEmptyOrSpace(shortsearch) || shortsearch.toLowerCase().equals("null")) {
 				shortsearch = "false";
 			}
+			//得到每页记录数
+	        int pageSize=10;
+	        try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+	        //得到当前页数
+	        int page=1;
+	        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
 			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userId, flowflag, channelid,
-					shortsearch);
+					shortsearch, page, pageSize);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
 				c.remove("ReturnType");
@@ -434,6 +440,7 @@ public class SeqController {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/seq/updateSeqMediaStatus.do")
 	@ResponseBody
 	public Map<String, Object> updateSeqMediaStatus(HttpServletRequest request) {
@@ -517,18 +524,19 @@ public class SeqController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String smaid = m.get("ContentId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(smaid) || smaid.toLowerCase().equals("null")) {
-				map.put("ReturnType", "1012");
-				map.put("Message", "无专辑id信息");
+			List<Map<String, Object>> updateList = (List<Map<String, Object>>) m.get("UpdateList");
+			if (updateList==null || updateList.size()==0) {
+				map.put("ReturnType", "1011");
+				map.put("Message", "无内容内容");
 				return map;
 			}
 			int flowFlag = 2;
 			try {flowFlag=Integer.parseInt(m.get("ContentFlowFlag")+"");} catch(Exception e) {};
-			String descn = null;
-			try {descn=m.get("ApplyDescn").toString();} catch(Exception e) {};
-			map = seqContentService.modifySeqStatus(userId, smaid, null, flowFlag, descn);
-			if (map != null) {
+			List<Map<String, Object>> retLs = seqContentService.modifySeqStatus(userId, updateList, flowFlag);
+			if (retLs != null && retLs.size()>0) {
+				map.put("ReturnType", "1001");
+				map.put("Message", "修改成功");
+				map.put("ResultList", retLs);
 				return map;
 			} else {
 				map = new HashMap<>();
@@ -644,13 +652,20 @@ public class SeqController {
 				map.put("Message", "无用户信息");
 				return map;
 			}
-			String contentid = m.get("ContentId") + "";
-			if (StringUtils.isNullOrEmptyOrSpace(contentid) || contentid.toLowerCase().equals("null")) {
+			String contentids = m.get("ContentIds") + "";
+			if (StringUtils.isNullOrEmptyOrSpace(contentids) || contentids.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1011");
 				map.put("Message", "无专辑信息");
 				return map;
 			}
-			map = seqContentService.removeSeqMediaAsset(userId, contentid);
+			List<Map<String, Object>> retLs = seqContentService.removeSeqMediaAsset(userId, contentids);
+			if (retLs!=null && retLs.size()>0) {
+				map.put("ResultList", retLs);
+				map.put("ReturnType", "1001");
+			} else {
+				map.put("ReturnType", "1011");
+				map.put("Message", "删除失败");
+			}
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

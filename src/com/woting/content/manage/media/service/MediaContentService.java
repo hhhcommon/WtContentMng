@@ -59,16 +59,15 @@ public class MediaContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public Map<String, Object> getMediaContents(String userid, String flowflag, String channelid, String seqmediaid) {
+	public Map<String, Object> getMediaContents(String userid, String flowflag, String channelid, String seqmediaid, int page, int pageSize) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		list = mediaService.getMaListByPubId(userid, flowflag, channelid, seqmediaid);
-		if (list != null && list.size() > 0) {
-			map.put("List", list);
-			map.put("AllCount", list.size());
+		Map<String, Object> retMap = mediaService.getMaListByPubId(userid, flowflag, channelid, seqmediaid, page, pageSize);
+		if (retMap != null) {
+			map.put("ResultList", retMap.get("List"));
+			map.put("AllCount", retMap.get("allCount"));
 			map.put("ReturnType", "1001");
-		}
-		return map;
+			return map;
+		} else return null;
 	}
 
 	/**
@@ -426,7 +425,7 @@ public class MediaContentService {
 		map.put("Message", "修改成功");
 		return map;
 	}
-
+	
 	public boolean modifyMediaStatus(String userid, String mediaId, String seqMediaId, int flowflag, String descn) {
 		SeqMediaAssetPo sma = mediaService.getSmaInfoById(seqMediaId);
 		MediaAssetPo ma = mediaService.getMaInfoById(mediaId);
@@ -537,9 +536,162 @@ public class MediaContentService {
 		return false;
 	}
 
-	public Map<String, Object> removeMediaAsset(String userId, String contentid) {
+	public List<Map<String, Object>> modifyMediaStatus(String userid, List<Map<String, Object>> updateList, int flowflag) {
+		if (updateList!=null && updateList.size()>0) {
+			List<Map<String, Object>> retList = new ArrayList<>();
+			for (Map<String, Object> map : updateList) {
+				try {
+					String mediaId = map.get("ContentId").toString();
+					String seqMediaId = map.get("SeqMediaId").toString();
+					String descn = null;
+					try {descn = map.get("ApplyDescn").toString();} catch (Exception e) {}
+					SeqMediaAssetPo sma = mediaService.getSmaInfoById(seqMediaId);
+					MediaAssetPo ma = mediaService.getMaInfoById(mediaId);
+					if (sma != null) {
+						SeqMaRefPo seqmapo = mediaService.getSeqMaRefByMId(mediaId);
+						if (seqmapo != null) {
+							if (flowflag == 0) { // 创建节目和修改节目使用
+								if (!seqmapo.getSId().equals(seqMediaId)) { // 修改节目对应专辑
+									mediaService.removeMa2SmaByMid(mediaId);
+									mediaService.bindMa2Sma(ma, sma);
+									List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'", "wt_SeqMediaAsset");
+									if (chas != null && chas.size() > 0) {
+										mediaService.removeCha(ma.getId(), "wt_MediaAsset");
+										for (ChannelAssetPo cha : chas) {
+											ChannelAssetPo macha = new ChannelAssetPo();
+											macha.setId(SequenceUUID.getPureUUID());
+											macha.setChannelId(cha.getChannelId());
+											macha.setPublisherId("0");
+											macha.setCheckerId("1");
+											macha.setAssetId(ma.getId());
+											macha.setAssetType("wt_MediaAsset");
+											macha.setFlowFlag(flowflag);
+											macha.setSort(0);
+											macha.setPubName(ma.getMaTitle());
+											macha.setPubImg(ma.getMaImg());
+											macha.setCheckRuleIds("0");
+											macha.setCTime(new Timestamp(System.currentTimeMillis()));
+											macha.setIsValidate(1);
+											macha.setInRuleIds("elt");
+											macha.setCheckRuleIds("elt");
+											mediaService.saveCha(macha);
+										}
+										Map<String, Object> retM = new HashMap<>();
+										retM.put("ContentId", mediaId);
+										retM.put("ReturnType", "1001");
+										retList.add(retM);
+									}
+								} else { // 创建节目
+									List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
+											"wt_SeqMediaAsset");
+									if (chas != null && chas.size() > 0) {
+										mediaService.removeCha(ma.getId(), "wt_MediaAsset");
+										for (ChannelAssetPo cha : chas) {
+											ChannelAssetPo macha = new ChannelAssetPo();
+											macha.setId(SequenceUUID.getPureUUID());
+											macha.setChannelId(cha.getChannelId());
+											macha.setPublisherId("0");
+											macha.setCheckerId("1");
+											macha.setPubName(ma.getMaTitle());
+											macha.setFlowFlag(flowflag);
+											macha.setAssetId(ma.getId());
+											macha.setAssetType("wt_MediaAsset");
+											macha.setSort(0);
+											macha.setPubImg(ma.getMaImg());
+											macha.setCheckRuleIds("0");
+											macha.setCTime(new Timestamp(System.currentTimeMillis()));
+											macha.setIsValidate(1);
+											macha.setInRuleIds("elt");
+											macha.setCheckRuleIds("elt");
+											mediaService.saveCha(macha);
+										}
+										Map<String, Object> retM = new HashMap<>();
+										retM.put("ContentId", mediaId);
+										retM.put("ReturnType", "1001");
+										retList.add(retM);
+									}
+								}
+							} else {
+								if (flowflag == 2) { // 发布节目
+									List<ChannelAssetPo> smachas = mediaService.getCHAListByAssetId("'" + sma.getId() + "'",
+											"wt_SeqMediaAsset");
+									if (smachas != null && smachas.size() > 0) { // 判断节目绑定专辑是否发布
+										for (ChannelAssetPo cha : smachas) {
+											if (cha.getFlowFlag() != flowflag) {
+												cha.setFlowFlag(1);
+												cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+												mediaService.updateCha(cha);
+												insertChannelAssetProgress(cha.getId(), 1, descn);
+											} else {
+												cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+												mediaService.updateCha(cha);
+											}
+										}
+									} else {
+										Map<String, Object> retM = new HashMap<>();
+										retM.put("ContentId", mediaId);
+										retM.put("ReturnType", "1011");
+										retM.put("Message", "发布失败");
+										retList.add(retM);
+									}
+									List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
+									if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
+										for (ChannelAssetPo cha : machas) {
+											if (cha.getFlowFlag() != flowflag) {
+												cha.setFlowFlag(1);
+												cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+												mediaService.updateCha(cha);
+												insertChannelAssetProgress(cha.getId(), 1, descn);
+											} else {
+												cha.setPubTime(new Timestamp(System.currentTimeMillis()));
+												mediaService.updateCha(cha);
+											}
+										}
+									} else {
+										Map<String, Object> retM = new HashMap<>();
+										retM.put("ContentId", mediaId);
+										retM.put("ReturnType", "1011");
+										retM.put("Message", "发布失败");
+										retList.add(retM);
+									}
+									new SubscribeThread(mediaId).start();
+									Map<String, Object> retM = new HashMap<>();
+									retM.put("ContentId", mediaId);
+									retM.put("ReturnType", "1001");
+									retList.add(retM);
+								} else if (flowflag == 4) {
+									List<ChannelAssetPo> machas = mediaService.getCHAListByAssetId("'" + mediaId + "'", "wt_MediaAsset");
+									if (machas != null && machas.size() > 0) { // 修改栏目发布表里节目发布信息
+										for (ChannelAssetPo cha : machas) {
+											insertChannelAssetProgress(cha.getId(), 2, descn);
+										}
+										Map<String, Object> retM = new HashMap<>();
+										retM.put("ContentId", mediaId);
+										retM.put("ReturnType", "1001");
+										retList.add(retM);
+									} else {
+										Map<String, Object> retM = new HashMap<>();
+										retM.put("ContentId", mediaId);
+										retM.put("ReturnType", "1011");
+										retM.put("Message", "发布失败");
+										retList.add(retM);
+									}
+								}
+							}
+						}
+					}
+				} catch (Exception e) {
+					continue;
+				}
+			}
+			return retList;
+		}
+		return null;
+	}
+
+	public Map<String, Object> removeMediaAsset(String userId, String contentids) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		String[] ids = contentid.split(",");
+		String[] ids = contentids.split(",");
 		for (String id : ids) {
 			mediaService.removeMedia(userId, id);
 		}
