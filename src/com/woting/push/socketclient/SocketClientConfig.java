@@ -172,6 +172,7 @@ public class SocketClientConfig implements Config {
         //读取配置文件
         JsonConfig jc=null;
         try {
+            @SuppressWarnings("unchecked")
             String configFileName=(SystemCache.getCache(FConstants.APPOSPATH)==null?"":((CacheEle<String>)(SystemCache.getCache(FConstants.APPOSPATH))).getContent());
             configFileName+="WEB-INF"+File.separator+"app.jconf";
             jc=new JsonConfig(configFileName);
