@@ -765,7 +765,7 @@ public class QueryService {
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 1-根据zjId，计算出文件存放目录
-		String path = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "" + "mweb/zj/" + zjId + "/";
+		String path = "/opt/dataCenter/shareH5/mweb/zj/" + zjId + "/";
 		// 2-判断是否有page所对应的数据
 		File thisPage, nextPage;
 		thisPage = new File(path + "P" + page + ".json");

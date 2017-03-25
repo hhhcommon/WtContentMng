@@ -37,7 +37,7 @@ public class _CacheCDictionary {
      * @return 元数据信息
      */
     @SuppressWarnings("unchecked")
-	public TreeNode getCDictDetail(String cdictMid, String cdictDid) {
+	public TreeNode<CDictDetail> getCDictDetail(String cdictMid, String cdictDid) {
         if (cdictModelMap==null) return null;
         CDictModel dm=cdictModelMap.get(cdictMid);
         if (dm==null) return null;

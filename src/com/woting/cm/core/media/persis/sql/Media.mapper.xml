@@ -325,8 +325,15 @@
   </select>
   
   <select id="getMaListBySmaId" parameterType="java.lang.String" resultMap="mediaAssetMap">
-    select <include refid="Base_Media_List"/>from wt_MediaAsset where id in (select mId from wt_SeqMA_Ref where sId=#{sId,jdbcType=VARCHAR})
-    order by cTime desc
+    select <include refid="Base_Media_List"/> 
+    from
+    (
+		SELECT ma.*,smaf.columnNum FROM wt_MediaAsset ma 
+		LEFT JOIN wt_SeqMA_Ref smaf
+		ON smaf.mId = ma.id
+		where smaf.sId = #{sId,jdbcType=VARCHAR}
+		ORDER BY smaf.columnNum DESC
+    ) ret
   </select>
   
   <select id="getMaPlayAndSeqNameByMaIds" parameterType="java.util.Map" resultType="java.util.Map">
@@ -364,7 +371,7 @@
   </select>
   
   <select id="getS2MRefInfoByMId" parameterType="java.lang.String" resultMap="seqMaRefMap">
-    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR} limit 1
+    select <include refid="Base_SeqMaRef_List"/>from wt_SeqMA_Ref where mid=#{mid,jdbcType=VARCHAR}
   </select>
   
    <select id="getS2MRefInfoBySId" parameterType="java.util.Map" resultMap="seqMaRefMap">
