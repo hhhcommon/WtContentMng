@@ -528,6 +528,10 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/mlogout");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
@@ -638,6 +642,10 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/updatePwd");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
@@ -758,6 +766,10 @@ public class PassportController {
                     mp.setImei(request.getSession().getId());
                 }
                 mUdk=mp.getUserDeviceKey();
+                mUdk=MobileParam.build(m).getUserDeviceKey();
+                if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                    mUdk.setDeviceId(request.getSession().getId());
+                }
                 Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/updatePwd_AfterCheckPhoneOK");
                 if (retM==null) {
                     map.put("ReturnType", "0000");
@@ -876,6 +888,10 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/getUserInfo");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
@@ -998,6 +1014,10 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/getRandomUserNum");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
@@ -1189,6 +1209,10 @@ public class PassportController {
                     mp.setImei(request.getSession().getId());
                 }
                 mUdk=mp.getUserDeviceKey();
+                mUdk=MobileParam.build(m).getUserDeviceKey();
+                if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                    mUdk.setDeviceId(request.getSession().getId());
+                }
                 Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/retrieveByPhoneNum");
                 if (retM==null) {
                     map.put("ReturnType", "0000");
@@ -1298,6 +1322,10 @@ public class PassportController {
                     mp.setImei(request.getSession().getId());
                 }
                 mUdk=mp.getUserDeviceKey();
+                mUdk=MobileParam.build(m).getUserDeviceKey();
+                if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                    mUdk.setDeviceId(request.getSession().getId());
+                }
                 Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/reSendPhoneCheckCode");
                 if (retM==null) {
                     map.put("ReturnType", "0000");
@@ -1431,6 +1459,10 @@ public class PassportController {
                     mp.setImei(request.getSession().getId());
                 }
                 mUdk=mp.getUserDeviceKey();
+                mUdk=MobileParam.build(m).getUserDeviceKey();
+                if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                    mUdk.setDeviceId(request.getSession().getId());
+                }
                 Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/checkPhoneCheckCode");
                 if (retM==null) {
                     map.put("ReturnType", "0000");
@@ -1574,6 +1606,10 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/updateUserInfo");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
@@ -1708,6 +1744,10 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/decideUserNum");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
