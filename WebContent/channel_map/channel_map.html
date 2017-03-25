@@ -7,7 +7,7 @@
   <meta http-equiv="pragma" content="no-cache">
   <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
   <meta http-equiv="expires" content="0">
-	<title>平台映射</title>
+	<title>栏目映射</title>
 	<meta name="keywords" content="我听,我享听">
   <meta name="description" content="我听,我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
@@ -177,7 +177,7 @@ body{overflow: hidden;height:100%;padding:0px;}
   color:#fff;
   margin-left:10px;
 }
-.no{
+.ot_no,.wt_no{
   width: auto;
   position: absolute;
   top: 50px;
@@ -203,9 +203,9 @@ body{overflow: hidden;height:100%;padding:0px;}
   </ul>
   <div class="wrapper_content">
     <div class="wt_content">
-      <div class="fl ztree left" id="woting_tree"></div>
+      <ul class="fl ztree left" id="woting_tree"></ul>
       <div class="right fl">
-        <div class="no dis">暂无映射关系</div>
+        <div class="wt_no dis">暂无映射关系</div>
         <table id='wt_table' data-toggle="table" data-height="246" data-show-refresh="true">
           <thead>
            <!--  <tr>
@@ -220,9 +220,9 @@ body{overflow: hidden;height:100%;padding:0px;}
       </div>  
     </div>
     <div class="ot_content">
-      <div class="fl ztree left" id="other_tree"></div>
+      <ul class="fl ztree left" id="other_tree"></ul>
       <div class="right fl">
-        <div class="no dis">暂无映射关系</div>
+        <div class="ot_no dis">暂无映射关系</div>
         <table id='ot_table' data-toggle="table" data-height="256">
           <thead>
             <!--<tr>
@@ -250,7 +250,7 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="modal_content">
       <p class="modal_cp ellipsis">你已经选择了"电影电视/读书"</p>
       <p>请选择其他栏目形成映射关系</p>
-      <div id="modal_tree" class="ztree"></div>
+      <ul id="modal_tree" class="ztree"></ul>
     </div>
     <div class="modal_footer">
       <button class="save fl">保存</button>
@@ -309,9 +309,11 @@ $(function(){
       if($(this).is(":checked")){
         if($(this).hasClass("wt")){//选中的是我听
           $(".wt_content").removeClass("dis").siblings(".ot_content").addClass("dis");
+          $(".ot_no").addClass("dis");
           return;
         }else{
           $(".ot_content").removeClass("dis").siblings(".wt_content").addClass("dis");
+          $(".wt_no").addClass("dis");
           return;
         }
       }
@@ -396,8 +398,10 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(loadWtData),
       success: function(returnData){
-        if(returnData.ReturnType=="1001") {
+        if(returnData.ReturnType=="1001"){
           wtObj.addNodes(null,returnData.Data.children,false);
+        }else{
+          $("#woting_tree").html("<li>数据加载失败...<li>");
         }
       },
       error:function(jqXHR){
@@ -416,8 +420,10 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(loadOtData),
       success: function(returnData){
-        if(returnData.ReturnType=="1001") {
+        if(returnData.ReturnType=="1001"){
           otherObj.addNodes(null,returnData.Data.children,false);
+        }else{
+          $("#other_tree").html("<li>数据加载失败...<li>");
         }
       },
       error:function(jqXHR){
@@ -442,10 +448,8 @@ $(function(){
       data:JSON.stringify(loadWtData),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-          debugger;
           modalObj.addNodes(null,returnData.Data.children,false);
           $(".modal_header").attr("applyType",applyType);
-          console.log(list);
           for(var i=0;i<list.length;i++){
             var node=modalObj.getNodeByParam("id",list[i], null);
             modalObj.setChkDisabled(node,true,false,false);
@@ -461,7 +465,6 @@ $(function(){
   var list=[];//存放对应的id
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
-    console.log(treeNode.id);
     var _url=rootPath+"common/getCCateRefs.do";
     var _data={"ApplyType":1,"Id":treeNode.id};
     $.ajax({
@@ -470,9 +473,8 @@ $(function(){
       dataType: "json",
       data:JSON.stringify(_data),
       success: function(returnData){
-        debugger;
         $('#wt_table').bootstrapTable('load',null);//清空数据
-        $(".no").addClass("dis");
+        $(".wt_no").addClass("dis");
         if(returnData.ReturnType=="1001"){
           $('#wt_table').bootstrapTable('load',returnData.ResultList);
           list=[];//清空数组
@@ -480,7 +482,7 @@ $(function(){
             list.push(returnData.ResultList[i].SrcDid);
           }
         }else{
-          $(".no").removeClass("dis");
+          $(".wt_no").removeClass("dis");
         }
       },
       error:function(jqXHR){
@@ -490,8 +492,6 @@ $(function(){
   }
   //选中其他平台的分类，查询其他平台与我听的映射关系
   function selectOtherTreeNode(event, treeId, treeNode){
-    debugger;
-    console.log(treeNode.id);
     var _url=rootPath+"common/getCCateRefs.do";
     var _data={"ApplyType":2,"Id":treeNode.id};
     $.ajax({
@@ -500,18 +500,16 @@ $(function(){
       dataType: "json",
       data:JSON.stringify(_data),
       success: function(returnData){
-        debugger;
         $('#ot_table').bootstrapTable('load',null);//清空数据//清空数据
-        $(".no").addClass("dis");
+        $(".ot_no").addClass("dis");
         if(returnData.ReturnType=="1001"){
           $('#ot_table').bootstrapTable('load',returnData.ResultList);
           list=[];//清空数组
           for(var i=0;i<returnData.ResultList.length;i++){
-            list.push(returnData.ResultList[i].SrcDid);
+            list.push(returnData.ResultList[i].ChannelId);
           }
-          console.log(list);
         }else{
-          $(".no").removeClass("dis");
+          $(".ot_no").removeClass("dis");
         }
       },
       error:function(jqXHR){
@@ -522,7 +520,7 @@ $(function(){
   
   //选中模态框上面树的节点
   function selectModalTreeNode(event,treeId,treeNode){
-    console.log(treeNode.id);
+  
   }
   
   //点击添加对应关系
@@ -537,6 +535,7 @@ $(function(){
     }else{
       if(!other_node){//选中我听平台
         wt_path=wt_node.attributes.pathName+"";//选中节点的路径
+        wt_path=wt_path.replace("栏目根/"," ");
         $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+wt_path+'"');
         applyType=1;
         //获取与我听对应的映射关系
@@ -566,7 +565,6 @@ $(function(){
         }
       }
     }
-    console.log(nodes_id);
     var node_id=$(".modal_cp").attr("nodeid");
     addmap(applyType,node_id,nodes_id);
   });
@@ -585,11 +583,12 @@ $(function(){
       data:JSON.stringify(_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-          debugger;
           alert("映射关系添加成功");
+          selectWotingTreeNode(event,node_id, treeNode);//重新调用一次
           $(".mask").addClass("dis");
           $("#modal_tree").html(" ");
-          selectWotingTreeNode(event,node_id, treeNode);//重新调用一次
+        }else{
+          alert(returnData.Message);
         }
       },
       error:function(jqXHR){
@@ -657,6 +656,7 @@ $(function(){
   $(".close,.cancel").on("click",function(){
     $(".mask").addClass("dis");
     $("#modal_tree").html(" ");
+    list=[];//清空
   });
 });
 </script>

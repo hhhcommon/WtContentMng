@@ -23,7 +23,7 @@ $(function(){
       var tl=formatTimeTJ(timeLong);
       if(resultData.ResultList[i].ContentPlay) detail.contentPlay=resultData.ResultList[i].ContentPlay;
       else detail.contentPlay="未知";
-      if(resultData.ResultList[i].ContentShareUrl) detail.contentShareUrl=resultData.ResultList[i].ContentShareUrl;
+      if(resultData.ResultList[i].ContentShareURL) detail.contentShareUrl=resultData.ResultList[i].ContentShareURL;
       else detail.contentShareUrl="未知";
       if(resultData.ResultList[i].ContentName) detail.contentName=resultData.ResultList[i].ContentName;
       else detail.contentName="未知";
@@ -33,9 +33,9 @@ $(function(){
                     '<h4>'+detail.contentName+'</h4>'+
                     '<div class="time">'+ct+'</div>'+
                     '<p class="lcp">'+
-                      '<img src="../../templet/zj_templet/imgs/sl.png" alt=""/>'+
+                      '<img src="../../imgs/sl.png" alt=""/>'+
                       '<span>'+detail.playCount+'</span>'+
-                      '<img src="../../templet/zj_templet/imgs/sc.png" alt="" class="sc"/>'+
+                      '<img src="../../imgs/sc.png" alt="" class="sc"/>'+
                       '<span class="contentT">'+tl+'</span>'+
                     '</p>'+
                   '</li>';
@@ -56,6 +56,7 @@ $(function(){
         type: "POST",
         url:rootPath+"content/getZJSubPage.do",
         dataType: "json",
+        async:false,
         data:JSON.stringify(_data),
         success: function(resultData){
           if(resultData.ReturnType=="1001"){
