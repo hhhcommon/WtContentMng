@@ -118,8 +118,12 @@ public abstract class CacheUtils {
 		} else {
 			htmlstr = htmlstr.replace("#####sequtag#####", "");
 		}
+		String descn = mapsequ.get("ContentDesc") == null || mapsequ.get("ContentDesc").toString().length()<1 ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString();
+		if (descn!=null) {
+			descn = descn.replace("\n", "").replace("\r", "");
+		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
-				.replace("#####sequdescn#####",mapsequ.get("ContentDesc") == null || mapsequ.get("ContentDesc").toString().length()<1 ? "这家伙真懒，什么也不留下~~~" : mapsequ.get("ContentDesc").toString())
+				.replace("#####sequdescn#####", descn)
 				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
 		        .replace("#####mediatype#####", "SEQU")
@@ -158,13 +162,17 @@ public abstract class CacheUtils {
 		} else {
 			htmlstr = htmlstr.replace("#####audiozhubo#####", "");
 		}
+		String descn = map.get("ContentDesc")==null || map.get("ContentDesc").equals("null") || map.get("ContentDesc").toString().length()<1 ? "欢迎大家收听"+map.get("ContentName")+"" :map.get("ContentDesc")+"";
+		if (descn!=null) {
+			descn = descn.replace("\n", "").replace("\r", "");
+		}
 		htmlstr = htmlstr.replace("#####audioname#####", map.get("ContentName")+"")
 				.replace("#####mediatype#####", "AUDIO")
 		        .replace("#####audioimgs#####", (map.get("ContentImg")+"").equals("null")?"":map.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####audioplay#####", map.get("ContentPlay")+"")
 				.replace("#####audioid#####", map.get("ContentId")+"")
 				.replace("#####audiotime#####", map.get("ContentTimes")+"")
-				.replace("#####audiodescn#####", map.get("ContentDesc")==null || map.get("ContentDesc").equals("null") || map.get("ContentDesc").toString().length()<1 ? "欢迎大家收听"+map.get("ContentName")+"" :map.get("ContentDesc")+"")
+				.replace("#####audiodescn#####", descn)
 				.replace("#####audioseq#####", map.get("ContentSeqName")+"")
 				.replace("#####audiosource#####", map.get("ContentPub")+"");
 		writeFile(htmlstr, path);
