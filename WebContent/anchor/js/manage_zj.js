@@ -1,15 +1,20 @@
 $(function(){
+  //获取用户的id
+  var userId=$(".login_user span",parent.document).attr("userid");
+//var userId="15611959959";
+  
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在创建专辑页面保存,subType=2代表在修改专辑页面保存
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
+  var allCount=0;//总记录数
   
   /*s--获取筛选条件*/
   var dataF={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
               "MobileClass":"Chrome",
-              "UserId":"123",
+              "UserId":userId,
               "PCDType":"3",
-              "MediaType":"MediaAsset"
+              "MediaType":"SeqMedia"
   };
   getFiltrates(dataF);
   function getFiltrates(data){
@@ -60,7 +65,7 @@ $(function(){
   zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
   zjData.MobileClass="Chrome";
   zjData.PCDType="3";
-  zjData.UserId="123";
+  zjData.UserId=userId;
   zjData.FlowFlag="0";
   zjData.PageSize="10";
   zjData.Page=current_page;
@@ -78,10 +83,15 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           $(".ri_top3_con").html("");//每次加载之前先清空
+          allCount=resultData.ResultList.length;
+          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           getSeqMediaList(resultData); //加载专辑列表
         }else{
           $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>没有查到任何内容</div>");//每次加载之前先清空
+          allCount="0";
+          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
+        pagitionInit(contentCount,allCount,obj.Page);//init翻页
         $('.shade', parent.document).hide();
       },
       error:function(XHR){
@@ -92,7 +102,7 @@ $(function(){
   //加载专辑列表
   function getSeqMediaList(resultData){
     for(var i=0;i<resultData.ResultList.length;i++){
-      var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' channelId='+channelds+'>'+
+      var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' >'+
                       '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
@@ -135,6 +145,7 @@ $(function(){
           }
         }
       }
+      $(".rtc_listBox").eq(i).attr("channelId",channelds);
     }
   }
   /*e--获取专辑列表*/
@@ -143,77 +154,30 @@ $(function(){
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";
-  //翻页
-  $(".pagination span").on("click",function(){
-    var data_action=$(this).attr("data_action");
+  
+  //翻页之后的回调函数
+  function pagitionBack(current_page){
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
     }else{//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=2;
     }
-    if(data_action=="previous"){
-      if(current_page <= 1){
-        current_page=1;
-        $(".previous").addClass('disabled');
-        return false;
-      }else{
-        current_page--;
-        $(".toPage").val("");
-        opts(seaFy,current_page);
-        return ;
-      }
-    }else if(data_action=="next"){
-      if(current_page >= contentCount){
-        current_page=contentCount;
-        $(".next").addClass('disabled');
-        return false;
-      }else{
-        current_page++;
-        $(".toPage").val("");
-        opts(seaFy,current_page);
-      }
-    }else{ //跳至进行输入合理数字范围检测
-      var reg = new RegExp("^[0-9]*$");
-      if(!reg.test($(".toPage").val()) || $(".toPage").val()<1 || $(".toPage").val() > contentCount){  
-        alert("请输入有效页码！");
-        return false;
-      }else{
-        current_page = $(".toPage").val();
-        opts(seaFy,current_page);
-        return;
-      }
-    }
-  });
-  //点击键盘上的enter也可以进行翻页
-  $(".toPage").keydown(function(e){
-    var evt=event?event:(window.event?window.event:null);//兼容IE和FF
-    if (evt.keyCode==13){
-      //跳至进行输入合理数字范围检测
-      var reg = new RegExp("^[0-9]*$");
-      if(!reg.test($(".toPage").val()) || $(".toPage").val()<1 || $(".toPage").val() > contentCount){  
-        alert("请输入有效页码！");
-        return false;
-      }else{
-        current_page = $(".toPage").val();
-        opts(seaFy,current_page);
-        return;
-      }
-    }
-  });
+    opts(seaFy,current_page);
+  }
+  
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
     destroy(zjData);
     zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
     zjData.MobileClass="Chrome";
     zjData.PCDType="3";
-    zjData.UserId="123";
+    zjData.UserId=userId;
     zjData.PageSize="10";
     zjData.Page=current_page;
-    $(".currentPage").text(current_page);
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(optfy==2){//optfy=2选中具体筛选条件后翻页
-      $(document).find(".new_cate li").each(function(){//待定
+      $(document).find(".new_cate li").each(function(){
         if($(".new_cate li").size()>="0"){
           var pId=$(this).attr("pid");
           var id=$(this).attr("id");
@@ -222,10 +186,10 @@ $(function(){
       });
     }
     if(seaFy==1){//seaFy=1未搜索关键词前翻页
-      getContentList(zjData);//待定
+      getContentList(zjData);
     }else{//seaFy=2搜索列表加载出来后翻页
-      jmData.SearchWord=searchWord;
-      getSearchList(zjData);//待定
+      zjData.SearchWord=searchWord;
+      getContentList(zjData);
     }
   }
   
@@ -236,16 +200,16 @@ $(function(){
     if (evt.keyCode==13){
       $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
       $("#channel").show();
-      searchList();//加载搜索列表  待定
+      searchList();
     }
   });
   //点击搜索小图标
   $(".ri_top_li2_img").on("click",function(){
     $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
     $("#channel").show();
-    searchList();//加载搜索列表  待定
+    searchList();
   });
-  function searchList(){//待定
+  function searchList(){
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){
       alert("请输入搜索内容");
@@ -255,42 +219,13 @@ $(function(){
       zjData.DeviceId="3279A27149B24719991812E6ADBA5584";
       zjData.MobileClass="Chrome";
       zjData.PCDType="3";
-      zjData.UserId="123";
+      zjData.UserId=userId;
       zjData.FlowFlag="0";
       zjData.PageSize="10";
       zjData.Page=current_page;
-      $(".currentPage").text(current_page);
       zjData.SearchWord=searchWord;
+      getContentList(zjData);
     }
-    getSearchList(zjData);  
-  }
-  function getSearchList(dataParam){
-    $.ajax({
-      type:"POST",
-      url:rootPath+"CM/content/searchContents.do",
-      dataType:"json",
-      data:JSON.stringify(dataParam),
-      beforeSend: function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
-        $('.shade', parent.document).show();
-      },
-      success:function(resultData){
-        if(resultData.ReturnType == "1001"){
-          contentCount=resultData.ResultInfo.Count;
-          contentCount=(contentCount%10==0)?(contentCount/10):(Math.ceil(contentCount/10));
-          $(".totalPage").text(contentCount);
-          getMediaList(resultData);//加载搜索得到的节目列表   待定
-        }else{
-          $(".totalPage").text("0");
-          $(".page").find("span").addClass("disabled");
-          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>没有找到节目...</div>");
-        }
-        $('.shade', parent.document).hide();
-      },
-      error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
-      }
-    });
   }
   /*e--根据搜索/筛选/翻页获取专辑列表*/
   
@@ -320,7 +255,7 @@ $(function(){
     var _data={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
                 "MobileClass":"Chrome",
                 "PCDType":"3",
-                "UserId":"123",
+                "UserId":userId,
                 "ContentId":contentId
     };
     $.ajax({
@@ -332,7 +267,7 @@ $(function(){
         $('.shade', parent.document).show();
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           $("body").css({"overflow":"hidden"});
           fillZjContent(resultData);//填充专辑信息
         }else{
@@ -856,67 +791,53 @@ $(function(){
     }
     getContentList(zjData);
   });
-
+  
+  /*s--翻页插件初始化*/
+  function pagitionInit(contentCount,allCount,current_page){
+    var totalPage=contentCount;
+    var totalRecords=allCount;
+    var pageNo=current_page;
+    //生成分页
+    //有些参数是可选的，比如lang，若不传有默认值
+    kkpager.generPageHtml({
+      pno : pageNo,
+      //总页码
+      total : totalPage,
+      //总数据条数
+      totalRecords : totalRecords,
+      //页码选项
+      lang : {
+        firstPageText : '首页',
+        firstPageTipText  : '首页',
+        lastPageText  : '尾页',
+        lastPageTipText : '尾页',
+        prePageText : '上一页',
+        prePageTipText  : '上一页',
+        nextPageText  : '下一页',
+        nextPageTipText : '下一页',
+        totalPageBeforeText : '共',
+        totalPageAfterText  : '页',
+        currPageBeforeText  : '当前第',
+        currPageAfterText : '页',
+        totalInfoSplitStr : '/',
+        totalRecordsBeforeText  : '共',
+        totalRecordsAfterText : '条数据',
+        gopageBeforeText  : '&nbsp;转到',
+        gopageButtonOkText  : '确定',
+        gopageAfterText : '页',
+        buttonTipBeforeText : '第',
+        buttonTipAfterText  : '页'
+      },
+      mode : 'click',//默认值是link，可选link或者click
+      click :function(current_page){//点击后的回调函数可自定义
+        this.selectPage(current_page);
+        pagitionBack(current_page);//翻页之后的回调函数
+        return false;
+      }
+    },true);
+  };
+  /*e--翻页插件初始化*/
+  
 });
 
-/*s--翻页*/
-function getParameter(name) {
-  var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-  var r = window.location.search.substr(1).match(reg);
-  if (r!=null) return unescape(r[2]); return null;
-}
-//init翻页
-$(function(){
-  var totalPage = 20;
-  var totalRecords = 390;
-  var pageNo = getParameter('pno');
-  if(!pageNo){
-    pageNo = 1;
-    }
-  //生成分页
-  //有些参数是可选的，比如lang，若不传有默认值
-  kkpager.generPageHtml({
-    pno : pageNo,
-    //总页码
-    total : totalPage,
-    //总数据条数
-    totalRecords : totalRecords,
-    //链接前部
-    hrefFormer : 'pager_test',
-    //链接尾部
-    hrefLatter : '.html',
-    getLink : function(n){
-    return this.hrefFormer + this.hrefLatter + "?pno="+n;
-    }
-    ,lang : {
-    firstPageText : '首页',
-    firstPageTipText  : '首页',
-    lastPageText  : '尾页',
-    lastPageTipText : '尾页',
-    prePageText : '上一页',
-    prePageTipText  : '上一页',
-    nextPageText  : '下一页',
-    nextPageTipText : '下一页',
-    totalPageBeforeText : '共',
-    totalPageAfterText  : '页',
-    currPageBeforeText  : '当前第',
-    currPageAfterText : '页',
-    totalInfoSplitStr : '/',
-    totalRecordsBeforeText  : '共',
-    totalRecordsAfterText : '条数据',
-    gopageBeforeText  : '&nbsp;转到',
-    gopageButtonOkText  : '确定',
-    gopageAfterText : '页',
-    buttonTipBeforeText : '第',
-    buttonTipAfterText  : '页'
-    }
-    ,
-    mode : 'click',//默认值是link，可选link或者click
-    click :function(n){//点击后的回调函数可自定义
-      this.selectPage(n);
-      alert(n);
-      return false;
-    }
-  });
-});
-/*e--翻页*/
+

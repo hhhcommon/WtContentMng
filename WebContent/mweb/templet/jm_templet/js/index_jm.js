@@ -92,12 +92,12 @@ $(function(){
       $(".playControl").removeClass("play");
     }
     if($(this).index()=="0"){//上一个按钮变成灰色
-      $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
+      $(".previous").css({"background":"url(../../imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
     }else if($(this).index()==len){//下一个按钮变成灰色
-      $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+      $(".next").css({"background":"url(../../imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
     }else{
-      $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
-      $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
+      $(".previous").css({"background":"url(../../imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
+      $(".next").css({"background":"url(../../imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
     }
     //从推荐列表选择声音时，节目详情变化
     $(".detail").children(".dp1").children(".dpspan").text($(this).attr("dz"));
@@ -122,10 +122,10 @@ $(function(){
           alert("当前已经是第一首了");
           return false;
         }else if(i==1){
-          $(".previous").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
+          $(".previous").css({"background":"url(../../imgs/audio_play.png) no-repeat 0 -162px","cursor":"default"});
         }
         if(i<=$(".listBox").length-1){
-          $(".next").css({"background":"url(../../templet/jm_templet/imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
+          $(".next").css({"background":"url(../../imgs/wt_play_right.png)","backgroundSize":"100% 100%"});
         }
         listNum=i-1;
         if(listNum>=0){
@@ -165,10 +165,10 @@ $(function(){
             return false;
           }
           if(i==$(".listBox").length-2){
-            $(".next").css({"background":"url(../../templet/jm_templet/imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
+            $(".next").css({"background":"url(../../imgs/audio_play.png) no-repeat 0 -192px","cursor":"default"});
           }
           if(i>=0){
-            $(".previous").css({"background":"url(../../templet/jm_templet/imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
+            $(".previous").css({"background":"url(../../imgs/wt_play_left.png)","backgroundSize":"100% 100%"});
           }
           $(".listBox").children(".listCon").children(".lcpp").children(".state").removeClass("playPng").removeClass("playGif");
           $('.listBox').children(".listCon").children(".span").css({"color":"#f60"});
@@ -212,16 +212,17 @@ $(function(){
         "PageSize":"20"
   };
   $.ajax({
-    url: rootPath+"common/jsonp.do",
+//  url: rootPath+"common/jsonp.do",
+    url:"http://www.wotingfm.com/wt/searchByText.do",
     type:"POST",
     dataType:"json",
     data:JSON.stringify(_data),
     success: function(resultData) {
-      var resultData=eval('(' + resultData.Data + ')');
       if(resultData.ReturnType=="1001"){
         loadRecomList(resultData);
       }else{
-        return;
+        $(".ulBox").append("<li class='noComment'>暂无评论</li>");
+        $(".ulBox").css({"height":$(".noComment").height()});
       }
     },
     error: function(jqXHR){
@@ -337,17 +338,17 @@ $(function(){
   
   //创建相关推荐资源列表
   function loadRecomList(resultData){
-    for(var i=0;i<resultData.ResultList.AllCount;i++){
+    for(var i=0;i<resultData.ResultList.List.length;i++){
       var detail={};
       if(resultData.ResultList.List[i].ContentTimes){
         var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
       }else{
         var contentTime="0";
       }
-      if(resultData.ResultList.List[i].zhubo) detail.zhubo=resultData.ResultList.List[i].zhubo;
+      if(resultData.ResultList.List[i].ContentPersons.perName) detail.zhubo=resultData.ResultList.List[i].ContentPersons[0].perName;
       else detail.zhubo="未知";
-      if(resultData.ResultList.List[i].SeqInfo) detail.seqInfo=resultData.ResultList.List[i].SeqInfo.ContentName;
-      else detail.seqInfo="未知";  
+      if(resultData.ResultList.List[i].SeqInfo) detail.sequName=resultData.ResultList.List[i].SeqInfo.ContentName;
+      else detail.sequName="未知"; 
       if(resultData.ResultList.List[i].ContentPub) detail.contentPub=resultData.ResultList.List[i].ContentPub;
       else detail.contentPub="未知"; 
       if(resultData.ResultList.List[i].ContentDescn) detail.contentDescn=resultData.ResultList.List[i].ContentDescn;
@@ -358,21 +359,21 @@ $(function(){
       else detail.contentImg="暂无图片";
       if(resultData.ResultList.List[i].ContentName) detail.contentName=resultData.ResultList.List[i].ContentName;
       else detail.contentName="暂无图片";
-      var newListBox= '<li contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.seqInfo+' dp='+detail.contentPub+' class="listBox">'+
+      var newListBox= '<li contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.sequName+' dp='+detail.contentPub+' class="listBox">'+
                         '<div class="default"></div>'+
                         '<div class="dn">'+detail.contentDescn+'</div>'+
                         '<img src='+detail.contentImg+' class="audioImg" alt="节目图片"/>'+
                         '<div class="listCon">'+
                           '<span class="span">'+detail.contentName+'</span>'+
                           '<p class="lcp lcpp">'+
-                            '<img src="../../templet/jm_templet/imgs/zj.png" alt="" />'+
+                            '<img src="../../imgs/zj.png" alt="" />'+
                             '<span>'+detail.contentPub+'</span>'+
                            ' <span alt="" class="state"/><span>'+
                           '</p>'+
                           '<p class="lcp">'+
-                            '<img src="../../templet/jm_templet/imgs/sl.png" alt="" />'+
+                            '<img src="../../imgs/sl.png" alt="" />'+
                             '<span>'+detail.playCount+'</span>'+
-                           '<img src="../../templet/jm_templet/imgs/sc.png" alt="" class="sc"/>'+
+                           '<img src="../../imgs/sc.png" alt="" class="sc"/>'+
                            '<span class="contentT" ></span>'+
                           '</p>'+
                         '</div>'+
