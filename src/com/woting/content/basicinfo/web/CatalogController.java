@@ -162,9 +162,7 @@ public class CatalogController {
             try {
                 dd.setOrder((data.get("Sort")==null?0:Integer.parseInt(data.get("Sort")+"")));
             } catch (Exception e) {
-                map.put("ReturnType", "0000");
-                map.put("Message", "参数[Sort]需要是整数，当前Sort值为["+data.get("Sort")+"]");
-                return map;
+            	dd.setOrder(0);
             }
             dd.setDesc((data.get("Descn")==null?null:data.get("Descn")+""));
             try {
@@ -254,12 +252,9 @@ public class CatalogController {
             dd.setBCode((data.get("BCode")==null?null:data.get("BCode")+""));
             
             try {
-                dd.setOrder((data.get("Sort")==null?0:Integer.parseInt(data.get("Sort")+"")));
-            } catch (Exception e) {
-                map.put("ReturnType", "0000");
-                map.put("Message", "参数[Sort]需要是整数，当前Sort值为["+data.get("Sort")+"]");
-                return map;
-            }
+                dd.setOrder(Integer.parseInt(data.get("Sort")+""));
+            } catch (Exception e) {}
+
             try {
                 int validate=(data.get("Validate")==null?0:Integer.parseInt(data.get("Validate")+""));
                 dd.setIsValidate(validate>2&&validate<1?1:validate); //默认是生效的

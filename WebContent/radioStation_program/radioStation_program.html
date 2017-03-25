@@ -4,7 +4,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>电台管理</title>
+  <title>电台管理--电台节目单信息</title>
   <meta name="keywords" content="我听，我享听">
   <meta name="description" content="我听，我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
@@ -388,7 +388,6 @@
       <button type="button" id="add" class="btn" style="margin-right:3px;">添加</button>
       <button type="button" id="mod" class="btn" style="margin-right:3px;" >修改</button>
       <button type="button" id="del" class="btn" style="margin-right:3px;" >删除</button>
-      <button type="button" id="sear" class="btn" style="margin-right:3px;">搜索</button>
       <button type="button" id="programme" class="btn" style="margin-right:3px;">节目单管理</button>
     </div>
     <!--显示主区域-->
@@ -404,7 +403,7 @@
         <div class="col-sm-12">
           <div class="ibox float-e-margins">
             <div class="title_radio">
-              <h5>电台分类详情</h5>
+              <h5>电台列表</h5>
               <span class="radio_tit"></span>
               <span class="radio_sum"></span>
             </div>
@@ -627,7 +626,7 @@ $(function(){
   
   //1-加载数据
   //1.1-加载页面上的树
-  var loadTreeData=[{CatalogType:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"},{CatalogType:"1",TreeViewType:"zTree"}];
+  var loadTreeData=[{CatalogType:"1",TreeViewType:"zTree"},{CatalogType:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
   loadTree(zTreeObj,loadTreeData);
   
   //2-初始化按钮
@@ -635,7 +634,7 @@ $(function(){
   $("#add").on("click",function(){
     cleanDialog();//清空数据
     oPeType="1";//新增
-    $("#addCata").find(".modal-header>h4").html("添加电台分类");
+    $("#addCata").find(".modal-header>h4").html("添加电台");
     var loadRadioData=[{CatalogType:"1",TreeViewType:"zTree"}];
     loadTree(radioObj,loadRadioData);//加载弹出页面上电台分类的树
     var loadAreaData=[{CatalogType:"2",TreeViewType:"zTree"},{CatalogType:"9",TreeViewType:"zTree"}];
@@ -700,7 +699,7 @@ $(function(){
           catalogId=$(this).parent().parent(".listBox").attr("selectnodeid");
         }
       });
-      if(confirm("确认删除这些电台 吗？")){
+      if(confirm("确认删除这些电台吗?")){
         delBroadcast(checkId,catalogType,catalogId);
       }else{
         alert("成功取消删除");
@@ -718,7 +717,7 @@ $(function(){
   })
   
   //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
-  $(".close,#shade,.cancel").on("click",function(){
+  $(".close,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade,#programmeMg").css({"display":"none"});
     $(document).find("input[type='checkbox']").removeAttr("checked");
@@ -833,7 +832,7 @@ function loadTree(obj,loadData) {
   var _url=rootPath+"baseinfo/getCataTree4View.do";
   var i=0;
   loadRecursion(0);
-
+  
   function loadRecursion(index) {
     if (index==loadData.length) return;
     $.ajax({
@@ -884,12 +883,11 @@ function reqDetailList(event, treeId, treeNode){
         $(".detail,.radio_tit,.radio_sum").html("");
         getZtreeRootPath(treeNode);//得到当前选中节点的根路径
         loadDetailList(treeNode,resultData);
-        $("#mod,#del,#sear,#programme").removeAttr("disabled");//工具栏可以进行任意操作
       }else{
         $(".radio_tit,.radio_sum").html("");
         $(".detail").html('<p style="font-size:20px;margin-top:10px;text-align:center;">暂时没有电台</p>');
-      
       }
+      $("#mod,#del,#sear,#programme").removeAttr("disabled");//工具栏可以进行任意操作
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
@@ -1073,13 +1071,12 @@ function addBroadcast(){
         alert("添加成功!");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
-        $(".modal-footer button").removeAttr("disabled");
         $(document).find("input[type='checkbox']").removeAttr("checked");
         reqDetailList(event,$("#nodeArea").attr("value"));
       }else{
-        $(".modal-footer button").removeAttr("disabled");
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
+      $(".modal-footer button").removeAttr("disabled");
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
@@ -1100,12 +1097,16 @@ function getBcInfoForMod(bcId){
     url:rootPath+"content/bc/getBcInfo.do",
     dataType: "json",
     data:JSON.stringify(_data),
+    beforeSend:function(){
+      $('.toobarArea button').attr("disabled","disabled");
+    },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         loadModData(resultData);//加载修改时需要的详细数据
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
+      $('.toobarArea button').removeAttr("disabled");
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
@@ -1115,7 +1116,7 @@ function getBcInfoForMod(bcId){
 
 /*加载修改时需要的详细数据*/
 function loadModData(resultData){
-  $("#addCata").find(".modal-header>h4").html("修改电台分类");
+  $("#addCata").find(".modal-header>h4").html("修改电台");
   var bcId=resultData.ResultInfo[0].ContentId;
   $(".bcId").attr({"value":bcId});
   var na=resultData.ResultInfo[0].ContentName;
@@ -1195,13 +1196,12 @@ function modBroadcast(){
         alert("修改成功");
         $("#addCata").modal("hide");
         $("#shade").css({"display":"none"});
-        $(".modal-footer button").removeAttr("disabled");
         $(document).find("input[type='checkbox']").removeAttr("checked");
         reqDetailList(event,$("#nodeArea").attr("value"));
       }else{
-        $(".modal-footer button").removeAttr("disabled");
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
+      $(".modal-footer button").removeAttr("disabled");
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
@@ -1225,7 +1225,7 @@ function delBroadcast(checkId,catalogType,catalogId){
     dataType: "json",
     data:JSON.stringify(delInfo),
     beforeSend: function(){
-      $("#mod,#del,#sear,#programme").attr("disabled","disabled");//只能进行添加操作
+      $('.toobarArea button').attr("disabled","disabled");
     },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
@@ -1234,6 +1234,7 @@ function delBroadcast(checkId,catalogType,catalogId){
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
+      $('.toobarArea button').removeAttr("disabled");
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
@@ -1262,6 +1263,15 @@ function cleanDialog(){
   $("#nodeArea,#nodeRadio").attr({"value":""});
   $(".area_ul,.radio_ul").children("._li").remove();
   $(".playPaths").children(".playPathList:gt(0)").remove();
+  var raadionodes = radioObj.getNodes();
+  for (var i = raadionodes.length-1; i >= 0; i--) {
+    radioObj.removeNode(raadionodes[i]);
+  }
+  var areanodes = areaObj.getNodes();
+  for (var i = areanodes.length-1; i >= 0; i--) {
+    areaObj.removeNode(areanodes[i]);
+  }
+  $("#areaTree,#radioTree").slideUp("slow");
 }
 
 /*鼠标放在弹出页面的树上，取消按钮出现*/
@@ -1347,6 +1357,9 @@ function getBcProgramme(){
       url:rootPath+"content/bc/getBcProgramme.do",
       dataType: "json",
       data:JSON.stringify(_data),
+      beforeSend:function(){
+        $(".content").html("<div class='remove' style='text-align:center;font-size:16px;margin-top: 10px;'>电台节目单正在加载...</div>");
+      },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
           loadBcProgramme(resultData);//加载电台节目单信息
@@ -1481,6 +1494,9 @@ $(".commitPro").on("click",function(){
     url:rootPath+"content/bc/updateBcProgramme.do",
     dataType: "json",
     data:JSON.stringify(_data),
+    beforeSend:function(){
+      $('.proBtns button').attr("disabled","disabled");
+    },
     success: function(resultData){
       if(resultData.ReturnType=="1001"){
         alert("节目单修改成功");
@@ -1490,6 +1506,7 @@ $(".commitPro").on("click",function(){
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
+      $('.proBtns button').removeAttr("disabled");
     },
     error: function(jqXHR){
       alert("发生错误" + jqXHR.status);
