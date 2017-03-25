@@ -68,6 +68,14 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+				    mUdk=MobileParam.build(m).getUserDeviceKey();
+	                if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+	                    mUdk.setDeviceId(request.getSession().getId());
+	                }
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/getSeqMediaList");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -206,6 +214,10 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/addSeqMediaInfo");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -337,6 +349,10 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/updateSeqMediaInfo");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -471,6 +487,10 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/updateSeqMediaStatus");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -599,6 +619,10 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/removeSeqMedia");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -722,6 +746,10 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/removeMediassToSeqMediaRef");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -843,6 +871,10 @@ public class SeqController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/seq/getSeqMediaInfo");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");

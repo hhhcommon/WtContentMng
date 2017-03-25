@@ -88,6 +88,10 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/addBroadcast.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -247,6 +251,10 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/updateBroadcast.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -457,6 +465,10 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/delBc.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -603,6 +615,10 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/getBcInfo.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -721,6 +737,10 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/updateBroadcast.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
@@ -905,6 +925,10 @@ public class BroadcastController {
 				}
 				mUdk = mp.getUserDeviceKey();
 				if (mUdk != null) {
+                    mUdk=MobileParam.build(m).getUserDeviceKey();
+                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
+                        mUdk.setDeviceId(request.getSession().getId());
+                    }
 					Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/bc/getBcInfo.do");
 					if ((retM.get("ReturnType") + "").equals("2003")) {
 						map.put("ReturnType", "200");
