@@ -147,12 +147,14 @@ public class SeqController {
 	        //得到当前页数
 	        int page=1;
 	        try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
-			List<Map<String, Object>> c = seqContentService.getHostSeqMediaContents(userId, flowflag, channelid,
-					shortsearch, page, pageSize);
+			Map<String, Object> c = seqContentService.getHostSeqMediaContents(userId, flowflag, channelid, shortsearch, page, pageSize);
 			if (c != null && c.size() > 0) {
 				map.put("ReturnType", "1001");
 				c.remove("ReturnType");
-				map.put("ResultList", c);
+				map.put("ResultList", c.get("List"));
+				if (c.containsKey("AllCount")) {
+					map.put("AllCount", c.get("AllCount"));
+				}
 			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有查到任何内容");
