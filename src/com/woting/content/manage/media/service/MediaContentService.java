@@ -148,7 +148,7 @@ public class MediaContentService {
 			smaPo = mediaService.getSmaInfoById(seqid);
 			mediaService.bindMa2Sma(ma.convert2Po(), smaPo);
 		} else {
-			smaPo = mediaService.getSmaInfoById("user::" + userid);
+			smaPo = mediaService.getSmaInfoById("user=" + userid);
 			if (smaPo == null) {
 				String smaName = "";
 				if (user.getUserName() != null) {
@@ -158,7 +158,7 @@ public class MediaContentService {
 				} else if (user.getLoginName() != null) {
 					smaName = user.getLoginName();
 				}
-				seqid = "user::" + userid;
+				seqid = "user=" + userid;
 				seqContentService.addSeqMediaInfo(seqid, userid, smaName + "的默认专辑", "cn36", null, null, null, null,
 						null);
 				smaPo = mediaService.getSmaInfoById(seqid);
