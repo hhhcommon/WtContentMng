@@ -184,8 +184,10 @@ header .downLoad{
 /*节目详情*/
 .detail{
   background: white;
-  padding: 0px 0px 15px 0px;
+  padding: 0px 0px 5px 0px;
   width: 100%;
+  height: auto;
+  position: relative;
   border-top: 1px solid #dedede;
 }
 .dt{
@@ -205,7 +207,8 @@ header .downLoad{
   font-size: 14px;;
   padding: 6px 20px 12px 4px;
 }
-.detail p{
+.dp1,.dp2,.dp3,.dp4{
+  position: relative;
   padding: 3px 0px 5px 20px;
   font-size: 14px;
 }
@@ -214,14 +217,14 @@ header .downLoad{
 }
 .jj{
   height:100%;
+  position: relative;
+  float: left;
 }
 .js{
   width: calc(100% - 70px);
-  position: absolute;
+  position: relative;
   padding: 0px;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 .active{
   color: #f60;
@@ -374,7 +377,8 @@ header .downLoad{
   display: none;
 }
 .noComment{
-  padding-top: 10px;
+  height: 30px !important;
+  line-height:30px;
   text-align:center;
 }
 

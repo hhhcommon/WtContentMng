@@ -269,7 +269,7 @@ $(function() {
     }
   })
   //2.5-点击遮罩层,确定,取消按钮，遮罩层和弹出层消失
-  $("#save,.close,#shade,.cancel").on("click",function(){
+  $(".close,.cancel").on("click",function(){
     $("#addCata").modal("hide");
     $("#shade").css({"display":"none"});
     $("#cataTrees").slideUp("slow");
@@ -466,6 +466,9 @@ function addChannel() {
           }
         );
         alert("添加成功!");
+        $("#addCata").modal("hide");
+        $("#shade").css({"display":"none"});
+        $("#cataTrees").slideUp("slow");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -488,7 +491,11 @@ function onClick(event, treeId, treeNode) {
       return false;
     }
   }     
-  $("#nodeParent").val(modalNode.id);
+  if(modalNode.id==modalNode.attributes.mId){//选中的还是是根节点
+    $("#nodeParent").val("0").attr("modalId",modalNode.id);
+  }else{
+    $("#nodeParent").val(modalNode.id).attr("modalId",modalNode.id);
+  }
   $("#nodeParents").val(modalNode.name);
   $("#cataTrees").slideUp("slow");
 };
@@ -526,7 +533,7 @@ function modChannel() {
         if(modInfo.Data.ParentId!=treeNode.attributes.parentId) {//栏目父级改变
           parentChanged=1;
           treeNode.attributes.parentId=$("#nodeParent").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
+          var targetNode=zTreeObj.getNodeByParam("id",$("#nodeParent").attr("modalId"),null);
           if(!treeNode.children){//选中的要移动的栏目下面无其他栏目
             zTreeObj.moveNode(targetNode,treeNode,"inner");
           }else{//选中的要移动的栏目下面含有其他栏目
@@ -538,7 +545,7 @@ function modChannel() {
         }
         if(modInfo.Data.Sort!=treeNode.attributes.order||parentChanged==1) {//顺序改变
           treeNode.attributes.order=$("#sort").val();
-          var targetNode=zTreeObj.getNodeByParam("id", $("#nodeParent").val(), null);
+          var targetNode=zTreeObj.getNodeByParam("id",$("#nodeParent").attr("modalId"),null);
           if(targetNode.children){//当前选中栏目的父级栏目的所有子栏目存在
             var sLength=targetNode.children.length;//当前选中栏目的父栏目的所有子栏目
             for(var i=0;i<sLength;i++){
@@ -557,6 +564,9 @@ function modChannel() {
         if(modInfo.Data.Descn!=treeNode.attributes.descn) treeNode.attributes.descn=$("#nodeDescn").val();
         zTreeObj.updateNode(treeNode);
         alert("修改成功!");
+        $("#addCata").modal("hide");
+        $("#shade").css({"display":"none"});
+        $("#cataTrees").slideUp("slow");
       }else{
         alert("发生错误：\n\t"+resultData.ReturnType+"-"+resultData.Message);
       }
@@ -590,7 +600,7 @@ function delChannel() {
 };
 
 /*清空栏目界面方法*/
-function cleanDialog() {
+function cleanDialog(){
   $("#verOperForm .form-control").each(function(){
     $(this).val("");
   });

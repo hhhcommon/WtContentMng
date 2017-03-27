@@ -211,7 +211,7 @@ public class BroadcastProService {
 		String[] fla = lfs.split(";;");
 		boolean hasMain = false;
 		for (int i = 0; i < fla.length; i++) {
-			String[] _s = fla[i].split("::");
+			String[] _s = fla[i].split("=");
 			BCLiveFlowPo lfp = new BCLiveFlowPo();
 			lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 			lfp.setBcId(bPo.getId());
@@ -383,7 +383,7 @@ public class BroadcastProService {
 		String[] fla = lfs.split(";;");
 		boolean hasMain = false;
 		for (int i = 0; i < fla.length; i++) {
-			String[] _s = fla[i].split("::");
+			String[] _s = fla[i].split("=");
 			BCLiveFlowPo lfp = new BCLiveFlowPo();
 			lfp.setId(SequenceUUID.getUUIDSubSegment(4));
 			lfp.setBcId(bPo.getId());
