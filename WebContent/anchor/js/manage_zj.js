@@ -1,7 +1,7 @@
 $(function(){
   //获取deviceId
 //var deviceId=getCookie("JSESSIONID");
-  var deviceId="B8CFB75906D9FE216F21C01A38DC412D";
+  var deviceId="59C1CE661FCA724EF50E47A281CE82A0";
   
   //获取用户的id
 //var userId=$(".login_user span",parent.document).attr("userid");
