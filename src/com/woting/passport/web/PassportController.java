@@ -1153,7 +1153,7 @@ public class PassportController {
                 RedisOperService roService=new RedisOperService(redisConn, 4);
                 RedisUserDeviceKey redisUdk=new RedisUserDeviceKey(mUdk);
                 try {
-                    roService.set(redisUdk.getKey_UserPhoneCheck(), System.currentTimeMillis()+"::"+phoneNum+"::"+checkNum, "", 100*1000);
+                    roService.set(redisUdk.getKey_UserPhoneCheck(), System.currentTimeMillis()+"="+phoneNum+"="+checkNum, "", 100*1000);
                 } finally {
                     roService.close();
                     roService=null;
@@ -1266,7 +1266,7 @@ public class PassportController {
                 RedisUserDeviceKey redisUdk=new RedisUserDeviceKey(mUdk);
                 RedisOperService roService=new RedisOperService(redisConn, 4);
                 try {
-                    roService.set(redisUdk.getKey_UserPhoneCheck(), System.currentTimeMillis()+"::"+phoneNum+"::"+checkNum, "", 100*1000);
+                    roService.set(redisUdk.getKey_UserPhoneCheck(), System.currentTimeMillis()+"="+phoneNum+"="+checkNum, "", 100*1000);
                 } finally {
                     roService.close();
                     roService=null;
@@ -1385,7 +1385,7 @@ public class PassportController {
                 map.put("ReturnType", "1002");
                 map.put("Message", "状态错误，未有之前的发送数据，无法重发");
             } else {//正确
-                String[] _info=info.split("::");
+                String[] _info=info.split("=");
                 if (_info.length!=3) {
                     map.put("ReturnType", "1002");
                     map.put("Message", "状态错误，数据格式不正确");
@@ -1400,7 +1400,7 @@ public class PassportController {
                         String smsRetNum=SendSMS.sendSms(phoneNum, checkNum, operType==1?"通过手机号注册用户":"通过绑定手机号找回密码");
                         //向Session中加入验证信息
                         try {
-                            roService.set(redisUdk.getKey_UserPhoneCheck(), System.currentTimeMillis()+"::"+phoneNum+"::"+checkNum, "", 100*1000);
+                            roService.set(redisUdk.getKey_UserPhoneCheck(), System.currentTimeMillis()+"="+phoneNum+"="+checkNum, "", 100*1000);
                         } finally {
                             roService.close();
                             roService=null;
@@ -1523,7 +1523,7 @@ public class PassportController {
                 map.put("ReturnType", "1005");
                 map.put("Message", "状态错误");
             } else {
-                String[] _info=info.split("::");
+                String[] _info=info.split("=");
                 if (_info.length!=3) {
                     map.put("ReturnType", "1005");
                     map.put("Message", "状态错误，数据格式不正确");
@@ -1542,7 +1542,7 @@ public class PassportController {
                         map.put("Message", "验证码不匹配");
                     } else {
                         try {
-                            roService.set(redisUdk.getKey_UserPhoneCheck(), ("OK::"+_phoneNum), "", 100*1000);
+                            roService.set(redisUdk.getKey_UserPhoneCheck(), ("OK="+_phoneNum), "", 100*1000);
                         } finally {
                             roService.close();
                             roService=null;

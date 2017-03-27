@@ -384,7 +384,7 @@ public class MediaService {
 		return null;
 	}
 
-	public List<Map<String, Object>> getSmaListByPubId(String userid, int page, int pagesize) {
+	public Map<String, Object> getSmaListByPubId(String userid, int page, int pagesize) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
 		Map<String, Object> m = new HashMap<>();
@@ -398,6 +398,8 @@ public class MediaService {
 					+ "' and resTableName = 'wt_SeqMediaAsset')");
 			m.put("groupByClause", " assetId,assetType");
 			m.put("sortByClause", " pubTime,cTime");
+			int allCount = channelAssetDao.getCount("getCountBy",m);
+			
 			m.put("LimitByClause", (page-1)*pagesize+","+pagesize);
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m);
 			if (chas != null && chas.size() > 0) {
@@ -411,10 +413,12 @@ public class MediaService {
 				m.put("smaPubId", "0");
 				listpo = seqMediaAssetDao.queryForList("getSmaList", m);
 				list = makeSmaListToReturn(listpo);
-				return list;
+				Map<String, Object> retM = new HashMap<>();
+				retM.put("AllCount", allCount);
+				retM.put("List", list);
+				return retM;
 			}
 		}
-
 		return null;
 	}
 

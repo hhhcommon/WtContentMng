@@ -40,7 +40,7 @@ public class RedisUtils {
 	public static void addPhoneCheckInfo(String phonenum, String checknum){
 		Jedis jedis = jedisPool.getResource();
 		try {
-			jedis.set("phoneCheckInfo_"+phonenum, System.currentTimeMillis()+"::"+checknum);
+			jedis.set("phoneCheckInfo_"+phonenum, System.currentTimeMillis()+"="+checknum);
 		} catch (Exception e) {} finally {
 			release(jedis);
 		}

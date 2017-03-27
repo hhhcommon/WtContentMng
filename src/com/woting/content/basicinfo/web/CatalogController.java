@@ -340,7 +340,7 @@ public class CatalogController {
                 map.put("ReturnType", "1002");
                 map.put("Message", "未找到对应结点");
             } else {
-                String s[]=ret.split("::");
+                String s[]=ret.split("=");
                 if (s.length!=2||!s[0].equals("3")) {
                     map.put("ReturnType", "T");
                     map.put("Message", "未知异常");
