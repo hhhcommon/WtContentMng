@@ -300,13 +300,15 @@ body{overflow: auto;-moz-user-select: none;}
 }
 .zj_st{
   float: right;
+  width:100px;
   line-height: 110px;
-  margin-right:130px;
+  margin-right:104px;
+  text-align: center;
   color:#000;
 }
 .op_type{
   float: right;
-  margin-right:-155px;
+  margin-right:-180px;
   margin-top: 15px;
 }
 .op_type p{
@@ -443,9 +445,9 @@ body{overflow: auto;-moz-user-select: none;}
   overflow: hidden;
 }
 .channelBox{
-  width:calc(100% - 41px);
+  width:calc(100% - 36px);
   height:auto;
-  min-height: 41px;
+  min-height: 36px;
   overflow: hidden;
   float: left;
   padding: 0px;
@@ -453,7 +455,7 @@ body{overflow: auto;-moz-user-select: none;}
 }
 .channelimg1{
   float: left;
-  height: 41px;
+  height: 36px;
   cursor: pointer;
 }
 .channelBox .channel_bq{
@@ -632,8 +634,8 @@ body{overflow: auto;-moz-user-select: none;}
           <div class="rt_opt">
             <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
             <span class="rto_txt fl">全选</span>
-            <button class="rto_revoke fl opetype" type="revoke">撤回专辑</button>
-            <button class="rto_delete fl opetype" type="delete">删除专辑</button>
+            <button class="rto_revoke fl opetype" type="revoke" disabled="disabled">撤回专辑</button>
+            <button class="rto_delete fl opetype" type="delete" disabled="disabled">删除专辑</button>
           </div>
           <div class="ri_top3_head">
             <span class="rth_al">全部专辑</span>
@@ -1036,4 +1038,34 @@ body{overflow: auto;-moz-user-select: none;}
   </div> 
 </div>
 </body>
+<script>
+//var dt = new Date(); 
+//dt.setSeconds(dt.getSeconds() + 60); 
+//document.cookie = "cookietest=1; expires=" + dt.toGMTString(); 
+//var cookiesEnabled = document.cookie.indexOf("cookietest=") != -1; 
+//if(!cookiesEnabled) { 
+//  //没有启用cookie 
+//  alert("没有启用cookie ");
+//} else{
+//  //已经启用cookie 
+//  alert("已经启用cookie ");
+//}
+$(function(){
+  //获取我的标签和公共表标签
+  var deviceId="6DB94D0DC3C29C32F10F6DFC7C7635CA";
+  var userId="123";
+  console.log(document.cookie);
+//var data1={"DeviceId":deviceId,
+//           "MobileClass":"Chrome",
+//           "PCDType":"3",
+//           "UserId":userId,
+//           "MediaType":"1",
+////           "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+////           "ChannelIds":"cn31",
+//           "TagType":"1",
+//           "TagSize":"20"
+//};
+//loadPubTag(data1);
+});
+</script>
 </html>

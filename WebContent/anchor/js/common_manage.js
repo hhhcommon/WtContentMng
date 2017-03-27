@@ -1,4 +1,4 @@
-$(function(){
+//$(function(){
   var rootPath=getRootPath();
   var isExisted = true;//定义存在为true
   var is_exist=false;//要添加的创作方式是否存在
@@ -6,6 +6,11 @@ $(function(){
   var type=2;//type=1点击多选,type=2未点击多选
   var overChannel=false;
   
+  //获取用户的id
+  var userId=$(".login_user span",parent.document).attr("userid");
+  var userId='123';
+  //获取deviceId
+  var deviceId="B8CFB75906D9FE216F21C01A38DC412D";
 
   $(document).on("click",".more1",function(){//点击更多
     if($("#channel").children(".attrValues").children("ul").hasClass("h40")){
@@ -223,15 +228,6 @@ $(function(){
     if($(".all").is(':hidden')) $(".all").show();
   });
   
-  /*点击取消，罩层和模态框消失*/
-  $(".add_zj .collapse-link,.add_zj .cancel,.add_jm .collapse-link,.add_jm .cancel").on("click",function(){
-    $("form")[0].reset();
-    $(".mask_zj,.add_zj,.mask_jm,.add_jm").hide();
-    $(".sonProgress").html(" ");
-    $(".parentProgress,.sonProgress").hide();
-    $("body").css({"overflow":"auto"});
-  });
-  
   /*底部footer显示/隐藏*/
   $(window).on("scroll", function(){ 
     var sTop = $(window).scrollTop();  
@@ -254,115 +250,6 @@ $(function(){
     $('.footer', parent.document).hide();
   });
   
-  //当页面宽度发生变化时
-  window.onresize=function(){
-    laydate.reset(); 
-  }
-  
-  //日历插件的位置跟随着滚动条变化
-  $(".add").on("scroll", function(){ 
-    laydate.reset();//重设日历控件坐标，一般用于页面dom结构改变时
-  }) 
-  
-  /*s--图片裁剪上传 */
-  $(".upl_pt_img").on("click",function(){
-    $(".mask_clip,.container_clip").show();
-  });
-  $(".upload_pic").on("click",function(){
-    $(".picFile").click();
-  })
-  $('.picFile').on('change', function(){
-    cleCanvas();
-    uploadPic();
-  });
-  function uploadPic(){
-    var ics = new imgStroke();
-    var reader=new FileReader();
-    reader.onload=function(){ 
-      // 通过 reader.result 来访问生成的 DataURL
-      var url=reader.result;
-      ics.init({"canvasId":"myCanvas","url":url,"x":20,"y":20});
-      demo_report();
-    };       
-    reader.readAsDataURL($(".picFile")[0].files[0]);
-    var jqObj=$(".picFile");
-    jqObj.val("");
-    var domObj = jqObj[0];
-    domObj.outerHTML = domObj.outerHTML;
-    var newJqObj = jqObj.clone();
-    jqObj.before(newJqObj);
-    jqObj.remove();
-    $(".picFile").unbind().change(function (){
-      uploadPic();
-    });
-  }
-  $('#btnSave').on('click', function(){
-    var imgBase64Data=$(document).find(".cropped img").attr("src");
-    if(!imgBase64Data||imgBase64Data=="undefined"){
-      alert("请先点击裁剪再进行保存");
-      return;
-    }else{
-      $(".previewImg").attr("isDefaultImg","false");
-      var oMyForm = new FormData();
-      oMyForm.append("ContentFile",imgBase64Data);
-      oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
-      oMyForm.append("MobileClass","Chrome");
-      oMyForm.append("PCDType","3");
-      oMyForm.append("UserId","123");
-      oMyForm.append("Purpose","2");
-      oMyForm.append("SrcType","1");
-      $.ajax({
-        url:rootPath+"common/uploadCM.do",
-        type:"POST",
-        data:oMyForm,
-        cache: false,
-        processData: false,
-        contentType: false,
-        dataType:"json",
-        //表单提交前进行验证
-        success: function(resultData){
-          if(resultData.Success =true){
-            alert("图片裁剪上传成功");
-            $(".upl_img").attr("value",resultData.FilePath);
-            cleCanvas();
-            $(".container_clip,.mask_clip").hide();
-            if($(".defaultImg").css("display")!="none"){
-              $(".defaultImg").css({"display":"none"});
-            }
-            var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
-            if($(".previewImg").children().length>1){
-              $(".previewImg img:last").replaceWith(newImg);
-            }else{
-              $(".previewImg").append(newImg);
-            } 
-          }else{
-            alert(resultData.err);
-          }
-        },
-        error: function(XHR){
-          alert("发生错误" + jqXHR.status);
-        }
-      });
-    }
-  });
-  $("#resetId").on("click",function(){
-    if(confirm("您确定要取消裁剪吗？")){
-      cleCanvas();
-      $(".previewImg").attr("isDefaultImg","true");
-      $(".container_clip,.mask_clip").hide();
-    }
-  });
-  //清空画布
-  function cleCanvas(){
-    var myctx=document.getElementById("myCanvas").getContext("2d");
-    myctx.restore();
-    var towctx=document.getElementById("myCanvasTow").getContext("2d");
-    towctx.restore();
-    $("#myCanvas,#myCanvasTow").hide();
-    $("#cutImgId").attr({"src":""});
-  }
-  /*e--图片裁剪上传 */
- 
   //销毁obj对象的key-value
   function destroy(obj){
     for(var key in obj){//清空对象
@@ -450,7 +337,8 @@ $(function(){
       isExisted=false;
     }
   }
-  //添加自定义标签
+$(function(){
+  /*添加自定义标签*/
   $(".tag_txt").keydown(function(e){
     var evt=event?event:(window.event?window.event:null);//兼容IE和FF
     if (evt.keyCode==13){
@@ -481,25 +369,89 @@ $(function(){
       }
     }
   });
+  
+  /*点击enter，添加创作方式*/
+  $(".czfs_author_ipt").keydown(function(e){
+    var evt=event?event:(window.event?window.event:null);//兼容IE和FF
+    if (evt.keyCode==13){
+      if($(".czfs_author_ipt").val()==""||$(".czfs_author_ipt").val()==null){
+        alert("作者名字不能为空");
+      }else{
+        var member=[];
+        $(".czfs_tag").find(".czfs_tag_li").each(function(){
+          var czfsObj={};//创作方式对象
+          var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
+          var czfs_txt=czfs_t.split(":")[0];
+          czfsObj.TypeName=$.trim(czfs_txt);
+          czfsObj.TypeId=$(this).attr("czfs_typeid");
+          czfsObj.TypeInfo=$.trim($(this).children().children(".czfs_tag_span2").html());
+          member.push(czfsObj);
+        });
+        for(var i=0;i<member.length;i++){ 
+          if((member[i].TypeName==$(".change_czfs option:selected").text())&&(member[i].TypeInfo==$(".czfs_author_ipt").val())){ 
+            alert("你添加的创作方式已存在,请重新添加");
+            $(".czfs_author_ipt").val(" ");
+            is_exist=true;
+            return;
+          }else{
+            is_exist=false;
+          }
+        }
+        if(is_exist==false){
+          var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+$(".change_czfs option:selected").attr("id")+'>'+
+                        '<div class="czfs_tag_div">'+
+                        '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
+                        '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
+                        '</div>'+
+                        '<img class="cancelImg" src="img/upl_img2.png" alt="" />'+
+                      '</li>';
+          $(".czfs_tag").append(new_czfs);
+          $(".czfs_author_ipt").val("");
+        }
+      }
+    }
+  });
+  
+  /*点击取消，罩层和模态框消失*/
+  $(".add_zj .collapse-link,.add_zj .cancel,.add_jm .collapse-link,.add_jm .cancel").on("click",function(){
+    $("form")[0].reset();
+    $(".mask_zj,.add_zj,.mask_jm,.add_jm").hide();
+    $(".sonProgress").html(" ");
+    $(".parentProgress,.sonProgress").hide();
+    $("body").css({"overflow":"auto"});
+  });
+  
+  /*当页面宽度发生变化时,日历位置不变*/
+  window.onresize=function(){
+    laydate.reset(); 
+  }
+  
+  /*日历插件的位置跟随着滚动条变化*/
+  $(".add_zj,.add_jm").on("scroll", function(){ 
+    laydate.reset();//重设日历控件坐标，一般用于页面dom结构改变时
+  }) 
+  
+})
   //上传节目页面获取公共标签
-  var data1={"DeviceId":"3279A27149B24719991812E6ADBA5584",
-             "MobileClass":"Chrome",
-             "PCDType":"3",
-             "UserId":"123",
-             "MediaType":"1",
-             "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-             "ChannelIds":"cn31",
-             "TagType":"1",
-             "TagSize":"20"
-  };
-  loadPubTag(data1);
+//var data1={"DeviceId":deviceId,
+//           "MobileClass":"Chrome",
+//           "PCDType":"3",
+//           "UserId":userId,
+//           "MediaType":"1",
+////           "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+////           "ChannelIds":"cn31",
+//           "TagType":"1",
+//           "TagSize":"20"
+//};
+//loadPubTag(data1);
   function loadPubTag(data){
     $.ajax({
       type:"POST",
       url:rootPath+"content/getTags.do",
       dataType:"json",
-      data:JSON.stringify(data1),
-      success:function(resultData){
+      cache:false,
+      data:JSON.stringify(data),
+      success:function(resultData,XHR){
         if(resultData.ReturnType == "1001"){
           getPubLabel(resultData);//加载上传节目页面公共标签元素
         }else{
@@ -523,28 +475,24 @@ $(function(){
       $(".gg_tag_con").append(label); 
     }
   }
-  //点击“换一换”，更换公共标签
-  $(document).on("click",".gg_tag .hyp",function(){
-    loadPubTag(data1);
-  })
   //上传节目页面获取我的标签
-  var data2={"DeviceId":"3279A27149B24719991812E6ADBA5584",
-             "MobileClass":"Chrome",
-             "PCDType":"3",
-             "UserId":"123",
-             "MediaType":"1",
-             "SeqMediaId":"704df034185448e3b9ed0801351859fb",
-             "ChannelIds":"cn31",
-             "TagType":"2",
-             "TagSize":"20"
-  };
-  loadMyTag(data2);
+//var data2={"DeviceId":deviceId,
+//           "MobileClass":"Chrome",
+//           "PCDType":"3",
+//           "UserId":userId,
+//           "MediaType":"1",
+//           "SeqMediaId":"704df034185448e3b9ed0801351859fb",
+//           "ChannelIds":"cn31",
+//           "TagType":"2",
+//           "TagSize":"20"
+//};
+//loadMyTag(data2);
   function loadMyTag(data){
     $.ajax({
       type:"POST",
       url:rootPath+"content/getTags.do",
       dataType:"json",
-      data:JSON.stringify(data2),
+      data:JSON.stringify(data),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           getMyLabel(resultData);//加载上传节目页面我的标签元素
@@ -568,10 +516,10 @@ $(function(){
       $(".my_tag_con").append(label); 
     }
   }
-  //点击“换一换”，更换我的标签
-  $(document).on("click",".my_tag .hyp",function(){
-    loadMyTag(data2);
-  })
+////点击“换一换”，更换我的标签
+//$(document).on("click",".my_tag .hyp",function(){
+//  loadMyTag(data2);
+
   
   //点击上传文件
   $(".upl_wj").on("click",function(){
@@ -586,10 +534,10 @@ $(function(){
     var _this=$(this);
     $(".sonProgress,.parentProgress").show();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("DeviceId", "3279A27149B24719991812E6ADBA5584");
+    oMyForm.append("DeviceId", deviceId);
     oMyForm.append("MobileClass", "Chrome");
     oMyForm.append("PCDType", "3");
-    oMyForm.append("UserId", "123");
+    oMyForm.append("UserId", userId);
     oMyForm.append("SrcType", "2");
     oMyForm.append("Purpose", "1");
     if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
@@ -658,43 +606,43 @@ $(function(){
   }
   
   //获取选择专辑列表
-  var data5={"DeviceId":"3279A27149B24719991812E6ADBA5584",
-             "MobileClass":"Chrome",
-             "PCDType":"3",
-             "UserId":"123",
-             "FlagFlow":"0",
-             "ChannelId":"0",
-             "ShortSearch":"false"
-  };
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/seq/getSeqMediaList.do",
-    dataType:"json",
-    data:JSON.stringify(data5),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getAlbumList(resultData); //加载专辑列表,上传节目时使用
-      }else{
-//      alert("得到专辑列表失败，请刷新页面重新加载");
-      }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
+//var data5={"DeviceId":deviceId,
+//           "MobileClass":"Chrome",
+//           "PCDType":"3",
+//           "UserId":userId,
+//           "FlagFlow":"0",
+//           "ChannelId":"0",
+//           "ShortSearch":"false"
+//};
+//$.ajax({
+//  type:"POST",
+//  url:rootPath+"content/seq/getSeqMediaList.do",
+//  dataType:"json",
+//  data:JSON.stringify(data5),
+//  success:function(resultData){
+//    if(resultData.ReturnType == "1001"){
+//      getAlbumList(resultData); //加载专辑列表,上传节目时使用
+//    }else{
+////      alert("得到专辑列表失败，请刷新页面重新加载");
+//    }
+//  },
+//  error:function(XHR){
+//    alert("发生错误："+ jqXHR.status);
+//  }
+//});
   //加载专辑列表
-  function getAlbumList(resultData){
-    for(var i=0;i<resultData.ResultList.length;i++){
-      var option='<option value="" id='+resultData.ResultList[i].ContentId+'>'+resultData.ResultList[i].ContentName+'</option>';
-      $(".upl_zj").append(option);
-    }
-  }
+//function getAlbumList(resultData){
+//  for(var i=0;i<resultData.ResultList.length;i++){
+//    var option='<option value="" id='+resultData.ResultList[i].ContentId+'>'+resultData.ResultList[i].ContentName+'</option>';
+//    $(".upl_zj").append(option);
+//  }
+//}
   
   //获取创作方式列表
-  var data3={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+  var data3={"DeviceId":deviceId,
              "MobileClass":"Chrome",
              "PCDType":"3",
-             "UserId":"123",
+             "UserId":userId,
              "CatalogType":"4",
              "TreeViewType":"zTree"
   };
@@ -721,47 +669,7 @@ $(function(){
       $(".change_czfs").append(option);
     }
   }
-  //点击enter，添加创作方式
-  $(".czfs_author_ipt").keydown(function(e){
-    var evt=event?event:(window.event?window.event:null);//兼容IE和FF
-    if (evt.keyCode==13){
-      if($(".czfs_author_ipt").val()==""||$(".czfs_author_ipt").val()==null){
-        alert("作者名字不能为空");
-      }else{
-        var member=[];
-        $(".czfs_tag").find(".czfs_tag_li").each(function(){
-          var czfsObj={};//创作方式对象
-          var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
-          var czfs_txt=czfs_t.split(":")[0];
-          czfsObj.TypeName=$.trim(czfs_txt);
-          czfsObj.TypeId=$(this).attr("czfs_typeid");
-          czfsObj.TypeInfo=$.trim($(this).children().children(".czfs_tag_span2").html());
-          member.push(czfsObj);
-        });
-        for(var i=0;i<member.length;i++){ 
-          if((member[i].TypeName==$(".change_czfs option:selected").text())&&(member[i].TypeInfo==$(".czfs_author_ipt").val())){ 
-            alert("你添加的创作方式已存在,请重新添加");
-            $(".czfs_author_ipt").val(" ");
-            is_exist=true;
-            return;
-          }else{
-            is_exist=false;
-          }
-        }
-        if(is_exist==false){
-          var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+$(".change_czfs option:selected").attr("id")+'>'+
-                        '<div class="czfs_tag_div">'+
-                        '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
-                        '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
-                        '</div>'+
-                        '<img class="cancelImg" src="img/upl_img2.png" alt="" />'+
-                      '</li>';
-          $(".czfs_tag").append(new_czfs);
-          $(".czfs_author_ipt").val("");
-        }
-      }
-    }
-  });
+  
   //取消新添加的创作方式
   $(document).on("click",".cancelImg",function(){
     $(this).parent(".bqImg").remove();
@@ -805,7 +713,6 @@ $(function(){
     }
   });
   /*e--批量操作，点击勾选框*/
-});
 
 /*s--清空数据与转换时间格式*/
 //定时发布的时间格式转换成时间戳
@@ -862,3 +769,117 @@ function clear_jm(){
 }
 /*e--清空数据与转换时间格式*/
 
+/*--获取cookie值作为deviceId的值*/
+function getCookie(cookieName){
+  var strCookie = document.cookie;
+  var arrCookie = strCookie.split("; ");
+  for(var i = 0; i < arrCookie.length; i++){
+    var arr = arrCookie[i].split("=");
+    if(cookieName == arr[0]){
+      return arr[1];
+    }
+  }
+  return "";
+}
+//});
+
+/*s--图片裁剪上传 */
+$(function(){
+  $(".upl_pt_img").on("click",function(){
+    $(".mask_clip,.container_clip").show();
+  });
+  $(".upload_pic").on("click",function(){
+    $(".picFile").click();
+  })
+  $('.picFile').on('change', function(){
+    cleCanvas();
+    uploadPic();
+  });
+  function uploadPic(){
+    var ics = new imgStroke();
+    var reader=new FileReader();
+    reader.onload=function(){ 
+      // 通过 reader.result 来访问生成的 DataURL
+      var url=reader.result;
+      ics.init({"canvasId":"myCanvas","url":url,"x":20,"y":20});
+      demo_report();
+    };       
+    reader.readAsDataURL($(".picFile")[0].files[0]);
+    var jqObj=$(".picFile");
+    jqObj.val("");
+    var domObj = jqObj[0];
+    domObj.outerHTML = domObj.outerHTML;
+    var newJqObj = jqObj.clone();
+    jqObj.before(newJqObj);
+    jqObj.remove();
+    $(".picFile").unbind().change(function (){
+      uploadPic();
+    });
+  }
+  $('#btnSave').on('click', function(){
+    var imgBase64Data=$(document).find(".cropped img").attr("src");
+    if(!imgBase64Data||imgBase64Data=="undefined"){
+      alert("请先点击裁剪再进行保存");
+      return;
+    }else{
+      $(".previewImg").attr("isDefaultImg","false");
+      var oMyForm = new FormData();
+      oMyForm.append("ContentFile",imgBase64Data);
+      oMyForm.append("DeviceId",deviceId);
+      oMyForm.append("MobileClass","Chrome");
+      oMyForm.append("PCDType","3");
+      oMyForm.append("UserId",userId);
+      oMyForm.append("Purpose","2");
+      oMyForm.append("SrcType","1");
+      $.ajax({
+        url:rootPath+"common/uploadCM.do",
+        type:"POST",
+        data:oMyForm,
+        cache: false,
+        processData: false,
+        contentType: false,
+        dataType:"json",
+        //表单提交前进行验证
+        success: function(resultData){
+          if(resultData.Success =true){
+            alert("图片裁剪上传成功");
+            $(".upl_img").attr("value",resultData.FilePath);
+            cleCanvas();
+            $(".container_clip,.mask_clip").hide();
+            if($(".defaultImg").css("display")!="none"){
+              $(".defaultImg").css({"display":"none"});
+            }
+            var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
+            if($(".previewImg").children().length>1){
+              $(".previewImg img:last").replaceWith(newImg);
+            }else{
+              $(".previewImg").append(newImg);
+            } 
+          }else{
+            alert(resultData.err);
+          }
+        },
+        error: function(XHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      });
+    }
+  });
+  $("#resetId").on("click",function(){
+    if(confirm("您确定要取消裁剪吗？")){
+      cleCanvas();
+      $(".previewImg").attr("isDefaultImg","true");
+      $(".container_clip,.mask_clip").hide();
+    }
+  });
+  //清空画布
+  function cleCanvas(){
+    var myctx=document.getElementById("myCanvas").getContext("2d");
+    myctx.restore();
+    var towctx=document.getElementById("myCanvasTow").getContext("2d");
+    towctx.restore();
+    $("#myCanvas,#myCanvasTow").hide();
+    $("#cutImgId").attr({"src":""});
+  }
+});
+/*e--图片裁剪上传 */

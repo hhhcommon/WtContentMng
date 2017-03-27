@@ -221,7 +221,8 @@ $(function(){
       if(resultData.ReturnType=="1001"){
         loadRecomList(resultData);
       }else{
-        $(".ulBox").append("<li class='noComment'>暂无评论</li>");
+        $(".ulBox").html("");
+        $(".ulBox").append("<li class='noComment'>暂无推荐列表</li>");
         $(".ulBox").css({"height":$(".noComment").height()});
       }
     },

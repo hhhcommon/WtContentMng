@@ -157,9 +157,9 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 .dcl_zj_jmlist{
   width:100%;
   height:200px;
-  position: absolute;
+  position: relative;
   float: left;
-  margin-top:10px;
+  margin-top:30px;
 }
 .list_title{
   height:32px;
@@ -348,6 +348,55 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   left:15px;
   min-width:110px !important;
 }
+.rt_opt{
+  height:50px;
+  background:rgb(252,244,234);
+  overflow: hidden;
+}
+.rto_check{
+  margin:15px 10px 15px 20px;
+  width:18px;
+  height:18px;
+  cursor: pointer; 
+}
+.rto_txt{
+  font-size: 16px;
+  position: relative;
+  top:4px;
+  color: #FFA634;
+}
+.rto_delete,.rto_revoke,.rto_submit{
+  margin-left:50px;
+  width:85px;
+  height:30px;
+  background: #ddd;
+  color: #000;
+  cursor: pointer;
+  margin-top:10px;
+  border:none;
+  text-align: center;
+  line-height:30px;
+}
+.ri_top_li2{
+  float: left;
+  margin-top: 16px;
+  width: 180px;
+  height: 30px;
+}
+.ri_top_li2_inp{
+  width: 180px;
+  height: 30px;
+  font-size: 14px;
+  padding-left: 6px;
+}
+.ri_top_li2_img{
+  position: absolute;
+  top: 23px;
+  left: 324px;
+  width: 18px;
+  height: 18px;
+  background-size: 100% 100%;
+}
 </style>
 <body onselectstart="return false">
 <div class="detail">
@@ -381,6 +430,17 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
             </div>
           </div>
           <div class="dcl_zj_jmlist">
+            <div class="rt_opt">
+              <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
+              <span class="rto_txt fl">全选</span>
+              <button class="rto_submit fl opetype" disabled type="submit">提交节目</button>
+              <button class="rto_revoke fl opetype" disabled type="revoke">撤回节目</button>
+              <button class="rto_delete fl opetype" disabled type="delete">删除节目</button>
+              <div class="ri_top_li2">
+                <input class="ri_top_li2_inp" type="text" placeholder="搜索专辑"/>
+                <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
+              </div>
+            </div>
             <div class="list_title">
               <h4></h4>
               <span class="list_title_span">相关操作</span>
@@ -442,13 +502,13 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
               </li>-->
-              <!--<li class="list_content1">
+              <li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>-->
+              </li>
             </ul>
           </div>
         </div>
@@ -523,13 +583,19 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 </body>
 <script>
 $(function(){
-  var href=$("#newIframe", parent.document).attr("src");
+  var href=$("#myIframe", parent.document).attr("src");
   var contentId=href.split('?')[1].split("=")[1];
   var rootPath=getRootPath();
+  //获取用户的id
+//var userId=$(".login_user span",parent.document).attr("userid");
+  var userId='123';
+  //获取deviceId
+  var deviceId="B8CFB75906D9FE216F21C01A38DC412D";
   
-  var data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+  
+  var data={"DeviceId":deviceId,
             "MobileClass":"Chrome",
-            "UserId":"123",
+            "UserId":userId,
             "PCDType":"3",
             "ContentId":contentId
   };
@@ -553,16 +619,16 @@ $(function(){
     });
   }
   
-  var _data={"DeviceId":"3279A27149B24719991812E6ADBA5584",
+  var _data={"DeviceId":deviceId,
             "MobileClass":"Chrome",
-            "UserId":"123",
+            "UserId":userId,
             "PCDType":"3",
             "FlagFlow":"0",
             "ChannelId":"0",
             "SeqMediaId":contentId
   };
   //得到专辑下面的节目列表
-  getZj_jmList(_data);
+//getZj_jmList(_data);
   function getZj_jmList(dataParam){
     $.ajax({
       type:"POST",
@@ -607,9 +673,9 @@ $(function(){
       type:"POST",
       url:rootPath+"content/seq/getSeqMediaList.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+      data:{"DeviceId":deviceId,
            "MobileClass":"Chrome",
-           "UserId":"123",
+           "UserId":userId,
            "PCDType":"3",
            "FlagFlow":"0",
            "ChannelId":"0",
@@ -657,7 +723,7 @@ $(function(){
   //点击右侧我的所有专辑列表，调到对应的详情页
   $(document).on("click",".list1_img",function(){
     var contentId=$(this).parent(".dcr_zjlist1").attr("contentId");
-    $("#newIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
+    $("#myIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId+""});
     getZjDetail(contentId);
   })
   
@@ -737,10 +803,10 @@ $(function(){
         case 'saved':
           FlowFlag=0;
           count=0;
-          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+          var dataParam={ "DeviceId":deviceId,
                           "MobileClass":"Chrome",
                           "PCDType":"3",
-                          "UserId":"123",
+                          "UserId":userId,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -752,10 +818,10 @@ $(function(){
         case 'pending':
           FlowFlag=1;
           count=0;
-          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+          var dataParam={ "DeviceId":deviceId,
                           "MobileClass":"Chrome",
                           "PCDType":"3",
-                          "UserId":"123",
+                          "UserId":userId,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -767,10 +833,10 @@ $(function(){
         case 'pended':
           FlowFlag=1;
           count=0;
-          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+          var dataParam={ "DeviceId":deviceId,
                           "MobileClass":"Chrome",
                           "PCDType":"3",
-                          "UserId":"123",
+                          "UserId":userId,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -782,10 +848,10 @@ $(function(){
         case 'published':
           FlowFlag=2;
           count=0;
-          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+          var dataParam={ "DeviceId":deviceId,
                           "MobileClass":"Chrome",
                           "PCDType":"3",
-                          "UserId":"123",
+                          "UserId":userId,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -797,10 +863,10 @@ $(function(){
         case 'notPass':
           FlowFlag=3;
           count=0;
-          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+          var dataParam={ "DeviceId":deviceId,
                           "MobileClass":"Chrome",
                           "PCDType":"3",
-                          "UserId":"123",
+                          "UserId":userId,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -812,10 +878,10 @@ $(function(){
         case 'recall':
           FlowFlag=4;
           count=0;
-          var dataParam={ "DeviceId":"3279A27149B24719991812E6ADBA5584",
+          var dataParam={ "DeviceId":deviceId,
                           "MobileClass":"Chrome",
                           "PCDType":"3",
-                          "UserId":"123",
+                          "UserId":userId,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag

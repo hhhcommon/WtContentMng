@@ -135,7 +135,7 @@ input,textarea{
 }
 .upl_mc input{
   width: 100%;
-  height: 30px;
+  height: 35px;
   color:#000;
   border: 1px solid #dedede;
 }
@@ -230,7 +230,7 @@ input,textarea{
 }
 .input_tag .tag_txt{
   width:100%;
-  height:30px;
+  height:35px;
   border:none;
 }
 .my_tag,.gg_tag{

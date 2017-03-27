@@ -199,7 +199,6 @@ var imgStroke = (function(){
 	/**旋转**/ 
 	ics.prototype.rotate=function(arr){
 		if(!moveSwitch){
-			alert('请点击重置按钮');
 			return; 
 		}
 		imgRotate(arr); 
@@ -279,7 +278,6 @@ var imgStroke = (function(){
   /**缩放**/
 	ics.prototype.scale=function(type){
 		if(!moveSwitch){
-			alert('请点击重置按钮');
 			return; 
 		}
 		if(type=="BIG"){
