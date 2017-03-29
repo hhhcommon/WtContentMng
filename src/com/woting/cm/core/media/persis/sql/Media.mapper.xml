@@ -324,7 +324,7 @@
     WHERE (${ids})
   </select>
   
-  <select id="getMaListBySmaId" parameterType="java.lang.String" resultMap="mediaAssetMap">
+  <select id="getMaListBySmaId" parameterType="java.util.Map" resultMap="mediaAssetMap">
     select <include refid="Base_Media_List"/> 
     from
     (
@@ -333,6 +333,7 @@
 		ON smaf.mId = ma.id
 		where smaf.sId = #{sId,jdbcType=VARCHAR}
 		ORDER BY smaf.columnNum DESC
+		<if test="LimitByClause!=null"> limit ${LimitByClause}</if>
     ) ret
   </select>
   

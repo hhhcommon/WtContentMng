@@ -38,7 +38,7 @@ public class ShareService {
 						if (smam != null && smam.size() > 0) {
 							Map<String, Object> map = new HashMap<>();
 							map.put("ContentDetail", smam.get(0));
-							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(resId);
+							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(resId, 0, 0);
 							if (mas != null && mas.size() > 0) {
 								Iterator<MediaAssetPo> it = mas.iterator();
 								while (it.hasNext()) {
