@@ -10,7 +10,7 @@
   var userId=$(".login_user span",parent.document).attr("userid");
   var userId='123';
   //获取deviceId
-  var deviceId="B8CFB75906D9FE216F21C01A38DC412D";
+  var deviceId="E830A87F620FFAC2B8585F39BA4186E8";
 
   $(document).on("click",".more1",function(){//点击更多
     if($("#channel").children(".attrValues").children("ul").hasClass("h40")){
@@ -228,28 +228,30 @@
     if($(".all").is(':hidden')) $(".all").show();
   });
   
-  /*底部footer显示/隐藏*/
-  $(window).on("scroll", function(){ 
-    var sTop = $(window).scrollTop();  
-    var sTop = parseInt(sTop);  
-    if (sTop >= 10){ 
-      if(!$('.footer', parent.document).is(":visible")){ 
-        $('.wrapper', parent.document).css({"height":"64%"});
-        $('.footer', parent.document).show();
-      }  
-    }else{  
-      if($('.footer', parent.document).is(":visible")){  
-        $('.footer', parent.document).hide();
-        $('.wrapper', parent.document).css({"height":"84%"});
-      }  
-    }
-  }); 
-  //点击footer_hide，footer隐藏
-  $('.footer_hide', parent.document).on("click",function(){
-    $('.wrapper', parent.document).css({"height":"84%"});
-    $('.footer', parent.document).hide();
+  $(function(){
+    /*底部footer显示/隐藏*/
+    $(window).on("scroll", function(){ 
+      var sTop = $(window).scrollTop();  
+      var sTop = parseInt(sTop);  
+      if (sTop >= 10){ 
+        if(!$('.footer', parent.document).is(":visible")){ 
+          $('.wrapper', parent.document).css({"height":"64%"});
+          $('.footer', parent.document).show();
+        }  
+      }else{  
+        if($('.footer', parent.document).is(":visible")){  
+          $('.footer', parent.document).hide();
+          $('.wrapper', parent.document).css({"height":"84%"});
+        }  
+      }
+    }); 
+    //点击footer_hide，footer隐藏
+    $('.footer_hide', parent.document).on("click",function(){
+      $('.wrapper', parent.document).css({"height":"84%"});
+      $('.footer', parent.document).hide();
+      $(window).scrollTop("0px");
+    });
   });
-  
   //销毁obj对象的key-value
   function destroy(obj){
     for(var key in obj){//清空对象
@@ -341,7 +343,7 @@ $(function(){
   /*添加自定义标签*/
   $(".tag_txt").keydown(function(e){
     var evt=event?event:(window.event?window.event:null);//兼容IE和FF
-    if (evt.keyCode==13){
+    if(evt.keyCode==13){
       var txt=$.trim($(".tag_txt").val());
       if(txt!=""){
         var count = txt.replace(/[^\x00-\xff]/g,"**").length;
@@ -520,32 +522,36 @@ $(function(){
 //$(document).on("click",".my_tag .hyp",function(){
 //  loadMyTag(data2);
 
-  
+/*s--上传音频文件*/
+$(function(){
   //点击上传文件
   $(".upl_wj").on("click",function(){
     $(".upl_file").click();
   });
-  $(".upl_file").change(function(){
+  $(".add_jm .upl_file").change(function(){
+    upAudio();//上传音频
+  });
+  function upAudio(){
     $(".upl_file").attr("value","");
+    $(".sonProgress,.parentProgress").hide();
     $(".uploadStatus").hide();
     $(".yp_mz").val("");
     $(".audio").attr("src","");
+    var _this=$(".add_jm .upl_file");
     var oMyForm = new FormData();
-    var _this=$(this);
-    $(".sonProgress,.parentProgress").show();
-    oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("ContentFile",$(_this)[0].files[0]);
     oMyForm.append("DeviceId", deviceId);
     oMyForm.append("MobileClass", "Chrome");
     oMyForm.append("PCDType", "3");
     oMyForm.append("UserId", userId);
     oMyForm.append("SrcType", "2");
     oMyForm.append("Purpose", "1");
-    if(($(this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
+    if(($(_this)[0].files[0].size)/1048576>100){//判断文件大小是否大于100M
       alert("文件过大，请选择合适的文件上传！");
     }else{
       requestUpload(_this,oMyForm);//请求上传文件
     }
-  });
+  }
   //请求上传文件
   function requestUpload(_this,oMyForm){
     $.ajax({
@@ -579,9 +585,20 @@ $(function(){
         alert("发生错误" + jqXHR.status);
       }
     });
+    var jqObj=$(".add_jm .upl_file");
+    jqObj.val("");
+    var domObj = jqObj[0];
+    domObj.outerHTML = domObj.outerHTML;
+    var newJqObj = jqObj.clone();
+    jqObj.before(newJqObj);
+    jqObj.remove();
+    $(".add_jm .upl_file").unbind().change(function (){
+      upAudio();
+    });
   }
   //侦查文件上传情况,,这个方法大概0.05-0.1秒执行一次
   function onprogress(evt){
+    $(".sonProgress,.parentProgress").show();
     var loaded = evt.loaded;     //已经上传大小情况 
     var tot = evt.total;      //文件总大小 
     var per = Math.floor(100*loaded/tot);  //已经上传的百分比 
@@ -589,54 +606,58 @@ $(function(){
     $(".sonProgress").css("width" , per +"%");
     if(per=="100"){
       $(".parentProgress").css({"border":"none"});
+      $(".sonProgress").css({"border-radius":"10px"});
     }
   }
-  //获取音频的时长
-  function getTime() {
-    setTimeout(function () {
-      var duration = $(".audio")[0].duration;
-      if(isNaN(duration)){//检查参数是否是非数字
-        getTime();
-      }else{
-        var time=$(".audio")[0].duration;
-        var timeLong=parseInt(time);
-        $(".timeLong").attr("value",timeLong);
-      }
-    }, 10);
-  }
+});
+//获取音频的时长
+function getTime(){
+  setTimeout(function (){
+    var duration = $(".audio")[0].duration;
+    if(isNaN(duration)){//检查参数是否是非数字
+      getTime();
+    }else{
+      var time=$(".audio")[0].duration;
+      var timeLong=parseInt(time);
+      $(".timeLong").attr("value",timeLong);
+    }
+  }, 10);
+}
+/*e--上传音频文件*/
+  
   
   //获取选择专辑列表
-//var data5={"DeviceId":deviceId,
-//           "MobileClass":"Chrome",
-//           "PCDType":"3",
-//           "UserId":userId,
-//           "FlagFlow":"0",
-//           "ChannelId":"0",
-//           "ShortSearch":"false"
-//};
-//$.ajax({
-//  type:"POST",
-//  url:rootPath+"content/seq/getSeqMediaList.do",
-//  dataType:"json",
-//  data:JSON.stringify(data5),
-//  success:function(resultData){
-//    if(resultData.ReturnType == "1001"){
-//      getAlbumList(resultData); //加载专辑列表,上传节目时使用
-//    }else{
-////      alert("得到专辑列表失败，请刷新页面重新加载");
-//    }
-//  },
-//  error:function(XHR){
-//    alert("发生错误："+ jqXHR.status);
-//  }
-//});
+  var data5={"DeviceId":deviceId,
+             "MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":userId,
+             "FlagFlow":"0",
+             "ChannelId":"0",
+             "ShortSearch":"false"
+  };
+  $.ajax({
+    type:"POST",
+    url:rootPath+"content/seq/getSeqMediaList.do",
+    dataType:"json",
+    data:JSON.stringify(data5),
+    success:function(resultData){
+      if(resultData.ReturnType == "1001"){
+        getAlbumList(resultData); //加载专辑列表,上传节目时使用
+      }else{
+//      alert("得到专辑列表失败，请刷新页面重新加载");
+      }
+    },
+    error:function(XHR){
+      alert("发生错误："+ jqXHR.status);
+    }
+  });
   //加载专辑列表
-//function getAlbumList(resultData){
-//  for(var i=0;i<resultData.ResultList.length;i++){
-//    var option='<option value="" id='+resultData.ResultList[i].ContentId+'>'+resultData.ResultList[i].ContentName+'</option>';
-//    $(".upl_zj").append(option);
-//  }
-//}
+  function getAlbumList(resultData){
+    for(var i=0;i<resultData.ResultList.length;i++){
+      var option='<option value="" id='+resultData.ResultList[i].ContentId+'>'+resultData.ResultList[i].ContentName+'</option>';
+      $(".upl_zj").append(option);
+    }
+  }
   
   //获取创作方式列表
   var data3={"DeviceId":deviceId,
@@ -701,15 +722,33 @@ $(function(){
   });
   //点击单个勾选框
   $(document).on("click",".ric_img_check",function(){
+    var num=0;
+    var l=$(".ri_top3_con .rtc_listBox .ric_img_check").length;
     if($(this).hasClass("checkbox1")){
       $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
       $(".opetype").removeAttr("disabled").css("color","#fff");
       $(".rto_submit").css({"background":"#FFA634"});
       $(".rto_revoke").css({"background":"rgb(149,139,129)"});
       $(".rto_delete").css({"background":"rgb(200,61,13)"});
+      $(".ri_top3_con .rtc_listBox .ric_img_check").each(function(){//是否选中全选
+        if($(this).hasClass("checkbox1")){
+          
+        }else{
+          num++;
+        }
+      });
+      if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"img/checkbox2.png"});
     }else{
       $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-      $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+      $(".ri_top3_con .rtc_listBox .ric_img_check").each(function(){//是否选中全选
+        if($(this).hasClass("checkbox1")){
+          
+        }else{
+          num++;
+        }
+      });
+      if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+      if(num==0) $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
     }
   });
   /*e--批量操作，点击勾选框*/

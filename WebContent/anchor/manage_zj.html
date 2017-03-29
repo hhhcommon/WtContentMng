@@ -319,7 +319,7 @@ body{overflow: auto;-moz-user-select: none;}
 .mask_zj,.mask_jm{
   width:100%;
   height:1100px;
-  position: absolute;
+  position: fixed;
   top:0px;
   left:0px;
   z-index:10;
@@ -918,6 +918,7 @@ body{overflow: auto;-moz-user-select: none;}
           </div>
           <div class="ibox-content">
             <form class="form-horizontal">
+              <input type="text" class="seqId" style="display:none;" value="" />
               <input type="text" class="jmId" style="display:none;" value="" />
               <input type="text" class="timeLong" style="display:none;" value="" />
               <div class="form-group">
@@ -968,19 +969,19 @@ body{overflow: auto;-moz-user-select: none;}
                   </div>
                 </div>
               </div>
-              <div class="form-group">
+              <!--<div class="form-group">
                 <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <select name="" class="upl_zj" autocomplete="off"></select>
                 </div>
-              </div>
+              </div>-->
               <div class="form-group">
                 <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <div class="tag_box">
                     <ul class="upl_bq"></ul>
                     <div class="input_tag">
-                      <input type="text" class="tag_txt" placeholder="添加自定义标签" maxlength="6"/>
+                      <input type="text" class="tag_txt jm_addTag" placeholder="添加自定义标签" maxlength="6"/>
                     </div>
                   </div>
                   <div class="my_tag">
@@ -1054,7 +1055,6 @@ $(function(){
   //获取我的标签和公共表标签
   var deviceId="6DB94D0DC3C29C32F10F6DFC7C7635CA";
   var userId="123";
-  console.log(document.cookie);
 //var data1={"DeviceId":deviceId,
 //           "MobileClass":"Chrome",
 //           "PCDType":"3",
