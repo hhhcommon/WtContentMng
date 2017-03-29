@@ -5,17 +5,22 @@
   <title>专辑详情</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听,我享听">
+  <meta name="description" content="我听,我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link  href="css/pagination.css" rel="stylesheet"/>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <!--日历插件-->
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <script src="js/common_manage.js"></script>
+  <!--<script src="js/manage_jm.js"></script>-->
+  <!--翻页插件-->
+  <script src="js/pagination.min.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -23,7 +28,7 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{overflow: auto;background: #fff;-moz-user-select: none;}
+body{overflow-y:auto;background: #fff;-moz-user-select: none;}
 .detail{
   width:1084px;
   min-width:850px;
@@ -31,6 +36,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   margin:auto;
   border:1px solid #dedede;
 }
+.fl{float: left;}
 .detail_title{
   height: 30px;
   color: #000;
@@ -47,8 +53,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 }
 .detail_content{
   width:100%;
-  height:570px;
-  overflow: auto;
+  height:auto;
 }
 .dc_left1{
   width:710px;
@@ -185,19 +190,24 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 .list_title_span{
   color: #000;
   font-weight: bolder;
-  float: right;
+  float: left;
   height:30px;
   line-height:30px;
   font-size:15px;
   padding-right:10px;
   cursor: pointer;
+  width:100px;
+  text-align: center;
 }
 .jm_states{
-  float: right;
-  width: 135px;
+  position: relative;
+  float: left;
+  width: 110px;
   font-weight: bolder;
   color: #000;
   font-size: 15px;
+  margin-left:50%;
+  display: block !important;
 }
 .zj_jmlist {
   width: 100%;
@@ -207,8 +217,8 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 }
 .list_content{
   width:100%;
-  height:360px;
-  overflow-y: auto;
+  height:230px;
+  overflow: hidden;
 }
 .list_content1{
   height:25px;
@@ -242,14 +252,13 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   margin-left:25px;
 }
 .dc_right1{
-  width:300px;
+  width:285px;
   float: left;
   margin-right: 20px;
   margin-left: 30px;
 }
 .dc_right{
   width:300px;
-  height:670px;
   margin-top:10px;
   overflow: auto;
   border:1px solid #dedede;
@@ -304,7 +313,6 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   height:80px;
   width:80px;
   margin-top:15px;
-  margin-left:20px;
   margin-right:10px;
   border:1px solid #dedede;
   float: left;
@@ -317,6 +325,8 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 }
 .rtcl_con{
   height:100%;
+  width:305px;
+  overflow: hidden;
   float: left;
   color:rgb(173,172,172);
 }
@@ -325,14 +335,18 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   color:#000;
 }
 .jm_st{
-  float: right;
+  float: left;
+  width:100px;
   line-height: 110px;
-  margin-right:104px;
+  width:100px;
   color:#000;
+  text-align: center;
 }
 .op_type{
-  float: right;
-  margin-right:-140px;
+  float: left;
+  margin-left:10px;
+  width:100px;
+  text-align: center;
 }
 .op_type p{
   cursor: pointer;
@@ -345,7 +359,6 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   color:rgb(173,172,172);
 }
 .dropdown-menu{
-  left:15px;
   min-width:110px !important;
 }
 .rt_opt{
@@ -362,11 +375,11 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
 .rto_txt{
   font-size: 16px;
   position: relative;
-  top:4px;
+  top:14px;
   color: #FFA634;
 }
 .rto_delete,.rto_revoke,.rto_submit{
-  margin-left:50px;
+  margin-left:20px;
   width:85px;
   height:30px;
   background: #ddd;
@@ -377,25 +390,47 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
   text-align: center;
   line-height:30px;
 }
-.ri_top_li2{
-  float: left;
-  margin-top: 16px;
-  width: 180px;
-  height: 30px;
-}
 .ri_top_li2_inp{
-  width: 180px;
+  width: 190px;
   height: 30px;
   font-size: 14px;
   padding-left: 6px;
+  margin-left:20px;
+  margin-top:10px;
 }
 .ri_top_li2_img{
   position: absolute;
-  top: 23px;
-  left: 324px;
+  top: 15px;
+  right: 110px;
   width: 18px;
   height: 18px;
   background-size: 100% 100%;
+}
+.ric_img_check {
+  width: 18px;
+  height: 18px;
+  margin: 44px 20px;
+  cursor: pointer;
+}
+.rtcl_img {
+  height: 80px;
+  width: 80px;
+  margin-top: 15px;
+  margin-right: 10px;
+  border: 1px solid #dedede;
+  float: left;
+  cursor: pointer;
+}
+.rtcl_img img {
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+#kkpager{
+ padding:10px 0px; 
+}
+.infoTextAndGoPageBtnWrap{
+  width:240px !important;
 }
 </style>
 <body onselectstart="return false">
@@ -423,7 +458,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                 <li><span>自定义标签一</span></li>
                 <li><span>自定义标签一</span></li>-->
               </ul>
-              <p class="ctime"></p>
+              <p class="ctimes"></p>
             </div>
             <div class="dcl_zjcontent3">
               <p class="dcl_zjcontent3_p1"></p>
@@ -436,16 +471,13 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
               <button class="rto_submit fl opetype" disabled type="submit">提交节目</button>
               <button class="rto_revoke fl opetype" disabled type="revoke">撤回节目</button>
               <button class="rto_delete fl opetype" disabled type="delete">删除节目</button>
-              <div class="ri_top_li2">
-                <input class="ri_top_li2_inp" type="text" placeholder="搜索专辑"/>
-                <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
-              </div>
+              <input class="ri_top_li2_inp fl" type="text" placeholder="搜索专辑"/>
+              <img class="ri_top_li2_img fl" src="img/search1.png" alt="搜索按钮" />
             </div>
             <div class="list_title">
               <h4></h4>
-              <span class="list_title_span">相关操作</span>
               <div class="btn-group content-tabs jm_states">
-                <button class="dropdown" data-toggle="dropdown" aria-expanded="false" style="width: 120px;" >节目状态
+                <button class="dropdown" data-toggle="dropdown" aria-expanded="false" style="width: 110px;" >节目状态
                   <img src="img/filter2.png" alt="" />
                 </button>
                 <ul role="menu" class="dropdown-menu">
@@ -458,6 +490,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                   <li class="recalled" text="已撤回" type="recalled"><a>已撤回</a></li>
                 </ul>
               </div>
+              <div class="list_title_span">相关操作</div>
             </div>
             <ul class="list_content">
               <!--<li class="list_content1" style="margin-top:15px;">
@@ -502,14 +535,15 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
               </li>-->
-              <li class="list_content1">
+             <!--  <li class="list_content1">
                 <a class="list_content1_a" href="#">vol.23 想和你一起去看海</a>
                 <a class="list_content1_img" href="#"></a>
                 <span class="list_content1_span1">(0)</span>
                 <span class="list_content1_span2">已保存</span>
                 <span class="list_content1_span3">2016-10-18</span>
-              </li>
+              </li> -->
             </ul>
+            <div id="kkpager"></div>
           </div>
         </div>
       </div>
@@ -555,7 +589,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                 </p>
               </div>
             </div>-->
-            <!--<div class="dcr_zjlist1">
+            <!-- <div class="dcr_zjlist1">
               <div class="list1_img">
                 <img src="" alt="节目图片" />
               </div>
@@ -573,7 +607,7 @@ body{overflow: auto;background: #fff;-moz-user-select: none;}
                   <span>2016-10-08 10:47:35</span>
                 </p>
               </div>
-            </div>-->
+            </div> -->
           </div> 
         </div>
       </div>
@@ -590,7 +624,11 @@ $(function(){
 //var userId=$(".login_user span",parent.document).attr("userid");
   var userId='123';
   //获取deviceId
-  var deviceId="59C1CE661FCA724EF50E47A281CE82A0";
+  var deviceId="517CF12AA8B32A558580CCA76547533D";
+  
+  var current_page=1;//当前页码
+  var contentCount=0;//总页码数
+  var pageSize=2;//每页条数
   
   
   var data={"DeviceId":deviceId,
@@ -623,13 +661,16 @@ $(function(){
             "MobileClass":"Chrome",
             "UserId":userId,
             "PCDType":"3",
+            "PageSize":pageSize,
+            "Page":current_page,
             "FlagFlow":"0",
             "ChannelId":"0",
             "SeqMediaId":contentId
   };
   //得到专辑下面的节目列表
-//getZj_jmList(_data);
+  getZj_jmList(_data);
   function getZj_jmList(dataParam){
+    debugger;
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/getMediaList.do",
@@ -637,12 +678,17 @@ $(function(){
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
+          allCount=resultData.AllCount;
+          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
           fillZj_jmList(resultData);//填充专辑数据
         }else{
           $(".list_content").html("");//每次加载之前先清空
           $(".list_content").html("<li style='text-align: center;'>暂无节目数据</li>");
           $(".list_title h4").html("共0个节目");
+          allCount="0";
+          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2)); 
         }
+        pagitionInit(contentCount,allCount,_data.Page);//init翻页
       },
       error:function(XHR){
         alert("发生错误："+ jqXHR.status);
@@ -662,7 +708,7 @@ $(function(){
         $(".dcl_zjcontent2 ul").append(newli);
       }
     }
-    $(".ctime").html("最近更新时间:&nbsp;&nbsp;"+resultData.Result.CTime);
+    $(".ctimes").html("最近更新时间："+resultData.Result.CTime);
     $(".dcl_zjcontent3_p1").html(resultData.Result.ContentDesc);
     $(".list_title h4").html("共"+resultData.Result.SubCount+"个节目");
   }
@@ -730,67 +776,71 @@ $(function(){
   //专辑的节目列表
   function fillZj_jmList(resultData){
     $(".list_content,.list_title h4").html("");//每次加载之前先清空
-    $(".dcl_zjcontent2 .h3span").html("("+resultData.ResultList.AllCount+"个节目)");
-    $(".list_title h4").html("共"+resultData.ResultList.AllCount+"个节目");
-    for(var i=0;i<resultData.ResultList.AllCount;i++){
-      if(resultData.ResultList.List[i].ContentSeqName){
-        var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
-                        '<div class="rtcl_img">'+
-                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
+    for(var i=0;i<resultData.ResultList.length;i++){
+      var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList[i].ContentSeqId+' contentId='+resultData.ResultList[i].ContentId+'>'+
+                        '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
+                        '<div class="rtcl_img fl">'+
+                          '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
                         '</div>'+
                         '<div class="rtcl_con">'+
-                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
+                          '<h4></h4>'+
                           '<p class="other">'+
-                            '<span>时间 ：</span>'+
-                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
+                            '<span>时间：</span>'+
+                            '<span class="ctime"></span>'+
                           '</p>'+
-                          '<p class="playcount">'+
-                            '<img class="list_content1_img" src="img/act1.png" alt="图片" />'+
-                            '<span class="list_content1_span1">('+resultData.ResultList.List[i].PlayCount+')</span>'+
+                          '<p class="other">'+
+                            '<span>喜欢次数 ：</span>'+
+                            '<span class="loveCount"></span>'+
                           '</p>'+
                         '</div>'+
-                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
+                        '<p class="jm_st"></p>'+
                         '<div class="op_type" id="op_Box'+i+'">'+
                           '<p class="jm_edit c173">编辑</p>'+
-                          '<p class="jm_pub c173">发布</p>'+
-                          '<p class="jm_del c173">删除</p>'+
+                          '<p class="jm_submit c173">提交</p>'+
                           '<p class="jm_recal c173">撤回</p>'+
+                          '<p class="jm_del c173">删除</p>'+
                         '</div>'+
                       '</li>';
-      }else{
-        var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList.List[i].ContentSeqId+' contentId='+resultData.ResultList.List[i].ContentId+'>'+
-                        '<div class="rtcl_img">'+
-                          '<img src='+resultData.ResultList.List[i].ContentImg+' alt="节目图片" />'+
-                        '</div>'+
-                        '<div class="rtcl_con">'+
-                          '<h4>'+resultData.ResultList.List[i].ContentName+'</h4>'+
-                          '<p class="other">'+
-                            '<span>时间 ：</span>'+
-                            '<span>'+resultData.ResultList.List[i].CTime+'</span>'+
-                          '</p>'+
-                          '<p class="playcount">'+
-                            '<img class="list_content1_img" src="img/act1.png" alt="图片" />'+
-                            '<span class="list_content1_span1">('+resultData.ResultList.List[i].PlayCount+')</span>'+
-                          '</p>'+
-                        '</div>'+
-                        '<p class="jm_st">'+resultData.ResultList.List[i].ContentPubChannels[0].FlowFlagState+'</p>'+
-                        '<div class="op_type" id="op_Box'+i+'">'+
-                          '<p class="jm_edit c173">编辑</p>'+
-                          '<p class="jm_pub c173">发布</p>'+
-                          '<p class="jm_del c173">删除</p>'+
-                          '<p class="jm_recal c173">撤回</p>'+
-                        '</div>'+
-                      '</li>';
-      }
-      $(".list_content").append(programBox); 
-      if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="0"){//提交
-        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
-      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="1"){//审核
-        
-      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="2"){//发布
-        $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
-      }else if(resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag=="3"){//撤回
-        $("#op_Box"+i).children(".jm_edit,.jm_pub,.jm_del").removeClass("c173").addClass("cf60");
+      $(".list_content").append(programBox);
+      $(".rtc_listBox").children(".rtcl_con").children("h4").eq(i).text(((resultData.ResultList[i].ContentName)?(resultData.ResultList[i].ContentName):"暂无"));
+      $(".rtc_listBox").children(".rtcl_con").children(".other").children(".ctime").eq(i).text(((resultData.ResultList[i].CTime)?(resultData.ResultList[i].CTime):"暂无"));
+      $(".rtc_listBox").children(".rtcl_con").children(".other").children(".loveCount").eq(i).text(((resultData.ResultList[i].ContentFavorite)?(resultData.ResultList[i].ContentFavorite):"暂无"));
+      if(resultData.ResultList[i].ContentPubChannels){
+        $(".rtc_listBox").children(".jm_st").eq(i).text(((resultData.ResultList[i].ContentPubChannels[0].FlowFlagState)?(resultData.ResultList[i].ContentPubChannels[0].FlowFlagState):"未知"));
+        var channelds="";
+        for(var j=0;j<resultData.ResultList[i].ContentPubChannels.length;j++){
+          if(channelds==""){
+            channelds=resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }else{
+            channelds+=","+resultData.ResultList[i].ContentPubChannels[j].ChannelId;
+          }
+        }
+        $(".rtc_listBox").children(".jm_st").eq(i).attr("jmStatusId",resultData.ResultList[i].ContentPubChannels[0].FlowFlag);
+        $(".rtc_listBox").eq(i).attr("channelId",channelds);
+        var flowflag=resultData.ResultList[i].ContentPubChannels[0].FlowFlag;
+        switch(flowflag){//0(已提交),1(审核中),2(已发布),3(未通过),4(已撤回)
+          case "0": $("#op_Box"+i).children(".jm_edit,.jm_submit,.jm_del").removeClass("c173").addClass("cf60");
+          break;
+          case "1": $("#op_Box"+i).children(".jm_edit,.jm_submit,.jm_del,.jm_recal").removeClass("cf60").addClass("c173");
+          break;
+          case "2": $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
+          break; 
+          case "3": $("#op_Box"+i).children(".jm_edit,.jm_submit,.jm_del,.jm_recal").removeClass("c173").addClass("cf60");
+          break;
+          case "4": $("#op_Box"+i).children(".jm_edit,.jm_submit,.jm_del").removeClass("c173").addClass("cf60");
+          break;
+          default:break;
+        }
+//       var flowflag=resultData.ResultList.List[i].ContentPubChannels[0].FlowFlag;
+//       switch(flowflag){//0全部，1已保存，2发布审核中，3已审核(定时发布)，4已发布，5发布未通过,6待撤回(实际是撤回审核中)，7已撤回，8撤回未通过
+//         case "1":case "5":case "7": $("#op_Box"+i).children(".jm_edit,.jm_submit,.jm_del").removeClass("c173").addClass("cf60");
+//         break;
+//         case "2":case "3":case "6": $("#op_Box"+i).children(".jm_edit,.jm_submit,.jm_del,.jm_recal").removeClass("cf60").addClass("c173");
+//         break;
+//         case "4":case "8": $("#op_Box"+i).children(".jm_recal").removeClass("c173").addClass("cf60");
+//         break;        
+//         default:break;
+//       }
       }
     }
   }
@@ -893,8 +943,158 @@ $(function(){
         default:
       }
     })
-
-
+    
+    
+  /*s--翻页插件初始化*/
+  function pagitionInit(contentCount,allCount,current_page){
+    var totalPage=contentCount;
+    var totalRecords=allCount;
+    var pageNo=current_page;
+    //生成分页
+    //有些参数是可选的，比如lang，若不传有默认值
+    kkpager.generPageHtml({
+      pno : pageNo,
+      //总页码
+      total : totalPage,
+      //总数据条数
+      totalRecords : totalRecords,
+      //页码选项
+      lang : {
+        firstPageText : '首页',
+        firstPageTipText  : '首页',
+        lastPageText  : '尾页',
+        lastPageTipText : '尾页',
+        prePageText : '上一页',
+        prePageTipText  : '上一页',
+        nextPageText  : '下一页',
+        nextPageTipText : '下一页',
+        totalPageBeforeText : '共',
+        totalPageAfterText  : '页',
+        currPageBeforeText  : '当前第',
+        currPageAfterText : '页',
+        totalInfoSplitStr : '/',
+        totalRecordsBeforeText  : '共',
+        totalRecordsAfterText : '条数据',
+        gopageBeforeText  : '&nbsp;转到',
+        gopageButtonOkText  : '确定',
+        gopageAfterText : '页',
+        buttonTipBeforeText : '第',
+        buttonTipAfterText  : '页'
+      },
+      mode :'click',//默认值是link，可选link或者click
+      click :function(current_page){//点击后的回调函数可自定义
+        this.selectPage(current_page);
+        pagitionBack(current_page);//翻页之后的回调函数
+        return false;
+      }
+    },true);
+  };
+  /*e--翻页插件初始化*/
+  
+  /*s--根据搜索/筛选/翻页获取节目列表*/
+  var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
+  var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
+  var searchWord="";
+  
+  //翻页之后的回调函数
+  function pagitionBack(current_page){
+    debugger;
+    searchWord=$.trim($(".ri_top_li2_inp").val());
+    if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
+      seaFy=1;
+    }else{//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
+      seaFy=2;
+    }
+    opts(seaFy,current_page);
+  }
+  
+  //判断在点击翻页之前是否选择了筛选条件
+  function opts(seaFy,current_page){
+    debugger;
+    destroy(_data);
+    _data.DeviceId=deviceId;
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
+    _data.UserId=userId;
+    _data.PageSize=pageSize;
+    _data.Page=current_page;
+    _data.FlagFlow="0";
+    _data.ChannelId="0";
+    _data.SeqMediaId=contentId;
+    searchWord=$.trim($(".ri_top_li2_inp").val());
+    if(seaFy==1){//seaFy=1未搜索关键词前翻页
+      getZj_jmList(_data);
+    }else{//seaFy=2搜索列表加载出来后翻页
+      _data.SearchWord=searchWord;
+      getSearchList(_data);
+    }
+  }
+  
+  /*搜索*/
+  //键盘上的enter事件
+  $(".ri_top_li2_inp").keydown(function(e){
+    var evt=event?event:(window.event?window.event:null);//兼容IE和FF
+    if(evt.keyCode==13){
+      searchList();//加载搜索列表
+    }
+  });
+  //点击搜索小图标
+  $(".ri_top_li2_img").on("click",function(){
+    searchList();//加载搜索列表 
+  });
+  //加载搜索列表 
+  function searchList(){
+    searchWord=$.trim($(".ri_top_li2_inp").val());
+    if(searchWord==""){
+      alert("请输入搜索内容");
+      $(".ri_top_li2_inp").focus();
+    }else{
+      destroy(_data);
+      _data.DeviceId=deviceId;
+      _data.MobileClass="Chrome";
+      _data.PCDType="3";
+      _data.UserId=userId;
+      _data.PageSize=pageSize;
+      _data.Page=current_page;
+      _data.FlagFlow="0";
+      _data.ChannelId="0";
+      _data.SeqMediaId=contentId;
+      _data.SearchWord=searchWord;
+      getSearchList(_Data);
+    }
+  }
+  function getSearchList(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/content/searchContents.do",
+      dataType:"json",
+      data:JSON.stringify(dataParam),
+      beforeSend: function(){
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        clear_jm();
+        if(resultData.ReturnType == "1001"){
+          $(".ri_top3_con").html("");//每次加载之前先清空
+          allCount=resultData.AllCount;
+          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
+          fillZj_jmList(resultData);//加载搜索得到的节目列表
+        }else{
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>没有找到节目...</div>");
+          allCount="0";
+          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
+        }
+        pagitionInit(contentCount,allCount,_data.Page);//init翻页
+        $('.shade', parent.document).hide();
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  /*e--根据搜索/筛选/翻页获取节目列表*/
+ 
 });
 </script>
 </html>

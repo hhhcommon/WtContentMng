@@ -101,7 +101,7 @@ input,textarea{
   width:220px;
   height:18px;
   float: left;
-  border-radius: 7px;
+  border-radius:7px;
   display: none;
 }
 .sonProgress{
@@ -113,7 +113,6 @@ input,textarea{
   font-size:16px; 
   color:#fff;
   font-weight:bold;
-  border-radius: 7px;
 }
 .uploadStatus{
   width:49px;
