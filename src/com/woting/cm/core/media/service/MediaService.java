@@ -178,15 +178,18 @@ public class MediaService {
 			m1.put("publisherId", "0");
 			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
 					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"')";
+			String wheresqlcount = " and assetId in (SELECT mId FROM wt_SeqMA_Ref where sId IN (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"'))";
 			if (m1.containsKey("channelIds")) {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
-			m1.put("wheresql", wheresql);
+			m1.put("wheresql", wheresqlcount);
 			m1.put("groupByClause", " assetId,assetType");
 			m1.put("sortByClause", " pubTime,cTime");
 			m1.put("LimitByClause", (page-1)*pagesize+","+pagesize);
-			m1.remove("channelIds"); // TODO
+			m1.remove("channelIds");
 			long allCount = channelAssetDao.getCount("getListCount", m1);
+			m1.put("wheresql", wheresql);
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m1);
 			if (chas != null && chas.size() > 0) {
 				String assetIds = "";
@@ -216,8 +219,7 @@ public class MediaService {
 								m.put("ContentSeqId", sma.getId());
 								m.put("ContentSeqName", sma.getSmaTitle());
 								if (m.containsKey("ContentPubChannels")) {
-									List<Map<String, Object>> chass = (List<Map<String, Object>>) m
-											.get("ContentPubChannels");
+									List<Map<String, Object>> chass = (List<Map<String, Object>>) m.get("ContentPubChannels");
 									if (chass != null && chass.size() > 0) {
 										for (Map<String, Object> map : chass) {
 											map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
