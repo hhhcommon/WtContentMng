@@ -138,8 +138,7 @@ public class QueryService {
 		if (mediaType!=null) {
 			if (mediaType.equals("SEQU")) sql += " ch.assetType = 'wt_SeqMediaAsset' )";
 			else if(mediaType.equals("AUDIO")) sql += " ch.assetType = 'wt_MediaAsset' )";
-			else sql += " ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset' ) ";
-		}
+		} else sql += " ch.assetType = 'wt_MediaAsset' or ch.assetType = 'wt_SeqMediaAsset' ) ";
 		if (flowFlag!=null) {
 			sql += " and ch.flowFlag = "+flowFlag;
 		}
