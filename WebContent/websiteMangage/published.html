@@ -1244,6 +1244,8 @@ $(function(){
           $(".nopass_masker,.nopass_container").hide();
           $("body").css({"overflow-x":"auto"});
           getContentList(data1);
+          $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+          $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
         }else{
           alert(resultData.Message);
         }

@@ -121,9 +121,9 @@ body.canvas-menu .navbar-static-side{
   font-weight:400;
   color:#000;
 }
-.con_left .nav > li .active{
+/*.con_left .nav > li .active{
   background-color:#0077c7;
-}
+}*/
 .a_fs{
   font-size:16px;
 }
@@ -237,6 +237,15 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
 .fb{
   font-weight:bolder;
 }
+.nav-third-level li:hover,.nav-third-level li:focus{
+  background:#0077c7;
+}
+.nav-third-level li a span{
+  padding-left: 20px; 
+}
+.nav-third-level{
+  background: #fff;
+}
 </style>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg laydate_body" onselectstart="return false">
@@ -286,11 +295,12 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
           <li class="programManage">
             <a href="javascript:void(0);" class="a_audio1">
               <img class="audio1" src="img/audio1.png" alt="节目管理" />
-              <span class="nav-label fb">节目管理</span>
+              <span class="nav-label fb">内容管理</span>
               <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-second-level nav-list collapse">
-              <li class="navList"><a hrefs="published.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><span class="nav-label">已发布</span></a></li>
+              <li class="navList"><a hrefs="published.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><span class="nav-label">已发布内容</span></a></li>
+              <li class="navList"><a hrefs="carousel_figure.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><span class="nav-label">轮播图版本1</span></a></li>
             </ul>
           </li>
           <li class="anchorManage">
@@ -324,6 +334,16 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
               <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-second-level nav-list collapse">
+              <!--<li>
+                <a hrefs="" class="M_menuItem a_audio1" href="javascript:void(0);">
+                  <span class="nav-label fb">轮播图管理</span>
+                  <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-third-level nav-list collapse">
+                  <li class="navList"><a hrefs="carousel_figure.html" class="M_menuItem a_audio1 " hrefs="javascript:void(0);"><span class="nav-label">添加节目</span></a></li>
+                  <li class="navList"><a hrefs="" class="M_menuItem a_audio1 " hrefs="javascript:void(0);"><span class="nav-label">设置轮播图</span></a></li>
+                </ul>
+              </li>-->
               <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><span class="nav-label">APK版本管理</span></a></li>
               <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><span class="nav-label">栏目管理</span></a></li>
               <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><span class="nav-label">分类管理</span></a></li>
@@ -387,9 +407,7 @@ $(function(){
   
   //点击左侧导航菜单加载Iframe
   $(".navList").on("click",function(){
-    $("#myIframe").attr({"src":$(this).children("a").attr("hrefs")});
-    $("#myIframe").show();
-    $("#newIframe").hide();
+    $("#myIframe").attr({"src":$(this).children("a").attr("hrefs")}).show();
   });
 })
   

@@ -199,8 +199,14 @@ $(function(){
     }
   });
   
+  /*s--分页插件*/
+  
+  /*e--分页插件*/
+  
   //请求推荐资源列表
   var searchStr=$(".palyCtrlBox").children("h4").text();
+  var contentId=eval('('+$("audio").attr("jmOpenApp").split("=")[1]+')').ContentId;
+  var page=1;
   var _data={
         "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
         "IMEI":"3279A27149B24719991812E6ADBA5583",
@@ -208,31 +214,56 @@ $(function(){
         "SearchStr":searchStr,
         "ResultType":"0",
         "PageType":"0",
-        "Page":"1",
-        "PageSize":"20"
+        "Page":page,
+        "RootInfo":"AUDIO_"+contentId,
+        "PageSize":"10"
   };
-  $.ajax({
-//  url: rootPath+"common/jsonp.do",
-    url:"http://www.wotingfm.com/wt/searchByText.do",
-    type:"POST",
-    dataType:"json",
-    data:JSON.stringify(_data),
-    success: function(resultData) {
-      if(resultData.ReturnType=="1001"){
-        loadRecomList(resultData);
-      }else{
-        $(".ulBox").html("");
-        $(".ulBox").append("<li class='noComment'>暂无推荐列表</li>");
-        $(".ulBox").css({"height":$(".noComment").height()});
+  tuijianList(_data);
+  function tuijianList(_data){
+    $.ajax({
+  //  url: rootPath+"common/jsonp.do",
+      url:"http://www.wotingfm.com/wt/searchByText.do",
+      type:"POST",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success: function(resultData) {
+        if(resultData.ReturnType=="1001"){
+          loadRecomList(resultData);
+          page++;
+        }else{
+          $(".ulBox").html("");
+          $(".ulBox").append("<li class='noComment'>暂无推荐列表</li>");
+          $(".ulBox").css({"height":$(".noComment").height()});
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
       }
-    },
-    error: function(jqXHR){
-      alert("发生错误" + jqXHR.status);
+    });
+  }
+  
+  //滚动条滚动时请求加载下一页数据
+  window.onscroll=function(){
+    if(page!=1){//不是第一页时才执行
+      //当滚动到最底部以上60像素时,加载新内容  
+      if($(document).height() - $(this).scrollTop() - $(this).height()==0){
+        var data={
+                  "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
+                  "IMEI":"3279A27149B24719991812E6ADBA5583",
+                  "PCDType":"3",
+                  "SearchStr":searchStr,
+                  "ResultType":"0",
+                  "PageType":"0",
+                  "Page":page,
+                  "PageSize":"10",
+                  "RootInfo":"AUDIO_"+contentId,
+        };
+        tuijianList(data);
+      }
     }
-  });
+  }
   
   //请求查看评论
-  var contentId=eval('('+$("audio").attr("jmOpenApp").split("=")[1]+')').ContentId;
   comment(contentId);
   function comment(contentId){
     var data={
@@ -242,7 +273,7 @@ $(function(){
           "ContentId":contentId,
           "MediaType":"AUDIO",
           "Page":"1",
-          "PageSize":"20"
+          "PageSize":"10"
     };
     $.ajax({
       url: rootPath+"common/jsonp.do",
@@ -341,15 +372,23 @@ $(function(){
   function loadRecomList(resultData){
     for(var i=0;i<resultData.ResultList.List.length;i++){
       var detail={};
+      var contentTime='0';
       if(resultData.ResultList.List[i].ContentTimes){
-        var contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
+        contentTime=parseInt(resultData.ResultList.List[i].ContentTimes/1000);
+        contentTime=formatTimeTJ(Math.round(contentTime));
       }else{
-        var contentTime="0";
+        contentTime="0";
+        contentTime=formatTimeTJ(Math.round(contentTime));
       }
-      if(resultData.ResultList.List[i].ContentPersons.perName) detail.zhubo=resultData.ResultList.List[i].ContentPersons[0].perName;
-      else detail.zhubo="未知";
-      if(resultData.ResultList.List[i].SeqInfo) detail.sequName=resultData.ResultList.List[i].SeqInfo.ContentName;
-      else detail.sequName="未知"; 
+      if(resultData.ResultList.List[i].ContentPersons){
+        detail.zhubo=resultData.ResultList.List[i].ContentPersons[0].PerName;
+      }else {
+        detail.zhubo="未知";
+      }
+      if(resultData.ResultList.List[i].SeqInfo){
+        if(resultData.ResultList.List[i].SeqInfo.ContentName) detail.sequName=resultData.ResultList.List[i].SeqInfo.ContentId;
+        else detail.sequName="未知";
+      }
       if(resultData.ResultList.List[i].ContentPub) detail.contentPub=resultData.ResultList.List[i].ContentPub;
       else detail.contentPub="未知"; 
       if(resultData.ResultList.List[i].ContentDescn) detail.contentDescn=resultData.ResultList.List[i].ContentDescn;
@@ -357,7 +396,7 @@ $(function(){
       if(resultData.ResultList.List[i].PlayCount!=null) detail.playCount=resultData.ResultList.List[i].PlayCount;
       else detail.playCount="0";
       if(resultData.ResultList.List[i].ContentImg) detail.contentImg=resultData.ResultList.List[i].ContentImg;
-      else detail.contentImg="暂无图片";
+      else detail.contentImg="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
       if(resultData.ResultList.List[i].ContentName) detail.contentName=resultData.ResultList.List[i].ContentName;
       else detail.contentName="暂无图片";
       var newListBox= '<li contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.sequName+' dp='+detail.contentPub+' class="listBox">'+
@@ -375,13 +414,11 @@ $(function(){
                             '<img src="../../imgs/sl.png" alt="" />'+
                             '<span>'+detail.playCount+'</span>'+
                            '<img src="../../imgs/sc.png" alt="" class="sc"/>'+
-                           '<span class="contentT" ></span>'+
+                           '<span class="contentT" fullTime='+contentTime+'>'+contentTime+'</span>'+
                           '</p>'+
                         '</div>'+
                       '</li>';
       $(".ulBox").append(newListBox);
-      $(".contentT").eq(i).text(formatTimeTJ(Math.round(contentTime))); 
-      $(".contentT").eq(i).attr({"fullTime":formatTime(Math.round(contentTime))}); 
     }
   }
   

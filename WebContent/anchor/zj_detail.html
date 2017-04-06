@@ -12,6 +12,7 @@
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link  href="css/pagination.css" rel="stylesheet"/>
+  <link href="css/add.css" rel="stylesheet"  />
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
@@ -198,6 +199,7 @@ body{overflow-y:auto;background: #fff;-moz-user-select: none;}
   cursor: pointer;
   width:100px;
   text-align: center;
+  margin-left:10px;
 }
 .jm_states{
   position: relative;
@@ -432,6 +434,17 @@ body{overflow-y:auto;background: #fff;-moz-user-select: none;}
 .infoTextAndGoPageBtnWrap{
   width:240px !important;
 }
+/*遮罩层*/
+.mask_jm{
+  width:100%;
+  height:1100px;
+  position: fixed;
+  top:0px;
+  left:0px;
+  z-index:10;
+  background:rgba(0,0,0,0.5);
+  display: none;
+}
 </style>
 <body onselectstart="return false">
 <div class="detail">
@@ -615,6 +628,143 @@ body{overflow-y:auto;background: #fff;-moz-user-select: none;}
   </div>
 </div>
 </body>
+<!--引入Iframe页面的遮罩层-->
+<div class="mask_jm"></div>
+<!--上传节目-->
+<div class="add_jm">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+          <div class="ibox-title iboxtitle">
+            <h4>上传节目</h4>
+            <div class="ibox-tools">
+              <a class="collapse-link">
+                <i class="fa fa-times"></i>
+              </a>
+            </div>
+          </div>
+          <div class="ibox-content">
+            <form class="form-horizontal">
+              <input type="text" class="jmId" style="display:none;" value="" />
+              <input type="text" class="timeLong" style="display:none;" value="" />
+              <div class="form-group">
+                <label class="col-sm-2 control-label">上传文件<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="upl_wj">
+                    <img class="upl_wj_img" src="img/upl_img1.png" alt="" />
+                  </div>
+                  <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
+                  <audio class="audio" preload="auto" src="" style="display:none;"></audio>
+                  <div class="upl_yp">
+                    <input type="text" class="yp_mz" >
+                    <div class="parentProgress">
+                      <div class="sonProgress"></div>
+                    </div>
+                    <div class="uploadStatus">上传成功</div>
+                    <img class="cancelUpload" src="img/upl_img2.png" alt="" />
+                  </div>
+                  <div class="upl_wj_p1">
+                    <span>支持 MP3、M4A的文件格式，文件≤100兆。</span>
+                                                            如上传内容存在色情、赌博或侵犯第三方合法权益等违反法律法规或公序良俗内容的，我听有权将节目下架。
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">节目名称<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="upl_mc">
+                    <input type="text" class="uplTitle" placeholder="标题" maxlength="40">
+                    <p>建议使用简洁明了的标题，请不要包含任何多余信息（如专辑标题、日期）；不超过40个字哦~</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">节目配图<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="upl_pt">
+                    <div class="previewImg" isDefaultImg="true">
+                      <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
+                    </div>
+                    <img class="upl_pt_img" src="img/upl_img3.png" alt="" />
+                    <div class="img_uploadStatus">上传成功</div>
+                    <div class="mask_gif">
+                      <img src="img/waiting_circle.gif" alt="图片上传等待" />
+                    </div>
+                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
+                    <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <select name="" class="upl_zj" autocomplete="off"></select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
+                <div class="col-sm-10" style="padding-left:0px;">
+                  <div class="tag_box">
+                    <ul class="upl_bq"></ul>
+                    <div class="input_tag">
+                      <input type="text" class="tag_txt" placeholder="添加自定义标签" maxlength="6"/>
+                    </div>
+                  </div>
+                  <div class="my_tag">
+                    <h5>我的标签</h5>
+                    <span class="hyp">换一批</span>
+                    <ul class="my_tag_con"></ul>
+                  </div>
+                  <div class="gg_tag">
+                    <h5>公共标签</h5>
+                    <span class="hyp">换一批</span>
+                    <ul class="gg_tag_con"></ul>
+                  </div>
+                  <p>最多添加5个标签，单个标签最长6个汉字，按回车确认</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">节目简介：</label>
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
+                  <div class="upl_desc">
+                    <textarea type="text" class="uplDecn" placeholder="关于节目内容的简单介绍"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">创作方式：</label>
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
+                  <div class="upl_czfs">
+                    <ul class="czfs_tag"></ul>
+                    <div class="czfs_div">
+                      <select name="" class="change_czfs" autocomplete="off"></select>
+                      <input type="text" class="czfs_author_ipt" placeholder="输入对应的作者,可自定义创作方式"/>
+                    </div>
+                    <p>可选择多个创作方式，并输入对应的作者， 按"enter"添加创作方式</p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-2 control-label">定时发布：</label>
+                <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
+                  <input class="form-control layer-date laydate-icon" style="max-width:240px;float:left;" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:20px;">
+                <div class="btn_group">
+                  <input type="button" class="submit" id="submitBtn" value="保存"/>
+                  <input type="button" class="cancel" id="cancelBtn" value="取消"/>
+                  <input type="button" class="pub" id="pubBtn" value="提交"/>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+</div>
 <script>
 $(function(){
   var href=$("#myIframe", parent.document).attr("src");
@@ -624,7 +774,7 @@ $(function(){
 //var userId=$(".login_user span",parent.document).attr("userid");
   var userId='123';
   //获取deviceId
-  var deviceId="517CF12AA8B32A558580CCA76547533D";
+  var deviceId="E830A87F620FFAC2B8585F39BA4186E8";
   
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
@@ -670,7 +820,6 @@ $(function(){
   //得到专辑下面的节目列表
   getZj_jmList(_data);
   function getZj_jmList(dataParam){
-    debugger;
     $.ajax({
       type:"POST",
       url:rootPath+"content/media/getMediaList.do",
@@ -775,7 +924,6 @@ $(function(){
   
   //专辑的节目列表
   function fillZj_jmList(resultData){
-    $(".list_content,.list_title h4").html("");//每次加载之前先清空
     for(var i=0;i<resultData.ResultList.length;i++){
       var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList[i].ContentSeqId+' contentId='+resultData.ResultList[i].ContentId+'>'+
                         '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
@@ -872,6 +1020,8 @@ $(function(){
                           "MobileClass":"Chrome",
                           "PCDType":"3",
                           "UserId":userId,
+                          "PageSize":pageSize,
+                          "Page":current_page,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -887,6 +1037,8 @@ $(function(){
                           "MobileClass":"Chrome",
                           "PCDType":"3",
                           "UserId":userId,
+                          "PageSize":pageSize,
+                          "Page":current_page,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -902,6 +1054,8 @@ $(function(){
                           "MobileClass":"Chrome",
                           "PCDType":"3",
                           "UserId":userId,
+                          "PageSize":pageSize,
+                          "Page":current_page,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -917,6 +1071,8 @@ $(function(){
                           "MobileClass":"Chrome",
                           "PCDType":"3",
                           "UserId":userId,
+                          "PageSize":pageSize,
+                          "Page":current_page,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -932,6 +1088,8 @@ $(function(){
                           "MobileClass":"Chrome",
                           "PCDType":"3",
                           "UserId":userId,
+                          "PageSize":pageSize,
+                          "Page":current_page,
                           "SeqMediaId":contentId,
                           "ChannelId":"0",
                           "FlowFlag":FlowFlag
@@ -1010,7 +1168,6 @@ $(function(){
   
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
-    debugger;
     destroy(_data);
     _data.DeviceId=deviceId;
     _data.MobileClass="Chrome";
@@ -1094,6 +1251,471 @@ $(function(){
     });
   }
   /*e--根据搜索/筛选/翻页获取节目列表*/
+ 
+  /*s--相关操作的集合*/
+  /*s--点击相关操作的编辑按钮*/
+  $(document).on("click",".jm_edit",function(){
+    var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("jmstatusid");
+//  if(flowFlag=="2"||flowFlag=="3"||flowFlag=="4"||flowFlag=="6"||flowFlag=="8"){
+      //2发布审核中，3已审核(定时发布)，4已发布，6待撤回(实际是撤回审核中)，8撤回未通过
+    if(flowFlag=="1"||flowFlag=="2"){//0(已提交),1(审核中),2(已发布),3(未通过),4(已撤回)
+      alert("当前状态不支持编辑操作");
+      return;
+    }else{
+      edit_jm(contentId);//编辑节目时得到节目的详细信息
+    }
+  });
+  //编辑节目时得到节目的详细信息
+  function edit_jm(contentId){
+    var datas={"DeviceId":deviceId,
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":userId,
+               "ContentId":contentId
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/getMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(datas),
+      beforeSend: function(){
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          clear_jm();//填充前清空数据
+          $("body").css({"overflow":"hidden"});
+          getTime();
+          fillJmContent(resultData);//填充节目信息
+        }else{
+          alert(resultData.Message);
+        }
+        $('.shade', parent.document).hide();
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  //填充节目信息
+  function fillJmContent(resultData){
+    $(".jmId").attr("value",resultData.Result.ContentId);
+    $(".iboxtitle h4").html("修改节目");
+    $(".yp_mz").val("aa.mp3");//数据库没有存这一字段，因为有需要，我自己加上的
+    $(".upl_file").attr("value",resultData.Result.ContentPlay);
+    $(".audio").attr("src",resultData.Result.ContentPlay);
+    $(".uplTitle").val(resultData.Result.ContentName);
+    $(".defaultImg").attr("src",resultData.Result.ContentImg);
+    $(".upl_img").attr("value",resultData.Result.ContentImg);
+    $(".upl_zj option").each(function(){
+      if($(this).attr("id")==resultData.Result.ContentSeqId){
+        $(".upl_zj option").prop("selected",false);
+        $(this).prop("selected",true); 
+      }
+    })
+    if(resultData.Result.ContentKeyWords!=null){
+      for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
+        var new_tag= '<li class="upl_bq_img bqImg" tagId='+resultData.Result.ContentKeyWords[i].TagId+'>'+
+                      '<span>'+resultData.Result.ContentKeyWords[i].TagName+'</span>'+
+                      '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+                    '</li>';
+        $(".upl_bq").append(new_tag);
+        var tagId=resultData.Result.ContentKeyWords[i].TagId;
+        $(".my_tag_con").find(".my_tag_con1").each(function(){
+          if($(this).attr("tagId")==tagId){
+            $(this).children("input").prop("checked",true);
+            $(this).children("input").prop("disabled",true);
+          }
+        })
+        $(".gg_tag_con").find(".gg_tag_con1").each(function(){
+          if($(this).attr("tagId")==tagId){
+            $(this).children("input").prop("checked",true);
+            $(this).children("input").prop("disabled",true);
+          }
+        })
+      }
+    }
+    $(".uplDecn").val(resultData.Result.ContentDesc);
+    if(resultData.Result.ContentMemberTypes!=null){
+      for(var i=0;i<resultData.Result.ContentMemberTypes.length;i++){
+        var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+resultData.Result.ContentMemberTypes[i].TypeId+'>'+
+                        '<div class="czfs_tag_div">'+
+                        '<span class="czfs_tag_span1">'+resultData.Result.ContentMemberTypes[i].TypeName+' : </span>'+
+                        '<span class="czfs_tag_span2">'+resultData.Result.ContentMemberTypes[i].TypeInfo+'</span>'+
+                        '</div>'+
+                        '<img class="cancelImg" src="img/upl_img2.png" alt="" />'+
+                      '</li>';
+        $(".czfs_tag").append(new_czfs); 
+      }
+    }
+    $(".layer-date").val(resultData.Result.CTime);
+  }
+  //点击编辑页面的保存
+  $("#submitBtn").on("click",function(){
+    if(!$(".upl_img").attr("value")){
+      $(".upl_img").attr("value",$(".defaultImg").attr("src"));
+    }
+    var _data={};
+    _data.UserId=userId;
+    _data.DeviceId=deviceId;
+    _data.MobileClass="Chrome";
+    _data.PCDType="3";
+    _data.ContentId=$(".jmId").val();
+    _data.ContentURI=$(".audio").attr("src");
+    _data.ContentName=$(".uplTitle").val();
+    _data.ContentImg=$(".upl_img").attr("value")
+    _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    _data.TimeLong=$(".timeLong").attr("value");
+    var taglist=[];
+    $(".upl_bq").find(".upl_bq_img").each(function(){
+      var tag={};//标签对象
+      var tagTxt=$(this).children("span").html();
+      $(".my_tag_con1").each(function(){
+        if($(this).children(".my_tag_con1_span").html()==tagTxt){
+          $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
+          $(this).children(".my_tag_con1_check").prop("checked",true);
+          $(this).children(".my_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".my_tag_con1_span").html();
+          tag.TagOrg="我的标签";
+        }
+      })
+      $(".gg_tag_con1").each(function(){
+        if($(this).children(".gg_tag_con1_span").html()==tagTxt){
+          $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
+          $(this).children(".gg_tag_con1_check").prop("checked",true);
+          $(this).children(".gg_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".gg_tag_con1_span").html();
+          tag.TagOrg="公共标签";
+        }
+      })
+      if($(this).attr("tagType")=="自定义标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="自定义标签";
+      }
+      taglist.push(tag);
+    });
+    _data.TagList=taglist;
+    _data.ContentDesc=$(".uplDecn").val();
+    var memberTypelist=[];
+    $(".czfs_tag").find(".czfs_tag_li").each(function(){
+      var czfsObj={};//创作方式对象
+      var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
+      var czfs_txt=czfs_t.split(":")[0];
+      czfsObj.TypeName=czfs_txt;
+      czfsObj.TypeId=$(this).attr("czfs_typeid");
+      czfsObj.TypeInfo=$(this).children().children(".czfs_tag_span2").html();
+      memberTypelist.push(czfsObj);
+    });
+    _data.MemberType=memberTypelist;
+    var str_time=$(".layer-date").val();
+    var rst_strto_time=js_strto_time(str_time);
+    _data.FixedPubTime=rst_strto_time;
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/updateMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(_data),
+      beforeSend: function(){
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("修改内容保存成功");
+          $(".mask_jm,.add_jm").hide();
+          $("body").css({"overflow":"auto"});
+          getZj_jmList(_data);//重新加载节目列表
+        }else{
+          alert(resultData.Message);
+        }
+        $('.shade', parent.document).hide();
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  });
+  //点击编辑页面的提交
+  var _datas={};
+  $("#pubBtn").on("click",function(){
+    _datas.UserId=userId;
+    _datas.DeviceId=deviceId;
+    _datas.MobileClass="Chrome";
+    _datas.PCDType="3";
+    _datas.ContentId=$(".jmId").val();
+    _datas.ContentURI=$(".audio").attr("src");
+    _datas.ContentName=$(".uplTitle").val();
+    _datas.ContentImg=$(".upl_img").attr("value");
+    _datas.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    _datas.TimeLong=$(".timeLong").attr("value");
+    var taglist=[];
+    $(".upl_bq").find(".upl_bq_img").each(function(){
+      var tag={};//标签对象
+      var tagTxt=$(this).children("span").html();
+      $(".my_tag_con1").each(function(){
+        if($(this).children(".my_tag_con1_span").html()==tagTxt){
+          $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
+          $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
+          $(this).children(".my_tag_con1_check").prop("checked",true);
+          $(this).children(".my_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".my_tag_con1_span").html();
+          tag.TagOrg="我的标签";
+        }
+      })
+      $(".gg_tag_con1").each(function(){
+        if($(this).children(".gg_tag_con1_span").html()==tagTxt){
+          $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
+          $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
+          $(this).children(".gg_tag_con1_check").prop("checked",true);
+          $(this).children(".gg_tag_con1_check").attr("disabled",true);
+          tag.TagName=$(this).children(".gg_tag_con1_span").html();
+          tag.TagOrg="公共标签";
+        }
+      })
+      if($(this).attr("tagType")=="自定义标签"){
+        tag.TagName=$(this).children("span").html();
+        tag.TagOrg="自定义标签";
+      }
+      taglist.push(tag);
+    });
+    _datas.TagList=taglist;
+    _datas.ContentDesc=$(".uplDecn").val();
+    var memberTypelist=[];
+    $(".czfs_tag").find(".czfs_tag_li").each(function(){
+      var czfsObj={};//创作方式对象
+      var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
+      var czfs_txt=czfs_t.split(":")[0];
+      czfsObj.TypeName=czfs_txt;
+      czfsObj.TypeId=$(this).attr("czfs_typeid");
+      czfsObj.TypeInfo=$(this).children().children(".czfs_tag_span2").html();
+      memberTypelist.push(czfsObj);
+    });
+    _datas.MemberType=memberTypelist;
+    var str_time=$(".layer-date").val();
+    var rst_strto_time=js_strto_time(str_time);
+    _data.FixedPubTime=rst_strto_time;
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/updateMediaInfo.do",
+      dataType:"json",
+      data:JSON.stringify(_datas),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          pubEditJm(_datas);
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  });
+  function pubEditJm(_datas){
+    var contentId=$(".jmId").val();
+    var contentSeqId=_datas.SeqMediaId;
+    var list=[{"ContentId":contentId,"SeqMediaId":contentSeqId}];
+    var data4={"DeviceId":deviceId,
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":userId,
+               "ContentFlowFlag":"2",
+               "UpdateList":list
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/updateMediaStatus.do",
+      dataType:"json",
+      data:JSON.stringify(data4),
+      beforeSend: function(){
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("节目发布成功");
+          $(".mask_jm,.add_jm").hide();
+          $("body").css({"overflow":"auto"});
+          getZj_jmList(_datas);//重新加载节目列表
+        }else{
+          alert(resultData.Message);
+        }
+        $('.shade', parent.document).show();
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  /*e--点击相关操作的编辑按钮*/
+  
+  /*s--点击相关操作的提交按钮*/
+  $(document).on("click",".jm_submit",function(){
+     var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("jmstatusid");
+     if(flowFlag=="1"||flowFlag=="2") {//0(已提交),1(审核中),2(已发布),3(未通过),4(已撤回)
+      alert("当前状态不支持发布操作");
+      return;
+    }else{
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      $('.shade', parent.document).show();
+      submit_jm(contentId,contentSeqId);
+    }
+  })
+  function submit_jm(contentId,contentSeqId){
+    var datas={"DeviceId":deviceId,
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":userId,
+               "UpdateList":[{"ContentId":contentId,"SeqMediaId":contentSeqId}],
+               "ContentFlowFlag":"2"
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/updateMediaStatus.do",
+      dataType:"json",
+      data:JSON.stringify(datas),
+      beforeSend:function(){
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("发布节目请求成功");
+//        var _data={"DeviceId":deviceId,
+//                  "MobileClass":"Chrome",
+//                  "UserId":userId,
+//                  "PCDType":"3",
+//                  "PageSize":pageSize,
+//                  "Page":current_page,
+//                  "FlagFlow":"0",
+//                  "ChannelId":"0",
+//                  "SeqMediaId":contentId
+//      };
+//      getZj_jmList(_data);//重新加载节目列表
+        }else{
+          alert(resultData.Message);
+        }
+        $('.shade', parent.document).hide();
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  /*e--点击相关操作的提交按钮*/
+ 
+  /*s--点击相关操作的撤回按钮*/
+  $(document).on("click",".jm_recal",function(){
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("jmstatusid");
+    if(flowFlag=="2"||flowFlag=="3"){//0(已提交),1(审核中),2(已发布),3(未通过),4(已撤回)
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      var seqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      recal_jm(contentId,seqId);
+    }else{
+      alert("当前节目不支持撤回操作");
+      return;
+    }
+  })
+  function recal_jm(contentId,seqId){
+    var datas={"DeviceId":deviceId,
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":userId,
+               "UpdateList":[{"ContentId":contentId,"SeqMediaId":seqId}],
+               "ContentFlowFlag":"4"
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/updateMediaStatus.do",
+      dataType:"json",
+      data:JSON.stringify(datas),
+      beforeSend:function(){
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("撤回节目请求已发送");
+//        var _data={"DeviceId":deviceId,
+//                  "MobileClass":"Chrome",
+//                  "UserId":userId,
+//                  "PCDType":"3",
+//                  "PageSize":pageSize,
+//                  "Page":current_page,
+//                  "FlagFlow":"0",
+//                  "ChannelId":"0",
+//                  "SeqMediaId":contentId
+//      };
+//      getZj_jmList(_data);//重新加载节目列表
+        }else{
+          alert(resultData.Message);
+        }
+        $('.shade', parent.document).hide();
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  /*e--点击相关操作的撤回按钮*/
+ 
+  /*s--点击相关操作的删除按钮*/
+  $(document).on("click",".jm_del",function(){
+    var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("jmstatusid");
+    if(flowFlag=="0"||flowFlag=="4"){//0(已提交),1(审核中),2(已发布),3(未通过),4(已撤回)
+      $('.shade', parent.document).show();
+      var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+      var contentSeqId=$(this).parents(".rtc_listBox").attr("contentseqid");
+      del_jm(contentId,contentSeqId);
+    }else{
+      alert("当前节目不支持删除操作");
+      return;
+    }
+  })
+  function del_jm(contentId,contentSeqId){
+    var datas={"DeviceId":deviceId,
+               "MobileClass":"Chrome",
+               "PCDType":"3",
+               "UserId":userId,
+               "ContentIds":contentId,
+    };
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/media/removeMedia.do",
+      dataType:"json",
+      data:JSON.stringify(datas),
+      beforeSend:function(){
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          alert("节目删除成功");
+//        var _data={"DeviceId":deviceId,
+//                  "MobileClass":"Chrome",
+//                  "UserId":userId,
+//                  "PCDType":"3",
+//                  "PageSize":pageSize,
+//                  "Page":current_page,
+//                  "FlagFlow":"0",
+//                  "ChannelId":"0",
+//                  "SeqMediaId":contentId
+//      };
+//      getZj_jmList(_data);//重新加载节目列表
+        }else{
+          alert(resultData.Message);
+        }
+        $('.shade', parent.document).hide();
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  /*e--点击相关操作的删除按钮*/
+ 
+  /*e--相关操作的集合*/
+  
  
 });
 </script>

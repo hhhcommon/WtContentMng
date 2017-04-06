@@ -28,27 +28,27 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   height:100%;
 }
 .content_wrapper{
-  width:820px;
-  margin-top: 30px;
+  width:800px;
+  margin-top:15px;
   float: left;
-  border-right:1px solid #dedede;
+  /*border-right:1px solid #dedede;*/
 }
 .cw_c1{
   font-weight:bold;
   color: #000;
   font-size:24px;
-  padding:0px 30px 30px;
+  padding:0px 20px 30px;
 }
 .cw_c2{
   color:#333;
-  padding:0px 30px;
+  padding:0px 20px;
   margin:0;
 }
 .cw_c2 span{
   margin-right:10px;
 }
 .cw_c3{
-  padding: 0px 30px 30px;
+  padding: 0px 20px 30px;
   position: relative;
   width: 100%;
   height: 100%;
@@ -72,14 +72,15 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   background-size:100% 100%;
 }
 .tujian_wrapper{
-  width:270px;
-  height:100%;
+  position: relative;
+  width: 280px;
+  height: 625px;
   float: left;
   /*background: red;*/
 }
 .tujian_wrapper1{
   position: relative;
-  padding: 35px 45px 0px 15px;
+  padding: 35px 10px 0px 15px;
   /*border: 1px solid green;*/
 }
 .prev,.next{
@@ -101,7 +102,6 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 .tw_cons{
   width:100%;
   height:550px;
-  overflow-y: auto;
   margin: 17px 0px;
 }
 .tw_con{
@@ -113,31 +113,55 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 .tw_cons :last-child .tw_con{
   border-bottom: none;
 }
-.tw_con div{
-  font-size:17px;
+.tw_con1{
+  font-size:16px;
+  color: #FFA634;
+}
+.tw_con2{
+  font-size: 14px;
   color: #000;
+  height: 60px;
+  margin-top: 10px;
+  overflow: hidden;
 }
-.tw_con img{
-  width: 120px;
-  height: 80px;
-  display: block;
-  background-size: 100% 100%;
-  margin: 15px auto 5px;
-}
-.ellipsis {
+.ellipsis{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.header{
+  height:40px;
+  padding:0px 15px;
+  color:#000;
+  font-size:14px;
+  margin:0px;
+}
+.fl{float: left;}
+.select{
+  width: 40px;
+  height: 20px;
+  text-align: center;
+  border: 1px solid #ffa634;
+  border-radius: 8px;
+  color: #ffa634;
+  float: right;
+}
 </style>
 <body class="laydate_body" onselectstart="return false">
   <div class="containers">
+    <ul class="header ellipsis">
+      <li class="fl">素材库&nbsp;></li>
+      <li class="fl">&nbsp;选题推 &nbsp;></li>
+      <li class="fl">&nbsp;姚明当选新一届中国篮协主席#&nbsp;></li>
+      <li class="fl">&nbsp;中国篮协体制改革</li>
+    </ul>
     <div class="content_wrapper">
       <div class="cw_c1">朴槿惠遭弹劾辞职后 韩国经济将何去何从</div>
       <p class="cw_c2">
         <span>澎湃新闻</span>
         <span>2016-11-12</span>
         <span>16:45</span>
+        <span class="select">收藏</span>
       </p>
       <div class="cw_c3">
         <div class="cw_c4">
@@ -168,21 +192,24 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
         </div>
         <ul class="tw_cons">
           <li class="tw_con">
-            <div class="">频道的一档访谈的一档访谈的一档访谈类栏目</div>
-            <img src="img/a5.jpg" alt="" />
+            <div class="tw_con1 ellipsis">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con2">频道的一档访一档访谈的一档访访谈的一档访谈类栏目</div>
           </li>
           <li class="tw_con">
-            <div class="">频道的一档访谈的一档访谈的一档访谈类栏目</div>
-            <img src="img/a5.jpg" alt="" />
+            <div class="tw_con1 ellipsis">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con2">频道的一档访一档访谈的一档访访谈的一档访谈类栏目</div>
           </li>
           <li class="tw_con">
-            <div class="">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con1 ellipsis">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con2">频道的一档访一档访谈的一档访访谈的一档访谈类栏目</div>
           </li>
           <li class="tw_con">
-            <div class="">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con1 ellipsis">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con2">频道的一档访一档访谈的一档访访谈的一档访谈类栏目</div>
           </li>
           <li class="tw_con">
-            <div class="">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con1 ellipsis">频道的一档访谈的一档访谈的一档访谈类栏目</div>
+            <div class="tw_con2">频道的一档访一档访谈的一档访访谈的一档访谈类栏目</div>
           </li>
         </ul>
         <div class="next">

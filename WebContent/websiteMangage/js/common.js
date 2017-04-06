@@ -158,8 +158,8 @@ $(document).on("click",".cate_img",function(){//所有筛选条件里面的取�
 });
 $(document).on("click",".all_check",function(){//点击全选
   if($(this).hasClass("checkbox1")){
-    $(".checkbox_img").attr({"src":"img/checkbox2.png"});
-    $(this).removeClass("checkbox1");
+    $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+    $(".ri_top3_con .rtc_listBox .checkbox_img").attr({"src":"img/checkbox2.png"});
     $(".ri_top3_con .rtc_listBox").each(function(){
       $(this).children(".rtcl_img_check").removeClass("checkbox1");
     });
@@ -167,8 +167,8 @@ $(document).on("click",".all_check",function(){//点击全选
     $(".rto_pass").css({"background":"#0077c7"});
     $(".rto_nopass").css({"background":"darkred"}); 
   }else{
-    $(".checkbox_img").attr({"src":"img/checkbox1.png"});
-    $(this).addClass("checkbox1");
+    $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+    $(".ri_top3_con .rtc_listBox .checkbox_img").attr({"src":"img/checkbox1.png"});
     $(".ri_top3_con .rtc_listBox").each(function(){
       $(this).children(".rtcl_img_check").addClass("checkbox1");
     }); 
@@ -176,14 +176,32 @@ $(document).on("click",".all_check",function(){//点击全选
   }
 });
 $(document).on("click",".rtcl_img_check",function(){//点击单个勾选框
+  var num=0;
+  var l=$(".ri_top3_con .rtc_listBox .rtcl_img_check").length;
   if($(this).hasClass("checkbox1")){
     $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
     $(".opetype").removeAttr("disabled").css("color","#fff");
     $(".rto_pass").css({"background":"#0077c7"});
     $(".rto_nopass").css({"background":"darkred"});
+    $(".ri_top3_con .rtc_listBox .rtcl_img_check").each(function(){//是否选中全选
+      if($(this).hasClass("checkbox1")){
+        
+      }else{
+        num++;
+      }
+    });
+    if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"img/checkbox2.png"});
   }else{
     $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-    $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+    $(".ri_top3_con .rtc_listBox .rtcl_img_check").each(function(){//是否选中全选
+      if($(this).hasClass("checkbox1")){
+        
+      }else{
+        num++;
+      }
+    });
+    if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+    if(num==0) $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
   }
 });
 $(window).resize(function(){//时刻监听着页面的变化

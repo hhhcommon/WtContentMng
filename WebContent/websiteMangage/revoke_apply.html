@@ -1240,6 +1240,8 @@ $(function(){
               data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
             }
             getContentList(data1);
+            $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+            $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
           }else{
             alert(resultData.Message);
           }
@@ -1323,6 +1325,8 @@ $(function(){
           $("body").css({"overflow-x":"auto"});
           alert("具体原因提交成功");
           getContentList(data1);
+          $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+          $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
         }else{
           alert(resultData.Message);
         }
