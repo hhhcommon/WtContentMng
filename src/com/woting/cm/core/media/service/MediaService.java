@@ -178,15 +178,18 @@ public class MediaService {
 			m1.put("publisherId", "0");
 			String wheresql = " and assetId in (select resId from wt_Person_Ref where personId = '" + userid
 					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"')";
+			String wheresqlcount = " and assetId in (SELECT mId FROM wt_SeqMA_Ref where sId IN (select resId from wt_Person_Ref where personId = '" + userid
+					+ "' and resTableName = 'wt_SeqMediaAsset' and resId = '"+seqmediaid+"'))";
 			if (m1.containsKey("channelIds")) {
 				wheresql += " and channelId in ("+m1.get("channelIds")+")";
 			}
-			m1.put("wheresql", wheresql);
+			m1.put("wheresql", wheresqlcount);
 			m1.put("groupByClause", " assetId,assetType");
 			m1.put("sortByClause", " pubTime,cTime");
-			m1.put("LimitByClause", (page-1)*pagesize+","+pagesize);
-			m1.remove("channelIds"); // TODO
+//			m1.put("LimitByClause", (page-1)*pagesize+","+pagesize);
+			m1.remove("channelIds");
 			long allCount = channelAssetDao.getCount("getListCount", m1);
+			m1.put("wheresql", wheresql);
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m1);
 			if (chas != null && chas.size() > 0) {
 				String assetIds = "";
@@ -200,7 +203,7 @@ public class MediaService {
 				List<SeqMediaAssetPo> smas = seqMediaAssetDao.queryForList("getSmaList", m2);
 				if (smas != null && smas.size() > 0) {
 					for (SeqMediaAssetPo sma : smas) {
-						List<MediaAssetPo> listpo = getMaListBySmaId(sma.getId());
+						List<MediaAssetPo> listpo = getMaListBySmaId(sma.getId(), page, pagesize);
 						if (listpo != null && listpo.size() > 0) {
 							String resids = "";
 							for (MediaAssetPo mediaAssetPo : listpo) {
@@ -216,8 +219,7 @@ public class MediaService {
 								m.put("ContentSeqId", sma.getId());
 								m.put("ContentSeqName", sma.getSmaTitle());
 								if (m.containsKey("ContentPubChannels")) {
-									List<Map<String, Object>> chass = (List<Map<String, Object>>) m
-											.get("ContentPubChannels");
+									List<Map<String, Object>> chass = (List<Map<String, Object>>) m.get("ContentPubChannels");
 									if (chass != null && chass.size() > 0) {
 										for (Map<String, Object> map : chass) {
 											map.put("FlowFlagState", FlowFlagState.get(map.get("FlowFlag")));
@@ -384,7 +386,7 @@ public class MediaService {
 		return null;
 	}
 
-	public List<Map<String, Object>> getSmaListByPubId(String userid, int page, int pagesize) {
+	public Map<String, Object> getSmaListByPubId(String userid, int page, int pagesize) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		List<SeqMediaAssetPo> listpo = new ArrayList<SeqMediaAssetPo>();
 		Map<String, Object> m = new HashMap<>();
@@ -398,6 +400,8 @@ public class MediaService {
 					+ "' and resTableName = 'wt_SeqMediaAsset')");
 			m.put("groupByClause", " assetId,assetType");
 			m.put("sortByClause", " pubTime,cTime");
+			int allCount = channelAssetDao.getCount("getCountBy",m);
+			
 			m.put("LimitByClause", (page-1)*pagesize+","+pagesize);
 			List<ChannelAssetPo> chas = channelAssetDao.queryForList("getListBy", m);
 			if (chas != null && chas.size() > 0) {
@@ -411,10 +415,12 @@ public class MediaService {
 				m.put("smaPubId", "0");
 				listpo = seqMediaAssetDao.queryForList("getSmaList", m);
 				list = makeSmaListToReturn(listpo);
-				return list;
+				Map<String, Object> retM = new HashMap<>();
+				retM.put("AllCount", allCount);
+				retM.put("List", list);
+				return retM;
 			}
 		}
-
 		return null;
 	}
 
@@ -632,8 +638,13 @@ public class MediaService {
 		return null;
 	}
 
-	public List<MediaAssetPo> getMaListBySmaId(String smaid) {
-		List<MediaAssetPo> malist = mediaAssetDao.queryForList("getMaListBySmaId", smaid);
+	public List<MediaAssetPo> getMaListBySmaId(String smaid, int page, int pageSize) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("sId", smaid);
+		if (page!=0 && pageSize!=0) {
+			m.put("LimitByClause", (page-1)*pageSize+","+pageSize);
+		}
+		List<MediaAssetPo> malist = mediaAssetDao.queryForList("getMaListBySmaId", m);
 		return malist;
 	}
 

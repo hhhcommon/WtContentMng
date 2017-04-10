@@ -24,7 +24,7 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 html,body{height:100%;overflow-x: auto;font-family: "微软雅黑";}
 .wrapper{
   width:100%;
-  height:100%;
+  height:auto;
   position: absolute;
   background-image:url("img/bg.jpg");
   background-size:100% 100%;
@@ -286,6 +286,7 @@ $(function(){
       type:"POST",
       url:rootPath+"passport/user/mlogin.do",
       dataType:"json",
+      cache:true,
       data:JSON.stringify(login_data),
       beforeSend:function(){
         $(".mask_gif").show();
@@ -380,6 +381,7 @@ $(function(){
       type:"POST",
       url:_url,
       dataType:"json",
+      cache:true,
       data:JSON.stringify(_data),
       success:function(returnData){
         if(returnData.ReturnType=="1001"){
@@ -416,6 +418,7 @@ $(function(){
       type:"POST",
       url:rootPath+"passport/user/checkPhoneCheckCode.do",
       dataType:"json",
+      cache:true,
       data:JSON.stringify(_data),
       success:function(returnData){
         if(returnData.ReturnType!="1001"){
@@ -494,6 +497,7 @@ $(function(){
       type:"POST",
       url:rootPath+"passport/user/register.do",
       dataType:"json",
+      cache:true,
       data:JSON.stringify(register_data),
       beforeSend:function(){
         $(".mask_gif").show();
@@ -516,7 +520,6 @@ $(function(){
     });
   });
   /*e--注册*/
-  
 });
 </script>
 </html>

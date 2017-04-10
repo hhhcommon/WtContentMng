@@ -53,7 +53,7 @@ public class PassportController {
     private DictService dictService;
     @Resource(name="redisSessionService")
     private SessionService sessionService;
-    @Resource
+    @Resource(name="connectionFactory123")
     JedisConnectionFactory redisConn;
 
     /**

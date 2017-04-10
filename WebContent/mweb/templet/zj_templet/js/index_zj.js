@@ -14,12 +14,17 @@ $(function(){
   });
   
   //加载更多
+  var timeLong='';
   function loadMore(resultData){
     var detail={};
     for(var i=0;i<resultData.ResultList.length;i++){
       var str=resultData.ResultList[i].CTime;
       var ct=str.substring(0,str.lastIndexOf(":"));
-      var timeLong=resultData.ResultList[i].ContentTimes;
+      if(resultData.ResultList[i].ContentTimes){
+        timeLong=parseInt(resultData.ResultList[i].ContentTimes/1000);
+      }else{
+        timeLong="0";
+      }
       var tl=formatTimeTJ(timeLong);
       if(resultData.ResultList[i].ContentPlay) detail.contentPlay=resultData.ResultList[i].ContentPlay;
       else detail.contentPlay="未知";
@@ -39,7 +44,7 @@ $(function(){
                       '<span class="contentT">'+tl+'</span>'+
                     '</p>'+
                   '</li>';
-      $(".ulBox").append(listBox);           
+      $(".ulBox").append(listBox);
     }
   }
   
@@ -73,7 +78,8 @@ $(function(){
   
   //获取节目列表的节目时长
   $(document).find(".ulBox li").each(function(){
-    var timeLong=$(this).children(".lcp").children(".contentT").text();
+    var tl=$(this).children(".lcp").children(".contentT").text();
+    timeLong=parseInt(tl)/1000;
     $(this).children(".lcp").children(".contentT").text(formatTimeTJ(timeLong));
   })
 

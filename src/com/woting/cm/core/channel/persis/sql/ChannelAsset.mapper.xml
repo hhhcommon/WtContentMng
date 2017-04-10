@@ -148,6 +148,17 @@
     where assetType=#{assetType,jdbcType=VARCHAR} and (${assetIds})
   </select>
   
+  <select id="getCountBy" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select COUNT(s.num) FROM
+    (
+    select  count(*) num from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    <if test="wheresql!=null"> ${wheresql}</if>
+    <if test="groupByClause!=null"> group by ${groupByClause}</if>
+    <if test="sortByClause!=null"> order by ${sortByClause}</if>
+    <if test="LimitByClause!=null"> limit ${LimitByClause}</if>
+    ) s
+  </select>
+  
   <select id="getListBy" parameterType="java.util.Map" resultMap="channelAssetMap">
     select <include refid="Base_Column_List"/>from wt_ChannelAsset <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
     <if test="wheresql!=null"> ${wheresql}</if>

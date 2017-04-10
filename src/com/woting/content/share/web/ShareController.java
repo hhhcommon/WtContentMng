@@ -81,4 +81,21 @@ public class ShareController {
 			return map;
 		}
 	}
+	
+	@RequestMapping(value = "/share/makeOSSInfo.do")
+	@ResponseBody
+	public Map<String, Object> makeOSSInfo(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String id = m.get("Id") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(id) || id.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无分享地址");
+			return map;
+		}
+		shareService.makeOSSInfo(id);
+
+		map.put("ReturnType", "1001");
+		return map;
+	}
 }

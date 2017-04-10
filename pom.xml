@@ -7,9 +7,7 @@
   <!-- 配置编码格式，与eclpse的IDE环境编码格式匹配 -->
   <!-- D:\workIDE\projects\WtContentMng || D:\workIDE\work\WtContentMng || D:\WBWorkDir\WtContentMng -->
   <properties>
-
-	<projectDir>D:\workIDE\projects\WtContentMng</projectDir>
-
+	<projectDir>D:\WBWorkDir\WtContentMng</projectDir>
   </properties>
 
   <parent>

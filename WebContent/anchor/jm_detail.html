@@ -5,8 +5,8 @@
   <title>节目详情</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听,我享听">
+  <meta name="description" content="我听,我享听">
   <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
@@ -90,7 +90,7 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
 }
 .dc_left .dcl_pic .phone_pic2{
   position: absolute;
-  top:237px;
+  top:247px;
   margin-left:95px;
   z-index:10;
   cursor: pointer;
@@ -348,9 +348,17 @@ body{overflow: auto;background:#fff;-moz-user-select: none;}
 </body>
 <script>
 $(function(){
-  var href=$("#newIframe", parent.document).attr("src");
+  var href=$("#myIframe", parent.document).attr("src");
   var contentId=href.split('?')[1].split("=")[1];
   var rootPath=getRootPath();
+  
+  //获取deviceId
+//var deviceId=getCookie("JSESSIONID");
+  var deviceId="019B30D594BB928CBE2FB6BA28B9CD8D";
+  
+  //获取用户的id
+//var userId=$(".login_user span",parent.document).attr("userid");
+  var userId="123";
   
   getJmDetail(contentId);//得到节目信息
   function getJmDetail(contentId){
@@ -358,9 +366,9 @@ $(function(){
       type:"POST",
       url:rootPath+"content/media/getMediaInfo.do",
       dataType:"json",
-      data:{"DeviceId":"3279A27149B24719991812E6ADBA5584",
+      data:{"DeviceId":deviceId,
             "MobileClass":"Chrome",
-            "UserId":"123",
+            "UserId":userId,
             "PCDType":"3",
             "ContentId":contentId
       },

@@ -58,25 +58,26 @@ public class SeqContentService {
 	 * @param mediatype
 	 * @return
 	 */
-	public List<Map<String, Object>> getHostSeqMediaContents(String userid, String flowflag, String channelid, String shortsearch, int page, int pageSize) {
+	public Map<String, Object> getHostSeqMediaContents(String userid, String flowflag, String channelid, String shortsearch, int page, int pageSize) {
+		Map<String, Object> retM = new HashMap<>();
 		if (shortsearch.equals("true")) {
 			List<Map<String, Object>> l = mediaService.getShortSmaListByPubId(userid);
-			return l;
+			retM.put("List", l);
+			return retM;
 		} else {
 			if (flowflag.equals("0") && channelid.equals("0")) {
-				List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-				list = mediaService.getSmaListByPubId(userid,page,pageSize);
-				if (list != null && list.size() > 0)
-					return list;
+				retM = mediaService.getSmaListByPubId(userid,page,pageSize);
+				if (retM != null && retM.size() > 0)
+					return retM;
 				else
 					return null;
 			} else {
 				List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 				list = mediaService.getSmaListByPubId(userid, flowflag, channelid, page, pageSize);
-				if (list != null && list.size() > 0)
-					return list;
-				else
-					return null;
+				if (list != null && list.size() > 0) {
+					retM.put("List", list);
+					return retM;
+				} else return null;
 			}
 		}
 	}
@@ -409,7 +410,7 @@ public class SeqContentService {
 			map.put("Message", "添加成功");
 		} else {
 			if (flowflag == 2) {
-				List<MediaAssetPo> malist = mediaService.getMaListBySmaId(contentId);
+				List<MediaAssetPo> malist = mediaService.getMaListBySmaId(contentId, 0, 0);
 				if (flowflag == 2 && (malist == null || malist.size() == 0)) {
 					map.put("ReturnType", "1014");
 					map.put("Message", "专辑无下级单体");
@@ -474,7 +475,7 @@ public class SeqContentService {
 						retList.add(retMap);
 					}
 					if (flowflag == 2) {
-						List<MediaAssetPo> malist = mediaService.getMaListBySmaId(contentId);
+						List<MediaAssetPo> malist = mediaService.getMaListBySmaId(contentId, 0, 0);
 						if (flowflag == 2 && (malist == null || malist.size() == 0)) {
 							retMap.put("ReturnType", "1014");
 							retMap.put("ContentId", contentId);
@@ -576,7 +577,7 @@ public class SeqContentService {
 						smas.add(sma);
 						List<Map<String, Object>> ls = mediaService.makeSmaListToReturn(smas);
 						if (ls != null && ls.size() > 0) {
-							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(contentId);
+							List<MediaAssetPo> mas = mediaService.getMaListBySmaId(contentId, 0, 0);
 							if (mas != null && mas.size() > 0) {
 								List<Map<String, Object>> mam = mediaService.makeMaListToReturn(mas);
 								ls.get(0).put("MediaAssetList", mam);
