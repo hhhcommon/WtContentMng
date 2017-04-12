@@ -33,4 +33,12 @@ public class PlayCountDBService {
 	public void deleteById(String id) {
 		playCountDBDao.delete("delete", id);
 	}
+	
+	public long getPlayCountNum(String id) {
+		PlayCountDBPo playCountDBPo = playCountDBDao.getInfoObject("getInfoById", id);
+		if (playCountDBPo!=null) {
+			return playCountDBPo.getPlayCount();
+		}
+		return 0;
+	}
 }
