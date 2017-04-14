@@ -11,16 +11,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.springframework.stereotype.Service;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.cachedb.cachedb.service.CacheDBService;
+import com.woting.cm.cachedb.playcountdb.persis.po.PlayCountDBPo;
 import com.woting.cm.cachedb.playcountdb.service.PlayCountDBService;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -1424,4 +1425,47 @@ public class QueryService {
 		}
 		return null;
     }
+
+	public Map<String, Object> getPlayCounts(String contentIds) {
+		String[] ids = contentIds.split(",");
+		if (ids!=null && ids.length>0) {
+			String sqlIds = "";
+			Map<String, Object> pcdbmap = new HashMap<>();
+			Map<String, Object> alaumap = new HashMap<>();
+			for (String id : ids) {
+				String[] ssids = id.split("_");
+				String sId = ssids[0];
+				if (ssids.length>1) {
+					String mId = ssids[1];
+					if (!sqlIds.contains(mId)) sqlIds += " or id = 'AUDIO_"+mId+"_PLAYCOUNT'";
+					alaumap.put(mId, sId);
+				} else if (!sqlIds.contains(sId)) sqlIds += " or id = 'SEQU_"+sId+"_PLAYCOUNT'";
+				pcdbmap.put(id, null);
+			}
+			if (sqlIds.length()>3) {
+				sqlIds = sqlIds.substring(3);
+				List<PlayCountDBPo> pos = playCountDBService.getPlayCountsBySql(sqlIds);
+				if (pos!=null && pos.size()>0) {
+					for (PlayCountDBPo playCountDBPo : pos) {
+						if (playCountDBPo.getResTableName().equals("AUDIO")) {
+							String sId = alaumap.get(playCountDBPo.getResId()).toString();
+							pcdbmap.put(sId+"_"+playCountDBPo.getResId(), playCountDBPo.getPlayCount());
+						} else if (playCountDBPo.getResTableName().equals("SEQU")) {
+							pcdbmap.put(playCountDBPo.getResId(), playCountDBPo.getPlayCount());
+						}
+					}
+				}
+				Set<String> sets = pcdbmap.keySet();
+				if (sets!=null && sets.size()>0) {
+					for (String id : sets) {
+						if (pcdbmap.get(id)==null) {
+							pcdbmap.put(id, 0);
+						}
+					}
+					return pcdbmap;
+				}
+			}
+		}
+		return null;
+	}
 }
