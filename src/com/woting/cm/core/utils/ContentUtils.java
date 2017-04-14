@@ -118,6 +118,7 @@ public abstract class ContentUtils {
 
         fillExtInfo(retM, "AUDIO", personList, cataList, pubChannelList, favoriteList);//填充扩展信息
 
+
         retM.put("ContentTimes", one.get("timeLong"));//S01-特有：播放时长
 
         retM.put("CTime", one.get("CTime"));//A1-管控：节目创建时间，目前以此进行排序

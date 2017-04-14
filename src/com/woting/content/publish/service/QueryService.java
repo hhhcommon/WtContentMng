@@ -18,6 +18,8 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.springframework.stereotype.Service;
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.cachedb.cachedb.service.CacheDBService;
@@ -68,7 +70,6 @@ public class QueryService {
 	private CacheDBService cacheDBService;
 	@Resource
 	private PlayCountDBService playCountDBService;
-
 
 	/**
 	 * 查询列表
@@ -839,9 +840,11 @@ public class QueryService {
 		;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getSearchContentList(String searchWord, String flowFlag, int page, int pageSize,
 			String mediaType, String channelId, String publisherId, Timestamp begincontentpubtime,
 			Timestamp endcontentpubtime, Timestamp begincontentctime, Timestamp endcontentctime) {
+		Map<String, Object> mapall = new HashMap<>();
 		List<Map<String, Object>> ls = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1061,11 +1064,9 @@ public class QueryService {
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
-		Map<String, Object> ret = new HashMap<>();
-		ret.put("ResultType", "1001");
-		ret.put("List", ls);
-		ret.put("AllCount", numall);
-		return ret;
+		mapall.put("List", ls);
+		mapall.put("Count", numall);
+		return mapall;
 	}
 	
 	private void updateChannelAssetProgress(String channelAssetId, String checkId, int reFlowFlag, String reDescn) {

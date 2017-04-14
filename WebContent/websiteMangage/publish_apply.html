@@ -1205,6 +1205,8 @@ $(function(){
               data1.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
             }
             getContentList(data1);
+            $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+            $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
           }else{
             alert(resultData.Message);
           }
@@ -1275,7 +1277,7 @@ $(function(){
       url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false, 
-      data:JSON.stringify(data1),
+      data:JSON.stringify(data4),
       beforeSend:function(){
         $('.nc_txt7').attr("disabled","disabled");
       },
@@ -1286,6 +1288,8 @@ $(function(){
           $(".nopass_masker,.nopass_container").hide();
           $("body").css({"overflow-x":"auto"});
           getContentList(data1);
+          $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+          $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
         }else{
           alert(resultData.Message);
         }

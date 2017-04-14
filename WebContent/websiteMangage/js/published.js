@@ -1,5 +1,4 @@
 $(function(){
-  debugger;
   var rootPath=getRootPath();
   var flowflag="2";
   var current_page=1;//当前页码
