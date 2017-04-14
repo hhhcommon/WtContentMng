@@ -1,6 +1,12 @@
 $(function(){
   var rootPath=getRootPath();
   
+  //图片是404时使用默认图片
+  $(".boximg").error(function(){ 
+    var _img="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
+    $(this).attr("src", _img); 
+  }); 
+  
   //控制播放的节目的顺序号
   var listNum=0;
   //获取播放元素容器
@@ -56,7 +62,7 @@ $(function(){
     if(!isNaN(this.duration)){
       //播放进度条
       var progressValue = this.currentTime/this.duration*($(".currentMusicBar").width());
-      $('.currentMusicBarRound')[0].style.left = parseInt(progressValue) + 'px';
+      $('.currentMusicBarRound')[0].style.left = parseInt(progressValue-3) + 'px';
       //播放时长
       if(formatTime(Math.floor(this.currentTime))!=0){
         $(".playTime").text(formatTime(Math.floor(this.currentTime)));
@@ -109,7 +115,7 @@ $(function(){
     $(".playTime").text("00:00");
     $('.currentMusicBarRound')[0].style.left="0px";
     var src=$(this).children(".audioImg").attr("src");
-    $(".boximg").css({"background-image":"url("+src+")"});
+    $(".boximg").attr("src",src);
     var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
     comment(contentId);//加载评论列表
   });
@@ -141,7 +147,7 @@ $(function(){
           $(".detail").children(".dp3").children(".dpspan").text($(".listBox").eq(listNum).attr("dp"));
           $(".detail").children(".dp4").children(".dpspan").text($(".listBox").eq(listNum).children(".dn").text());
           var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
-          $(".box").css({"background-image":"url("+src+")"});
+          $(".boximg").attr("src",src);
           audio.src=$(".listBox").eq(listNum).attr("data_src");
           audioPlay($(".listBox").eq(listNum),audio,true);
           $(".playControl").addClass("play");
@@ -190,7 +196,7 @@ $(function(){
       $('.currentMusicBarRound')[0].style.left="0px";
       $(".fullTime").text($(".listBox").eq(listNum).children(".listCon").children(".lcp").children(".contentT").attr("fullTime"));
       var src=$(".listBox").eq(listNum).children(".audioImg").attr("src");
-      $(".box").css({"background-image":"url("+src+")"});
+      $(".boximg").attr("src",src);
       audio.src=$(".listBox").eq(listNum).attr("data_src");
       audioPlay($(".listBox").eq(listNum),audio,true);
       $(".playControl").addClass("play");
@@ -386,7 +392,7 @@ $(function(){
         detail.zhubo="未知";
       }
       if(resultData.ResultList.List[i].SeqInfo){
-        if(resultData.ResultList.List[i].SeqInfo.ContentName) detail.sequName=resultData.ResultList.List[i].SeqInfo.ContentId;
+        if(resultData.ResultList.List[i].SeqInfo.ContentName) detail.sequName=resultData.ResultList.List[i].SeqInfo.ContentName;
         else detail.sequName="未知";
       }
       if(resultData.ResultList.List[i].ContentPub) detail.contentPub=resultData.ResultList.List[i].ContentPub;
@@ -398,7 +404,7 @@ $(function(){
       if(resultData.ResultList.List[i].ContentImg) detail.contentImg=resultData.ResultList.List[i].ContentImg;
       else detail.contentImg="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
       if(resultData.ResultList.List[i].ContentName) detail.contentName=resultData.ResultList.List[i].ContentName;
-      else detail.contentName="暂无图片";
+      else detail.contentName="未知";
       var newListBox= '<li contentId='+resultData.ResultList.List[i].ContentId+' data_src='+resultData.ResultList.List[i].ContentPlay+' dz='+detail.zhubo+' ds='+detail.sequName+' dp='+detail.contentPub+' class="listBox">'+
                         '<div class="default"></div>'+
                         '<div class="dn">'+detail.contentDescn+'</div>'+
@@ -407,7 +413,7 @@ $(function(){
                           '<span class="span">'+detail.contentName+'</span>'+
                           '<p class="lcp lcpp">'+
                             '<img src="../../imgs/zj.png" alt="" />'+
-                            '<span>'+detail.contentPub+'</span>'+
+                            '<span class="seqname">'+detail.sequName+'</span>'+
                            ' <span alt="" class="state"/><span>'+
                           '</p>'+
                           '<p class="lcp">'+
@@ -419,6 +425,11 @@ $(function(){
                         '</div>'+
                       '</li>';
       $(".ulBox").append(newListBox);
+      //图片404时使用默认图片
+      $('.audioImg').error(function(){ 
+        var _img="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
+        $(this).attr("src", _img); 
+      }); 
     }
   }
   

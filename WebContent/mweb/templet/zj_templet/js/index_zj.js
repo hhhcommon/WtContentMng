@@ -1,6 +1,16 @@
 $(function(){
   var rootPath=getRootPath();
   
+  //图片是404时使用默认图片
+  $(".boximg").error(function(){ 
+    var _img="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
+    $(this).attr("src", _img); 
+  }); 
+  $(".pic1").error(function(){ 
+    var _img="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
+    $(this).attr("src", _img); 
+  }); 
+  
   var page=2;
   $(".ulBox").on("click",".playBtn",function(){//点击专辑里面的某个节目，跳到节目页
     var shareUrl=$(this).attr("share_url");
