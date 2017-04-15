@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -49,6 +50,27 @@ public class FileUtils {
 		else
 			return false;
 	}
+	
+	public static boolean writeTxtFile(String content, File fileName){
+		boolean flag=false; 
+		try {
+			RandomAccessFile mm=null;  
+			FileOutputStream o=null;  
+			try {
+				o = new FileOutputStream(fileName);  
+			    o.write(content.getBytes("UTF-8"));  
+			    o.close();
+			    flag=true;
+			} catch (Exception e) {
+			    e.printStackTrace();
+			}finally{
+				if(mm!=null) mm.close();
+			}  
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return flag;  
+	}  
 
 	@SuppressWarnings("unchecked")
 	public static List<Map<String, Object>> readFileByJson(String path) {
@@ -110,7 +132,7 @@ public class FileUtils {
 	}
 	
 	public static void writeContentInfo(String key, String jsonstr) {
-		File file = FileUtils.createFile("/opt/dataCenter/contentinfo/"+key+".json");
+		File file = FileUtils.createFile("/mnt/contentinfo/"+key+".json");
 		FileUtils.writeFile(jsonstr, file);
 	}
 

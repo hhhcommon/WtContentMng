@@ -124,7 +124,7 @@ public abstract class CacheUtils {
 		}
 		htmlstr = htmlstr.replace("#####sequname#####", mapsequ.get("ContentName").toString())
 				.replace("#####sequdescn#####", descn)
-				.replace("#####sequimgs#####", mapsequ.get("ContentImg").toString() == null ? "../../imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
+				.replace("#####sequimgs#####", mapsequ.get("ContentImg") == null ? "../../imgs/default.png" : mapsequ.get("ContentImg").toString().replace(".png", ".300_300.png"))
 		        .replace("#####sequid#####", mapsequ.get("ContentId").toString())
 		        .replace("#####mediatype#####", "SEQU")
 		        .replace("#####sequsum#####", num+""); // 替换指定的信息
