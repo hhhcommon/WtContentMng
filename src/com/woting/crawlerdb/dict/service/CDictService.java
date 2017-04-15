@@ -377,7 +377,7 @@ public class CDictService {
 			}
 		}
 		if (craw.size()>0) {
-			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt");
+			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt", true);
 			return true;
 		}
 		return false;

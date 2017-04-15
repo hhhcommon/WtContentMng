@@ -1,5 +1,6 @@
 package com.woting.content.share.service;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,15 +23,14 @@ import com.spiritdata.framework.util.FileNameUtils;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
-import com.woting.cm.cachedb.cachedb.persis.po.CacheDBPo;
 import com.woting.cm.cachedb.cachedb.service.CacheDBService;
-import com.woting.cm.cachedb.playcountdb.persis.po.PlayCountDBPo;
 import com.woting.cm.cachedb.playcountdb.service.PlayCountDBService;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.content.publish.utils.CacheUtils;
+import com.woting.content.share.utils.FileUtils;
 import com.woting.content.share.utils.SHA1;
 
 public class ShareService {
@@ -46,6 +46,7 @@ public class ShareService {
 		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
 			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
 				if (mediaType.equals("SEQU")) {
+					
 					SeqMediaAssetPo sma = mediaService.getSmaInfoById(resId);
 					if (sma != null) {
 						List<SeqMediaAssetPo> listpo = new ArrayList<>();
@@ -110,30 +111,29 @@ public class ShareService {
 		return null;
 	}
 
-	public void makeOSSInfo(String smaId) {
+	public void makeCacheDBInfo(String smaId) {
 		addRedia(smaId);
 	}
 	
 	public void addRedia(String smaId) {
 		try {
+			RedisOperService redis = null;
 			ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
 	        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+	            JedisConnectionFactory conn=(JedisConnectionFactory)WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory182");
+	            redis = new RedisOperService(conn);
 	            this.DataSource = (DataSource) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("dataSource");
 	        }
+			System.out.println("1");
 			Map<String, Object> oneDate = makeSeqMediaAssetInfo(smaId); // 获得专辑相关静态信息
 			List<String> maIds = getSeqMARef(smaId); // 获得专辑下级节目id列表
 			if (oneDate!=null && oneDate.size()>0) {
 				if (maIds!=null && maIds.size()>0) {
 					oneDate.put("ContentSubCount", maIds.size());
 				}
-				CacheDBPo cacheDBPo = new CacheDBPo();
-				cacheDBPo.setId("SEQU_"+smaId+"_INFO");
-				cacheDBPo.setResTableName("SEQU");
-				cacheDBPo.setResId(smaId);
-				cacheDBPo.setValue(JsonUtils.objToJson(oneDate));
-				cacheDBService.insertCacheDBPo(cacheDBPo);
-//				writeContentInfo("Content=MediaType_CID=[SEQU_"+smaId+"]=INFO", JsonUtils.objToJson(oneDate));
+				writeContentInfo("Content=MediaType_CID=[SEQU_"+smaId+"]=INFO", JsonUtils.objToJson(oneDate));
 			}
+			System.out.println("2");
 			List<Map<String, Object>> reply = new ArrayList<>();
 			if (maIds!=null && maIds.size()>0) {
 				List<String> retMaIds = new ArrayList<>();
@@ -142,31 +142,21 @@ public class ShareService {
 					m.put("id", str);
 					m.put("type", "wt_MediaAsset");
 					reply.add(m);
-					retMaIds.add("AUDIO_"+str);
+					retMaIds.add("Content=MediaType_CID=[AUDIO_"+str+"]");
 				}
-				CacheDBPo cacheDBPo = new CacheDBPo();
-				cacheDBPo.setId("SEQU_"+smaId+"_SUBLIST");
-				cacheDBPo.setResTableName("SEQU");
-				cacheDBPo.setResId(smaId);
-				cacheDBPo.setValue(JsonUtils.objToJson(retMaIds));
-				cacheDBService.insertCacheDBPo(cacheDBPo);
-//				writeContentInfo("Content=MediaType_CID=[SEQU_"+smaId+"]=SUBLIST", JsonUtils.objToJson(retMaIds));
+				writeContentInfo("Content=MediaType_CID=[SEQU_"+smaId+"]=SUBLIST", JsonUtils.objToJson(retMaIds));
 			}
+			System.out.println("3");
 			List<Map<String, Object>> maLs = getMediaAssetInfos(maIds);
 			if (maLs!=null && maLs.size()>0) {
 				for (Map<String, Object> map : maLs) {
 					Map<String, Object> smam = new HashMap<>();
 					smam.put("ContentId", smaId);
 					map.put("SeqInfo", smam);
-					CacheDBPo cacheDBPo = new CacheDBPo();
-					cacheDBPo.setId("AUDIO_"+map.get("ContentId")+"_INFO");
-					cacheDBPo.setResTableName("AUDIO");
-					cacheDBPo.setResId(map.get("ContentId")+"");
-					cacheDBPo.setValue(JsonUtils.objToJson(map));
-					cacheDBService.insertCacheDBPo(cacheDBPo);
-//					writeContentInfo("Content=MediaType_CID=[AUDIO_"+map.get("ContentId")+"]=INFO", JsonUtils.objToJson(map));
+					writeContentInfo("Content=MediaType_CID=[AUDIO_"+map.get("ContentId")+"]=INFO", JsonUtils.objToJson(map));
 				}
 			}
+			System.out.println("4");
 			Map<String, Object> m = new HashMap<>();
 			m.put("id", smaId);
 			m.put("type", "wt_SeqMediaAsset");
@@ -174,15 +164,10 @@ public class ShareService {
 			List<Map<String, Object>> playLs = getPlayCountInfo(reply);
 			if (playLs!=null && playLs.size()>0) {
 				for (Map<String, Object> map : playLs) {
-					PlayCountDBPo playCountDBPo = new PlayCountDBPo();
-					playCountDBPo.setId(map.get("type")+"_"+map.get("id")+"_PLAYCOUNT");
-					playCountDBPo.setResTableName(map.get("type")+"");
-					playCountDBPo.setResId(map.get("id").toString());
-					playCountDBPo.setPlayCount(Long.valueOf(map.get("playcount").toString()));
-					playCountDBService.insertPlayCountDBPo(playCountDBPo);
-//					writeContentInfo("Content=MediaType_CID=["+map.get("type")+"_"+map.get("id")+"]=PLAYCOUNT", map.get("playcount")+"");
+					addRedisInfo(redis,"Content=MediaType_CID=["+map.get("type")+"_"+map.get("id")+"]=PLAYCOUNT", map.get("playcount")+"", 30*24*60*60*1000l);
 				}
 			}
+			redis.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -195,7 +180,7 @@ public class ShareService {
 		ResultSet rs = null;
 		try {
 			conn = DataSource.getConnection();
-			String sql = "SELECT id,smaTitle,smaPublisher,keyWords,descn,smaImg,cTime FROM wt_SeqMediaAsset_Old where id = '"+smaId+"'";
+			String sql = "SELECT id,smaTitle,smaPublisher,keyWords,descn,smaImg,cTime FROM wt_SeqMediaAsset where id = '"+smaId+"'";
 			try {
 				ps = conn.prepareStatement(sql);
 				rs = ps.executeQuery();
@@ -216,7 +201,7 @@ public class ShareService {
 				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
 	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 			} catch (Exception e) {e.printStackTrace();}
-			sql = "SELECT cha.channelId,ch.channelName,cha.publisherId,org.oName,cha.pubTime,cha.flowFlag FROM wt_ChannelAsset_Old cha"
+			sql = "SELECT cha.channelId,ch.channelName,cha.publisherId,org.oName,cha.pubTime,cha.flowFlag FROM wt_ChannelAsset cha"
 					+ " LEFT JOIN wt_Channel ch ON ch.id = cha.channelId LEFT JOIN wt_Organize org ON org.id = cha.publisherId"
 					+ " where cha.assetId = '"+smaId+"' and cha.assetType = 'wt_SeqMediaAsset' and cha.flowFlag = 2";
 			try {
@@ -237,7 +222,7 @@ public class ShareService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			sql = "SELECT resf.dictMid mid,dd.id did,dd.ddName,resf.refName FROM wt_ResDict_Ref_Old resf"
+			sql = "SELECT resf.dictMid mid,dd.id did,dd.ddName,resf.refName FROM wt_ResDict_Ref resf"
 					+ " LEFT JOIN plat_DictD dd ON dd.id = resf.dictDid"
 					+ " where resf.resId = '"+smaId+"' and resf.resTableName = 'wt_SeqMediaAsset'";
 			try {
@@ -258,7 +243,7 @@ public class ShareService {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			sql = "SELECT per.id,per.pName,pef.refName FROM wt_Person_Ref_Old pef"
+			sql = "SELECT per.id,per.pName,pef.refName FROM wt_Person_Ref pef"
 					+ " LEFT JOIN wt_Person per ON per.id = pef.personId"
 					+ " where pef.resId = '"+smaId+"' and pef.resTableName = 'wt_SeqMediaAsset'";
 			try {
@@ -337,7 +322,7 @@ public class ShareService {
 				}
 				ids = ids.substring(3);
 				ids = "("+ids+")";
-				String sql = "SELECT ma.id,ma.maTitle,ma.maPublisher,ma.keyWords,ma.descn,ma.maImg,ma.timeLong,ma.cTime,mas.playURI FROM wt_MediaAsset_Old ma"
+				String sql = "SELECT ma.id,ma.maTitle,ma.maPublisher,ma.keyWords,ma.descn,ma.maImg,ma.timeLong,ma.cTime,mas.playURI FROM wt_MediaAsset ma"
 						+ " LEFT JOIN wt_MaSource mas ON mas.maId = ma.id and mas.isMain = 1"
 						+ " where "+ids.replace("id", "ma.id");
 				conn = DataSource.getConnection();
@@ -381,7 +366,7 @@ public class ShareService {
 				if (retLs!=null && retLs.size()==0) {
 					return null;
 				}
-				sql = "SELECT cha.assetId,cha.channelId,ch.channelName,cha.publisherId,org.oName,cha.pubTime,cha.flowFlag FROM wt_ChannelAsset_Old cha"
+				sql = "SELECT cha.assetId,cha.channelId,ch.channelName,cha.publisherId,org.oName,cha.pubTime,cha.flowFlag FROM wt_ChannelAsset cha"
 						+ " LEFT JOIN wt_Channel ch ON ch.id = cha.channelId LEFT JOIN wt_Organize org ON org.id = cha.publisherId"
 						+ " where "+ids.replace("id", "cha.assetId")+" and cha.assetType = 'wt_MediaAsset' and cha.flowFlag = 2";
 				try {
@@ -417,7 +402,7 @@ public class ShareService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				sql = "SELECT resf.dictMid mid,dd.id did,dd.ddName,resf.refName,resf.resId FROM wt_ResDict_Ref_Old resf"
+				sql = "SELECT resf.dictMid mid,dd.id did,dd.ddName,resf.refName,resf.resId FROM wt_ResDict_Ref resf"
 						+ " LEFT JOIN plat_DictD dd ON dd.id = resf.dictDid"
 						+ " where "+ids.replace("id", "resf.resId")+" and resf.resTableName = 'wt_MediaAsset'";
 				try {
@@ -453,7 +438,7 @@ public class ShareService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				sql = "SELECT per.id,per.pName,pef.refName,pef.resId FROM wt_Person_Ref_Old pef"
+				sql = "SELECT per.id,per.pName,pef.refName,pef.resId FROM wt_Person_Ref pef"
 						+ " LEFT JOIN wt_Person per ON per.id = pef.personId"
 						+ " where "+ids.replace("id", "pef.resId")+" and pef.resTableName = 'wt_MediaAsset'";
 				try {
@@ -539,8 +524,18 @@ public class ShareService {
 		return null;
 	}
 	
-//	private void writeContentInfo(String key, String jsonstr) {
-//		File file = FileUtils.createFile("/mnt/contentinfo/"+key+".json");
-//		FileUtils.writeFile(jsonstr, file);
-//	}
+	private void addRedisInfo(RedisOperService redis, String key, String info, long timeout) {
+		if (redis!=null && key!=null) {
+			try {
+				redis.set(key, info, timeout);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void writeContentInfo(String key, String jsonstr) {
+		File file = FileUtils.createFile("/opt/dataCenter/contentinfo/"+key+".json");
+		FileUtils.writeFile(jsonstr, file);
+	}
 }

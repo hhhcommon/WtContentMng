@@ -11,16 +11,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
-import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.springframework.stereotype.Service;
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.cachedb.cachedb.service.CacheDBService;
+import com.woting.cm.cachedb.playcountdb.persis.po.PlayCountDBPo;
 import com.woting.cm.cachedb.playcountdb.service.PlayCountDBService;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -67,7 +70,6 @@ public class QueryService {
 	private CacheDBService cacheDBService;
 	@Resource
 	private PlayCountDBService playCountDBService;
-
 
 	/**
 	 * 查询列表
@@ -838,9 +840,11 @@ public class QueryService {
 		;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getSearchContentList(String searchWord, String flowFlag, int page, int pageSize,
 			String mediaType, String channelId, String publisherId, Timestamp begincontentpubtime,
 			Timestamp endcontentpubtime, Timestamp begincontentctime, Timestamp endcontentctime) {
+		Map<String, Object> mapall = new HashMap<>();
 		List<Map<String, Object>> ls = new ArrayList<>();
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -1060,11 +1064,9 @@ public class QueryService {
             if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
             if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
         }
-		Map<String, Object> ret = new HashMap<>();
-		ret.put("ResultType", "1001");
-		ret.put("List", ls);
-		ret.put("AllCount", numall);
-		return ret;
+		mapall.put("List", ls);
+		mapall.put("Count", numall);
+		return mapall;
 	}
 	
 	private void updateChannelAssetProgress(String channelAssetId, String checkId, int reFlowFlag, String reDescn) {
@@ -1424,4 +1426,47 @@ public class QueryService {
 		}
 		return null;
     }
+
+	public Map<String, Object> getPlayCounts(String contentIds) {
+		String[] ids = contentIds.split(",");
+		if (ids!=null && ids.length>0) {
+			String sqlIds = "";
+			Map<String, Object> pcdbmap = new HashMap<>();
+			Map<String, Object> alaumap = new HashMap<>();
+			for (String id : ids) {
+				String[] ssids = id.split("_");
+				String sId = ssids[0];
+				if (ssids.length>1) {
+					String mId = ssids[1];
+					if (!sqlIds.contains(mId)) sqlIds += " or id = 'AUDIO_"+mId+"_PLAYCOUNT'";
+					alaumap.put(mId, sId);
+				} else if (!sqlIds.contains(sId)) sqlIds += " or id = 'SEQU_"+sId+"_PLAYCOUNT'";
+				pcdbmap.put(id, null);
+			}
+			if (sqlIds.length()>3) {
+				sqlIds = sqlIds.substring(3);
+				List<PlayCountDBPo> pos = playCountDBService.getPlayCountsBySql(sqlIds);
+				if (pos!=null && pos.size()>0) {
+					for (PlayCountDBPo playCountDBPo : pos) {
+						if (playCountDBPo.getResTableName().equals("AUDIO")) {
+							String sId = alaumap.get(playCountDBPo.getResId()).toString();
+							pcdbmap.put(sId+"_"+playCountDBPo.getResId(), playCountDBPo.getPlayCount());
+						} else if (playCountDBPo.getResTableName().equals("SEQU")) {
+							pcdbmap.put(playCountDBPo.getResId(), playCountDBPo.getPlayCount());
+						}
+					}
+				}
+				Set<String> sets = pcdbmap.keySet();
+				if (sets!=null && sets.size()>0) {
+					for (String id : sets) {
+						if (pcdbmap.get(id)==null) {
+							pcdbmap.put(id, 0);
+						}
+					}
+					return pcdbmap;
+				}
+			}
+		}
+		return null;
+	}
 }

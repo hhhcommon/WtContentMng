@@ -84,7 +84,7 @@ public class ShareController {
 	
 	@RequestMapping(value = "/share/makeOSSInfo.do")
 	@ResponseBody
-	public Map<String, Object> makeOSSInfo(HttpServletRequest request) {
+	public Map<String, Object> makeCacheDBInfo(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
 		String id = m.get("Id") + "";
@@ -93,7 +93,7 @@ public class ShareController {
 			map.put("Message", "无分享地址");
 			return map;
 		}
-		shareService.makeOSSInfo(id);
+		shareService.makeCacheDBInfo(id);
 
 		map.put("ReturnType", "1001");
 		return map;
