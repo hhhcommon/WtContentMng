@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+  <title>主播--详情页</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;background: #fff;}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.fl{
+  float: left;
+}
+.detail{
+  width:1080px;
+  min-width:850px;
+  height:auto;
+  margin:auto;
+}
+.detail_content{
+  width:100%;
+  height:auto;
+}
+.dc_top{
+  width:100%;
+  height:400px;
+}
+.detail_title{
+  width:100%;
+  height:40px;
+  line-height: 40px;
+  color: #000;
+  font-size: 14px;
+  padding-left:20px;
+  float: left;
+  border-bottom:1px solid #dedede;
+}
+.source{
+  width: 100%;
+  height: 40px;
+  line-height: 60px;
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  padding-left: 20px;
+  float: left
+}
+.dct_left,.dct_right{
+  width:515px;
+  margin-left: 20px;
+  padding:0px 0px 15px 20px;
+  border:1px solid #dedede;
+  height: 303px;
+  font-size: 14px;
+}
+.dctl_title,.dctr_title{
+  color:#000;
+  font-weight:bolder;
+  padding: 11px 0px 4px;
+}
+.binfo{
+  width:330px;
+  height:25px;
+  line-height: 25px;
+}
+.binfo span:nth-child(2){
+  width:230px;
+  padding-left:10px;
+}
+.cw{
+  color:#000;
+  font-weight:bold;
+  font-family: "微软雅黑";
+}
+.picture{
+  width:100px;
+  height:100px;
+  position: absolute;
+  margin-top:-20px;
+  margin-left: 370px;
+}
+.picture span{
+  width:100%;
+  display: inline-block;
+}
+.sign,.brief{
+  position: relative;
+}
+.sign0{
+  height: 25px;
+  line-height: 25px;
+}
+.sign1,.brief1{
+  line-height: 25px;
+  width: 415px;
+  position: relative;
+  margin-left: 60px;
+  padding-left:10px;
+  overflow: hidden;
+}
+.idphoto{
+  position: absolute;
+}
+.idphoto0{
+  margin-top:5px;
+}
+.picture1{
+  display: block;
+  width:70px;
+  height:70px;
+  position: relative;
+  margin-top:20px;
+}
+.picture1 img{
+  -moz-border-radius: 50%; /* Firefox */
+  -webkit-border-radius: 50%; /* Safari 和 Chrome */
+  border-radius: 50%; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+}
+.picture1 img,.idphoto1  div img,.dcbl_img img{
+  width:100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+.idphoto1{
+  display: block;
+  width:100px;
+  height:100px;
+  margin-top:5px;
+}
+.gallery > div{
+  width:100px;
+  height:100px;
+  position: relative;
+}
+.gallery > div > img{
+  width: 100%;
+  transition: .1s transform;
+  transform: translateZ(0);
+}
+.gallery > div:hover{
+  z-index: 1;
+}
+.gallery > div:hover > img{
+  width:110%;
+  margin-left:-5%;
+  margin-top:-5%;
+}
+.gallery > div > img{
+  width:100%;
+  transition:0.4s ease-in-out;
+}
+.cf:before, .cf:after{
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.cf:after{
+  clear: both;
+}
+.dc_bottom{
+  width: calc( 100% - 40px);
+  height: auto;
+  margin-left: 20px;
+}
+.dcb_title{
+  padding: 20px 0px 0px 5px;
+  font-size:14px;
+}
+.dcbt0{
+  margin-left:-3px;
+}
+.dcbt2{
+  margin-left:30px;
+}
+.dcb_con1{
+  width: 100%;
+  height: 40px;
+  background: #f5f5f5;
+  border: 1px solid #dedede;
+  overflow: hidden;
+}
+.dcbc_txt{
+  height: 20px;
+  line-height: 20px;
+  color: #000;
+  margin-top: 10px;
+  font-size: 16px;
+  font-family: "微软雅黑";
+  text-align: center;
+}
+.dcbc_txt1{
+  width:100px;
+  margin: 10px 420px 0px 0px;
+}
+.dcbc_txt2{
+  width:106px;
+  border-left: 2px solid #d8d8d8;
+}
+.dcbc_txt3{
+  width:106px;
+  border-left: 2px solid #d8d8d8;
+}
+.dcbc_txt4{
+  width:200px;
+  border-left: 2px solid #d8d8d8;
+}
+.dcb_con2{
+  width: 100%;
+  overflow: auto;
+  font-size:14px;
+}
+.dcb_listBox{
+  width: calc(100% - 15px );
+  height: 145px;
+  margin-left: 15px;
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+  overflow: hidden;
+}
+.dcbl_img{
+  width: 80px;
+  height: 80px;
+  margin-top: 15px;
+  margin-right: 15px;
+  border: 1px solid black;
+}
+.dcbl_con{
+  width: 410px;
+  height: 100%;
+  float: left;
+  color: rgb(173,172,172);
+  margin-top: 15px;
+}
+.dcbl_con_p{
+  width:100%;
+  color: #000;
+  font-size: 14px;
+  font-weight: bolder;
+}
+.dcbl_con_tags,.dcbl_con_desc{
+  overflow: hidden;
+  width:100%;
+  color: #000;
+}
+.dcbl_con_tag1{
+  font-weight: bolder;
+  line-height: 25px;
+}
+.dcbl_con_tag1s{
+  overflow: hidden;
+  position: relative;
+  width: 360px;
+  margin-bottom:0px;
+  line-height: 25px;
+}
+.dcbl_con_tag1s li{
+  width: auto;
+  display: inline-block;
+  padding: 0px 5px 0px 0px;
+}
+.dcbl_con_tag2{
+  padding: 0px 5px;
+}
+.dcbl_con_desc1{
+  line-height: 25px;
+  font-weight: bolder;
+}
+.dcbl_con_desc2{
+  position: relative;
+  line-height: 25px;
+  width: 360px;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+.playcount,.episodes{
+  color: #000;
+  padding: 0px 10px;
+  text-align: center;
+  position: relative;
+  top:30px;
+  width: 110px;
+}
+.channels{
+  width: 106px;
+  height: auto;
+  position: relative;
+  top: 30px;
+  overflow: hidden;
+}
+.dcbl_con_channel{
+  width: 100%;
+  line-height: 25px;
+  text-align: center;
+}
+.episodes{
+  font-weight: bold;
+}
+.time{
+  color: #000;
+  width: 190px;
+  text-align: center;
+  position: relative;
+  top:30px;
+}
+.c7{
+  color:#0077c7;
+}
+</style>
+<body>
+<div class="detail">
+  <div class="containers">
+    <div class="detail_content">
+      <div class="dc_top">
+        <div class="detail_title"></div>
+        <div class="source">来自&nbsp;主播平台注册用户</div>
+        <div class="dct_left fl">
+          <h3 class="dctl_title">基本资料</h3>
+          <div class="binfo">
+            <span class="fl">用&nbsp;&nbsp;户&nbsp;&nbsp;Id:</span>
+            <span class="userId cw ellipsis fl"></span>
+          </div>
+          <div class="picture">
+            <span class="fl">头像:</span>
+            <div class="picture1"><img src="" alt="个人头像"/></div>
+          </div>
+          <div class="binfo">
+            <span class="fl">昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称:</span>
+            <span class="nickname cw ellipsis fl"></span>
+          </div>
+          <div class="binfo">
+            <span class="fl">性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别:</span>
+            <span class="sex cw ellipsis fl"></span>
+          </div>
+          <div class="binfo">
+            <span class="fl">手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机:</span>
+            <span class="phone cw ellipsis fl"></span>
+          </div>
+          <div class="binfo">
+            <span class="fl">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱:</span>
+            <span class="email cw ellipsis fl"></span>
+          </div>
+          <div class="sign">
+            <span class="sign0 fl">个人签名:</span>
+            <div class="sign1 cw"></div>
+          </div>
+          <div class="brief">
+            <span class="sign0 fl">个人简介:</span>
+            <div class="brief1 cw"></div>
+          </div>
+        </div>
+        <div class="dct_right fl">
+          <h3 class="dctr_title">认证资料</h3>
+          <div class="realname binfo">
+            <span class="fl">真实姓名:</span>
+            <span class="realname1 cw ellipsis fl"></span>
+          </div>
+          <div class="phnumber binfo">
+            <span class="fl">联系地址:</span>
+            <span class="phnumber1 cw ellipsis fl"></span>
+          </div>
+          <div class="zipcode binfo">
+            <span class="fl">邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编:</span>
+            <span class="zipcode1 cw ellipsis fl"></span>
+          </div>
+          <div class="idcode binfo">
+            <span class="fl">身份证号:</span>
+            <span class="idcode1 cw ellipsis fl"></span>
+          </div>
+          <div class="idphoto">
+            <span class="fl idphoto0">身份证照片:</span>
+            <div class="idphoto1 fl gallery cf">
+              <div class="idPic">
+                <img src="../anchor/img/a5.jpg" alt="身份证照片" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dc_bottom">
+        <div class="dcb_title cw">
+          <span class="dcbt0"></span>
+          <span class="dcbt1"></span>
+          <span class="dcbt2"></span>
+        </div>
+        <div class="dcb_con1">
+          <span class="dcbc_txt fl dcbc_txt1">所有专辑</span>
+          <span class="dcbc_txt fl dcbc_txt2">栏目</span>
+          <span class="dcbc_txt fl dcbc_txt3">播放量</span>
+          <span class="dcbc_txt fl dcbc_txt3">集数</span>
+          <span class="dcbc_txt fl dcbc_txt4">最近更新时间</span>
+        </div>
+        <div class="dcb_con2">
+          <!--<div class="dcb_listBox">
+            <div class="dcbl_img fl">
+              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
+            </div>
+            <div class="dcbl_con fl">
+              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
+              <div class="dcbl_con_tags">
+                <span class="dcbl_con_tag1 fl">标签：</span>
+                <ul class="dcbl_con_tag1s fl">
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                </ul>
+              </div>
+              <div class="dcbl_con_desc">
+                <span class="dcbl_con_desc1 fl">简介：</span>
+                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
+                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
+                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
+                                声新鲜血液。
+                </span>
+              </div>
+            </div>
+            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
+            <span class="playcount fl">643</span>
+            <span class="episodes fl">5</span>
+            <span class="time fl">2017-2-14 13:12:32</span>
+          </div>-->
+          <!--<div class="dcb_listBox">
+            <div class="dcbl_img fl">
+              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
+            </div>
+            <div class="dcbl_con fl">
+              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
+              <div class="dcbl_con_tags">
+                <span class="dcbl_con_tag1 fl">标签：</span>
+                <ul class="dcbl_con_tag1s fl">
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                </ul>
+              </div>
+              <div class="dcbl_con_desc">
+                <span class="dcbl_con_desc1 fl">简介：</span>
+                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
+                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
+                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
+                                声新鲜血液。
+                </span>
+              </div>
+            </div>
+            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
+            <span class="playcount fl">643</span>
+            <span class="episodes fl">5</span>
+            <span class="time fl">2017-2-14 13:12:32</span>
+          </div>-->
+          <!--<div class="dcb_listBox">
+            <div class="dcbl_img fl">
+              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
+            </div>
+            <div class="dcbl_con fl">
+              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
+              <div class="dcbl_con_tags">
+                <span class="dcbl_con_tag1 fl">标签：</span>
+                <ul class="dcbl_con_tag1s fl">
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
+                </ul>
+              </div>
+              <div class="dcbl_con_desc">
+                <span class="dcbl_con_desc1 fl">简介：</span>
+                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
+                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
+                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
+                                声新鲜血液。
+                </span>
+              </div>
+            </div>
+            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
+            <span class="playcount fl">643</span>
+            <span class="episodes fl">5</span>
+            <span class="time fl">2017-2-14 13:12:32</span>
+          </div>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+$(function(){
+  var personId=getUrlParam(window.location.href,'personId');
+  var rootPath=getRootPath();
+  var current_page="1";//当前页码
+  
+  var data1={ "UserId":"123",
+              "PersonId":personId
+  };
+  /*得到主播信息*/
+  getAnchorDetail(data1);
+  function getAnchorDetail(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/person/getPersonInfo.do",
+      dataType:"json",
+      async:false,
+      cache:false, 
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillAnchorDetail(resultData);//填充专辑数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  //填充主播数据
+  function fillAnchorDetail(resultData){
+    var pername=resultData.ResultInfo.PersonName?resultData.ResultInfo.PersonName:"暂无";
+    $(".detail_title").text("当前位置：主播管理>主播列表>"+pername);
+    $(".dcbt0").text(pername+"的");
+    $(".userId").text(resultData.ResultInfo.PersonId?resultData.ResultInfo.PersonId:"暂无");
+    $(".nickname").text(resultData.ResultInfo.PersonNick?resultData.ResultInfo.PersonNick:"暂无");
+    $(".sex").text(resultData.ResultInfo.PersonSex?resultData.ResultInfo.PersonSex:"保密");
+    $(".phone").text(resultData.ResultInfo.PersonPhone?resultData.ResultInfo.PersonPhone:"保密");
+    $(".email").text(resultData.ResultInfo.PersonEmail?resultData.ResultInfo.PersonEmail:"保密");
+    $(".sign1").text(resultData.ResultInfo.PersonSign?resultData.ResultInfo.PersonSign:"暂无");
+    $(".brief1").text(resultData.ResultInfo.PersonDesc?resultData.ResultInfo.PersonDesc:"暂无");
+    $(".picture1 img").attr("src",(resultData.ResultInfo.PersonImg?resultData.ResultInfo.PersonImg:"个人头像"));
+    $(".realname1").text(resultData.ResultInfo.PersonName?resultData.ResultInfo.PersonName:"保密");
+    $(".phnumber1").text(resultData.ResultInfo.PersonAddress?resultData.ResultInfo.PersonAddress:"保密");
+    $(".zipcode1").text(resultData.ResultInfo.PostCode?resultData.ResultInfo.PostCode:"保密");
+    $(".idcode1").text(resultData.ResultInfo.IDNumber?resultData.ResultInfo.IDNumber:"保密");
+    $(".idPic").attr("src",(resultData.ResultInfo.IDImg?resultData.ResultInfo.IDImg:"身份证照片"));//暂无照片
+    $(".dcbt1").text((resultData.ResultInfo.SeqMediaSize?("专辑("+resultData.ResultInfo.SeqMediaSize+")"):"专辑(0)"));
+    $(".dcbt2").text((resultData.ResultInfo.MediaSize?("节目("+resultData.ResultInfo.MediaSize+")"):"节目(0)"));
+  }
+  
+  var data2={ "UserId":"123",
+              "PersonId":personId,
+              "MediaType":"SEQU",
+              "PageSize":"10",
+              "Page":current_page
+  };
+  getAnchorZJList(data2);
+  function getAnchorZJList(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/person/getPersonContents.do",
+      dataType:"json",
+      async:false,
+      cache:false,
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          fillAnchorZJList(resultData);//填充主播专辑
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  //填充主播专辑
+  function fillAnchorZJList(resultData){
+    for(var i=0;i<resultData.ResultInfo.List.length;i++){
+      var conName=(resultData.ResultInfo.List[i].ContentName)?(resultData.ResultInfo.List[i].ContentName):("未知");
+      var desc=(resultData.ResultInfo.List[i].ContentDesc)?(resultData.ResultInfo.List[i].ContentDesc):("暂无");
+      var pcount=(resultData.ResultInfo.List[i].ContentPlayCount)?(resultData.ResultInfo.List[i].ContentPlayCount):("xx");
+      var msize=(resultData.ResultInfo.List[i].MediaSize)?(resultData.ResultInfo.List[i].MediaSize):("xx");
+      var cptime=(resultData.ResultInfo.List[i].ContentPubTime)?(resultData.ResultInfo.List[i].ContentPubTime):("0");
+      cptime=new Date(parseInt(cptime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");
+      var listbox= '<div class="dcb_listBox">'+
+                '<div class="dcbl_img fl">'+
+                  '<img src='+resultData.ResultInfo.List[i].ContentImg+' alt="节目图片">'+
+                '</div>'+
+                '<div class="dcbl_con fl">'+
+                  '<div class="dcbl_con_p ellipsis c7" contentId='+resultData.ResultInfo.List[i].ContentId+'>'+conName+'</div>'+
+                  '<div class="dcbl_con_tags">'+
+                    '<span class="dcbl_con_tag1 fl">标签：</span>'+
+                    '<ul class="dcbl_con_tag1s fl">'+
+//                    '<li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>'+
+//                    '<li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>'+
+                    '</ul>'+
+                  '</div>'+
+                  '<div class="dcbl_con_desc">'+
+                    '<span class="dcbl_con_desc1 fl">简介：</span>'+
+                    '<div class="dcbl_con_desc2 fl">'+desc+'</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="channels fl cw">'+
+                  '<span class="dcbl_con_channel fl">音乐</span>'+
+                '</div>'+
+                '<span class="playcount fl">'+pcount+'</span>'+
+                '<span class="episodes fl">'+msize+'</span>'+
+                '<span class="time fl">'+cptime+'</span>'+
+              '</div>';
+      $(".dcb_con2").append(listbox);
+      if(resultData.ResultInfo.List[i].ContentKeyWords){//有待修改
+        for(var j=0;j<resultData.ResultInfo.List[i].ContentKeyWords.length;j++){
+          var li='<li class="dcbl_con_tag2 fl>'+resultData.ResultInfo.List[i].ContentKeyWords[j].KwName+'</li>';
+          $(".dcbl_con_tag1s").eq(i).append(li);
+        }
+      }else{
+        $(".dcbl_con_tag1s").eq(i).html("<li>暂无</li>");
+      }
+      if(resultData.ResultInfo.List[i].ContentPubChannels){//有待修改
+        for(var j=0;j<resultData.ResultInfo.List[i].ContentPubChannels.length;j++){
+          var span='<span class="dcbl_con_channel fl" chId='+resultData.ResultInfo.List[i].ContentPubChannels[j].ChannelId+'>'+resultData.ResultInfo.List[i].ContentPubChannels[j].ChannelName+'</span>';
+          $(".channels").eq(i).append(span);
+        }
+      }else{
+        $(".channels").eq(i).html("<div>暂无</div>");
+      }
+    }
+  }
+  
+  /*点击专辑名称--进入专辑详情页*/
+  $(".dcbl_con_p").on("click",function(){
+    var contentid=$(this).attr("contentId");
+    $("#myIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+  });
+ 
+});
+</script>
+</html>
