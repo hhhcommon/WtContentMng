@@ -357,6 +357,34 @@ public class QueryController {
 	 * @param request
 	 * @return
 	 */
+	@RequestMapping(value = "/content/getPlayCounts.do")
+	@ResponseBody
+	public Map<String, Object> getPlayCounts(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<>();
+		Map<String, Object> m = RequestUtils.getDataFromRequest(request);
+		String contentIds = m.get("ContentIds") + "";
+		if (StringUtils.isNullOrEmptyOrSpace(contentIds) || contentIds.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1012");
+			map.put("Message", "无查询内容");
+			return map;
+		}
+		Map<String, Object> retMap = queryService.getPlayCounts(contentIds);
+		if (retMap!=null && retMap.size()>0) {
+			map.put("ReturnType", "1001");
+			map.put("ResultData", retMap);
+			map.put("AllCount", retMap.size());
+			return map;
+		}
+		map.put("ReturnType", "1011");
+		return map;
+	}
+	
+	/**
+	 * 搜索内容请求
+	 * 
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/content/getAppRevocation.do")
 	@ResponseBody
