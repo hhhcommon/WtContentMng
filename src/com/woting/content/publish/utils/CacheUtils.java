@@ -1,13 +1,10 @@
 package com.woting.content.publish.utils;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +12,7 @@ import java.util.Map;
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.JsonUtils;
-import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.oss.utils.OssUtils;
 
 /**
  * 静态数据生成工具
@@ -27,8 +24,8 @@ public abstract class CacheUtils {
 	private static String zjpath = "mweb/zj/";
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
-	private static String jmurlrootpath = "http://www.wotingfm.com/dataCenter/shareH5/"; // 静态节目content.html路径头信息
-	private static String ossrootpath = "/opt/dataCenter/shareH5/";// SystemCache.getCache(FConstants.APPOSPATH).getContent()+""; // 静态文件根路径
+	private static String jmurlrootpath = "http://www.wotingfm.com/share/"; // 静态节目content.html路径头信息
+	private static String ossrootpath = "/shareH5/";
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
 	
 	/**
@@ -187,30 +184,32 @@ public abstract class CacheUtils {
 	 * @return
 	 */
 	public static boolean writeFile(String jsonstr, String path, boolean isOrNoToFor) {
-		File file = createFile(path);
-		try {
-			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
-			BufferedWriter writer = new BufferedWriter(write);
-			writer.write(jsonstr);
-			writer.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (file.exists()) {
-			String doedstr = readFile(path);
-			if (doedstr.length() == jsonstr.length()) return true;
-			else {
-				if (isOrNoToFor) {
-					for (int i = 0; i < 10; i++) {
-						if (writeFile(jsonstr, path, false)) {
-							return true;
-						}
-					}
-				}
-				return false;
-			}
-		}
-		else return false;
+		return OssUtils.upLoadObject(path, jsonstr, true);
+//		return false;
+//		File file = createFile(path);
+//		try {
+//			OutputStreamWriter write = new OutputStreamWriter(new FileOutputStream(file),"UTF-8");
+//			BufferedWriter writer = new BufferedWriter(write);
+//			writer.write(jsonstr);
+//			writer.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		if (file.exists()) {
+//			String doedstr = readFile(path);
+//			if (doedstr.length() == jsonstr.length()) return true;
+//			else {
+//				if (isOrNoToFor) {
+//					for (int i = 0; i < 10; i++) {
+//						if (writeFile(jsonstr, path, false)) {
+//							return true;
+//						}
+//					}
+//				}
+//				return false;
+//			}
+//		}
+//		else return false;
 	}
 
 	/**
