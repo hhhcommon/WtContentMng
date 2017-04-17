@@ -37,6 +37,7 @@ import com.woting.cm.core.media.model.MediaAsset;
 import com.woting.cm.core.media.model.SeqMediaAsset;
 import com.woting.cm.core.media.persis.po.MaSourcePo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
+import com.woting.cm.core.media.persis.po.MediaPlayCountPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.person.persis.po.PersonPo;
@@ -63,6 +64,8 @@ public class MediaService {
 	private MybatisDAO<ChannelPo> channelDao;
 	@Resource(name = "defaultDAO")
 	private MybatisDAO<DictRefResPo> dictRefDao;
+	@Resource(name = "defaultDAO")
+	private MybatisDAO<MediaPlayCountPo> mediaPlayCountDao;
 	@Resource
 	private ChannelContentService channelContentService;
 	@Resource
@@ -96,6 +99,7 @@ public class MediaService {
 		mediaAssetDao.setNamespace("A_MEDIA");
 		maSourceDao.setNamespace("A_MEDIA");
 		seqMaRefDao.setNamespace("A_MEDIA");
+		mediaPlayCountDao.setNamespace("A_MEDIA");
 		seqMediaAssetDao.setNamespace("A_MEDIA");
 		channelAssetDao.setNamespace("A_CHANNELASSET");
 		channelDao.setNamespace("A_CHANNEL");
@@ -563,6 +567,8 @@ public class MediaService {
 								}
 							}
 						}
+						long playCount = getMediaPlatCountByResIdAndResTableName(ma.getId(), "wt_MediaAsset");
+						mam.put("PlayCount", playCount);
 						list.add(mam);
 					} catch (Exception e) {e.printStackTrace();}
 				}
@@ -977,5 +983,21 @@ public class MediaService {
 			return ls;
 		}
 		return null;
+	}
+	
+	public long getMediaPlatCountByResIdAndResTableName(String resId, String resTableName) {
+		try {
+			Map<String, Object> m = new HashMap<>();
+			m.put("resId", resId);
+			m.put("resTableName", resTableName);
+			MediaPlayCountPo mediaPlayCountPo = mediaPlayCountDao.getInfoObject("getPlayCount", m);
+			if (mediaPlayCountPo!=null) {
+				return mediaPlayCountPo.getPlayCount();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		return 0;
 	}
 }

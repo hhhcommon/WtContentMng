@@ -314,7 +314,8 @@ public class QueryController {
 			List<Map<String, Object>> ls = (List<Map<String, Object>>) retM.get("List");
 			if (ls!=null && ls.size()>0) {
 				map.put("ReturnType", "1001");
-			    map.put("ResultInfo", retM);
+			    map.put("ResultList", ls);
+			    map.put("AllCount", retM.get("AllCount"));
 			    return map;
 			} 
 		} 

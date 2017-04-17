@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>专辑管理(主播--专辑详情)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;background: #fff;-moz-user-select: none;}
+.detail{
+  width:1080px;
+  min-width:850px;
+  position: relative;
+  height:auto;
+  margin:auto;
+}
+.containers{
+  position: relative;
+  height:auto;
+}
+.detail_title{
+  position: relative;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  color: #000;
+  font-size: 14px;
+  padding-left: 20px;
+  border-bottom: 1px solid #dedede;
+}
+.title_more{
+  overflow: hidden;
+  height: 30px;
+  font-size: 14px;
+  margin-top: 5px;
+  line-height: 30px;
+  border-bottom: 2px solid #dedede;
+}
+.my_title{
+  color: #000;
+  float: left;
+  font-weight: bold;
+}
+.more{
+  color: #0077c7;
+  float: right;
+  margin-right:10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.detail_content{
+  position: relative;
+  width:100%;
+  height:auto;
+  overflow: hidden;
+}
+.dc_left{
+  position: relative;
+  width:710px;
+  height:auto;
+  float: left;
+  margin:15px 0px 0px 20px;
+}
+.dcl_zjcontent {
+  width:100%;
+  padding: 0px 0px 10px 20px;
+  position: relative;
+  border: 1px solid #dedede;
+  overflow: hidden;
+}
+.dcl_zjcontent12{
+  overflow: hidden;
+  height: auto;
+  padding-bottom: 20px;
+}
+.dcl_zjcontent1{
+  float: left;
+  width:180px;
+  height:180px;
+  position: relative;
+  margin-top:20px;
+}
+.dcl_zjcontent1 img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+  -ms-interpolation-mode:bicubic;  
+}
+.tags1{
+  color: #000;
+  font-weight: 800; 
+}
+.pper,.newspan{
+  padding: 0px 5px;
+  margin: 0px 10px 0px 0px;
+}
+.pper{color: #000;}
+.ctime{
+  margin: 0px;
+  height: 30px;
+  line-height: 30px
+}
+.dcl_zjcontent2{
+  float:right;
+  overflow: hidden;
+  width:calc(100% - 205px);
+  height:auto;
+  margin-top:20px;
+  padding: 0px 10px 0px 0px;
+}
+.title{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  color: #000;
+  font-weight: bolder;
+  font-size: 18px;
+}
+.per,.channels,.tagss{
+  line-height: 30px;  
+  font-size: 14px;
+}
+.h3span{
+  color:#ffa634;
+  font-size:14px;
+  font-weight:100;
+}
+.dcl_zjcontent2 .cctime{
+  font-weight:normal;
+  color: #676a6c;
+}
+.dcl_zjcontent2 ul{
+  overflow: hidden;
+  line-height: 30px;
+  margin:0px;
+}
+.dcl_zjcontent3{
+  overflow: hidden;
+  height:30px;
+  line-height:30px;
+}
+.dcl_zjcontent3 .revoke,.dcl_zjcontent3 .player{
+  margin-right: 50px;
+  width:85px;
+  color: #fff;
+  border:none;
+  cursor: pointer;
+  text-align: center;
+  float: left;
+}
+.fl{
+  float: left;
+}
+.dcl_zjcontent3 .revoke{
+  background: #0077c7;
+}
+.dcl_zjcontent3 .player{
+  background: #f60;
+}
+.play_sum{
+  width: 130px;
+  height: 30px;
+  line-height: 30px;
+}
+.play_sum1{
+  color:#0077c7;
+  font-size:25px;
+}
+.play_sum2{
+  color: #000;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.dcl_zjcontent4{
+  font-family: "微软雅黑";
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+  line-height: 25px;
+  float: left;
+}
+.dcl_zj_jmlist{
+  width:100%;
+  height:auto;
+  position: relative;
+  float: left;
+  margin-top:10px;
+}
+.list_title{
+  height:30px;
+  line-height: 30px;
+  border-bottom:1px dotted #000;
+}
+.content-tabs{
+  height: 30px;
+  background: #fff;
+  border-bottom: solid 0px #f3f3f4;
+}
+.content-tabs button:hover {
+  background: #fff;
+}
+.list_title h4{
+  color:#000;
+  float: left;
+  padding-left:20px;
+  height:30px;
+  font-size:15px;
+  line-height:30px;
+}
+.list_title_span{
+  color:#0077c7;
+  font-weight: bolder;
+  float: right;
+  height:30px;
+  line-height:30px;
+  font-size:15px;
+  padding-right:10px;
+  cursor: pointer;
+}
+.jm_states{
+  float: right;
+  width: 135px;
+  font-weight: bolder;
+  color: #000;
+  font-size: 15px;
+}
+.zj_jmlist {
+  width: 100%;
+  position: absolute;
+  height: 200px;
+  border: 1px solid #00458A;
+}
+.list_content1{
+  width:100%;
+  height:30px;
+  line-height:30px;
+  border-bottom:1px solid #676a6c;
+  overflow: hidden;
+}
+.list_content1_div {
+  width: 290px;
+  overflow: hidden;
+}
+.list_content1_play{
+  background: url("img/btn.png") repeat;
+  background-position: 0px -154px;
+  width: 25px;
+  height: 25px;
+  background-size: 100%;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  background-position: 0px -154px;
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+}
+.act{
+  width:240px;
+  overflow: hidden;
+}
+.act li{
+  width: 70px;
+  overflow: hidden;
+  margin-left: 20px;
+}
+.playcount{
+  position: absolute;
+}
+.list_content1_span1{
+  padding-left:0px;
+}
+.list_content1_span2,.list_content1_span3{
+  margin-left:25px;
+}
+.dc_right1{
+  width:300px;
+  float: left;
+  margin:15px 0px 0px 36px;
+}
+.dc_right{
+  width:100%;
+  height:auto;
+}
+.dcr_zjlist{
+  overflow: auto;
+}
+.dcr_zjlist1{
+  width:100%;
+  height: 110px;
+  border-bottom: 2px solid #dedede;
+  overflow: hidden;
+}
+.list1_img{
+  width:80px;
+  height:80px;
+  float: left;
+  margin:15px 0px;
+  display: inline-block;
+  border:1px solid #dedede;
+  cursor: pointer;
+}
+.list_content{
+  width:100%;
+  height: auto;
+}
+.playcount{
+  position: absolute;
+}
+.list_content1_span1{
+  padding-left:0px;
+}
+.list_content1_a{
+  font-size:15px;
+  color: #0077c7;
+  cursor: pointer;
+  width:240px;
+}
+.list_content1_span2,.list_content1_span3{
+  margin-left:25px;
+}
+.list1_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.list1_con{
+  width:195px;
+  float: left;
+  padding-left:10px;
+  margin:15px 0px;
+}
+.list_time{
+  width: 160px;
+  text-align: right;
+  margin-left: 10px;
+}
+.rtc_listBox{
+  width:97%;
+  height:110px;
+  border-bottom:1px solid #dedede;
+  position:relative;
+  font-family: "微软雅黑";
+  font-size:14px ;
+  overflow: hidden;
+}
+.rtcl_img{
+  height:80px;
+  width:80px;
+  margin-top:15px;
+  margin-left:20px;
+  margin-right:10px;
+  border:1px solid #dedede;
+  float: left;
+  cursor: pointer;
+}
+.rtcl_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.rtcl_con{
+  height:100%;
+  float: left;
+  color:rgb(173,172,172);
+}
+.rtcl_con h4{
+  margin-top:20px;
+  color:#000;
+}
+.jm_st{
+  float: right;
+  line-height: 110px;
+  margin-right:104px;
+  color:#000;
+}
+.op_type{
+  float: right;
+  margin-right:-140px;
+}
+.op_type p{
+  cursor: pointer;
+  margin:5px 0px 0px 0px;
+}
+.cf60{
+ color:#f60; 
+}
+.c173{
+  color:rgb(173,172,172);
+}
+.dropdown-menu{
+  left:15px;
+  min-width:110px !important;
+}
+.formChannel{
+  font-size: 15px;
+  color: #000;
+  font-weight: 800;
+  font-family: "微软雅黑";
+}
+.list1_con_name{
+  color: #0077c7;
+  font-weight: bold;
+  cursor: pointer;
+}
+.list1_con_name,.list1_con_num,.list1_con_time{
+  width: 180px;
+}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.audioIframe{
+  position: relative;
+  height:auto;
+  display: none;
+}
+#audioIframe{
+  height:100px;
+}
+.locker{
+  position:relative;
+  margin-left: 90%;
+  margin-top: 0px;
+  width: 50px;
+  height: 15px;
+  background: center no-repeat;
+  background-size: cover;
+  background-image:url("http://sss.qingting.fm/www/images/locker-bg@2x.png");
+  cursor: pointer;
+}
+.locker .locker_btn{
+  width: 50px;
+  height: 18px;
+  background: center no-repeat;
+  background-size: 12px 12px;
+  background-image:url("http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png");
+}
+.clearHeight:after{ 
+  content:""; 
+  display: block; 
+  clear: both; 
+}
+</style>
+<body onselectstart="return false">
+<div class="detail">
+  <div class="containers">
+    <div class="detail_content">
+      <div class="detail_title">当前位置：主播管理> 主播列表>
+        <span class="pername"></span>
+        <span class="zjname"></span>
+      </div>
+      <div class="dc_left">
+        <div class="dcl_zjcontent">
+          <div class="dcl_zjcontent12">
+            <div class="dcl_zjcontent1">
+              <img src="" alt="节目封面图片" />
+            </div>
+            <div class="dcl_zjcontent2">
+              <div class="title ellipsis"></div>
+              <div class="per">
+                <span class="fl">主播:</span>
+                <ul>
+                  <!--<li class="pper fl">主播1</li>
+                  <li class="pper fl">主播2</li>
+                  <li class="pper fl">主播3</li>-->
+                </ul>
+              </div>
+              <div class="channels">
+                <span class="fl">来自栏目:</span>
+                <ul>
+                  <!--<li class="formChannel fl">【小说故事-文学】</li>
+                  <li class="formChannel fl">【小说故事-文学】</li>
+                  <li class="formChannel fl">【小说故事-文学】</li>
+                  <li class="formChannel fl">【小说故事-文学】</li>-->
+                </ul>
+              </div>
+              <div class="tagss">
+                <span class="tags1 fl">标签：</span>
+                <ul>
+                  <!--<li class="newspan fl">自定义标签一</li>
+                  <li class="newspan fl">自定义标签一</li>
+                  <li class="newspan fl">自定义标签一</li>
+                  <li class="newspan fl">自定义标签一</li>
+                  <li class="newspan fl">自定义标签一</li>-->
+                </ul>
+              </div>
+              <p class="ctime">最近更新时间：<span class="cctime"></span></p>
+            </div>
+          </div>
+          <div class="dcl_zjcontent3">
+            <button class="revoke fl">撤回专辑</button>
+            <button class="player fl">全部播放</button>
+            <div class="play_sum fl">
+              <span class="play_sum1"></span>
+              <span class="play_sum2">次播放</span>
+            </div>
+          </div>
+          <div class="dcl_zjcontent4"></div>
+        </div>
+        <div class="dcl_zj_jmlist">
+          <div class="list_title">
+            <h4></h4>
+            <span class="list_title_span">更改排序</span>
+          </div>
+          <ul class="list_content clearHeight">
+            <!--<li class="list_content1">
+              <div class="fl list_content1_div">
+                <span alt="播放按钮图片" class="list_content1_play fl"/></span>
+                <span class="list_content1_a fl">vol.23 想和你一起去看海</span>
+              </div>
+              <ul class="act fl">
+                <li class="play fl">
+                  <img class="play1" src="img/act1.png" alt="" />
+                  <span class="play2">播放(0)</span>
+                </li>
+                <li class="love fl">
+                  <img class="love1" src="img/act3.png" alt="" />
+                  <span class="love2">喜欢(0)</span>
+                </li>
+                <li class="intransit fl">
+                  <img class="intransit1" src="img/act5.png" alt="" />
+                  <span class="intransit2">转发(0)</span>
+                </li>
+              </ul>
+              <span class="list_time fl">2016-10-18</span>
+            </li>-->
+            <!--<li class="list_content1">
+              <div class="fl list_content1_div">
+                <span alt="播放按钮图片" class="list_content1_play fl"/></span>
+                <span class="list_content1_a fl">vol.23 想和你一起去看海</span>
+              </div>
+              <ul class="act fl">
+                <li class="play fl">
+                  <img class="play1" src="img/act1.png" alt="" />
+                  <span class="play2">播放(0)</span>
+                </li>
+                <li class="love fl">
+                  <img class="love1" src="img/act3.png" alt="" />
+                  <span class="love2">喜欢(0)</span>
+                </li>
+                <li class="intransit fl">
+                  <img class="intransit1" src="img/act5.png" alt="" />
+                  <span class="intransit2">转发(0)</span>
+                </li>
+              </ul>
+              <span class="list_time fl">2016-10-18</span>
+            </li>-->
+            <!--<li class="list_content1">
+              <div class="fl list_content1_div">
+                <span alt="播放按钮图片" class="list_content1_play fl"/></span>
+                <span class="list_content1_a fl">vol.23 想和你一起去看海</span>
+              </div>
+              <ul class="act fl">
+                <li class="play fl">
+                  <img class="play1" src="img/act1.png" alt="" />
+                  <span class="play2">播放(0)</span>
+                </li>
+                <li class="love fl">
+                  <img class="love1" src="img/act3.png" alt="" />
+                  <span class="love2">喜欢(0)</span>
+                </li>
+                <li class="intransit fl">
+                  <img class="intransit1" src="img/act5.png" alt="" />
+                  <span class="intransit2">转发(0)</span>
+                </li>
+              </ul>
+              <span class="list_time fl">2016-10-18</span>
+            </li>-->
+          </ul>
+        </div>
+      </div>
+      <div class="dc_right1">
+        <div class="title_more">
+          <div class="my_title">Ta的专辑</div>
+          <div class="more">更多</div>
+        </div>
+        <div class="dc_right">
+          <div class="dcr_zjlist">
+            <!--<div class="dcr_zjlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name">
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num">
+                  <span>集数 ： </span>
+                  <span>8</span>
+                </p>
+                <p class="list1_con_time">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+            <!--<div class="dcr_zjlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name">
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num">
+                  <span>集数 ： </span>
+                  <span>8</span>
+                </p>
+                <p class="list1_con_time">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+            <!--<div class="dcr_zjlist1">
+              <div class="list1_img">
+                <img src="" alt="节目图片" />
+              </div>
+              <div class="list1_con">
+                <p class="list1_con_name">
+                  <span>双份的阳光</span>
+                </p>
+                <p class="list1_con_num">
+                  <span>集数 ： </span>
+                  <span>8</span>
+                </p>
+                <p class="list1_con_time">
+                  <span>时间 ：</span>
+                  <span>2016-10-08 10:47:35</span>
+                </p>
+              </div>
+            </div>-->
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="locker">
+    <div class="locker_btn locked"></div>
+  </div>
+  <div class="audioIframe">
+    <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="" frameborder="0" seamless></iframe>
+  </div>
+</div>
+</body>
+<script>
+  var rootPath=getRootPath();
+  var audioList=[];//音乐播放列表
+  var listNum=0;//控制播放节目的序号
+  var personId=getUrlParam(window.location.href,'personId');
+  var contentId=getUrlParam(window.location.href,'contentId');
+  var userId="123";
+$(function(){  
+  /*得到专辑信息*/
+  var data1={"UserId":userId,
+             "ContentFlowFlag":"2",
+             "Page":"1",
+             "PageSize":"10",
+             "ContentId":contentId,
+             "MediaType":"wt_SeqMediaAsset"
+  };
+  getZjDetail(data1);
+  function getZjDetail(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/content/getContentInfo.do",
+      dataType:"json",
+      async:false,
+      cache:false,
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          fillZjDetail(resultData);//填充专辑数据
+        }else{
+          alert(resultData.Message);
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  //填充专辑数据
+  function fillZjDetail(resultData){
+    $(".zjname").text(!resultData.ContentDetail.ContentName?"自定义专辑名称":resultData.ContentDetail.ContentName);
+    $(".dcl_zjcontent1 img").attr("src",(!resultData.ContentDetail.ContentImg?"专辑封面":(resultData.ContentDetail.ContentImg)));
+    $(".title").text(!resultData.ContentDetail.ContentName?"自定义专辑名称":resultData.ContentDetail.ContentName);
+    if(resultData.ContentDetail.ContentPersons){
+      for(var i=0;i<resultData.ContentDetail.ContentPersons.length;i++){
+        var li='<li class="pper fl">'+resultData.ContentDetail.ContentPersons[i].PerName+'</li>';
+        $(".per ul").append(li);
+      }
+    }else{
+      $(".per ul").append("<li>暂无</li>");
+    }
+    if(resultData.ContentDetail.ContentPubChannels){
+      for(var i=0;i<resultData.ContentDetail.ContentPubChannels.length;i++){
+        var li='<li class="formChannel fl">'+"【"+resultData.ContentDetail.ContentPubChannels[i].ChannelName+"】"+'</li>';
+        $(".channels ul").append(li);
+      }
+    }else{
+      $(".channels ul").append("<li>【暂无】</li>");
+    }
+    if(resultData.ContentDetail.ContentKeyWord){
+      for(var i=0;i<resultData.ContentDetail.ContentKeyWord.length;i++){
+        var li='<li class="newspan fl" tagId='+resultData.ContentDetail.ContentKeyWord[i].TagId+'>'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</li>';
+        $(".tagss ul").append(li);
+      }
+    }else{
+      $(".tagss ul").append("<li>暂无</li>");
+    }
+    $(".cctime").text(!resultData.ContentDetail.CTime?"未知":(resultData.ContentDetail.CTime));
+    $(".play_sum1").text(!resultData.ContentDetail.PlayCount?"未知":(resultData.ContentDetail.PlayCount));
+    $(".dcl_zjcontent4").text(!resultData.ContentDetail.ContentDesc?"暂无":(resultData.ContentDetail.ContentDesc));
+    if(resultData.SubList){
+      $(".list_title h4").html("共"+resultData.SubList.length+"集");
+      for(var i=0;i<resultData.SubList.length;i++){
+        var li='<li class="list_content1" conId='+resultData.SubList[i].ContentId+'>'+
+                  '<div class="fl list_content1_div">'+
+                    '<span alt="播放按钮图片" class="list_content1_play fl" playUrl='+resultData.SubList[i].ContentPlay+'/></span>'+
+                    '<span class="list_content1_a fl ellipsis">'+resultData.SubList[i].ContentName+'</span>'+
+                  '</div>'+
+                  '<ul class="act fl">'+
+                    '<li class="play fl">'+
+                      '<img class="play1" src="img/act1.png" alt="" />'+
+                      '<span class="play2">'+resultData.SubList[i].PlayCount+'</span>'+
+                    '</li>'+
+                    '<li class="love fl">'+
+                      '<img class="love1" src="img/act3.png" alt="" />'+
+                      '<span class="love2">喜欢(0)</span>'+
+                    '</li>'+
+                    '<li class="intransit fl">'+
+                      '<img class="intransit1" src="img/act5.png" alt="" />'+
+                      '<span class="intransit2">转发(0)</span>'+
+                    '</li>'+
+                  '</ul>'+
+                  '<span class="list_time fl">'+resultData.SubList[i].CTime+'</span>'+
+                '</li>';
+        $(".list_content").append(li);
+        if(resultData.SubList[i].ContentPlay){
+          var audioObj={};
+          audioObj.title=resultData.SubList[i].ContentName;
+          audioObj.playUrl=resultData.SubList[i].ContentPlay;
+          audioList.push(audioObj);
+        }
+      }
+      $("#audioIframe").attr("src","globalplayer.html");
+    }else{
+      $(".list_title h4").html("共0集");
+    }
+  };
+  
+ /*获取同主播的专辑列表*/
+  var data3={"UserId":userId,
+             "PersonId":personId,
+             "Page":"1",
+             "PageSize":"3",
+             "MediaType":"SEQU"
+  };
+  getZjList(data3);
+  function getZjList(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/person/getPersonContents.do",
+      dataType:"json",
+      async:false,
+      cache:false,
+      data:JSON.stringify(dataParam),
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          $(".dcr_zjlist").html(" ");
+          fillZjList(resultData);//填充专辑列表数据
+        }else{
+          alert("没有更多专辑了");
+        }
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  //填充专辑列表数据
+  function fillZjList(resultData){
+    for(var i=0;i<resultData.ResultInfo.List.length;i++){
+      var ctime=resultData.ResultInfo.List[i].CTime;
+      ctime=new Date(parseInt(ctime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");  
+      var li='<div class="dcr_zjlist1">'+
+              '<div class="list1_img">'+
+                '<img src='+resultData.ResultInfo.List[i].ContentImg+' alt="节目图片" />'+
+              '</div>'+
+              '<div class="list1_con">'+
+                '<p class="list1_con_name ellipsis" contentId='+resultData.ResultInfo.List[i].ContentId+'>'+
+                  '<span>'+resultData.ResultInfo.List[i].ContentName+'</span>'+
+                '</p>'+
+                '<p class="list1_con_num ellipsis">'+
+                  '<span>集数 ： </span>'+
+                  '<span>'+resultData.ResultInfo.List[i].MediaSize+'</span>'+
+                '</p>'+
+                '<p class="list1_con_time ellipsis">'+
+                  '<span>时间 ：</span>'+
+                  '<span>'+ctime+'</span>'+
+                '</p>'+
+              '</div>'+
+            '</div>';
+      $(".dcr_zjlist").append(li);
+      if(resultData.ResultInfo.List[i].ContentPersons){
+        for(var j=0;j<resultData.ResultInfo.List[i].ContentPersons.length;j++){
+          if(resultData.ResultInfo.List[i].ContentPersons[j].PerId==personId){
+            $(".pername").attr("pername",resultData.ResultInfo.List[i].ContentPersons[j].PerName);
+            $(".pername").attr("perid",resultData.ResultInfo.List[i].ContentPersons[j].PerId);
+            $(".pername").text(resultData.ResultInfo.List[i].ContentPersons[j].PerName+">");
+            return false;
+          }
+        }
+      }
+    }
+  };
+ 
+  /*点击节目列表--跳到节目详情页*/
+  $(document).on("click",".list_content1_a",function(){
+    var jmid=$(this).parent(".list_content1_div").parent(".list_content1").attr("conId");
+    var pername=$(".pername").attr("pername");
+    $("#myIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
+  });
+  
+  /*点击专辑名称，跳到专辑详情页*/
+  $(document).on("click",".list1_con_name",function(){
+    var personId=$(".pername").attr("perid");
+    var contentid=$(this).attr("contentId");
+    $("#myIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+  });
+  
+  /*点击更多--加载下一批专辑*/
+  var moreNum=1;//记录点击的次数
+  $(".more").on("click",function(){
+    moreNum++;
+    var data4={"UserId":userId,
+               "PersonId":personId,
+               "Page":moreNum,
+               "PageSize":"3",
+               "MediaType":"SEQU"
+    };
+    getZjList(data4);
+  });
+  
+  /*点击全部播放*/
+  $(".player").on("click",function(){
+    $(".locker").click();
+  });
+  
+  //播放器面板出现与隐藏
+  $(document).on("click",".locker",function(){
+    if($(this).children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
+      $(".audioIframe").show();
+      $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-locked-hover@2x.png)"});
+      $(this).children(".locker_btn").removeClass("locked");
+    }else{//此时显示，点击之后隐藏
+      $(".audioIframe").hide();
+      $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png)"});
+      $(this).children(".locker_btn").addClass("locked");
+    }
+  });
+  
+});
+</script>
+</html>
