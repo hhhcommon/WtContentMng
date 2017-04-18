@@ -25,7 +25,7 @@ public abstract class CacheUtils {
 	private static String jmpath = "mweb/jm/";
 	private static String templetpath = "mweb/templet/";
 	private static String jmurlrootpath = "http://www.wotingfm.com/share/"; // 静态节目content.html路径头信息
-	private static String ossrootpath = "/shareH5/";
+	private static String ossrootpath = "shareH5/";
 	private static String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent()+"";
 	
 	/**
