@@ -190,5 +190,9 @@
     <property name="BucketName" value="${oss.BucketName}"/>
     <property name="TempFile" value="${oss.TempFile}"/>
   </bean>
+  <!-- map2json功能 -->
+  <bean id="map2json" class="com.woting.cm.core.map2json.persis.po.Map2JsonPo" scope="prototype">
+    <property name="replaceStr" value="${map2json.replaceStr}"/>
+  </bean>
   <context:annotation-config/>
 </beans>

@@ -28,16 +28,13 @@
             </list>
           </property>
         </bean>
-        <bean class="com.woting.content.ext.spring.MappingJackson2HttpMessageConverterFactory">
+        <bean class="com.woting.ext.spring.MappingJackson2HttpMessageConverterFactory">
           <property name="supportedMediaTypes">
             <list>
               <value>application/json;charset=UTF-8</value>
             </list>
           </property>
         </bean>
-<!--         <property name="objectMapper"> -->
-<!--               <bean class="com.woting.content.ext.spring.CustomJsonHttpMessageConverter"></bean>  -->
-<!--           </property> -->
       </list>
     </property>
   </bean>
