@@ -10,14 +10,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
-
 import javax.servlet.ServletContext;
-
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.GetObjectRequest;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ObjectMetadata;
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.SequenceUUID;
@@ -33,15 +31,22 @@ public class OssUtils {
 	 * @return
 	 */
 	public static boolean upLoadObject(String key, String content, boolean isOrNoDelete) {
+		OSSClient ossClient = null;
 		try {
 			if (content!=null && key!=null) {
 				OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
 				if (ossConfigPo!=null) {
-					OSSClient ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
+					ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
 					if (ossClient!=null) {
 						File file = createFile(ossConfigPo.getTempFile()+SequenceUUID.getPureUUID()+".json");
 						writeFile(content, file);
-						ossClient.putObject(ossConfigPo.getBucketName(), key, file);
+						ObjectMetadata meta = new ObjectMetadata();
+						meta.setContentLength(content.length());
+						meta.setCacheControl("no-cache");
+						meta.setHeader("Pragma", "no-cache");
+						meta.setContentType(contentType(file.getName().substring(file.getName().lastIndexOf("."))));
+						meta.setContentDisposition("inline;filename=" + file.getName());
+						ossClient.putObject(ossConfigPo.getBucketName(), key, file, meta);
 						if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), key)) {
 						    if (isOrNoDelete) deleteFile(file);
 						    return true;
@@ -52,6 +57,8 @@ public class OssUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (ossClient!=null) ossClient.shutdown();
 		}
 		return false;
 	}
@@ -64,13 +71,20 @@ public class OssUtils {
 	 * @return
 	 */
 	public static boolean upLoadObject(String key, File file, boolean isOrNoDelete) {
+		OSSClient ossClient = null;
 		try {
 			if (file!=null && key!=null) {
 				OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
 				if (ossConfigPo!=null) {
-					OSSClient ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
+					ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
 					if (ossClient!=null) {
-						ossClient.putObject(ossConfigPo.getBucketName(), key, file);
+						ObjectMetadata meta = new ObjectMetadata();
+						meta.setContentLength(file.getTotalSpace());
+						meta.setCacheControl("no-cache");
+						meta.setHeader("Pragma", "no-cache");
+						meta.setContentType(contentType(file.getName().substring(file.getName().lastIndexOf("."))));  
+						meta.setContentDisposition("inline;filename=" + file.getName()); 
+						ossClient.putObject(ossConfigPo.getBucketName(), key, file, meta);
 						if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), key)) {
 							if (isOrNoDelete) deleteFile(file);
 							return true;	
@@ -81,6 +95,8 @@ public class OssUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (ossClient!=null) ossClient.shutdown();
 		}
 		return false;
 	}
@@ -92,13 +108,20 @@ public class OssUtils {
 	 * @return
 	 */
 	public static boolean upLoadObject(String key, InputStream in) {
+		OSSClient ossClient = null;
 		try {
 			if (in!=null && key!=null) {
 				OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
 				if (ossConfigPo!=null) {
-					OSSClient ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
+					ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
 					if (ossClient!=null) {
-						ossClient.putObject(ossConfigPo.getBucketName(), key, in);
+						ObjectMetadata meta = new ObjectMetadata();
+						meta.setContentLength(in.available());
+						meta.setCacheControl("no-cache");
+						meta.setHeader("Pragma", "no-cache");
+						meta.setContentType("text/html");
+//						meta.setContentDisposition("inline;filename=");
+						ossClient.putObject(ossConfigPo.getBucketName(), key, in, meta);
 						if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), key)) {
 							in.close();
 							return true;
@@ -109,6 +132,8 @@ public class OssUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (ossClient!=null) ossClient.shutdown();
 		}
 		return false;
 	}
@@ -120,15 +145,20 @@ public class OssUtils {
 	 * @return
 	 */
 	public static boolean upLoadObject(String key, String url) {
+		OSSClient ossClient = null;
 		try {
 			if (url!=null && url.length()>0 && key!=null) {
 				OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
 				if (ossConfigPo!=null) {
-					OSSClient ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
+					ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
 					if (ossClient!=null) {
 						InputStream in = new URL(url).openStream();
 						if (in != null) {
-							ossClient.putObject(ossConfigPo.getBucketName(), key, in);
+							ObjectMetadata meta = new ObjectMetadata();
+							meta.setCacheControl("no-cache");
+							meta.setHeader("Pragma", "no-cache");
+							meta.setContentType("text/html");
+							ossClient.putObject(ossConfigPo.getBucketName(), key, in, meta);
 							if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), key)) {
 								in.close();
 								return true;
@@ -140,23 +170,33 @@ public class OssUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (ossClient!=null) ossClient.shutdown();
 		}
 		return false;
 	}
 	
 	public static InputStream getObjectToInputStream(String key) {
-		OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
-		if (ossConfigPo!=null) {
-			OSSClient ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
-			if (ossClient!=null) {
-				OSSObject ossObject = ossClient.getObject(ossConfigPo.getBucketName(), key);
-				if (ossObject!=null) {
-					InputStream in = ossObject.getObjectContent();
-					if (in!=null) {
-						return in;
+		OSSClient ossClient = null;
+		try {
+			OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
+			if (ossConfigPo!=null) {
+				ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
+				if (ossClient!=null) {
+					OSSObject ossObject = ossClient.getObject(ossConfigPo.getBucketName(), key);
+					if (ossObject!=null) {
+						InputStream in = ossObject.getObjectContent();
+						if (in!=null) {
+							return in;
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (ossClient!=null) ossClient.shutdown();
 		}
 		return null;
 	}
@@ -207,10 +247,11 @@ public class OssUtils {
 	 * 默认进行格式转换，转为png格式
 	 */
 	public static InputStream makePictureResize(String key, int ResizePer) {
+		OSSClient ossClient = null;
 		try {
 			OssConfigPo ossConfigPo = (OssConfigPo) getBean("ossconfig");
 			if (ossConfigPo!=null) {
-				OSSClient ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
+				ossClient = new OSSClient(ossConfigPo.getEndpoint(), ossConfigPo.getAccessKeyId(), ossConfigPo.getAccessKeySecret());
 				if (ossClient!=null) {
 					String style = "image/resize,m_lfit,w_"+ResizePer+",h_"+ResizePer+",limit_0/auto-orient,0";  
 					GetObjectRequest request = new GetObjectRequest(ossConfigPo.getBucketName(), key);
@@ -225,7 +266,10 @@ public class OssUtils {
 				}
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (ossClient!=null) ossClient.shutdown();
 		}
 		return null;
 	}
@@ -310,4 +354,26 @@ public class OssUtils {
         }
 		return null;
 	}
+	
+	/**
+     * 判断OSS服务文件上传时文件的contentType
+     * @param FilenameExtension 文件后缀 
+     * @return String
+     */
+     public static String contentType(String FilenameExtension){
+    	FilenameExtension = FilenameExtension.toLowerCase();
+        if(FilenameExtension.equals("BMP")||FilenameExtension.equals("bmp")){return "image/bmp";}  
+        if(FilenameExtension.equals("GIF")||FilenameExtension.equals("gif")){return "image/gif";}  
+        if(FilenameExtension.equals("JPEG")||FilenameExtension.equals("jpeg")||FilenameExtension.equals("JPG")||FilenameExtension.equals("jpg")||
+           FilenameExtension.equals("PNG")||FilenameExtension.equals("png")){return "image/jpeg";}  
+        if(FilenameExtension.equals("HTML")||FilenameExtension.equals("html")){return "text/html";}
+        if(FilenameExtension.equals("TXT")||FilenameExtension.equals("txt")){return "text/plain";}  
+        if(FilenameExtension.equals("VSD")||FilenameExtension.equals("vsd")){return "application/vnd.visio";}  
+        if(FilenameExtension.equals("PPTX")||FilenameExtension.equals("pptx")||
+            FilenameExtension.equals("PPT")||FilenameExtension.equals("ppt")){return "application/vnd.ms-powerpoint";}  
+        if(FilenameExtension.equals("DOCX")||FilenameExtension.equals("docx")||  
+            FilenameExtension.equals("DOC")||FilenameExtension.equals("doc")){return "application/msword";}  
+        if(FilenameExtension.equals("XML")||FilenameExtension.equals("xml")){return "text/xml";}  
+        return "text/html";
+     }
 }

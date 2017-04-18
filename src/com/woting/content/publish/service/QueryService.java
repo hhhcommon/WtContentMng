@@ -14,12 +14,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.springframework.stereotype.Service;
-import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.SystemCache;
+
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.cm.cachedb.cachedb.service.CacheDBService;
