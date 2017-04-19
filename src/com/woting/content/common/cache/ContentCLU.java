@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.spiritdata.framework.component.UGA.cache.FrameworkUgaCLU;
 import com.spiritdata.framework.core.cache.AbstractCacheLifecycleUnit;
 import com.spiritdata.framework.core.cache.CacheEle;
@@ -16,6 +17,7 @@ import com.woting.cm.core.dict.service.DictService;
 import com.woting.crawlerdb.dict.mem._CacheCDictionary;
 import com.woting.crawlerdb.dict.service.CDictService;
 import com.woting.exceptionC.Wtcm1000CException;
+
 
 public class ContentCLU extends AbstractCacheLifecycleUnit {
     private Logger logger=LoggerFactory.getLogger(FrameworkUgaCLU.class);
