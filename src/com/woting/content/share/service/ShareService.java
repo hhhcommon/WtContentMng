@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.ext.spring.redis.RedisOperService;
@@ -23,6 +24,8 @@ import com.spiritdata.framework.util.FileNameUtils;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.cachedb.cachedb.service.CacheDBService;
+import com.woting.cm.cachedb.playcountdb.service.PlayCountDBService;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
@@ -35,11 +38,16 @@ public class ShareService {
 	@Resource
 	private MediaService mediaService;
 	private DataSource DataSource = null;
+	@Resource
+	private CacheDBService cacheDBService;
+	@Resource
+	private PlayCountDBService playCountDBService;
 
 	public boolean getShareHtml(String resId, String mediaType) {
 		if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !resId.toLowerCase().equals("null")) {
 			if (!StringUtils.isNullOrEmptyOrSpace(mediaType) && !mediaType.toLowerCase().equals("null")) {
 				if (mediaType.equals("SEQU")) {
+					
 					SeqMediaAssetPo sma = mediaService.getSmaInfoById(resId);
 					if (sma != null) {
 						List<SeqMediaAssetPo> listpo = new ArrayList<>();
@@ -104,8 +112,7 @@ public class ShareService {
 		return null;
 	}
 
-	public void makeOSSInfo(String smaId) {
-		
+	public void makeCacheDBInfo(String smaId) {
 		addRedia(smaId);
 	}
 	

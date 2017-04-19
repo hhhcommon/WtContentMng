@@ -8,15 +8,23 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+
 import org.springframework.stereotype.Service;
-import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.SystemCache;
+
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.cachedb.cachedb.service.CacheDBService;
+import com.woting.cm.cachedb.playcountdb.persis.po.PlayCountDBPo;
+import com.woting.cm.cachedb.playcountdb.service.PlayCountDBService;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
@@ -58,6 +66,10 @@ public class QueryService {
 	private ChannelAssetProgressService channelAssetProgressService;
 	@Resource
 	private DictContentService dictContentService;
+	@Resource
+	private CacheDBService cacheDBService;
+	@Resource
+	private PlayCountDBService playCountDBService;
 
 	/**
 	 * 查询列表
@@ -1290,5 +1302,171 @@ public class QueryService {
 			}
 		}
 		return true;
+	}
+	
+	/**
+     * 获得内容快照
+     * @param cacheDBIds 例如 AUDIO_00022bbcc4b349f582587c2ef579ae5f_INFO
+     * @param page 当cacheDBId为专辑时，才有效;
+     * @param pageSize 当cacheDBId为专辑时，才有效;
+     * @param isOrNoToLoad 当cacheDB未包含id信息时是否查询
+     * @return
+     *         返回结果包含内容信息，栏目信息，字典信息，播放次数，专辑下级节目信息
+     */
+    public List<Map<String, Object>> getCacheDBList(List<String> cacheDBIds, int page, int pageSize, boolean isOrNoToLoad) {
+    	if (cacheDBIds!=null && cacheDBIds.size()>0) {
+    		List<Map<String, Object>> retList = new ArrayList<>();
+    		ExecutorService fixedThreadPool = Executors.newFixedThreadPool(cacheDBIds.size());
+    		for (int i = 0; i < cacheDBIds.size(); i++) {
+    			int f = i;
+				fixedThreadPool.execute(new Runnable() {
+					public void run() {
+						try {
+							String cacheDBId = cacheDBIds.get(f);
+							retList.add(null);
+							if (cacheDBId!=null && cacheDBId.length()>0) {
+								String[] params = cacheDBId.split("_");
+								String type = params[0];
+								String id = params[1];
+								Map<String, Object> retM = getCacheDBInfo(id, type, page, pageSize);
+								if (retM==null) {
+									if (isOrNoToLoad) {
+										if (type.equals("SEQU")) retM = getContentInfo(5, 1, id, "wt_SeqMediaAsset");//getSeqMaInfo(id, pageSize, page, 1, null);
+										else if (type.equals("AUDIO")) retM = getContentInfo(0, 0, id, "wt_MediaAsset");//getMaInfo(id, null);
+									}
+//									addCacheDBInfo(id, type); //往CacheDB表里添加数据
+								}
+								if (retM!=null && retM.size()>0) {
+									retList.set(f, retM);
+								}
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+    		
+    		fixedThreadPool.shutdown();
+			while (true) {
+				try {
+					Thread.sleep(20);
+				} catch (Exception e) {e.printStackTrace();}
+				if (fixedThreadPool.isTerminated()) {
+					break;
+				}
+			}
+			if (retList!=null && retList.size()>0) {
+				Iterator<Map<String, Object>> it = retList.iterator();
+				while (it.hasNext()) {
+					Map<String, Object> m = it.next();
+					if (m==null) {
+						it.remove();
+					}
+				}
+				return retList;
+			}
+		}
+		return null;
+    }
+    
+    /**
+     * 
+     * @param id 内容Id，目前只限专辑和节目,
+     * @param type 内容类型，SEQU，AUDIO
+     * @param page 
+     *            当type='SEQU'时有效，专辑下级节目页码，默认为0
+     * @param pageSize
+     *            当type='SEQU'时有效，专辑下级节目每页页数，默认为0
+     * @return
+     */
+    public Map<String, Object> getCacheDBInfo(String id, String type, int page, int pageSize) {
+    	if (id!=null && type!=null) {
+			if (type.equals("wt_SeqMediaAsset")) type = "SEQU";
+			if (type.equals("wt_MediaAsset")) type = "AUDIO";
+			String cacheDBInfostr = cacheDBService.getCacheDBInfo(type+"_"+id+"_INFO");
+			if (cacheDBInfostr!=null && cacheDBInfostr.length()>0) {
+				Map<String, Object> cacheDBMap = (Map<String, Object>) JsonUtils.jsonToObj(cacheDBInfostr, Map.class);
+				long playcount = playCountDBService.getPlayCountNum(type+"_"+id+"_PLAYCOUNT");
+				cacheDBMap.put("PlayCount", playcount);
+				if (type.equals("SEQU") && page>0 && pageSize>0) {
+					String smaSubList = cacheDBService.getCacheDBInfo(type+"_"+id+"_SUBLIST");
+					if (smaSubList!=null && smaSubList.length()>0) {
+						List<String> smaSubs = (List<String>) JsonUtils.jsonToObj(smaSubList, List.class);
+						if (smaSubs!=null && smaSubs.size()>0) {
+							int begNum = (page-1)*pageSize;
+							int endNum = page*pageSize;
+							if (smaSubs.size()>=begNum) {
+								List<String> maIds = smaSubs.subList(begNum, smaSubs.size()>endNum?endNum:(smaSubs.size()-1));
+								if (maIds!=null && maIds.size()>0) {
+									List<Map<String, Object>> audios = cacheDBService.getCacheDBAudios(maIds);
+									if (audios!=null && audios.size()>0) {
+										cacheDBMap.put("SubList", audios);
+									}
+								}
+							}
+							if (!cacheDBMap.containsKey("SubList")) {
+								cacheDBMap.put("SubList", null);
+							}
+						}
+					}
+				} else {
+					if (type.equals("AUDIO")) {
+						try {
+							Map<String, Object> smamap = (Map<String, Object>) cacheDBMap.get("SeqInfo");
+						    String smaId = smamap.get("ContentId").toString();
+						    String smastr = cacheDBService.getCacheDBInfo("SEQU_"+smaId+"_INFO");
+						    smamap = (Map<String, Object>) JsonUtils.jsonToObj(smastr, Map.class);
+						    cacheDBMap.put("SeqInfo", smamap);
+						} catch (Exception e) {}
+					}
+				}
+				return cacheDBMap;
+			}
+		}
+		return null;
+    }
+
+	public Map<String, Object> getPlayCounts(String contentIds) {
+		String[] ids = contentIds.split(",");
+		if (ids!=null && ids.length>0) {
+			String sqlIds = "";
+			Map<String, Object> pcdbmap = new HashMap<>();
+			Map<String, Object> alaumap = new HashMap<>();
+			for (String id : ids) {
+				String[] ssids = id.split("_");
+				String sId = ssids[0];
+				if (ssids.length>1) {
+					String mId = ssids[1];
+					if (!sqlIds.contains(mId)) sqlIds += " or id = 'AUDIO_"+mId+"_PLAYCOUNT'";
+					alaumap.put(mId, sId);
+				} else if (!sqlIds.contains(sId)) sqlIds += " or id = 'SEQU_"+sId+"_PLAYCOUNT'";
+				pcdbmap.put(id, null);
+			}
+			if (sqlIds.length()>3) {
+				sqlIds = sqlIds.substring(3);
+				List<PlayCountDBPo> pos = playCountDBService.getPlayCountsBySql(sqlIds);
+				if (pos!=null && pos.size()>0) {
+					for (PlayCountDBPo playCountDBPo : pos) {
+						if (playCountDBPo.getResTableName().equals("AUDIO")) {
+							String sId = alaumap.get(playCountDBPo.getResId()).toString();
+							pcdbmap.put(sId+"_"+playCountDBPo.getResId(), playCountDBPo.getPlayCount());
+						} else if (playCountDBPo.getResTableName().equals("SEQU")) {
+							pcdbmap.put(playCountDBPo.getResId(), playCountDBPo.getPlayCount());
+						}
+					}
+				}
+				Set<String> sets = pcdbmap.keySet();
+				if (sets!=null && sets.size()>0) {
+					for (String id : sets) {
+						if (pcdbmap.get(id)==null) {
+							pcdbmap.put(id, 0);
+						}
+					}
+					return pcdbmap;
+				}
+			}
+		}
+		return null;
 	}
 }

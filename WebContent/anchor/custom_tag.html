@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>定制标签</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
+.ellipsis{
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
+}
+.fl{float: left;}
+.fr{float: right;}
+.wrapper{
+  position: absolute;
+  width: 1084px;
+  min-width: 780px;
+  height:auto;
+  background: white;
+  border:1px solid #dedede;
+}
+.special{
+  position: relative;
+  padding:15px;
+  height:auto;
+  /*border:1px solid red;*/
+}
+.header{
+  height:40px;
+  padding:0px 15px;
+  color:#000;
+  font-size:14px;
+  margin:0px;
+}
+.header1{
+  overflow: hidden;
+  /*border:1px solid red;*/
+  height:30px;
+  padding:0px 15px;
+}
+.header1_ipt1{
+  width: 480px;
+  height: 30px;
+  padding: 0px 4px;
+  border: none;
+  border: 1px solid #dedede;
+}
+.header1_ipt2{
+  width:80px;
+  height:30px;
+  line-height: 30px;
+  color: #fff;
+  border: none;
+  background: #FFA634;
+  margin-left:15px;
+}
+.header2{
+  overflow: hidden;
+  /*border:1px solid red;*/
+  height:130px;
+  padding:0px 15px;
+  margin-top:40px;
+}
+.header2_div1{
+  height: 30px;
+  font-size: 16px;
+  color: #000;
+}
+.header2_div2{
+  width:100%;
+  height:80px;
+  margin-bottom:0;
+  border-top: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
+  overflow: hidden;
+}
+.hd_tag{
+  height: 27px;
+  line-height: 27px;
+  background: url("img/auto.png");
+  background-position: 0 -118px;
+  padding: 0px 0px 0px 15px;
+  float: left;
+  position: relative;
+  margin: 10px 8px 0px 0px;
+  display: inline-block;
+  cursor: pointer;
+}
+.hd_tag_span{
+  background: url("img/auto.png");
+  background-position: right -118px;
+  padding-right: 8px;
+  display: inline-block;
+  vertical-align: top !important;
+  white-space: nowrap;
+  line-height: 27px;
+}
+.cancelImg{
+  position: absolute;
+  top: -6px;
+  right: -2px;
+  display: none;
+}
+.lch_li{overflow: hidden;}
+.content{
+  /*border:1px solid red;*/
+  height:auto;
+  width:100%;
+  padding:0px 15px;
+  position: relative;
+  overflow: hidden;
+} 
+.leftc{
+  width:670px;
+  height:auto;
+  /*border:1px solid black;*/
+}
+.lc_header{
+  overflow: hidden;
+  height: 40px;
+  line-height: 40px;
+  margin-bottom: 0px;
+  /*border: 1px solid red;*/
+}
+.lch_li{overflow: hidden;}
+.lch_1{
+  width: 25px;
+  height: 30px;
+  background-size:100% 100%;
+  margin: 5px 6px;
+}
+.lch_2{
+  font-size: 16px;
+  color: #000;
+  font-weight: 600;
+}
+.lch_3,.lch_5{
+  color: #000;
+  font-size: 14px;
+  padding: 0px 10px;
+}
+.lch_4{
+  width: 2px;
+  height: 15px;
+  background: #ddd;
+  margin-top: 13px;
+}
+.f60{color:#f60;}
+.lc_wrapper{
+  overflow: hidden;
+  /*border:1px solid red;*/
+}
+.lcw_li{
+  width:100%;
+  padding: 0px 7px;
+  height:120px;
+  margin-top:10px;
+  /*border:1px solid black;*/
+  overflow: hidden;
+}
+.lli_header,.lli_footer{
+  height:30px;
+}
+.lh_title{
+  font-size:16px;
+  line-height:30px;
+  cursor: pointer;
+}
+.lh_op{
+  padding: 0px 5px;
+  height: 20px;
+  line-height: 20px;
+  margin: 5px 10px;
+  border: 1px solid #f60;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.lli_con{
+  color:#000;
+  font-size:14px;
+  height:60px;
+  overflow: hidden;
+}
+.lf_come,.lf_time{line-height:30px;}
+.lf_time{margin-left:30px;}
+.rightc{
+  width:330px;
+  height:auto;
+  margin-left:50px;
+  /*border:1px solid black;*/
+}
+.rcw1_h1{
+  height:30px;
+  overflow: hidden;
+}
+.rcw1_h2{
+  width: 4px;
+  height: 13px;
+  margin: 9px 10px 9px 0px;
+  border-radius: 10px;
+  background: #f60;
+  color: #000;
+}
+.rcw1_h3{
+  font-size: 16px;
+  line-height: 30px;
+}
+.rcw1_c1,.rcw2_c1{
+  overflow: hidden;
+  padding-left:15px;
+}
+.rcw1_c2{margin-top:15px;}
+.rcw1_c3{font-size: 15px;}
+.rcw1_c4{
+  margin:5px 0px;
+  overflow: hidden;
+}
+.rcw1_c5{
+  width:98px;
+  height:68px;
+  border:1px solid #dedede;
+  background-size: 100% 100%;
+  margin: 0px 10px 0px 0px;
+}
+.rcw1_c6{
+  width: 204px;
+  height: 70px;
+  overflow: hidden;
+}
+.rcw1_c6,.rcw1_c8{color: #000;}
+.rc_wrapper2{margin-top:40px;}
+.rcw2_c2{
+  width:97px;
+  height:120px;
+  margin:10px 4px;
+}
+.rcw2_c3{
+  width:80px;
+  height:80px;
+  margin:10px 0px;
+}
+.rcw2_c4{
+  color: #f60;
+  font-size: 15px;
+  width:80px;
+  text-align: center;
+}
+</style>
+<body class="laydate_body" onselectstart="return false">
+<div class="wrapper">
+  <div class="tags">
+    <ul class="header ellipsis">
+      <li class="fl">素材库&nbsp;></li>
+      <li class="fl">&nbsp;定制标签</li>
+    </ul>
+    <div class="header1">
+      <input type="text" class="header1_ipt1 fl" placeholder="输入感兴趣的关键词添加自定义的标签" />
+      <input type="button" class="header1_ipt2 fl" value="添加"/>
+    </div>
+    <div class="header2">
+      <div class="header2_div1">我的标签</div>
+      <ul class="header2_div2">
+        <li class="hd_tag">
+          <span class="hd_tag_span">自定义标签一</span>
+          <img class="hd_tag_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />
+        </li>
+        <li class="hd_tag">
+          <span class="hd_tag_span">自定义标签一</span>
+          <img class="hd_tag_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />
+        </li>
+        <li class="hd_tag">
+          <span class="hd_tag_span">自定义标签一</span>
+          <img class="hd_tag_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />
+        </li>
+      </ul>
+    </div>
+    <div class="content">
+      <div class="leftc fl">
+        <ul class="lc_header">
+          <li class="fl lch_li">
+            <img src="" alt="图片1" class="lch_1 fl" />
+            <span class="lch_2 fl">中国篮协体制改革</span>
+          </li>
+          <li class="fr lch_li">
+            <span class="lch_3 fl">热门排序</span>
+            <span class="lch_4 fl"></span>
+            <span class="lch_5 fl f60">时间排序</span>
+          </li>
+        </ul>
+        <ul class="lc_wrapper">
+          <li class="lcw_li">
+            <div class="lli_header">
+              <div class="lh_title fl f60">姚明：篮协将进行深入改革 首要任务是任务优化环境</div>
+              <div class="lh_op fr f60">收藏</div>
+            </div>
+            <div class="lli_con">
+                              篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化
+                              环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境
+            </div>
+            <div class="lli_footer">
+              <div class="lf_come fl">来自：腾讯体育</div>
+              <div class="lf_time fl">2017年02月23日  11:14</div>
+            </div>
+          </li>
+          <li class="lcw_li">
+            <div class="lli_header">
+              <div class="lh_title fl f60">姚明：篮协将进行深入改革 首要任务是任务优化环境</div>
+              <div class="lh_op fr f60">收藏</div>
+            </div>
+            <div class="lli_con">
+                              篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化
+                              环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境
+            </div>
+            <div class="lli_footer">
+              <div class="lf_come fl">来自：腾讯体育</div>
+              <div class="lf_time fl">2017年02月23日  11:14</div>
+            </div>
+          </li>
+          <li class="lcw_li">
+            <div class="lli_header">
+              <div class="lh_title fl f60">姚明：篮协将进行深入改革 首要任务是任务优化环境</div>
+              <div class="lh_op fr f60">收藏</div>
+            </div>
+            <div class="lli_con">
+                              篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化
+                              环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境
+            </div>
+            <div class="lli_footer">
+              <div class="lf_come fl">来自：腾讯体育</div>
+              <div class="lf_time fl">2017年02月23日  11:14</div>
+            </div>
+          </li>
+          <li class="lcw_li">
+            <div class="lli_header">
+              <div class="lh_title fl f60">姚明：篮协将进行深入改革 首要任务是任务优化环境</div>
+              <div class="lh_op fr f60">收藏</div>
+            </div>
+            <div class="lli_con">
+                              篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化
+                              环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境篮协将进行深入改革 首要任务是任务优化环境
+            </div>
+            <div class="lli_footer">
+              <div class="lf_come fl">来自：腾讯体育</div>
+              <div class="lf_time fl">2017年02月23日  11:14</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="rightc fl">
+        <div class="rc_wrapper1">
+          <div class="rcw1_h1">
+            <span class="rcw1_h2 fl"></span>
+            <span class="rcw1_h3 fl">相关背景</span>
+          </div>
+          <ul class="rcw1_c1">
+            <li class="rcw1_c2">
+              <div class="rcw1_c3 f60">中国篮球协会</div>
+              <div class="rcw1_c4">
+                <img class='fl rcw1_c5' src="img/a5.jpg" alt="图片" />
+                <div class="rcw1_c6 fl">
+                                      中国篮球协会中国篮球协会中国篮球协会中国篮球协会中国篮球协会中国篮球协会
+                </div>
+              </div>
+              <div class="rcw1_c7">来自：百度百科</div>
+            </li>
+            <li class="rcw1_c2">
+              <div class="rcw1_c3 f60">中国篮球协会</div>
+              <div class="rcw1_c4">
+                <img class='fl rcw1_c5' src="img/a5.jpg" alt="图片" />
+                <div class="rcw1_c6 fl">
+                                      中国篮球协会中国篮球协会中国篮球协会中国篮球协会中国篮球协会中国篮球协会
+                </div>
+              </div>
+              <div class="rcw1_c7">来自：百度百科</div>
+            </li>
+            <li class="rcw1_c2">
+              <div class="rcw1_c3 f60">中国篮球协会</div>
+              <div class="rcw1_c4">
+                <div class="rcw1_c8 fl">
+                                      中国篮球协会中国篮球协会中国篮球协会中国篮球协会中国篮球协会中国篮球协会
+                </div>
+              </div>
+              <div class="rcw1_c7">来自：百度百科</div>
+            </li>
+          </ul>
+        </div>
+        <div class="rc_wrapper2">
+          <div class="rcw1_h1">
+            <span class="rcw1_h2 fl"></span>
+            <span class="rcw1_h3 fl">相关人物</span>
+          </div>
+          <ul class="rcw2_c1">
+            <li class="rcw2_c2 fl">
+              <img class='rcw2_c3' src="img/a5.jpg" alt="" />
+              <div class="rcw2_c4">姚明</div>
+            </li>
+            <li class="rcw2_c2 fl">
+              <img class='rcw2_c3' src="img/a5.jpg" alt="" />
+              <div class="rcw2_c4">姚明</div>
+            </li>
+            <li class="rcw2_c2 fl">
+              <img class='rcw2_c3' src="img/a5.jpg" alt="" />
+              <div class="rcw2_c4">姚明</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+$(function(){
+  /*s--标签的相关操作*/
+  $(document).on("mouseenter",".hd_tag",function(){
+    $(this).children(".cancelImg").show();
+  });
+  $(document).on("mouseleave",".hd_tag",function(event){
+    $(this).children(".cancelImg").hide();
+  });
+  $(document).on("mouseenter",".cancelImg",function(){
+    event.stopPropagation();
+    $(this).attr({"src":"img/upl_img6.png"});
+  });
+  $(document).on("mouseleave",".cancelImg",function(event){
+    event.stopPropagation();
+    $(this).attr({"src":"img/upl_img2.png"});
+    $(this).hide();
+  });
+  
+  //点击添加标签按钮
+  $(".header1_ipt2").on("click",function(){
+    var tagTxt=$.trim($(".header1_ipt1").val());
+    if(tagTxt==" "){
+      alert("请输入感兴趣的关键词");
+      $(".header1_ipt1").focus();
+    }else{
+      var tag='<li class="hd_tag">'+
+                '<span class="hd_tag_span">'+tagTxt+'</span>'+
+                '<img class="hd_tag_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+              '</li>';
+      $(".header2_div2").append(tag);
+      $(".header1_ipt1").val(" ");
+    }
+  });
+  
+  //删除我的标签
+  $(document).on("click",".hd_tag_cancelimg1",function(){
+    $(this).parent().remove();
+  });
+  
+  /*s--标签的相关操作*/
+ 
+  /*s--点击搜藏/取消*/
+  $(document).on("click",".lh_op",function(){
+    $(".mask").show();
+    $("body").css("overflow","hidden");
+  });
+  /*e--点击搜藏/取消*/
+  
+  /*s--点击标题，进入文章详情页*/
+  $(document).on("click",".lh_title",function(){
+    $("#myIframe",parent.document).attr("src","topic1.html");
+  });
+  /*e--点击标题，进入文章详情页*/
+  
+  /*s--点击关闭和取消*/
+  $(document).on("click",".mask_cancel,.mask_header2",function(){
+    $(".mask").hide();
+    $("body").css("overflow","auto");
+  });
+  /*e--点击关闭和取消*/
+});
+</script>
+</html>

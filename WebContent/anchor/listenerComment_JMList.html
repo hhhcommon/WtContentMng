@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>听众评论列表--节目列表</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">
+  <meta name="description" content="我听，我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <script src="js/common_manage.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
+.fl{float: left;}
+.fr{float: right;}
+.ov{overflow: hidden;}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wrapper{
+  position: absolute;
+  width: 1084px;
+  min-width: 780px;
+  min-height:100%;
+  height:auto;
+  background: white;
+  border:1px solid #dedede;
+}
+.header {
+  height: 40px;
+  padding: 10px 15px;
+  color: #000;
+  font-size: 14px;
+  margin: 0px;
+}
+.comment{
+  position: relative;
+  padding-top:10px;
+  overflow: hidden;
+  width: 1084px;
+  min-width: 780px;
+  height:auto;
+}
+.rc_header{
+  width: 100%;
+  height: 30px;
+  margin-top: 10px;
+  /*border: 1px solid red;*/
+}
+.rc_header1{
+  width: 3px;
+  height:14px;
+  margin-top:8px;
+  background: #ffa634;
+}
+.rc_header2{
+  width: 80px;
+  height: 20px;
+  color: #000;
+  font-size:16px;
+  font-weight: bold;
+}
+.content{
+  width:100%;
+  height:auto;
+  margin-top:27px;
+  overflow: hidden;
+  background: white;
+}
+.left_content{
+  width:600px;
+  height:auto;
+  padding:0px 17px 10px;
+  border-right:1px solid rgb(222,222,222);
+  overflow: hidden;
+}
+.lc0{
+  width:100%;
+  height:25px;
+  line-height: 25px;
+  margin-bottom:20px;
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+}
+.lc1,.lc2{
+  width:100%;
+  height:25px;
+  line-height: 25px;
+  margin-bottom:10px;
+}
+.lc1{
+  font-weight:bold;
+  color:#000;
+  font-size:24px;
+}
+.lc2{
+  overflow: hidden;
+} 
+.lc2_s2{
+  font-weight: bold;
+  color: #000;
+} 
+.lc2_s3{
+  margin-left:30px;
+} 
+.lc2_s4{
+  margin-left:10px;
+}
+.lc3{
+  font-size:16px;
+  color: #000;
+  margin-top: 20px;
+}
+.lc_content{
+  width:100%;
+  height:auto;
+}
+.lc_box{
+  position:relative;
+  padding:10px 0px;
+  overflow: hidden;
+  border-bottom:1px solid rgb(222,222,222);
+}
+.lc_s1{
+  width:310px;
+  font-size:14px;
+  padding-right:10px;
+  color: #000;
+}
+.lc_s2{color:rgb(255,128,66);}
+.lc_s3{margin-left:20px;}
+.lc_s4{margin-left:10px;}
+.right_content{
+  width:480px;
+  height:auto;
+  position: relative;
+}
+.rc_header{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  font-size: 16px;
+  color: #000;
+  padding-left:20px;
+  text-align: center;
+}
+.rc_box{
+  height:70px;
+  line-height: 25px;
+  padding:10px 10px 10px 20px;
+  overflow: hidden;
+}
+.rc_s1{
+  width: 380px;
+  font-size:14px;
+  padding-right:10px;
+  color: #000;
+  font-weight:bold;
+}
+.rc_s2{color:rgb(255,128,66);}
+/*.rc_s3{margin-left:20px;}*/
+.rc_s4{margin-left:10px;}
+.rc_search{
+  height: 30px;
+  width: 445px;
+  padding-left:20px;
+  /*border: 1px solid #dedede;*/
+}
+.rc_search1{
+  height: 30px;
+  width: 440px;
+}
+.rc_search2{
+  position: relative;
+  top: -25px;
+  right: -10px;
+  float: right;
+}   
+</style>
+<body class="laydate_body" onselectstart="return false">
+<div class="wrapper">
+  <ul class="header ellipsis">
+    <li class="fl">素材库&nbsp;></li>
+    <li class="fl">&nbsp;听众评论&nbsp;></li>
+    <li class="fl">&nbsp;双份的阳光</li>
+  </ul>
+  <div class="comment">
+    <div class="left_content fl">
+      <div class="lc0">节目列表</div>
+      <div class="lc1 ellipsis">双份的阳光</div>
+      <div class="lc2 ellipsis">
+        <span class="lc2_s1 fl">来自栏目</span>
+        <span class="lc2_s2 fl">【情感生活】</span>
+        <span class="lc2_s3 fl">2016-10-11</span>
+        <span class="lc2_s4 fl">10:47:25</span>
+      </div>
+      <div class="lc3">共72个节目</div>
+      <div class="lc_content">
+        <div class="lc_box">
+          <span class="fl lc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
+          <span class="fl lc_s2">评论(180)</span>
+          <span class="fr lc_s4">12:25:25</span>
+          <span class="fr lc_s3">2016-12-15</span>
+        </div>
+        <div class="lc_box">
+          <span class="fl lc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
+          <span class="fl lc_s2">评论(180)</span>
+          <span class="fr lc_s4">12:25:25</span>
+          <span class="fr lc_s3">2016-12-15</span>
+        </div>
+        <div class="lc_box">
+          <span class="fl lc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
+          <span class="fl lc_s2">评论(180)</span>
+          <span class="fr lc_s4">12:25:25</span>
+          <span class="fr lc_s3">2016-12-15</span>
+        </div>
+        <div class="lc_box">
+          <span class="fl lc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
+          <span class="fl lc_s2">评论(180)</span>
+          <span class="fr lc_s4">12:25:25</span>
+          <span class="fr lc_s3">2016-12-15</span>
+        </div>
+        <div class="lc_box">
+          <span class="fl lc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
+          <span class="fl lc_s2">评论(180)</span>
+          <span class="fr lc_s4">12:25:25</span>
+          <span class="fr lc_s3">2016-12-15</span>
+        </div>
+      </div>
+    </div>
+    <div class="right_content fl">
+      <div class="rc_search">
+        <input type="text" class="rc_search1 fl" placeholder="输入搜索关键词" />
+        <img src="img/search1.png" alt="" class="rc_search2 fr"/>
+      </div>
+      <div class="rc_header ov">
+        <div class="rc_header1 fl"></div>
+        <div class="rc_header2 fl">所有专辑</div>
+      </div>
+      <div class="rc_content">
+        <div class="rc_box">
+          <span class="fl rc_s1 ellipsis">双份的阳光</span>
+          <span class="fl rc_s2">评论(180)</span>
+          <span class="fl rc_s3">2016-12-15</span>
+          <span class="fl rc_s4">12:25:25</span>
+        </div>
+        <div class="rc_box">
+          <span class="fl rc_s1 ellipsis">双份的阳光</span>
+          <span class="fl rc_s2">评论(180)</span>
+          <span class="fl rc_s3">2016-12-15</span>
+          <span class="fl rc_s4">12:25:25</span>
+        </div>
+        <div class="rc_box">
+          <span class="fl rc_s1 ellipsis">双份的阳光</span>
+          <span class="fl rc_s2">评论(180)</span>
+          <span class="fl rc_s3">2016-12-15</span>
+          <span class="fl rc_s4">12:25:25</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+</script>
+</html>

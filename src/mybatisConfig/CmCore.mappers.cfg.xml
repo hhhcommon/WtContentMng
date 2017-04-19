@@ -24,6 +24,8 @@
     <typeAlias alias="mediaplaycount" type="com.woting.cm.core.media.persis.po.MediaPlayCountPo"/>
     <typeAlias alias="channelAssetProgress" type="com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo"/>
     <typeAlias alias="channelref"           type="com.woting.cm.core.channel.persis.po.ChannelMapRefPo"/>
+    <typeAlias alias="cachedb"           type="com.woting.cm.cachedb.cachedb.persis.po.CacheDBPo"/>
+    <typeAlias alias="playcountdb"       type="com.woting.cm.cachedb.playcountdb.persis.po.PlayCountDBPo"/>
    </typeAliases>
   <!-- SQL文件设置 -->
   <mappers>
@@ -43,5 +45,7 @@
     <mapper resource="com/woting/cm/core/subscribe/persis/sql/Subscribe.mapper.xml"/>
     <mapper resource="com/woting/cm/core/channel/persis/sql/ChannelAssetProgress.mapper.xml"/>
     <mapper resource="com/woting/cm/core/channel/persis/sql/ChannelMapRef.mapper.xml"/>
+    <mapper resource="com/woting/cm/cachedb/cachedb/persis/sql/CacheDB.mapper.xml"/>
+    <mapper resource="com/woting/cm/cachedb/playcountdb/persis/sql/PlayCountDB.mapper.xml"/>
   </mappers>
 </configuration>

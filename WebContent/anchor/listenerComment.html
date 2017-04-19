@@ -14,6 +14,7 @@
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/context.utils.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <script src="js/common_manage.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -22,262 +23,228 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
-.fl{
-  float: left;
-}
+.fl{float: left;}
+.fr{float: right;}
+.ov{overflow: hidden;}
 .ellipsis{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.comment{
+.wrapper{
   position: absolute;
   width: 1084px;
   min-width: 780px;
-  height:auto;
-  border:1px solid rgb(222,222,222);
-}
-.comment1{
-  width:100%;
+  min-height:100%;
   height:auto;
   background: white;
+  border:1px solid #dedede;
+}
+.comment{
   position: relative;
+  padding:15px;
+  height:auto;
+  overflow: hidden;
+  /*border:1px solid red;*/
 }
 .header{
-  padding-left:20px;
-  height:40px;
-  overflow: hidden;
-  background: rgb(240,240,240);
-  border-bottom: 1px solid rgb(222,222,222);
-}
-.hearder_span{
-  width:65px;
-  float: left;
-  font-weight:bolder;
-  color: #000;
-  line-height: 40px;
-  font-size:16px;
-}
-.content{
-  width:100%;
-  height:auto;
-  margin-top:27px;
-  overflow: hidden;
-  background: white;
-}
-.left_content{
-  width:600px;
-  height:auto;
-  padding:0px 17px 10px;
-  border-right:1px solid rgb(222,222,222);
-  overflow: hidden;
-}
-.lc1,.lc2{
-  width:100%;
-  height:25px;
-  line-height: 25px;
-  margin-bottom:10px;
-}
-.lc1{
-  font-weight:bold;
+  height:30px;
+  padding:0px 15px;
   color:#000;
-  font-size:24px;
+  font-size:14px;
+  margin:0px;
 }
-.lc2{
-  overflow: hidden;
-} 
-.lc2_s2{
-  font-weight: bold;
+.com_header{
+  height:30px;
+  /*border:1px solid black;*/
+}
+.com_header1{
   color: #000;
-} 
-.lc2_s3{
-  margin-left:30px;
-} 
-.lc2_s4{
-  margin-left:10px;
-}
-.lc3{
-  font-size:16px;
-  color: #000;
-  margin-top: 20px;
-}
-.lc_content{
-  width:100%;
-  height:auto;
-}
-.lc_box{
-  position:relative;
-  padding:20px 0px;
-  overflow: hidden;
-  border-bottom:2px solid rgb(222,222,222);
-}
-.lcb1{
-  width:40px;
-  height:40px;
-  background-size:100% 100%;
-}
-.lcb2{
-  width: 455px;
-  margin-left: 15px;
-  overflow: hidden;
-}
-.lcb2_s1{
-  width:255px;
-  color: rgb(255,128,66);
-}
-.lcb2_s2{
-  margin-left: 40px;
-}
-.lcb2_s3{
-  margin-left: 10px;
-}
-.lcb3{
-  color: #000;
-  width: 455px;
-  position: relative;
-  margin-left: 15px;
-  margin-top: 10px;
-  line-height: 20px;
-  height: auto;
-  overflow: hidden;
-}
-.lcb4{
-  position: relative;
-  top: -18px;
-  left: 15px;
-}
-.right_content{
-  width:480px;
-  height:auto;
-  position: relative;
-}
-.rc_header{
-  width: 100%;
-  height: 30px;
+  font-size: 16px;
   line-height: 30px;
+  font-weight: bold;
+}
+.comment_search{
+  width: 320px;
+  height: 100%;
+  margin-right: -20px;
+  /*border: 1px solid red;*/
+}
+.guest2_search1{
+  height: 100%;
+  width: 300px;
+}
+.guest2_search2{
+  position: relative;
+  top: 5px;
+  left: -25px;
+} 
+.com_wrapper{
+  margin-top: 15px;
+  /*border: 1px solid red;*/
+  height: auto;
+}
+.comw_header{
+  height:40px;
+  line-height: 40px;
+  background: #eee;
   font-size: 16px;
   color: #000;
+}
+.comw_header1{
+  width: 750px;
+  padding-left:20px;
+}
+.comw_header2,.comw_header3{
+  width: 147px;
   text-align: center;
 }
-.rc_box{
-  height:30px;
-  line-height: 30px;
-  padding-left: 20px;
-  overflow: hidden;
+.comw_header4{
+  height:20px;
+  width:2px;
+  margin-top:10px;
+  background:#dedede; 
 }
-.rc_s1{
-  width: 210px;
-  font-size:14px;
-  padding-right:10px;
+.comw_con_listbox{
+  height:120px;
+  padding:10px 0px 10px 10px;
+  border-bottom: 2px solid #dedede;
+}
+.ccl_img1{
+  width:80px;
+  height:80px;
+  margin-top:10px;
+  background-size:100% 100%;
+  border:1px solid #dedede;
+}
+.ccl_img2{
+  width: 651px;
+  /* margin-top: 10px; */
+  margin: 10px 0px 10px 10px;
+  height: 80px;
+  /*border: 1px solid red;*/
+}
+.ccl_img3,.ccl_img4,.ccl_img8{
+  width:100%;
+  height: 25px;
+  line-height: 25px;
+}
+.ccl_img7{
+  padding: 0px 10px 0px 0px;
+}
+.ccl_img9{
+  width: 147px;
   color: #000;
+  line-height: 100px;
+  text-align: center;
 }
-.rc_s2{
-  color:rgb(255,128,66);
+.ccl_img10{
+  width: 147px;
+  color: #ffa634;
+  margin-top: 30px;
+  text-align: center;
+  cursor: pointer;
 }
-.rc_s3{
-  margin-left:20px;
-}
-.rc_s4{
-  margin-left:10px;
-}   
+.ccl_img11,.ccl_img12{margin-bottom: 10px;}
 </style>
 <body class="laydate_body" onselectstart="return false">
-<div class="comment">
-  <div class="comment1">
-    <div class="header">
-      <span class="hearder_span">最新评论</span>
+<div class="wrapper">
+  <ul class="header ellipsis">
+    <li class="fl">素材库&nbsp;></li>
+    <li class="fl">&nbsp;听众评论</li>
+  </ul>
+  <div class="comment">
+    <div class="com_header ov">
+      <div class="com_header1 fl">我的专辑</div>
+      <div class="comment_search ov fr">
+        <input type="text" class="guest2_search1 fl" placeholder="输入搜索关键词" />
+        <img src="img/search1.png" alt="" class="guest2_search2 fr"/>
+      </div>
     </div>
-    <div class="content">
-      <div class="left_content fl">
-        <div class="lc1 ellipsis">Vol.72 你知道吗？其实我贼懂车</div>
-        <div class="lc2 ellipsis">
-          <span class="lc2_s1 fl">来自专辑</span>
-          <span class="lc2_s2 fl">《双份的阳光》</span>
-          <span class="lc2_s3 fl">2016-10-11</span>
-          <span class="lc2_s4 fl">10:47:25</span>
-        </div>
-        <div class="lc3">评论(180)</div>
-        <div class="lc_content">
-          <div class="lc_box">
-            <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
-            <div class="lcb2 fl">
-              <span class="lcb2_s1 fl ellipsis">魔术大师奇瑞</span>
-              <span class="lcb2_s2 fl">2015-10-15</span>
-              <span class="lcb2_s3 fl">10:45:12</span>
-            </div>
-            <div class="lcb3 fl">魔术大魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞
-                        魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞师奇瑞魔术大师奇瑞</div> 
-            <img src="img/con1.jpg" class="lcb4 fl" alt="标识图片" />
-          </div>
-          <div class="lc_box">
-            <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
-            <div class="lcb2 fl">
-              <span class="lcb2_s1 fl ellipsis">魔术大师奇瑞</span>
-              <span class="lcb2_s2 fl">2015-10-15</span>
-              <span class="lcb2_s3 fl">10:45:12</span>
-            </div>
-            <div class="lcb3 fl">魔术大师奇瑞魔术大师奇瑞</div> 
-            <img src="img/con1.jpg" class="lcb4 fl" alt="标识图片" />
-          </div>
-          <div class="lc_box">
-            <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
-            <div class="lcb2 fl">
-              <span class="lcb2_s1 fl ellipsis">魔术大师魔术大师奇魔术大师奇魔术大师奇魔术大师奇奇瑞</span>
-              <span class="lcb2_s2 fl">2015-10-15</span>
-              <span class="lcb2_s3 fl">10:45:12</span>
-            </div>
-            <div class="lcb3 fl">魔术大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇
-                            大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇       
-                            瑞大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇大师奇瑞魔术大师奇
-            </div> 
-            <img src="img/con1.jpg" class="lcb4 fl" alt="标识图片" />
-          </div>
-          <div class="lc_box">
-            <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
-            <div class="lcb2 fl">
-              <span class="lcb2_s1 fl ellipsis">魔术大师奇瑞魔术大师奇</span>
-              <span class="lcb2_s2 fl">2015-10-15</span>
-              <span class="lcb2_s3 fl">10:45:12</span>
-            </div>
-            <div class="lcb3 fl">魔术大师奇瑞魔术大师奇瑞</div> 
-            <img src="img/con1.jpg" class="lcb4 fl" alt="标识图片" />
-          </div>
-        </div>
+    <div class="com_wrapper">
+      <div class="comw_header ov">
+        <span class="comw_header1 fl">共3张专辑</span>
+        <span class="comw_header4 fl"></span>
+        <span class="comw_header2 fl">节目数量</span>
+        <span class="comw_header4 fl"></span>
+        <span class="comw_header3 fl">相关操作</span>
       </div>
-      <div class="right_content fl">
-        <div class="rc_header">节目列表</div>
-        <div class="rc_content">
-          <div class="rc_box">
-            <span class="fl rc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
-            <span class="fl rc_s2">评论(180)</span>
-            <span class="fl rc_s3">2016-12-15</span>
-            <span class="fl rc_s4">2016-12-15</span>
+      <ul class="comw_content">
+        <li class="comw_con_listbox ov">
+          <img src="img/a5.jpg" alt="" class="ccl_img1 fl"/>
+          <div class="ccl_img2 ov fl">
+            <div class="ccl_img3 ellipsis">专辑名称：双份的阳光</div>
+            <div class="ccl_img4 ov">
+              <div class="ccl_img5 fl">来自栏目：</div>
+              <ul class="ccl_img6 fl ellipsis">
+                <li class="fl ccl_img7">[情感生活]</li>
+                <li class="fl ccl_img7">[情感生活]</li>
+              </ul>
+            </div>
+            <div class="ellipsis ccl_img8">时间：2016-10-11 10:25:26</div>
           </div>
-          <div class="rc_box">
-            <span class="fl rc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
-            <span class="fl rc_s2">评论(180)</span>
-            <span class="fl rc_s3">2016-12-15</span>
-            <span class="fl rc_s4">2016-12-15</span>
+          <div class="ellipsis ccl_img9 fl">8个节目</div>
+          <div class="ccl_img10 fl">
+            <div class="ccl_img11">查看专辑评论</div>
+            <div class="ccl_img12">查看节目列表</div>
           </div>
-          <div class="rc_box">
-            <span class="fl rc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
-            <span class="fl rc_s2">评论(180)</span>
-            <span class="fl rc_s3">2016-12-15</span>
-            <span class="fl rc_s4">2016-12-15</span>
+        </li>
+        <li class="comw_con_listbox ov">
+          <img src="img/a5.jpg" alt="" class="ccl_img1 fl"/>
+          <div class="ccl_img2 ov fl">
+            <div class="ccl_img3 ellipsis">专辑名称：双份的阳光</div>
+            <div class="ccl_img4 ov">
+              <div class="ccl_img5 fl">来自栏目：</div>
+              <ul class="ccl_img6 fl ellipsis">
+                <li class="fl ccl_img7">[情感生活]</li>
+                <li class="fl ccl_img7">[情感生活]</li>
+              </ul>
+            </div>
+            <div class="ellipsis ccl_img8">时间：2016-10-11 10:25:26</div>
           </div>
-          <div class="rc_box">
-            <span class="fl rc_s1 ellipsis">Vol.72你知道吗？其实我贼懂车</span>
-            <span class="fl rc_s2">评论(180)</span>
-            <span class="fl rc_s3">2016-12-15</span>
-            <span class="fl rc_s4">2016-12-15</span>
+          <div class="ellipsis ccl_img9 fl">8个节目</div>
+          <div class="ccl_img10 fl">
+            <div class="ccl_img11">查看专辑评论</div>
+            <div class="ccl_img12">查看节目列表</div>
           </div>
-        </div>
-      </div>
+        </li>
+        <li class="comw_con_listbox ov">
+          <img src="img/a5.jpg" alt="" class="ccl_img1 fl"/>
+          <div class="ccl_img2 ov fl">
+            <div class="ccl_img3 ellipsis">专辑名称：双份的阳光</div>
+            <div class="ccl_img4 ov">
+              <div class="ccl_img5 fl">来自栏目：</div>
+              <ul class="ccl_img6 fl ellipsis">
+                <li class="fl ccl_img7">[情感生活]</li>
+                <li class="fl ccl_img7">[情感生活]</li>
+              </ul>
+            </div>
+            <div class="ellipsis ccl_img8">时间：2016-10-11 10:25:26</div>
+          </div>
+          <div class="ellipsis ccl_img9 fl">8个节目</div>
+          <div class="ccl_img10 fl">
+            <div class="ccl_img11">查看专辑评论</div>
+            <div class="ccl_img12">查看节目列表</div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
 </body>
 <script>
-
+$(function(){
+  /*s--点击查看专辑评论*/
+  $(".ccl_img11").on("click",function(){
+    $("#myIframe", parent.document).attr({"src":"listenerZJCommentList.html"});
+  });
+  /*e--点击查看专辑评论*/
+ 
+  /*s--点击查看节目列表*/
+  $(".ccl_img12").on("click",function(){
+    $("#myIframe", parent.document).attr({"src":"listenerComment_JMList.html"});
+  });
+  /*e--点击查看节目列表*/
+});
 </script>
 </html>

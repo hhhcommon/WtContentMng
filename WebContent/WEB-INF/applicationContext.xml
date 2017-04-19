@@ -56,6 +56,41 @@
     <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
   </bean>
   
+  <!--[BEGIN]内容快照库-->
+  <bean id="dataSource_CacheDB" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="false">
+    <property name="driverClassName" value="${cacheDB.mysql.driverClassName}"/>
+    <property name="url" value="${cacheDB.mysql.url}"/>
+    <property name="username" value="${cacheDB.mysql.username}"/>
+    <property name="password" value="${cacheDB.mysql.password}"/>
+    <property name="initialSize" value="30"/>
+    <property name="maxActive" value="50"/>
+    <property name="maxWait" value="60000"/>
+    <property name="poolPreparedStatements" value="true"/>
+    <property name="maxOpenPreparedStatements" value="30"/>
+    <property name="testOnBorrow"><value>false</value></property>
+    <property name="validationQuery"><value>select 1 from dual</value></property>
+  </bean>
+  <bean id="transactionManager_CacheDB" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource_CacheDB"/>
+  </bean>
+  <bean id="sqlSessionFactory_CacheDB" class="com.spiritdata.framework.ext.spring.mybatis.MySqlSessionFactoryBean">
+    <property name="configLocations">
+      <list merge="default">
+        <value>classpath*:mybatisConfig/frameworkMybatis.xml</value>
+        <value>classpath*:mybatisConfig/*.mappers.cfg.xml</value>
+      </list>
+    </property>
+    <property name="databaseType" value="MySql"/>
+    <property name="dataSource" ref="dataSource_CacheDB"/>
+    <property name="transactionFactory">
+      <bean class="org.apache.ibatis.transaction.managed.ManagedTransactionFactory" />
+    </property>
+  </bean>
+  <bean id="defaultDAO_CacheDB" class="com.spiritdata.framework.core.dao.mybatis.MybatisDAO"  scope="prototype" init-method="initialize">
+    <property name="sqlSessionFactory" ref="sqlSessionFactory_CacheDB"/>
+  </bean>
+  <!--[END]内容快照库-->
+  
   <!--[BEGIN]抓取数据库-->
   <bean id="dataSource_DB" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="false">
     <property name="driverClassName" value="${crawlDB.mysql.driverClassName}"/>
@@ -147,6 +182,17 @@
     <property name="password" value="${redis.password}"/>
     <property name="poolConfig" ref="poolConfig"/>
   </bean>
-  
+  <!-- oss功能 -->
+  <bean id="ossconfig" class="com.woting.cm.core.oss.persis.po.OssConfigPo" scope="prototype">
+    <property name="Endpoint" value="${oss.Endpoint}"/>
+    <property name="AccessKeyId" value="${oss.AccessKeyId}"/>
+    <property name="AccessKeySecret" value="${oss.AccessKeySecret}"/>
+    <property name="BucketName" value="${oss.BucketName}"/>
+    <property name="TempFile" value="${oss.TempFile}"/>
+  </bean>
+  <!-- map2json功能 -->
+  <bean id="map2json" class="com.woting.cm.core.map2json.persis.po.Map2JsonPo" scope="prototype">
+    <property name="replaceStr" value="${map2json.replaceStr}"/>
+  </bean>
   <context:annotation-config/>
 </beans>

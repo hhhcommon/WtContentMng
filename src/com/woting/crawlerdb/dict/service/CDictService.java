@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.spiritdata.framework.core.cache.CacheEle;
@@ -35,6 +37,7 @@ import com.woting.crawlerdb.dict.model.CDictModel;
 import com.woting.crawlerdb.dict.persis.po.CDictDetailPo;
 import com.woting.crawlerdb.dict.persis.po.CDictMasterPo;
 import com.woting.exceptionC.Wtcm1000CException;
+
 
 @Service
 public class CDictService {
@@ -377,7 +380,7 @@ public class CDictService {
 			}
 		}
 		if (craw.size()>0) {
-			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt");
+			CacheUtils.writeFile(JsonUtils.objToJson(craw), "/opt/WtCrawlerHotSpot/conf/craw.txt", true);
 			return true;
 		}
 		return false;
