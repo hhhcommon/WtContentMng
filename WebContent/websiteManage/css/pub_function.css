@@ -3,7 +3,7 @@
 *{margin: 0;padding: 0;}
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;color:#000;}
-body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !important;}
+body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !important;}
 #wrapper{width:100%;}
 .fl{float: left;}
 .ellipsis{
@@ -15,9 +15,14 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   position: relative;
   width: 100%;
   min-width: 1080px;
-  height: auto;
+  height: 100%;
+  overflow-x: auto;
 }
-.content .containers{width:100%;}
+.contents .containers{
+  position: relative;
+  height: 100%;
+  width:100%;
+}
 .c_title{
   color: #000;
   padding-left: 15px;
@@ -27,7 +32,9 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 }
 .c_con{
   width:100%;
-  height:auto;
+  height:calc(100% - 40px);
+  position: relative;
+  overflow: hidden;
   /*border:1px solid red;*/
   /*overflow-x: auto;*/
 }
@@ -42,6 +49,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   height:100%;
   min-width:870px;
   border-left:2px solid #dedede;
+  overflow: hidden;
 }
 .nav{
   overflow: hidden;
@@ -66,7 +74,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 .cc_right,.nav_con2{
   width:100%;
   height:100%;
-  /*padding: 0px 15px;*/
+  overflow-x:auto;
   background: #fff;
   position: relative;
   /*border-left:2px solid #dedede;*/
@@ -166,8 +174,9 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   width:100%;
   height:auto;
   position: relative;
-  padding: 0px 15px;
+  padding: 0px 15px 0px;
   margin-top:20px;
+  overflow: hidden;
   /*padding-bottom:140px;*/
 }
 .rt_opt{
@@ -242,7 +251,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 }
 .ri_top3_con{
   min-height:235px;
-  overflow:hidden;
+  height: auto;
 }
 .rtc_listBox{
   width:100%;
@@ -329,7 +338,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 }
 .rtcl_con_desc{
   font-size: 14px;
-  padding: 0px 10px 0px 0px;
+  padding: 0px;
   overflow: hidden;
   color: #000;
 }
@@ -504,10 +513,10 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 .fixed{
   position: relative;
   left: 0px;
-  top: 20px;
-  bottom: 20px;
+  margin-top: 20px;
+  margin-bottom:20px;
   height: auto;
-  width:calc(100% - 50px);
+  width:100%;
   overflow: hidden;
   /*display: none;*/
 }
@@ -517,7 +526,6 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   color: #999;
   padding:0px;
   font-size: 13px;
-  margin-bottom: 20px;
 }
 #kkpager .infoTextAndGoPageBtnWrap{
   width: 295px !important;
@@ -526,28 +534,28 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 }   
 .audioIframe{
   position: fixed;
-  width:938px;
+  width:100%;
   height:100px;
-  top:438px;
+  top:0px;
   bottom: 0px;
+  overflow: hidden;
   display: none;
-}
-#audioIframe{
-
 }
 .locker{
   position: fixed;
-  right: 0px;
-  top: 520px;
+  right: 20px;
+  margin-bottom: 20px;
+  top: 500px;
   float: right;
   width: 45px;
   height: 15px;
   background-size: cover;
   background-image:url("http://sss.qingting.fm/www/images/locker-bg@2x.png");
   cursor: pointer;
+  overflow: hidden;
 }
 .locker .locker_btn{
-  width: 50px;
+  width: 45px;
   height: 18px;
   background: center no-repeat;
   background-size: 12px 12px;

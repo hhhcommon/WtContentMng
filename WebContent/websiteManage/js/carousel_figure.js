@@ -97,7 +97,7 @@ $(function(){
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
     destroy(data);
-    var nodes=zTreeObj.getChangeCheckedNodes();//当前被勾选的节点集合  
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
@@ -150,7 +150,7 @@ $(function(){
   //在每次加载具体的资源列表时候的公共方法
   function anew(flowflag){
     destroy(data);
-    var nodes=zTreeObj.getChangeCheckedNodes();//当前被勾选的节点集合  
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
@@ -262,7 +262,7 @@ $(function(){
   //搜索
   function searchList(){
     destroy(data);
-    var nodes=zTreeObj.getChangeCheckedNodes();//当前被勾选的节点集合  
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
@@ -338,11 +338,11 @@ $(function(){
       showRemoveBtn: false,//是否显示删除按钮
       showRenameBtn: false//是否显示编辑名称按钮
     },
-    check:{
-      enable:true,//设置 zTree的节点上是否显示 checkbox / radio
-      chkStyle:"radio",
-      radioType:"all"
-    },
+//  check:{
+//    enable:true,//设置 zTree的节点上是否显示 checkbox / radio
+//    chkStyle:"radio",
+//    radioType:"all"
+//  },
     async:{
       enable:true//强行异步加载父节点的子节点
     },
@@ -352,11 +352,12 @@ $(function(){
       }
     },
     callback:{
-      onClick:function(e, treeId, treeNode, clickFlag){
-        zTreeObj.checkNode(treeNode, !treeNode.checked, true);
-        requestList();
-      },//选中页面上某一分类，加载对应的列表详情
-      onCheck:requestList,//选中页面上某一分类，加载对应的列表详情
+//    onClick:function(e, treeId, treeNode, clickFlag){
+//      zTreeObj.checkNode(treeNode, !treeNode.checked, true);
+//      requestList();
+//    },//选中页面上某一分类，加载对应的列表详情
+//    onCheck:requestList,//选中页面上某一分类，加载对应的列表详情
+      onClick:requestList,//选中页面上某一分类，加载对应的列表详情
     }
   });
   
@@ -399,11 +400,10 @@ $(function(){
     current_page=1;
     data.Page=current_page;
     data.PageSize="10";
-    var nodes=zTreeObj.getChangeCheckedNodes();//当前被勾选的节点集合  
-    for(var i=0;i<nodes.length;i++){
-      data.ChannelId=nodes[i].id;
-      getContentList(data);//请求加载内容列表
-    }
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    data.ChannelId=nodes[0].id;
+    getContentList(data);//请求加载内容列表
+    
     //切换栏目时还原状态
     $(".all").css("display","none").children(".new_cate").html("");
     $(".startPubTime,.endPubTime").val("");
@@ -683,6 +683,16 @@ $(function(){
     var text=$(this).text().replace(/\s/g, "");
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var box=$(".ri_top3_con .rtc_listBox");
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    var channelId=nodes[0].id;
+    var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
+    if(mediatype=="wt_MediaAsset"){//节目
+      mediatype="AUDIO";
+    }else if(mediatype=="wt_SeqMediaAsset"){//专辑
+      mediatype="SEQU ";
+    }else{//电台
+      mediatype="RADIO ";
+    }
     if(text=="置顶"){//点击置顶
       $(box).each(function(){
         if($(this).hasClass("isTop")){
@@ -696,47 +706,43 @@ $(function(){
             $(this).removeClass("isTop");
             $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
           });
-          var data={"ContentId":contentId,
+          var data={"MediaType":mediatype,
+                    "ChannelId":channelId,
+                    "ContentId":contentId,
+                    "IsOnlyTop":"1",
                     "UserId":userId,
-                    "topType":true//设置置顶
+                    "Top":"1"//设置置顶
           };
-          //setTop(data);//设置置顶
-          var topBox=$(this).parent(".opetype1").parent(".rtc_listBox");
-          $(".ri_top3_con").prepend(topBox);
-          $(topBox).addClass("isTop");
-          $(this).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+          setTop(data);//设置置顶
         }else{
           alert("你已经取消对本内容的置顶");
           return false;
         }
       }else{//暂无置顶内容    
-        var data={"ContentId":contentId,
+        var data={"MediaType":mediatype,
+                  "ChannelId":channelId,
+                  "ContentId":contentId,
+                  "IsOnlyTop":"1",
                   "UserId":userId,
-                  "topType":true//设置置顶
+                  "Top":"1"//设置置顶
         };
-        //setTop(data);//设置置顶
-        var topBox=$(this).parent(".opetype1").parent(".rtc_listBox");
-        $(".ri_top3_con").prepend(topBox);
-        $(topBox).addClass("isTop");
-        $(this).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+        setTop(data);//设置置顶
       }
     }else{//点击取消置顶
-      var data={"ContentId":contentId,
+      var data={"MediaType":mediatype,
+                "ChannelId":channelId,
+                "ContentId":contentId,
+                "IsOnlyTop":"1",
                 "UserId":userId,
-                "topType":false//取消置顶
+                "Top":"0"//取消置顶
       };
-      //cancelTop(data);//取消置顶
-      $(box).each(function(){
-        $(this).removeClass("isTop");
-        $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
-      });
     }
   });
   
-  //设置置顶
+  //设置/取消置顶
   function setTop(data){
     $.ajax({
-      url:rootPath+"common/setTop.do",
+      url:rootPath+"content/setTop.do",
       type:"POST",
       data:JSON.stringify(data),
       cache: false,
@@ -744,36 +750,29 @@ $(function(){
       contentType: false,
       dataType:"json",
       success:function(resultData){
-        if(resultData.ReturnType=="1001"){
-          alert("设置置顶成功");
-        }else{
-          alert("设置置顶失败");
+        if(data.Top=="1"){//设置置顶
+          if(resultData.ReturnType=="1001"){
+            alert("设置置顶成功");
+            var topBox=$(this).parent(".opetype1").parent(".rtc_listBox");
+            $(".ri_top3_con").prepend(topBox);
+            $(topBox).addClass("isTop");
+            $(this).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+          }else{
+            alert("设置置顶失败");
+          }  
+        }else{//取消置顶
+          if(resultData.ReturnType=="1001"){
+            alert("取消置顶成功");
+            $(box).each(function(){
+              $(this).removeClass("isTop");
+              $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
+            });
+          }else{
+            alert("取消置顶失败");
+          }  
         }
       },
-      error: function(XHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  }
-  
-  //取消置顶
-  function cancelTop(data){
-    $.ajax({
-      url:rootPath+"common/cancelTop.do",
-      type:"POST",
-      data:JSON.stringify(data),
-      cache: false,
-      processData: false,
-      contentType: false,
-      dataType:"json",
-      success:function(resultData){
-        if(resultData.ReturnType=="1001"){
-          alert("取消置顶成功");
-        }else{
-          alert("取消置顶失败");
-        }
-      },
-      error: function(XHR){
+      error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
       }
     });

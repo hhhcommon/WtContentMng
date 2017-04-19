@@ -11,7 +11,6 @@ $(function(){
     $(this).attr("src", _img); 
   }); 
   
-  var page=2;
   $(".ulBox").on("click",".playBtn",function(){//点击专辑里面的某个节目，跳到节目页
     var shareUrl=$(this).attr("share_url");
     window.location.href=shareUrl;
@@ -44,12 +43,12 @@ $(function(){
       else detail.contentName="未知";
       if(resultData.ResultList[i].PlayCount) detail.playCount=resultData.ResultList[i].PlayCount;
       else detail.playCount="0";
-      var listBox= '<li class="listBox playBtn" data_src='+detail.contentPlay+' share_url='+detail.contentShareUrl+'>'+
+      var listBox='<li class="listBox playBtn" contentId='+resultData.ResultList[i].ContentId+' data_src='+detail.contentPlay+' share_url='+detail.contentShareUrl+'>'+
                     '<h4>'+detail.contentName+'</h4>'+
                     '<div class="time">'+ct+'</div>'+
                     '<p class="lcp">'+
                       '<img src="../../imgs/sl.png" alt=""/>'+
-                      '<span>'+detail.playCount+'</span>'+
+                      '<span class="playCount"></span>'+
                       '<img src="../../imgs/sc.png" alt="" class="sc"/>'+
                       '<span class="contentT">'+tl+'</span>'+
                     '</p>'+
@@ -58,32 +57,97 @@ $(function(){
     }
   }
   
-  //添加滚动条事件
-  window.onscroll=function(){
-    //当滚动到最底部以上60像素时,加载新内容  
-    if($(document).height() - $(this).scrollTop() - $(this).height()==0){
+  /*s--节目列表分页插件*/
+  var page1=2;
+  $('.zj_box').dropload({
+    scrollArea :window,
+    loadDownFn :function(me){
       var _data={
                   "ContentId":$(".PicBox").attr("contentId"),
                   "MediaType":"SEQU",
-                  "Page":page
+                  "Page":page1,
       };
       $.ajax({
         type: "POST",
         url:rootPath+"content/getZJSubPage.do",
-        dataType: "json",
+        data:JSON.stringify(_data),
+        dataType:'json',
+        success:function(resultData){
+          if(resultData.ReturnType=="1001"){
+            loadMore(resultData);
+            getPlayCount(resultData);
+            page1++;
+          }else{
+            me.lock();//锁定
+            me.noData();//无数据
+          }
+          setTimeout(function(){//为了测试，延迟1秒加载
+            // 每次数据插入，必须重置
+            me.resetload();
+          },1000);
+        },
+        error: function(xhr, type){
+          alert('数据加载出错!');
+          // 即使加载出错，也得重置
+          me.resetload();
+        }
+      });
+    }
+  });
+  /*e--节目列表分页插件*/
+  
+  //获取节目列表的playCount
+  function getPlayCount(resultData){
+    var contentIds='';
+    var seqId=$(".PicBox").attr("ContentId");
+    if(resultData.ResultList.length<=1){
+      var jmId=resultData.ResultList[0].ContentId;
+      var contentId=seqId+'_'+jmId;
+    }else{//多于一天数据时用逗号拼接
+      for(var i=0;i<resultData.ResultList.length;i++){
+        var jmId=resultData.ResultList[i].ContentId;
+        var contentId=seqId+'_'+jmId;
+        if(contentIds==''){
+          contentIds=contentId;
+        }else{
+          contentIds+=','+contentId;
+        }
+      }
+    }
+    var _data={"ContentIds":contentIds};
+    $.ajax({
+        type:"POST",
+        url:rootPath+"content/getPlayCounts.do",
+        dataType:"json",
         async:false,
         data:JSON.stringify(_data),
         success: function(resultData){
           if(resultData.ReturnType=="1001"){
-            loadMore(resultData);
-            page++;
+            var playCounts=[];
+            var keys=[];
+            for(var key in resultData.ResultData){
+              var _key=key;
+              var _value=resultData.ResultData[key];
+              keys.push(_key);
+              playCounts.push(_value);
+            }
+            $(".listBox").each(function(){
+              var cid=$(this).attr("contentId");
+              for(var i=0;i<keys.length;i++){
+                var ccid=keys[i].split("_")[1];
+                if(ccid==cid){
+                  var tid=playCounts[i];
+                  $(this).children(".lcp").children(".playCount").text(tid);
+                  return;
+                }
+              }
+            });
           }
         },
         error: function(jqXHR){  
           alert("发生错误" + jqXHR.status);
         }     
       });
-    }
   }
   
   //获取节目列表的节目时长

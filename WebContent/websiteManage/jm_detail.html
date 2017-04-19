@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>节目管理</title>
+  <title>节目详情页</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">                                                              
@@ -22,32 +22,37 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{height:100%;-moz-user-select: none;overflow: auto;}
+body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
 .ellipsis {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .detail{
+  width:1080px;
+  min-width:850px;
   position: relative;
-  width: 100%;
-  min-width: 1080px;
+  height:auto;
+  margin:auto;
 }
 .detail_title{
-  height: 30px;
+  position: relative;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
   color: #000;
   font-size: 14px;
-  margin-top: 20px;
-  padding-left:20px;
-  float: left;
+  padding-left: 20px;
+  border-bottom: 1px solid #dedede;
 }
 .my_title{
+  overflow: hidden;
   height: 30px;
-  color: #000;
-  line-height: 30px;
   font-size: 14px;
+  line-height: 30px;
+  border-bottom: 2px solid #dedede;
+  color: #000;
   font-weight: bold;
-  margin: 80px 0px 0px 10px;
 }
 .detail_content{
   width: 100%;
@@ -55,16 +60,12 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
   overflow: hidden;
   position: relative;
 }
-.dc_left1{
-  width:710px;
-  float: left;
-}
 .dc_left{
   position: relative;
   width:710px;
-  height:calc(100% - 10px);
+  height:auto;
   float: left;
-  margin:10px 0px 0px 20px;
+  margin:15px 0px 0px 20px;
 }
 .dcl_jmcontent {
   width:100%;
@@ -84,6 +85,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
   height:180px;
   position: relative;
   margin-top:20px;
+  border: 1px solid #dedede;
 }
 .dcl_jmcontent1 img{
   width:100%;
@@ -98,12 +100,25 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
   height:auto;
   margin-top:20px;
 }
-.dcl_jmcontent2 h3{
-  width:470px;
-  display: inline-block;
-  font-size: 20px;
-  color:#000;
-  font-family: "微软雅黑";
+.title{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  color: #000;
+  font-weight: bolder;
+  font-size: 18px;
+}
+.ctime,.comzjs,.tagss{
+  height:30px;
+  line-height: 30px;
+  font-size: 14px;
+  overflow: hidden;
+}
+.tagss{height: auto;}
+.newspan{
+  padding: 0px 5px;
+  margin: 0px 10px 0px 0px;
+  color: #000;
 }
 .h3span{
   color:#ffa634;
@@ -114,7 +129,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
   font-size:14px;
 }
 .dcl_jmcontent2 p span{
-  font-size:15px;
+  font-size:14px;
   color:#000;
   font-family: "微软雅黑";
 }
@@ -138,6 +153,12 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
 .dcl_jmcontent2 ul{
   overflow: hidden;
 }
+.dcl_jmcontent2 .act{
+  overflow: hidden;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+}
 .dcl_jmcontent2 .act li{
   height: 27px;
   line-height: 27px;
@@ -145,11 +166,11 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
   background-position: 0 -118px;
   float: left;
   position: relative;
-  margin:10px 8px 0px 0px;
+  margin:0px 20px 0px 0px;
   display: inline-block;
   cursor: pointer;
 }
-.dcl_jmcontent2 ul li span{
+.dcl_jmcontent2 .act li span{
   background: url("img/auto.png");
   background-position:right -118px;
   padding-right:8px;
@@ -160,21 +181,23 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
 }
 .dcl_jmcontent3{
   overflow: hidden;
-}
-.dcl_jmcontent3 .revoke,.dcl_jmcontent3 .player{
-	margin-right: 50px;
-  width:85px;
   height:30px;
+  line-height:30px;
+}
+.revoke,.player{
+	margin-right:50px;
+  width:85px;
   color: #fff;
   cursor: pointer;
   text-align: center;
-  line-height:30px;
   float: left;
+  background: #f60;
+  border:none;
 }
-.dcl_jmcontent3 .revoke{
+.revoke{
 	background: #0077c7;
 }
-.dcl_jmcontent3 .player{
+.player{
 	background: #f60;
 }
 .dcl_jmcontent4{
@@ -269,21 +292,26 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
 .dc_right1{
   width:300px;
   float: left;
-  margin-left:36px;
+  margin:15px 0px 0px 36px;
 }
 .dc_right{
-  width:300px;
-  height:auto;
+  width:100%;
+  margin-top:0px;
+}
+.dcr_jmlist{
+  overflow: auto;
 }
 .dcr_jmlist1{
-  margin: 10px 10px 0px 10px;
-  height: 100px;
+  height: 110px;
+  width: 100%;
+  overflow: hidden;
   border-bottom: 2px solid #dedede;
 }
 .list1_img{
   width:80px;
   height:80px;
   float: left;
+  margin:15px 0px;
   display: inline-block;
   border:1px solid #dedede;
   cursor: pointer;
@@ -296,6 +324,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
 .list1_con{
   width:195px;
   float: left;
+  margin:15px 0px;
   padding-left:10px;
 }
 .list1_con_name{
@@ -429,7 +458,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
 .locker{
   position:relative;
   margin-left: 90%;
-  margin-top: -13px;
+  margin-top: 0px;
   width: 50px;
   height: 15px;
   background: center no-repeat;
@@ -447,61 +476,57 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
 </style>
 <body>
 <div class="detail">
+  <div class="detail_title">当前位置：内容管理> 已发布内容> </div>
   <div class="detail_content">
-    <div class="dc_left1">
-      <div class="detail_title">节目管理> 已发布> </div>
-      <div class="dc_left">
-        <div class="dcl_jmcontent">
-          <div class="dcl_jmcontent12">
-            <div class="dcl_jmcontent1">
-              <img src="" alt="节目封面图片" />
-            </div>
-            <div class="dcl_jmcontent2">
-              <div class="title">
-                <h3 class="ellipsis"></h3>
-              </div>
-              <p class="ctime">最近更新时间：<span class="cctime"></span></p>
-              <p>来自专辑<span class="comZj"></span></p>
-              <div class="tagss">
-                <span>标签：</span>
-                <ul class="tags">
-                  <!--<li class="newli"><span class="newspan">自定义标签一</span></li>
-                  <li class="newli"><span class="newspan">自定义标签一</span></li>
-                  <li class="newli"><span class="newspan">自定义标签一</span></li>
-                  <li class="newli"><span class="newspan">自定义标签一</span></li>
-                  <li class="newli"><span class="newspan">自定义标签一</span></li>-->
-                </ul>
-              </div>
-              <ul class="act">
-                <li class="play">
-                  <img class="play1" src="img/act1.png" alt="" />
-                  <span class="play2"></span>
-                </li>
-                <li class="love">
-                  <img class="love1" src="img/act3.png" alt="" />
-                  <span class="love2"></span>
-                </li>
-                <li class="download">
-                  <img class="download1" src="img/act4.png" alt="" />
-                  <span class="download2"></span>
-                </li>
-                <li class="share">
-                  <img class="share1" src="img/act2.png" alt="" />
-                  <span class="share2"></span>
-                </li>
-                <li class="intransit">
-                  <img class="intransit1" src="img/act5.png" alt="" />
-                  <span class="intransit2"></span>
-                </li>
+    <div class="dc_left">
+      <div class="dcl_jmcontent">
+        <div class="dcl_jmcontent12">
+          <div class="dcl_jmcontent1">
+            <img src="" alt="节目封面图片" />
+          </div>
+          <div class="dcl_jmcontent2">
+            <div class="title ellipsis"></div>
+            <div class="ctime">最近更新时间：<span class="cctime"></span></div>
+            <div class="comzjs">来自专辑<span class="comZj"></span></div>
+            <div class="tagss">
+              <span>标签：</span>
+              <ul class="tags">
+                <!--<li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>-->
               </ul>
             </div>
+            <ul class="act">
+              <li class="play">
+                <img class="play1" src="img/act1.png" alt="" />
+                <span class="play2"></span>
+              </li>
+              <li class="love">
+                <img class="love1" src="img/act3.png" alt="" />
+                <span class="love2"></span>
+              </li>
+              <li class="download">
+                <img class="download1" src="img/act4.png" alt="" />
+                <span class="download2"></span>
+              </li>
+              <li class="share">
+                <img class="share1" src="img/act2.png" alt="" />
+                <span class="share2"></span>
+              </li>
+              <li class="intransit">
+                <img class="intransit1" src="img/act5.png" alt="" />
+                <span class="intransit2"></span>
+              </li>
+            </ul>
           </div>
-          <div class="dcl_jmcontent3">
-        		<span class="revoke" opetype="revoke">撤回</span>
-        		<span class="player">播放</span>
-        	</div>
-        	<div class="dcl_jmcontent4"></div>
         </div>
+        <div class="dcl_jmcontent3">
+      		<button class="revoke" opetype="revoke">撤回</button>
+      		<button class="player">播放</button>
+      	</div>
+      	<div class="dcl_jmcontent4"></div>
       </div>
     </div>
     <div class="dc_right1">
@@ -570,7 +595,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
     <div class="locker_btn locked"></div>
   </div>
   <div class="audioIframe">
-    <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="globalplayer.html" frameborder="0"  seamless></iframe>
+    <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="" frameborder="0"  seamless></iframe>
   </div>
 </div>
 <!--s:不通过-->
@@ -630,6 +655,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;}
   var contentId=getUrlParam(window.location.href,'contentId');
   var audioList=[];//音乐播放列表
   var listNum=0;//控制播放节目的序号
+  var userId='123';
   
 $(function(){
   var data1={"UserId":"123",
@@ -667,24 +693,19 @@ $(function(){
   
   //填充节目数据
   function fillJmDetail(resultData){
-    if(resultData.ContentDetail.ContentPlay){
-      var audioObj={};
-      audioObj.title=resultData.ContentDetail.ContentName;
-      audioObj.playUrl=resultData.ContentDetail.ContentPlay;
-      audioList.push(audioObj);
-    }
-    $(".detail_title").html("节目管理> 已发布> "+resultData.ContentDetail.ContentName);
-    $(".dcl_jmcontent2 .title h3").html(resultData.ContentDetail.ContentName);
-    $(".dcl_jmcontent2 .title h3").attr("contentId",resultData.ContentDetail.ContentId);
+    $(".detail_title").html("当前位置：内容管理> 已发布内容> "+resultData.ContentDetail.ContentName);
+    $(".title").html(resultData.ContentDetail.ContentName).attr("contentId",resultData.ContentDetail.ContentId);
     $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
     $(".cctime").html(resultData.ContentDetail.CTime);
     $(".comZj").html(!resultData.ContentDetail.ContentSeqName?"【自定义专辑】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
     $(".comZj").attr({"seqId":resultData.ContentDetail.ContentSeqId});
     if(resultData.ContentDetail.ContentKeyWord){
       for(var i=0;i<resultData.ContentDetail.ContentKeyWord.length;i++){
-        var li='<li class="newli"><span class="newspan" tagId='+resultData.ContentDetail.ContentKeyWord[i].TagId+'>'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</span></li>';
+        var li='<li class="newspan fl">'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</li>';
         $(".tags").append(li);
       }
+    }else{
+      $(".tags").append("<li>暂无</li>");
     }
     if(resultData.ContentDetail.ContentPubChannels){
       var chId,chStr="";
@@ -697,7 +718,7 @@ $(function(){
           chStr+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelName;
         }
       }
-      $(".dcl_jmcontent2 .title h3").attr({"channelId":chId});
+      $(".title").attr({"channelId":chId});
     }
     $(".play2").html(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
     $(".love2").html(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
@@ -705,10 +726,17 @@ $(function(){
     $(".share2").html(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
     $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
     $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
+    if(resultData.ContentDetail.ContentPlay){
+      var audioObj={};
+      audioObj.title=resultData.ContentDetail.ContentName;
+      audioObj.playUrl=resultData.ContentDetail.ContentPlay;
+      audioList.push(audioObj);
+    }
+    $("#audioIframe").attr("src","globalplayer.html");
   }
   
   /*同专辑下的所有节目*/
-  var data2={"UserId":"123",
+  var data2={"UserId":userId,
              "ContentFlowFlag":"2",
              "Page":"1",
              "PageSize":"10",
@@ -854,12 +882,6 @@ $(function(){
     var contentIds=$(this).attr("contentId");
     $("#myIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentIds+"&&seqId="+seqIds});
   });
-  
-  /*页面重置时播放器面板的样式也随着变化*/
-  window.onresize=function(){
-    var w=$(".content").css("width");
-    $(".audioIframe").css("width",w);
-  }
   
   /*播放器面板出现与隐藏*/
   $(document).on("click",".locker",function(){

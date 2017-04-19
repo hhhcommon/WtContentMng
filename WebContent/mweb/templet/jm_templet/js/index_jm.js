@@ -117,7 +117,8 @@ $(function(){
     var src=$(this).children(".audioImg").attr("src");
     $(".boximg").attr("src",src);
     var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
-    comment(contentId);//加载评论列表
+    var page2=1;
+    comment(contentId,page2);//加载评论列表
   });
   
   //点击上一个
@@ -152,7 +153,8 @@ $(function(){
           audioPlay($(".listBox").eq(listNum),audio,true);
           $(".playControl").addClass("play");
           var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
-          comment(contentId);//加载评论列表
+          var page2=1;
+          comment(contentId,page2);//加载评论列表
         }
       }
     });
@@ -201,76 +203,63 @@ $(function(){
       audioPlay($(".listBox").eq(listNum),audio,true);
       $(".playControl").addClass("play");
       var contentId=$(".palyCtrlBox").children("h4").attr("contentId");
-      comment(contentId);//加载评论列表
+      var page2=1;
+      comment(contentId,page2);//加载评论列表
     }
   });
   
-  /*s--分页插件*/
-  
-  /*e--分页插件*/
-  
-  //请求推荐资源列表
+  /*s--推荐列表分页插件*/
+  var page1 =0;// 页数
+  var pageSize1 =10;// 每页展示10个
   var searchStr=$(".palyCtrlBox").children("h4").text();
   var contentId=eval('('+$("audio").attr("jmOpenApp").split("=")[1]+')').ContentId;
-  var page=1;
-  var _data={
-        "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
-        "IMEI":"3279A27149B24719991812E6ADBA5583",
-        "PCDType":"3",
-        "SearchStr":searchStr,
-        "ResultType":"0",
-        "PageType":"0",
-        "Page":page,
-        "RootInfo":"AUDIO_"+contentId,
-        "PageSize":"10"
-  };
-  tuijianList(_data);
-  function tuijianList(_data){
-    $.ajax({
-  //  url: rootPath+"common/jsonp.do",
-      url:"http://www.wotingfm.com/wt/searchByText.do",
-      type:"POST",
-      dataType:"json",
-      data:JSON.stringify(_data),
-      success: function(resultData) {
-        if(resultData.ReturnType=="1001"){
-          loadRecomList(resultData);
-          page++;
-        }else{
-          $(".ulBox").html("");
-          $(".ulBox").append("<li class='noComment'>暂无推荐列表</li>");
-          $(".ulBox").css({"height":$(".noComment").height()});
+  // dropload
+  $('.ulBox').dropload({
+    scrollArea :window,
+    loadDownFn :function(me){
+      page1++;
+      var _data={
+              "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
+              "IMEI":"3279A27149B24719991812E6ADBA5583",
+              "PCDType":"3",
+              "SearchStr":searchStr,
+              "ResultType":"0",
+              "PageType":"0",
+              "Page":page1,
+              "RootInfo":"AUDIO_"+contentId,
+              "PageSize":pageSize1,
+              "RootPage":"3"
+      };
+      $.ajax({
+        type:'post',
+        url:'http://www.wotingfm.com/wt/searchByText.do',
+        data:JSON.stringify(_data),
+        dataType:'json',
+        success:function(resultData){
+          if(resultData.ReturnType=="1001"){
+            loadRecomList(resultData);
+          }else{
+            me.lock();//锁定
+            me.noData();//无数据
+          }
+          setTimeout(function(){//为了测试，延迟1秒加载
+            // 每次数据插入，必须重置
+            me.resetload();
+          },1000);
+        },
+        error: function(xhr, type){
+          alert('数据加载出错!');
+          // 即使加载出错，也得重置
+          me.resetload();
         }
-      },
-      error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  }
-  
-  //滚动条滚动时请求加载下一页数据
-  window.onscroll=function(){
-    if(page!=1){//不是第一页时才执行
-      //当滚动到最底部以上60像素时,加载新内容  
-      if($(document).height() - $(this).scrollTop() - $(this).height()==0){
-        var data={
-                  "RemoteUrl":"http://www.wotingfm.com:808/wt/searchByText.do",
-                  "IMEI":"3279A27149B24719991812E6ADBA5583",
-                  "PCDType":"3",
-                  "SearchStr":searchStr,
-                  "ResultType":"0",
-                  "PageType":"0",
-                  "Page":page,
-                  "PageSize":"10",
-                  "RootInfo":"AUDIO_"+contentId,
-        };
-        tuijianList(data);
-      }
+      });
     }
-  }
+  });
+  /*e--推荐列表分页插件*/
   
   //请求查看评论
-  comment(contentId);
+  var page2=1;
+  comment(contentId,page2);
   function comment(contentId){
     var data={
           "RemoteUrl":"http://www.wotingfm.com:808/wt/discuss/article/getList.do",
@@ -278,22 +267,24 @@ $(function(){
           "PCDType":"3",
           "ContentId":contentId,
           "MediaType":"AUDIO",
-          "Page":"1",
-          "PageSize":"10"
+          "Page":page2,
+          "PageSize":pageSize1
     };
     $.ajax({
       url: rootPath+"common/jsonp.do",
       type:"POST",
       dataType:"json",
       data:JSON.stringify(data),
-      success: function(resultData) {
+      success: function(resultData){
         var resultData=eval('(' + resultData.Data + ')');
-        if (resultData.ReturnType=="1001"){
+        if(resultData.ReturnType=="1001"){
+          page2++;
           loadCommentList(resultData);
         }else{
-          $(".comment").html("");
-          $(".comment").append("<li class='noComment'>暂无评论</li>");
-          $(".noComment").css({"height":$(".ulBox").height()});
+          if(page2==1){//第一页
+            $(".comment .lists").html(" ").append("<li class='noComment'>暂无评论</li>");
+            $(".noComment").css({"height":"240px"});
+          }
         }
       },
       error: function(jqXHR){
@@ -424,7 +415,7 @@ $(function(){
                           '</p>'+
                         '</div>'+
                       '</li>';
-      $(".ulBox").append(newListBox);
+      $(".ulBox .lists").append(newListBox);
       //图片404时使用默认图片
       $('.audioImg').error(function(){ 
         var _img="http://www.wotingfm.com/dataCenter/shareH5/mweb/imgs/default_img.png";
@@ -435,7 +426,6 @@ $(function(){
   
   //加载评论列表
   function loadCommentList(resultData){
-    $(".comment").html("");
     for(var i=0;i<resultData.AllCount;i++){
       var commentTime=resultData.DiscussList[i].Time;
       var commentList='<li class="ctList" commentId='+resultData.DiscussList[i].Id+'>'+
@@ -449,7 +439,7 @@ $(function(){
                           '<div class="commentContent">'+resultData.DiscussList[i].Discuss+'</div>'+
                        '</div>'+
                       '</li>';
-      $(".comment").append(commentList);
+      $(".comment .lists").append(commentList);
       $(".commentTime").eq(i).text(formatCommentDate(commentTime));
     }
   }
@@ -470,6 +460,6 @@ $(function(){
   $(".tj .tjh4").on("click",function(){
     var index = $(this).index();
     $(this).addClass('active').siblings().removeClass('active');
-    $('.audioList ul').eq(index).show().siblings().hide();
+    $('.audioList .lis').eq(index).show().siblings().hide();
   })
 });

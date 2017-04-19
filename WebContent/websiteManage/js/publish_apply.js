@@ -10,7 +10,7 @@ $(function(){
   
   var deviceId='E830A87F620FFAC2B8585F39BA4186E8';
   var userId='123';
-  var contentflowflag='1';//1待审核  
+  var contentflowflag='2';//1待审核  
   
   /*日期处理--日历插件*/
   $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
@@ -477,6 +477,7 @@ $(function(){
         }
         $(".rtcl_img").eq(i).attr("chIds",chIds);
       }
+      $(".rtcl_con_desc2").eq(i).text((resultData.ResultList[i].ContentDesc)?(resultData.ResultList[i].ContentDesc):"暂无");
       $(".source_form").eq(i).text((resultData.ResultList[i].ContentPublisher)?(resultData.ResultList[i].ContentPublisher):"未知");
       var contenttime=resultData.ResultList[i].ContentTime;
       contenttime=new Date(parseInt(contenttime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");
@@ -561,7 +562,7 @@ $(function(){
       }
     });
     if(contentids.length!=0){//选中内容
-      $("body").css({"overflow":"hidden"});
+//    $("body").css({"overflow":"hidden"});
       $(".nc_txt1").text("选择了"+contentids.length+"个节目，您确认所选的节目不予发布么？");
       $(".nopass_masker").removeClass("dis");
     }
@@ -603,7 +604,7 @@ $(function(){
           alert("具体原因提交成功");
           $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker").hide();
-          $("body").css({"overflow":"auto"});
+//        $("body").css({"overflow":"auto"});
           $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
           $(".rto_play").css({"color":"#000","background":"#ddd"});
           $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
@@ -623,7 +624,7 @@ $(function(){
   $(document).on("click",".nh_span2",function(){
     $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
     $(".nopass_masker").hide();
-    $("body").css({"overflow":"auto"});
+//  $("body").css({"overflow":"auto"});
   });
   /*e--不通过发布*/
   
