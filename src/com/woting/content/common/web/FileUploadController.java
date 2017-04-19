@@ -1,6 +1,7 @@
 package com.woting.content.common.web;
 
 import java.io.File;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +13,11 @@ import com.spiritdata.framework.util.FileNameUtils;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.cm.core.oss.utils.OssUtils;
 import com.woting.content.manage.fileupload.web.UploadController;
 import com.woting.dataanal.gather.API.persis.pojo.ApiLogPo;
 import com.woting.passport.session.DeviceType;
 import com.woting.passport.session.SessionService;
-
-import net.coobird.thumbnailator.Thumbnails;
 
 public class FileUploadController extends UploadController {
 	private ApiLogPo alPo = new ApiLogPo();
@@ -32,43 +32,78 @@ public class FileUploadController extends UploadController {
 		String purpose = rqtParams.get("Purpose") + "";
 		if (srcType.equals("1")) { // 图片处理
 			String filepath = m.get("FilePath") + ""; // 原始文件路径
-			String path = FileNameUtils.getFilePath(filepath);
+			//FileNameUtils.getFilePath(filepath);
+			String ext = FileNameUtils.getExt(filepath);
 			String newname = FileNameUtils.getPureFileName(filepath);
-			String newfilepath = FileNameUtils.concatPath(path, newname + ".png");
+			String newfilepath = "";
 			if (purpose.equals("1")) { // 用户头像处理
 				try {
-					String img150path = FileNameUtils.concatPath(path, newname + ".150_150.png");
-					String img300path = FileNameUtils.concatPath(path, newname + ".300_300.png");
-					String img450path = FileNameUtils.concatPath(path, newname + ".450_450.png");
-					Thumbnails.of(new File(filepath)).size(150, 150).toFile(img150path);
-					Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
-					Thumbnails.of(new File(filepath)).size(450, 450).toFile(img450path);
+					String path = "userimg";
+					newfilepath = FileNameUtils.concatPath(path, newname + ext);
+					String imgpath = FileNameUtils.concatPath(path, newname+ext);
+					String img150path = FileNameUtils.concatPath(path, newname + ".150_150" + ext);
+					String img300path = FileNameUtils.concatPath(path, newname + ".300_300" + ext);
+					String img450path = FileNameUtils.concatPath(path, newname + ".450_450" + ext);
+					OssUtils.upLoadObject(imgpath, new File(filepath), true);
+					InputStream in = null;
+					in = OssUtils.makePictureResize(imgpath, 150);
+					if (in!=null) OssUtils.upLoadObject(img150path, in);
+					in = OssUtils.makePictureResize(imgpath, 300);
+					if (in!=null) OssUtils.upLoadObject(img300path, in);
+					in = OssUtils.makePictureResize(imgpath, 450);
+					if (in!=null) OssUtils.upLoadObject(img450path, in);
+//					Thumbnails.of(new File(filepath)).size(150, 150).toFile(img150path);
+//					Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
+//					Thumbnails.of(new File(filepath)).size(450, 450).toFile(img450path);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
 				if (purpose.equals("2")) { // 内容图片处理
 					try {
-						String img180path = FileNameUtils.concatPath(path, newname + ".180_180.png");
-						String img300path = FileNameUtils.concatPath(path, newname + ".300_300.png");
-						Thumbnails.of(new File(filepath)).size(180, 180).toFile(img180path);
-						Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
+						String path = "contentimg";
+						newfilepath = FileNameUtils.concatPath(path, newname + ext);
+						String imgpath = FileNameUtils.concatPath(path, newname + ext);
+						String img180path = FileNameUtils.concatPath(path, newname + ".180_180" + ext);
+						String img300path = FileNameUtils.concatPath(path, newname + ".300_300" + ext);
+						OssUtils.upLoadObject(imgpath, new File(filepath), true);
+						InputStream in = null;
+						in = OssUtils.makePictureResize(imgpath, 180);
+						if (in!=null) OssUtils.upLoadObject(img180path, in);
+						in = OssUtils.makePictureResize(imgpath, 300);
+						if (in!=null) OssUtils.upLoadObject(img300path, in);
+//						Thumbnails.of(new File(filepath)).size(180, 180).toFile(img180path);
+//						Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				} else {
 					if (purpose.equals("3")) { // 轮播图处理
 						try {
-							String img1080_450path = FileNameUtils.concatPath(path, newname + ".1080_450.png");
-							Thumbnails.of(new File(filepath)).size(1080, 450).toFile(img1080_450path);
+							String path = "contentimg";
+							newfilepath = FileNameUtils.concatPath(path, newname + ext);
+							String imgpath = FileNameUtils.concatPath(path, newname + ext);
+							String img1080_450path = FileNameUtils.concatPath(path, newname + ".1080_450" + ext);
+							OssUtils.upLoadObject(imgpath, new File(filepath), true);
+							InputStream in = null;
+							in = OssUtils.makePictureResize(imgpath, 1080, 450);
+							if (in!=null) OssUtils.upLoadObject(img1080_450path, in);
+//							Thumbnails.of(new File(filepath)).size(1080, 450).toFile(img1080_450path);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					} else {
 						if (purpose.equals("4")) { // 栏目图处理
 							try {
-								String img100_100path = FileNameUtils.concatPath(path, newname + ".100_100.png");
-								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);
+								String path = "contentimg";
+								newfilepath = FileNameUtils.concatPath(path, newname + ext);
+								String imgpath = FileNameUtils.concatPath(path, newname + ext);
+								String img100_100path = FileNameUtils.concatPath(path, newname + ".100_100" + ext);
+								OssUtils.upLoadObject(imgpath, new File(filepath), true);
+								InputStream in = null;
+								in = OssUtils.makePictureResize(imgpath, 100);
+								if (in!=null) OssUtils.upLoadObject(img100_100path, in);
+//								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -76,12 +111,17 @@ public class FileUploadController extends UploadController {
 					}
 				}
 			}
-			map.put("FilePath", newfilepath.replace("\\", "/").replace("/opt/", "http://www.wotingfm.com/"));
+			map.put("FilePath", "##img##/" + newfilepath);
 			map.put("Model", "1");
 		} else {
 			if (srcType.equals("2")) {
 				String filepath = m.get("FilePath") + ""; // 原始文件路径
-				map.put("FilePath", filepath.replace("\\", "/").replace("/opt/", "http://www.wotingfm.com/"));
+				String path = "contentmedia";
+				String newname = FileNameUtils.getPureFileName(filepath);
+				String ext = FileNameUtils.getExt(filepath);
+				String newfilepath = path + "/" + newname + ext;
+				OssUtils.upLoadObject(newfilepath, new File(filepath), true);
+				map.put("FilePath", "##mp3##/" + newfilepath);
 				map.put("Model", "2");
 			}
 		}
