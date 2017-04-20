@@ -1,14 +1,9 @@
 /*s--播放相关操作*/
-
-
-
-
 $(window).resize(function(){
   var sl=$("body").scrollLeft();
   sl=-sl;
   $(".audioIframe").css({"width":$(".cc_right").css("width"),"margin-left":sl+"px"});
   var h=$(document.body).height();
-  console.log(h-20);
   if($(".locker").children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
     $(".audioIframe").hide().css({"top":h-40+"px"});
     $(".ri_top3").css("padding-bottom","0px");
@@ -70,8 +65,8 @@ $(document).on("click",".all_check",function(){
         $(this).children(".rtcl_img_check").removeClass("checkbox1");
       });
       $(".opetype").removeAttr("disabled").css({"color":"#fff"});
-      $(".rto_pass").css({"background":"#0077c7"});
-      $(".rto_nopass").css({"background":"darkred"});
+      $(".rto_pass,.rto_set").css({"background":"#0077c7"});
+      $(".rto_nopass,.rto_del").css({"background":"darkred"});
       $(".jmsum").text("你已经选择了"+l+"个内容").removeClass("dis");
     }else{
       $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
@@ -95,8 +90,8 @@ $(document).on("click",".rtcl_img_check",function(){
   if($(this).hasClass("checkbox1")){
     $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
     $(".opetype").removeAttr("disabled").css({"color":"#fff"});
-    $(".rto_pass").css({"background":"#0077c7"});
-    $(".rto_nopass").css({"background":"darkred"});
+    $(".rto_pass,.opetype").css({"background":"#0077c7"});
+    $(".rto_nopass,.rto_del").css({"background":"darkred"});
     $(".ri_top3_con .rtc_listBox .rtcl_img_check").each(function(){//是否选中全选
       if($(this).hasClass("checkbox1")){
         

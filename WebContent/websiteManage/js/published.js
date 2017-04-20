@@ -558,7 +558,7 @@ $(function(){
       }
     });
     if(contentIds.length!=0){//已有选中内容
-      $("body").css("overflow","hidden");
+      $("body").css("overflow-x","hidden");
       $(".nopass_masker").removeClass("dis");
     }
   });
@@ -577,7 +577,7 @@ $(function(){
     }
     contentIds.push(contentList);
     if(contentIds.length!=0){//已有选中内容
-      $("body").css("overflow","hidden");
+      $("body").css("overflow-x","hidden");
       $(".nopass_masker").removeClass("dis");
     }
   });
@@ -619,7 +619,7 @@ $(function(){
           alert("内容撤回成功");
           $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker").addClass("dis");
-          $("body").css({"overflow":"auto"});
+          $("body").css("overflow-x","auto");
           $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
           $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
           getContentList(data);
@@ -636,9 +636,9 @@ $(function(){
 
   //点击撤回原因弹出页面上的关闭按钮
   $(document).on("click",".nh_span2",function(){
+    $("body").css("overflow-x","auto");
     $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
     $(".nopass_masker").addClass("dis");
-    $("body").css({"overflow":"auto"});
   });
   /*e--点击撤回相关操作*/
   

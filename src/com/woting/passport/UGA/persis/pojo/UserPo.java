@@ -20,6 +20,7 @@ public class UserPo extends UgaUser {
     private int userType; //用户分类：1=普通用户;2=编辑用户
     private int userClass; //用户分类：1=普通用户;2=编辑用户
     private int userState;//用户状态，0~2
+    private int phoneNumIsPub;//是否公开手机号码
     private String portraitBig;//用户头像大
     private String portraitMini;//用户头像小
     private String homepage; //用户主页
@@ -164,4 +165,10 @@ public class UserPo extends UgaUser {
         if (!StringUtils.isNullOrEmptyOrSpace(this.descn)) retM.put("Descn", this.descn);
         return retM;
     }
+	public int getPhoneNumIsPub() {
+		return phoneNumIsPub;
+	}
+	public void setPhoneNumIsPub(int phoneNumIsPub) {
+		this.phoneNumIsPub = phoneNumIsPub;
+	}
 }

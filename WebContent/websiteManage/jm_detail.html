@@ -187,18 +187,20 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
 .revoke,.player{
 	margin-right:50px;
   width:85px;
-  color: #fff;
+  color: #000;
   cursor: pointer;
   text-align: center;
   float: left;
-  background: #f60;
+  background: #ddd;
   border:none;
 }
-.revoke{
-	background: #0077c7;
+.c07{
+  color:#fff;
+	background:#0077c7;
 }
-.player{
-	background: #f60;
+.f60{
+  color:#fff;
+	background:#f60;
 }
 .dcl_jmcontent4{
   width:100%;
@@ -339,21 +341,16 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
   position:fixed;
   top:0;
   left:0;
-  background: #000;
-  opacity: 0.5;
+  background:rgba(0,0,0,0.6);
   display: none;
-  z-index:100;
 }
 .nopass_container{
   width:575px;
   height:465px;
-  position: fixed;
-  top:20px;
+  position: relative;
+  margin:20px auto;
   background: #fff;
-  z-index:101;
-  overflow-y: auto;
-  display: none;
-  cursor: pointer;
+  overflow: hidden;
 }
 .nopass_head{
   width:100%;
@@ -375,6 +372,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
   float: right;
   text-align: center;
   margin: 10px 20px;
+  cursor: pointer;
 }
 .nc_con1{
   width:100%;
@@ -423,6 +421,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
 .nc_checkimg{
   width:18px;
   height:18px;
+  cursor: pointer;
 }
 .nc_reasons  li img,.nc_txt5 img{
   margin:0px;
@@ -438,6 +437,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
   line-height: 30px;
   color:#000;
   background:#0077c7;
+  cursor: pointer;
 }
 .nc_reasons{
   overflow: hidden;
@@ -599,51 +599,52 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
   </div>
 </div>
 <!--s:不通过-->
-<div class="nopass_masker"></div>
-<div class="nopass_container">
-  <div class="nopass_head">
-    <span class="nh_span1">撤回</span>
-    <span class="nh_span2">×</span>
-  </div>
-  <div class="nopass_content">
-    <div class="nc_con1">
-      <span class="nc_txt1"></span>
+<div class="nopass_masker">
+  <div class="nopass_container">
+    <div class="nopass_head">
+      <span class="nh_span1">撤回</span>
+      <span class="nh_span2">×</span>
     </div>
-    <div class="nc_con2">
-      <p class="nc_txt2 black">请告知主播具体的原因：</p>
-      <ul class="nc_reasons">
-        <li>
-          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
-          <span class="nc_txt2">广告信息及垃圾信息</span>
-        </li>
-        <li>
-          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
-          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
-        </li>
-        <li>
-          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
-          <span class="nc_txt2">虚构事实。隐瞒真相以误导、欺骗他人</span>
-        </li>
-        <li>
-          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
-          <span class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</span>
-        </li>
-        <li>
-          <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
-          <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
-        </li>
-      </ul>
-      <div class="nc_txt3">
-        <span class="nc_txt4">其他原因：</span>
-        <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+    <div class="nopass_content">
+      <div class="nc_con1">
+        <span class="nc_txt1"></span>
       </div>
-    </div>
-    <div class="nc_con3">
-      <div class="nc_txt5 fl">
-        <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
-        <span class="nc_txt6 fl">违规登记</span>
+      <div class="nc_con2">
+        <p class="nc_txt2 black">请告知主播具体的原因：</p>
+        <ul class="nc_reasons">
+          <li>
+            <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">广告信息及垃圾信息</span>
+          </li>
+          <li>
+            <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+          </li>
+          <li>
+            <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">虚构事实。隐瞒真相以误导、欺骗他人</span>
+          </li>
+          <li>
+            <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</span>
+          </li>
+          <li>
+            <img src="img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+          </li>
+        </ul>
+        <div class="nc_txt3">
+          <span class="nc_txt4">其他原因：</span>
+          <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+        </div>
       </div>
-      <div class="nc_txt7 fl">确定</div>
+      <div class="nc_con3">
+        <div class="nc_txt5 fl">
+          <img src="img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt6 fl">违规登记</span>
+        </div>
+        <div class="nc_txt7 fl">确定</div>
+      </div>
     </div>
   </div>
 </div>
@@ -674,6 +675,9 @@ $(function(){
       async:false,
       cache:false,
       data:JSON.stringify(dataParam),
+      beforeSend:function(){
+        $('.revoke,.player').attr("disabled","disabled");
+      },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           if(dataParam.MediaType=="wt_MediaAsset"){
@@ -681,8 +685,12 @@ $(function(){
           }else{
             fillJmList(resultData);//填充专辑下的节目列表
           }
+          $('.revoke,.player').removeAttr("disabled");
+          $('.revoke').addClass("c07");
+          $('.player').addClass("f60");
         }else{
           alert(resultData.Message);
+          $('.revoke,.player').removeAttr("disabled").css({"color":"#000","background":"#ddd"});
         }
       },
       error:function(XHR){
@@ -771,6 +779,7 @@ $(function(){
   
   /*点击撤回节目*/ 
   var contentIds=[];
+  var channelId='';
   $(".revoke").on("click",function(){
     contentIds=[];
     $(".other_reason").val(" ");
@@ -778,27 +787,12 @@ $(function(){
     var contentList={};
     contentList.Id=contentId;
     contentList.MediaType="AUDIO";
-    var channelId='';
-    $(document).find(".formChannel").each(function(){
-      if(channelId==''){
-        channelId=$(this).attr("channelid");
-      }else{
-        channelId+=','+$(this).attr("channelid");
-      }
-    });
-    contentObj.ChannelIds=channelId;
+    channelId=$(".title").attr("channelid");
+    contentList.ChannelIds=channelId;
     contentIds.push(contentList);
-    if(contentIds.length!=0){//选中内容
-      var height=$(".containers").height();
-      var width1=$(".nopass_masker").width();
-      var width2=$(".nopass_container").width();
-      var left=(width1-width2)/2;
-      $(".nopass_container").css({"left":left+"px"});
-      $(".nopass_masker").css({"height":height}).show();
-      $("body").css({"overflow":"hidden"});
-      $(".nc_txt1").text("您确认撤回这个节目么？");
-      $(".nopass_container").show();
-    }
+    $("body").css("overflow","hidden");
+    $(".nc_txt1").text("您确认撤回这个节目么？");
+    $(".nopass_masker").show();
   });
   
   //点击单个勾选框
@@ -827,25 +821,26 @@ $(function(){
       red.ReDescn=$(".other_reason").val();
       reDesc.push(red);
     }
-    var data2={
-                UserId:"123",
-                ContentIds:contentIds,
-                OpeType:$(".revoke").attr("opetype")
+    var data2={"UserId":userId,
+               "ContentIds":contentIds,
+               "OpeType":$(".revoke").attr("opetype"),
+               "ReDescn":reDesc
     };
     $.ajax({
       type: "POST",
       url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false,
+      async:false,
       data:JSON.stringify(data2),
       beforeSend:function(){
         $('.nc_txt7').attr("disabled","disabled");
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("具体原因提交成功");
+          alert("撤回成功");
           $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-          $(".nopass_masker,.nopass_container").hide();
+          $(".nopass_masker").hide();
           $("body").css({"overflow":"auto"});
         }else{
           alert(resultData.Message);
@@ -859,9 +854,9 @@ $(function(){
   });
   
   /*点击遮罩层或不通过页面上的取消按钮*/
-  $(document).on("click",".nopass_masker,.nh_span2",function(){
+  $(document).on("click",".nh_span2",function(){
     $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-    $(".nopass_masker,.nopass_container").hide();
+    $(".nopass_masker").hide();
     $("body").css({"overflow":"auto"});
   });
   

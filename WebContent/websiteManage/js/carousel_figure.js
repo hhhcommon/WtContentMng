@@ -563,8 +563,18 @@ $(function(){
   $(document).on("click",".carousel",function(){
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var contenttxt=$(this).parent(".opetype1").siblings(".rtcl_con").children(".rtcl_con_p").text();
-    console.log(contentId,contenttxt);
-    $(".cm_content3").text("<"+contenttxt+">").attr("contentId",contentId);
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    var channelId=nodes[0].id;
+    var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
+    if(mediatype=="wt_MediaAsset"){//节目
+      mediatype="AUDIO";
+    }else if(mediatype=="wt_SeqMediaAsset"){//专辑
+      mediatype="SEQU ";
+    }else{//电台
+      mediatype="RADIO ";
+    }
+    console.log(contentId,contenttxt,channelId,mediatype);
+    $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
     $("body").css("overflow","hidden");
     $(".carousel_mask").removeClass("dis");
   });

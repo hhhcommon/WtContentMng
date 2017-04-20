@@ -815,7 +815,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   position:fixed;
   top:0;
   left:0;
-  background:rgba(0,0,0,0.5) ;
+  background:rgba(0,0,0,0.6);
 }
 .nopass_container{
   width:575px;

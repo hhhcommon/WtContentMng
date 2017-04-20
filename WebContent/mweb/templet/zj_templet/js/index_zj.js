@@ -53,7 +53,7 @@ $(function(){
                       '<span class="contentT">'+tl+'</span>'+
                     '</p>'+
                   '</li>';
-      $(".ulBox").append(listBox);
+      $(".lists").append(listBox);
     }
   }
   
