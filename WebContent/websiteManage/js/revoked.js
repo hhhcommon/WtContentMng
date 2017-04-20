@@ -10,7 +10,7 @@ $(function(){
   
   var deviceId='E830A87F620FFAC2B8585F39BA4186E8';
   var userId='123';
-  var contentflowflag='2';//4已撤回
+  var contentflowflag='4';//4已撤回
   
   /*日期处理--日历插件*/
   $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});

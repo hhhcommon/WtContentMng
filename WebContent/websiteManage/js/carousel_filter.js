@@ -128,6 +128,8 @@ function getSourceFilters(){
     success:function(resultData){
       if(resultData.ReturnType == "1001"){
         loadSourceFilters(resultData);//加载来源的筛选条件
+      }else{
+        $("#source .attrValues .av_ul").html("<li>暂无来源</li>");
       }
     },
     error:function(jqXHR){
@@ -136,6 +138,7 @@ function getSourceFilters(){
   });
 }
 function loadSourceFilters(resultData){
+  $("#source .attrValues .av_ul").html(" ");//清空
   for(var i=0;i<resultData.Source.length;i++){
     var li='<li class="trig_item" id='+resultData.Source[i].SourceId+'>'+
               '<div class="check_cate"></div>'+

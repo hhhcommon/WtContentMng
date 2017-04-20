@@ -1,23 +1,34 @@
 /*s--播放相关操作*/
-//页面重置时播放器面板的样式也随着变化
-window.onresize=function(){
-  var w=$(".content").css("width");
-  $(".audioIframe").css("width",w);
-}
+$(window).resize(function(){
+  var sl=$("body").scrollLeft();
+  sl=-sl;
+  $(".audioIframe").css({"width":$(".cc_right").css("width"),"margin-left":sl+"px"});
+  var h=$(document.body).height();
+  if($(".locker").children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
+    $(".audioIframe").hide().css({"top":h-40+"px"});
+    $(".ri_top3").css("padding-bottom","0px");
+    $(".locker").css({"top":h-20+"px","transition" :"all 0.1s ease 0s"});
+  }else{//此时显示，点击之后隐藏
+    $(".audioIframe").show().css({"top":h-75+"px"});
+    $(".ri_top3").css("padding-bottom","130px");
+    $(".locker").css({"top":h-90+"px","transition" :"all 0.1s ease 0s"});
+  }
+});
 
 //播放器面板出现与隐藏
 $(document).on("click",".locker",function(){
+  var h=$(document.body).height()-20;
   if($(this).children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
-    $(".audioIframe").show();
+    $(".audioIframe").show().css({"top":h-75+"px"});
     $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-locked-hover@2x.png)"});
-    $(".ri_top3").css("padding-bottom","140px");
-    $(this).css({"top":"423px","transition" :"all 0.1s ease 0s"});
+    $(".ri_top3").css("padding-bottom","130px");
+    $(this).css({"top":h-90+"px","transition" :"all 0.1s ease 0s"});
     $(this).children(".locker_btn").removeClass("locked");
   }else{//此时显示，点击之后隐藏
-    $(".audioIframe").hide();
+    $(".audioIframe").hide().css({"top":h-40+"px"});
     $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png)"});
     $(".ri_top3").css("padding-bottom","0px");
-    $(this).css({"top":"520px","transition" :"all 0.1s ease 0s"});
+    $(this).css({"top":h+"px","transition" :"all 0.1s ease 0s"});
     $(this).children(".locker_btn").addClass("locked");
   }
 });
@@ -34,7 +45,10 @@ function destroy(obj){
  /*s--设置计时器右边边框的高度赋给左边*/
   var times=setInterval(setTime,100);
   function setTime(){
-    $(".ztree").css({"height":$(".nav_con").height()+"px","overflow":"auto"});
+    $(".cc_left").css({"height":$(".nav_con").height()+"px","overflow":"auto"});
+    var sl=$("body").scrollLeft();
+    sl=-sl;
+    $(".audioIframe").css({"width":$(".cc_right").css("width"),"margin-left":sl+"px"});//监听横向滚动条的变化
   }
   /*e--设置计时器右边边框的高度赋给左边*/
 
@@ -51,8 +65,8 @@ $(document).on("click",".all_check",function(){
         $(this).children(".rtcl_img_check").removeClass("checkbox1");
       });
       $(".opetype").removeAttr("disabled").css({"color":"#fff"});
-      $(".rto_pass").css({"background":"#0077c7"});
-      $(".rto_nopass").css({"background":"darkred"});
+      $(".rto_pass,.rto_set").css({"background":"#0077c7"});
+      $(".rto_nopass,.rto_del").css({"background":"darkred"});
       $(".jmsum").text("你已经选择了"+l+"个内容").removeClass("dis");
     }else{
       $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
@@ -76,8 +90,8 @@ $(document).on("click",".rtcl_img_check",function(){
   if($(this).hasClass("checkbox1")){
     $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
     $(".opetype").removeAttr("disabled").css({"color":"#fff"});
-    $(".rto_pass").css({"background":"#0077c7"});
-    $(".rto_nopass").css({"background":"darkred"});
+    $(".rto_pass,.opetype").css({"background":"#0077c7"});
+    $(".rto_nopass,.rto_del").css({"background":"darkred"});
     $(".ri_top3_con .rtc_listBox .rtcl_img_check").each(function(){//是否选中全选
       if($(this).hasClass("checkbox1")){
         

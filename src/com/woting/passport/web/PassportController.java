@@ -168,7 +168,7 @@ public class PassportController {
             //4-返回成功，若没有IMEI也返回成功
             map.put("ReturnType", "1001");
             if (u!=null) {
-                Map<String, Object> um=u.toDetailInfo();
+                Map<String, Object> um=u.getDetailInfo();
                 List<DictRefRes> dictRefList=dictService.getDictRefs("plat_User", u.getUserId());
                 if (dictRefList!=null&&!dictRefList.isEmpty()) {
                     for (DictRefRes drr: dictRefList) {
@@ -946,7 +946,7 @@ public class PassportController {
             } else {
                 UserPo up=userService.getUserById(userId);
                 if (up!=null) {
-                    Map<String, Object> um=up.toDetailInfo();
+                    Map<String, Object> um=up.getDetailInfo();
                     List<DictRefRes> dictRefList=dictService.getDictRefs("plat_User", userId);
                     if (dictRefList!=null&&!dictRefList.isEmpty()) {
                         for (DictRefRes drr: dictRefList) {
