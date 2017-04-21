@@ -46,12 +46,13 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   color: #000;
   font-size: 14px;
   margin: 0px;
+  line-height: 40px;
 }
 .comment{
   position: relative;
   padding-top:10px;
   overflow: hidden;
-  width: 1084px;
+  width:100%;
   min-width: 780px;
   height:auto;
 }
@@ -82,10 +83,10 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   background: white;
 }
 .left_content{
-  width:600px;
+  width:56%;
   height:auto;
   padding:0px 17px 10px;
-  border-right:1px solid rgb(222,222,222);
+/*  border-right:1px solid rgb(222,222,222);*/
   overflow: hidden;
 }
 .lc0{
@@ -142,7 +143,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   background-size:100% 100%;
 }
 .lcb2{
-  width:500px;
+  width:calc(100% - 55px);
   margin-left: 15px;
   overflow: hidden;
 }
@@ -162,11 +163,13 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   margin-left:27px;
   color:#ffa634;
   cursor: pointer;
+  font-size: 14px;
 }
 .lcb3{
   color: #000;
-  width: 500px;
+  width: calc(100% - 85px);
   position: relative;
+  font-size: 14px;
   margin-left: 15px;
   margin-top: 10px;
   line-height: 20px;
@@ -177,12 +180,12 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   overflow: hidden;
 }
 .right_content{
-  width:480px;
+  width:40%;
   height:auto;
   position: relative;
 }
 .rc_header{
-  width: 100%;
+  width: calc(100% - 20px);
   height: 30px;
   line-height: 30px;
   font-size: 16px;
@@ -197,28 +200,29 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   overflow: hidden;
 }
 .rc_s1{
-  width: 380px;
-  font-size:14px;
+  width: 74%;
   padding-right:10px;
   color: #000;
 }
-.rc_s2{color:rgb(255,128,66);}
-/*.rc_s3{margin-left:20px;}*/
+.rc_s2{
+  color:rgb(255,128,66);}
+.rc_s1,.rc_s2,.rc_s3,.rc_s4{font-size:14px;}
 .rc_s4{margin-left:10px;}
 .rc_search{
   height: 30px;
-  width: 445px;
+  width: calc(100% - 40px);
   padding-left:20px;
   /*border: 1px solid #dedede;*/
 }
 .rc_search1{
   height: 30px;
-  width: 440px;
+  width: 100%;
+  position: relative;
 }
 .rc_search2{
   position: relative;
   top: -25px;
-  right: -10px;
+  right: 5px;
   float: right;
 }   
 </style>
@@ -242,7 +246,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
       <div class="lc3">评论(180)</div>
       <div class="lc_content">
         <div class="lc_box">
-          <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
+          <img src="../../anchorResource/img/a5.jpg" class="lcb1 fl" alt="人物头像" />
           <div class="lcb2 fl">
             <span class="lcb2_s1 fl ellipsis">魔术大师奇瑞</span>
             <span class="lcb2_s2 fl">2015-10-15</span>
@@ -253,7 +257,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
                              魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞魔术大师奇瑞师奇瑞魔术大师奇瑞</div> 
         </div>
         <div class="lc_box">
-          <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
+          <img src="../../anchorResource/img/a5.jpg" class="lcb1 fl" alt="人物头像" />
           <div class="lcb2 fl">
             <span class="lcb2_s1 fl ellipsis">魔术大师奇瑞</span>
             <span class="lcb2_s2 fl">2015-10-15</span>
@@ -263,7 +267,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
           <div class="lcb3 fl">魔术大魔术瑞师奇瑞魔术大师奇瑞</div> 
         </div>
         <div class="lc_box">
-          <img src="img/a5.jpg" class="lcb1 fl" alt="人物头像" />
+          <img src="../../anchorResource/img/a5.jpg" class="lcb1 fl" alt="人物头像" />
           <div class="lcb2 fl">
             <span class="lcb2_s1 fl ellipsis">魔术大师奇瑞</span>
             <span class="lcb2_s2 fl">2015-10-15</span>
@@ -279,7 +283,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
     <div class="right_content fl">
       <div class="rc_search">
         <input type="text" class="rc_search1 fl" placeholder="输入搜索关键词" />
-        <img src="img/search1.png" alt="" class="rc_search2 fr"/>
+        <img src="../../anchorResource/img/search1.png" alt="" class="rc_search2 fr"/>
       </div>
       <div class="rc_header ov">
         <div class="rc_header1 fl"></div>

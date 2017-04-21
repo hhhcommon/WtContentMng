@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>评论插件</title>
+  <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1,user-scalable=no">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/js/mainPage.js"></script>
+  <script src="../resources/js/common.utils.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <style>
+  .test{
+    width:500px;
+    border:1px solid green;
+    margin:20px auto;
+  }
+  div{
+    width:100px;
+    height: 100px;
+    border:1px solid red;
+  }
+  </style>
+</head>
+<body>
+  <div></div>
+  <div></div>
+</body>
+<script type="text/javascript">
+  var rootPath=getRootPath();
+  var _data={
+    "ContentIds":"0465ee31a93c4865adfe9cb006f8c557_28abc3e0210a4a54a80cc2571b6b20cd,0465ee31a93c4865adfe9cb006f8c557"};
+  aa(_data);
+  function aa(data){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/getPlayCounts.do",
+      dataType:"json",
+      async:false,
+      data:JSON.stringify(data),
+      success: function(resultData){
+        if(resultData.ReturnType=="1001"){
+          var playCounts=[];
+          var keys=[];
+          for(var key in resultData.ResultData){
+            var _value=resultData.ResultData[key];
+            keys.push(key);
+            playCounts.push(_value);
+          }
+          $.each(keys,function(index,value){
+            $("div").eq(index).text(value);
+          })
+          $.each(playCounts,function(index,value){
+            $("div").eq(index).text(value);
+          })
+        }
+      },
+      error: function(jqXHR){  
+        alert("发生错误" + jqXHR.status);
+      }     
+    });
+  } 
+</script>
+<script>
+//var json= { "Type": "Coding", "Height":100 };
+//for(var key in json){
+//  alert(key); alert(json[key]);
+//}
+//$.each(json, function(i){
+//  alert(json[i]);
+//  alert(i);
+//});
+</script>
+</html>
