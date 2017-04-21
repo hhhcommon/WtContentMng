@@ -237,6 +237,14 @@ public class ChannelContentService {
 		return null;
 	}
 	
+	public ChannelAssetPo getChannelAssetByIdTypeAndChannelId(String assetId, String assetType, String channelId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", assetId);
+		m.put("assetType", assetType);
+		m.put("channelId", channelId);
+		return channelAssetDao.getInfoObject("getListBy", m);
+	}
+	
 	public List<Map<String, Object>> getChannelAssetsByAssetIdsAndAssetType(Map<String, Object> m) {
 		List<Map<String, Object>> chas = channelAssetDao.queryForListAutoTranform("getChannelAndChannelAssetBy", m);
 		if (chas!=null && chas.size()>0) {

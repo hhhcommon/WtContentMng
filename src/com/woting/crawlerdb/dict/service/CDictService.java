@@ -36,6 +36,7 @@ import com.woting.crawlerdb.dict.model.CDictMaster;
 import com.woting.crawlerdb.dict.model.CDictModel;
 import com.woting.crawlerdb.dict.persis.po.CDictDetailPo;
 import com.woting.crawlerdb.dict.persis.po.CDictMasterPo;
+import com.woting.crawlerdb.dict.persis.po.DictRefPo;
 import com.woting.exceptionC.Wtcm1000CException;
 
 
@@ -47,6 +48,8 @@ public class CDictService {
 	private MybatisDAO<CDictDetailPo> cDictDDao;
 	@Resource(name = "defaultDAO_DB")
 	private MybatisDAO<CDictMasterPo> cDictMDao;
+	@Resource(name = "defaultDAO_DB")
+	private MybatisDAO<DictRefPo> dictRefDao;
 	@Resource
 	private ChannelMapService channelMapService;
 	private _CacheCDictionary _cd = null;
@@ -56,6 +59,7 @@ public class CDictService {
 	public void initParam() {
 		cDictDDao.setNamespace("A_CDICTD");
 		cDictMDao.setNamespace("A_CDICTM");
+		dictRefDao.setNamespace("A_DICTREF");
 	}
 	
 	/**
@@ -384,5 +388,30 @@ public class CDictService {
 			return true;
 		}
 		return false;
+	}
+	
+	public DictRefPo getDictRef(String resId, String resTableName, String dictDId) {
+		Map<String, Object> m = new HashMap<>();
+		if (resId!=null) {
+			m.put("resId", resId);
+		}
+		if (resTableName!=null) {
+			m.put("resTableName", resTableName);
+		}
+		if (dictDId!=null) {
+			m.put("cdictDid", dictDId);
+		}
+		return dictRefDao.getInfoObject("getList", m);
+	}
+	
+	public List<DictRefPo> getDictRefs(String resTableName, String dictDId) {
+		Map<String, Object> m = new HashMap<>();
+		if (resTableName!=null) {
+			m.put("resTableName", resTableName);
+		}
+		if (dictDId!=null) {
+			m.put("cdictDid", dictDId);
+		}
+		return dictRefDao.queryForList("getList", m);
 	}
 }

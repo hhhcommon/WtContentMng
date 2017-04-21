@@ -13,8 +13,11 @@
     <typeAlias alias="PVersion"     type="com.woting.version.core.model.Version"/>
     <typeAlias alias="PVerConfig"   type="com.woting.version.core.model.VersionConfig"/>
     <!-- 抓取资源管理 -->
-    <typeAlias alias="cDictD" type="com.woting.crawlerdb.dict.persis.po.CDictDetailPo"/>
-    <typeAlias alias="cDictM" type="com.woting.crawlerdb.dict.persis.po.CDictMasterPo"/>
+    <typeAlias alias="cDictD"     type="com.woting.crawlerdb.dict.persis.po.CDictDetailPo"/>
+    <typeAlias alias="cDictM"     type="com.woting.crawlerdb.dict.persis.po.CDictMasterPo"/>
+    <typeAlias alias="dictref"    type="com.woting.crawlerdb.dict.persis.po.DictRefPo"/>
+    <typeAlias alias="album"      type="com.woting.crawlerdb.album.persis.po.AlbumPo"/>
+    <typeAlias alias="audio"      type="com.woting.crawlerdb.audio.persis.po.AudioPo"/>
   </typeAliases>
   <mappers>
     <!-- 电台相关 -->
@@ -28,5 +31,8 @@
     <!-- 抓取资源管理 -->
     <mapper resource="com/woting/crawlerdb/dict/persis/sql/CDictDetail.mapper.xml"/>
     <mapper resource="com/woting/crawlerdb/dict/persis/sql/CDictMaster.mapper.xml"/>
+    <mapper resource="com/woting/crawlerdb/dict/persis/sql/DictRef.mapper.xml"/>
+    <mapper resource="com/woting/crawlerdb/album/persis/sql/Album.mapper.xml"/>
+    <mapper resource="com/woting/crawlerdb/audio/persis/sql/Audio.mapper.xml"/>
   </mappers>
 </configuration>
