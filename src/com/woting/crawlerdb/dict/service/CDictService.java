@@ -37,6 +37,7 @@ import com.woting.crawlerdb.dict.model.CDictModel;
 import com.woting.crawlerdb.dict.persis.po.CDictDetailPo;
 import com.woting.crawlerdb.dict.persis.po.CDictMasterPo;
 import com.woting.crawlerdb.dict.persis.po.DictRefPo;
+import com.woting.crawlerdb.service.CrawlerService;
 import com.woting.exceptionC.Wtcm1000CException;
 
 
@@ -52,6 +53,8 @@ public class CDictService {
 	private MybatisDAO<DictRefPo> dictRefDao;
 	@Resource
 	private ChannelMapService channelMapService;
+	@Resource
+	private CrawlerService crawlerService;
 	private _CacheCDictionary _cd = null;
 	private _CacheChannel _cc=null;
 
@@ -215,6 +218,8 @@ public class CDictService {
 								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
 								chamaps.add(chamapref);
+								String redisKey = "wt_ChannelMapRef_"+chamapref.getId();
+								crawlerService.makeCCateResRef(redisKey, chamapref.getId(), did, id);
 							}
 						}
 						channelMapService.insertList(chamaps);
@@ -237,6 +242,8 @@ public class CDictService {
 								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
 								chamaps.add(chamapref);
+								String redisKey = "wt_ChannelMapRef_"+chamapref.getId();
+								crawlerService.makeCCateResRef(redisKey, chamapref.getId(), id, chaid);
 							}
 						}
 						channelMapService.insertList(chamaps);
