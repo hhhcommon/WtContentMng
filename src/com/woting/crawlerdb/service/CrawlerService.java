@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.service.ChannelService;
-import com.woting.content.manage.channel.service.ChannelContentService;
+import com.woting.cm.core.media.service.MediaService;
 import com.woting.crawlerdb.album.service.AlbumService;
 import com.woting.crawlerdb.audio.service.AudioService;
 import com.woting.crawlerdb.dict.service.CDictService;
@@ -27,7 +27,7 @@ public class CrawlerService {
 	@Resource
     private DataSource dataSource;
 	@Resource
-	private ChannelContentService channelContentService;
+	private MediaService mediaService;
 	
     public boolean makeCCateResRef(String dictRefId, String crawlerDictdId, String channelId) {
     	Connection conn = null;
@@ -109,7 +109,10 @@ public class CrawlerService {
 							} catch (Exception e) {e.printStackTrace();}
 							if (chas!=null && chas.size()>0) {
 								for (ChannelAssetPo channelAssetPo : chas) {
-									ChannelAssetPo existcha = channelContentService.getChannelAssetByIdTypeAndChannelId(channelAssetPo.getAssetId(), channelAssetPo.getAssetType(), channelAssetPo.getChannelId());
+									ChannelAssetPo existcha = mediaService.getChannelAssetByIdTypeAndChannelId(channelAssetPo.getAssetId(), channelAssetPo.getAssetType(), channelAssetPo.getChannelId());
+									if (existcha==null) {
+										mediaService.saveCha(channelAssetPo);
+									}
 								}
 							}
 						}

@@ -680,6 +680,14 @@ public class MediaService {
 		cha.buildFromPo(chapo);
 		return cha;
 	}
+	
+	public ChannelAssetPo getChannelAssetByIdTypeAndChannelId(String assetId, String assetType, String channelId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", assetId);
+		m.put("assetType", assetType);
+		m.put("channelId", channelId);
+		return channelAssetDao.getInfoObject("getListBy", m);
+	}
 
 	// 根据栏目发布表资源id得到栏目发布信息
 	public List<ChannelAssetPo> getCHAInfoByAssetId(String id) {
