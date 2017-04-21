@@ -285,4 +285,24 @@
   <delete id="delByChannels" parameterType="java.lang.String">
     delete from wt_ChannelAsset where ${value}
   </delete>
+
+  <!-- 置顶 -->
+  <!-- 取消置顶 -->
+  <update id="cancelTop" parameterType="java.util.Map">
+    update wt_ChannelAsset set topSort=0
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetType=#{assetType,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR}
+  </update>
+  <!-- 设置置顶 -->
+  <update id="setTop" parameterType="java.util.Map">
+    <if test="onlyTop==null or onlyTop==1">
+    update wt_ChannelAsset set topSort=0
+    where channelId=#{channelId,jdbcType=VARCHAR};
+    </if>
+    update wt_ChannelAsset set topSort=#{topSort,jdbcType=INTEGER}
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetType=#{assetType,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+  </update>
 </mapper>
