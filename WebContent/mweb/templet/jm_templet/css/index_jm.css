@@ -390,7 +390,7 @@ header .downLoad{
   display: none;
 }
 .noComment{
-  height: 30px !important;
+  height:30px;
   line-height:30px;
   text-align:center;
 }
