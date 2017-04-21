@@ -35,12 +35,14 @@ import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
 import com.woting.cm.core.channel.service.ChannelAssetProgressService;
+import com.woting.cm.core.channel.service.ChannelLoopImgService;
 import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.media.MediaType;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.cm.core.oss.utils.OssUtils;
 import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.cm.core.utils.ContentUtils;
@@ -63,8 +65,10 @@ public class QueryService {
 	private KeyWordProService keyWordProService;
 	@Resource
 	private ChannelContentService chaService;
-	@Resource
-	private ChannelService chService;
+    @Resource
+    private ChannelService chService;
+    @Resource
+    private ChannelLoopImgService clmService;
 	@Resource
 	private BroadcastProService broadcastProService;
 	@Resource
@@ -783,22 +787,22 @@ public class QueryService {
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 1-根据zjId，计算出文件存放目录
-		String path = "/opt/dataCenter/shareH5/mweb/zj/" + zjId + "/";
+		String path = "shareH5/mweb/zj/" + zjId + "/";
 		// 2-判断是否有page所对应的数据
-		File thisPage, nextPage;
-		thisPage = new File(path + "P" + page + ".json");
+//		File thisPage, nextPage;
+//		thisPage = new File(path + "P" + page + ".json");
 		int nextpage = Integer.valueOf(page) + 1;
-		nextPage = new File(path + "P" + nextpage + ".json");
-		if (!thisPage.exists()) {
+//		nextPage = new File(path + "P" + nextpage + ".json");
+		if (!OssUtils.exists(path + "P" + page + ".json")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "没有相关内容 ");
 		} else {// 组织本页数据
-			String jsonstr = CacheUtils.readFile(path + "P" + page + ".json");
+			String jsonstr = OssUtils.getObjectToString(path + "P" + page + ".json");//CacheUtils.readFile(path + "P" + page + ".json");
 			List<Map<String, Object>> listaudios = (List<Map<String, Object>>) JsonUtils.jsonToObj(jsonstr, List.class);
 			if (listaudios != null) {
 				map.put("ResultList", listaudios);
 				map.put("ReturnType", "1001");
-				map.put("NextPage", String.valueOf(nextPage.exists()));// 判断是否有下一页，并组织到返回数据中
+				map.put("NextPage", OssUtils.exists(path + "P" + nextpage + ".json"));// 判断是否有下一页，并组织到返回数据中
 			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有相关内容 ");
@@ -1545,5 +1549,19 @@ public class QueryService {
             }
         }
         return map;
+    }
+
+    /**
+     * 获取某栏目下的轮播图列表
+     * @param mediaType 过滤条件，按类型过滤
+     * @param channelId 栏目Id
+     * @param pageSize 每页有几条记录
+     * @param pageIndex 页码，若为0,则得到所有内容
+     * @return 轮播图列表
+     */
+    public List<Map<String, Object>> getLoopImgList(String mediaType, String channelId, int pageSize, int pageIndex) {
+        if (StringUtils.isNullOrEmptyOrSpace(channelId)) return null;
+
+        return clmService.getLoopImgList(mediaType, channelId, pageSize, pageIndex);
     }
 }

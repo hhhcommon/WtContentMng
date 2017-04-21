@@ -7,22 +7,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听,我享听">
   <meta name="description" content="我听,我享听">
-  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="css/add.css" rel="stylesheet"  />
-  <link  href="css/pagination.css" rel="stylesheet"/>
-  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-  <script src="../resources/js/context.utils.js"></script>
-  <script src="js/common_manage.js"></script>
-  <script src="js/manage_zj.js"></script>
-  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <link href="../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../anchorResource/css/add.css" rel="stylesheet"  />
+  <link  href="../anchorResource/css/pagination.css" rel="stylesheet"/>
+  <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../../resources/js/context.utils.js"></script>
+  <script src="../anchorResource/js/common_manage.js"></script>
+  <script src="../anchorResource/js/manage_zj.js"></script>
+  <script src="../../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
   <!--裁剪图片的插件-->
-  <script src="js/photoClip/pic.js"></script>
-  <script src="js/photoClip/lrz.pc.min.js"></script>
+  <script src="../anchorResource/js/photoClip/pic.js"></script>
+  <script src="../anchorResource/js/photoClip/lrz.pc.min.js"></script>
   <!--翻页插件-->
-  <script src="js/pagination.min.js"></script>
+  <script src="../anchorResource/js/pagination.min.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -398,7 +398,7 @@ body{overflow: auto;-moz-user-select: none;}
   height:20px;
   float: left;
   margin-top:5px;
-  background: url(img/sprite.png);
+  background: url("../anchorResource/img/sprite.png");
   background-repeat:no-repeat ;
   background-position: -41px -414px;
   display: none;
@@ -461,7 +461,7 @@ body{overflow: auto;-moz-user-select: none;}
 .channelBox .channel_bq{
   height: 30px;
   line-height: 30px;
-  background: url("img/auto.png");
+  background: url("../anchorResource/img/auto.png");
   background-position: 0 -113px;
   padding: 5px 0px 0px 15px;
   margin-left: 6px;
@@ -471,7 +471,7 @@ body{overflow: auto;-moz-user-select: none;}
   cursor: pointer;
 }
 .channelBox .channel_bq span {
-  background: url("img/auto.png");
+  background: url("../anchorResource/img/auto.png");
   background-position: right -118px;
   padding-right: 8px;
   display: inline-block;
@@ -609,10 +609,10 @@ body{overflow: auto;-moz-user-select: none;}
           <li class="ri_top_li1">音频管理 > 专辑管理</li>
           <li class="ri_top_li2">
             <input class="ri_top_li2_inp" type="text" placeholder="搜索专辑"/>
-            <img class="ri_top_li2_img" src="img/search1.png" alt="搜索按钮" />
+            <img class="ri_top_li2_img" src="../anchorResource/img/search1.png" alt="搜索按钮" />
           </li>
-          <li class="ri_top_li3"><img src="img/upLoadZJ.png" alt="创建专辑" /></li>
-          <li class="ri_top_li4"><span class="filter">收起筛选</span><img src="img/filter1.png" alt="收起筛选" /></li>
+          <li class="ri_top_li3"><img src="../anchorResource/img/upLoadZJ.png" alt="创建专辑" /></li>
+          <li class="ri_top_li4"><span class="filter">收起筛选</span><img src="../anchorResource/img/filter1.png" alt="收起筛选" /></li>
         </ul>
         <div class="all">
           <div class="all_cate">所有分类 > </div>
@@ -632,7 +632,7 @@ body{overflow: auto;-moz-user-select: none;}
         </div>
         <div class="ri_top3">
           <div class="rt_opt">
-            <img src="img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
+            <img src="../anchorResource/img/checkbox1.png" alt="全选" class="rto_check fl all_check checkbox_img checkbox1"/>
             <span class="rto_txt fl">全选</span>
             <button class="rto_revoke fl opetype" type="revoke" disabled="disabled">撤回专辑</button>
             <button class="rto_delete fl opetype" type="delete" disabled="disabled">删除专辑</button>
@@ -684,10 +684,10 @@ body{overflow: auto;-moz-user-select: none;}
                     <div class="previewImg" isDefaultImg="true">
                       <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
                     </div>
-                    <img class="upl_pt_img" src="img/upl_img3.png" alt="" name="upl_pt_img" />
+                    <img class="upl_pt_img" src="../anchorResource/img/upl_img3.png" alt="" name="upl_pt_img" />
                     <div class="img_uploadStatus">上传成功</div>
                     <div class="mask_gif">
-                      <img src="img/waiting_circle.gif" alt="图片上传等待" />
+                      <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" />
                     </div>
                     <input type="file" class="upl_img" style="display:none;" name="upl_img" accept=".jpg,.png" value=""/>
                     <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
@@ -742,7 +742,7 @@ body{overflow: auto;-moz-user-select: none;}
                         <img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">
                       </li>-->
                     </ul>
-                    <img class="channelimg1" src="img/upl_img4.png" alt="" />
+                    <img class="channelimg1" src="./../anchorResource/img/upl_img4.png" alt="" />
                     <div class="channelBox1">
                       <div class="cBox1_nav">
                         <div class="active">一级栏目</div>
@@ -925,7 +925,7 @@ body{overflow: auto;-moz-user-select: none;}
                 <label class="col-sm-2 control-label">上传文件<span class="ast">*</span>：</label>
                 <div class="col-sm-10" style="padding-left:0px;">
                   <div class="upl_wj">
-                    <img class="upl_wj_img" src="img/upl_img1.png" alt="" />
+                    <img class="upl_wj_img" src="../anchorResource/img/upl_img1.png" alt="" />
                   </div>
                   <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
                   <audio class="audio" preload="auto" src="" style="display:none;"></audio>
@@ -936,9 +936,9 @@ body{overflow: auto;-moz-user-select: none;}
                     </div>
                     <div class="uploadStatus">上传成功</div>
                     <div class="mask_gif">
-                      <img src="img/waiting_circle.gif" alt="图片上传等待" />
+                      <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" />
                     </div>
-                    <img class="cancelUpload" src="img/upl_img2.png" alt="" />
+                    <img class="cancelUpload" src="../anchorResource/img/upl_img2.png" alt="" />
                   </div>
                   <div class="upl_wj_p1">
                     <span>支持 MP3、M4A的文件格式，文件≤100兆。</span>
@@ -962,7 +962,7 @@ body{overflow: auto;-moz-user-select: none;}
                     <div class="previewImg">
                       <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
                     </div>
-                    <img class="upl_pt_img" src="img/upl_img3.png" alt="" />
+                    <img class="upl_pt_img" src="../anchorResource/img/upl_img3.png" alt="" />
                     <div class="img_uploadStatus">上传成功</div>
                     <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
                     <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>

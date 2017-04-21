@@ -7,14 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">
   <meta name="description" content="我听，我享听">
-  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-  <script src="../resources/js/context.utils.js"></script>
-  <script src="js/common_manage.js"></script>
-  <script src="../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
+  <link href="../../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../../../resources/js/context.utils.js"></script>
+  <!--<script src="../../anchorResource/js/common_manage.js"></script>-->
+  <script src="../../../resources/plugins/hplus/js/plugins/layer/laydate/laydate.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -24,13 +24,18 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;color:#676a6c}
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 .containers{
-  width:1084px;
-  height:100%;
+  width: 1084px;
+  height: auto;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #dedede;
 }
 .content_wrapper{
-  width:800px;
+  width:66%;
   margin-top:15px;
   float: left;
+  overflow: hidden;
   /*border-right:1px solid #dedede;*/
 }
 .cw_c1{
@@ -44,13 +49,11 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   padding:0px 20px;
   margin:0;
 }
-.cw_c2 span{
-  margin-right:10px;
-}
+.cw_c2 span{margin-right:10px;}
 .cw_c3{
   padding: 0px 20px 30px;
   position: relative;
-  width: 100%;
+  width: calc(100% - 40px);
   height: 100%;
   overflow: auto;
 }
@@ -73,9 +76,10 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
 }
 .tujian_wrapper{
   position: relative;
-  width: 280px;
+  width: 30%;
   height: 625px;
   float: left;
+  margin-left: 3%;
   /*background: red;*/
 }
 .tujian_wrapper1{
@@ -130,11 +134,14 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
   text-overflow: ellipsis;
 }
 .header{
-  height:40px;
-  padding:0px 15px;
-  color:#000;
-  font-size:14px;
-  margin:0px;
+  height: 40px;
+  padding: 0px 15px;
+  color: #000;
+  position: relative;
+  font-size: 14px;
+  line-height: 40px;
+  margin: 0px;
+  width: calc(100% - 30px);
 }
 .fl{float: left;}
 .select{
@@ -170,7 +177,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
                     像，力求以精度、纯度和锐度为新闻导向，呈现最质朴的新闻
         </div>
         <div class="cw_c5">
-          <img src="img/a5.jpg" alt="节目详情图片" />
+          <img src="../../anchorResource/img/a5.jpg" alt="节目详情图片" />
         </div>
         <div class="cw_c4">
                     是中央电视台新闻频道的一档访谈类栏目。周一至周五，从时事政策
@@ -188,7 +195,7 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
       <div class="tujian_wrapper1">
         <div class="prev">
           <span class="prev_span">上一篇</span>
-          <img src="img/filter1.png" alt="上一篇" />
+          <img src="../../anchorResource/img/filter1.png" alt="上一篇" />
         </div>
         <ul class="tw_cons">
           <li class="tw_con">
@@ -214,11 +221,10 @@ body{overflow: auto;-moz-user-select: none; font-family: "微软雅黑";}
         </ul>
         <div class="next">
           <span class="prev_span">下一篇</span>
-          <img src="img/filter2.png" alt="下一篇" />
+          <img src="../../anchorResource/img/filter2.png" alt="下一篇" />
         </div>
       </div>
-      
+    </div>
   </div>
-  
 </body>
 </html>
