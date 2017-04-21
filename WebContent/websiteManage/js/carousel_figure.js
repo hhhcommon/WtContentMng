@@ -13,8 +13,6 @@ $(function(){
   });
   /*e--内容与轮播图切换*/
   
-  /*e--右边边框的高度赋给左边*/
-  
   var rootPath=getRootPath();
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
@@ -364,6 +362,7 @@ $(function(){
   //选中树上的栏目后的回调函数
   var data={};
   function requestList(event,treeId,treeNode){
+    debugger;
     destroy(data);
     data.UserId=userId;
     data.PCDType="3";
@@ -539,9 +538,9 @@ $(function(){
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
     }else if(mediatype=="wt_SeqMediaAsset"){//专辑
-      mediatype="SEQU ";
+      mediatype="SEQU";
     }else{//电台
-      mediatype="RADIO ";
+      mediatype="RADIO";
     }
     console.log(contentId,contenttxt,channelId,mediatype);
     $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
@@ -581,6 +580,7 @@ $(function(){
       dataType:"json",
       beforeSend:function(){
         $(".carouselImgMask").removeClass("dis");
+        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
       },
       success:function(resultData){
         if(resultData.Success==true){
@@ -598,6 +598,7 @@ $(function(){
         }else{
           alert(resultData.err);
         }
+        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
       },
       error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
@@ -618,15 +619,17 @@ $(function(){
   //点击保存设置
   $(".cmf_save").on("click",function(){
     //待定--设置轮播图（缺少轮播图图片的地址）
-    var contentId=$(".cm_content3").attr("contentId");
+    var contentid=$(".cm_content3").attr("contentId");
     var mediatype=$(".cm_content3").attr("mediatype");
     var channelid=$(".cm_content3").attr("channelid");
+    var imgurl=$(".upl_file").attr("value");
     var data={"PCDType":"3",
               "UserId":userId,
               "MediaType":mediatype,
-              "ContentId":contentId,
+              "ContentId":contentid,
               "ChannelId":channelid,
-              "LoopSort":"0"
+              "LoopSort":"0",
+              "ImgeUrl":imgurl
     };
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
@@ -665,6 +668,7 @@ $(function(){
   //点击置顶或取消置顶按钮
   var hasTop=false;//是否有置顶内容
   $(document).on("click",".top",function(){
+    var obj=$(this);
     var text=$(this).text().replace(/\s/g, "");
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var box=$(".ri_top3_con .rtc_listBox");
@@ -674,9 +678,9 @@ $(function(){
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
     }else if(mediatype=="wt_SeqMediaAsset"){//专辑
-      mediatype="SEQU ";
+      mediatype="SEQU";
     }else{//电台
-      mediatype="RADIO ";
+      mediatype="RADIO";
     }
     if(text=="置顶"){//点击置顶
       $(box).each(function(){
@@ -699,7 +703,7 @@ $(function(){
                     "UserId":userId,
                     "Top":"1"//设置置顶
           };
-          setTop(data);//设置置顶
+          setTop(data,obj);//设置置顶
         }else{
           alert("你已经取消对本内容的置顶");
           return false;
@@ -713,7 +717,7 @@ $(function(){
                   "UserId":userId,
                   "Top":"1"//设置置顶
         };
-        setTop(data);//设置置顶
+        setTop(data,obj);//设置置顶
       }
     }else{//点击取消置顶
       var data={"PCDType":"3",
@@ -724,11 +728,12 @@ $(function(){
                 "UserId":userId,
                 "Top":"0"//取消置顶
       };
+      setTop(data,obj);//取消置顶
     }
   });
   
   //设置/取消置顶
-  function setTop(data){
+  function setTop(data,obj){
     $.ajax({
       url:rootPath+"content/setTop.do",
       type:"POST",
@@ -737,28 +742,30 @@ $(function(){
       processData: false,
       contentType: false,
       dataType:"json",
+      beforeSend:function(){
+        $(obj).attr("disabled","disabled");
+      },
       success:function(resultData){
         if(data.Top=="1"){//设置置顶
           if(resultData.ReturnType=="1001"){
             alert("设置置顶成功");
-            var topBox=$(this).parent(".opetype1").parent(".rtc_listBox");
-            $(".ri_top3_con").prepend(topBox);
-            $(topBox).addClass("isTop");
-            $(this).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+            requestList();//再次请求内容列表
+//          var topBox=$(obj).parent(".opetype1").parent(".rtc_listBox");
+//          $(".ri_top3_con").prepend(topBox);
+//          $(topBox).addClass("isTop");
+//          $(obj).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
           }else{
             alert("设置置顶失败");  
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
             alert("取消置顶成功");
-            $(box).each(function(){
-              $(this).removeClass("isTop");
-              $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
-            });
+            requestList();//再次请求内容列表
           }else{
             alert("取消置顶失败");
           }  
         }
+        $(obj).removeAttr("disabled");
       },
       error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
@@ -884,7 +891,9 @@ $(function(){
   //请求栏目下的所有轮播图
   var data1={"PCDType":"3",
              "UserId":userId,
-             "ChannelId":channelId
+             "ChannelId":channelId,
+             "Page":"1",
+             "PageSize":"10"
   };
 //getLoopImages(data1);
   function getLoopImages(data){
