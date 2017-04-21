@@ -149,7 +149,7 @@ public class QueryService {
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,"
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,"
 				+ "(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,"
-				+ " ch.assetId,ch.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg"
+				+ " ch.assetId,ch.channelName,ch.topSort,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg"
 				+ " from ("
 				+ " SELECT ch.*,c.channelName"
 				+ " from wt_ChannelAsset ch"
@@ -181,7 +181,7 @@ public class QueryService {
 		if (endctime!=null) {
 			sql += " and ch.cTime <= '"+endctime+"'";
 		}
-		sql += " ORDER BY ch.loopSort DESC, ch.sort DESC, ch.pubTime DESC LIMIT ";
+		sql += " ORDER BY ch.topSort DESC, ch.sort DESC, ch.pubTime DESC LIMIT ";
 		if (page>0 && pagesize>0) {
 			sql += (page-1)*pagesize +","+pagesize;
 		} else {
@@ -211,6 +211,7 @@ public class QueryService {
 				oneDate.put("ContentFlowFlag", rs.getInt("flowFlag"));
 				oneDate.put("ContentSort", rs.getInt("sort"));
 				oneDate.put("ContentTime", rs.getTimestamp("time"));
+				oneDate.put("ContentTopSort", rs.getInt("topSort"));
 				oneDate.put("MediaSize", 1);
 				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
 				if (rs.getString("assetType").equals("wt_MediaAsset")) {

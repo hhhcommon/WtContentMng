@@ -910,6 +910,14 @@ public class MediaService {
 		m.put("resTableName", resTableName);
 		channelAssetDao.delete("deleteByEntity", m);
 	}
+	
+	public void removeCha(String assetId, String resTableName, String channelId) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("assetId", assetId);
+		m.put("resTableName", resTableName);
+		m.put("channelId", channelId);
+		channelAssetDao.delete("deleteByEntity", m);
+	}
 
 	public void removeKeyWordRes(String assetId, String resTableName) {
 		keyWordProService.removeKeyWordByAssetId(assetId, resTableName);
