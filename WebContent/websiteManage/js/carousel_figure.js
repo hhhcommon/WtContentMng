@@ -30,8 +30,9 @@ $(function(){
   var searchWord="";
   
   var deviceId='E830A87F620FFAC2B8585F39BA4186E8';
-  var userId='123';
+  var userId='0579efbaf9a9';//W003
   var flowflag='2';
+  var channelId='';//栏目id
   
   /*日期处理--日历插件*/
   $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
@@ -527,7 +528,7 @@ $(function(){
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
   function getSeqInfo(seqId,i){
-    var data={"UserId":"123",
+    var data={"UserId":userId,
               "ContentFlowFlag":"2",
               "Page":"1",
               "PageSize":"10",
@@ -564,7 +565,7 @@ $(function(){
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var contenttxt=$(this).parent(".opetype1").siblings(".rtcl_con").children(".rtcl_con_p").text();
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    var channelId=nodes[0].id;
+    channelId=nodes[0].id;
     var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
@@ -591,7 +592,6 @@ $(function(){
     var _this=$(".upload_pic");
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
-    oMyForm.append("DeviceId", deviceId);
     oMyForm.append("MobileClass", "Chrome");
     oMyForm.append("PCDType", "3");
     oMyForm.append("UserId", userId);
@@ -630,7 +630,7 @@ $(function(){
           alert(resultData.err);
         }
       },
-      error: function(XHR){
+      error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
       }
     });
@@ -652,7 +652,8 @@ $(function(){
     var contentId=$(".cm_content3").attr("contentId");
     var mediatype=$(".cm_content3").attr("mediatype");
     var channelid=$(".cm_content3").attr("channelid");
-    var data={"UserId":userId,
+    var data={"PCDType":"3",
+              "UserId":userId,
               "MediaType":mediatype,
               "ContentId":contentId,
               "ChannelId":channelid,
@@ -699,7 +700,7 @@ $(function(){
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var box=$(".ri_top3_con .rtc_listBox");
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    var channelId=nodes[0].id;
+    channelId=nodes[0].id;
     var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
@@ -721,7 +722,8 @@ $(function(){
             $(this).removeClass("isTop");
             $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
           });
-          var data={"MediaType":mediatype,
+          var data={"PCDType":"3",
+                    "MediaType":mediatype,
                     "ChannelId":channelId,
                     "ContentId":contentId,
                     "IsOnlyTop":"1",
@@ -734,7 +736,8 @@ $(function(){
           return false;
         }
       }else{//暂无置顶内容    
-        var data={"MediaType":mediatype,
+        var data={"PCDType":"3",
+                  "MediaType":mediatype,
                   "ChannelId":channelId,
                   "ContentId":contentId,
                   "IsOnlyTop":"1",
@@ -744,7 +747,8 @@ $(function(){
         setTop(data);//设置置顶
       }
     }else{//点击取消置顶
-      var data={"MediaType":mediatype,
+      var data={"PCDType":"3",
+                "MediaType":mediatype,
                 "ChannelId":channelId,
                 "ContentId":contentId,
                 "IsOnlyTop":"1",
@@ -773,7 +777,7 @@ $(function(){
             $(topBox).addClass("isTop");
             $(this).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
           }else{
-            alert("设置置顶失败");
+            alert("设置置顶失败");  
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
@@ -857,11 +861,11 @@ $(function(){
       red.ReDescn=$(".other_reason").val();
       reDesc.push(red);
     }
-    var data2={
-                UserId:"123",
-                ContentIds:contentIds,
-                ReDescn:reDesc,
-                OpeType:"revoke"
+    var data2={"PCDType":"3",
+               "UserId":userId,
+               "ContentIds":contentIds,
+               "ReDescn":reDesc,
+               "OpeType":"revoke"
     };
     $.ajax({
       type:"POST",
@@ -909,13 +913,12 @@ $(function(){
   
   /*s--切换到轮播图之后的相关操作*/
   //请求栏目下的所有轮播图
-  var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-  var channelId=nodes[0].id;
-  var data1={"UserId":userId,
+  var data1={"PCDType":"3",
+             "UserId":userId,
              "ChannelId":channelId
   };
-  getLoopImages(dada1);
-  function getLoopImages(dada){
+//getLoopImages(data1);
+  function getLoopImages(data){
     $.ajax({
       type:"POST",
       url:rootPath+"content/getLoopImages.do",
@@ -942,6 +945,7 @@ $(function(){
   
   //加载轮播图列表
   function getLoopImages(returnData){
+    return;
     $(".lb_div5").html(" ");//每次加载之前都要清空
     for(var i=0;i<returnData.ReturnList.length;i++){
       var list='<div class="lbd_box" id='+returnData.ReturnList[i].Id+'>'+
@@ -976,9 +980,10 @@ $(function(){
     $li.children(".lbd_box1").text("第"+prev_index+"帧");
     $li.next().children(".lbd_box1").text("第"+now_index+"帧");
     return;
-    var data2={"ChannelId":channelId,
-                "UserId":userId,
-                "Sort":sort
+    var data2={"PCDType":"3",
+               "ChannelId":channelId,
+               "UserId":userId,
+               "Sort":sort
     };
     $.ajax({
       type:"POST",
@@ -1019,9 +1024,10 @@ $(function(){
     $li.children(".lbd_box1").text("第"+next_index+"帧");
     $li.prev().children(".lbd_box1").text("第"+now_index+"帧");
     return;
-    var data2={"ChannelId":channelId,
-                "UserId":userId,
-                "Sort":sort
+    var data2={"PCDType":"3",
+               "ChannelId":channelId,
+               "UserId":userId,
+               "Sort":sort
     };
     $.ajax({
       type:"POST",
@@ -1063,9 +1069,10 @@ $(function(){
     });
     return;
     
-    var data2={"ChannelId":channelId,
-                "UserId":userId,
-                "Sort":sort
+    var data2={"PCDType":"3",
+               "ChannelId":channelId,
+               "UserId":userId,
+               "Sort":sort
     };
     $.ajax({
       type:"POST",
