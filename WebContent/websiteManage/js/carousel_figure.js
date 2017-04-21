@@ -77,6 +77,7 @@ $(function(){
   /*s--翻页/搜索*/
   //翻页之后的回调函数
   function pagitionBack(current_page){
+    debugger;
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
@@ -88,6 +89,7 @@ $(function(){
   
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
+    debugger;
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
@@ -362,11 +364,10 @@ $(function(){
   //选中树上的栏目后的回调函数
   var data={};
   function requestList(event,treeId,treeNode){
-    debugger;
     destroy(data);
     data.UserId=userId;
     data.PCDType="3";
-    data.FlagFlow=flowflag;
+    data.ContentFlowFlag=flowflag;
     current_page=1;
     data.Page=current_page;
     data.PageSize="10";
@@ -490,6 +491,14 @@ $(function(){
           }
         }
         $(".sequ_num").eq(i).attr("chIds",chIds);
+      }
+      if(resultData.ResultList[i].ContentTopSort){
+        $(".top").eq(i).attr("contentTopSort",resultData.ResultList[i].ContentTopSort);
+        if(resultData.ResultList[i].ContentTopSort>"0"){//已置顶
+          var topBox=$(".top").eq(i).parent(".opetype1").parent(".rtc_listBox");
+          $(topBox).addClass("isTop");
+          $(".top").eq(i).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+        }
       }
     }
     $("#audioIframe").attr("src","globalplayer.html");
@@ -651,7 +660,7 @@ $(function(){
         }
         $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
       },
-      error: function(XHR){
+      error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
       }
     });
@@ -755,7 +764,8 @@ $(function(){
 //          $(topBox).addClass("isTop");
 //          $(obj).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
           }else{
-            alert("设置置顶失败");  
+            alert("设置置顶失败"); 
+            requestList();//再次请求内容列表
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
