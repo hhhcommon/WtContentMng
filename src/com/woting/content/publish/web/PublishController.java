@@ -504,4 +504,120 @@ public class PublishController {
             } catch (InterruptedException e) {}
         }
     }
+
+    @RequestMapping(value = "/content/getLoopImages.do")
+    @ResponseBody
+    public Map<String, Object> getContentsWithLoopImgInChannel(HttpServletRequest request) {
+        // 数据收集处理==1
+        ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+        alPo.setApiName("6.4.2--/content/getLoopImages.do");
+        alPo.setObjType("010");//内容发布
+        alPo.setDealFlag(1);// 处理成功
+        alPo.setOwnerType(201);
+        alPo.setOwnerId("--");
+
+        Map<String, Object> map=new HashMap<String, Object>();
+        try {
+            // 0-获取参数
+            String userId=null; //用户判断用户权限，目前不起作用
+            MobileUDKey mUdk=null;
+            Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+            alPo.setReqParam(JsonUtils.objToJson(m));
+            if (m == null || m.size() == 0) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数");
+            } else {
+                MobileParam mp = MobileParam.build(m);
+                if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+                        && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+                                : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+                    mp.setImei(request.getSession().getId());
+                }
+                mUdk = mp.getUserDeviceKey();
+                if (mUdk!=null) {
+                    Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/setTop");
+                    if ((retM.get("ReturnType") + "").equals("2003")) {
+                        map.put("ReturnType", "200");
+                        map.put("Message", "需要登录");
+                    } else {
+                        map.putAll(retM);
+                        if ((retM.get("ReturnType") + "").equals("1001")) map.remove("ReturnType");
+                    }
+                    userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+                } else {
+                    map.put("ReturnType", "0000");
+                    map.put("Message", "无法获取需要的参数");
+                }
+            }
+            // 数据收集处理==2
+            if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+                alPo.setOwnerId(map.get("UserId") + "");
+            } else {
+                // 过客
+                if (mUdk != null) alPo.setOwnerId(mUdk.getDeviceId());
+                else alPo.setOwnerId("0");
+            }
+            if (mUdk != null) {
+                alPo.setDeviceType(mUdk.getPCDType());
+                alPo.setDeviceId(mUdk.getDeviceId());
+            }
+            if (m!=null) {
+                if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+                    if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+                        alPo.setExploreVer(m.get("MobileClass") + "");
+                    }
+                    if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+                        alPo.setExploreName(m.get("exploreName") + "");
+                    }
+                } else {
+                    if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+                        alPo.setDeviceClass(m.get("MobileClass") + "");
+                    }
+                }
+            }
+            if (map.get("ReturnType") != null) return map;
+
+            if (StringUtils.isNullOrEmptyOrSpace(userId)) {
+                map.put("ReturnType", "1002");
+                map.put("Message", "用户不存在");
+                return map;
+            }
+            //得到参数
+            String channelId=(m.get("ChannelId")==null?null:m.get("ChannelId").toString());
+            if (StringUtils.isNullOrEmptyOrSpace(channelId)) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数:栏目Id");
+                return map;
+            }
+            String mediaType=(m.get("MediaType")==null?null:m.get("MediaType").toString());
+            //获取分页信息
+            int page=0;//获取页数
+            try {page=Integer.parseInt(m.get("Page")+"");} catch(Exception e) {};
+            int pageSize=10;//得到每页条数
+            try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
+
+            List<Map<String, Object>> resultList=queryService.getLoopImgList(mediaType, channelId, pageSize, page);
+            if (resultList==null||resultList.isEmpty()) {
+                map.put("ReturnType", "1011");
+            } else {
+                map.put("ReturnType", "1001");
+                map.put("ResultList", resultList);
+            }
+            return map;
+        } catch(Exception e) {
+            e.printStackTrace();
+            map.put("ReturnType", "T");
+            map.put("TClass", e.getClass().getName());
+            map.put("Message", StringUtils.getAllMessage(e));
+            alPo.setDealFlag(2);
+            return map;
+        } finally {
+            //数据收集处理=3
+            alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+            alPo.setReturnData(JsonUtils.objToJson(map));
+            try {
+                ApiGatherMemory.getInstance().put2Queue(alPo);
+            } catch (InterruptedException e) {}
+        }
+    }
 }
