@@ -35,6 +35,7 @@ import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
 import com.woting.cm.core.channel.service.ChannelAssetProgressService;
+import com.woting.cm.core.channel.service.ChannelLoopImgService;
 import com.woting.cm.core.channel.service.ChannelService;
 import com.woting.cm.core.media.MediaType;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
@@ -63,8 +64,10 @@ public class QueryService {
 	private KeyWordProService keyWordProService;
 	@Resource
 	private ChannelContentService chaService;
-	@Resource
-	private ChannelService chService;
+    @Resource
+    private ChannelService chService;
+    @Resource
+    private ChannelLoopImgService clmService;
 	@Resource
 	private BroadcastProService broadcastProService;
 	@Resource
@@ -1545,5 +1548,19 @@ public class QueryService {
             }
         }
         return map;
+    }
+
+    /**
+     * 获取某栏目下的轮播图列表
+     * @param mediaType 过滤条件，按类型过滤
+     * @param channelId 栏目Id
+     * @param pageSize 每页有几条记录
+     * @param pageIndex 页码，若为0,则得到所有内容
+     * @return 轮播图列表
+     */
+    public List<Map<String, Object>> getLoopImgList(String mediaType, String channelId, int pageSize, int pageIndex) {
+        if (StringUtils.isNullOrEmptyOrSpace(channelId)) return null;
+
+        return clmService.getLoopImgList(mediaType, channelId, pageSize, pageIndex);
     }
 }
