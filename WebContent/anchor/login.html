@@ -62,7 +62,7 @@ html,body{height:100%;overflow-x: auto;font-family: "微软雅黑";}
   color:#FFA634;
 }
 .con_tabs{
-  width: calc(100% - 80px);
+  width: calc(100% - 0px);
   padding: 0px 40px 20px;
 }
 .dis{
@@ -84,7 +84,7 @@ html,body{height:100%;overflow-x: auto;font-family: "微软雅黑";}
   font-size:16px;
 }
 .div1 input,.div2 input,.div7 input{
-  width:calc(100% - 75px);
+  width:calc(100% - 55px);
   height:36px;
   padding:0px 7px;
   margin-left:5px;
@@ -173,14 +173,14 @@ form{
   padding:0px 7px;  
 }
 .ver_code{
-  width:135px;
+  width:150px;
   height:40px;
   line-height:40px;
   background: #ffa634;
   color: #fff;
   border:none;
   display: inline-block;
-  margin-left:10px;
+  margin-left:13px;
   text-align: center;
   cursor: pointer;
   float: left;
@@ -371,21 +371,24 @@ $(function(){
       }else{
         if(clicknum>1){//点击起到的是重发效果
           var _url=rootPath+"passport/user/reSendPhoneCheckCode.do";
-          getCode(_url,sMobile);//不是第一次得到验证码
+          var _data={};
+          _data.PCDType=pcdType;
+          _data.PhoneNum=sMobile;
+          _data.OperType=1;
+          getCode(_url,_data);//不是第一次得到验证码
         }else{//第一次发送验证码
           var _url=rootPath+"passport/user/registerByPhoneNum.do";
-          getCode(_url,sMobile);//第一次得到验证码
+          var _data={};
+          _data.PCDType=pcdType;
+          _data.PhoneNum=sMobile;
+          getCode(_url,_data);//第一次得到验证码
         }
       }
     }
   });
   
   //获取验证码
-  function getCode(_url,sMobile){
-    var _data={};
-    _data.PCDType=pcdType;
-    _data.PhoneNum=sMobile;
-    _data.OperType=1;
+  function getCode(_url,_data){
     $.ajax({
       type:"POST",
       url:_url,
