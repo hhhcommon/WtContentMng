@@ -973,7 +973,7 @@ public class QueryService {
 			}
             if (ids.length()>3) {
 				ids = ids.substring(3);
-				List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(ids, mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(ids, mediaType!=null?(mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"):null);
 				if (perls!=null) {
 					for (Map<String, Object> m1 : ls) {
 						for (Map<String, Object> m2 : perls) {
@@ -995,7 +995,7 @@ public class QueryService {
 					}
 				}
 	            
-				List<Map<String, Object>> kws = keyWordProService.getKeyWordsByIds(ids.replace("perf", "kws"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordsByIds(ids.replace("perf", "kws"), mediaType!=null?(mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"):null);
 				if (kws!=null) {
 					for (Map<String, Object> m1 : ls) {
 						for (Map<String, Object> m2 : kws) {
@@ -1043,7 +1043,7 @@ public class QueryService {
 				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
 	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 	            
-	            List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(ids.replace("perf.resId", "resd.resId"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+	            List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(ids.replace("perf.resId", "resd.resId"), mediaType!=null?(mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"):null);
 				if (dictrefs!=null) {
 					for (Map<String, Object> m1 : ls) {
 						for (Map<String, Object> m2 : dictrefs) {

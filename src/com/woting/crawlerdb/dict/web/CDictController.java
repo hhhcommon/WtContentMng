@@ -4,11 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.ext.spring.redis.RedisOperService;
 import com.spiritdata.framework.util.RequestUtils;
+import com.spiritdata.framework.util.StringUtils;
 import com.woting.crawlerdb.dict.service.CDictService;
 
 /**
@@ -199,6 +208,37 @@ public class CDictController {
 		} else {
 			map.put("ReturnType", "1012");
 			map.put("Message", "文件生成失败");
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="getChannelMapRefPer.do")
+    @ResponseBody
+    public Map<String, Object> getChannelMapRefPer(HttpServletRequest request) {
+		Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+		Map<String,Object> map=new HashMap<String, Object>();
+		String perId = m.get("PerId")+"";
+		if (StringUtils.isNullOrEmptyOrSpace(perId) || perId.toLowerCase().equals("null")) {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无进程Id");
+			return map;
+		}
+		RedisOperService redis = null;
+		ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
+            redis = new RedisOperService(js, 6);
+        }
+        String perstr = null;
+        if (redis!=null) {
+			perstr = redis.get("wt_ChannelMapRef_"+perId);
+		}
+		if(perstr!=null && perstr.length()>0) {
+			map.put("ReturnType", "1001");
+			map.put("PerNum", perstr);
+		} else {
+			map.put("ReturnType", "1011");
+			map.put("Message", "无进程");
 		}
 		return map;
 	}

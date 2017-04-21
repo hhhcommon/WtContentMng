@@ -327,7 +327,7 @@ public class PublishController {
 			if (ls!=null && ls.size()>0) {
 				map.put("ReturnType", "1001");
 			    map.put("ResultList", ls);
-			    map.put("AllCount", retM.get("AllCount"));
+			    map.put("AllCount", retM.get("Count"));
 			    return map;
 			} 
 		} 
