@@ -181,7 +181,9 @@ public class ChannelService {
             //数据库
             ChannelPo cpo=c.convert2Po();
             if (cpo.getPcId()==null) cpo.setPcId("0");
+            c.setChannelImg(c.getChannelImg().replace("http://ac.wotingfm.com/contentimg/", "##contentimg##"));
             channelDao.insert(c.convert2Po());
+            c.setChannelImg(c.getChannelImg().replace("##contentimg##", "http://ac.wotingfm.com/contentimg/"));
             //缓存
             TreeNode<Channel> nd=new TreeNode<Channel>(c);
             parentNode.addChild(nd);
@@ -240,7 +242,9 @@ public class ChannelService {
             //修改字典项
             try {
                 //数据库
+            	c.setChannelImg(c.getChannelImg().replace("http://ac.wotingfm.com/contentimg/", "##contentimg##"));
                 channelDao.update(c.convert2Po());
+                c.setChannelImg(c.getChannelImg().replace("##contentimg##", "http://ac.wotingfm.com/contentimg/"));
                 //缓存
                 if (c.getNodeName()!=null&&!c.getNodeName().equals(myInTree.getTnEntity().getNodeName())) myInTree.getTnEntity().setNodeName(c.getNodeName());
                 if (c.getOwner()!=null&&!c.getOwner().equals(myInTree.getTnEntity().getOwner())) myInTree.getTnEntity().setOwner(c.getOwner());

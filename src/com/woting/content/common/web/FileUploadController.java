@@ -1,7 +1,6 @@
 package com.woting.content.common.web;
 
 import java.io.File;
-import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,7 +99,7 @@ public class FileUploadController extends UploadController {
 					}
 				}
 			}
-			map.put("FilePath", "##img##/" + newfilepath);
+			map.put("FilePath", "http://ac.wotingfm.com/" + newfilepath);
 			map.put("Model", "1");
 		} else {
 			if (srcType.equals("2")) {
@@ -110,7 +109,7 @@ public class FileUploadController extends UploadController {
 				String ext = FileNameUtils.getExt(filepath);
 				String newfilepath = path + "/" + newname + ext;
 				OssUtils.upLoadObject(newfilepath, new File(filepath), true);
-				map.put("FilePath", "##mp3##/" + newfilepath);
+				map.put("FilePath", "http://ac.wotingfm.com/" + newfilepath);
 				map.put("Model", "2");
 			}
 		}

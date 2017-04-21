@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.RequestUtils;
@@ -29,7 +27,6 @@ public class MediaContentController {
 	private MediaContentService mediaContentService;
 	@Resource(name = "redisSessionService")
 	private SessionService sessionService;
-	private static String ip_address = "www.wotingfm.com";
 
 	/**
 	 * 得到主播单体节目列表
@@ -274,18 +271,16 @@ public class MediaContentController {
 //				map.put("Message", "无专辑Id");
 //				return map;
 			}
-			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";
-			if (contentimg.toLowerCase().equals("null"))
-				contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			if (!contentimg.toLowerCase().equals("null"))
+				contentimg = contentimg.replace("http://ac.wotingfm.com/contentimg/", "##contentimg##");
 			String contenturi = m.get("ContentURI") + "";
 			if (StringUtils.isNullOrEmptyOrSpace(contenturi) || contenturi.toLowerCase().equals("null")) {
 				map.put("ReturnType", "1014");
 				map.put("Message", "无播放资源");
 				return map;
 			}
-			contenturi = contenturi.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			contenturi = contenturi.replace("http://ac.wotingfm.com/contentmedia/", "##contentmedia##");
 			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";
@@ -436,12 +431,10 @@ public class MediaContentController {
 				map.put("Message", "无播放资源");
 				return map;
 			}
-			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";
-			if (contentimg.toLowerCase().equals("null"))
-				contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
-			contenturi = contenturi.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			if (!contentimg.toLowerCase().equals("null"))
+				contentimg = contentimg.replace("http://ac.wotingfm.com/contentimg/", "##contentimg##");
+			contenturi = contenturi.replace("http://ac.wotingfm.com/contentmedia/", "##contentmedia##");
 			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
 			List<Map<String, Object>> membertypes = (List<Map<String, Object>>) m.get("MemberType");
 			String contentdesc = m.get("ContentDesc") + "";

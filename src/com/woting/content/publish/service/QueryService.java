@@ -1,6 +1,5 @@
 package com.woting.content.publish.service;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,7 +50,6 @@ import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.content.manage.media.service.MediaContentService;
-import com.woting.content.publish.utils.CacheUtils;
 
 @Service
 public class QueryService {
@@ -183,7 +181,7 @@ public class QueryService {
 		if (endctime!=null) {
 			sql += " and ch.cTime <= '"+endctime+"'";
 		}
-		sql += " ORDER BY ch.sort DESC, ch.pubTime DESC LIMIT ";
+		sql += " ORDER BY ch.loopSort DESC, ch.sort DESC, ch.pubTime DESC LIMIT ";
 		if (page>0 && pagesize>0) {
 			sql += (page-1)*pagesize +","+pagesize;
 		} else {

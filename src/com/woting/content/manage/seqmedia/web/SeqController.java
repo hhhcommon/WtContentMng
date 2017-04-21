@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.content.manage.seqmedia.service.SeqContentService;
 import com.woting.dataanal.gather.API.ApiGatherUtils;
@@ -30,7 +27,6 @@ public class SeqController {
 	private SeqContentService seqContentService;
 	@Resource(name = "redisSessionService")
 	private SessionService sessionService;
-	private static String ip_address = "www.wotingfm.com";
 
 	/**
 	 * 得到主播id下的专辑列表(包括发布和未发布的)
@@ -201,9 +197,7 @@ public class SeqController {
 				map.put("Message", "无法获取需要的参数");
 			} else {
 				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei()) && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1 : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
 					mp.setImei(request.getSession().getId());
 				}
 				mUdk = mp.getUserDeviceKey();
@@ -274,11 +268,9 @@ public class SeqController {
 			}
 			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
 			List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
-			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";
-			if (contentimg.equals("null"))
-				contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			if (!contentimg.equals("null"))
+				contentimg = contentimg.replace("http://ac.wotingfm.com/contentimg/", "##contentimg##");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
 			map = seqContentService.addSeqMediaInfo(null,userId, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
@@ -332,9 +324,7 @@ public class SeqController {
 				map.put("Message", "无法获取需要的参数");
 			} else {
 				MobileParam mp = MobileParam.build(m);
-				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
-						&& DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
-								: Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+				if (StringUtils.isNullOrEmptyOrSpace(mp.getImei()) && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1 : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
 					mp.setImei(request.getSession().getId());
 				}
 				mUdk = mp.getUserDeviceKey();
@@ -407,15 +397,12 @@ public class SeqController {
 			String channelId = m.get("ChannelId") + "";
 			List<Map<String, Object>> tags = (List<Map<String, Object>>) m.get("TagList");
 			List<Map<String, Object>> memberType = (List<Map<String, Object>>) m.get("MemberType");
-			String rootpath = SystemCache.getCache(FConstants.APPOSPATH).getContent() + "";
 			String contentimg = m.get("ContentImg") + "";
-			if (contentimg.equals("null"))
-				contentimg = "htpp://www.wotingfm.com:908/CM/mweb/templet/zj_templet/imgs/default.png";
-			contentimg = contentimg.replace(rootpath, "http://" + ip_address + ":908/CM/");
+			if (!contentimg.equals("null"))
+				contentimg = contentimg.replace("http://ac.wotingfm.com/contentimg/", "##contentimg##");
 			String contentdesc = m.get("ContentDesc") + "";
 			String pubTime = m.get("FixedPubTime") + "";
-			map = seqContentService.updateSeqInfo(userId, contentid, contentname, channelId, contentimg, tags,
-					memberType, contentdesc, pubTime);
+			map = seqContentService.updateSeqInfo(userId, contentid, contentname, channelId, contentimg, tags, memberType, contentdesc, pubTime);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

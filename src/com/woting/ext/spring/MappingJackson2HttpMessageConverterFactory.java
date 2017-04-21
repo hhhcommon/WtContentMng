@@ -45,4 +45,31 @@ public class MappingJackson2HttpMessageConverterFactory extends MappingJackson2H
         //输出
         outputMessage.getBody().write(result.getBytes("UTF-8"));
 	}
+	
+//	@Override
+//	protected void writeInternal(Object t, HttpOutputMessage outputMessage)
+//			throws IOException, HttpMessageNotWritableException {
+//		ObjectMapper mapper = new ObjectMapper();
+//        String json = mapper.writeValueAsString(t);
+//        //加密
+//        Map2JsonPo mJsonPo = null;
+//        ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+//        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+//        	mJsonPo = (Map2JsonPo) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("map2json");
+//        }
+//        
+//        String result = "";
+//        if (mJsonPo!=null) {
+//			Map<String, Object> map2jsonmap = mJsonPo.getReplaceMap();
+//			if (map2jsonmap!=null && map2jsonmap.size()>0) {
+//				Set<String> sets = map2jsonmap.keySet();
+//				for (String key : sets) {
+//					json = json.replace(key, map2jsonmap.get(key).toString());
+//				}
+//			}
+//		}
+//        result = json;
+//        //输出
+//        outputMessage.getBody().write(result.getBytes("UTF-8"));
+//	}
 }
