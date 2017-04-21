@@ -20,20 +20,28 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Service;
 
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.cm.cachedb.cachedb.service.CacheDBService;
 import com.woting.cm.cachedb.playcountdb.persis.po.PlayCountDBPo;
 import com.woting.cm.cachedb.playcountdb.service.PlayCountDBService;
 import com.woting.cm.core.broadcast.persis.po.BroadcastPo;
+import com.woting.cm.core.channel.mem._CacheChannel;
+import com.woting.cm.core.channel.model.Channel;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelAssetProgressPo;
 import com.woting.cm.core.channel.service.ChannelAssetProgressService;
 import com.woting.cm.core.channel.service.ChannelService;
+import com.woting.cm.core.media.MediaType;
 import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.cm.core.oss.utils.OssUtils;
 import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.cm.core.utils.ContentUtils;
@@ -776,22 +784,22 @@ public class QueryService {
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 1-根据zjId，计算出文件存放目录
-		String path = "/opt/dataCenter/shareH5/mweb/zj/" + zjId + "/";
+		String path = "shareH5/mweb/zj/" + zjId + "/";
 		// 2-判断是否有page所对应的数据
-		File thisPage, nextPage;
-		thisPage = new File(path + "P" + page + ".json");
+//		File thisPage, nextPage;
+//		thisPage = new File(path + "P" + page + ".json");
 		int nextpage = Integer.valueOf(page) + 1;
-		nextPage = new File(path + "P" + nextpage + ".json");
-		if (!thisPage.exists()) {
+//		nextPage = new File(path + "P" + nextpage + ".json");
+		if (!OssUtils.exists(path + "P" + page + ".json")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "没有相关内容 ");
 		} else {// 组织本页数据
-			String jsonstr = CacheUtils.readFile(path + "P" + page + ".json");
+			String jsonstr = OssUtils.getObjectToString(path + "P" + page + ".json");//CacheUtils.readFile(path + "P" + page + ".json");
 			List<Map<String, Object>> listaudios = (List<Map<String, Object>>) JsonUtils.jsonToObj(jsonstr, List.class);
 			if (listaudios != null) {
 				map.put("ResultList", listaudios);
 				map.put("ReturnType", "1001");
-				map.put("NextPage", String.valueOf(nextPage.exists()));// 判断是否有下一页，并组织到返回数据中
+				map.put("NextPage", OssUtils.exists(path + "P" + nextpage + ".json"));// 判断是否有下一页，并组织到返回数据中
 			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有相关内容 ");
@@ -1469,4 +1477,74 @@ public class QueryService {
 		}
 		return null;
 	}
+
+	/**
+	 * 给栏目下的某个资源设置置顶
+	 * @param mediaType 资源类型
+	 * @param contentId 资源ID
+	 * @param channelId 所属栏目ID
+	 * @param onlyTop 是否该栏目下仅允许一个资源置顶
+	 * @param topSort 置顶排序号，越大约考前
+	 * @return
+	 */
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> setTop(String mediaType, String contentId, String channelId, int onlyTop, int topSort) {
+        String _err=","+(StringUtils.isNullOrEmptyOrSpace(mediaType)?"媒体类型为空":"");
+        _err+=","+(StringUtils.isNullOrEmptyOrSpace(mediaType)?"内容Id为空":"");
+        _err+=","+(StringUtils.isNullOrEmptyOrSpace(mediaType)?"栏目Id为空":"");
+        _err=_err.substring(1);
+
+        Map<String, Object> map=new HashMap<String, Object>();
+        if (StringUtils.isNullOrEmptyOrSpace(_err)) {
+            map.put("ReturnType", "0000");
+            map.put("Message", "无法获取需要的参数:"+_err);
+            return map;
+        }
+        MediaType mt=MediaType.buildByTypeName(mediaType);
+        if (mt==MediaType.ERR) {
+            map.put("ReturnType", "0000");
+            map.put("Message", "参数不合法：资源类型设置错误");
+            return map;
+        }
+
+        //获得栏目信息
+        _CacheChannel _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
+        TreeNode<Channel> c=(TreeNode<Channel>)_cc.channelTree.findNode(channelId);
+        if (c==null) {
+            map.put("ReturnType", "1004");
+            map.put("Message", "栏目不存在");
+            return map;
+        }
+        //获取栏目下的资源
+        String tableName=mt.getTabName();
+        ChannelAssetPo caPo=null;
+        try {
+            caPo=chService.getContentByBizKey(channelId, tableName, contentId);
+        } catch(Exception e) {
+        }
+        if (caPo==null) {
+            map.put("ReturnType", "1003");
+            map.put("Message", "内容不存在");
+            return map;
+        }
+        if (caPo.getFlowFlag()!=2||caPo.getIsValidate()!=1) {
+            map.put("ReturnType", "1006");
+            map.put("Message", "该内容在此栏目下未发布或无效，不必设置");
+            return map;
+        }
+        map.put("ReturnType", "1001");
+        if (topSort==0) {//取消置顶，直接设置就可以了
+            if (!chService.cancelTop(channelId, tableName, contentId)) {
+                map.put("ReturnType", "1005");
+                map.put("Message", "设置失败");
+            }
+        } else {
+            int _topSort=(onlyTop==1?topSort:1);
+            if (!chService.setTop(channelId, tableName, contentId, _topSort, onlyTop)) {
+                map.put("ReturnType", "1005");
+                map.put("Message", "设置失败");
+            }
+        }
+        return map;
+    }
 }

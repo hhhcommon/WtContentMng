@@ -319,4 +319,63 @@ public class ChannelService {
     	}
 		return ms;
     }
+
+    /**
+     * 获得一条栏目发布信息，根据业务Key
+     * @param channelId 栏目Id
+     * @param tableName 资源类型——资源对应的表
+     * @param contentId 资源Id
+     */
+    public ChannelAssetPo getContentByBizKey(String channelId, String tableName, String contentId) {
+        Map<String ,Object> param=new HashMap<String, Object>();
+        param.put("channelId", channelId);
+        param.put("assetType", tableName);
+        param.put("assetId", contentId);
+        return channelAssetDao.getInfoObject(param);
+    }
+
+    /**
+     * 取消栏目下某一资源的置顶
+     * @param channelId 栏目Id
+     * @param tableName 资源类型——资源对应的表
+     * @param contentId 资源Id
+     * @return 取消成功返回True，否则返回False
+     */
+    public boolean cancelTop(String channelId, String tableName, String contentId) {
+        Map<String ,Object> param=new HashMap<String, Object>();
+        param.put("channelId", channelId);
+        param.put("assetType", tableName);
+        param.put("assetId", contentId);
+        int i=0;
+        try {
+            channelAssetDao.update("cancelTop", param);
+            i=1;
+        } catch(Exception e) {
+        }
+        return i==1;
+    }
+    /**
+     * 取消栏目下某一资源的置顶
+     * @param channelId 栏目Id
+     * @param tableName 资源类型——资源对应的表
+     * @param contentId 资源Id
+     * @param topSort 置顶序号
+     * @param onlyTop 是否仅有一个置顶资源
+     * @return 取消成功返回True，否则返回False
+     */
+    public boolean setTop(String channelId, String tableName, String contentId, int topSort, int onlyTop) {
+        Map<String ,Object> param=new HashMap<String, Object>();
+        param.put("channelId", channelId);
+        param.put("assetType", tableName);
+        param.put("assetId", contentId);
+        param.put("topSort", topSort);
+        param.put("onlyTop", onlyTop);
+        int i=0;
+        try {
+            channelAssetDao.update("setTop", param);
+            i=1;
+        } catch(Exception e) {
+        }
+        return i==1;
+    }
 }

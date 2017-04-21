@@ -45,13 +45,9 @@ public class FileUploadController extends UploadController {
 					String img300path = FileNameUtils.concatPath(path, newname + ".300_300" + ext);
 					String img450path = FileNameUtils.concatPath(path, newname + ".450_450" + ext);
 					OssUtils.upLoadObject(imgpath, new File(filepath), true);
-					InputStream in = null;
-					in = OssUtils.makePictureResize(imgpath, 150);
-					if (in!=null) OssUtils.upLoadObject(img150path, in);
-					in = OssUtils.makePictureResize(imgpath, 300);
-					if (in!=null) OssUtils.upLoadObject(img300path, in);
-					in = OssUtils.makePictureResize(imgpath, 450);
-					if (in!=null) OssUtils.upLoadObject(img450path, in);
+					OssUtils.makePictureResize(imgpath, img150path, 150);
+					OssUtils.makePictureResize(imgpath, img300path, 300);
+					OssUtils.makePictureResize(imgpath, img450path, 450);
 //					Thumbnails.of(new File(filepath)).size(150, 150).toFile(img150path);
 //					Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
 //					Thumbnails.of(new File(filepath)).size(450, 450).toFile(img450path);
@@ -67,11 +63,8 @@ public class FileUploadController extends UploadController {
 						String img180path = FileNameUtils.concatPath(path, newname + ".180_180" + ext);
 						String img300path = FileNameUtils.concatPath(path, newname + ".300_300" + ext);
 						OssUtils.upLoadObject(imgpath, new File(filepath), true);
-						InputStream in = null;
-						in = OssUtils.makePictureResize(imgpath, 180);
-						if (in!=null) OssUtils.upLoadObject(img180path, in);
-						in = OssUtils.makePictureResize(imgpath, 300);
-						if (in!=null) OssUtils.upLoadObject(img300path, in);
+						OssUtils.makePictureResize(imgpath, img180path, 180);
+						OssUtils.makePictureResize(imgpath, img300path, 300);
 //						Thumbnails.of(new File(filepath)).size(180, 180).toFile(img180path);
 //						Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
 					} catch (Exception e) {
@@ -85,9 +78,7 @@ public class FileUploadController extends UploadController {
 							String imgpath = FileNameUtils.concatPath(path, newname + ext);
 							String img1080_450path = FileNameUtils.concatPath(path, newname + ".1080_450" + ext);
 							OssUtils.upLoadObject(imgpath, new File(filepath), true);
-							InputStream in = null;
-							in = OssUtils.makePictureResize(imgpath, 1080, 450);
-							if (in!=null) OssUtils.upLoadObject(img1080_450path, in);
+							OssUtils.makePictureResize(imgpath, img1080_450path, 1080, 450);
 //							Thumbnails.of(new File(filepath)).size(1080, 450).toFile(img1080_450path);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -100,9 +91,7 @@ public class FileUploadController extends UploadController {
 								String imgpath = FileNameUtils.concatPath(path, newname + ext);
 								String img100_100path = FileNameUtils.concatPath(path, newname + ".100_100" + ext);
 								OssUtils.upLoadObject(imgpath, new File(filepath), true);
-								InputStream in = null;
-								in = OssUtils.makePictureResize(imgpath, 100);
-								if (in!=null) OssUtils.upLoadObject(img100_100path, in);
+								OssUtils.makePictureResize(imgpath, img100_100path, 100);
 //								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);
 							} catch (Exception e) {
 								e.printStackTrace();
