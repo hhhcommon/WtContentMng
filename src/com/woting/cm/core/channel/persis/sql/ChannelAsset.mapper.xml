@@ -167,13 +167,13 @@
     <if test="LimitByClause!=null"> limit ${LimitByClause}</if>
   </select>
   
-  <select id="getChannelAndChannelAssetBy" parameterType="java.util.Map" resultType="java.util.Map">
+  <select id="getChannelAndChannelAssetBy" parameterType="java.util.Map" resultType="java.util.HashMap">
     SELECT ch.id,cha.assetId,cha.pubName,ch.channelName,cha.flowFlag,cha.pubTime from wt_ChannelAsset cha LEFT JOIN wt_Channel ch ON cha.channelId = ch.id 
     where (${ids}) and assetType=#{assetType,jdbcType=VARCHAR}
     <if test="sortByClause!=null">order by ${sortByClause}</if>
   </select>
   
-  <select id="getPersonContentListBy" parameterType="java.util.Map" resultType="java.util.Map">
+  <select id="getPersonContentListBy" parameterType="java.util.Map" resultType="java.util.HashMap">
     SELECT DISTINCT ch.id,(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.maPublisher when 'wt_SeqMediaAsset' then sma.smaPublisher end) publisher,
 	(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,
 	(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,
@@ -305,4 +305,25 @@
           assetType=#{assetType,jdbcType=VARCHAR} and
           assetId=#{assetId,jdbcType=VARCHAR};
   </update>
+
+  <!-- 轮播图相关 -->
+  <!-- 获取轮播图列表 -->
+  <select id="getLoopImgList" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select a.id, a.checkerId, a.assetType, a.assetId, a.loopSort,
+    (CASE a.assetType WHEN 'wt_MediaAsset' THEN b.maTitle WHEN 'wt_SeqMediaAsset' THEN c.smaTitle WHEN 'wt_Broadcast' THEN d.bcTitle END) title, 
+    (CASE a.assetType WHEN 'wt_MediaAsset' THEN b.loopImg WHEN 'wt_SeqMediaAsset' THEN c.loopImg WHEN 'wt_Broadcast' THEN d.loopImg END) imgUrl 
+    from wt_ChannelAsset a
+    left join wt_MediaAsset b on a.assetType='wt_MediaAsset' and a.assetId=b.id
+    left join wt_SeqMediaAsset c on a.assetType='wt_SeqMediaAsset' and a.assetId=c.id
+    left join wt_Broadcast d on a.assetType='wt_Broadcast' and a.assetId=d.id
+    <![CDATA[
+    where a.channelId=#{channelId,jdbcType=VARCHAR} and a.loopSort>0
+    ]]>
+    <if test="assetTypes!=null">
+      <foreach collection="listTag" index="index" item="tag" open="and (" separator="or" close=")">
+        a.assetType=#{assetType}
+      </foreach>
+    </if>
+    order by a.loopSort desc, a.topSort desc, a.publishTime desc
+  </select>
 </mapper>
