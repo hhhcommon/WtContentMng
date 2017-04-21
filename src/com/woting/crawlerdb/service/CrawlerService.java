@@ -131,7 +131,7 @@ public class CrawlerService {
 												mediaService.removeCha(channelAssetPo.getAssetId(), channelAssetPo.getAssetType(), "cn36");
 												if (redis!=null && channelAssetPo.getAssetType().equals("wt_SeqMediaAsset")) {
 													smanum++;
-													redis.set(redisKey, ((smanum+0.0)/num)+"");
+													redis.set(redisKey, ((smanum+0.0)/num)+"", 60*1000);
 												}
 											} catch (Exception e) {
 												e.printStackTrace();
@@ -145,7 +145,7 @@ public class CrawlerService {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
-						redis.set(redisKey, "1");
+						redis.set(redisKey, "1", 1000);
 						redis.close();
 					}
 				} catch (Exception e) {
