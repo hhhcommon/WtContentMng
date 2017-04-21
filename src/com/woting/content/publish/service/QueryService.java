@@ -42,6 +42,7 @@ import com.woting.cm.core.media.persis.po.MediaAssetPo;
 import com.woting.cm.core.media.persis.po.SeqMaRefPo;
 import com.woting.cm.core.media.persis.po.SeqMediaAssetPo;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.cm.core.oss.utils.OssUtils;
 import com.woting.cm.core.person.service.PersonService;
 import com.woting.cm.core.subscribe.SubscribeThread;
 import com.woting.cm.core.utils.ContentUtils;
@@ -786,22 +787,22 @@ public class QueryService {
 	public Map<String, Object> getZJSubPage(String zjId, String page) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// 1-根据zjId，计算出文件存放目录
-		String path = "/opt/dataCenter/shareH5/mweb/zj/" + zjId + "/";
+		String path = "shareH5/mweb/zj/" + zjId + "/";
 		// 2-判断是否有page所对应的数据
-		File thisPage, nextPage;
-		thisPage = new File(path + "P" + page + ".json");
+//		File thisPage, nextPage;
+//		thisPage = new File(path + "P" + page + ".json");
 		int nextpage = Integer.valueOf(page) + 1;
-		nextPage = new File(path + "P" + nextpage + ".json");
-		if (!thisPage.exists()) {
+//		nextPage = new File(path + "P" + nextpage + ".json");
+		if (!OssUtils.exists(path + "P" + page + ".json")) {
 			map.put("ReturnType", "1011");
 			map.put("Message", "没有相关内容 ");
 		} else {// 组织本页数据
-			String jsonstr = CacheUtils.readFile(path + "P" + page + ".json");
+			String jsonstr = OssUtils.getObjectToString(path + "P" + page + ".json");//CacheUtils.readFile(path + "P" + page + ".json");
 			List<Map<String, Object>> listaudios = (List<Map<String, Object>>) JsonUtils.jsonToObj(jsonstr, List.class);
 			if (listaudios != null) {
 				map.put("ResultList", listaudios);
 				map.put("ReturnType", "1001");
-				map.put("NextPage", String.valueOf(nextPage.exists()));// 判断是否有下一页，并组织到返回数据中
+				map.put("NextPage", OssUtils.exists(path + "P" + nextpage + ".json"));// 判断是否有下一页，并组织到返回数据中
 			} else {
 				map.put("ReturnType", "1011");
 				map.put("Message", "没有相关内容 ");

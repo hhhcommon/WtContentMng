@@ -39,9 +39,7 @@
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 body{-moz-user-select: none;}
-#wrapper{
-  width:100%;
-}
+#wrapper{width:100%;}
 @media (max-width: 767px){
   .navbar-nav .open .dropdown-menu{
     position: static;
@@ -70,9 +68,7 @@ body{-moz-user-select: none;}
   color:#fff;
   font-family: "微软雅黑";
 }
-.navbar-right .loginBtn .login_user:hover{
-  color:#fff;
-}
+.navbar-right .loginBtn .login_user:hover{color:#fff;}
 .login_user{
   margin-right: 20px;
   margin-top: 20px;
@@ -83,15 +79,9 @@ body{-moz-user-select: none;}
   color:#fff;
   background:transparent;
 }
-.loginBtn .dropdown-menu{
-  z-index:1004;
-}
-.loginBtn .dropdown-menu > li > a{
-  text-align: center;
-}
-.nav .open >a{
-  background: transparent !important;
-}
+.loginBtn .dropdown-menu{z-index:1004;}
+.loginBtn .dropdown-menu > li > a{text-align: center;}
+.nav .open >a{background: transparent !important;}
 /*中间内容区域*/
 .wrapper{
 	position: relative;
@@ -115,9 +105,7 @@ body.canvas-menu .navbar-static-side{
   text-indent: 24px;
   width:99%;
 }
-.con_left .nav > li > a{
-  padding:0px 0px 0px 0px;
-}
+.con_left .nav > li > a{padding:0px 0px 0px 0px;}
 .nav .a_audio1{
   color:#000;
   font-family: "微软雅黑";
@@ -133,9 +121,7 @@ body.canvas-menu .navbar-static-side{
 .con_left .nav > li .active{
   background-color: #ffa634;
 }
-.a_fs{
-  font-size:16px;
-}
+.a_fs{font-size:16px;}
 .audio1{
   width: 22px;
   position: absolute;
@@ -165,9 +151,7 @@ body.canvas-menu .navbar-static-side{
   height: 38px;
   background-size: 100% 100%;
 }
-.nav li .a_audio1{
-  border-bottom:1px solid #dedede;
-}
+.nav li .a_audio1{border-bottom:1px solid #dedede;}
 .navbar-default .nav > li > .a_audio1:hover,
 .navbar-default .nav > li > .a_audio1:focus{
   background-color: #ffa634;
@@ -186,9 +170,7 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
   margin-left:0px;
   margin-right:0px;
 }
-#content-main{
-  height:calc(100% - 1px) !important;
-}
+#content-main{height:calc(100% - 1px) !important;}
 /*底部样式*/
 #wrapper .footer{
   height:auto;
@@ -265,9 +247,7 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
   width: 100%;
   height: calc(100% - 40px);
 }
-.tab_iframe{
-  display: none;
-}
+.tab_iframe{display: none;}
 .active{
   background:#ccc;
   display: block;
@@ -284,12 +264,13 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.navbar-static-side{background: #fff;}
 </style>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg laydate_body" onselectstart="return false">
 <div id="wrapper">
   <div class="navbar-fixed-top" style="width:100%;height:80px;background: #ffa634;">
-    <a href="javascript:void(0);" style="float:left;"><img alt="woting logo" class="logo" src="img/logo1.png"></a>
+    <a href="javascript:void(0);" style="float:left;"><img alt="woting logo" class="logo" src="anchorResource/img/logo1.png"></a>
     <div class="navbar-header" style="position:relative;width:auto;top:0px;display: none;">
       <!--汉堡按钮，伸缩菜单栏-->
       <a class="navbar-minimalize minimalize-styl-2 btn btn-primary" href="javascript:void(0);" style="margin: 21px 5px 5px 20px;">
@@ -299,12 +280,12 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
     <div class="nav navbar-nav navbar-right desktop user_nav userlogin">
       <div class="dropdown loginBtn">
         <a data-toggle="dropdown" class="dropdown-toggle login_user" href="javascript:void(0);" hrefs="anchor_login.html">
-          <img src="img/login1.png" alt="用户登陆" style="margin-right:3px;"/>
+          <img src="anchorResource/img/login1.png" alt="用户登陆" style="margin-right:3px;"/>
           <span>用户登陆</span>
-          <img src="img/login2.png" alt="用户登陆" />
+          <img src="anchorResource/img/login2.png" alt="用户登陆" />
         </a>
         <ul class="dropdown-menu animated fadeInRight m-t-xs" style="margin-right:-15px;">
-          <li class="navList"><a class="M_menuItem" hrefs="personalData.html" href="javascript:void(0);">个人资料</a></li>
+          <li class="navList"><a class="M_menuItem" hrefs="personCenter/personalData.html" href="javascript:void(0);">个人资料</a></li>
           <li class="divider"></li>
           <li class="loginOut"><a href="login.html">退出登录</a></li>
         </ul>
@@ -318,55 +299,55 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
         <ul class="nav" id="side-menu">
           <li class="materialLibrary">
             <a href="javascript:void(0);" class="a_audio1">
-              <img class="audio1" src="img/audio3.png" alt="素材库" />
+              <img class="audio1" src="anchorResource/img/audio3.png" alt="素材库" />
               <span class="nav-label">素材库</span>
               <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-second-level nav-list collapse">
-              <li class="navList"><a hrefs="subjectRecommend.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">选题推荐</span></a></li>
-              <li class="navList"><a hrefs="custom_tag.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">定制标签</span></a></li>
-              <li class="navList"><a hrefs="guestLibrary.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">嘉宾库</span></a></li>
-              <li class="navList"><a hrefs="listenerComment.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">听众评论</span></a></li>
+              <li class="navList"><a hrefs="materialLibrary/subjectRecommend/subjectRecommend.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">选题推荐</span></a></li>
+              <li class="navList"><a hrefs="materialLibrary/customTag/customTag.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">定制标签</span></a></li>
+              <li class="navList"><a hrefs="materialLibrary/guestLibrary/guestLibrary.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">嘉宾库</span></a></li>
+              <li class="navList"><a hrefs="materialLibrary/listenerComment/listenerComment.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">听众评论</span></a></li>
             </ul>
           </li>
           <li class="manage">
             <a href="javascript:void(0);" class="a_audio1">
-              <img class="audio1" src="img/audio1.png" alt="音频管理" />
+              <img class="audio1" src="anchorResource/img/audio1.png" alt="音频管理" />
               <span class="nav-label">音频管理</span>
               <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-second-level nav-list collapse">
-              <li class="navList"><a hrefs="manage_zj.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">专辑管理</span></a></li>
-              <li class="navList"><a hrefs="manage_jm.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">节目管理</span></a></li>
+              <li class="navList"><a hrefs="jmANDzj/manage_zj.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">专辑管理</span></a></li>
+              <li class="navList"><a hrefs="jmANDzj/manage_jm.html" class="M_menuItem a_audio1 a_fs"  href='javascript:void(0)'><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">节目管理</span></a></li>
             </ul>
           </li>
           <li class="analysis">
             <a href="javascript:void(0);" class="a_audio1">
-              <img class="audio1" src="img/audio2.png" alt="音频管理" />
+              <img class="audio1" src="anchorResource/img/audio2.png" alt="音频管理" />
               <span class="nav-label">数据分析</span>
               <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-second-level nav-list collapse">
-              <li class="navList"><a hrefs="topic0.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">播放数</span></a></li>
-              <li class="navList"><a hrefs="topic1.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">下载数</span></a></li>
-              <li class="navList"><a hrefs="topics.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">粉丝数</span></a></li>
-              <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">被赞数</span></a></li>
-              <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">评论数</span></a></li>
-              <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">分享数</span></a></li>
+              <li class="navList"><a hrefs="topic0.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">播放数</span></a></li>
+              <li class="navList"><a hrefs="topic1.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">下载数</span></a></li>
+              <li class="navList"><a hrefs="topics.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">粉丝数</span></a></li>
+              <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">被赞数</span></a></li>
+              <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">评论数</span></a></li>
+              <li class="navList"><a hrefs="" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">分享数</span></a></li>
             </ul>
           </li>
           <li class="personalCenter">
             <a href="javascript:void(0);" class="a_audio1">
-              <img class="audio1" src="img/audio3.png" alt="个人中心" />
+              <img class="audio1" src="anchorResource/img/audio3.png" alt="个人中心" />
               <span class="nav-label">个人中心</span>
               <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-second-level nav-list collapse">
-              <li class="navList"><a hrefs="personalData.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">个人资料</span></a></li>
-              <li class="navList"><a hrefs="changePassword.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">修改密码</span></a></li>
-              <li class="navList"><a hrefs="changePhoneNum.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">修改手机号</span></a></li>
-              <li class="navList"><a hrefs="authentication.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">身份认证</span></a></li>
-              <li class="navList"><a hrefs="feedBack.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="img/left-line.png" alt="" /><span class="nav-label">反馈建议</span></a></li>
+              <li class="navList"><a hrefs="personCenter/personalData.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">个人资料</span></a></li>
+              <li class="navList"><a hrefs="personCenter/changePassword.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">修改密码</span></a></li>
+              <li class="navList"><a hrefs="personCenter/changePhoneNum.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">修改手机号</span></a></li>
+              <li class="navList"><a hrefs="personCenter/authentication.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">身份认证</span></a></li>
+              <li class="navList"><a hrefs="personCenter/feedBack.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">反馈建议</span></a></li>
             </ul>
           </li>
         </ul>
@@ -411,7 +392,7 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
 </div>
 <!--整个大页面的遮罩层-->
 <div class="shade">
-  <img class="waitting_circle" src="img/waiting_circle.gif"/>
+  <img class="waitting_circle" src="anchorResource/img/waiting_circle.gif"/>
   <div>请耐心等待哟......</div>
 </div>
 <script>
@@ -440,10 +421,8 @@ $(function(){
   $(".login_user span").text(userName).attr("userId",userId).attr("userPsd",userPsd);
   //点击退出登录
   var logout_data={};
-  var deviceId="";
   var pcdType=3;
   $(".loginOut").on("click",function(){
-    logout_data.IMEI=deviceId;
     logout_data.PCDType=pcdType;
     logout_data.UserId=$(".login_user span").attr("userId");
     $.ajax({

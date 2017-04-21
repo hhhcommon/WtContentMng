@@ -648,13 +648,18 @@ $(function(){
   
   //点击保存设置
   $(".cmf_save").on("click",function(){
-    //待定--设置轮播图（没有接口和参数）
-    var id=$(".cm_content3").attr("contentId");
-    var data={"ContentId":id,
-              "UserId":userId
+    //待定--设置轮播图（缺少轮播图图片的地址）
+    var contentId=$(".cm_content3").attr("contentId");
+    var mediatype=$(".cm_content3").attr("mediatype");
+    var channelid=$(".cm_content3").attr("channelid");
+    var data={"UserId":userId,
+              "MediaType":mediatype,
+              "ContentId":contentId,
+              "ChannelId":channelid,
+              "LoopSort":"0"
     };
     $.ajax({
-      url:rootPath+"common/saveSetting.do",
+      url:rootPath+"content/addLoopImage.do",
       type:"POST",
       data:JSON.stringify(data),
       cache: false,
@@ -904,15 +909,16 @@ $(function(){
   
   /*s--切换到轮播图之后的相关操作*/
   //请求栏目下的所有轮播图
-  var channelId='cn0';
-  var data1={"ChannelId":channelId,
-              "UserId":userId,
+  var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+  var channelId=nodes[0].id;
+  var data1={"UserId":userId,
+             "ChannelId":channelId
   };
-//preCarousel(dada1);
-  function preCarousel(dada){
+  getLoopImages(dada1);
+  function getLoopImages(dada){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/preCarousel.do",
+      url:rootPath+"content/getLoopImages.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data),
@@ -922,7 +928,7 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          loadCarouselList(returnData);//加载轮播图列表
+          loadLoopImagesList(returnData);//加载轮播图列表
         }else{
           alert(resultData.Message);
         }
@@ -935,7 +941,7 @@ $(function(){
   }
   
   //加载轮播图列表
-  function loadCarouselList(returnData){
+  function getLoopImages(returnData){
     $(".lb_div5").html(" ");//每次加载之前都要清空
     for(var i=0;i<returnData.ReturnList.length;i++){
       var list='<div class="lbd_box" id='+returnData.ReturnList[i].Id+'>'+
