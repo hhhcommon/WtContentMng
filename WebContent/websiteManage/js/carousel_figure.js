@@ -737,6 +737,7 @@ $(function(){
   
   //设置/取消置顶
   function setTop(data1,obj){
+    debugger;
     $.ajax({
       url:rootPath+"content/setTop.do",
       type:"POST",
