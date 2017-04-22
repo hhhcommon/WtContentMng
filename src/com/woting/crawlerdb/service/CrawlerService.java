@@ -34,13 +34,14 @@ public class CrawlerService {
 	@Resource
 	private MediaService mediaService;
 	
-    public void makeCCateResRef(String redisKey, String dictRefId, String crawlerDictdId, String channelId) {
+    public void addCCateResRef(String dictRefId, String crawlerDictdId, String channelId) {
     	new Thread(new Runnable() {
 			public void run() {
 				Connection conn = null;
 				PreparedStatement ps = null;
 				ResultSet rs = null;
 				try {
+					String redisKey = "wt_ChannelMapRef_"+dictRefId;
 					String sql = "";
 					long num = 0;
 					long smanum = 0;
@@ -50,6 +51,7 @@ public class CrawlerService {
 			            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
 			            redis = new RedisOperService(js, 6);
 			        }
+			        redis.set(redisKey+"_TYPE", "ADD", 30*60*1000);
 					conn = dataSource.getConnection();
 					try {
 						sql = "SELECT COUNT(*) FROM crawlerDB.c_ResDict_Ref dref where dref.cdictDid = '"+crawlerDictdId+"' and dref.resTableName = 'c_Album'";
@@ -131,7 +133,8 @@ public class CrawlerService {
 												mediaService.removeCha(channelAssetPo.getAssetId(), channelAssetPo.getAssetType(), "cn36");
 												if (redis!=null && channelAssetPo.getAssetType().equals("wt_SeqMediaAsset")) {
 													smanum++;
-													redis.set(redisKey, ((smanum+0.0)/num)+"", 60*1000);
+													redis.set(redisKey, ((smanum+0.0)/num)+"", 10*60*1000);
+													redis.set(redisKey+"_TYPE", "ADD", 10*60*1000);
 												}
 											} catch (Exception e) {
 												e.printStackTrace();
@@ -146,6 +149,7 @@ public class CrawlerService {
 						e.printStackTrace();
 					} finally {
 						redis.set(redisKey, "1", 1000);
+						redis.set(redisKey+"_TYPE", "ADD", 1000);
 						redis.close();
 					}
 				} catch (Exception e) {
@@ -153,6 +157,38 @@ public class CrawlerService {
 				}
 			}
 		}).start();
-    	
 	}
+    
+    public void deleteCCateResRef(String redisKey, String dictRefId, String crawlerDictdId, String channelId) {
+    	new Thread(new Runnable() {
+			public void run() {
+				Connection conn = null;
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				try {
+					String sql = "";
+					long num = 0;
+					long smanum = 0;
+					RedisOperService redis = null;
+					ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+			        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+			            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
+			            redis = new RedisOperService(js, 6);
+			        }
+			        redis.set(redisKey+"_TYPE", "DELETE", 30*60*1000);
+					conn = dataSource.getConnection();
+					try {
+						sql = "SELECT COUNT(*) FROM wt_ChannelAsset where assetType = 'wt_SeqMediaAsset' and channelId = '"+channelId+"' and assetId IN"
+								+ " (SELECT rot.resId FROM wt_ResOrgAsset_Ref rot"
+								+ " where rot.resTableName = 'wt_SeqMediaAsset' "
+								+ " and rot.origId IN (SELECT resId FROM crawlerDB.c_ResDict_Ref where cdictDid = '"+crawlerDictdId+"' and resTableName = 'c_Album'))";
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+    }
 }

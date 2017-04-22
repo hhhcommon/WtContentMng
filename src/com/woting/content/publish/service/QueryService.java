@@ -190,7 +190,7 @@ public class QueryService {
 		sql += " ) ch ";
 		sql += " LEFT JOIN wt_MediaAsset ma ON (ch.assetId=ma.id and ch.assetType = 'wt_MediaAsset')"
 				+ " LEFT JOIN wt_SeqMediaAsset sma ON (ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset')";
-		sql += " GROUP BY ch.assetId,ch.assetType";
+		sql += " GROUP BY ch.topSort DESC, ch.assetId,ch.assetType";
 		try {
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();

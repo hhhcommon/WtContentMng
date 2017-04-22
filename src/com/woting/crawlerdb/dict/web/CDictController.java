@@ -186,7 +186,10 @@ public class CDictController {
             map.put("Message", "Ids参数为空");
             return map;
 		}
-		boolean isok = cDictService.delDictResRef(ids);
+		String isOrNoRemoveStr = m.get("IsOrNoRemove")+"";
+		boolean isOrNoRemove = true;
+		if (!isOrNoRemoveStr.equals("true")) isOrNoRemove = false;
+		boolean isok = cDictService.delDictResRef(ids, isOrNoRemove);
 		if(isok) {
 			map.put("ReturnType", "1001");
 			map.put("Message", "删除成功");
