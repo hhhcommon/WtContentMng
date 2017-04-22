@@ -20,6 +20,7 @@ $(function(){
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";//搜索词
+  var data={};//存储数据
   
   var userId='0579efbaf9a9';//W003
   var flowflag='2';
@@ -77,7 +78,11 @@ $(function(){
   /*s--翻页/搜索*/
   //翻页之后的回调函数
   function pagitionBack(current_page){
-    debugger;
+    if(($(".new_cate li").size()>"0")||(($(".startPubTime").val())&&($(".endPubTime").val()))){
+      optfy=2;//选中具体筛选条件后翻页
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
+    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
@@ -89,7 +94,6 @@ $(function(){
   
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
-    debugger;
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
@@ -297,14 +301,6 @@ $(function(){
   }
   /*e--翻页/搜索*/
   
-  /*s--销毁obj对象的key-value*/
-  function destroy(obj){
-    for(var key in obj){//清空对象
-      delete obj[key];
-    }
-  }
-  /*e--销毁obj对象的key-value*/
-  
   /*s--ztree的操作结合*/
   var zTreeObj,treeNode,treeNodeId;
   
@@ -362,11 +358,9 @@ $(function(){
   }
   
   //选中树上的栏目后的回调函数
-  var data={};
   function requestList(event,treeId,treeNode){
     destroy(data);
     data.UserId=userId;
-    data.PCDType="3";
     data.ContentFlowFlag=flowflag;
     current_page=1;
     data.Page=current_page;
@@ -506,9 +500,7 @@ $(function(){
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
   function getSeqInfo(seqId,i){
-    var data={"UserId":userId,
-              "Page":"1",
-              "PageSize":"10",
+    var data0={"UserId":userId,
               "ContentId":seqId,
               "MediaType":"wt_SeqMediaAsset"
     };
@@ -518,15 +510,17 @@ $(function(){
       dataType:"json",
       cache:false,
       async:false,
-      data:JSON.stringify(data),
+      data:JSON.stringify(data0),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          if(resultData.SubList[0].ContentPlay){
-            var audioObj={};
-            audioObj.title=resultData.SubList[0].ContentName;
-            audioObj.playUrl=resultData.SubList[0].ContentPlay;
-            audioList.push(audioObj);
-            $(".rtc_listBox").eq(i).addClass("playurl");
+          if(resultData.SubList[0]){
+            if(resultData.SubList[0].ContentPlay){
+              var audioObj={};
+              audioObj.title=resultData.SubList[0].ContentName;
+              audioObj.playUrl=resultData.SubList[0].ContentPlay;
+              audioList.push(audioObj);
+              $(".rtc_listBox").eq(i).addClass("playurl");
+            }
           }
         }
       },
@@ -632,7 +626,7 @@ $(function(){
     var mediatype=$(".cm_content3").attr("mediatype");
     var channelid=$(".cm_content3").attr("channelid");
     var imgurl=$(".upl_file").attr("value");
-    var data={"PCDType":"3",
+    var data5={"PCDType":"3",
               "UserId":userId,
               "MediaType":mediatype,
               "ContentId":contentid,
@@ -643,7 +637,7 @@ $(function(){
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
       type:"POST",
-      data:JSON.stringify(data),
+      data:JSON.stringify(data5),
       cache: false,
       processData: false,
       contentType: false,
@@ -704,7 +698,7 @@ $(function(){
             $(this).removeClass("isTop");
             $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
           });
-          var data={"PCDType":"3",
+          var data1={"PCDType":"3",
                     "MediaType":mediatype,
                     "ChannelId":channelId,
                     "ContentId":contentId,
@@ -712,13 +706,13 @@ $(function(){
                     "UserId":userId,
                     "Top":"1"//设置置顶
           };
-          setTop(data,obj);//设置置顶
+          setTop(data1,obj);//设置置顶
         }else{
           alert("你已经取消对本内容的置顶");
           return false;
         }
       }else{//暂无置顶内容    
-        var data={"PCDType":"3",
+        var data1={"PCDType":"3",
                   "MediaType":mediatype,
                   "ChannelId":channelId,
                   "ContentId":contentId,
@@ -726,10 +720,10 @@ $(function(){
                   "UserId":userId,
                   "Top":"1"//设置置顶
         };
-        setTop(data,obj);//设置置顶
+        setTop(data1,obj);//设置置顶
       }
     }else{//点击取消置顶
-      var data={"PCDType":"3",
+      var data1={"PCDType":"3",
                 "MediaType":mediatype,
                 "ChannelId":channelId,
                 "ContentId":contentId,
@@ -737,16 +731,16 @@ $(function(){
                 "UserId":userId,
                 "Top":"0"//取消置顶
       };
-      setTop(data,obj);//取消置顶
+      setTop(data1,obj);//取消置顶
     }
   });
   
   //设置/取消置顶
-  function setTop(data,obj){
+  function setTop(data1,obj){
     $.ajax({
       url:rootPath+"content/setTop.do",
       type:"POST",
-      data:JSON.stringify(data),
+      data:JSON.stringify(data1),
       cache: false,
       processData: false,
       contentType: false,
@@ -755,22 +749,21 @@ $(function(){
         $(obj).attr("disabled","disabled");
       },
       success:function(resultData){
-        if(data.Top=="1"){//设置置顶
+        if(data1.Top=="1"){//设置置顶
           if(resultData.ReturnType=="1001"){
             alert("设置置顶成功");
-            requestList();//再次请求内容列表
+            getContentList(data);//再次加载内容列表
 //          var topBox=$(obj).parent(".opetype1").parent(".rtc_listBox");
 //          $(".ri_top3_con").prepend(topBox);
 //          $(topBox).addClass("isTop");
 //          $(obj).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
           }else{
             alert("设置置顶失败"); 
-            requestList();//再次请求内容列表
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
             alert("取消置顶成功");
-            requestList();//再次请求内容列表
+            getContentList(data);//再次加载内容列表
           }else{
             alert("取消置顶失败");
           }  
@@ -847,8 +840,7 @@ $(function(){
       red.ReDescn=$(".other_reason").val();
       reDesc.push(red);
     }
-    var data2={"PCDType":"3",
-               "UserId":userId,
+    var data2={"UserId":userId,
                "ContentIds":contentIds,
                "ReDescn":reDesc,
                "OpeType":"revoke"
@@ -868,9 +860,9 @@ $(function(){
           $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker").addClass("dis");
           $("body").css({"overflow":"auto"});
-          requestList();//再次请求内容列表
           $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
           $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+          getContentList(data);//再次加载内容列表
         }else{
           alert(resultData.Message);
         }
@@ -881,12 +873,6 @@ $(function(){
       }     
     });
   })
-  
-  //点击弹出页面上的勾选框
-  $(document).on("click",".nc_checkimg",function(){
-    if($(this).hasClass("checkbox1")) $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
-    else $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-  });
   
   //点击撤回原因弹出页面上的关闭按钮
   $(document).on("click",".nh_span2",function(){
@@ -899,20 +885,20 @@ $(function(){
   
   /*s--切换到轮播图之后的相关操作*/
   //请求栏目下的所有轮播图
-  var data1={"PCDType":"3",
+  var data3={"PCDType":"3",
              "UserId":userId,
              "ChannelId":channelId,
              "Page":"1",
              "PageSize":"10"
   };
-//getLoopImages(data1);
-  function getLoopImages(data){
+//getLoopImages(data3);
+  function getLoopImages(data3){
     $.ajax({
       type:"POST",
       url:rootPath+"content/getLoopImages.do",
       dataType:"json",
       cache:false, 
-      data:JSON.stringify(data),
+      data:JSON.stringify(data3),
       beforeSend:function(){
         $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
         $('.shade', parent.document).show();
@@ -968,7 +954,7 @@ $(function(){
     $li.children(".lbd_box1").text("第"+prev_index+"帧");
     $li.next().children(".lbd_box1").text("第"+now_index+"帧");
     return;
-    var data2={"PCDType":"3",
+    var data4={"PCDType":"3",
                "ChannelId":channelId,
                "UserId":userId,
                "Sort":sort
@@ -978,7 +964,7 @@ $(function(){
       url:rootPath+"content/upCarousel.do",
       dataType:"json",
       cache:false, 
-      data:JSON.stringify(data2),
+      data:JSON.stringify(data4),
       beforeSend:function(){
         $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
         $('.shade', parent.document).show();
@@ -1012,7 +998,7 @@ $(function(){
     $li.children(".lbd_box1").text("第"+next_index+"帧");
     $li.prev().children(".lbd_box1").text("第"+now_index+"帧");
     return;
-    var data2={"PCDType":"3",
+    var data4={"PCDType":"3",
                "ChannelId":channelId,
                "UserId":userId,
                "Sort":sort
@@ -1022,7 +1008,7 @@ $(function(){
       url:rootPath+"content/downCarousel.do",
       dataType:"json",
       cache:false, 
-      data:JSON.stringify(data2),
+      data:JSON.stringify(data4),
       beforeSend:function(){
         $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
         $('.shade', parent.document).show();
@@ -1057,7 +1043,7 @@ $(function(){
     });
     return;
     
-    var data2={"PCDType":"3",
+    var data6={"PCDType":"3",
                "ChannelId":channelId,
                "UserId":userId,
                "Sort":sort
@@ -1067,7 +1053,7 @@ $(function(){
       url:rootPath+"content/downCarousel.do",
       dataType:"json",
       cache:false, 
-      data:JSON.stringify(data2),
+      data:JSON.stringify(data6),
       beforeSend:function(){
         $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
         $('.shade', parent.document).show();
