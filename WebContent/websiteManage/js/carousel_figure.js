@@ -884,8 +884,7 @@ $(function(){
   var data3={"PCDType":"3",
              "UserId":userId,
              "ChannelId":channelId,
-             "Page":"1",
-             "PageSize":"10"
+             "Page":"0",
   };
 //getLoopImages(data3);
   function getLoopImages(data3){
@@ -915,7 +914,6 @@ $(function(){
   
   //加载轮播图列表
   function getLoopImages(returnData){
-    return;
     $(".lb_div5").html(" ");//每次加载之前都要清空
     for(var i=0;i<returnData.ReturnList.length;i++){
       var list='<div class="lbd_box" id='+returnData.ReturnList[i].Id+'>'+
@@ -944,64 +942,38 @@ $(function(){
   //点击上移一层
   $(document).on("click",".lbd_box61",function(){
     var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-    var prev_index=$li.prev().index()+1;
-    var now_index=$li.index()+1;
-    $li.prev().before($li);
-    $li.children(".lbd_box1").text("第"+prev_index+"帧");
-    $li.next().children(".lbd_box1").text("第"+now_index+"帧");
-    return;
+    var contentId=$($li).attr("contentId");
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    channelId=nodes[0].id;
     var data4={"PCDType":"3",
                "ChannelId":channelId,
                "UserId":userId,
-               "Sort":sort
+               "ContentId":contentId,
+               "LoopSort":"-1"
     };
-    $.ajax({
-      type:"POST",
-      url:rootPath+"content/upCarousel.do",
-      dataType:"json",
-      cache:false, 
-      data:JSON.stringify(data4),
-      beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
-        $('.shade', parent.document).show();
-      },
-      success: function(resultData){
-        if(resultData.ReturnType=="1001"){
-          var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-          var prev_index=$li.prev().index()+1;
-          var now_index=$li.index()+1;
-          $li.prev().before($li);
-          $li.children(".lbd_box1").text("第"+prev_index+"帧");
-          $li.next().children(".lbd_box1").text("第"+now_index+"帧");
-//        loadCarouselList(returnData);//重新加载轮播图列表
-        }else{
-          alert(resultData.Message);
-        }
-        $('.shade', parent.document).hide();
-      },
-      error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
-    });
+    moveLoopImage(data4);//移动轮播图
   });
   
   //点击下移一层
   $(document).on("click",".lbd_box62",function(){
     var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-    var next_index=$li.next().index()+1;
-    var now_index=$li.index()+1;
-    $li.next().after($li);
-    $li.children(".lbd_box1").text("第"+next_index+"帧");
-    $li.prev().children(".lbd_box1").text("第"+now_index+"帧");
-    return;
+    var contentId=$($li).attr("contentId");
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    channelId=nodes[0].id;
     var data4={"PCDType":"3",
                "ChannelId":channelId,
                "UserId":userId,
-               "Sort":sort
+               "ContentId":contentId,
+               "LoopSort":"-2"
     };
+    moveLoopImage(data4);//移动轮播图
+  });
+  
+  //移动轮播图
+  function moveLoopImage(data4){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/downCarousel.do",
+      url:rootPath+"content/moveLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data4),
@@ -1010,16 +982,22 @@ $(function(){
         $('.shade', parent.document).show();
       },
       success: function(resultData){
-        if(resultData.ReturnType=="1001"){
-          var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-          var next_index=$li.next().index()+1;
-          var now_index=$li.index()+1;
-          $li.next().after($li);
-          $li.children(".lbd_box1").text("第"+next_index+"帧");
-          $li.prev().children(".lbd_box1").text("第"+now_index+"帧");
-//        loadCarouselList(returnData);//重新加载轮播图列表
-        }else{
-          alert(resultData.Message);
+        if(data4.LoopSort=="-1"){//上移
+          if(resultData.ReturnType=="1001"){
+            alert("轮播图上移成功");
+//          getLoopImages(data3);//重新加载轮播图列表
+          }else{
+            alert("轮播图上移失败");
+            alert(resultData.Message);
+          }
+        }else{//下移，-2
+          if(resultData.ReturnType=="1001"){
+            alert("轮播图下移成功");
+//          getLoopImages(data3);//重新加载轮播图列表
+          }else{
+            alert("轮播图下移失败");
+            alert(resultData.Message);
+          }
         }
         $('.shade', parent.document).hide();
       },
@@ -1027,26 +1005,25 @@ $(function(){
         $(".lb_div5").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
-  });
+  }
   
   //点击删除此帧
   $(document).on("click",".lbd_box63",function(){
     var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-    $li.remove();
-    $(".lb_div5 .lbd_box").each(function(i){
-      var index=i+1;
-      $(this).children(".lbd_box1").text("第"+index+"帧");
-    });
-    return;
-    
+    var contentId=$($li).attr("contentId");
+    var mediaType=$($li).attr("mediaType");
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    channelId=nodes[0].id;
     var data6={"PCDType":"3",
-               "ChannelId":channelId,
                "UserId":userId,
-               "Sort":sort
+               "MediaType":mediaType,
+               "ContentId":contentId,
+               "ChannelId":channelId
+               
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/downCarousel.do",
+      url:rootPath+"content/delLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data6),
@@ -1056,13 +1033,8 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-          $li.remove();
-          $(".lb_div5 .lbd_box").each(function(i){
-            var index=i+1;
-            $(this).children(".lbd_box1").text("第"+index+"帧");
-          });
-//        loadCarouselList(returnData);//重新加载轮播图列表
+          alert("轮播图删除成功");
+//        getLoopImages(data3);//重新加载轮播图列表
         }else{
           alert(resultData.Message);
         }
