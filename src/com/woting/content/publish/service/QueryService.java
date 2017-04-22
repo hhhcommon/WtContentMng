@@ -1,6 +1,5 @@
 package com.woting.content.publish.service;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,7 +50,6 @@ import com.woting.content.manage.channel.service.ChannelContentService;
 import com.woting.content.manage.dict.service.DictContentService;
 import com.woting.content.manage.keyword.service.KeyWordProService;
 import com.woting.content.manage.media.service.MediaContentService;
-import com.woting.content.publish.utils.CacheUtils;
 
 @Service
 public class QueryService {
@@ -1563,5 +1561,18 @@ public class QueryService {
         if (StringUtils.isNullOrEmptyOrSpace(channelId)) return null;
 
         return clmService.getLoopImgList(mediaType, channelId, pageSize, pageIndex);
+    }
+    
+    /**
+     * 某一栏目下轮播图排序
+     * @param mediaType 过滤条件，按类型过滤
+     * @param channelId 栏目Id
+     * @param contentId 内容Id
+     * @param loopSort  =-1:下移; =1:上移
+     */
+    public boolean updateLoopSort(String mediaType, String channelId, String contentId, int loopSort) {
+        if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || loopSort==0) return false;
+
+        return clmService.updateLoopSort(mediaType, channelId, contentId, loopSort);
     }
 }

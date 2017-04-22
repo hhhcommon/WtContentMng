@@ -326,4 +326,17 @@
     </if>
     order by a.loopSort desc, a.topSort desc, a.publishTime desc
   </select>
+  
+  <!-- 轮播图排序 -->
+  <update id="updateLoopSort" parameterType="java.util.Map">
+    update wt_ChannelAsset set loopSort=#{_loopSort,jdbcType=INTEGER}
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetType=#{assetType,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+    update wt_ChannelAsset set loopSort=#{loopSort,jdbcType=INTEGER}
+    where channelId=#{_channelId,jdbcType=VARCHAR} and
+          assetType=#{_assetType,jdbcType=VARCHAR} and
+          assetId=#{_assetId,jdbcType=VARCHAR}
+    
+  </update>
 </mapper>
