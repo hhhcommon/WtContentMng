@@ -218,8 +218,7 @@ public class CDictService {
 								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
 								chamaps.add(chamapref);
-								String redisKey = "wt_ChannelMapRef_"+chamapref.getId();
-								crawlerService.makeCCateResRef(redisKey, chamapref.getId(), did, id);
+								crawlerService.addCCateResRef(chamapref.getId(), did, id);
 							}
 						}
 						channelMapService.insertList(chamaps);
@@ -242,8 +241,7 @@ public class CDictService {
 								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
 								chamaps.add(chamapref);
-								String redisKey = "wt_ChannelMapRef_"+chamapref.getId();
-								crawlerService.makeCCateResRef(redisKey, chamapref.getId(), id, chaid);
+								crawlerService.addCCateResRef(chamapref.getId(), id, chaid);
 							}
 						}
 						channelMapService.insertList(chamaps);
@@ -342,7 +340,7 @@ public class CDictService {
 	 * @param id
 	 * @return
 	 */
-	public boolean delDictResRef(String ids) {
+	public boolean delDictResRef(String ids, boolean isOrNoRemove) {
 		String valus = "";
 		String[] chamapids = ids.split(",");
 		if (chamapids!=null && chamapids.length>0) {
