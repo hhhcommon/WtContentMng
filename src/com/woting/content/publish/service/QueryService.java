@@ -469,7 +469,7 @@ public class QueryService {
 	 */
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
 		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentid+"'", acttype);
-		if (chas != null && chas.size() > 0) {
+//		if (chas != null && chas.size() > 0) {
 			MediaAssetPo ma = mediaService.getMaInfoById(contentid);
 			if (ma != null) {
 				List<MediaAssetPo> mas = new ArrayList<>();
@@ -479,7 +479,7 @@ public class QueryService {
 					return rem.get(0);
 				}
 			}
-		}
+//		}
 		return null;
 	}
 
