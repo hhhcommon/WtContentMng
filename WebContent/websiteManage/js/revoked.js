@@ -8,8 +8,7 @@ $(function(){
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";
   
-  var deviceId='E830A87F620FFAC2B8585F39BA4186E8';
-  var userId='123';
+  var userId='0579efbaf9a9';//W003
   var contentflowflag='4';//4已撤回
   
   /*日期处理--日历插件*/
@@ -64,6 +63,11 @@ $(function(){
   /*s--翻页/搜索*/
   //翻页之后的回调函数
   function pagitionBack(current_page){
+    if(($(".new_cate li").size()>"0")||(($(".startPubTime").val())&&($(".endPubTime").val()))){
+      optfy=2;//选中具体筛选条件后翻页
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
+    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
@@ -76,14 +80,12 @@ $(function(){
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
     destroy(data);
-    data.DeviceId=deviceId;
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    data.ChannelId=nodes[0].id;
     data.UserId=userId;
-    data.PCDType="3";
     data.ContentFlowFlag=contentflowflag;
     data.PageSize="10";
     data.Page=current_page;
-    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(optfy==2){//optfy=2选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
@@ -93,7 +95,7 @@ $(function(){
           if(pId=="type"){
             if(id!='ALL') data.MediaType=$(this).attr("id");
           }else{
-            data.SourceId=$(this).attr("id");
+            data.PubliusherId=$(this).attr("id");
           }
         }
       });
@@ -114,10 +116,6 @@ $(function(){
   $(document).on("click",".trig_item",function(){
     optfy=2;//选中具体筛选条件后翻页
     anew(contentflowflag);//在每次加载具体的资源列表时候的公共方法
-    if(($(".startPubTime").val())&&($(".endPubTime").val())){
-      data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-      data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-    }
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
       getContentList(data);
@@ -131,15 +129,13 @@ $(function(){
   //在每次加载具体的资源列表时候的公共方法
   function anew(contentflowflag){
     destroy(data);
-    data.DeviceId=deviceId;
-    data.UserId=userId;
-    data.PCDType="3";
-    data.ContentFlowFlag=contentflowflag;
-    data.PageSize="10";
-    current_page=1;
-    data.Page=current_page;
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合
     data.ChannelId=nodes[0].id;
+    current_page=1;
+    data.UserId=userId;
+    data.PageSize="10";
+    data.Page=current_page;
+    data.ContentFlowFlag=contentflowflag;
     if($(".new_cate li").size()>"0"){
       optfy=2;//选中具体筛选条件后翻页
       $(document).find(".new_cate li").each(function(){
@@ -148,27 +144,24 @@ $(function(){
         if(pId=="type"){
           if(id!='ALL') data.MediaType=$(this).attr("id");
         }else{
-          data.SourceId=$(this).attr("id");
+          data.PubliusherId=$(this).attr("id");
         }
       });
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
     }
     if(($(".startPubTime").val())&&($(".endPubTime").val())){
       optfy=2;//选中具体筛选条件后翻页
       data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
       data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
     }
   }
   
   //点击取消所选的筛选条件
   $(document).on("click",".cate_img",function(){
-    if($(".new_cate li").size()<="0"){
-      optfy=1;//未选中具体筛选条件前翻页
-    }
     anew(contentflowflag);//在每次加载具体的资源列表时候的公共方法
-    if(($(".startPubTime").val())&&($(".endPubTime").val())){
-      data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-      data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -190,8 +183,6 @@ $(function(){
     }else{
       optfy=2;//选中具体筛选条件后翻页
       anew(contentflowflag);
-      data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-      data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
       searchWord=$.trim($(".ri_top_li2_inp").val());
       if(searchWord==""){
         seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -208,9 +199,6 @@ $(function(){
   $(".clean").on("click",function(){
     $(".startPubTime,.endPubTime").val("");
     anew(contentflowflag);//在每次加载具体的资源列表时候的公共方法
-    if($(".new_cate li").size()<="0"){
-      optfy=1;//未选中具体筛选条件前翻页
-    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -245,15 +233,13 @@ $(function(){
   //搜索
   function searchList(){
     destroy(data);
-    data.DeviceId=deviceId;
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    data.ChannelId=nodes[0].id;
     data.UserId=userId;
-    data.PCDType="3";
     data.ContentFlowFlag=contentflowflag;
     data.PageSize="10";
     current_page=1;
     data.Page=current_page;
-    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -362,9 +348,7 @@ $(function(){
   var data={};
   function requestList(event,treeId,treeNode){
     destroy(data);
-    data.DeviceId=deviceId;
     data.UserId=userId;
-    data.PCDType="3";
     data.ContentFlowFlag=contentflowflag;
     current_page=1;
     data.Page=current_page;
@@ -459,8 +443,7 @@ $(function(){
         $(".sequ_num").eq(i).text((resultData.ResultList[i].MediaSize)?(resultData.ResultList[i].MediaSize+"个声音"):"0个声音");
         //如果是专辑，ajax请求获取专辑的详细信息
         var seqId=resultData.ResultList[i].ContentId;
-        var pagenum=data.Page;
-        getSeqInfo(seqId,i,pagenum);
+        getSeqInfo(seqId,i);
       }
       $(".sequ_num").eq(i).attr("mediaType",resultData.ResultList[i].MediaType);
       if(resultData.ResultList[i].ContentPersons){
@@ -484,16 +467,12 @@ $(function(){
       contenttime=new Date(parseInt(contenttime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");
       $(".audio_time").eq(i).text((contenttime)?(contenttime):"0000-00-00:00:00:00");
     }
-    console.log(audioList);
     $("#audioIframe").attr("src","globalplayer.html");
   }
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
-  function getSeqInfo(seqId,i,pagenum){
+  function getSeqInfo(seqId,i){
     var data={"UserId":userId,
-              "ContentFlowFlag":contentflowflag,
-              "Page":pagenum,
-              "PageSize":"10",
               "ContentId":seqId,
               "MediaType":"wt_SeqMediaAsset"
     };
@@ -506,13 +485,15 @@ $(function(){
       data:JSON.stringify(data),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          if(resultData.SubList[0].ContentPlay){
-            var audioObj={};
-            audioObj.title=resultData.SubList[0].ContentName;
-            audioObj.playUrl=resultData.SubList[0].ContentPlay;
-            audioList.push(audioObj);
-            $(".rtc_listBox").eq(i).addClass("playurl").attr("playurl",resultData.SubList[0].ContentPlay);
-            $(".rtc_listBox").eq(i).attr("playurlName",resultData.SubList[0].ContentName);
+          if(resultData.SubList[0]){
+            if(resultData.SubList[0].ContentPlay){
+              var audioObj={};
+              audioObj.title=resultData.SubList[0].ContentName;
+              audioObj.playUrl=resultData.SubList[0].ContentPlay;
+              audioList.push(audioObj);
+              $(".rtc_listBox").eq(i).addClass("playurl").attr("playurl",resultData.SubList[0].ContentPlay);
+              $(".rtc_listBox").eq(i).attr("playurlName",resultData.SubList[0].ContentName);
+            }
           }
         }
       },
@@ -590,8 +571,9 @@ $(function(){
   /*
       编辑直接发布已撤回内容的接口还没有，目前我用的是主播管理的发布接口
   * */
+  var contentIds=[];
   $(".rto_set").on("click",function(){
-    var contentIds=[];
+    contentIds=[];
     $(".ri_top3_con .rtc_listBox").each(function(){
       if($(this).children(".rtcl_img_check").hasClass("checkbox1")){//未选中
         
