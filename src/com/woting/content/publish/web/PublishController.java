@@ -327,7 +327,7 @@ public class PublishController {
 			if (ls!=null && ls.size()>0) {
 				map.put("ReturnType", "1001");
 			    map.put("ResultList", ls);
-			    map.put("AllCount", retM.get("AllCount"));
+			    map.put("AllCount", retM.get("Count"));
 			    return map;
 			} 
 		} 
@@ -535,7 +535,7 @@ public class PublishController {
                 }
                 mUdk = mp.getUserDeviceKey();
                 if (mUdk!=null) {
-                    Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/setTop");
+                    Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/getLoopImages");
                     if ((retM.get("ReturnType") + "").equals("2003")) {
                         map.put("ReturnType", "200");
                         map.put("Message", "需要登录");
@@ -621,12 +621,12 @@ public class PublishController {
         }
     }
     
-    @RequestMapping(value = "/content/moveLoopImage.do")
+    @RequestMapping(value = "/content/sortLoopImage.do")
     @ResponseBody
     public Map<String, Object> updateLoopSortInChannel(HttpServletRequest request) {
         // 数据收集处理==1
         ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-        alPo.setApiName("6.4.3--/content/moveLoopImage.do");
+        alPo.setApiName("6.4.3--/content/sortLoopImage.do");
         alPo.setObjType("010");//内容发布
         alPo.setDealFlag(1);// 处理成功
         alPo.setOwnerType(201);
@@ -651,7 +651,7 @@ public class PublishController {
                 }
                 mUdk = mp.getUserDeviceKey();
                 if (mUdk!=null) {
-                    Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/setTop");
+                    Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "content/sortLoopImage");
                     if ((retM.get("ReturnType") + "").equals("2003")) {
                         map.put("ReturnType", "200");
                         map.put("Message", "需要登录");

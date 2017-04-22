@@ -10,16 +10,8 @@ $(function(){
     }else{
       $(".ri_top_li3").removeClass("dis");
     }
-    $(".ztree").css({"height":$(".nav_con").height()+"px","overflow":"auto"});
   });
   /*e--内容与轮播图切换*/
-  
-  /*s--设置计时器右边边框的高度赋给左边*/
-  var times=setInterval(setTime,100);
-  function setTime(){
-    $(".ztree").css({"height":$(".nav_con").height()+"px","overflow":"auto"});
-  }
-  /*e--右边边框的高度赋给左边*/
   
   var rootPath=getRootPath();
   var current_page=1;//当前页码
@@ -27,11 +19,11 @@ $(function(){
   var allCount=0;//总记录数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
-  var searchWord="";
+  var searchWord="";//搜索词
   
-  var deviceId='E830A87F620FFAC2B8585F39BA4186E8';
-  var userId='123';
+  var userId='0579efbaf9a9';//W003
   var flowflag='2';
+  var channelId='';//栏目id
   
   /*日期处理--日历插件*/
   $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
@@ -85,6 +77,7 @@ $(function(){
   /*s--翻页/搜索*/
   //翻页之后的回调函数
   function pagitionBack(current_page){
+    debugger;
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
@@ -96,6 +89,7 @@ $(function(){
   
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
+    debugger;
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
@@ -112,7 +106,7 @@ $(function(){
           if(pId=="type"){
             if(id!='ALL') data.MediaType=$(this).attr("id");
           }else{
-            data.SourceId=$(this).attr("id");
+            data.PubliusherId=$(this).attr("id");
           }
         }
       });
@@ -133,10 +127,6 @@ $(function(){
   $(document).on("click",".trig_item",function(){
     optfy=2;//选中具体筛选条件后翻页
     anew(flowflag);//在每次加载具体的资源列表时候的公共方法
-    if(($(".startPubTime").val())&&($(".endPubTime").val())){
-      data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-      data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-    }
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
       getContentList(data);
@@ -165,27 +155,24 @@ $(function(){
         if(pId=="type"){
           if(id!='ALL') data.MediaType=$(this).attr("id");
         }else{
-          data.SourceId=$(this).attr("id");
+          data.PubliusherId=$(this).attr("id");
         }
       });
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
     }
     if(($(".startPubTime").val())&&($(".endPubTime").val())){
       optfy=2;//选中具体筛选条件后翻页
       data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
       data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
     }
   }
   
   //点击取消所选的筛选条件
   $(document).on("click",".cate_img",function(){
-    if($(".new_cate li").size()<="0"){
-      optfy=1;//未选中具体筛选条件前翻页
-    }
     anew(flowflag);//在每次加载具体的资源列表时候的公共方法
-    if(($(".startPubTime").val())&&($(".endPubTime").val())){
-      data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-      data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
-    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -207,8 +194,6 @@ $(function(){
     }else{
       optfy=2;//选中具体筛选条件后翻页
       anew(flowflag);
-      data.BeginContentPubTime=new Date($(".startPubTime").val()).getTime();
-      data.EndContentPubTime=new Date($(".endPubTime").val()).getTime();
       searchWord=$.trim($(".ri_top_li2_inp").val());
       if(searchWord==""){
         seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -225,9 +210,6 @@ $(function(){
   $(".clean").on("click",function(){
     $(".startPubTime,.endPubTime").val("");
     anew(flowflag);//在每次加载具体的资源列表时候的公共方法
-    if($(".new_cate li").size()<="0"){
-      optfy=1;//未选中具体筛选条件前翻页
-    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){
       seaFy=1;//seaFy=1未搜索关键词前翻页
@@ -338,11 +320,6 @@ $(function(){
       showRemoveBtn: false,//是否显示删除按钮
       showRenameBtn: false//是否显示编辑名称按钮
     },
-//  check:{
-//    enable:true,//设置 zTree的节点上是否显示 checkbox / radio
-//    chkStyle:"radio",
-//    radioType:"all"
-//  },
     async:{
       enable:true//强行异步加载父节点的子节点
     },
@@ -352,11 +329,6 @@ $(function(){
       }
     },
     callback:{
-//    onClick:function(e, treeId, treeNode, clickFlag){
-//      zTreeObj.checkNode(treeNode, !treeNode.checked, true);
-//      requestList();
-//    },//选中页面上某一分类，加载对应的列表详情
-//    onCheck:requestList,//选中页面上某一分类，加载对应的列表详情
       onClick:requestList,//选中页面上某一分类，加载对应的列表详情
     }
   });
@@ -393,10 +365,9 @@ $(function(){
   var data={};
   function requestList(event,treeId,treeNode){
     destroy(data);
-    data.DeviceId=deviceId;
     data.UserId=userId;
     data.PCDType="3";
-    data.FlagFlow=flowflag;
+    data.ContentFlowFlag=flowflag;
     current_page=1;
     data.Page=current_page;
     data.PageSize="10";
@@ -477,7 +448,7 @@ $(function(){
                 '</div>'+
               '</div>';
       $(".ri_top3_con").append(listBox);
-      if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src","resultData.ResultList[i].ContentImg");
+      if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultList[i].ContentImg);
       else $(".rtcl_img img").eq(i).attr("src","http://wotingfm.com:908/CM/resources/images/default.png");
       $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
@@ -521,14 +492,21 @@ $(function(){
         }
         $(".sequ_num").eq(i).attr("chIds",chIds);
       }
+      if(resultData.ResultList[i].ContentTopSort){
+        $(".top").eq(i).attr("contentTopSort",resultData.ResultList[i].ContentTopSort);
+        if(resultData.ResultList[i].ContentTopSort>"0"){//已置顶
+          var topBox=$(".top").eq(i).parent(".opetype1").parent(".rtc_listBox");
+          $(topBox).addClass("isTop");
+          $(".top").eq(i).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+        }
+      }
     }
     $("#audioIframe").attr("src","globalplayer.html");
   }
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
   function getSeqInfo(seqId,i){
-    var data={"UserId":"123",
-              "ContentFlowFlag":"2",
+    var data={"UserId":userId,
               "Page":"1",
               "PageSize":"10",
               "ContentId":seqId,
@@ -564,14 +542,14 @@ $(function(){
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var contenttxt=$(this).parent(".opetype1").siblings(".rtcl_con").children(".rtcl_con_p").text();
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    var channelId=nodes[0].id;
+    channelId=nodes[0].id;
     var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
     }else if(mediatype=="wt_SeqMediaAsset"){//专辑
-      mediatype="SEQU ";
+      mediatype="SEQU";
     }else{//电台
-      mediatype="RADIO ";
+      mediatype="RADIO";
     }
     console.log(contentId,contenttxt,channelId,mediatype);
     $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
@@ -591,7 +569,6 @@ $(function(){
     var _this=$(".upload_pic");
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
-    oMyForm.append("DeviceId", deviceId);
     oMyForm.append("MobileClass", "Chrome");
     oMyForm.append("PCDType", "3");
     oMyForm.append("UserId", userId);
@@ -612,6 +589,7 @@ $(function(){
       dataType:"json",
       beforeSend:function(){
         $(".carouselImgMask").removeClass("dis");
+        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
       },
       success:function(resultData){
         if(resultData.Success==true){
@@ -629,8 +607,9 @@ $(function(){
         }else{
           alert(resultData.err);
         }
+        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
       },
-      error: function(XHR){
+      error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
       }
     });
@@ -649,14 +628,17 @@ $(function(){
   //点击保存设置
   $(".cmf_save").on("click",function(){
     //待定--设置轮播图（缺少轮播图图片的地址）
-    var contentId=$(".cm_content3").attr("contentId");
+    var contentid=$(".cm_content3").attr("contentId");
     var mediatype=$(".cm_content3").attr("mediatype");
     var channelid=$(".cm_content3").attr("channelid");
-    var data={"UserId":userId,
+    var imgurl=$(".upl_file").attr("value");
+    var data={"PCDType":"3",
+              "UserId":userId,
               "MediaType":mediatype,
-              "ContentId":contentId,
+              "ContentId":contentid,
               "ChannelId":channelid,
-              "LoopSort":"0"
+              "LoopSort":"0",
+              "ImgeUrl":imgurl
     };
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
@@ -678,7 +660,7 @@ $(function(){
         }
         $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
       },
-      error: function(XHR){
+      error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
       }
     });
@@ -695,18 +677,19 @@ $(function(){
   //点击置顶或取消置顶按钮
   var hasTop=false;//是否有置顶内容
   $(document).on("click",".top",function(){
+    var obj=$(this);
     var text=$(this).text().replace(/\s/g, "");
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var box=$(".ri_top3_con .rtc_listBox");
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    var channelId=nodes[0].id;
+    channelId=nodes[0].id;
     var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
     }else if(mediatype=="wt_SeqMediaAsset"){//专辑
-      mediatype="SEQU ";
+      mediatype="SEQU";
     }else{//电台
-      mediatype="RADIO ";
+      mediatype="RADIO";
     }
     if(text=="置顶"){//点击置顶
       $(box).each(function(){
@@ -721,41 +704,45 @@ $(function(){
             $(this).removeClass("isTop");
             $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
           });
-          var data={"MediaType":mediatype,
+          var data={"PCDType":"3",
+                    "MediaType":mediatype,
                     "ChannelId":channelId,
                     "ContentId":contentId,
                     "IsOnlyTop":"1",
                     "UserId":userId,
                     "Top":"1"//设置置顶
           };
-          setTop(data);//设置置顶
+          setTop(data,obj);//设置置顶
         }else{
           alert("你已经取消对本内容的置顶");
           return false;
         }
       }else{//暂无置顶内容    
-        var data={"MediaType":mediatype,
+        var data={"PCDType":"3",
+                  "MediaType":mediatype,
                   "ChannelId":channelId,
                   "ContentId":contentId,
                   "IsOnlyTop":"1",
                   "UserId":userId,
                   "Top":"1"//设置置顶
         };
-        setTop(data);//设置置顶
+        setTop(data,obj);//设置置顶
       }
     }else{//点击取消置顶
-      var data={"MediaType":mediatype,
+      var data={"PCDType":"3",
+                "MediaType":mediatype,
                 "ChannelId":channelId,
                 "ContentId":contentId,
                 "IsOnlyTop":"1",
                 "UserId":userId,
                 "Top":"0"//取消置顶
       };
+      setTop(data,obj);//取消置顶
     }
   });
   
   //设置/取消置顶
-  function setTop(data){
+  function setTop(data,obj){
     $.ajax({
       url:rootPath+"content/setTop.do",
       type:"POST",
@@ -764,28 +751,31 @@ $(function(){
       processData: false,
       contentType: false,
       dataType:"json",
+      beforeSend:function(){
+        $(obj).attr("disabled","disabled");
+      },
       success:function(resultData){
         if(data.Top=="1"){//设置置顶
           if(resultData.ReturnType=="1001"){
             alert("设置置顶成功");
-            var topBox=$(this).parent(".opetype1").parent(".rtc_listBox");
-            $(".ri_top3_con").prepend(topBox);
-            $(topBox).addClass("isTop");
-            $(this).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
+            requestList();//再次请求内容列表
+//          var topBox=$(obj).parent(".opetype1").parent(".rtc_listBox");
+//          $(".ri_top3_con").prepend(topBox);
+//          $(topBox).addClass("isTop");
+//          $(obj).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
           }else{
-            alert("设置置顶失败");
+            alert("设置置顶失败"); 
+            requestList();//再次请求内容列表
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
             alert("取消置顶成功");
-            $(box).each(function(){
-              $(this).removeClass("isTop");
-              $(this).children(".opetype1").children(".top").css({"color":"#0077C7","letter-spacing":"3.6px"}).text("置  顶");
-            });
+            requestList();//再次请求内容列表
           }else{
             alert("取消置顶失败");
           }  
         }
+        $(obj).removeAttr("disabled");
       },
       error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
@@ -857,11 +847,11 @@ $(function(){
       red.ReDescn=$(".other_reason").val();
       reDesc.push(red);
     }
-    var data2={
-                UserId:"123",
-                ContentIds:contentIds,
-                ReDescn:reDesc,
-                OpeType:"revoke"
+    var data2={"PCDType":"3",
+               "UserId":userId,
+               "ContentIds":contentIds,
+               "ReDescn":reDesc,
+               "OpeType":"revoke"
     };
     $.ajax({
       type:"POST",
@@ -909,13 +899,14 @@ $(function(){
   
   /*s--切换到轮播图之后的相关操作*/
   //请求栏目下的所有轮播图
-  var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-  var channelId=nodes[0].id;
-  var data1={"UserId":userId,
-             "ChannelId":channelId
+  var data1={"PCDType":"3",
+             "UserId":userId,
+             "ChannelId":channelId,
+             "Page":"1",
+             "PageSize":"10"
   };
-  getLoopImages(dada1);
-  function getLoopImages(dada){
+//getLoopImages(data1);
+  function getLoopImages(data){
     $.ajax({
       type:"POST",
       url:rootPath+"content/getLoopImages.do",
@@ -942,6 +933,7 @@ $(function(){
   
   //加载轮播图列表
   function getLoopImages(returnData){
+    return;
     $(".lb_div5").html(" ");//每次加载之前都要清空
     for(var i=0;i<returnData.ReturnList.length;i++){
       var list='<div class="lbd_box" id='+returnData.ReturnList[i].Id+'>'+
@@ -976,9 +968,10 @@ $(function(){
     $li.children(".lbd_box1").text("第"+prev_index+"帧");
     $li.next().children(".lbd_box1").text("第"+now_index+"帧");
     return;
-    var data2={"ChannelId":channelId,
-                "UserId":userId,
-                "Sort":sort
+    var data2={"PCDType":"3",
+               "ChannelId":channelId,
+               "UserId":userId,
+               "Sort":sort
     };
     $.ajax({
       type:"POST",
@@ -1019,9 +1012,10 @@ $(function(){
     $li.children(".lbd_box1").text("第"+next_index+"帧");
     $li.prev().children(".lbd_box1").text("第"+now_index+"帧");
     return;
-    var data2={"ChannelId":channelId,
-                "UserId":userId,
-                "Sort":sort
+    var data2={"PCDType":"3",
+               "ChannelId":channelId,
+               "UserId":userId,
+               "Sort":sort
     };
     $.ajax({
       type:"POST",
@@ -1063,9 +1057,10 @@ $(function(){
     });
     return;
     
-    var data2={"ChannelId":channelId,
-                "UserId":userId,
-                "Sort":sort
+    var data2={"PCDType":"3",
+               "ChannelId":channelId,
+               "UserId":userId,
+               "Sort":sort
     };
     $.ajax({
       type:"POST",

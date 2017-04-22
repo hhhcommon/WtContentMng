@@ -1,11 +1,8 @@
 $(function(){
-  //获取deviceId
-//var deviceId=getCookie("JSESSIONID");
-  var deviceId="E830A87F620FFAC2B8585F39BA4186E8";
   
   //获取用户的id
-//var userId=$(".login_user span",parent.document).attr("userid");
-  var userId="123";
+  var userId=$(".login_user span",parent.document).attr("userid");
+
   
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在创建专辑页面保存,subType=2代表在修改专辑页面保存
@@ -15,11 +12,10 @@ $(function(){
   var pageSize=2;//每页条数
   
   /*s--获取筛选条件*/
-  var dataF={ "DeviceId":deviceId,
-              "MobileClass":"Chrome",
-              "UserId":userId,
-              "PCDType":"3",
-              "MediaType":"SeqMedia"
+  var dataF={"MobileClass":"Chrome",
+             "UserId":userId,
+             "PCDType":"3",
+             "MediaType":"SeqMedia"
   };
   getFiltrates(dataF);
   function getFiltrates(data){
@@ -68,7 +64,6 @@ $(function(){
   
   /*s--获取专辑列表*/
   var zjData={};
-  zjData.DeviceId=deviceId;
   zjData.MobileClass="Chrome";
   zjData.PCDType="3";
   zjData.UserId=userId;
@@ -176,7 +171,6 @@ $(function(){
   //判断在点击翻页之前是否选择了筛选条件
   function opts(seaFy,current_page){
     destroy(zjData);
-    zjData.DeviceId=deviceId;
     zjData.MobileClass="Chrome";
     zjData.PCDType="3";
     zjData.UserId=userId;
@@ -223,7 +217,6 @@ $(function(){
       $(".ri_top_li2_inp").focus();
     }else{
       destroy(zjData);
-      zjData.DeviceId=deviceId;
       zjData.MobileClass="Chrome";
       zjData.PCDType="3";
       zjData.UserId=userId;
@@ -282,7 +275,6 @@ $(function(){
       $(".add_jm .upl_img").attr("value","http://wotingfm.com:908/CM/resources/images/default.png");
     }
     _data.UserId=userId;
-    _data.DeviceId=deviceId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
     _data.ContentURI=$(".audio").attr("src");
@@ -380,8 +372,7 @@ $(function(){
   });
   //编辑专辑时保存的信息
   function edit_zj(contentId){
-    var _data={ "DeviceId":deviceId,
-                "MobileClass":"Chrome",
+    var _data={ "MobileClass":"Chrome",
                 "PCDType":"3",
                 "UserId":userId,
                 "ContentId":contentId
@@ -461,8 +452,7 @@ $(function(){
   });
   
   //获取公共标签
-  var data1={"DeviceId":deviceId,
-             "MobileClass":"Chrome",
+  var data1={"MobileClass":"Chrome",
              "PCDType":"3",
              "UserId":userId,
              "MediaType":"1",
@@ -477,14 +467,13 @@ $(function(){
   })
   
   //获取我的标签
-  var data2={"DeviceId":deviceId,
-               "MobileClass":"Chrome",
-               "PCDType":"3",
-               "UserId":userId,
-               "MediaType":"1",
-               "ChannelIds":"cn31",
-               "TagType":"2",
-               "TagSize":"20"
+  var data2={"MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":userId,
+             "MediaType":"1",
+             "ChannelIds":"cn31",
+             "TagType":"2",
+             "TagSize":"20"
   };
   loadMyTag(data2);
   //点击“换一换”，更换我的标签
@@ -514,7 +503,6 @@ $(function(){
     }
     var _data={};
     _data.UserId="123";
-    _data.DeviceId=deviceId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
     _data.ContentName=$(".uplTitle").val();
@@ -585,7 +573,6 @@ $(function(){
     }
     var _data={};
     _data.UserId=userId;
-    _data.DeviceId=deviceId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
     _data.ContentName=$(".uplTitle").val();
@@ -679,7 +666,6 @@ $(function(){
         case "revoke":
           var url="content/seq/updateSeqMediaStatus.do";
           var data6={};
-          data6.DeviceId=deviceId;
           data6.PCDType="3";
           data6.MobileClass="Chrome";
           data6.UserId=userId;
@@ -690,7 +676,6 @@ $(function(){
         case "delete":
           var url="content/seq/removeSeqMedia.do";
           var data6={};
-          data6.DeviceId=deviceId;
           data6.PCDType="3";
           data6.MobileClass="Chrome";
           data6.UserId=userId;
@@ -939,7 +924,6 @@ $(function(){
   /*根据不同的筛选条件得到不同的专辑列表*/
   $(document).on("click",".trig_item,.trig_item_li,.cate_img",function(){//选中或取消某个筛选条件
     destroy(zjData);
-    zjData.DeviceId=deviceId;
     zjData.MobileClass="Chrome";
     zjData.PCDType="3";
     zjData.UserId=userId;

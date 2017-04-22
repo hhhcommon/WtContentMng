@@ -149,7 +149,7 @@ public class QueryService {
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.descn when 'wt_SeqMediaAsset' then sma.descn end) descn,"
 				+ "(CASE ch.assetType WHEN 'wt_MediaAsset' then ma.id when 'wt_SeqMediaAsset' then sma.id end) resId,"
 				+ "(CASE ch.flowFlag WHEN 2 then ch.pubTime ELSE ch.cTime end) time,"
-				+ " ch.assetId,ch.channelName,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg"
+				+ " ch.assetId,ch.channelName,ch.topSort,ch.sort,ch.channelId,ch.flowFlag,ch.publisherId,ch.assetType,ch.pubName,ch.pubImg"
 				+ " from ("
 				+ " SELECT ch.*,c.channelName"
 				+ " from wt_ChannelAsset ch"
@@ -181,7 +181,7 @@ public class QueryService {
 		if (endctime!=null) {
 			sql += " and ch.cTime <= '"+endctime+"'";
 		}
-		sql += " ORDER BY ch.sort DESC, ch.pubTime DESC LIMIT ";
+		sql += " ORDER BY ch.topSort DESC, ch.sort DESC, ch.pubTime DESC LIMIT ";
 		if (page>0 && pagesize>0) {
 			sql += (page-1)*pagesize +","+pagesize;
 		} else {
@@ -211,6 +211,7 @@ public class QueryService {
 				oneDate.put("ContentFlowFlag", rs.getInt("flowFlag"));
 				oneDate.put("ContentSort", rs.getInt("sort"));
 				oneDate.put("ContentTime", rs.getTimestamp("time"));
+				oneDate.put("ContentTopSort", rs.getInt("topSort"));
 				oneDate.put("MediaSize", 1);
 				ids += " or persf.resId = '"+rs.getString("assetId")+"'";
 				if (rs.getString("assetType").equals("wt_MediaAsset")) {
@@ -468,7 +469,7 @@ public class QueryService {
 	 */
 	public Map<String, Object> getAudioInfo(String contentid, String acttype) {
 		List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'"+contentid+"'", acttype);
-		if (chas != null && chas.size() > 0) {
+//		if (chas != null && chas.size() > 0) {
 			MediaAssetPo ma = mediaService.getMaInfoById(contentid);
 			if (ma != null) {
 				List<MediaAssetPo> mas = new ArrayList<>();
@@ -478,7 +479,7 @@ public class QueryService {
 					return rem.get(0);
 				}
 			}
-		}
+//		}
 		return null;
 	}
 
@@ -972,7 +973,7 @@ public class QueryService {
 			}
             if (ids.length()>3) {
 				ids = ids.substring(3);
-				List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(ids, mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				List<Map<String, Object>> perls = personService.getPersonsByResIdsAndResTableName(ids, mediaType!=null?(mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"):null);
 				if (perls!=null) {
 					for (Map<String, Object> m1 : ls) {
 						for (Map<String, Object> m2 : perls) {
@@ -994,7 +995,7 @@ public class QueryService {
 					}
 				}
 	            
-				List<Map<String, Object>> kws = keyWordProService.getKeyWordsByIds(ids.replace("perf", "kws"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+				List<Map<String, Object>> kws = keyWordProService.getKeyWordsByIds(ids.replace("perf", "kws"), mediaType!=null?(mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"):null);
 				if (kws!=null) {
 					for (Map<String, Object> m1 : ls) {
 						for (Map<String, Object> m2 : kws) {
@@ -1042,7 +1043,7 @@ public class QueryService {
 				if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
 	            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 	            
-	            List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(ids.replace("perf.resId", "resd.resId"), mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset");
+	            List<Map<String, Object>> dictrefs = dictContentService.getDictRefListByIdsAndMeidaType(ids.replace("perf.resId", "resd.resId"), mediaType!=null?(mediaType.equals("SEQU")?"wt_SeqMediaAsset":"wt_MediaAsset"):null);
 				if (dictrefs!=null) {
 					for (Map<String, Object> m1 : ls) {
 						for (Map<String, Object> m2 : dictrefs) {
