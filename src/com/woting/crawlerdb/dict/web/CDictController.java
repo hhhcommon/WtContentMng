@@ -112,9 +112,10 @@ public class CDictController {
             map.put("Message", "关联栏目Ids参数为空");
             return map;
 		}
-		boolean isok = cDictService.addCDDAndDDRef(applyType, id, refIds);
-		if(isok) {
+		List<Map<String, Object>> retLs = cDictService.addCDDAndDDRef(applyType, id, refIds);
+		if(retLs!=null && retLs.size()>0) {
 			map.put("ReturnType", "1001");
+			map.put("ResultList", retLs);
 			return map;
 		} else {
 			map.put("ReturnType", "1013");

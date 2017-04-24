@@ -229,8 +229,8 @@ public class CrawlerService {
 											onlyIds += tempStr;
 											onlyIdList.add(rs.getString("assetId")+"_"+rs.getString("assetType"));
 										}
-									} else {								
-										moreMultipleIds += ",'"+rs.getString("id")+"'";										
+									} else {
+										moreMultipleIds += ",'"+rs.getString("id")+"'";
 									}
 								}
 								if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
