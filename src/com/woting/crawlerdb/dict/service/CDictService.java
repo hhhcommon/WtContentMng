@@ -10,19 +10,14 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
-import com.spiritdata.framework.ext.spring.redis.RedisOperService;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
@@ -232,7 +227,7 @@ public class CDictService {
 								List<ChannelMapRefPo> chaps = channelMapService.getList(chamapref.getChannelId(), "3", chamapref.getSrcDid(), null, null);
 								if (chaps==null || chaps.size()==0) {
 									chamaps.add(chamapref);
-									crawlerService.addCCateResRef(chamapref.getId(), did, id);
+									crawlerService.addCCateResRef(chamapref.getId());
 									Map<String, Object> mapRef = new HashMap<>();
 									mapRef.put("ReqId", chamapref.getChannelId());
 									mapRef.put("ReqRefId", chamapref.getSrcDid());
@@ -269,7 +264,7 @@ public class CDictService {
 								List<ChannelMapRefPo> chaps = channelMapService.getList(chamapref.getChannelId(), "3", chamapref.getSrcDid(), null, null);
 								if (chaps==null || chaps.size()==0) {
 									chamaps.add(chamapref);
-									crawlerService.addCCateResRef(chamapref.getId(), id, chaid);
+									crawlerService.addCCateResRef(chamapref.getId());
 									Map<String, Object> mapRef = new HashMap<>();
 									mapRef.put("ReqId", chamapref.getChannelId());
 									mapRef.put("ReqRefId", chamapref.getSrcDid());
@@ -381,16 +376,11 @@ public class CDictService {
 	 * @return
 	 */
 	public boolean delDictResRef(String ids, boolean isOrNoRemove) {
-		String valus = "";
 		String[] chamapids = ids.split(",");
 		if (chamapids!=null && chamapids.length>0) {
 			for (String id : chamapids) {
-				valus += " or id = '"+id+"'";
+				crawlerService.deleteCCateResRef(id);
 			}
-			valus = valus.substring(3);
-			Map<String, Object> m = new HashMap<>();
-			m.put("value", valus);
-			channelMapService.deleteBy(m);
 			return true;
 		}
 		return false;

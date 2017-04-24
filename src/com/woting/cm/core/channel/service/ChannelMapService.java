@@ -22,6 +22,12 @@ public class ChannelMapService {
 		channelMapRefDao.setNamespace("A_CHANNELMAPREF");
     }
 	
+	public ChannelMapRefPo getInfo(String id) {
+		Map<String, Object> m = new HashMap<>();
+		m.put("id", id);
+		return channelMapRefDao.getInfoObject("getList", m);
+	}
+	
 	public List<ChannelMapRefPo> getList(String channelId, String srcMid, String srcDid, String srcName, String whereSql) {
 		Map<String, Object> m = new HashMap<>();
 		if (channelId!=null) {
@@ -54,6 +60,13 @@ public class ChannelMapService {
 		}
 	}
 	
+	public void deleteById(String id) {
+		Map<String, Object> m = new HashMap<>();
+		if (id!=null) {
+			m.put("id", id);
+			channelMapRefDao.delete("deleteByEntity", m);
+		}
+	}
 	
 	public void deleteBy(String channelId, String srcMid, String srcDid, String srcName) {
 		Map<String, Object> m = new HashMap<>();

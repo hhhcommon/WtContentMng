@@ -20,6 +20,8 @@ import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.ext.spring.redis.RedisOperService;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
+import com.woting.cm.core.channel.persis.po.ChannelMapRefPo;
+import com.woting.cm.core.channel.service.ChannelMapService;
 import com.woting.cm.core.media.service.MediaService;
 import com.woting.crawlerdb.album.service.AlbumService;
 import com.woting.crawlerdb.audio.service.AudioService;
@@ -36,18 +38,27 @@ public class CrawlerService {
     private DataSource dataSource;
 	@Resource
 	private MediaService mediaService;
+	@Resource
+	private ChannelMapService channelMapService;
 	
-    public void addCCateResRef(String dictRefId, String crawlerDictdId, String channelId) {
+    public void addCCateResRef(String dictRefId) {
     	new Thread(new Runnable() {
 			public void run() {
 				Connection conn = null;
 				PreparedStatement ps = null;
 				ResultSet rs = null;
+				String crawlerDictdId = null;
+				String channelId = null;
 				try {
 					String redisKey = "wt_ChannelMapRef_"+dictRefId;
 					String sql = "";
 					long num = 0;
 					long smanum = 0;
+					ChannelMapRefPo cMapRefPo = channelMapService.getInfo(dictRefId);
+					if (cMapRefPo!=null) {
+						channelId = cMapRefPo.getChannelId();
+						crawlerDictdId = cMapRefPo.getSrcDid();
+					} else return ;
 					RedisOperService redis = null;
 					ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
 			        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
@@ -173,17 +184,24 @@ public class CrawlerService {
 		}).start();
 	}
     
-    public void deleteCCateResRef(String dictRefId, String crawlerDictdId, String channelId) {
+    public void deleteCCateResRef(String dictRefId) {
     	new Thread(new Runnable() {
 			public void run() {
 				Connection conn = null;
 				PreparedStatement ps = null;
 				ResultSet rs = null;
 				Statement st = null;
+				String crawlerDictdId = null;
+				String channelId = null;
 				try {
 					String sql = "";
 					long num = 0;
 //					long smanum = 0;
+					ChannelMapRefPo cMapRefPo = channelMapService.getInfo(dictRefId);
+					if (cMapRefPo!=null) {
+						channelId = cMapRefPo.getChannelId();
+						crawlerDictdId = cMapRefPo.getSrcDid();
+					} else return;
 					RedisOperService redis = null;
 					ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
 			        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
@@ -305,6 +323,7 @@ public class CrawlerService {
 						redis.pExpire(inRuleIdStr+"_TYPE",  10*1000);
 						redis.pExpire(inRuleIdStr+"_TIME", 10*1000);
 						redis.close();
+						channelMapService.deleteById(dictRefId);
 						if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
 					}
 				} catch (Exception e) {
