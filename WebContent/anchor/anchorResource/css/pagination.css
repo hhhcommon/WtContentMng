@@ -117,3 +117,122 @@
 #kkpager .currPageNum{
 	color:#FD7F4D;
 }
+#loopImgKKpage{
+  clear:both;
+  color:#999;
+  padding:25px 0px;
+  font-size:13px;
+}
+#loopImgKKpage a{
+  float: left;
+  border: 1px solid #ccc;
+  display: inline;
+  padding: 3px 10px 3px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  cursor: pointer;
+  background: #fff;
+  text-decoration:none;
+  color:#999;
+}
+
+#loopImgKKpage span.disabled{
+  float: left;
+  display: inline;
+  padding: 3px 10px 3px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border:1px solid #DFDFDF;
+  background-color:#FFF;
+  color:#DFDFDF;
+}
+#loopImgKKpage span.curr{
+  float: left;
+  border:1px solid #ffa634;
+  display: inline;
+  padding: 3px 10px 3px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background: #F0FDFF;
+  color: #ffa634;
+}
+#loopImgKKpage a:hover{
+  border:1px solid #ffa634; 
+  background-color:#ffa634; 
+  color:#fff;
+}
+#loopImgKKpage span.normalsize{
+}
+#kkpager_gopage_wrap{
+  position:relative;
+  left:0px;
+  top:0px;
+}
+#kkpager_btn_go {
+  left: 40px;
+  margin-left: 22px;
+  height: 18px;
+  line-height: 18px;
+  display: block;
+  top:2px;
+  display: block;
+  width:44px;
+  border:0px;
+  overflow:hidden;
+  padding:0px;
+  text-align:center;
+  cursor:pointer;
+  background-color:#ffa634;
+  color:#FFF;
+  position:absolute;
+  left:0px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  display:none;
+}
+#kkpager_btn_go_input{
+  width: 60px;
+  height: 19px;
+  padding: 0px 4px;
+  color:#999;
+  text-align:center;
+  margin-left:1px;
+  margin-right:1px;
+  border:1px solid #DFDFDF;
+  position:relative;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  left:0px;
+  top:0px;
+  outline:none;
+}
+
+#kkpager_btn_go_input.focus{
+  border-color:#ffa634;
+}
+
+#loopImgKKpage .pageBtnWrap{
+  float:left;
+}
+#loopImgKKpage .infoTextAndGoPageBtnWrap{
+  width:300px;
+  display: block;
+  margin-left: 20px;
+  overflow: hidden;
+  float: left;
+  padding-top: 5px;
+  font-size: 16px;
+}
+#loopImgKKpage .spanDot{
+  float:left;
+  margin-right:5px;
+}
+#loopImgKKpage .currPageNum{
+  color:#FD7F4D;
+}

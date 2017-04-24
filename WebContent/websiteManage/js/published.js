@@ -399,6 +399,9 @@ $(function(){
                 '<img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                 '<div class="rtcl_img fl">'+
                   '<img src="" alt="节目图片" />'+
+                  '<div class="btn_player dis">'+
+                    '<i class="icon"></i>'+
+                  '</div>'+
                 '</div>'+
                 '<div class="rtcl_con fl">'+
                   '<p class="rtcl_con_p ellipsis"></p>'+
