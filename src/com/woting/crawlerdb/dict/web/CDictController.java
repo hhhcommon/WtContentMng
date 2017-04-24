@@ -233,12 +233,19 @@ public class CDictController {
             redis = new RedisOperService(js, 6);
         }
         String perstr = null;
+        String pertype = null;
+        String perTime = null;
         if (redis!=null) {
 			perstr = redis.get("wt_ChannelMapRef_"+perId);
+			pertype = redis.get("wt_ChannelMapRef_"+perId+"_TYPE");
+			perTime = redis.get("wt_ChannelMapRef_"+perId+"_TIME");
+			redis.close();
 		}
 		if(perstr!=null && perstr.length()>0) {
 			map.put("ReturnType", "1001");
 			map.put("PerNum", perstr);
+			map.put("PerType", pertype);
+			map.put("PerTime", perTime);
 		} else {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无进程");
