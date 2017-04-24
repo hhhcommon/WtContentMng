@@ -746,17 +746,13 @@ $(function(){
       contentType: false,
       dataType:"json",
       beforeSend:function(){
-        $(obj).attr("disabled","disabled");
+        $(obj).attr("disabled","disabled").css("color","#ccc");
       },
       success:function(resultData){
         if(data1.Top=="1"){//设置置顶
           if(resultData.ReturnType=="1001"){
             alert("设置置顶成功");
             getContentList(data);//再次加载内容列表
-//          var topBox=$(obj).parent(".opetype1").parent(".rtc_listBox");
-//          $(".ri_top3_con").prepend(topBox);
-//          $(topBox).addClass("isTop");
-//          $(obj).css({"color":"#000","letter-spacing":"0px"}).text("取消置顶");
           }else{
             alert("设置置顶失败"); 
           }  
@@ -768,7 +764,7 @@ $(function(){
             alert("取消置顶失败");
           }  
         }
-        $(obj).removeAttr("disabled");
+        $(obj).removeAttr("disabled").css("color","#0077C7");
       },
       error: function(jqXHR){
         alert("发生错误" + jqXHR.status);

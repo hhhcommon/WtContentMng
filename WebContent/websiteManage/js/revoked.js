@@ -472,7 +472,7 @@ $(function(){
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
   function getSeqInfo(seqId,i){
-    var data={"UserId":userId,
+    var data1={"UserId":userId,
               "ContentId":seqId,
               "MediaType":"wt_SeqMediaAsset"
     };
@@ -482,7 +482,7 @@ $(function(){
       dataType:"json",
       cache:false,
       async:false,
-      data:JSON.stringify(data),
+      data:JSON.stringify(data1),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           if(resultData.SubList[0]){
