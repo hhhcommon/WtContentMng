@@ -3,14 +3,14 @@ $(window).resize(function(){
   var sl=$("body").scrollLeft();
   sl=-sl;
   $(".audioIframe").css({"width":$(".cc_right").css("width"),"margin-left":sl+"px"});
-  var h=$(document.body).height();
+  var h=$(document.body).height()-20;
   if($(".locker").children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
     $(".audioIframe").hide().css({"top":h-40+"px"});
     $(".ri_top3").css("padding-bottom","0px");
     $(".locker").css({"top":h-20+"px","transition" :"all 0.1s ease 0s"});
   }else{//此时显示，点击之后隐藏
     $(".audioIframe").show().css({"top":h-75+"px"});
-    $(".ri_top3").css("padding-bottom","130px");
+    $(".ri_top3").css("padding-bottom","100px");
     $(".locker").css({"top":h-90+"px","transition" :"all 0.1s ease 0s"});
   }
 });
@@ -21,7 +21,7 @@ $(document).on("click",".locker",function(){
   if($(this).children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
     $(".audioIframe").show().css({"top":h-75+"px"});
     $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-locked-hover@2x.png)"});
-    $(".ri_top3").css("padding-bottom","130px");
+    $(".ri_top3").css("padding-bottom","100px");
     $(this).css({"top":h-90+"px","transition" :"all 0.1s ease 0s"});
     $(this).children(".locker_btn").removeClass("locked");
   }else{//此时显示，点击之后隐藏
@@ -42,15 +42,15 @@ function destroy(obj){
 }
 /*e--销毁obj对象的key-value*/
 
- /*s--设置计时器右边边框的高度赋给左边*/
-  var times=setInterval(setTime,100);
-  function setTime(){
-    $(".cc_left").css({"height":$(".nav_con").height()+"px","overflow":"auto"});
-    var sl=$("body").scrollLeft();
-    sl=-sl;
-    $(".audioIframe").css({"width":$(".cc_right").css("width"),"margin-left":sl+"px"});//监听横向滚动条的变化
-  }
-  /*e--设置计时器右边边框的高度赋给左边*/
+/*s--设置计时器右边边框的高度赋给左边*/
+var times=setInterval(setTime,100);
+function setTime(){
+  $(".cc_left").css({"height":$(".nav_con").height()+"px","overflow":"auto"});
+  var sl=$("body").scrollLeft();
+  sl=-sl;
+  $(".audioIframe").css({"width":$(".cc_right").css("width"),"margin-left":sl+"px"});//监听横向滚动条的变化
+}
+/*e--设置计时器右边边框的高度赋给左边*/
 
 /*s--勾选框相关操作*/
 //点击全选
