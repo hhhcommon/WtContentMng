@@ -911,10 +911,10 @@ public class MediaService {
 		channelAssetDao.delete("deleteByEntity", m);
 	}
 	
-	public void removeCha(String assetId, String resTableName, String channelId) {
+	public void removeCha(String assetId, String assetType, String channelId) {
 		Map<String, Object> m = new HashMap<>();
 		m.put("assetId", assetId);
-		m.put("resTableName", resTableName);
+		m.put("assetType", assetType);
 		m.put("channelId", channelId);
 		channelAssetDao.delete("deleteByEntity", m);
 	}
