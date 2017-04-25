@@ -1,5 +1,14 @@
 package com.woting.content.manage.utils;
 
+import javax.servlet.ServletContext;
+
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.spiritdata.framework.FConstants;
+import com.spiritdata.framework.core.cache.SystemCache;
+import com.spiritdata.framework.ext.spring.redis.RedisOperService;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -61,5 +70,66 @@ public class RedisUtils {
 		Jedis jedis = jedisPool.getResource();
 		jedis.del("phoneCheckInfo_"+phonenum);
 		release(jedis);
+	}
+	
+	public static boolean setString (String connectionFactory, int redisDB, String key, String value, long expireTime) {
+		RedisOperService redis = null;
+		try {
+			if (connectionFactory!=null) {
+				ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+		        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+		            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean(connectionFactory);
+		            redis = new RedisOperService(js, redisDB);
+		            if (expireTime==0) return redis.set(key, value);
+		            else return redis.set(key, value, expireTime);
+		        }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (redis!=null) try {redis.close();redis=null;} catch(Exception e) {redis=null;} finally {redis=null;};
+		}
+		return false;
+	}
+	
+	public static boolean setString (String connectionFactory, int redisDB, String key, String value) {
+		RedisOperService redis = null;
+		try {
+			if (connectionFactory!=null) {
+				ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+		        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+		            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean(connectionFactory);
+		            redis = new RedisOperService(js, redisDB);
+		            return redis.set(key, value);
+		        }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (redis!=null) try {redis.close();redis=null;} catch(Exception e) {redis=null;} finally {redis=null;};
+		}
+		return false;
+	}
+	
+	public static boolean pExpire(String connectionFactory, int redisDB, String key, long expireTime) {
+		RedisOperService redis = null;
+		try {
+			if (connectionFactory!=null) {
+				ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+		        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+		            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean(connectionFactory);
+		            redis = new RedisOperService(js, redisDB);
+		            return redis.pExpire(key, expireTime);
+		        }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (redis!=null) try {redis.close();redis=null;} catch(Exception e) {redis=null;} finally {redis=null;};
+		}
+		return false;
 	}
 }

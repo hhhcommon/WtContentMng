@@ -207,12 +207,6 @@ public class CDictService {
         _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 		String[] ids = refIds.split(",");
 		if (ids!=null && ids.length>0) {
-//			RedisOperService redis = null;
-//			ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
-//	        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
-//	            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
-//	            redis = new RedisOperService(js, 6);
-//	        }
 	        List<Map<String, Object>> retLs = new ArrayList<>();
 			if (applyType.equals("1")) {
 				if (_cc!=null) {
@@ -237,12 +231,14 @@ public class CDictService {
 									mapRef.put("ReqId", chamapref.getChannelId());
 									mapRef.put("ReqRefId", chamapref.getSrcDid());
 									mapRef.put("Message", "信息处理成功");
+									mapRef.put("ReturnType", "1001");
 									retLs.add(mapRef);
 								} else {
 									Map<String, Object> mapRef = new HashMap<>();
 									mapRef.put("ReqId", chamapref.getChannelId());
 									mapRef.put("ReqRefId", chamapref.getSrcDid());
 									mapRef.put("Message", "信息已存在");
+									mapRef.put("ReturnType", "1011");
 									retLs.add(mapRef);
 								}
 							}
@@ -274,12 +270,14 @@ public class CDictService {
 									mapRef.put("ReqId", chamapref.getChannelId());
 									mapRef.put("ReqRefId", chamapref.getSrcDid());
 									mapRef.put("Message", "信息处理成功");
+									mapRef.put("ReturnType", "1001");
 									retLs.add(mapRef);
 								} else {
 									Map<String, Object> mapRef = new HashMap<>();
 									mapRef.put("ReqId", chamapref.getChannelId());
 									mapRef.put("ReqRefId", chamapref.getSrcDid());
 									mapRef.put("Message", "信息已存在");
+									mapRef.put("ReturnType", "1011");
 									retLs.add(mapRef);
 								}
 							}
@@ -391,10 +389,12 @@ public class CDictService {
 	            redis = new RedisOperService(js, 6);
 	        }
 			for (String id : chamapids) {
-				if (redis.get("wt_ChannelMap_Ref_"+id)!=null) {
+				String keyStr = redis.get("wt_ChannelMapRef_"+id);
+				if (keyStr!=null) {
 					Map<String, Object> m = new HashMap<>();
 					m.put("PerId", id);
 					m.put("Message", "删除失败，关系正在处理");
+					m.put("ReturnType", "1011");
 					retLs.add(m);
 				} else {
 					if (isOrNoRemove) { // 删除栏目关系表数据
@@ -402,12 +402,14 @@ public class CDictService {
 						Map<String, Object> m = new HashMap<>();
 						m.put("PerId", id);
 						m.put("Message", "开始关系执行关系删除");
+						m.put("ReturnType", "1001");
 						retLs.add(m);
 					} else { // 只删除对应关系
 						channelMapService.deleteById(id);
 						Map<String, Object> m = new HashMap<>();
 						m.put("PerId", id);
 						m.put("Message", "关系删除成功");
+						m.put("ReturnType", "1001");
 						retLs.add(m);
 					}
 				}
