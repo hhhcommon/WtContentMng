@@ -311,16 +311,20 @@ body{overflow: hidden;height:100%;padding:0px;}
         checkbox: true
     }, {
         field: 'Id',
-        title: '映射关系id'
+        title: '映射关系id',
+        width:0
     }, {
         field: 'SrcSource',
-        title: '其他平台名称'
+        title: '其他平台名称',
+        width:100
     }, {
         field: 'SrcName',
-        title: '其他平台分类'
+        title: '其他平台分类',
+        width:100
     }, {
         field: 'ChannelName',
-        title: '我听分类'
+        title: '我听分类',
+        width:100
     }]
   });
 </script>
@@ -516,8 +520,8 @@ $(function(){
             list.push(returnData.ResultList[i].SrcDid);
           }
           for(var i=0;i<returnData.ResultList.length;i++){
-            var perId=returnData.ResultList[i].Id
-            loadProgress(perId);
+            var perId=returnData.ResultList[i].Id;
+            loadProgress(perId);    
           }
         }else{
           $(".wt_no").removeClass("dis");
@@ -706,7 +710,7 @@ $(function(){
 
   /*s--进度条插件初始化*/
   function loadProgress(id){
-    var per_data={"PerId":id}
+    var per_data={"PerId":id};
     $.ajax({
       type: "POST",    
       url:rootPath+"common/getChannelMapRefPer.do",
@@ -715,9 +719,7 @@ $(function(){
       data:JSON.stringify(per_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-         alert("返回成功");
-        }else{
-          alert("返回失败!");
+//        var timer=setInterval(loadProgress,100);//调用进度条插件
         }
       },
       error:function(jqXHR){
@@ -734,7 +736,8 @@ $(function(){
   
   //调用进度条插件
   function progress(){
-    $(".progress_mask").removeClass("dis");
+    alert(0);
+//  $(".progress_mask").removeClass("dis");
     context.clearRect(0, 0, canvas.width, canvas.height);
     whiteCircle();
     text(speed);
@@ -744,6 +747,7 @@ $(function(){
       return;
     } 
   };
+  
     
   //绘制蓝色外圈
   function blueCircle(n){
