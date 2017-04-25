@@ -70,7 +70,7 @@ public class CrawlerService {
 							if (rs!=null) try {rs.close();rs=null;} catch(Exception e) {rs=null;} finally {rs=null;};
 				            if (ps!=null) try {ps.close();ps=null;} catch(Exception e) {ps=null;} finally {ps=null;};
 						} catch (Exception e) {e.printStackTrace();}
-						int pageSize = 100;
+						int pageSize = 10;
 						int pages = (int) (num/pageSize + 1);
 						for (int i = 1; i <= pages; i++) {
 							String albumIds = "";
