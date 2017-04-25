@@ -121,14 +121,6 @@ body{overflow: hidden;height:100%;padding:0px;}
 #ot_table{
   table-layout: fixed;
 }
-#ot_table thead tr th:nth-child(2){
-  visibility: hidden;
-  width: 0px;
-}
-#ot_table tbody tr td:nth-child(2){
-  visibility: hidden;
-  width: 0px;
-}
 .mask{
   width:100%;
   height:100%;
@@ -301,6 +293,9 @@ body{overflow: hidden;height:100%;padding:0px;}
     }, {
         field: 'SrcName',
         title: '其他平台分类'
+    },{
+        field: 'Progress',
+        title: '进程进度'
     }]
   });
   
@@ -325,6 +320,9 @@ body{overflow: hidden;height:100%;padding:0px;}
         field: 'ChannelName',
         title: '我听分类',
         width:100
+    },{
+        field: 'Progress',
+        title: '进程进度'
     }]
   });
 </script>
