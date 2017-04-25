@@ -53,9 +53,8 @@ public class CrawlerService {
 						channelId = cMapRefPo.getChannelId();
 						crawlerDictdId = cMapRefPo.getSrcDid();
 					} else return ;
-					
 					RedisUtils.setString("connectionFactory123", 6, redisKey+"_TYPE", "ADD", 30*60*1000);
-			        RedisUtils.setString("connectionFactory123", 6, redisKey, "0", 30*60*1000);
+					RedisUtils.setString("connectionFactory123", 6, redisKey, "0", 30*60*1000);
 			        RedisUtils.setString("connectionFactory123", 6, redisKey+"_TIME", System.currentTimeMillis()+"");
 			        
 					conn = dataSource.getConnection();
@@ -148,7 +147,7 @@ public class CrawlerService {
 												if (channelAssetPo.getAssetType().equals("wt_SeqMediaAsset")) {
 													smanum++;
 													RedisUtils.setString("connectionFactory123", 6, redisKey+"_TYPE", "ADD", 60*60*1000);
-											        RedisUtils.setString("connectionFactory123", 6, redisKey, ((smanum+0.0)/num)+"", 60*60*1000);
+											        RedisUtils.setString("connectionFactory123", 6, redisKey, (int)((smanum+0.0)/num/0.01)+"", 60*60*1000);
 												}
 											} catch (Exception e) {
 												e.printStackTrace();
@@ -162,7 +161,7 @@ public class CrawlerService {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
-						RedisUtils.setString("connectionFactory123", 6, redisKey, "1", 5*60*1000);
+						RedisUtils.setString("connectionFactory123", 6, redisKey, "100", 5*60*1000);
 				        RedisUtils.pExpire("connectionFactory123", 6, redisKey+"_TYPE", 5*60*1000);
 				        RedisUtils.pExpire("connectionFactory123", 6, redisKey+"_TIME", 5*60*1000);
 					}
@@ -212,7 +211,7 @@ public class CrawlerService {
 						int pages = (int) (num/pageSize + 2);
 						for (int i = 1; i < pages; i++) {
 							RedisUtils.setString("connectionFactory123", 6, inRuleIdStr+"_TYPE", "DELETE", 60*60*1000);
-					        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, (((i-1)+0.0)/pages)+"", 60*60*1000);
+					        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, (int)(((i-1)+0.0)/pages/0.01)+"", 60*60*1000);
 							List<String> onlyIdList = new ArrayList<>();
 							List<String> removeOnlyIds = new ArrayList<>(); //删除多关系
 							String onlyIds = "";
@@ -302,7 +301,7 @@ public class CrawlerService {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
-				        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, "1", 10*1000);
+				        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, "100", 10*1000);
 				        RedisUtils.pExpire("connectionFactory123", 6, inRuleIdStr+"_TYPE", 10*1000);
 				        RedisUtils.pExpire("connectionFactory123", 6, inRuleIdStr+"_TIME", 10*1000);
 						channelMapService.deleteById(dictRefId);

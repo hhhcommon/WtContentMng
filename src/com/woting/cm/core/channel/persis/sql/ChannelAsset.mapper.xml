@@ -353,7 +353,6 @@
   <update id="deleteLoopImg" parameterType="java.util.Map">
     update wt_ChannelAsset set loopSort=0
     where channelId=#{channelId,jdbcType=VARCHAR} and
-          assetType=#{assetType,jdbcType=VARCHAR} and
           assetId=#{assetId,jdbcType=VARCHAR};
   </update>
   
