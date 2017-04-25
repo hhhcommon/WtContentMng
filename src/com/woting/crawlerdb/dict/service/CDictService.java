@@ -10,14 +10,19 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.spiritdata.framework.FConstants;
 import com.spiritdata.framework.core.cache.CacheEle;
 import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.core.model.tree.TreeNodeBean;
+import com.spiritdata.framework.ext.spring.redis.RedisOperService;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.TreeUtils;
@@ -197,11 +202,18 @@ public class CDictService {
 
 	
 	@SuppressWarnings("unchecked")
-	public boolean addCDDAndDDRef(String applyType, String id, String refIds) {
+	public List<Map<String, Object>> addCDDAndDDRef(String applyType, String id, String refIds) {
 		_cd = (_CacheCDictionary) (SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)==null?null:SystemCache.getCache(WtContentMngConstants.CACHE_CDICT)).getContent();
         _cc=(SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)==null?null:((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent());
 		String[] ids = refIds.split(",");
 		if (ids!=null && ids.length>0) {
+//			RedisOperService redis = null;
+//			ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+//	        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+//	            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
+//	            redis = new RedisOperService(js, 6);
+//	        }
+	        List<Map<String, Object>> retLs = new ArrayList<>();
 			if (applyType.equals("1")) {
 				if (_cc!=null) {
 					TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(id);
@@ -217,12 +229,26 @@ public class CDictService {
 								chamapref.setSrcMid("3");
 								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
-								chamaps.add(chamapref);
-								crawlerService.addCCateResRef(chamapref.getId(), did, id);
+								List<ChannelMapRefPo> chaps = channelMapService.getList(chamapref.getChannelId(), "3", chamapref.getSrcDid(), null, null);
+								if (chaps==null || chaps.size()==0) {
+									chamaps.add(chamapref);
+									crawlerService.addCCateResRef(chamapref.getId());
+									Map<String, Object> mapRef = new HashMap<>();
+									mapRef.put("ReqId", chamapref.getChannelId());
+									mapRef.put("ReqRefId", chamapref.getSrcDid());
+									mapRef.put("Message", "信息处理成功");
+									retLs.add(mapRef);
+								} else {
+									Map<String, Object> mapRef = new HashMap<>();
+									mapRef.put("ReqId", chamapref.getChannelId());
+									mapRef.put("ReqRefId", chamapref.getSrcDid());
+									mapRef.put("Message", "信息已存在");
+									retLs.add(mapRef);
+								}
 							}
 						}
 						channelMapService.insertList(chamaps);
-						return true;
+						return retLs;
 					}
 				}
 			} else {
@@ -240,17 +266,31 @@ public class CDictService {
 								chamapref.setSrcMid("3");
 								chamapref.setSrcName(cdd.getTnEntity().getPublisher());
 								chamapref.setcTime(new Timestamp(System.currentTimeMillis()));
-								chamaps.add(chamapref);
-								crawlerService.addCCateResRef(chamapref.getId(), id, chaid);
+								List<ChannelMapRefPo> chaps = channelMapService.getList(chamapref.getChannelId(), "3", chamapref.getSrcDid(), null, null);
+								if (chaps==null || chaps.size()==0) {
+									chamaps.add(chamapref);
+									crawlerService.addCCateResRef(chamapref.getId());
+									Map<String, Object> mapRef = new HashMap<>();
+									mapRef.put("ReqId", chamapref.getChannelId());
+									mapRef.put("ReqRefId", chamapref.getSrcDid());
+									mapRef.put("Message", "信息处理成功");
+									retLs.add(mapRef);
+								} else {
+									Map<String, Object> mapRef = new HashMap<>();
+									mapRef.put("ReqId", chamapref.getChannelId());
+									mapRef.put("ReqRefId", chamapref.getSrcDid());
+									mapRef.put("Message", "信息已存在");
+									retLs.add(mapRef);
+								}
 							}
 						}
 						channelMapService.insertList(chamaps);
-						return true;
+						return retLs;
 					}
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	/**
@@ -340,20 +380,41 @@ public class CDictService {
 	 * @param id
 	 * @return
 	 */
-	public boolean delDictResRef(String ids, boolean isOrNoRemove) {
-		String valus = "";
+	public List<Map<String, Object>> delDictResRef(String ids, boolean isOrNoRemove) {
 		String[] chamapids = ids.split(",");
 		if (chamapids!=null && chamapids.length>0) {
+			List<Map<String, Object>> retLs = new ArrayList<>();
+			RedisOperService redis = null;
+			ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
+	        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
+	            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
+	            redis = new RedisOperService(js, 6);
+	        }
 			for (String id : chamapids) {
-				valus += " or id = '"+id+"'";
+				if (redis.get("wt_ChannelMap_Ref_"+id)!=null) {
+					Map<String, Object> m = new HashMap<>();
+					m.put("PerId", id);
+					m.put("Message", "删除失败，关系正在处理");
+					retLs.add(m);
+				} else {
+					if (isOrNoRemove) { // 删除栏目关系表数据
+						crawlerService.deleteCCateResRef(id);
+						Map<String, Object> m = new HashMap<>();
+						m.put("PerId", id);
+						m.put("Message", "开始关系执行关系删除");
+						retLs.add(m);
+					} else { // 只删除对应关系
+						channelMapService.deleteById(id);
+						Map<String, Object> m = new HashMap<>();
+						m.put("PerId", id);
+						m.put("Message", "关系删除成功");
+						retLs.add(m);
+					}
+				}
 			}
-			valus = valus.substring(3);
-			Map<String, Object> m = new HashMap<>();
-			m.put("value", valus);
-			channelMapService.deleteBy(m);
-			return true;
+			return retLs;
 		}
-		return false;
+		return null;
 	}
 	
 	public boolean saveCrawlerFile() {
