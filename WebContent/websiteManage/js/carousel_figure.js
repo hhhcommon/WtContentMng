@@ -503,7 +503,7 @@ $(function(){
     data3.ChannelId=nodes[0].id;
     data3.UserId=userId;
     data3.PCDType="3";
-    data3.Page="1";
+    data3.Page=loopCurrentPage;
     data3.PageSize="10";
     getLoopImages(data3);
   }
@@ -1037,14 +1037,14 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-//        loopAllCount=resultData.AllCount;
+          loopAllCount=resultData.AllCount;
           loadLoopImages(resultData);//加载轮播图列表
         }else{
-//        loopAllCount="0";
+          loopAllCount="0";
           alert(resultData.Message);
         }
-//      loopContentCount=(loopAllCount%10==0)?(loopAllCount/10):(Math.ceil(loopAllCount/10));
-//      loopPagitionInit(loopContentCount,loopAllCount,data3.Page);
+        loopContentCount=(loopAllCount%10==0)?(loopAllCount/10):(Math.ceil(loopAllCount/10));
+        loopPagitionInit(loopContentCount,loopAllCount,data3.Page);
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
@@ -1055,56 +1055,26 @@ $(function(){
   
   /*s--轮播图列表翻页插件初始化*/
   function loopPagitionInit(loopContentCount,loopAllCount,loopCurrentPage){
-    var totalPage=loopContentCount;
-    var totalRecords=loopAllCount;
-    var pageNo=loopCurrentPage;
-    //生成分页
-    //有些参数是可选的，比如lang，若不传有默认值
-    kkpager.generPageHtml({
-      pagerid : 'loopImgKKpage', //divID
-      pno : pageNo,
-      //总页码
-      total : totalPage,
-      //总数据条数
-      totalRecords : totalRecords,
-      //页码选项
-      lang : {
-        firstPageText : '首页',
-        firstPageTipText  : '首页',
-        lastPageText  : '尾页',
-        lastPageTipText : '尾页',
-        prePageText : '上一页',
-        prePageTipText  : '上一页',
-        nextPageText  : '下一页',
-        nextPageTipText : '下一页',
-        totalPageBeforeText : '共',
-        totalPageAfterText  : '页',
-        currPageBeforeText  : '当前第',
-        currPageAfterText : '页',
-        totalInfoSplitStr : '/',
-        totalRecordsBeforeText  : '共',
-        totalRecordsAfterText : '条数据',
-        gopageBeforeText  : '&nbsp;转到',
-        gopageButtonOkText  : '确定',
-        gopageAfterText : '页',
-        buttonTipBeforeText : '第',
-        buttonTipAfterText  : '页'
-      },
-      mode : 'click',//默认值是link，可选link或者click
-      click :function(dataParam){//点击后的回调函数可自定义
-        this.selectPage(loopCurrentPage);
-        destroy(data3);
-        var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-        data3.ChannelId=nodes[0].id;
-        data3.UserId=userId;
-        data3.PCDType="3";
-        data3.Page=loopCurrentPage;
-        data3.PageSize="10";
-        getLoopImages(data3);
-        return false;
-      }
-    },true);
+    $("#loopImgKKpage").pagination(loopContentCount, {
+      num_edge_entries: 2,
+      num_display_entries: 4,
+      items_per_page:1,
+      callback:ajaxLoop,
+      current_page:loopCurrentPage-1
+    });
   };
+  //ajax请求轮播图
+  function ajaxLoop(loopCurrentPage){
+    loopCurrentPage=loopCurrentPage+1;
+    destroy(data3);
+    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+    data3.ChannelId=nodes[0].id;
+    data3.UserId=userId;
+    data3.PCDType="3";
+    data3.Page=loopCurrentPage;
+    data3.PageSize="10";
+    getLoopImages(data3);
+  }
   /*e--轮播图列表翻页插件初始化*/
   
   //加载轮播图列表
@@ -1230,7 +1200,7 @@ $(function(){
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
           alert("轮播图删除成功");
-//        getLoopImages(data3);//重新加载轮播图列表
+          getLoopImages(data3);//重新加载轮播图列表
         }else{
           alert(resultData.Message);
         }
