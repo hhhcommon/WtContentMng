@@ -189,7 +189,7 @@ public class CDictController {
 		}
 		String isOrNoRemoveStr = m.get("IsOrNoRemove")+"";
 		boolean isOrNoRemove = true;
-		if (!isOrNoRemoveStr.equals("true")) isOrNoRemove = false;
+		if (!isOrNoRemoveStr.equals("1")) isOrNoRemove = false;
 		List<Map<String, Object>> retLs = cDictService.delDictResRef(ids, isOrNoRemove);
 		if(retLs!=null && retLs.size()>0) {
 			map.put("ReturnType", "1001");
