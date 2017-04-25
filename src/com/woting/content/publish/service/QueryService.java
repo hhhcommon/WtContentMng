@@ -190,7 +190,7 @@ public class QueryService {
 		sql += " ) ch ";
 		sql += " LEFT JOIN wt_MediaAsset ma ON (ch.assetId=ma.id and ch.assetType = 'wt_MediaAsset')"
 				+ " LEFT JOIN wt_SeqMediaAsset sma ON (ch.assetId = sma.id and ch.assetType = 'wt_SeqMediaAsset')";
-		sql += " GROUP BY ch.topSort DESC, ch.assetId,ch.assetType";
+		sql += " GROUP BY ch.assetId,ch.assetType";
 		try {
 			ps = conn.prepareStatement(sql);
 			rs = ps.executeQuery();
@@ -1558,10 +1558,10 @@ public class QueryService {
      * @param pageIndex 页码，若为0,则得到所有内容
      * @return 轮播图列表
      */
-    public List<Map<String, Object>> getLoopImgList(String mediaType, String channelId, int pageSize, int pageIndex) {
+	public Map<String, Object> getLoopImgList(String mediaType, String channelId, int pageSize, int pageIndex) {
         if (StringUtils.isNullOrEmptyOrSpace(channelId)) return null;
 
-        return clmService.getLoopImgList(mediaType, channelId, pageSize, pageIndex);
+    	return clmService.getLoopImgList(mediaType, channelId, pageSize, pageIndex);
     }
     
     /**
@@ -1575,5 +1575,31 @@ public class QueryService {
         if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || loopSort==0) return false;
 
         return clmService.updateLoopSort(mediaType, channelId, contentId, loopSort);
+    }
+    
+    /**
+     * 某一栏目下轮播图排序
+     * @param mediaType 过滤条件，按类型过滤
+     * @param channelId 栏目Id
+     * @param contentId 内容Id
+     */
+    public boolean deleteLoopImg(String mediaType, String channelId, String contentId) {
+        if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId)) return false;
+
+        return clmService.deleteLoopImg(mediaType, channelId, contentId);
+    }
+    
+    /**
+     * 某一栏目下添加轮播图
+     * @param mediaType 过滤条件，按类型过滤
+     * @param channelId 栏目Id
+     * @param contentId 内容Id
+     * @param imgeUrl 轮播图地址
+     * @param loopSort 轮播图排序号
+     */
+    public boolean addLoopImg(String mediaType, String channelId, String contentId, String imgeUrl, int loopSort) {
+        if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imgeUrl)) return false;
+
+        return clmService.addLoopImg(mediaType, channelId, contentId, imgeUrl, loopSort);
     }
 }
