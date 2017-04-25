@@ -9,20 +9,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.spiritdata.framework.FConstants;
-import com.spiritdata.framework.core.cache.SystemCache;
-import com.spiritdata.framework.ext.spring.redis.RedisOperService;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
 import com.woting.cm.core.channel.persis.po.ChannelMapRefPo;
 import com.woting.cm.core.channel.service.ChannelMapService;
 import com.woting.cm.core.media.service.MediaService;
+import com.woting.content.manage.utils.RedisUtils;
 import com.woting.crawlerdb.album.service.AlbumService;
 import com.woting.crawlerdb.audio.service.AudioService;
 import com.woting.crawlerdb.dict.service.CDictService;
@@ -59,15 +53,11 @@ public class CrawlerService {
 						channelId = cMapRefPo.getChannelId();
 						crawlerDictdId = cMapRefPo.getSrcDid();
 					} else return ;
-					RedisOperService redis = null;
-					ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
-			        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
-			            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
-			            redis = new RedisOperService(js, 6);
-			        }
-			        redis.set(redisKey+"_TYPE", "ADD", 30*60*1000);
-			        redis.set(redisKey, "0", 30*60*1000);
-			        redis.set(redisKey+"_TIME", System.currentTimeMillis()+"");
+					
+					RedisUtils.setString("connectionFactory123", 6, redisKey+"_TYPE", "ADD", 30*60*1000);
+			        RedisUtils.setString("connectionFactory123", 6, redisKey, "0", 30*60*1000);
+			        RedisUtils.setString("connectionFactory123", 6, redisKey+"_TIME", System.currentTimeMillis()+"");
+			        
 					conn = dataSource.getConnection();
 					try {
 						sql = "SELECT COUNT(*) FROM crawlerDB.c_ResDict_Ref dref where dref.cdictDid = '"+crawlerDictdId+"' and dref.resTableName = 'c_Album'";
@@ -157,8 +147,8 @@ public class CrawlerService {
 												mediaService.removeCha(channelAssetPo.getAssetId(), channelAssetPo.getAssetType(), "cn36");
 												if (channelAssetPo.getAssetType().equals("wt_SeqMediaAsset")) {
 													smanum++;
-													redis.set(redisKey, ((smanum+0.0)/num)+"", 60*60*1000);
-													redis.set(redisKey+"_TYPE", "ADD", 60*60*1000);
+													RedisUtils.setString("connectionFactory123", 6, redisKey+"_TYPE", "ADD", 60*60*1000);
+											        RedisUtils.setString("connectionFactory123", 6, redisKey, ((smanum+0.0)/num)+"", 60*60*1000);
 												}
 											} catch (Exception e) {
 												e.printStackTrace();
@@ -172,10 +162,9 @@ public class CrawlerService {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
-						redis.set(redisKey, "1", 5*60*1000);
-						redis.set(redisKey+"_TYPE", "ADD", 5*60*1000);
-						redis.pExpire(redisKey+"_TIME", 5*60*1000);
-						redis.close();
+						RedisUtils.setString("connectionFactory123", 6, redisKey, "1", 5*60*1000);
+				        RedisUtils.pExpire("connectionFactory123", 6, redisKey+"_TYPE", 5*60*1000);
+				        RedisUtils.pExpire("connectionFactory123", 6, redisKey+"_TIME", 5*60*1000);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -202,16 +191,10 @@ public class CrawlerService {
 						channelId = cMapRefPo.getChannelId();
 						crawlerDictdId = cMapRefPo.getSrcDid();
 					} else return;
-					RedisOperService redis = null;
-					ServletContext sc=(SystemCache.getCache(FConstants.SERVLET_CONTEXT)==null?null:(ServletContext)SystemCache.getCache(FConstants.SERVLET_CONTEXT).getContent());
-			        if (WebApplicationContextUtils.getWebApplicationContext(sc)!=null) {
-			            JedisConnectionFactory js =(JedisConnectionFactory) WebApplicationContextUtils.getWebApplicationContext(sc).getBean("connectionFactory123");
-			            redis = new RedisOperService(js, 6);
-			        }
 			        String inRuleIdStr = "wt_ChannelAssetMapRef_"+dictRefId;
-			        redis.set(inRuleIdStr+"_TYPE", "DELETE", 30*60*1000);
-			        redis.set(inRuleIdStr, "0",30*60*1000);
-			        redis.set(inRuleIdStr+"_TIME", System.currentTimeMillis()+"");
+			        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr+"_TYPE", "DELETE", 30*60*1000);
+			        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, "0", 30*60*1000);
+			        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr+"_TIME", System.currentTimeMillis()+"");
 					conn = dataSource.getConnection();
 					try {
 						sql = "SELECT count(*) FROM wt_ChannelAsset where inRuleIds LIKE '%"+inRuleIdStr+"%'";
@@ -228,8 +211,8 @@ public class CrawlerService {
 						int pageSize = 1000;
 						int pages = (int) (num/pageSize + 2);
 						for (int i = 1; i < pages; i++) {
-							redis.set(inRuleIdStr, (((i-1)+0.0)/pages)+"",60*60*1000);
-							redis.set(inRuleIdStr+"_TYPE", "DELETE", 60*60*1000);
+							RedisUtils.setString("connectionFactory123", 6, inRuleIdStr+"_TYPE", "DELETE", 60*60*1000);
+					        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, (((i-1)+0.0)/pages)+"", 60*60*1000);
 							List<String> onlyIdList = new ArrayList<>();
 							List<String> removeOnlyIds = new ArrayList<>(); //删除多关系
 							String onlyIds = "";
@@ -319,10 +302,9 @@ public class CrawlerService {
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {
-						redis.set(inRuleIdStr, "1", 10*1000);
-						redis.pExpire(inRuleIdStr+"_TYPE",  10*1000);
-						redis.pExpire(inRuleIdStr+"_TIME", 10*1000);
-						redis.close();
+				        RedisUtils.setString("connectionFactory123", 6, inRuleIdStr, "1", 10*1000);
+				        RedisUtils.pExpire("connectionFactory123", 6, inRuleIdStr+"_TYPE", 10*1000);
+				        RedisUtils.pExpire("connectionFactory123", 6, inRuleIdStr+"_TIME", 10*1000);
 						channelMapService.deleteById(dictRefId);
 						if (conn!=null) try {conn.close();conn=null;} catch(Exception e) {conn=null;} finally {conn=null;};
 					}
