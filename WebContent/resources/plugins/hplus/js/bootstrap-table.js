@@ -45,7 +45,7 @@
     BootstrapTable.DEFAULTS = {
         classes: 'table table-hover',
         height: undefined,
-        undefinedText: '-',
+        undefinedText: ' ',
         sortName: undefined,
         sortOrder: 'asc',
         striped: false,
