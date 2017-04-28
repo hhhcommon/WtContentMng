@@ -99,15 +99,16 @@ public class ChannelLoopImgService {
     	if (loopImageList==null || loopImageList.size()<=1) return false;
     	Map<String, Object> param=new HashMap<String, Object>();
     	int index=-1;
-    	for(int i=loopImageList.size()-1; i>=0; i--) {
+    	for(int i=0; i<loopImageList.size(); i++) {
     	    Map<String, Object> m=loopImageList.get(i);
     	    if (m!=null && m.get("ContentId")!=null) {
+    	        index++;
     	        if (m.get("ContentId").equals(contentId)) {// 查找所要操作的内容所在的位置
-                    index=i;
                     break;
                 }
     	    }
     	}
+    	if (index==-1) return false;
     	param.put("channelId", channelId);
     	//处理类型
         if (!StringUtils.isNullOrEmptyOrSpace(mediaType)) {
@@ -123,24 +124,24 @@ public class ChannelLoopImgService {
         }
         // 排序
     	if (loopSort==-1) {// 上移
-    		if (index <= 0 || index>=loopImageList.size()) return false; 
-    		if (loopImageList.get(index).get("ContentId")==null) return false;
-    		String _contentId = loopImageList.get(index).get("ContentId").toString();
+    		if (index<=0 || index>=loopImageList.size()) return false; 
+    		if (loopImageList.get(index-1).get("ContentId")==null) return false;
+    		String _contentId = loopImageList.get(index-1).get("ContentId").toString();
+    		long _loopSort=(long)loopImageList.get(index-1).get("LoopSort");
     		long tempSort=(long)loopImageList.get(index).get("LoopSort");
     		param.put("assetId", contentId);
-    		param.put("_assetId", _contentId);
     		param.put("loopSort", tempSort);
-    		long _loopSort=(long)loopImageList.get(index+1).get("LoopSort");
+    		param.put("_assetId", _contentId);
     		param.put("_loopSort", _loopSort);
     	} else if (loopSort==-2) {// 下移
-    		if (index<0 || index>=loopImageList.size()) return false; 
-    		if (loopImageList.get(index).get("ContentId")==null) return false;
-    		String _contentId = loopImageList.get(index).get("ContentId").toString();
-    		loopSort = (int)loopImageList.get(index).get("LoopSort");
+    		if (index<0 || index>=loopImageList.size()-1) return false; 
+    		if (loopImageList.get(index+1).get("ContentId")==null) return false;
+    		String _contentId = loopImageList.get(index+1).get("ContentId").toString();
+    		long _loopSort=(long)loopImageList.get(index+1).get("LoopSort");
+    		long tempSort=(long)loopImageList.get(index).get("LoopSort");
     		param.put("assetId", contentId);
+    		param.put("loopSort", tempSort);
     		param.put("_assetId", _contentId);
-    		param.put("loopSort", loopSort);
-    		int _loopSort=(int)loopImageList.get(index-1).get("LoopSort");
     		param.put("_loopSort", _loopSort);
     	} else if (loopSort>0) {// 根据参数设置所在位置
     		if (index == loopSort) return false;// 有错误
@@ -206,7 +207,7 @@ public class ChannelLoopImgService {
 
     	Map<String, Object> param=new HashMap<String, Object>();
     	param.put("channelId", channelId);
-    	List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgCount", param);
+    	List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgMax", param);
     	int loopSort=0;
     	if (_ret!=null&&_ret.size()>=0) {
     		Map<String, Object> map=(Map<String, Object>) _ret.get(0).get(0);
