@@ -9,6 +9,8 @@
  */
 jQuery.fn.pagination = function(maxentries, opts){
 	opts = jQuery.extend({
+	  maxentries:0,
+    items_per_page:10,
 		items_per_page:10,
 		num_display_entries:10,
 		current_page:0,
@@ -141,7 +143,11 @@ jQuery.fn.pagination = function(maxentries, opts){
 			}
 	        /****************** Added ***************/
             /*插入一个文本框，用户输入并回车后进行跳转*/
-			var pagetext = '<input id="pagevalue" size="1" value="'+(current_page+2)+'"type="text">';
+      var cp=current_page+2;
+      if(cp>=np){
+        cp=np;
+      }
+			var pagetext = '<input id="pagevalue" size="1" value="'+cp+'" type="text">';
             var toPage='<span><a id="search" href="#">跳转</a></span>';
             $(pagetext).appendTo(panel);
             $(toPage).appendTo(panel);

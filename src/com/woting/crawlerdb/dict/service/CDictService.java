@@ -327,6 +327,7 @@ public class CDictService {
 						m.put("ChannelId", id);
 						m.put("ChannelSource", "我听科技");
 						m.put("ChannelName", _c.getTreePathName().replace("栏目根/", ""));
+						m.put("IsValidate", chamaps.getIsValidate());
 						retLs.add(m);
 					}
 				}
@@ -347,6 +348,7 @@ public class CDictService {
 						TreeNode<Channel> _c=(TreeNode<Channel>)_cc.channelTree.findNode(chamaps.getChannelId());
 						m.put("ChannelSource", "我听科技");
 						m.put("ChannelName", _c.getTreePathName().replace("栏目根/", ""));
+						m.put("IsValidate", chamaps.getIsValidate());
 						retLs.add(m);
 					}
 				}
@@ -398,6 +400,13 @@ public class CDictService {
 					retLs.add(m);
 				} else {
 					if (isOrNoRemove) { // 删除栏目关系表数据
+						
+						// 修改数据库使该关系无效
+						ChannelMapRefPo cMapRefPo = new ChannelMapRefPo();
+						cMapRefPo.setId(id);
+						cMapRefPo.setIsValidate(2);
+						channelMapService.updateChannelMapRef(cMapRefPo);
+						
 						crawlerService.deleteCCateResRef(id);
 						Map<String, Object> m = new HashMap<>();
 						m.put("PerId", id);
