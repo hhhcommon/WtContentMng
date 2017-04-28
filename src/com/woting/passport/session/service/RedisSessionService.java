@@ -32,6 +32,7 @@ public class RedisSessionService implements SessionService {
     @Resource
     private MobileUsedService muService;
 
+    @SuppressWarnings("unchecked")
     @Override
     /**
      * return 
@@ -208,7 +209,7 @@ public class RedisSessionService implements SessionService {
             //1-删除该用户在此类设备上的登录信息——踢出（不允许同一用户在同一类型的不同设备上同时登录）
             try {
                 String did=roService.get(rUdk.getKey_UserLoginDeviceType());
-                if (did!=null&&did.trim().length()>0) {
+                if (did!=null&&did.trim().length()>0&&!did.equals(udk.getDeviceId())) {
                     RedisUserDeviceKey _oldKey=new RedisUserDeviceKey(udk);
                     _oldKey.setDeviceId(did);
                     cleanUserLogin(_oldKey, roService);
@@ -216,9 +217,8 @@ public class RedisSessionService implements SessionService {
             } catch(Exception e) {}
             //2-删除在该设备上的其他用户登录信息（不允许同一设备上有两个用户同时登录）
             try {
-                //删除用户在
                 String uid=roService.get(rUdk.getKey_DeviceType_UserId());
-                if (uid!=null&&uid.trim().length()>0) {
+                if (uid!=null&&uid.trim().length()>0&&!uid.equals(udk.getUserId())) {
                     RedisUserDeviceKey _oldKey=new RedisUserDeviceKey(udk);
                     _oldKey.setUserId(uid);
                     cleanUserLogin(_oldKey, roService);
