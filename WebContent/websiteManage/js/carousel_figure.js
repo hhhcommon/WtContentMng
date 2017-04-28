@@ -140,7 +140,7 @@ $(function(){
   var current_page=1;//内容列表当前页码
   var contentCount=0;//内容列表总页码数
   var allCount=0;//内容列表总记录数
-  var pageSize=1;//每页展示10条记录
+  var pageSize=10;//每页展示10条记录
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";//搜索词
