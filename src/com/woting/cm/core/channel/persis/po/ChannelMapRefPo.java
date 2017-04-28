@@ -12,6 +12,7 @@ public class ChannelMapRefPo extends BaseObject {
 	private String srcMid;
 	private String srcDid;
 	private String srcName;
+	private int isValidate;
 	private Timestamp cTime;
 	public String getId() {
 		return id;
@@ -48,5 +49,11 @@ public class ChannelMapRefPo extends BaseObject {
 	}
 	public void setcTime(Timestamp cTime) {
 		this.cTime = cTime;
+	}
+	public int getIsValidate() {
+		return isValidate;
+	}
+	public void setIsValidate(int isValidate) {
+		this.isValidate = isValidate;
 	}
 }
