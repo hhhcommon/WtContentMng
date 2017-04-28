@@ -3,13 +3,13 @@ $(function(){
   //获取用户的id
   var userId=$(".login_user span",parent.document).attr("userid");
 
-  
   var rootPath=getRootPath();
   var subType=1;//subType=1代表在创建专辑页面保存,subType=2代表在修改专辑页面保存
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var allCount=0;//总记录数
   var pageSize=2;//每页条数
+  var flagflow=0;//专辑的状态
   
   /*s--获取筛选条件*/
   var dataF={"MobileClass":"Chrome",
@@ -67,7 +67,7 @@ $(function(){
   zjData.MobileClass="Chrome";
   zjData.PCDType="3";
   zjData.UserId=userId;
-  zjData.FlowFlag="0";
+  zjData.FlagFlow=flagflow;
   zjData.PageSize=pageSize;
   zjData.Page=current_page;
   getContentList(zjData);
@@ -79,20 +79,19 @@ $(function(){
       cache:true,
       data:JSON.stringify(obj),
       beforeSend: function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载专辑列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:230px;'>正在加载专辑列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           $(".ri_top3_con").html("");//每次加载之前先清空
           allCount=resultData.AllCount;
-          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
           getSeqMediaList(resultData); //加载专辑列表
         }else{
-          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>没有查到任何内容</div>");//每次加载之前先清空
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:230px;'>没有查到任何内容</div>");//每次加载之前先清空
           allCount="0";
-          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
         }
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,zjData.Page);//init翻页
         $('.shade', parent.document).hide();
       },
@@ -105,7 +104,7 @@ $(function(){
   function getSeqMediaList(resultData){
     for(var i=0;i<resultData.ResultList.length;i++){
       var albumBox= '<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+' >'+
-                      '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
+                      '<img src="./../anchorResource/img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
                       '<div class="rtcl_img">'+
                         '<img src='+resultData.ResultList[i].ContentImg+' alt="节目图片" />'+
                       '</div>'+
@@ -126,7 +125,7 @@ $(function(){
                       '<p class="zj_st">'+resultData.ResultList[i].SubCount+'个节目'+'</p>'+
                       '<div class="op_type" id="op_Box'+i+'">'+
                         '<p class="jm_up cf60">上传节目</p>'+
-                        '<p class="jm_mg cf60" hrefs="manage_jm.html">节目管理</p>'+
+                        '<p class="jm_mg cf60" hrefs="jmANDzj/manage_jm.html">节目管理</p>'+
                         '<p class="zj_ed cf60">编辑专辑</p>'+
                       '</div>'+
                     '</div>';
@@ -159,6 +158,11 @@ $(function(){
   
   //翻页之后的回调函数
   function pagitionBack(current_page){
+    if($(".new_cate li").size()>"0"){//已经选中筛选条件
+      optfy=2;//选中具体筛选条件后翻页
+    }else{
+      optfy=1;//未选中具体筛选条件后翻页
+    }
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(searchWord==""){//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
       seaFy=1;
@@ -190,7 +194,7 @@ $(function(){
       getContentList(zjData);
     }else{//seaFy=2搜索列表加载出来后翻页
       zjData.SearchWord=searchWord;
-      getContentList(zjData);
+      getSearchList(zjData);
     }
   }
   
@@ -201,14 +205,14 @@ $(function(){
     if (evt.keyCode==13){
       $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
       $("#channel").show();
-      searchList();
+      searchList();//搜索
     }
   });
   //点击搜索小图标
   $(".ri_top_li2_img").on("click",function(){
     $(".all").css("display","none").children(".new_cate").html("");//每次搜索时都要清除筛选条件，search的优先级大于filters
     $("#channel").show();
-    searchList();
+    searchList();//搜索
   });
   function searchList(){
     searchWord=$.trim($(".ri_top_li2_inp").val());
@@ -220,12 +224,43 @@ $(function(){
       zjData.MobileClass="Chrome";
       zjData.PCDType="3";
       zjData.UserId=userId;
-      zjData.FlowFlag="0";
+      zjData.FlowFlag=flagflow;
       zjData.PageSize=pageSize;
+      current_page=1;
       zjData.Page=current_page;
       zjData.SearchWord=searchWord;
-      getContentList(zjData);
+      getSearchList(zjData);
     }
+  }
+  //得到搜索列表 
+  function getSearchList(obj){//暂无本接口
+    $.ajax({
+      type:"POST",
+      url:rootPath+"content/searchSeqList.do",
+      dataType:"json",
+      cache:false, 
+      data:JSON.stringify(obj),
+      beforeSend:function(){
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:230px;'>正在加载专辑列表...</div>");
+        $('.shade', parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          $(".ri_top3_con").html("");//每次加载之前先清空
+          allCount=resultData.AllCount;
+          getSeqMediaList(resultData); //加载专辑列表
+        }else{
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:230px;'>没有查到任何内容</div>");//每次加载之前先清空
+          allCount="0";
+        }
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
+        pagitionInit(contentCount,allCount,zjData.Page);//init翻页
+        $('.shade', parent.document).hide();
+      },
+      error:function(XHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
   }
   /*e--根据搜索/筛选/翻页获取专辑列表*/
   
@@ -236,11 +271,11 @@ $(function(){
     $(".add_jm .seqId").val(seqId);
   });
   
-  /*添加自定义标签*/
-  $(".jm_addTag").keydown(function(e){
+  /*创建/编辑节目弹出页面添加自定义标签*/
+  $(".mask_jm .jm_addTag").keydown(function(e){
     var evt=event?event:(window.event?window.event:null);//兼容IE和FF
     if(evt.keyCode==13){
-      var txt=$.trim($(".jm_addTag").val());
+      var txt=$.trim($(".mask_jm .jm_addTag").val());
       if(txt!=""){
         var count = txt.replace(/[^\x00-\xff]/g,"**").length;
         if(count<=12){
@@ -248,14 +283,14 @@ $(function(){
           if(!isExisted){
             if(tag_sum>=5){
               alert("最多添加5个标签");
-              $(".jm_addTag").val("");
+              $(".mask_jm .jm_addTag").val("");
               return;
             }
             var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
                               '<span>'+txt+'</span>'+
-                              '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+                              '<img class="upl_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" />'+
                             '</li>';
-            $(".upl_bq").append(new_tag);
+            $(".mask_jm .upl_bq").append(new_tag);
             tag_sum++;
           }else{
             alert("你添加的标签已存在!");
@@ -263,7 +298,7 @@ $(function(){
         }else{
           alert("输入内容超出范围");
         }
-        $(".jm_addTag").val("");
+        $(".mask_jm .jm_addTag").val("");
       }
     }
   });
@@ -271,19 +306,19 @@ $(function(){
   //上传节目页面--点击保存按钮
   var _data={};
   function add_jmData(seqId){
-    if($(".add_jm .previewImg").attr("isDefaultImg")=="true"){
-      $(".add_jm .upl_img").attr("value","http://wotingfm.com:908/CM/resources/images/default.png");
+    if($(".mask_jm .previewImg").attr("isDefaultImg")=="true"){
+      $(".mask_jm .upl_img").attr("value","http://wotingfm.com:908/CM/resources/images/default.png");
     }
     _data.UserId=userId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
-    _data.ContentURI=$(".audio").attr("src");
-    _data.ContentName=$(".add_jm .uplTitle").val();
-    _data.ContentImg=$(".add_jm .upl_img").attr("value");
-    _data.SeqMediaId=$(".add_jm .seqId").val();
-    _data.TimeLong=$(".add_jm .timeLong").attr("value");
+    _data.ContentURI=$(".mask_jm .audio").attr("src");
+    _data.ContentName=$(".mask_jm .uplTitle").val();
+    _data.ContentImg=$(".mask_jm .upl_img").attr("value");
+    _data.SeqMediaId=$(".mask_jm .seqId").val();
+    _data.TimeLong=$(".mask_jm .timeLong").attr("value");
     var taglist=[];
-    $(".add_jm .upl_bq").find(".upl_bq_img").each(function(){
+    $(".mask_jm .upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
       if($(this).attr("tagType")=="我的标签"){
         tag.TagName=$(this).children("span").html();
@@ -300,9 +335,9 @@ $(function(){
       taglist.push(tag);
     });
     _data.TagList=taglist;
-    _data.ContentDesc=$(".uplDecn").val();
+    _data.ContentDesc=$(".mask_jm .uplDecn").val();
     var memberTypelist=[];
-    $(".add_jm .czfs_tag").find(".czfs_tag_li").each(function(){
+    $(".mask_jm .czfs_tag").find(".czfs_tag_li").each(function(){
       var czfsObj={};//创作方式对象
       var czfs_t=""+$(this).children().children(".czfs_tag_span1").html();
       var czfs_txt=czfs_t.split(":")[0];
@@ -312,17 +347,17 @@ $(function(){
       memberTypelist.push(czfsObj);
     });
     _data.MemberType=memberTypelist;
-    var str_time=$(".layer-date").val();
+    var str_time=$(".mask_jm .layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
   }
-  $(".add_jm #submitBtn").on("click",function(){
-    _data.FlowFlag="1";
+  $(".mask_jm #submitBtn").on("click",function(){
+    _data.FlowFlag="1";//1提交
     add_jmData();
     addJM(_data);
   });
-  $(".add_jm #pubBtn").on("click",function(){
-    _data.FlowFlag="2";
+  $(".mask_jm #pubBtn").on("click",function(){
+    _data.FlowFlag="2";//2发布
     add_jmData();
     addJM(_data);
   });
@@ -333,28 +368,27 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       beforeSend:function(){
-        $(".btn_group input").attr("disabled","disabled");
+        $(".mask_jm .btn_group input").attr("disabled","disabled").css("background","#ccc");
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           alert("新建节目成功");
-          $(".mask_jm,.add_jm").hide();
+          $(".mask_jm").hide();
           $("body").css({"overflow":"auto"});
-          getContentList(zjData);//重新加载节目列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
         }else{
           alert(resultData.Message);
         }
-        $(".btn_group input").removeAttr("disabled");
+        $(".mask_jm .btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
       }
     });
   }
-    
   /*e--点击上传节目按钮*/
   
   /*s--点击相关操作的节目管理按钮*/
@@ -401,26 +435,26 @@ $(function(){
   }
   //填充专辑信息
   function fillZjContent(resultData){
-    $(".channelBox").html("");
-    $(".iboxtitle h4").html("修改专辑");
-    $(".zjId").attr("value",resultData.Result.ContentId);
-    $(".uplTitle").val(resultData.Result.ContentName);
-    $(".defaultImg").attr("src",resultData.Result.ContentImg);
+    $(".mask_zj .channelBox").html("");
+    $(".mask_zj .iboxtitle h4").html("修改专辑");
+    $(".mask_zj .zjId").attr("value",resultData.Result.ContentId);
+    $(".mask_zj .uplTitle").val(resultData.Result.ContentName);
+    $(".mask_zj .defaultImg").attr("src",resultData.Result.ContentImg);
     if(resultData.Result.ContentKeyWords!=null){
       for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
         var new_tag= '<li class="upl_bq_img bqImg" tagId='+resultData.Result.ContentKeyWords[i].TagId+'>'+
                       '<span>'+resultData.Result.ContentKeyWords[i].TagName+'</span>'+
-                      '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+                      '<img class="upl_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" />'+
                     '</li>';
-        $(".upl_bq").append(new_tag);
+        $(".mask_zj .upl_bq").append(new_tag);
         var tagId=resultData.Result.ContentKeyWords[i].TagId;
-        $(".my_tag_con1").each(function(){
+        $(".mask_zj .my_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input[type='checkbox']").prop("checked",true);
             $(this).children("input[type='checkbox']").prop("disabled",true);
           }
         })
-        $(".gg_tag_con1").each(function(){
+        $(".mask_zj .gg_tag_con1").each(function(){
           if($(this).attr("tagid")==tagId){
             $(this).children("input").prop("checked",true);
             $(this).children("input").prop("disabled",true);
@@ -432,23 +466,23 @@ $(function(){
       for(var i=0;i<resultData.Result.ContentPubChannels.length;i++){
         var li='<li class="channel_bq bqImg" id='+resultData.Result.ContentPubChannels[i].ChannelId+'>'+
                   '<span>'+resultData.Result.ContentPubChannels[i].ChannelName+'</span>'+
-                  '<img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">'+
+                  '<img class="channel_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" style="display: none;">'+
                 '</li>';
-        $(".channelBox").append(li);
+        $(".mask_zj .channelBox").append(li);
       }
     }
-    $(".uplDecn").val(resultData.Result.ContentDesc);
-    $(".layer-date").val(resultData.Result.CTime);
+    $(".mask_zj .uplDecn").val(resultData.Result.ContentDesc);
+    $(".mask_zj .layer-date").val(resultData.Result.CTime);
   }
   /*e--点击相关操作的编辑专辑按钮*/
   
   /*s--点击创建专辑按钮*/
   $(document).on("click",".ri_top_li3",function(){
     subType=1;
-    $(".add_zj .iboxtitle h4").html("创建专辑");
+    $(".mask_zj .iboxtitle h4").html("创建专辑");
     clear_zj();//清空专辑模态框上的数据
     clear_jm();//清空节目模态框上的数据
-    $(".mask_jm,.add_jm").hide();
+    $(".mask_jm").hide();
   });
   
   //获取公共标签
@@ -456,7 +490,6 @@ $(function(){
              "PCDType":"3",
              "UserId":userId,
              "MediaType":"1",
-             "ChannelIds":"cn31",
              "TagType":"1",
              "TagSize":"20"
   };
@@ -471,7 +504,6 @@ $(function(){
              "PCDType":"3",
              "UserId":userId,
              "MediaType":"1",
-             "ChannelIds":"cn31",
              "TagType":"2",
              "TagSize":"20"
   };
@@ -483,14 +515,14 @@ $(function(){
   /*e--点击创建专辑按钮*/
 
   /*s--点击创建专辑/编辑专辑页面上的保存按钮*/
-  $("#submitBtn").on("click",function(){
+  $(".mask_zj #submitBtn").on("click",function(){
     if(subType=="1")  save_add_zj();
     if(subType=="2")  save_edit_zj();
   })
   //点击创建专辑页面上的保存按钮
   function save_add_zj(){
     var chIdstr="";
-    $(".channelBox li").each(function(){
+    $(".mask_zj .channelBox li").each(function(){
       var ids=$(this).attr("id");
       if(chIdstr==""){
         chIdstr=ids;
@@ -498,18 +530,18 @@ $(function(){
         chIdstr+=","+ids;
       }
     })
-    if($(".previewImg").attr("isDefaultImg")=="true"){
-      $(".upl_img").attr("value","http://wotingfm.com:908/CM/resources/images/default.png");
+    if($(".mask_zj .previewImg").attr("isDefaultImg")=="true"){
+      $(".mask_zj .upl_img").attr("value","http://wotingfm.com:908/CM/resources/images/default.png");
     }
     var _data={};
-    _data.UserId="123";
+    _data.UserId=userId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
-    _data.ContentName=$(".uplTitle").val();
-    _data.ContentImg=$(".upl_img").attr("value");
+    _data.ContentName=$(".mask_zj .uplTitle").val();
+    _data.ContentImg=$(".mask_zj .upl_img").attr("value");
     _data.ChannelId=chIdstr;
     var taglist=[];
-    $(".upl_bq").find(".upl_bq_img").each(function(){
+    $(".mask_zj .upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
       if($(this).attr("tagType")=="我的标签"){
         tag.TagName=$(this).children("span").html();
@@ -526,8 +558,8 @@ $(function(){
       taglist.push(tag);
     });
     _data.TagList=taglist;
-    _data.ContentDesc=$(".uplDecn").val();
-    var str_time=$(".layer-date").val();
+    _data.ContentDesc=$(".mask_zj .uplDecn").val();
+    var str_time=$(".mask_zj .layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
     $.ajax({
@@ -536,12 +568,12 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       beforeSend:function(){
-        $(".btn_group input").attr("disabled","disabled");
+        $(".mask_zj .btn_group input").attr("disabled","disabled").css("background","#ccc");
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           alert("创建专辑成功");
-          $(".mask_zj,.add_zj").hide();
+          $(".mask_zj").hide();
           $("body").css({"overflow":"auto"});
           getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
@@ -550,7 +582,7 @@ $(function(){
         }else{
           alert(resultData.Message);
         }
-        $(".btn_group input").removeAttr("disabled");
+        $(".mask_zj .btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
@@ -560,7 +592,7 @@ $(function(){
   //点击编辑专辑页面上的保存按钮
   function save_edit_zj(){
     var chIdstr="";
-    $(".channelBox li").each(function(){
+    $(".mask_zj .channelBox li").each(function(){
       var ids=$(this).attr("id");
       if(chIdstr==""){
         chIdstr=ids;
@@ -568,22 +600,22 @@ $(function(){
         chIdstr+=","+ids;
       }
     })
-    if(!$(".upl_img").attr("value")){
-      $(".upl_img").attr("value",$(".defaultImg").attr("src"));
+    if(!$(".mask_zj .upl_img").attr("value")){
+      $(".mask_zj .upl_img").attr("value",$(".defaultImg").attr("src"));
     }
     var _data={};
     _data.UserId=userId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
-    _data.ContentName=$(".uplTitle").val();
-    _data.ContentId=$(".zjId").attr("value");
-    _data.ContentImg=$(".upl_img").attr("value");
+    _data.ContentName=$(".mask_zj .uplTitle").val();
+    _data.ContentId=$(".mask_zj .zjId").attr("value");
+    _data.ContentImg=$(".mask_zj .upl_img").attr("value");
     _data.ChannelId=chIdstr;
     var taglist=[];
-    $(".upl_bq").find(".upl_bq_img").each(function(){
+    $(".mask_zj .upl_bq").find(".upl_bq_img").each(function(){
       var tag={};//标签对象
       var tagTxt=$(this).children("span").html();
-      $(".my_tag_con1").each(function(){
+      $(".mask_zj .my_tag_con1").each(function(){
         if($(this).children(".my_tag_con1_span").html()==tagTxt){
           $(".my_tag_con1").children(".my_tag_con1_check").prop("checked",false);
           $(".my_tag_con1").children(".my_tag_con1_check").attr("disabled",false);
@@ -593,7 +625,7 @@ $(function(){
           tag.TagOrg="我的标签";
         }
       })
-      $(".gg_tag_con1").each(function(){
+      $(".mask_zj .gg_tag_con1").each(function(){
         if($(this).children(".gg_tag_con1_span").html()==tagTxt){
           $(".gg_tag_con1").children(".gg_tag_con1_check").prop("checked",false);
           $(".gg_tag_con1").children(".gg_tag_con1_check").attr("disabled",false);
@@ -610,8 +642,8 @@ $(function(){
       taglist.push(tag);
     });
     _data.TagList=taglist;
-    _data.ContentDesc=$(".uplDecn").val();
-    var str_time=$(".layer-date").val();
+    _data.ContentDesc=$(".mask_zj .uplDecn").val();
+    var str_time=$(".mask_zj .layer-date").val();
     var rst_strto_time=js_strto_time(str_time);
     _data.FixedPubTime=rst_strto_time;
     $.ajax({
@@ -620,19 +652,19 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       beforeSend: function(){
-        $(".btn_group input").attr("disabled","disabled");
+        $(".mask_zj .btn_group input").attr("disabled","disabled").css("background","#ccc");
       },
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("专辑信息修改成功");
-          $(".mask_zj,.add_zj").hide();
+          $(".mask_zj").hide();
           $("body").css({"overflow":"auto"});
           getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
         }
-        $(".btn_group input").removeAttr("disabled");
+        $(".mask_zj .btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
@@ -661,7 +693,6 @@ $(function(){
       }
     });
     if(lists.length!=0){//选中内容
-      var isSure=false;//是否存在
       switch(type){
         case "revoke":
           var url="content/seq/updateSeqMediaStatus.do";
@@ -697,14 +728,15 @@ $(function(){
         $(".shade",parent.document).show();
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           alert("操作成功");
           $("body").css({"overflow":"auto"});
-          getContentList(zjData);//重新加载节目列表
+          getContentList(zjData);//重新加载专辑列表
           $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
           $("#channel .chnels").remove();
           getFiltrates(dataF);//重新加载筛选条件
           $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+          $(".all_check").addClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox1.png"});
         }else{
           alert(resultData.Message);
         }
@@ -727,8 +759,11 @@ $(function(){
     dataType:"json",
     //表单提交前进行验证
     success: function (resultData){
-      if(resultData.jsonType == "1"){
-        getChannelList(resultData);//得到栏目栏目列表
+      if(resultData.jsonType=="1"){
+        if(resultData.data.children[0]){
+          resultData=resultData.data.children[0];
+          getChannelList(resultData);//得到专辑栏目列表
+        }
       }
     },
     error: function(XHR){
@@ -737,24 +772,24 @@ $(function(){
   });
   //得到专辑栏目列表
   function getChannelList(resultData){
-    for(var i=0;i<resultData.data.children.length;i++){
-      var ss=resultData.data.children[i].attributes.nPy.substring(0,1);
+    for(var i=0;i<resultData.children.length;i++){
+      var ss=resultData.children[i].attributes.nPy.substring(0,1);
       switch(ss){
         case "A":case "B":case "C":case "D":case "E":case "F":case "G":
-          var li='<li value="" id='+resultData.data.children[i].id+'>'+resultData.data.children[i].name+'</li>';
-          $(".cul_ag").append(li);
+          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
+          $(".mask_zj .cul_ag").append(li);
           break;
         case "H":case "I":case "J":case "K":case "L":
-          var li='<li value="" id='+resultData.data.children[i].id+'>'+resultData.data.children[i].name+'</li>';
-          $(".cul_hl").append(li);
+          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
+          $(".mask_zj .cul_hl").append(li);
           break;
         case "M":case "N":case "O":case "P":case "Q":case "R":case "S":
-          var li='<li value="" id='+resultData.data.children[i].id+'>'+resultData.data.children[i].name+'</li>';
-          $(".cul_ms").append(li);
+          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
+          $(".mask_zj .cul_ms").append(li);
           break;
         case "T":case "U":case "V":case "W":case "X":case "Y":case "Z":
-          var li='<li value="" id='+resultData.data.children[i].id+'>'+resultData.data.children[i].name+'</li>';
-          $(".cul_tz").append(li);
+          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
+          $(".mask_zj .cul_tz").append(li);
           break;
         default:
           break;
@@ -762,20 +797,20 @@ $(function(){
     }
   }
   //选择一级/二级栏目
-  $(".channelimg1").on("click",function(){
-    $(".cBox1_nav div:eq(0)").addClass("active").siblings().removeClass("active");
-    $('.cBox1_con .cBox1_conb:eq(0)').show().siblings().hide();
-    $(".channelBox1").toggle();
+  $(".mask_zj .channelimg1").on("click",function(){
+    $(".mask_zj .cBox1_nav div:eq(0)").addClass("active").siblings().removeClass("active");
+    $('.mask_zj .cBox1_con .cBox1_conb:eq(0)').show().siblings().hide();
+    $(".mask_zj .channelBox1").toggle();
   });
-  $(".cBox1_nav div").on("click",function(){
+  $(".mask_zj .cBox1_nav div").on("click",function(){
     var index = $(this).index();
     $(this).addClass('active').siblings().removeClass('active');
-    $('.cBox1_con .cBox1_conb').eq(index).show().siblings().hide();
+    $('.mask_zj .cBox1_con .cBox1_conb').eq(index).show().siblings().hide();
     if(index==0){//点击一级栏目
-      $(".cBox1_conF li").removeClass("selectedF");
-      $(".channelBox li").each(function(){
+      $(".mask_zj .cBox1_conF li").removeClass("selectedF");
+      $(".mask_zj .channelBox li").each(function(){
         var pId=$(this).attr("pid");
-        $(".cBox1_conF li").each(function(){
+        $(".mask_zj .cBox1_conF li").each(function(){
           if($(this).attr("id")==pId){
             $(this).addClass("selectedF");
           }
@@ -792,11 +827,11 @@ $(function(){
   });
   $(document).on("mouseenter",".cancelImg",function(){
     event.stopPropagation();
-    $(this).attr({"src":"img/upl_img6.png"});
+    $(this).attr({"src":"../anchorResource/img/upl_img6.png"});
   });
   $(document).on("mouseleave",".cancelImg",function(event){
     event.stopPropagation();
-    $(this).attr({"src":"img/upl_img2.png"});
+    $(this).attr({"src":"../anchorResource/img/upl_img2.png"});
     $(this).hide();
   });
   var exit=false;//默认删除选中的二级栏目之后不存在相同的一级栏目
@@ -804,12 +839,12 @@ $(function(){
     $(this).parent().remove();
     var id=$(this).parent().attr("id");
     var pId=$(this).parent().attr("pid");
-    $(".cBox1_conS li").each(function(){
+    $(".mask_zj .cBox1_conS li").each(function(){
       if($(this).attr("id")==id){
         $(this).removeClass("selectedF");
       }
     });
-    $(".channelBox li").each(function(){
+    $(".mask_zj .channelBox li").each(function(){
       if($(this).attr("pid")==pId){
         exit=true;
         return;
@@ -818,16 +853,16 @@ $(function(){
       }
     });
     if(exit==false){
-      $(".cBox1_conF li").each(function(){
+      $(".mask_zj .cBox1_conF li").each(function(){
         if($(this).attr("id")==pId){
           $(this).removeClass("selectedF");
         }
       })
-      $(".cBox1_conS").html(" ").append("<li class='chsec'>请先选择具体的一级栏目</li>");
+      $(".mask_zj .cBox1_conS").html(" ").append("<li class='chsec'>请先选择具体的一级栏目</li>");
     }
   })
-  $(document).on("click",".cul li",function(){
-    if($(".channelBox li").size()<"5"){
+  $(document).on("click",".mask_zj .cul li",function(){
+    if($(".mask_zj .channelBox li").size()<"5"){
       $(this).addClass("selectedF");
       var chid=$(this).attr("id");
       $.ajax({
@@ -838,9 +873,12 @@ $(function(){
         contentType: false,
         dataType:"json",
         //表单提交前进行验证
-        success: function (resultData){
-          if(resultData.jsonType == "1"){
-            channelSecondList(chid,resultData);//加载选中的一级栏目下面的二级栏目
+        success: function(resultData){
+          if(resultData.jsonType =="1"){
+            if(resultData.data.children[0]){
+              resultData=resultData.data.children[0];
+              channelSecondList(chid,resultData);//加载选中的一级栏目下面的二级栏目
+            }
           }
         },
         error: function(XHR){
@@ -854,39 +892,39 @@ $(function(){
   });
   //加载选中的一级栏目下面的二级栏目
   function channelSecondList(chid,resultData){
-    $(".cBox1_conS").html("");
-    for(var i=0;i<resultData.data.children.length;i++){
-      if(chid==resultData.data.children[i].id){
-        if(resultData.data.children[i].isParent==true){
-          for(var j=0;j<resultData.data.children[i].children.length;j++){
-            var li="<li id="+resultData.data.children[i].children[j].attributes.id+" pid="+resultData.data.children[i].children[j].attributes.parentId+">"+resultData.data.children[i].children[j].name+"</li>"
-            $(".cBox1_conS").append(li);
+    $(".mask_zj .cBox1_conS").html("");
+    for(var i=0;i<resultData.children.length;i++){
+      if(chid==resultData.children[i].id){
+        if(resultData.children[i].isParent==true){
+          for(var j=0;j<resultData.children[i].children.length;j++){
+            var li="<li id="+resultData.children[i].children[j].attributes.id+" pid="+resultData.children[i].children[j].attributes.parentId+">"+resultData.children[i].children[j].name+"</li>"
+            $(".mask_zj .cBox1_conS").append(li);
           }
         }else{
-          $(".cBox1_conS").append("<li class='chsec'>暂无二级栏目</li>");
+          $(".mask_zj .cBox1_conS").append("<li class='chsec'>暂无二级栏目</li>");
         }
-        $(".cBox1_nav div:eq(0)").removeClass("active").siblings().addClass("active");
-        $(".cBox1_conF").hide();
-        $(".cBox1_conS").show();
+        $(".mask_zj .cBox1_nav div:eq(0)").removeClass("active").siblings().addClass("active");
+        $(".mask_zj .cBox1_conF").hide();
+        $(".mask_zj .cBox1_conS").show();
         return;
       }
     }
   }
   //选中二级栏目
-  $(document).on("click",".cBox1_conS li",function(){
+  $(document).on("click",".mask_zj .cBox1_conS li",function(){
     var isSelected=false;
     var id=$(this).attr("id");
     var pid=$(this).attr("pid");
     var txt=$(this).text();
-    if($(".channelBox li").size()==0){
+    if($(".mask_zj .channelBox li").size()==0){
       var li='<li class="channel_bq bqImg" id='+id+' pid='+pid+'>'+
                   '<span>'+txt+'</span>'+
-                  '<img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">'+
+                  '<img class="channel_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" style="display: none;">'+
                 '</li>';
-      $(".channelBox").append(li);
+      $(".mask_zj .channelBox").append(li);
       $(this).addClass("selectedF");
-    }else if($(".channelBox li").size()<"5"){
-      $(".channelBox li").each(function(){
+    }else if($(".mask_zj .channelBox li").size()<"5"){
+      $(".mask_zj .channelBox li").each(function(){
         if($(this).attr("id")!=id){
           isSelected=false;
         }else{
@@ -896,10 +934,10 @@ $(function(){
       if(isSelected==false){
         var li='<li class="channel_bq bqImg" id='+id+' pid='+pid+'>'+
                   '<span>'+txt+'</span>'+
-                  '<img class="channel_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" style="display: none;">'+
+                  '<img class="channel_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" style="display: none;">'+
                 '</li>';
-        $(".channelBox").append(li);
-        $(".cBox1_conS li").each(function(){
+        $(".mask_zj .channelBox").append(li);
+        $(".mask_zj .cBox1_conS li").each(function(){
           if($(this).attr("id")==id){
             $(this).addClass("selectedF")
           }
@@ -918,11 +956,12 @@ $(function(){
   //点击专辑的封面图片，跳到这个专辑的详情页
   $(document).on("click",".rtcl_img",function(){
     var contentId=$(this).parent(".rtc_listBox").attr("contentId");
-    $("#myIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
+    $("#myIframe", parent.document).attr({"src":"jmANDzj/zj_detail.html?contentId="+contentId});
   });
   
-  /*根据不同的筛选条件得到不同的专辑列表*/
-  $(document).on("click",".trig_item,.trig_item_li,.cate_img",function(){//选中或取消某个筛选条件
+  //根据不同的筛选条件得到不同的专辑列表
+  $(document).on("click",".trig_item,.trig_item_li",function(){//选中某个筛选条件
+    optfy=2;////选中具体筛选条件后翻页
     destroy(zjData);
     zjData.MobileClass="Chrome";
     zjData.PCDType="3";
@@ -931,7 +970,24 @@ $(function(){
     zjData.Page=current_page;
     if($(".new_cate li").size()>"0"){
       $(document).find(".new_cate li").each(function(){
-        zjData.ContentId=$(this).attr("id");
+        zjData.ChannelId=$(this).attr("id");
+      });
+    }
+    getContentList(zjData);
+  });
+  
+  //根据不同的筛选条件得到不同的专辑列表
+  $(document).on("click",".cate_img",function(){//取消某个筛选条件
+    optfy=1;//未选中具体筛选条件后翻页
+    destroy(zjData);
+    zjData.MobileClass="Chrome";
+    zjData.PCDType="3";
+    zjData.UserId=userId;
+    zjData.PageSize=pageSize;
+    zjData.Page=current_page;
+    if($(".new_cate li").size()>"0"){
+      $(document).find(".new_cate li").each(function(){
+        zjData.ChannelId=$(this).attr("id");
       });
     }
     getContentList(zjData);

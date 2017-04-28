@@ -1109,9 +1109,11 @@ $(function(){
   $(document).on("click",".lbd_box61",function(){
     var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
     var contentId=$($li).attr("contentId");
+    var mediaType=$($li).attr("mediaType");
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     channelId=nodes[0].id;
     var data4={"PCDType":"3",
+               "MediaType":mediaType,
                "ChannelId":channelId,
                "UserId":userId,
                "ContentId":contentId,
@@ -1124,9 +1126,11 @@ $(function(){
   $(document).on("click",".lbd_box62",function(){
     var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
     var contentId=$($li).attr("contentId");
+    var mediaType=$($li).attr("mediaType");
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     channelId=nodes[0].id;
     var data4={"PCDType":"3",
+               "MediaType":mediaType,
                "ChannelId":channelId,
                "UserId":userId,
                "ContentId":contentId,
@@ -1139,7 +1143,7 @@ $(function(){
   function moveLoopImage(data4){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/moveLoopImage.do",
+      url:rootPath+"content/sortLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data4),
@@ -1151,7 +1155,7 @@ $(function(){
         if(data4.LoopSort=="-1"){//上移
           if(resultData.ReturnType=="1001"){
             alert("轮播图上移成功");
-//          getLoopImages(data3);//重新加载轮播图列表
+            getLoopImages(data3);//重新加载轮播图列表
           }else{
             alert("轮播图上移失败");
             alert(resultData.Message);
@@ -1159,7 +1163,7 @@ $(function(){
         }else{//下移，-2
           if(resultData.ReturnType=="1001"){
             alert("轮播图下移成功");
-//          getLoopImages(data3);//重新加载轮播图列表
+            getLoopImages(data3);//重新加载轮播图列表
           }else{
             alert("轮播图下移失败");
             alert(resultData.Message);
@@ -1185,7 +1189,6 @@ $(function(){
                "MediaType":mediaType,
                "ContentId":contentId,
                "ChannelId":channelId
-               
     };
     $.ajax({
       type:"POST",
