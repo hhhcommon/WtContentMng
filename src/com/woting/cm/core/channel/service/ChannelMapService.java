@@ -60,6 +60,12 @@ public class ChannelMapService {
 		}
 	}
 	
+	public void updateChannelMapRef(ChannelMapRefPo channelMapRefPo) {
+		if (channelMapRefPo!=null) {
+			channelMapRefDao.update(channelMapRefPo);
+		}
+	}
+	
 	public void deleteById(String id) {
 		Map<String, Object> m = new HashMap<>();
 		if (id!=null) {
