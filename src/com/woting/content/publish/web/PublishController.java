@@ -938,6 +938,8 @@ public class PublishController {
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
+            String[] urlSplit=imgeUrl.split("\\");
+            imgeUrl = "##contentimg##"+urlSplit[urlSplit.length-1];
             String mediaType=(m.get("MediaType")==null?null:m.get("MediaType").toString());
             int loopSort=(m.get("LoopSort")==null?0:Integer.valueOf(m.get("LoopSort").toString()));
 
