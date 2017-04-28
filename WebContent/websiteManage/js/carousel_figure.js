@@ -399,7 +399,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:280px;'>正在加载节目列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载节目列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -410,7 +410,7 @@ $(function(){
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载来源的筛选条件
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+          $(".ri_top3_con").html("<div style='text-align:center;min-height:300px;line-height:200px;'>没有找到节目</div>");
           allCount="0";
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           $('.shade', parent.document).hide();
@@ -518,7 +518,7 @@ $(function(){
 //    async:false,
       data:JSON.stringify(data),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载内容列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -528,7 +528,7 @@ $(function(){
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载内容列表
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
+          $(".ri_top3_con").html("<div style='text-align:center;min-height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
           contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           $('.shade', parent.document).hide();
@@ -696,7 +696,7 @@ $(function(){
     carouselImg();
   });
   function carouselImg(){
-    $(".upload_pic").attr("value","");
+    $(".upload_pic").attr("value"," ");
     var _this=$(".upload_pic");
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
@@ -725,7 +725,7 @@ $(function(){
       success:function(resultData){
         if(resultData.Success==true){
           $(".carouselImgMask").addClass("dis");
-          $(".upl_file").attr("value",resultData.FilePath);
+          $(".upload_pic").attr("value",resultData.FilePath);
           if($(".defaultImg").css("display")!="none"){
             $(".defaultImg").css({"display":"none"});
           }
@@ -762,7 +762,7 @@ $(function(){
     var contentid=$(".cm_content3").attr("contentId");
     var mediatype=$(".cm_content3").attr("mediatype");
     var channelid=$(".cm_content3").attr("channelid");
-    var imgurl=$(".upl_file").attr("value");
+    var imgurl=$(".upload_pic").attr("value");
     var data5={"PCDType":"3",
               "UserId":userId,
               "MediaType":mediatype,
@@ -1006,7 +1006,7 @@ $(function(){
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".ri_top3_con").html("<div style='text-align:center;min-height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   })
@@ -1032,7 +1032,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data3),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:280px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
@@ -1048,7 +1048,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".lb_div5").html("<div style='text-align:center;min-height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   }
@@ -1148,7 +1148,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data4),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
@@ -1172,7 +1172,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".lb_div5").html("<div style='text-align:center;min-height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   }
@@ -1197,7 +1197,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data6),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
@@ -1210,7 +1210,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".lb_div5").html("<div style='text-align:center;line-height:200px;min-height:300px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   });
