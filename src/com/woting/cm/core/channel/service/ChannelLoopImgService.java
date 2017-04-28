@@ -201,24 +201,26 @@ public class ChannelLoopImgService {
      * @param imgeUrl 轮播图地址
      * @param loopSort 轮播图排序号
      */
-    @SuppressWarnings("unchecked")
-	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int sort) {
+	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int loopSort) {
     	if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imageUrl)) return false;
 
     	Map<String, Object> param=new HashMap<String, Object>();
     	param.put("channelId", channelId);
-    	List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgMax", param);
-    	int loopSort=0;
-    	if (_ret!=null&&_ret.size()>=0) {
-    		Map<String, Object> map=(Map<String, Object>) _ret.get(0).get(0);
-    		loopSort=(int) map.get("loopSort");
-    		if (sort>0) loopSort=sort;
-    	}
-        
+    	long tempSort=0;
     	Map<String, Object> newData=new HashMap<String, Object>();
+    	if (loopSort<=0) {
+    	    List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgMax", param);
+            if (_ret!=null&&_ret.size()>=0) {
+                Map<String, Object> map=(Map<String, Object>) _ret.get(0);
+                tempSort=(long) map.get("loopSort");
+                tempSort+=1;
+                newData.put("loopSort", tempSort);
+            }
+    	} else {
+    	    newData.put("loopSort", loopSort);
+    	}
     	newData.put("channelId", channelId);
     	newData.put("assetId", contentId);
-    	newData.put("loopSort", loopSort);
     	newData.put("loopImg", imageUrl);
     	//处理类型
         if (!StringUtils.isNullOrEmptyOrSpace(mediaType)) {
