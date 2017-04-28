@@ -939,7 +939,7 @@ public class PublishController {
                 return map;
             }
             String mediaType=(m.get("MediaType")==null?null:m.get("MediaType").toString());
-            int loopSort=(m.get("LoopSort")==null?null:Integer.valueOf(m.get("LoopSort").toString()));
+            int loopSort=(m.get("LoopSort")==null?0:Integer.valueOf(m.get("LoopSort").toString()));
 
             boolean result=queryService.addLoopImg(mediaType, channelId, contentId, imgeUrl, loopSort);
             if (result) {
