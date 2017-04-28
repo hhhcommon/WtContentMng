@@ -360,7 +360,7 @@
   </update>
   
   <!-- 获得轮播图排序号中最大的那个数值 -->
-  <select id="getChannelLoopImgCount" parameterType="java.util.Map" resultType="java.util.HashMap">
+  <select id="getChannelLoopImgMax" parameterType="java.util.Map" resultType="java.util.HashMap">
     select * from wt_ChannelAsset 
     where loopSort=(
           select max(loopSort) from wt_ChannelAsset 
