@@ -11,7 +11,7 @@
   <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="../anchorResource/css/add.css" rel="stylesheet"  />
+  <link href="../anchorResource/css/manage_jm.css" rel="stylesheet"  />
   <link  href="../anchorResource/css/pagination.css" rel="stylesheet"/>
   <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../../resources/js/context.utils.js"></script>
@@ -24,497 +24,6 @@
   <!--翻页插件-->
   <script src="../anchorResource/js/pagination.min.js"></script>
 </head>
-<style>
-*{margin: 0;padding: 0;}
-li{list-style: none;}
-a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
-::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
-::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{overflow: auto;-moz-user-select: none; }
-.content{
-  position: relative;
-  width:1084px;
-  min-width:780px;
-  height:auto;
-  border:1px solid #dedede;
-}
-.content .containers .row{
-  position: absolute;
-  height: 100%;
-  margin-left:0px;
-  margin-right:0px;
-  position: inherit;
-}
-.ri_top{
-  width:100%;
-  height:50px;
-}
-.ri_top_li1{
-  width:156px;
-  height:30px;
-  color:#000;
-  font-size:14px;
-  margin-top:20px;
-  float: left;
-}
-.ri_top_li2{
-  float: left;
-  margin-top: 16px;
-  width: 180px;
-  height: 30px;
-}
-.ri_top_li2_inp{
-  width: 180px;
-  height: 30px;
-  font-size: 14px;
-  padding-left: 6px;
-}
-.dis{
-  display: none;
-}
-.ri_top_li2_img{
-  position: absolute;
-  top: 23px;
-  left: 324px;
-  width: 18px;
-  height: 18px;
-  background-size: 100% 100%;
-}
-.ri_top_li3{
-  width:86px;
-  height:30px;
-  float: left;
-  margin-left:10px;
-  margin-top:16px;
-  cursor: pointer;
-}
-.ri_top_li4{
-  width: 80px;
-  height: 30px;
-  float: left;
-  background: #eaeaea;
-  position: absolute;
-  top:16px;
-  right:1.7%;
-  cursor: pointer;
-}
-.ri_top_li4 span{
-  line-height: 30px;
-  margin-left:3px;
-}
-.ri_top_li4 img{
-  margin-left:6px;
-}
-/*中间右侧区域样式2*/
-.ri_top2{
-  width:100%;
-  height:auto;
-  position: relative;
-  margin-top:15px;
-}
-.border2{
-  border: 1px solid transparent; 
-}
-.attr{
-  position: relative;
-  width:100%;
-  border: 1px solid #dedede;
-}
-.attrKey{
-  overflow: hidden;
-  float: left;
-  width:88px;
-  height:40px;
-  line-height:40px;
-  color: rgb(91,90,90);
-  text-indent: 20px;
-  text-overflow: ellipsis;
-  font-size:14px;
-  background: #f5f5f5;
-}
-.attrValues {
-  margin-left: 88px;
-  padding-right: 100px;
-  overflow: hidden;
-}
-.attrValues .av-gather{
-  overflow: hidden;
-  margin-bottom:0px;
-}
-#album .av_ul{
-  min-height:40px;
-} 
-.trig_item{
-  display: block;
-  float: left;
-  margin-left:16px;
-  height:40px;
-  line-height: 40px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.trig_curr{
-  height:41px;
-  position:relative;
-  z-index:12;
-  border:1px solid #999;
-  border-bottom:medium none;
-  background: #fff;
-  color:#f60;
-}
-.tab_cont_item {
-  position: absolute;
-  left: 0;
-  top: 39px;
-  width: 100%;
-  border: 1px solid #999;
-  background: #fff;
-  display: none;
-  z-index: 10;
-}
-.tab_cont_item li{
-  float:left;
-  height:40px;
-  line-height:40px;
-  margin-left:20px;
-}
-.con_right ul{
-  margin-bottom:0px;
-}
-/*列表展示区域*/
-.ri_top3{
-  width:100%;
-  height:100%;
-  margin-top:20px;
-}
-.fl{
-  float: left;
-}
-.rt_opt{
-  height:50px;
-  background:rgb(252,244,234);
-  overflow: hidden;
-}
-.rto_check{
-  margin:15px 10px 15px 20px;
-  width:18px;
-  height:18px;
-  cursor: pointer; 
-}
-.rto_txt{
-  font-size: 16px;
-  margin: 13px 0px 15px;
-  color: #FFA634;
-}
-.rto_delete,.rto_revoke,.rto_submit{
-  margin-left:50px;
-  width:85px;
-  height:30px;
-  background: #ddd;
-  color:#000;
-  cursor: pointer;
-  margin-top:10px;
-  text-align: center;
-  line-height:30px;
-  border:none;
-}
-/*.rto_submit{
-  color: #fff;
-  background:#FFA634;
-}
-.rto_revoke{
-  color: #fff;
-  background:rgb(149,139,129);
-}
-.rto_delete{
-  color: #fff;
-  background:rgb(200,61,13);
-}*/
-.ri_top3_head{
-  width:100%;
-  height:40px;
-  background:#f5f5f5;
-  border:1px solid #dedede;
-  overflow: hidden;
-}
-.rth_txt{
-  width:100px;
-  height:20px;
-  line-height:20px;
-  color:#000;
-  margin-top:10px;
-  font-size:16px;
-  font-family: "微软雅黑";
-  float: left;
-  text-align: center;
-}
-.rth_txt1{
-  margin: 10px 420px 0px 10px;
-}
-.rth_txt2{
-  border-left:2px solid #d8d8d8;
-}
-.rth_txt3{  
-  border-left:2px solid #d8d8d8;
-}
-.rth_txt4{
-  border-left:2px solid #d8d8d8;
-}
-.rth_txt5{
-  text-indent: 65px;
-  border-left:2px solid #d8d8d8;
-}
-.ri_top3_head{
-  width:100%;
-  height:40px;
-  background:#f5f5f5;
-  border:1px solid #dedede;
-  overflow: hidden;
-}
-.rth_al,.rth_op,.rth_st{
-  width:115px;
-  height:20px;
-  line-height:20px;
-  color:#000;
-  margin-top:10px;
-  font-size:16px;
-  font-family: "微软雅黑";
-  float: left;
-}
-.rth_al{
-  text-indent:20px;
-  line-height: 20px;
-}
-.rth_st{
-  position:absolute;
-  right:145px;
-  text-indent:20px;
-  cursor: pointer;
-  border-left:2px solid #d8d8d8;
-}
-.dropdown_menu{
-  width: 128px;
-  background: #fff;
-  position: relative;
-  margin-top: 5px;
-  padding-bottom: 20px;
-  z-index: 10;
-}
-.dropdown_menu>li>span {
-  display: block;
-  color: #000;
-  line-height: 25px;
-  text-align: left;
-  cursor: pointer;
-  font-weight: normal;
-}
-.rth_op{  
-  position:absolute;
-  right:15px;
-  text-indent:20px;
-  border-left:2px solid #d8d8d8;
-}
-.ri_top3_con{
-  width:100%;
-  position: relative;
-  overflow:hidden;
-}
-.rtc_listBox{
-  width:100%;
-  height:110px;
-  border-bottom:1px solid #dedede;
-  position:relative;
-  font-family: "微软雅黑";
-  font-size:14px ;
-  overflow: hidden;
-}
-.rtcl_img{
-  height:80px;
-  width:80px;
-  margin-top:15px;
-  margin-right:10px;
-  border:1px solid #dedede;
-  float: left;
-  cursor: pointer;
-}
-.rtcl_img img{
-  width:100%;
-  height:100%;
-  background-size:100% 100%;
-}
-.rtcl_con{
-  height:100%;
-  float: left;
-  color:rgb(173,172,172);
-}
-.rtcl_con h4,.rtcl_con p{
-  width:500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.rtcl_con h4{
-  margin-top:20px;
-  color:#000;
-}
-.jm_st{
-  float: right;
-  line-height: 110px;
-  margin-right:160px;
-  color:#000;
-}
-.op_type{
-  float: right;
-  margin-right:-160px;
-}
-.op_type p{
-  cursor: pointer;
-  margin:5px 0px 0px 0px;
-}
-/*遮罩层*/
-.mask_jm{
-  width:100%;
-  height:1100px;
-  position: fixed;
-  top:0px;
-  left:0px;
-  z-index:10;
-  background:rgba(0,0,0,0.5);
-  display: none;
-}
-/*所有分类*/
-.all{
-  width:100%;
-  height:auto;
-  border:1px solid #dedede;
-  position: relative;
-  overflow: hidden;
-  margin-top:15px;
-  padding:0px 0px 10px 0px;
-  display: none;
-}
-.all_cate{
-  width:70px;
-  height:25px;
-  line-height:25px;
-  float: left;
-  margin-top:10px;
-  color:#000;
-}
-.new_cate{
-  width:calc(100% - 100px);
-  height:auto;
-  float: left;
-  color:#000;
-}
-.cate{
-  width: auto;
-  height: 25px;
-  line-height: 22px;
-  padding:0 1px 0 6px;
-  float: left;
-  margin-left:10px;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  white-space: nowrap;
-  margin-top:10px;
-}
-.cate:hover{
-  border: 1px solid #FFA634;
-}
-.cate:hover .cate_img{
-  color:#FFA634;
-}
-.cate_desc{
-  width:auto;
-  height:20px;
-  line-height:20px;
-}
-.cate_img{
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  line-height: 18px;
-  font-size: 16px;
-  font-weight: 700;
-  margin-left: 8px;
-  color:#dedede;
-}
-.check_cate{
-  width:20px;
-  height:20px;
-  float: left;
-  margin-top:5px;
-  background: url("../anchorResource/img/sprite.png");
-  background-repeat:no-repeat ;
-  background-position: -41px -414px;
-  display: none;
-}
-.ss1{
-  float:left;
-}
-.btns{
-  width: 100%;
-  height: 30px;
-  margin-top: 10px;
-  display: none; 
-  text-align: center;
-}
-.btns_sub{
-  color: #fff;
-  background: #ffa634;
-  border: 1px solid #ffa634;
-  display: inline-block;
-  margin: 5px;
-  border-radius: 2px;
-  height: 20px;
-  width: 42px;
-  line-height: 20px;
-  text-align: center;
-  cursor: pointer;
-}
-.btns_can{
-  color: #fff;
-  background: #ccc;
-  border: 1px solid #ccc;
-  display: inline-block;
-  margin: 5px;
-  border-radius: 2px;
-  height: 20px;
-  width: 42px;
-  line-height: 20px;
-  text-align: center;
-  cursor: pointer;
-}
-.more1{
-  top: 5px;
-  right: 10px;
-  width: 110px;
-  height: auto;
-  line-height: 22px;
-  overflow: hidden;
-}
-.check_more{
-  position: absolute;
-  top: 10px;
-  right: 30px;
-  width: 30px;
-  border: 1px solid #dedede;
-  height: auto;
-  line-height: 20px;
-  overflow: hidden;
-  cursor: pointer;
-}
-.attrTabcon{
-  overflow: hidden;
-}
-.ric_img_check{
-  width: 18px;
-  height: 18px;
-  margin: 44px 20px;
-  cursor: pointer;
-}
-</style>
 <body class="laydate_body" onselectstart="return false">
 <div class="content">
   <div class="containers">
@@ -549,11 +58,9 @@ body{overflow: auto;-moz-user-select: none; }
             <div class="attrValues">
               <ul class="av-gather av_ul"></ul>
             </div>
-            <div class="btns">
-              <span class="btns_sub">确定</span>
-              <span class="btns_can">取消</span>
+            <div class="more1">
+              <span class="check_more more2">更多</span>
             </div>
-            <span class="check_more more3">多选</span>
           </div>
         </div> 
         <div class="ri_top3">
@@ -570,171 +77,153 @@ body{overflow: auto;-moz-user-select: none; }
               <div class="dropdown" data-toggle="dropdown" aria-expanded="false">节目状态
                 <img src="../anchorResource/img/filter2.png" alt="" class="ric_txt38" style="margin-left:10px;"/>
               </div>
-              <ul role="menu" class="dropdown_menu dis">
-                <!--<li class="menu0 selected" text="全部" type="menu0"><span>全部</span></li>
-                <li class="menu1" text="已保存" type="menu1"><span>已保存</span></li>
-                <li class="menu2" text="发布审核中" type="menu2"><span>发布审核中</span></li>
-                <li class="menu3" text="已审核" type="menu3"><span>已审核</span></li>
-                <li class="menu4" text="已发布" type="menu4"><span>已发布</span></li>
-                <li class="menu5" text="发布未通过" type="menu5"><span>发布未通过</span></li>
-                <li class="menu6" text="待撤回" type="menu6"><span>待撤回</span></li>
-                <li class="menu7" text="已撤回" type="menu7"><span>已撤回</span></li>
-                <li class="menu8" text="撤回未通过" type="menu8"><span>撤回未通过</span></li>-->
-              </ul>
+              <ul role="menu" class="dropdown_menu dis"></ul>
             </div>
             <span class="rth_op">相关操作</span>
           </div>
           <div class="ri_top3_con"></div>
         </div>  
-        <!--<div class="page fl">
-          <div class="gigantic pagination">
-            <i class="currentPage">1</i><i>/</i><i class="totalPage">0</i><i>页</i>
-            <span class="previous" data_action="previous">上一页</span>
-            <span class="next" data_action="next">下一页</span>
-            <span class="jump" data_action="toPage">跳至</span><input type="text" class="toPage" value="">
-          </div>
-        </div>-->
         <div id="kkpager"></div>
       </div>
     </div>
   </div>
 </div> 
-<!--引入Iframe页面的遮罩层-->
-<div class="mask_jm"></div>
-<!--上传节目-->
-<div class="add_jm">
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="ibox float-e-margins">
-          <div class="ibox-title iboxtitle">
-            <h4>上传节目</h4>
-            <div class="ibox-tools">
-              <a class="collapse-link">
-                <i class="fa fa-times"></i>
-              </a>
+<!--上传节目页面的遮罩层-->
+<div class="mask_jm">
+  <div class="add_jm">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="ibox float-e-margins">
+            <div class="ibox-title iboxtitle">
+              <h4>上传节目</h4>
+              <div class="ibox-tools">
+                <a class="collapse-link">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="ibox-content">
-            <form class="form-horizontal">
-              <input type="text" class="jmId" style="display:none;" value="" />
-              <input type="text" class="timeLong" style="display:none;" value="" />
-              <div class="form-group">
-                <label class="col-sm-2 control-label">上传文件<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:0px;">
-                  <div class="upl_wj">
-                    <img class="upl_wj_img" src="../anchorResource/img/upl_img1.png" alt="" />
-                  </div>
-                  <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
-                  <audio class="audio" preload="auto" src="" style="display:none;"></audio>
-                  <div class="upl_yp">
-                    <input type="text" class="yp_mz" >
-                    <div class="parentProgress">
-                      <div class="sonProgress"></div>
+            <div class="ibox-content">
+              <form class="form-horizontal">
+                <input type="text" class="jmId" style="display:none;" value="" />
+                <input type="text" class="timeLong" style="display:none;" value="" />
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">上传文件<span class="ast">*</span>：</label>
+                  <div class="col-sm-10" style="padding-left:0px;">
+                    <div class="upl_wj">
+                      <img class="upl_wj_img" src="../anchorResource/img/upl_img1.png" alt="" />
                     </div>
-                    <div class="uploadStatus">上传成功</div>
-                    <img class="cancelUpload" src="../anchorResource/img/upl_img2.png" alt="" />
-                  </div>
-                  <div class="upl_wj_p1">
-                    <span>支持 MP3、M4A的文件格式，文件≤100兆。</span>
-                                                            如上传内容存在色情、赌博或侵犯第三方合法权益等违反法律法规或公序良俗内容的，我听有权将节目下架。
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">节目名称<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:0px;">
-                  <div class="upl_mc">
-                    <input type="text" class="uplTitle" placeholder="标题" maxlength="40">
-                    <p>建议使用简洁明了的标题，请不要包含任何多余信息（如专辑标题、日期）；不超过40个字哦~</p>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">节目配图<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:0px;">
-                  <div class="upl_pt">
-                    <div class="previewImg" isDefaultImg="true">
-                      <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
+                    <input type="file" class="upl_file" style="display:none;" accept=".mp3,.m4a,.mp4"/>
+                    <audio class="audio" preload="auto" src="" style="display:none;"></audio>
+                    <div class="upl_yp">
+                      <input type="text" class="yp_mz" >
+                      <div class="parentProgress">
+                        <div class="sonProgress"></div>
+                      </div>
+                      <div class="uploadStatus">上传成功</div>
+                      <img class="cancelUpload" src="../anchorResource/img/upl_img2.png" alt="" />
                     </div>
-                    <img class="upl_pt_img" src="../anchorResource/img/upl_img3.png" alt="" />
-                    <div class="img_uploadStatus">上传成功</div>
-                    <div class="mask_gif">
-                      <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" />
-                    </div>
-                    <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
-                    <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:0px;">
-                  <select name="" class="upl_zj" autocomplete="off"></select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
-                <div class="col-sm-10" style="padding-left:0px;">
-                  <div class="tag_box">
-                    <ul class="upl_bq"></ul>
-                    <div class="input_tag">
-                      <input type="text" class="tag_txt" placeholder="添加自定义标签" maxlength="6"/>
+                    <div class="upl_wj_p1">
+                      <span>支持 MP3、M4A的文件格式，文件≤100兆。</span>
+                                                              如上传内容存在色情、赌博或侵犯第三方合法权益等违反法律法规或公序良俗内容的，我听有权将节目下架。
                     </div>
                   </div>
-                  <div class="my_tag">
-                    <h5>我的标签</h5>
-                    <span class="hyp">换一批</span>
-                    <ul class="my_tag_con"></ul>
-                  </div>
-                  <div class="gg_tag">
-                    <h5>公共标签</h5>
-                    <span class="hyp">换一批</span>
-                    <ul class="gg_tag_con"></ul>
-                  </div>
-                  <p>最多添加5个标签，单个标签最长6个汉字，按回车确认</p>
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">节目简介：</label>
-                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
-                  <div class="upl_desc">
-                    <textarea type="text" class="uplDecn" placeholder="关于节目内容的简单介绍"></textarea>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">创作方式：</label>
-                <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
-                  <div class="upl_czfs">
-                    <ul class="czfs_tag"></ul>
-                    <div class="czfs_div">
-                      <select name="" class="change_czfs" autocomplete="off"></select>
-                      <input type="text" class="czfs_author_ipt" placeholder="输入对应的作者,可自定义创作方式"/>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">节目名称<span class="ast">*</span>：</label>
+                  <div class="col-sm-10" style="padding-left:0px;">
+                    <div class="upl_mc">
+                      <input type="text" class="uplTitle" placeholder="标题" maxlength="40">
+                      <p>建议使用简洁明了的标题，请不要包含任何多余信息（如专辑标题、日期）；不超过40个字哦~</p>
                     </div>
-                    <p>可选择多个创作方式，并输入对应的作者， 按"enter"添加创作方式</p>
                   </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">定时发布：</label>
-                <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
-                  <input class="form-control layer-date laydate-icon" style="max-width:240px;float:left;" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">节目配图<span class="ast">*</span>：</label>
+                  <div class="col-sm-10" style="padding-left:0px;">
+                    <div class="upl_pt">
+                      <div class="previewImg" isDefaultImg="true">
+                        <img class="defaultImg" src="http://wotingfm.com:908/CM/resources/images/default.png" alt="font cover" />
+                      </div>
+                      <img class="upl_pt_img" src="../anchorResource/img/upl_img3.png" alt="" />
+                      <div class="img_uploadStatus">上传成功</div>
+                      <div class="mask_gif">
+                        <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" />
+                      </div>
+                      <input type="file" class="upl_img" style="display:none;" accept=".jpg,.png" value=""/>
+                      <p>图片尺寸>500×500px,文件大小≤1兆，支持JPG.PNG的图片格式</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group" style="margin-bottom:20px;">
-                <div class="btn_group">
-                  <input type="button" class="submit" id="submitBtn" value="保存"/>
-                  <input type="button" class="cancel" id="cancelBtn" value="取消"/>
-                  <input type="button" class="pub" id="pubBtn" value="提交"/>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">选择专辑<span class="ast">*</span>：</label>
+                  <div class="col-sm-10" style="padding-left:0px;">
+                    <select name="" class="upl_zj" autocomplete="off"></select>
+                  </div>
                 </div>
-              </div>
-            </form>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">添加标签<span class="ast">*</span>：</label>
+                  <div class="col-sm-10" style="padding-left:0px;">
+                    <div class="tag_box">
+                      <ul class="upl_bq"></ul>
+                      <div class="input_tag">
+                        <input type="text" class="tag_txt" placeholder="添加自定义标签" maxlength="6"/>
+                      </div>
+                    </div>
+                    <div class="my_tag">
+                      <h5>我的标签</h5>
+                      <span class="hyp">换一批</span>
+                      <ul class="my_tag_con"></ul>
+                    </div>
+                    <div class="gg_tag">
+                      <h5>公共标签</h5>
+                      <span class="hyp">换一批</span>
+                      <ul class="gg_tag_con"></ul>
+                    </div>
+                    <p>最多添加5个标签，单个标签最长6个汉字，按回车确认</p>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">节目简介：</label>
+                  <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
+                    <div class="upl_desc">
+                      <textarea type="text" class="uplDecn" placeholder="关于节目内容的简单介绍"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">创作方式：</label>
+                  <div class="col-sm-10" style="padding-left:0px;margin-left: 3px;">
+                    <div class="upl_czfs">
+                      <ul class="czfs_tag"></ul>
+                      <div class="czfs_div">
+                        <select name="" class="change_czfs" autocomplete="off"></select>
+                        <input type="text" class="czfs_author_ipt" placeholder="输入对应的作者,可自定义创作方式"/>
+                      </div>
+                      <p>可选择多个创作方式，并输入对应的作者， 按"enter"添加创作方式</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">定时发布：</label>
+                  <div class="col-sm-10" style="padding-left:0px;margin-left: 8px;">
+                    <input class="form-control layer-date laydate-icon" style="max-width:240px;float:left;" placeholder="YYYY-MM-DD hh:mm:ss" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                  <div class="btn_group">
+                    <input type="button" class="submit" id="submitBtn" value="保存"/>
+                    <input type="button" class="cancel" id="cancelBtn" value="取消"/>
+                    <input type="button" class="pub" id="pubBtn" value="提交"/>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div> 
+    </div> 
+  </div>
 </div>
 <!--裁剪图片时需要的遮罩层-->
 <div class="mask_clip"></div>
@@ -777,10 +266,10 @@ $(function(){
   /*节目状态的下拉菜单*/
   $(".dropdown").on("click",function(){
     if($(this).siblings(".dropdown_menu").hasClass("dis")){
-      $(this).children("img").attr({"src":"img/filter1.png"});
+      $(this).children("img").attr({"src":"../anchorResource/img/filter1.png"});
       $(this).siblings(".dropdown_menu").removeClass("dis");
     }else{
-      $(this).children("img").attr({"src":"img/filter2.png"});
+      $(this).children("img").attr({"src":"../anchorResource/img/filter2.png"});
       $(this).siblings(".dropdown_menu").addClass("dis");
     }
   });

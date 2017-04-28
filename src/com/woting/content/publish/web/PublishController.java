@@ -62,7 +62,7 @@ public class PublishController {
 		Timestamp endcontentctime = null;
 //		String userId = m.get("UserId")+"";
 		int page = m.get("Page") == null ? 1 : Integer.valueOf(m.get("Page")+"");
-		int pagesize = m.get("PageSize") == null ? 10 : Integer.valueOf((String) m.get("PageSize"));
+		int pagesize = m.get("PageSize") == null ? 10 : Integer.valueOf( m.get("PageSize")+"");
 		if (m.containsKey("MediaType")) 
 			mediaType = m.get("MediaType") == null ? null : m.get("MediaType")+"";
 		if (m.containsKey("ChannelId"))
@@ -939,7 +939,7 @@ public class PublishController {
                 return map;
             }
             String mediaType=(m.get("MediaType")==null?null:m.get("MediaType").toString());
-            int loopSort=(m.get("LoopSort")==null?null:Integer.valueOf(m.get("LoopSort").toString()));
+            int loopSort=(m.get("LoopSort")==null?0:Integer.valueOf(m.get("LoopSort").toString()));
 
             boolean result=queryService.addLoopImg(mediaType, channelId, contentId, imgeUrl, loopSort);
             if (result) {

@@ -13,6 +13,7 @@
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
   <link  href="../anchor/anchorResource/css/pagination.css" rel="stylesheet"/>
+  <link  href="css/loopPagination.css" rel="stylesheet"/>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/mainPage.js"></script>
   <script src="../resources/js/common.utils.js"></script>
@@ -22,8 +23,10 @@
   <script src="../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
   <script src="js/carousel_filter.js"></script>
-  <!--翻页插件-->
+  <!--内容翻页插件-->
   <script src="../anchor/anchorResource/js/pagination.min.js"></script>
+  <!--轮播图翻页插件-->
+  <script src="js/loopPagination.js"></script>
   <script src="js/carousel_figure.js"></script>
 <style>
 /*全局样式*/
@@ -603,6 +606,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   border-bottom: 1px solid #dedede;
 }
 .lbd_box1{
+  width: 55px;
   font-size: 16px;
   color: #000;
   position: relative;
@@ -614,13 +618,13 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   cursor: pointer;
   position: relative;
   top: calc(50% - 68px);
-  margin: 0px 45px 0px 35px;
+  margin: 0px 35px;
 }
 .lbd_box3{
   width: 240px;
   height: 100px;
   border: 1px solid #dedede;
-  margin: 0px 0px 5px;
+  margin: 15px 0px 5px;
   display: block;
 }
 .lbd_box4{
@@ -628,6 +632,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   line-height: 30px;
   font-size: 16px;
   color: #000;
+  display: none;
   text-align: center;
 }
 .lbd_box5{
@@ -664,34 +669,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   overflow: hidden;
   /* display: none; */
 }
-#loopImgKKpage{
-  clear: both;
-  position: relative;
-  color: #999;
-  padding:0px;
-  font-size: 13px;
-  width:100%;
-  height: 40px;
-  border:1px solid red;
-}
-#loopImgKKpage .infoTextAndGoPageBtnWrap{
-  width: 295px !important;
-  padding: 0px !important;
-  margin-left: 0px !important;
-} 
-/*轮播图分页样式*/
-#loopImgKKpage span.curr{
-  border: 1px solid #0077c7 !important;
-  color:#0077c7 !important ;
-}
-#loopImgKKpage a:hover {
-  border: 1px solid #0077c7 !important;
-  background-color: #0077c7 !important;
-  color: #fff;
-}
-#loopImgKKpage .currPageNum {
-  color: #0077c7 !important;
-}  
 /*轮播图弹出层*/
 .carousel_mask{
   width:100%;
@@ -977,6 +954,9 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 #kkpager_btn_go{
   background-color: #0077c7 !important;
+}
+#kkpager_btn_go_input.focus{
+  border-color: #0077c7;
 }
 </style> 
 </head>
@@ -1275,7 +1255,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
         <div class="carouselImgMask dis">
           <img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />
         </div>
-        <input type="file" name="" id="" value="" class="upload_pic" style="display:none;" />
+        <input type="file" value="" class="upload_pic" style="display:none;" />
         <div class="cm_content6 fl">上传图片</div>
       </div>
       <div class="cm_footer">

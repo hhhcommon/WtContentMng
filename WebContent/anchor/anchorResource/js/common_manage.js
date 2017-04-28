@@ -25,11 +25,11 @@ $(document).on("click",".more3",function(){//点击多选
 });
 $(document).on("click",".ri_top_li4",function(){//点击收起筛选
   if($(this).children(".filter").text()=="收起筛选"){
-    $(this).children("img").attr({"src":"img/filter2.png"});
+    $(this).children("img").attr({"src":"./../anchorResource/img/filter2.png"});
     $(this).children(".filter").text("展开筛选");
     $(".ri_top2").hide();
   }else{
-    $(this).children("img").attr({"src":"img/filter1.png"});
+    $(this).children("img").attr({"src":"./../anchorResource/img/filter1.png"});
     $(this).children(".filter").text("收起筛选");
     $(".ri_top2").show();
   }
@@ -260,11 +260,11 @@ $(document).on("mouseleave",".bqImg",function(event){
 });
 $(document).on("mouseenter",".cancelImg",function(){
   event.stopPropagation();
-  $(this).attr({"src":"img/upl_img6.png"});
+  $(this).attr({"src":"./../anchorResource/img/upl_img6.png"});
 });
 $(document).on("mouseleave",".cancelImg",function(event){
   event.stopPropagation();
-  $(this).attr({"src":"img/upl_img2.png"});
+  $(this).attr({"src":"./../anchorResource/img/upl_img2.png"});
   $(this).hide();
 });
 //对我的标签和公共标签进行添加操作
@@ -294,7 +294,7 @@ function addTag(obj,txt,tagId,tagType){
     }
     var new_tag= '<li class="upl_bq_img bqImg" tagId='+tagId+' tagType='+tagType+'>'+
                     '<span>'+txt+'</span>'+
-                    '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+                    '<img class="upl_bq_cancelimg1 cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
                   '</li>';
     $(".upl_bq").append(new_tag);
     tag_sum++;
@@ -331,11 +331,11 @@ function isExiste(objValue){
   }
 }
 $(function(){
-  /*添加自定义标签*/
-  $(".tag_txt").keydown(function(e){
+  /*创建/编辑专辑弹出页面添加自定义标签*/
+  $(".mask_zj .tag_txt").keydown(function(e){
     var evt=event?event:(window.event?window.event:null);//兼容IE和FF
     if(evt.keyCode==13){
-      var txt=$.trim($(".tag_txt").val());
+      var txt=$.trim($(".mask_zj .tag_txt").val());
       if(txt!=""){
         var count = txt.replace(/[^\x00-\xff]/g,"**").length;
         if(count<=12){
@@ -343,14 +343,14 @@ $(function(){
           if(!isExisted){
             if(tag_sum>=5){
               alert("最多添加5个标签");
-              $(".tag_txt").val("");
+              $(".mask_zj .tag_txt").val("");
               return;
             }
             var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
                               '<span>'+txt+'</span>'+
-                              '<img class="upl_bq_cancelimg1 cancelImg" src="img/upl_img2.png" alt="" />'+
+                              '<img class="upl_bq_cancelimg1 cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
                             '</li>';
-            $(".upl_bq").append(new_tag);
+            $(".mask_zj .upl_bq").append(new_tag);
             tag_sum++;
           }else{
             alert("你添加的标签已存在!");
@@ -358,7 +358,7 @@ $(function(){
         }else{
           alert("输入内容超出范围");
         }
-        $(".tag_txt").val("");
+        $(".mask_zj .tag_txt").val("");
       }
     }
   });
@@ -396,7 +396,7 @@ $(function(){
                         '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
                         '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
                         '</div>'+
-                        '<img class="cancelImg" src="img/upl_img2.png" alt="" />'+
+                        '<img class="cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
                       '</li>';
           $(".czfs_tag").append(new_czfs);
           $(".czfs_author_ipt").val("");
@@ -406,9 +406,9 @@ $(function(){
   });
   
   /*点击取消，罩层和模态框消失*/
-  $(".add_zj .collapse-link,.add_zj .cancel,.add_jm .collapse-link,.add_jm .cancel").on("click",function(){
+  $(".mask_zj .collapse-link,.mask_zj .cancel,.mask_jm .collapse-link,.mask_jm .cancel").on("click",function(){
     $("form")[0].reset();
-    $(".mask_zj,.add_zj,.mask_jm,.add_jm").hide();
+    $(".mask_zj,.mask_jm").hide();
     $(".sonProgress").html(" ");
     $(".parentProgress,.sonProgress").hide();
     $("body").css({"overflow":"auto"});
@@ -506,7 +506,6 @@ $(function(){
     var _this=$(".add_jm .upl_file");
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
-    oMyForm.append("DeviceId", deviceId);
     oMyForm.append("MobileClass", "Chrome");
     oMyForm.append("PCDType", "3");
     oMyForm.append("UserId", userId);
@@ -596,7 +595,6 @@ var data5={"MobileClass":"Chrome",
            "PCDType":"3",
            "UserId":userId,
            "FlagFlow":"0",
-           "ChannelId":"0",
            "ShortSearch":"false"
 };
 $.ajax({
@@ -605,8 +603,8 @@ $.ajax({
   dataType:"json",
   data:JSON.stringify(data5),
   success:function(resultData){
-    if(resultData.ReturnType == "1001"){
-      getAlbumList(resultData); //加载专辑列表,上传节目时使用
+    if(resultData.ReturnType=="1001"){
+      getAlbumList(resultData);//加载专辑列表,上传节目时使用
     }else{
 //      alert("得到专辑列表失败，请刷新页面重新加载");
     }
@@ -665,7 +663,7 @@ $(document).on("click",".cancelImg",function(){
 //点击全选
 $(document).on("click",".all_check",function(){
   if($(this).hasClass("checkbox1")){
-    $(".checkbox_img").attr({"src":"img/checkbox2.png"});
+    $(".checkbox_img").attr({"src":"./../anchorResource/img/checkbox2.png"});
     $(this).removeClass("checkbox1");
     $(".ri_top3_con .rtc_listBox").each(function(){
       $(this).children(".ric_img_check").removeClass("checkbox1");
@@ -675,7 +673,7 @@ $(document).on("click",".all_check",function(){
     $(".rto_revoke").css({"background":"rgb(149,139,129)"});
     $(".rto_delete").css({"background":"rgb(200,61,13)"}); 
   }else{
-    $(".checkbox_img").attr({"src":"img/checkbox1.png"});
+    $(".checkbox_img").attr({"src":"./../anchorResource/img/checkbox1.png"});
     $(this).addClass("checkbox1");
     $(".ri_top3_con .rtc_listBox").each(function(){
       $(this).children(".ric_img_check").addClass("checkbox1");
@@ -688,7 +686,7 @@ $(document).on("click",".ric_img_check",function(){
   var num=0;
   var l=$(".ri_top3_con .rtc_listBox .ric_img_check").length;
   if($(this).hasClass("checkbox1")){
-    $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+    $(this).attr({"src":"./../anchorResource/img/checkbox2.png"}).removeClass("checkbox1");
     $(".opetype").removeAttr("disabled").css("color","#fff");
     $(".rto_submit").css({"background":"#FFA634"});
     $(".rto_revoke").css({"background":"rgb(149,139,129)"});
@@ -700,9 +698,9 @@ $(document).on("click",".ric_img_check",function(){
         num++;
       }
     });
-    if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"img/checkbox2.png"});
+    if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox2.png"});
   }else{
-    $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+    $(this).attr({"src":"./../anchorResource/img/checkbox1.png"}).addClass("checkbox1");
     $(".ri_top3_con .rtc_listBox .ric_img_check").each(function(){//是否选中全选
       if($(this).hasClass("checkbox1")){
         
@@ -710,7 +708,7 @@ $(document).on("click",".ric_img_check",function(){
         num++;
       }
     });
-    if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+    if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox1.png"});
     if(num==0) $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
   }
 });
@@ -742,7 +740,7 @@ function clear_zj(){
   $(".add_zj .cBox1_conS").html("<li class='center'>还未选择一级栏目</li>");
   $(".add_zj .channelBox1 li").removeClass("selectedF");
   $(".add_zj .channelBox1").hide();
-  $(".mask_zj,.add_zj").show();
+  $(".mask_zj").show();
 }  
 //清空上传节目模态框上的数据
 function clear_jm(){
@@ -753,7 +751,7 @@ function clear_jm(){
   $(".add_jm .jmId,.add_jm .upl_file,.add_jm .upl_img,.add_jm .timeLong").attr({"value":""});
   $(".add_jm .audio").attr("src","");
   $(".add_jm .uplTitle,.add_jm .yp_mz,.add_jm .uplDecn,.add_jm .czfs_author_ipt,.add_jm .layer-date").val("");
-  $(".add_jm .upl_bq,.czfs_tag").html("");
+  $(".add_jm .upl_bq,.add_jm .czfs_tag").html("");
   $(".add_jm .newImg").remove();
   $(".add_jm .defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
   $(".add_jm .img_uploadStatus,.add_jm .uploadStatus").hide();
@@ -767,22 +765,10 @@ function clear_jm(){
   $(".add_jm .change_czfs option").each(function(){
     $(this).attr("selected",false);
   })
-  $(".mask_jm,.add_jm").show();
+  $(".mask_jm").show();
 }
 /*e--清空数据与转换时间格式*/
 
-/*--获取cookie值作为deviceId的值*/
-function getCookie(cookieName){
-  var strCookie = document.cookie;
-  var arrCookie = strCookie.split("; ");
-  for(var i = 0; i < arrCookie.length; i++){
-    var arr = arrCookie[i].split("=");
-    if(cookieName == arr[0]){
-      return arr[1];
-    }
-  }
-  return "";
-}
 //});
 
 /*s--图片裁剪上传 */
@@ -827,7 +813,6 @@ $(function(){
       $(".previewImg").attr("isDefaultImg","false");
       var oMyForm = new FormData();
       oMyForm.append("ContentFile",imgBase64Data);
-      oMyForm.append("DeviceId",deviceId);
       oMyForm.append("MobileClass","Chrome");
       oMyForm.append("PCDType","3");
       oMyForm.append("UserId",userId);
@@ -841,6 +826,9 @@ $(function(){
         processData: false,
         contentType: false,
         dataType:"json",
+        beforeSend: function(){
+          $(".action1 button").attr("disabled","disabled").css("background","#ccc");
+        },
         //表单提交前进行验证
         success: function(resultData){
           if(resultData.Success =true){
@@ -860,6 +848,7 @@ $(function(){
           }else{
             alert(resultData.err);
           }
+          $(".action1 button").removeAttr("disabled").css("background","#ffa634");
         },
         error: function(XHR){
           alert("发生错误" + jqXHR.status);

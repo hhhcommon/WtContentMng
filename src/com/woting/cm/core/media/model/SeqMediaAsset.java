@@ -190,6 +190,7 @@ public class SeqMediaAsset extends BaseObject implements Serializable, ModelSwap
         ret.setCTime(CTime);
         ret.setPubCount(pubCount);
         ret.setSmaStatus(smaStatus);
+        ret.setSmaAllCount(smaAllCount);
 
         return ret;
     }

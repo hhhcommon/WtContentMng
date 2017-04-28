@@ -52,7 +52,7 @@ public class ChannelLoopImgService {
         int count=0;
         if (pageIndex==0) {
         	_ret=channelAssetDao.queryForListAutoTranform("getLoopImgList", param);
-        	count=channelAssetDao.getCount("getLoopImgListCount");
+        	count=channelAssetDao.getCount("getLoopImgListCount", param);
         } else {
             Page<Map<String, Object>> page=channelAssetDao.pageQueryAutoTranform("getLoopImgListCount", "getLoopImgList", param, pageIndex, pageSize);
             if (page!=null&&page.getDataCount()>0) {
@@ -93,19 +93,22 @@ public class ChannelLoopImgService {
 	public boolean updateLoopSort(String mediaType, String channelId, String contentId, int loopSort) {
     	if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || loopSort==0) return false;
 
-    	Map<String, Object> map = getLoopImgList(mediaType, channelId, 0, 0);
+    	Map<String, Object> map = getLoopImgList(null, channelId, 0, 0);
+    	if (map==null) return false;
     	List<Map<String, Object>> loopImageList=(List<Map<String, Object>>) map.get("ResultList");
     	if (loopImageList==null || loopImageList.size()<=1) return false;
-    	
     	Map<String, Object> param=new HashMap<String, Object>();
     	int index=-1;
     	for(int i=0; i<loopImageList.size(); i++) {
-    		if (loopImageList.get(i).get("ContentId").equals(contentId)) {// 查找所要操作的内容所在的位置
-    			index=i+1;
-    			break;
-    		}
+    	    Map<String, Object> m=loopImageList.get(i);
+    	    if (m!=null && m.get("ContentId")!=null) {
+    	        index++;
+    	        if (m.get("ContentId").equals(contentId)) {// 查找所要操作的内容所在的位置
+                    break;
+                }
+    	    }
     	}
-    	param.put("loopSort", loopSort);
+    	if (index==-1) return false;
     	param.put("channelId", channelId);
     	//处理类型
         if (!StringUtils.isNullOrEmptyOrSpace(mediaType)) {
@@ -121,21 +124,25 @@ public class ChannelLoopImgService {
         }
         // 排序
     	if (loopSort==-1) {// 上移
-    		if (index <= 0) return false; 
+    		if (index<=0 || index>=loopImageList.size()) return false; 
     		if (loopImageList.get(index-1).get("ContentId")==null) return false;
     		String _contentId = loopImageList.get(index-1).get("ContentId").toString();
+    		long _loopSort=(long)loopImageList.get(index-1).get("LoopSort");
+    		long tempSort=(long)loopImageList.get(index).get("LoopSort");
     		param.put("assetId", contentId);
+    		param.put("loopSort", tempSort);
     		param.put("_assetId", _contentId);
-    		param.put("loopSort", loopSort);
-    		param.put("_loopSort", loopSort+1);
+    		param.put("_loopSort", _loopSort);
     	} else if (loopSort==-2) {// 下移
-    		if (index >= loopImageList.size()-1) return false; 
-    		if (loopImageList.get(index-1).get("ContentId")==null) return false;
+    		if (index<0 || index>=loopImageList.size()-1) return false; 
+    		if (loopImageList.get(index+1).get("ContentId")==null) return false;
     		String _contentId = loopImageList.get(index+1).get("ContentId").toString();
+    		long _loopSort=(long)loopImageList.get(index+1).get("LoopSort");
+    		long tempSort=(long)loopImageList.get(index).get("LoopSort");
     		param.put("assetId", contentId);
+    		param.put("loopSort", tempSort);
     		param.put("_assetId", _contentId);
-    		param.put("loopSort", loopSort);
-    		param.put("_loopSort", loopSort-1);
+    		param.put("_loopSort", _loopSort);
     	} else if (loopSort>0) {// 根据参数设置所在位置
     		if (index == loopSort) return false;// 有错误
     		String _contentId = loopImageList.get(loopSort).get("ContentId").toString();
@@ -194,22 +201,27 @@ public class ChannelLoopImgService {
      * @param imgeUrl 轮播图地址
      * @param loopSort 轮播图排序号
      */
-    @SuppressWarnings("unchecked")
-	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int sort) {
+	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int loopSort) {
     	if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imageUrl)) return false;
 
     	Map<String, Object> param=new HashMap<String, Object>();
     	param.put("channelId", channelId);
-    	List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgCount", param);
-    	int loopSort=0;
-    	if (_ret!=null&&_ret.size()>=0) {
-    		Map<String, Object> map=(Map<String, Object>) _ret.get(0).get(0);
-    		loopSort=(int) map.get("loopSort");
-    		if (sort>0) loopSort=sort;
-    	}
-        
+    	long tempSort=0;
     	Map<String, Object> newData=new HashMap<String, Object>();
+    	if (loopSort<=0) {
+    	    List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgMax", param);
+            if (_ret!=null&&_ret.size()>=0) {
+                Map<String, Object> map=(Map<String, Object>) _ret.get(0);
+                tempSort=(long) map.get("loopSort");
+                tempSort+=1;
+                newData.put("loopSort", tempSort);
+            }
+    	} else {
+    	    newData.put("loopSort", loopSort);
+    	}
     	newData.put("channelId", channelId);
+    	newData.put("assetId", contentId);
+    	newData.put("loopImg", imageUrl);
     	//处理类型
         if (!StringUtils.isNullOrEmptyOrSpace(mediaType)) {
             String[] ms=mediaType.split(",");
@@ -222,20 +234,8 @@ public class ChannelLoopImgService {
             }
             if (!assetTypes.isEmpty()) newData.put("assetTypes", assetTypes);
         }
-        newData.put("assetId", contentId);
-    	newData.put("publisherId", "2");
-    	newData.put("checkerId", "2");
-    	newData.put("isValidate", 1);
-    	newData.put("loopSort", loopSort);
-    	newData.put("sort", 0);
-    	newData.put("loopImg", imageUrl);
-    	newData.put("flowFlag", 2);
-    	newData.put("checkRuleIds", "etl");
-    	newData.put("pubTime", System.currentTimeMillis());
-    	newData.put("cTime", System.currentTimeMillis());
-    	
     	try {
-			channelAssetDao.insert("addLoopImgInChannel", newData);
+			channelAssetDao.update("addLoopImgInChannel", newData);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

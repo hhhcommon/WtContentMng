@@ -309,12 +309,17 @@
 
   <!-- 轮播图相关 -->
   <!-- 获取轮播图列表总数 -->
-  <select id="getLoopImgListCount" parameterType="java.util.Map" resultType="INTEGER">
+  <select id="getLoopImgListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(id)
-    from wt_ChannelAsset a
+    from wt_ChannelAsset
     <![CDATA[
-    where a.channelId=#{channelId,jdbcType=VARCHAR} and a.loopSort>0
+    where channelId=#{channelId,jdbcType=VARCHAR} and loopSort>0
     ]]>
+    <if test="assetTypes!=null">
+      <foreach collection="assetTypes" index="index" item="value" open="and (" separator="or" close=")">
+        assetType=#{value}
+      </foreach>
+    </if>
   </select>
 
   <!-- 获取轮播图列表 -->
@@ -330,8 +335,8 @@
     where a.channelId=#{channelId,jdbcType=VARCHAR} and a.loopSort>0
     ]]>
     <if test="assetTypes!=null">
-      <foreach collection="list" index="index" item="tag" open="and (" separator="or" close=")">
-        a.assetType=#{assetType}
+      <foreach collection="assetTypes" index="index" item="value" open="and (" separator="or" close=")">
+        a.assetType=#{value}
       </foreach>
     </if>
     order by a.loopSort desc, a.topSort desc, a.pubTime desc
@@ -341,11 +346,9 @@
   <update id="updateLoopSort" parameterType="java.util.Map">
     update wt_ChannelAsset set loopSort=#{_loopSort,jdbcType=INTEGER}
     where channelId=#{channelId,jdbcType=VARCHAR} and
-          assetType=#{assetType,jdbcType=VARCHAR} and
           assetId=#{assetId,jdbcType=VARCHAR};
     update wt_ChannelAsset set loopSort=#{loopSort,jdbcType=INTEGER}
     where channelId=#{channelId,jdbcType=VARCHAR} and
-          assetType=#{assetType,jdbcType=VARCHAR} and
           assetId=#{_assetId,jdbcType=VARCHAR}
   </update>
   
@@ -353,12 +356,11 @@
   <update id="deleteLoopImg" parameterType="java.util.Map">
     update wt_ChannelAsset set loopSort=0
     where channelId=#{channelId,jdbcType=VARCHAR} and
-          assetType=#{assetType,jdbcType=VARCHAR} and
           assetId=#{assetId,jdbcType=VARCHAR};
   </update>
   
   <!-- 获得轮播图排序号中最大的那个数值 -->
-  <select id="getChannelLoopImgCount" parameterType="java.util.Map" resultType="java.util.HashMap">
+  <select id="getChannelLoopImgMax" parameterType="java.util.Map" resultType="java.util.HashMap">
     select * from wt_ChannelAsset 
     where loopSort=(
           select max(loopSort) from wt_ChannelAsset 
@@ -366,25 +368,11 @@
   </select>
   
   <!-- 在某一栏目下添加轮播图 -->
-  <insert id="addLoopImgInChannel" parameterType="java.util.Map">
-    insert into wt_ChannelAsset
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id!=null">id,</if>
-      <if test="channelId!=null">channelId,</if>
-      <if test="assetType!=null">assetType,</if>
-      <if test="assetId!=null">assetId,</if>
-      <if test="publisherId!=null">publisherId,</if>
-      <if test="checkerId!=null">checkerId,</if>
-      <if test="isValidate!=null and isValidate!=0">isValidate,</if>
-      <if test="loopSort!=null and loopSort!=0">loopSort,</if>
-      <if test="sort!=null and sort!=0">sort,</if>
-      <if test="pubName!=null">pubName,</if>
-      <if test="loopImg!=null">loopImg,</if>
-      <if test="flowFlag!=null and flowFlag!=0">flowFlag,</if>
-      <if test="inRuleIds!=null">inRuleIds,</if>
-      <if test="checkRuleIds!=null">checkRuleIds,</if>
-      <if test="pubTime!=null">pubTime,</if>
-      <if test="CTime!=null">cTime,</if>
-    </trim>
-  </insert>
+  <update id="addLoopImgInChannel" parameterType="java.util.Map">
+    update wt_ChannelAsset set loopSort=#{loopSort,jdbcType=INTEGER}
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+    update wt_MediaAsset set loopImg=#{loopImg,jdbcType=VARCHAR}
+    where id=#{assetId,jdbcType=VARCHAR}
+  </update>
 </mapper>
