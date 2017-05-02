@@ -112,9 +112,10 @@ public class CDictController {
             map.put("Message", "关联栏目Ids参数为空");
             return map;
 		}
-		boolean isok = cDictService.addCDDAndDDRef(applyType, id, refIds);
-		if(isok) {
+		List<Map<String, Object>> retLs = cDictService.addCDDAndDDRef(applyType, id, refIds);
+		if(retLs!=null && retLs.size()>0) {
 			map.put("ReturnType", "1001");
+			map.put("ResultList", retLs);
 			return map;
 		} else {
 			map.put("ReturnType", "1013");
@@ -186,10 +187,13 @@ public class CDictController {
             map.put("Message", "Ids参数为空");
             return map;
 		}
-		boolean isok = cDictService.delDictResRef(ids);
-		if(isok) {
+		String isOrNoRemoveStr = m.get("IsOrNoRemove")+"";
+		boolean isOrNoRemove = true;
+		if (!isOrNoRemoveStr.equals("1")) isOrNoRemove = false;
+		List<Map<String, Object>> retLs = cDictService.delDictResRef(ids, isOrNoRemove);
+		if(retLs!=null && retLs.size()>0) {
 			map.put("ReturnType", "1001");
-			map.put("Message", "删除成功");
+			map.put("ResultList", retLs);
 		} else {
 			map.put("ReturnType", "1011");
 			map.put("Message", "删除失败");
@@ -230,12 +234,19 @@ public class CDictController {
             redis = new RedisOperService(js, 6);
         }
         String perstr = null;
+        String pertype = null;
+        String perTime = null;
         if (redis!=null) {
 			perstr = redis.get("wt_ChannelMapRef_"+perId);
+			pertype = redis.get("wt_ChannelMapRef_"+perId+"_TYPE");
+			perTime = redis.get("wt_ChannelMapRef_"+perId+"_TIME");
+			redis.close();
 		}
 		if(perstr!=null && perstr.length()>0) {
 			map.put("ReturnType", "1001");
 			map.put("PerNum", perstr);
+			map.put("PerType", pertype);
+			map.put("PerTime", perTime);
 		} else {
 			map.put("ReturnType", "1011");
 			map.put("Message", "无进程");

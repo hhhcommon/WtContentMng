@@ -29,17 +29,20 @@
   <script src="js/published.js"></script>
 </head>
 <style>
-  /*全局样式*/
-  *{margin: 0;padding: 0;}
-  .rth_txt1{
-    width:52%;  
-    margin: 10px 0px 0px 0px;
-    text-indent: -38%;
-  }
-  .rtcl_img_check{margin:45px 15px 44px 0px;}
-  .rth_txt2,.rth_txt3,.rth_txt4,.rth_txt5{width:12%;}
-  .rtcl_con_channel1s,.source_form, .audio_time,.opetype1{width:12%;}
-  .rtcl_con{width:36.3%;}
+/*全局样式*/
+*{margin: 0;padding: 0;}
+.rth_txt1{
+  width:52%;  
+  margin: 10px 0px 0px 0px;
+  text-indent: -38%;
+}
+.rtcl_img_check{margin:45px 15px 44px 0px;}
+.rth_txt2,.rth_txt3,.rth_txt4,.rth_txt5{width:12%;}
+.rtcl_con_channel1s,.source_form, .audio_time,.opetype1{width:12%;}
+.rtcl_con{width:36.3%;}
+#kkpager_btn_go_input.focus{
+  border-color: #0077c7;
+}
 </style>
 <body class="laydate_body" onselectstart="return false">
 <div class="contents">
@@ -47,7 +50,7 @@
     <div class="c_title">当前位置：内容管理>已发布内容</div>
     <div class="c_con">
       <div class="cc_left fl"> 
-        <div class="ccl_title">请选择要设置轮播图的栏目</div>
+        <div class="ccl_title">请选择要具体的栏目</div>
         <ul class="ztree" id="ztree"></ul>
       </div>
       <div class="nav_con fl">

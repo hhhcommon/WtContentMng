@@ -14,6 +14,7 @@
     <result column="publisherId"   property="publisherId"   jdbcType="VARCHAR"/>
     <result column="checkerId"     property="checkerId"     jdbcType="VARCHAR"/>
     <result column="isValidate"    property="isValidate"    jdbcType="INTEGER"/>
+    <result column="loopSort"      property="loopSort"      jdbcType="INTEGER"/>
     <result column="sort"          property="sort"          jdbcType="INTEGER"/>
     <result column="pubName"       property="pubName"       jdbcType="VARCHAR"/>
     <result column="pubImg"        property="pubImg"        jdbcType="VARCHAR"/>
@@ -307,6 +308,20 @@
   </update>
 
   <!-- 轮播图相关 -->
+  <!-- 获取轮播图列表总数 -->
+  <select id="getLoopImgListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(id)
+    from wt_ChannelAsset
+    <![CDATA[
+    where channelId=#{channelId,jdbcType=VARCHAR} and loopSort>0
+    ]]>
+    <if test="assetTypes!=null">
+      <foreach collection="assetTypes" index="index" item="value" open="and (" separator="or" close=")">
+        assetType=#{value}
+      </foreach>
+    </if>
+  </select>
+
   <!-- 获取轮播图列表 -->
   <select id="getLoopImgList" parameterType="java.util.Map" resultType="java.util.HashMap">
     select a.id, a.checkerId, a.assetType, a.assetId, a.loopSort,
@@ -320,10 +335,44 @@
     where a.channelId=#{channelId,jdbcType=VARCHAR} and a.loopSort>0
     ]]>
     <if test="assetTypes!=null">
-      <foreach collection="listTag" index="index" item="tag" open="and (" separator="or" close=")">
-        a.assetType=#{assetType}
+      <foreach collection="assetTypes" index="index" item="value" open="and (" separator="or" close=")">
+        a.assetType=#{value}
       </foreach>
     </if>
-    order by a.loopSort desc, a.topSort desc, a.publishTime desc
+    order by a.loopSort desc, a.topSort desc, a.pubTime desc
   </select>
+  
+  <!-- 轮播图排序 -->
+  <update id="updateLoopSort" parameterType="java.util.Map">
+    update wt_ChannelAsset set loopSort=#{_loopSort,jdbcType=INTEGER}
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+    update wt_ChannelAsset set loopSort=#{loopSort,jdbcType=INTEGER}
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetId=#{_assetId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 删除轮播图  实际上没有在数据库中删除  只是将loopSort设置为0 -->
+  <update id="deleteLoopImg" parameterType="java.util.Map">
+    update wt_ChannelAsset set loopSort=0
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+  </update>
+  
+  <!-- 获得轮播图排序号中最大的那个数值 -->
+  <select id="getChannelLoopImgMax" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from wt_ChannelAsset 
+    where loopSort=(
+          select max(loopSort) from wt_ChannelAsset 
+          where channelId=#{channelId,jdbcType=VARCHAR})
+  </select>
+  
+  <!-- 在某一栏目下添加轮播图 -->
+  <update id="addLoopImgInChannel" parameterType="java.util.Map">
+    update wt_ChannelAsset set loopSort=#{loopSort,jdbcType=INTEGER}
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+    update wt_MediaAsset set loopImg=#{loopImg,jdbcType=VARCHAR}
+    where id=#{assetId,jdbcType=VARCHAR}
+  </update>
 </mapper>

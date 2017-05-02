@@ -12,7 +12,7 @@
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
-  <link  href="../anchor/css/pagination.css" rel="stylesheet"/>
+  <link  href="../anchor/anchorResource/css/pagination.css" rel="stylesheet"/>
   <link  href="css/pub_function.css" rel="stylesheet"/>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/mainPage.js"></script>
@@ -29,120 +29,123 @@
   <script src="js/revoke_apply.js"></script>
 </head>
 <style>
-  *{margin:0;padding:0;}
-  .opopetypes{
-    height:40px;
-    float: right;
-  }
-  .rto_pass,.rto_nopass,.rto_play{
-    margin-left:50px;
-    width:85px;
-    height:30px;
-    background: #ddd;
-    color:#000;
-    border:none;
-    cursor: pointer;
-    margin-top:0px;
-    text-align: center;
-    line-height:30px;
-  }
-  .rth_txt1{
-    width:58%;  
-    margin: 10px 0px 0px 0px;
-    text-indent: -46%;
-  }
-  .rth_txt2{width:20%;}
-  .rth_txt3{width:22%;}
-  .rtc_listBox{
-    height:180px;
-    max-height:210px;
-    padding:10px 0px;
-  }
-  .rtcl_con_p{
-    width:100%;
-    padding:0px 10px 0px 25px;
-    margin:0px 0px 15px 0px;
-  }
-  .rtcl_img_check{margin:45px 15px 44px 0px;}
-  .rtcl_img{margin-top:0px;}
-  .sequ_num{
-    color:#0077c7;
-    width: 100%;
-    margin:0px 0px 3px;
-  }
-  .sequ_name{
-    color: #000;
-    margin:0px 0px 3px;
-  }
-  .rtcl_con{
-    padding:0px;
-    width:42.5%;
-    height:auto;
-  }
-  .sequ_names{
-    margin:0px;
-    width:calc(100% - 30px);
-  }
-  .sequ_names1{
-    margin:0px 0px 0px 7px;
-  }
-  .tag{
-    width: 100%;
-    height: auto;
-    max-height: 40px;
-    margin-top:3px;
-    color:#000;
-    overflow: hidden;
-  }
-  .tag1{
-    width:30px;
-    display: inline-block;
-  }
-  .rtcl_con_tags{
-    width: 91%;
-    max-height:40px;
-    margin: 0px;
-    padding: 0px;
-  }
-  .rtcl_con_tags1{
-    padding: 0px 5px;
-    margin: 0px 5px 2px 0px;
-  }
-  .rtcl_con_desc{
-    width:100%;
-    max-height:60px;
-  }
-  .rtcl_con_desc1{display: inline-block;}
-  .rtcl_con_desc2{
-    width:calc(100% - 32px);
-    line-height: 20px;
-    max-height: 60px;
-    padding: 0px 5px 0px 0px;
-    display:-webkit-box;
-    -webkit-line-clamp:3;
-    -webkit-box-orient: vertical;
-    overflow: hidden; 
-  }
-  .source_form{width:20%;}
-  .audio_time{width:22%;}
-  .nopass_container{height:465px;}
-  .nopass_container{height:465px;}
-  .act{
-    width:100%;
-    overflow: hidden;
-    height:18px;
-  }
-  .act li{
-    margin-right:35px;
-    height:18px;
-    color:#000;
-    font-size:12px;
-  }
-  .act li img{
-    width: 15px;
-    height: 15px;
-    background-size: 100% 100%;
-  }
+*{margin:0;padding:0;}
+.opopetypes{
+  height:40px;
+  float: right;
+}
+.rto_pass,.rto_nopass,.rto_play{
+  margin-left:50px;
+  width:85px;
+  height:30px;
+  background: #ddd;
+  color:#000;
+  border:none;
+  cursor: pointer;
+  margin-top:0px;
+  text-align: center;
+  line-height:30px;
+}
+.rth_txt1{
+  width:58%;  
+  margin: 10px 0px 0px 0px;
+  text-indent: -46%;
+}
+.rth_txt2{width:20%;}
+.rth_txt3{width:22%;}
+.rtc_listBox{
+  height:180px;
+  max-height:210px;
+  padding:10px 0px;
+}
+.rtcl_con_p{
+  width:100%;
+  padding:0px 10px 0px 25px;
+  margin:0px 0px 15px 0px;
+}
+.rtcl_img_check{margin:45px 15px 44px 0px;}
+.rtcl_img{margin-top:0px;}
+.sequ_num{
+  color:#0077c7;
+  width: 100%;
+  margin:0px 0px 3px;
+}
+.sequ_name{
+  color: #000;
+  margin:0px 0px 3px;
+}
+.rtcl_con{
+  padding:0px;
+  width:42.5%;
+  height:auto;
+}
+.sequ_names{
+  margin:0px;
+  width:calc(100% - 30px);
+}
+.sequ_names1{
+  margin:0px 0px 0px 7px;
+}
+.tag{
+  width: 100%;
+  height: auto;
+  max-height: 40px;
+  margin-top:3px;
+  color:#000;
+  overflow: hidden;
+}
+.tag1{
+  width:30px;
+  display: inline-block;
+}
+.rtcl_con_tags{
+  width: 91%;
+  max-height:40px;
+  margin: 0px;
+  padding: 0px;
+}
+.rtcl_con_tags1{
+  padding: 0px 5px;
+  margin: 0px 5px 2px 0px;
+}
+.rtcl_con_desc{
+  width:100%;
+  max-height:60px;
+}
+.rtcl_con_desc1{display: inline-block;}
+.rtcl_con_desc2{
+  width:calc(100% - 32px);
+  line-height: 20px;
+  max-height: 60px;
+  padding: 0px 5px 0px 0px;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient: vertical;
+  overflow: hidden; 
+}
+.source_form{width:20%;}
+.audio_time{width:22%;}
+.nopass_container{height:465px;}
+.nopass_container{height:465px;}
+.act{
+  width:100%;
+  overflow: hidden;
+  height:18px;
+}
+.act li{
+  margin-right:35px;
+  height:18px;
+  color:#000;
+  font-size:12px;
+}
+.act li img{
+  width: 15px;
+  height: 15px;
+  background-size: 100% 100%;
+}
+#kkpager_btn_go_input.focus{
+  border-color: #0077c7;
+}
 </style>
 <body class="laydate_body" onselectstart="return false">
 <div class="contents">
@@ -150,7 +153,7 @@
     <div class="c_title">当前位置：内容管理>撤回申请</div>
     <div class="c_con">
       <div class="cc_left fl"> 
-        <div class="ccl_title">请选择一个栏目</div>
+        <div class="ccl_title">请选择具体的栏目</div>
         <ul class="ztree" id="ztree"></ul>
       </div>
       <div class="nav_con fl">

@@ -38,11 +38,11 @@ public class FileUploadController extends UploadController {
 			if (purpose.equals("1")) { // 用户头像处理
 				try {
 					String path = "userimg";
-					newfilepath = FileNameUtils.concatPath(path, newname + ext);
-					String imgpath = FileNameUtils.concatPath(path, newname+ext);
-					String img150path = FileNameUtils.concatPath(path, newname + ".150_150" + ext);
-					String img300path = FileNameUtils.concatPath(path, newname + ".300_300" + ext);
-					String img450path = FileNameUtils.concatPath(path, newname + ".450_450" + ext);
+					newfilepath = path+"/"+newname + ext;
+					String imgpath = path+"/"+newname+ext;
+					String img150path = path+"/"+newname + ".150_150" + ext;
+					String img300path = path+"/"+newname + ".300_300" + ext;
+					String img450path = path+"/"+newname + ".450_450" + ext;
 					OssUtils.upLoadObject(imgpath, new File(filepath), true);
 					OssUtils.makePictureResize(imgpath, img150path, 150);
 					OssUtils.makePictureResize(imgpath, img300path, 300);
@@ -57,10 +57,10 @@ public class FileUploadController extends UploadController {
 				if (purpose.equals("2")) { // 内容图片处理
 					try {
 						String path = "contentimg";
-						newfilepath = FileNameUtils.concatPath(path, newname + ext);
-						String imgpath = FileNameUtils.concatPath(path, newname + ext);
-						String img180path = FileNameUtils.concatPath(path, newname + ".180_180" + ext);
-						String img300path = FileNameUtils.concatPath(path, newname + ".300_300" + ext);
+						newfilepath = path+"/"+newname + ext;
+						String imgpath = path+"/"+newname + ext;
+						String img180path = path+"/"+newname + ".180_180" + ext;
+						String img300path = path+"/"+newname + ".300_300" + ext;
 						OssUtils.upLoadObject(imgpath, new File(filepath), true);
 						OssUtils.makePictureResize(imgpath, img180path, 180);
 						OssUtils.makePictureResize(imgpath, img300path, 300);
@@ -73,9 +73,9 @@ public class FileUploadController extends UploadController {
 					if (purpose.equals("3")) { // 轮播图处理
 						try {
 							String path = "contentimg";
-							newfilepath = FileNameUtils.concatPath(path, newname + ext);
-							String imgpath = FileNameUtils.concatPath(path, newname + ext);
-							String img1080_450path = FileNameUtils.concatPath(path, newname + ".1080_450" + ext);
+							newfilepath = path+"/"+newname + ext;
+							String imgpath = path+"/"+newname + ext;
+							String img1080_450path = path+"/"+newname + ".1080_450" + ext;
 							OssUtils.upLoadObject(imgpath, new File(filepath), true);
 							OssUtils.makePictureResize(imgpath, img1080_450path, 1080, 450);
 //							Thumbnails.of(new File(filepath)).size(1080, 450).toFile(img1080_450path);
@@ -86,9 +86,9 @@ public class FileUploadController extends UploadController {
 						if (purpose.equals("4")) { // 栏目图处理
 							try {
 								String path = "contentimg";
-								newfilepath = FileNameUtils.concatPath(path, newname + ext);
-								String imgpath = FileNameUtils.concatPath(path, newname + ext);
-								String img100_100path = FileNameUtils.concatPath(path, newname + ".100_100" + ext);
+								newfilepath = path+"/"+newname + ext;
+								String imgpath = path+"/"+newname + ext;
+								String img100_100path = path+"/"+newname + ".100_100" + ext;
 								OssUtils.upLoadObject(imgpath, new File(filepath), true);
 								OssUtils.makePictureResize(imgpath, img100_100path, 100);
 //								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);

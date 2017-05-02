@@ -13,6 +13,7 @@
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
   <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
   <link  href="../anchor/anchorResource/css/pagination.css" rel="stylesheet"/>
+  <link  href="css/loopPagination.css" rel="stylesheet"/>
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/mainPage.js"></script>
   <script src="../resources/js/common.utils.js"></script>
@@ -22,17 +23,17 @@
   <script src="../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
   <script src="js/carousel_filter.js"></script>
-  <script src="js/pub_function.js"></script>
-  <!--翻页插件-->
+  <!--内容翻页插件-->
   <script src="../anchor/anchorResource/js/pagination.min.js"></script>
+  <!--轮播图翻页插件-->
+  <script src="js/loopPagination.js"></script>
   <script src="js/carousel_figure.js"></script>
 <style>
 /*全局样式*/
 *{margin: 0;padding: 0;}
 li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;color:#000;}
-body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !important;}
-#wrapper{width:100%;}
+body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !important;}
 .fl{float: left;}
 .ellipsis{
   overflow: hidden;
@@ -43,9 +44,14 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   position: relative;
   width: 100%;
   min-width: 1080px;
-  height: auto;
+  height: 100%;
 }
-.content .containers{width:100%;}
+.contents .containers{
+  position: relative;
+  height: 100%;
+  min-width: 1080px;
+  width: 100%;
+}
 .c_title{
   color: #000;
   padding-left: 15px;
@@ -54,25 +60,28 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   border-bottom: 1px solid #dedede;
 }
 .c_con{
-  width:100%;
-  height:auto;
-  overflow: hidden;
+  width: 100%;
+  height: calc(100% - 40px);
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
   /*border:1px solid red;*/
 }
 .cc_left{
   position: relative;
-  width:195px;
+  width:190px;
   height: 100%;
   margin-left:15px;
 }
 .nav_con{
-  width:calc(100% - 210px);
-  height:100%;
+  width:calc(100% - 205px);
+  height:auto;
   min-width:870px;
   border-left:2px solid #dedede;
 }
 .nav_cons{
   position: relative;
+  height: 100%;
   width: calc(100% - 30px);
   margin: 0px 15px;
   border: 1px solid transparent;
@@ -102,7 +111,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 }
 .cc_right,.nav_con2{
   width:100%;
-  height:100%;
+  height:auto;
   margin-top:40px;
   background: #fff;
   position: relative;
@@ -516,7 +525,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   top: 20px;
   bottom: 20px;
   height: auto;
-  width:calc(100% - 50px);
+  width:calc(100% - 0px);
   overflow: hidden;
   /*display: none;*/
 }
@@ -545,7 +554,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 .locker{
   position: relative;
   right: 0px;
-  top: -15px;
+  top: 15px;
   float: right;
   width: 45px;
   height: 15px;
@@ -597,21 +606,25 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   border-bottom: 1px solid #dedede;
 }
 .lbd_box1{
+  width: 55px;
   font-size: 16px;
   color: #000;
-  margin: 50px 0px 0px 0px;
+  position: relative;
+  top: calc(50% - 11px);
 }
 .lbd_box2{
   width: 240px;
   height: 135px;
   cursor: pointer;
-  margin: 0px 45px 0px 35px;
+  position: relative;
+  top: calc(50% - 68px);
+  margin: 0px 35px;
 }
 .lbd_box3{
   width: 240px;
   height: 100px;
   border: 1px solid #dedede;
-  margin: 0px 0px 5px;
+  margin: 15px 0px 5px;
   display: block;
 }
 .lbd_box4{
@@ -619,6 +632,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   line-height: 30px;
   font-size: 16px;
   color: #000;
+  display: none;
   text-align: center;
 }
 .lbd_box5{
@@ -627,12 +641,14 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   color: #000;
   text-align: center;
   border: 1px solid #0077C7;
-  margin-top: 47px;
+  position: relative;
+  top: calc(50% - 12px);
 }
 .lbd_box6{
   width: 188px;
   text-align: center;
-  margin: 20px 0px 0px 0px;
+  position: relative;
+  top: calc(50% - 38px);
 }
 .lbd_box61,.lbd_box62,.lbd_box63{
   line-height: 25px;
@@ -640,53 +656,18 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
   cursor: pointer;
 }
 .lb_div6{
-  /*height:80px;*/
+  height:40px;
   width:100%;
-  padding:20px 0px;
   overflow: hidden;
 }
 .lb_div61{
-  height:30px;
-  width:100px;
-  line-height: 30px;
-  border:1px solid #dedede;
+  position: relative;
+  left: 0px;
+  height: auto;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
-}
-.lb_div62,.lb_div64{
-  width: 30px;
-  text-align: center;
-  line-height: 25px;
-  color: #000;
-  cursor: pointer;
-}
-.lb_div62{
-  font-size: 30px;
-}
-.lb_div63{
-  font-size: 16px;
-  padding: 0px 13px;
-  color: #000;
-  border-right: 1px solid #dedede;
-  border-left: 1px solid #dedede;
-}
-.lb_div64{
-  font-size:24px;
-}
-.lb_div65{
-  font-size: 15px;
-  color: #000;
-  line-height: 30px;
-}
-.lb_div66,.lb_div67{
-  padding: 0px 10px;
-  height: 30px;
-  color: #000;
-  border: 1px solid #dedede;
-  margin-left: 60px;
-}
-.lb_div67{
-  color: #fff;
-  background: #0077C7;
+  /* display: none; */
 }
 /*轮播图弹出层*/
 .carousel_mask{
@@ -958,7 +939,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 .cate:hover .cate_img{
   color:#0077c7;
 }
-/*分页样式*/
+/*内容列表分页样式*/
 #kkpager span.curr{
   border: 1px solid #0077c7 !important;
   color:#0077c7 !important ;
@@ -973,6 +954,9 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
 }
 #kkpager_btn_go{
   background-color: #0077c7 !important;
+}
+#kkpager_btn_go_input.focus{
+  border-color: #0077c7;
 }
 </style> 
 </head>
@@ -1187,7 +1171,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
                 <div class="lb_div3 fl rth_txt">操作</div> 
               </div> 
               <div class="lb_div5">
-                <div class="lbd_box">
+                <!--<div class="lbd_box">
                   <div class="lbd_box1 fl">第1帧</div>
                   <div class="lbd_box2 fl">
                     <img src="" alt=""  class="lbd_box3"/>
@@ -1199,8 +1183,8 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
                     <div class="lbd_box62">下移一层</div>
                     <div class="lbd_box63">删除此帧</div>
                   </div>
-                </div>
-                <div class="lbd_box">
+                </div>-->
+                <!--<div class="lbd_box">
                   <div class="lbd_box1 fl">第2帧</div>
                   <div class="lbd_box2 fl">
                     <img src="" alt=""  class="lbd_box3"/>
@@ -1212,8 +1196,8 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
                     <div class="lbd_box62">下移一层</div>
                     <div class="lbd_box63">删除此帧</div>
                   </div>
-                </div>
-                <div class="lbd_box">
+                </div>-->
+                <!--<div class="lbd_box">
                   <div class="lbd_box1 fl">第3帧</div>
                   <div class="lbd_box2 fl">
                     <img src="" alt=""  class="lbd_box3"/>
@@ -1225,8 +1209,8 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
                     <div class="lbd_box62">下移一层</div>
                     <div class="lbd_box63">删除此帧</div>
                   </div>
-                </div>
-                <div class="lbd_box">
+                </div>-->
+                <!--<div class="lbd_box">
                   <div class="lbd_box1 fl">第4帧</div>
                   <div class="lbd_box2 fl">
                     <img src="" alt=""  class="lbd_box3"/>
@@ -1238,17 +1222,12 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
                     <div class="lbd_box62">下移一层</div>
                     <div class="lbd_box63">删除此帧</div>
                   </div>
-                </div>
+                </div>-->
               </div>
               <div class="lb_div6">
-                <!--<div class="lb_div61 fl">
-                  <div class="lb_div62 fl">－</div>
-                  <div class="lb_div63 fl">4</div>
-                  <div class="lb_div64 fl">＋</div>
-                </div>-->
-                <!--<div class="lb_div65 fl">&nbsp;帧&nbsp;&nbsp;轮播图</div>-->
-                <!--<input type="button" class="lb_div66 fl" value="全部删除" />-->
-                <!--<input type="button" class="lb_div67 fl" value="保存设置" />-->
+                <div class="lb_div61">
+                  <div id="loopImgKKpage" class="loopImgKKpage"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -1276,7 +1255,7 @@ body{height:auto;-moz-user-select: none;overflow:auto; background:#fff !importan
         <div class="carouselImgMask dis">
           <img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />
         </div>
-        <input type="file" name="" id="" value="" class="upload_pic" style="display:none;" />
+        <input type="file" value="" class="upload_pic" style="display:none;" />
         <div class="cm_content6 fl">上传图片</div>
       </div>
       <div class="cm_footer">

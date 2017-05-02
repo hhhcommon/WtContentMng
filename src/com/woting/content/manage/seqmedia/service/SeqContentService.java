@@ -107,6 +107,7 @@ public class SeqContentService {
 		sma.setCTime(new Timestamp(System.currentTimeMillis()));
 		sma.setSmaPubType(1);
 		sma.setSmaPubId("0");
+		sma.setSmaAllCount(0);
 		sma.setSmaPublisher("我听科技");
 		UserPo user = userService.getUserById(userid);
 		if (user == null) {

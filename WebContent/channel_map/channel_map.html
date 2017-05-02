@@ -184,6 +184,14 @@ body{overflow: hidden;height:100%;padding:0px;}
   padding: 10px 10px 10px 14px;
   font-size: 16px;
 }
+progress{
+  border: 1px solid #0077C7;  
+  background-color:#E6E6E6;
+  color: #0077C7; /*IE10*/
+}
+progress::-moz-progress-bar { background: #0077C7; }
+progress::-webkit-progress-bar { background: #e6e6e6; }
+progress::-webkit-progress-value  { background: #0077C7; }
 </style>
 <body>
 <div class="wrapper wrapper-content" style="height:100%;">
@@ -277,6 +285,9 @@ body{overflow: hidden;height:100%;padding:0px;}
     }, {
         field: 'SrcName',
         title: '其他平台分类'
+    },{
+        field: 'Progress',
+        title: '进程进度'
     }]
   });
   
@@ -297,13 +308,16 @@ body{overflow: hidden;height:100%;padding:0px;}
     }, {
         field: 'ChannelName',
         title: '我听分类'
+    },{
+        field: 'Progress',
+        title: '进程进度'
     }]
   });
 </script>
 <script>
 $(function(){
   var wtObj,otherObj,modalObj,treeNode,wt_nodes,other_nodes,wt_node,other_node;
-  var wt_path,ot_path,modal_nodes,applyType;
+  var wt_path,ot_path,modal_nodes,applyType,treeid;
   var rootPath=getRootPath();
   
   //配置我听平台树的相关参数
@@ -491,6 +505,10 @@ $(function(){
           for(var i=0;i<returnData.ResultList.length;i++){
             list.push(returnData.ResultList[i].SrcDid);
           }
+          for(var i=0;i<returnData.ResultList.length;i++){
+            perId=returnData.ResultList[i].Id;
+            loadProgress(perId);    
+          }
         }else{
           $(".wt_no").removeClass("dis");
         }
@@ -510,13 +528,17 @@ $(function(){
       dataType: "json",
       data:JSON.stringify(_data),
       success: function(returnData){
-        $('#ot_table').bootstrapTable('load',null);//清空数据//清空数据
+        $('#ot_table').bootstrapTable('load',null);//清空数据
         $(".ot_no").addClass("dis");
         list=[];//清空数组
         if(returnData.ReturnType=="1001"){
           $('#ot_table').bootstrapTable('load',returnData.ResultList);
           for(var i=0;i<returnData.ResultList.length;i++){
             list.push(returnData.ResultList[i].ChannelId);
+          }
+          for(var i=0;i<returnData.ResultList.length;i++){
+            perId=returnData.ResultList[i].Id;
+            loadProgress(perId); 
           }
         }else{
           $(".ot_no").removeClass("dis");
@@ -557,6 +579,7 @@ $(function(){
   });
   
   //点击保存--添加映射关系
+  var perId='';
   $(".save").on("click",function(){
     applyType=$(".modal_header").attr("applyType");
     modal_nodes=modalObj.getCheckedNodes(true);//得到模态框上被选中的节点集合
@@ -648,17 +671,22 @@ $(function(){
       type: "POST",    
       url: _url,
       dataType: "json",
-      async:false,
+      async:true,
       data:JSON.stringify(_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-          alert("删除成功");
-          $(obj).each(function(){
-            var is=$(this).prop("checked");
-            if(is==true){//这条数据被选中
-              $(this).parent("td").parent("tr").remove();
-            }
-          });
+          if(applyType==2){//重新调用我听与其他平台的对应关系
+            wt_nodes=wtObj.getSelectedNodes();//获取我听平台当前被选中的节点集合
+            wt_node=wt_nodes[0]; //当前我听平台当前被选中节点
+            treeid=wt_node.id;
+            selectWotingTreeNode(event,treeid, wt_node);
+          }else{//重新调用其他平台与我听的对应关系
+            other_nodes=otherObj.getSelectedNodes();//获取其他平台当前被选中的节点集合
+            other_node=other_nodes[0];//获取其他平台当前被选中的节点
+            treeid=other_node.id;
+            selectOtherTreeNode(event, treeid, other_node);
+          }
+          alert("删除成功!");
         }else{
           alert("删除失败!");
         }
@@ -675,6 +703,94 @@ $(function(){
     $("#modal_tree").html(" ");
     list=[];//清空
   });
+
+  /*s--进度条插件初始化*/
+  function loadProgress(id){
+    if($(".wt_content").hasClass("dis")){//删除其他平台
+      obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
+      applyType=1;
+    }else{//删除我听
+      applyType=2;
+      obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
+    }
+    var per_data={"PerId":id};
+    $.ajax({
+      type:"POST",    
+      url:rootPath+"common/getChannelMapRefPer.do",
+      dataType:"json",
+      async:true,
+      data:JSON.stringify(per_data),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          if(returnData.PerNum<"100"){
+            return;
+          }else{
+            var ipt='<progress value='+returnData.PerNum+' max="100"></progress>'; 
+            $(obj).each(function(){
+              var id=$(this).parent("td").next("td");
+              id=$(id).text();
+              if(id==per_data.PerId){
+                $(this).parent("td").parent("tr").children("td:last-child").html(ipt);
+                perId=per_data.PerId;
+//              window.setInterval(load_progress(perId),1000);
+                window.setInterval(loadProgress(perId),1000);
+              }
+            });
+          }
+        }else{
+          alert(returnData.Message);
+          return;
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  function load_progress(id){
+    alert(id);
+    if($(".wt_content").hasClass("dis")){//删除其他平台
+      obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
+      applyType=1;
+    }else{//删除我听
+      applyType=2;
+      obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
+    }
+    var per_data={"PerId":id};
+    $.ajax({
+      type:"POST",    
+      url:rootPath+"common/getChannelMapRefPer.do",
+      dataType:"json",
+      async:true,
+      data:JSON.stringify(per_data),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          if(returnData.PerNum>="100"){
+            return;
+          }else{
+            var ipt='<progress value='+returnData.PerNum+' max="100"></progress>'; 
+            $(obj).each(function(){
+              var id=$(this).parent("td").next("td");
+              id=$(id).text();
+              if(id==per_data.PerId){
+                $(this).parent("td").parent("tr").children("td:last-child").html(ipt);
+                perId=per_data.PerId;
+                window.setInterval(loadProgress(perId),1000);
+                return;
+              }
+            });
+          }
+        }else{
+          alert(returnData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
 });
 </script>
 </html>

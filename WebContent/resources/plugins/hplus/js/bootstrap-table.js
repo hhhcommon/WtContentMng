@@ -45,7 +45,7 @@
     BootstrapTable.DEFAULTS = {
         classes: 'table table-hover',
         height: undefined,
-        undefinedText: '-',
+        undefinedText: ' ',
         sortName: undefined,
         sortOrder: 'asc',
         striped: false,
@@ -90,7 +90,7 @@
         this.$container.after('<div class="clearfix"></div>');
 
         if (this.options.height) {
-            this.$container.css('height', this.options.height + 'px');
+            this.$container.css('height','482px');
         }
         this.$el.addClass(this.options.classes);
         if (this.options.striped) {

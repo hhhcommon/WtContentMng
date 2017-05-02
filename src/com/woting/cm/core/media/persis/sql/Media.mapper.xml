@@ -273,7 +273,7 @@
       <if test="smaPubId!=null">smaPubId,</if>
       <if test="smaPublisher!=null">smaPublisher,</if>
       <if test="smaImg!=null">smaImg,</if>
-      <if test="smaAllCount!=null and smaAllCount!=0">smaAllCount,</if>
+      <if test="smaAllCount!=null">smaAllCount,</if>
       <if test="subjectWords!=null">subjectWords,</if>
       <if test="keyWords!=null">keyWords,</if>
       <if test="langDid!=null">langDid,</if>
@@ -289,7 +289,7 @@
       <if test="smaPubId!=null">#{smaPubId,jdbcType=VARCHAR},</if>
       <if test="smaPublisher!=null">#{smaPublisher,jdbcType=VARCHAR},</if>
       <if test="smaImg!=null">#{smaImg,jdbcType=VARCHAR},</if>
-      <if test="smaAllCount!=null and smaAllCount!=0">#{smaAllCount,jdbcType=VARCHAR},</if>
+      <if test="smaAllCount!=null">#{smaAllCount,jdbcType=VARCHAR},</if>
       <if test="subjectWords!=null">#{subjectWords,jdbcType=VARCHAR},</if>
       <if test="keyWords!=null">#{keyWords,jdbcType=VARCHAR},</if>
       <if test="langDid!=null">#{langDid,jdbcType=VARCHAR},</if>
