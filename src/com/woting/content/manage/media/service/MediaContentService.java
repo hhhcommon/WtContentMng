@@ -120,8 +120,7 @@ public class MediaContentService {
 				po.setpName(user.getNickName());
 			} else if (user.getLoginName() != null) {
 				po.setpName(user.getLoginName());
-			} else
-				return null;
+			} else return null;
 			po.setIsVerified(1);
 			if (user.getDescn() != null) {
 				po.setDescn(user.getDescn());
@@ -134,7 +133,7 @@ public class MediaContentService {
 			PersonRefPo poref = new PersonRefPo();
 			poref.setId(SequenceUUID.getPureUUID());
 			poref.setRefName("主播-节目");
-			poref.setPersonId(userid);
+			poref.setPersonId(po.getId());
 			poref.setResTableName("wt_MediaAsset");
 			poref.setResId(ma.getId());
 			poref.setcTime(ma.getCTime());
