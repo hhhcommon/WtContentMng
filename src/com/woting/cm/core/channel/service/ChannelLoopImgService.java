@@ -204,27 +204,29 @@ public class ChannelLoopImgService {
 	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int loopSort) {
     	if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imageUrl)) return false;
 
-    	Map<String, Object> param=new HashMap<String, Object>();
-    	param.put("channelId", channelId);
-    	long tempSort=0;
     	Map<String, Object> newData=new HashMap<String, Object>();
-    	if (loopSort<=0) {
-    	    List<Map<String, Object>> _ret=channelAssetDao.queryForListAutoTranform("getChannelLoopImgMax", param);
-            if (_ret!=null&&_ret.size()>=0) {
-                Map<String, Object> map=(Map<String, Object>) _ret.get(0);
-                tempSort=(long) map.get("loopSort");
-                tempSort+=1;
-                newData.put("loopSort", tempSort);
-            }
-    	} else {
+	    
+    	if (loopSort>0) {
     	    newData.put("loopSort", loopSort);
+    	    newData.put("setType", "withSort");
+    	} else {
+    	    newData.put("setType", "withMax");
     	}
     	newData.put("channelId", channelId);
     	newData.put("assetId", contentId);
     	newData.put("loopImg", imageUrl);
     	//处理类型
-        if (!StringUtils.isNullOrEmptyOrSpace(mediaType)) {
-            String[] ms=mediaType.split(",");
+    	if (StringUtils.isNullOrEmptyOrSpace(mediaType)) return false;
+        String[] ms=mediaType.split(",");
+        if (ms.length <= 1) {
+            if (mediaType.equals("AUDIO")) {
+                newData.put("assetType", "wt_MediaAsset");
+            } else if (mediaType.equals("RADIO")) {
+                newData.put("assetType", "wt_Broadcast");
+            } else {
+                newData.put("assetType", "wt_SeqMediaAsset");
+            }
+        } else {
             List<String> assetTypes=new ArrayList<String>();//多个媒体类型表的列表
             for (String oneMediaType:ms) {
                 MediaType oneMT=MediaType.buildByTypeName(oneMediaType);
@@ -235,11 +237,11 @@ public class ChannelLoopImgService {
             if (!assetTypes.isEmpty()) newData.put("assetTypes", assetTypes);
         }
     	try {
-			channelAssetDao.update("addLoopImgInChannel", newData);
-			return true;
+		    channelAssetDao.update("addLoopImgInChannel", newData);
+		    return true;
 		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		    e.printStackTrace();
+		    return false;
+	    }
     }
 }
