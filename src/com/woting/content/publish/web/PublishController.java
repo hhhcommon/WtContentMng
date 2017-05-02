@@ -598,10 +598,10 @@ public class PublishController {
             try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
 
             Map<String, Object> _map=queryService.getLoopImgList(mediaType, channelId, pageSize, page);
-            if (_map==null||_map.isEmpty()) {
+            List<Map<String, Object>> resultList=(List<Map<String, Object>>) _map.get("ResultList");
+            if (resultList==null||resultList.isEmpty()) {
                 map.put("ReturnType", "1011");
             } else {
-                List<Map<String, Object>> resultList=(List<Map<String, Object>>) _map.get("ResultList");
                 int count=(int)_map.get("AllCount");
                 map.put("ReturnType", "1001");
                 map.put("ResultList", resultList);
