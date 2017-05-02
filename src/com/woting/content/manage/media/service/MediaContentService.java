@@ -112,7 +112,8 @@ public class MediaContentService {
 		} else {
 			po = new PersonPo();
 			po.setId(userid);
-			po.setPortrait(contentimg);
+			if (user.getPortraitBig()!=null && user.getPortraitBig().length()>5)
+				po.setPortrait(user.getPortraitBig());
 			if (user.getUserName() != null) {
 				po.setpName(user.getUserName());
 			} else if (user.getNickName() != null) {
