@@ -598,10 +598,10 @@ public class PublishController {
             try {pageSize=Integer.parseInt(m.get("PageSize")+"");} catch(Exception e) {};
 
             Map<String, Object> _map=queryService.getLoopImgList(mediaType, channelId, pageSize, page);
-            List<Map<String, Object>> resultList=(List<Map<String, Object>>) _map.get("ResultList");
-            if (resultList==null||resultList.isEmpty()) {
+            if (_map==null||_map.isEmpty()) {
                 map.put("ReturnType", "1011");
             } else {
+                List<Map<String, Object>> resultList=(List<Map<String, Object>>) _map.get("ResultList");
                 int count=(int)_map.get("AllCount");
                 map.put("ReturnType", "1001");
                 map.put("ResultList", resultList);
@@ -938,7 +938,7 @@ public class PublishController {
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String[] urlSplit=imgeUrl.split("\\");
+            String[] urlSplit=imgeUrl.split("/");
             imgeUrl = "##contentimg##"+urlSplit[urlSplit.length-1];
             String mediaType=(m.get("MediaType")==null?null:m.get("MediaType").toString());
             int loopSort=(m.get("LoopSort")==null?0:Integer.valueOf(m.get("LoopSort").toString()));
