@@ -369,10 +369,27 @@
   
   <!-- 在某一栏目下添加轮播图 -->
   <update id="addLoopImgInChannel" parameterType="java.util.Map">
+    <if test="setType=='withMax'">
+    update wt_ChannelAsset set loopSort=(select mt._max from ((select max(b.loopSort)+1 _max from wt_ChannelAsset b where b.channelId=#{channelId,jdbcType=VARCHAR})) as mt)
+    where channelId=#{channelId,jdbcType=VARCHAR} and
+          assetId=#{assetId,jdbcType=VARCHAR};
+    </if>
+    <if test="setType=='withSort'">
     update wt_ChannelAsset set loopSort=#{loopSort,jdbcType=INTEGER}
     where channelId=#{channelId,jdbcType=VARCHAR} and
           assetId=#{assetId,jdbcType=VARCHAR};
+    </if>
+    <if test="assetId=='wt_MediaAsset'">
     update wt_MediaAsset set loopImg=#{loopImg,jdbcType=VARCHAR}
     where id=#{assetId,jdbcType=VARCHAR}
+    </if>
+    <if test="assetId=='wt_SeqMediaAsset'">
+    update wt_SeqMediaAsset set loopImg=#{loopImg,jdbcType=VARCHAR}
+    where id=#{assetId,jdbcType=VARCHAR}
+    </if>
+    <if test="assetId=='wt_Broadcast'">
+    update wt_Broadcast set loopImg=#{loopImg,jdbcType=VARCHAR}
+    where id=#{assetId,jdbcType=VARCHAR}
+    </if>
   </update>
 </mapper>

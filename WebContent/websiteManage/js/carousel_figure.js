@@ -400,7 +400,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载节目列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载节目列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -410,7 +410,7 @@ $(function(){
           allCount=resultData.AllCount;
           loadContentList(resultData);//加载来源的筛选条件
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;min-height:300px;line-height:200px;'>没有找到节目</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
           allCount="0";
           $('.shade', parent.document).hide();
         }
@@ -518,7 +518,7 @@ $(function(){
 //    async:false,
       data:JSON.stringify(data),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载内容列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -527,7 +527,7 @@ $(function(){
           allCount=resultData.AllCount;
           loadContentList(resultData);//加载内容列表
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;min-height:300px;line-height:200px;'>没有找到内容</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
           $('.shade', parent.document).hide();
         }
@@ -1005,7 +1005,7 @@ $(function(){
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='text-align:center;min-height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   })
@@ -1031,7 +1031,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data3),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
@@ -1040,14 +1040,14 @@ $(function(){
           loadLoopImages(resultData);//加载轮播图列表
         }else{
           loopAllCount="0";
-          alert(resultData.Message);
+          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图，请自行添加</div>");
         }
         loopContentCount=(loopAllCount%pageSize==0)?(loopAllCount/pageSize):(Math.ceil(loopAllCount/pageSize));
         loopPagitionInit(loopContentCount,loopAllCount,data3.Page);
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;min-height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   }
@@ -1098,46 +1098,56 @@ $(function(){
       $(".lb_div5").append(list);
       if(resultData.ResultList[i].ContentLoopImg) $(".lbd_box3").eq(i).attr("src",resultData.ResultList[i].ContentLoopImg);
       if(i==0){//第一个不支持上移
-        $(".lbd_box61").eq(i).css("color","#ccc").attr("disabled","disabled");
+        $(".lbd_box61").eq(i).css("color","#ccc").attr({"disabled":"disabled","pointer-events":"none"}); 
       }
       if(i==(resultData.ResultList.length-1)){//最后一个不支持下移
-        $(".lbd_box62").eq(i).css("color","#ccc").attr("disabled","disabled");
+        $(".lbd_box62").eq(i).css("color","#ccc").attr({"disabled":"disabled","pointer-events":"none"});
       }
     }
   }
   
   //点击上移一层
   $(document).on("click",".lbd_box61",function(){
-    var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-    var contentId=$($li).attr("contentId");
-    var mediaType=$($li).attr("mediaType");
-    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    channelId=nodes[0].id;
-    var data4={"PCDType":"3",
-               "MediaType":mediaType,
-               "ChannelId":channelId,
-               "UserId":userId,
-               "ContentId":contentId,
-               "LoopSort":"-1"
-    };
-    moveLoopImage(data4);//移动轮播图
+    if($(this).attr("disabled")=="disabled"){//第一个禁止上移
+      alert("当前操作不支持上移");
+      return false;
+    }else{
+      var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
+      var contentId=$($li).attr("contentId");
+      var mediaType=$($li).attr("mediaType");
+      var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+      channelId=nodes[0].id;
+      var data4={"PCDType":"3",
+                 "MediaType":mediaType,
+                 "ChannelId":channelId,
+                 "UserId":userId,
+                 "ContentId":contentId,
+                 "LoopSort":"-1"
+      };
+      moveLoopImage(data4);//移动轮播图
+    }
   });
   
   //点击下移一层
   $(document).on("click",".lbd_box62",function(){
-    var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
-    var contentId=$($li).attr("contentId");
-    var mediaType=$($li).attr("mediaType");
-    var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    channelId=nodes[0].id;
-    var data4={"PCDType":"3",
-               "MediaType":mediaType,
-               "ChannelId":channelId,
-               "UserId":userId,
-               "ContentId":contentId,
-               "LoopSort":"-2"
-    };
-    moveLoopImage(data4);//移动轮播图
+    if($(this).attr("disabled")=="disabled"){//第一个禁止上移
+      alert("当前操作不支持下移");
+      return false;
+    }else{
+      var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
+      var contentId=$($li).attr("contentId");
+      var mediaType=$($li).attr("mediaType");
+      var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
+      channelId=nodes[0].id;
+      var data4={"PCDType":"3",
+                 "MediaType":mediaType,
+                 "ChannelId":channelId,
+                 "UserId":userId,
+                 "ContentId":contentId,
+                 "LoopSort":"-2"
+      };
+      moveLoopImage(data4);//移动轮播图
+    }
   });
   
   //移动轮播图
@@ -1149,7 +1159,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data4),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
@@ -1173,7 +1183,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;min-height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   }
@@ -1198,7 +1208,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data6),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;line-height:40px;min-height:300px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
@@ -1211,7 +1221,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='text-align:center;line-height:200px;min-height:300px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   });
