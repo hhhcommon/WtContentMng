@@ -3,6 +3,7 @@ package com.woting.crawlerdb.dict.web;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,6 @@ import com.woting.crawlerdb.dict.service.CDictService;
 /**
  * 映射关系控制
  * @author wbq
- *
  */
 @Controller
 @RequestMapping(value="/common/")
