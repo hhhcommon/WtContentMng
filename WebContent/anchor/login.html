@@ -303,7 +303,6 @@ $(function(){
       },
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-          alert("祝贺您登录成功！");
           var logSuccessName=login_data.UserName;
           var logSuccessId=returnData.UserInfo.UserId;
           var logSuccessPwd=login_data.Password;
@@ -514,7 +513,6 @@ $(function(){
       },
       success:function(returnData){
         if(returnData.ReturnType=="1001"){
-          alert("祝贺您注册成功！");
           var logSuccessName=register_data.NickName;
           var logSuccessId=returnData.UserId;
           var logSuccessPwd=register_data.Password;

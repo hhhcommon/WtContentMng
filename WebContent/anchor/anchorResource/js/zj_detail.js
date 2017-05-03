@@ -74,15 +74,34 @@ $(function(){
     $(".dcl_zjcontent2 h3").html(resultData.Result.ContentName);
     $(".dcl_zjcontent2 .h3span").html("("+resultData.Result.SubCount+"个节目)");
     $(".dcl_zjcontent1 img").attr("src",resultData.Result.ContentImg);
-    $(".dcl_zjcontent2 p span").html("【"+resultData.Result.ContentPubChannels[0].ChannelName+"】");
-    if(resultData.Result.ContentKeyWords!=null){
-      for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
-        var newli='<li><span>'+resultData.Result.ContentKeyWords[i].TagName+'</span></li>';
-        $(".dcl_zjcontent2 ul").append(newli);
+    if(resultData.Result.ContentPubChannels){
+      for(var i=0;i<resultData.Result.ContentPubChannels.length;i++){
+        if(resultData.Result.ContentPubChannels[i]){
+          var newli='<li class="formChannel fl" channelid='+resultData.Result.ContentPubChannels[i].ChannelId+'>'+"【"+resultData.Result.ContentPubChannels[i].ChannelName+"】"+'</li>';
+          $(".ch1").append(newli);
+        }
       }
+    }else{
+      var newli='<li>暂无</li>';
+      $(".ch1").append(newli);
     }
-    $(".ctimes").html("最近更新时间："+resultData.Result.CTime);
-    $(".dcl_zjcontent3_p1").html(resultData.Result.ContentDesc);
+    if(resultData.Result.ContentKeyWords){
+      for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
+        if(resultData.Result.ContentKeyWords[i]){
+          var newli='<li><span>'+resultData.Result.ContentKeyWords[i].TagName+'<span></li>';
+          $(".tg1").append(newli);
+        }
+      }
+    }else{
+      var newli='<li>暂无</li>';
+      $(".tg1").append(newli);
+    }
+    $(".cctimes").html(resultData.Result.CTime);
+    if(resultData.Result.ContentDesc){
+      $(".dcl_zjcontent3").html(resultData.Result.ContentDesc);
+    }else{
+      $(".dcl_zjcontent3").html("暂无描述");
+    }
     $(".list_title h4").html("共"+resultData.Result.SubCount+"个节目");
   }
   
@@ -146,6 +165,7 @@ $(function(){
   
   //专辑的节目列表
   function fillZj_jmList(resultData){
+    $(".list_content").html(" ");
     for(var i=0;i<resultData.ResultList.length;i++){
       var programBox= '<li class="rtc_listBox" contentSeqId='+resultData.ResultList[i].ContentSeqId+' contentId='+resultData.ResultList[i].ContentId+'>'+
                         '<img src="../anchorResource/img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
@@ -443,7 +463,6 @@ $(function(){
       _data.PageSize=pageSize;
       _data.Page=current_page;
       _data.FlagFlow="0";
-      _data.ChannelId="0";
       _data.SeqMediaId=contentId;
       _data.SearchWord=searchWord;
       getSearchList(_Data);
@@ -464,13 +483,12 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           $(".ri_top3_con").html("");//每次加载之前先清空
           allCount=resultData.AllCount;
-          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
           fillZj_jmList(resultData);//加载搜索得到的节目列表
         }else{
           $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>没有找到节目...</div>");
           allCount="0";
-          contentCount=(allCount%2==0)?(allCount/2):(Math.ceil(allCount/2));
         }
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,_data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
@@ -492,13 +510,44 @@ $(function(){
       alert("当前状态不支持编辑操作");
       return;
     }else{
+      clear_jm();//填充前清空数据
       edit_jm(contentId);//编辑节目时得到节目的详细信息
     }
   });
+  
+  //获取公共标签
+  var data1={"MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":userId,
+             "MediaType":"1",
+             "TagType":"1",
+             "TagSize":"20"
+  };
+  loadPubTag(data1);//mediaType暂时先为1，如果为2时得不到
+  
+  //点击“换一换”，更换公共标签
+  $(document).on("click",".gg_tag .hyp",function(){
+    loadPubTag(data1);
+  })
+  
+  //获取我的标签
+  var data2={"MobileClass":"Chrome",
+             "PCDType":"3",
+             "UserId":userId,
+             "MediaType":"1",
+             "TagType":"2",
+             "TagSize":"20"
+  };
+  loadMyTag(data2);
+  
+  //点击“换一换”，更换我的标签
+  $(document).on("click",".my_tag .hyp",function(){
+    loadMyTag(data2);
+  })
+  
   //编辑节目时得到节目的详细信息
   function edit_jm(contentId){
-    var datas={"DeviceId":deviceId,
-               "MobileClass":"Chrome",
+    var datas={"MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":userId,
                "ContentId":contentId
@@ -508,19 +557,15 @@ $(function(){
       url:rootPath+"content/media/getMediaInfo.do",
       dataType:"json",
       data:JSON.stringify(datas),
-      beforeSend: function(){
-        $('.shade', parent.document).show();
-      },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
-          clear_jm();//填充前清空数据
+        if(resultData.ReturnType=="1001"){
+          $(".mask_jm").show();
           $("body").css({"overflow":"hidden"});
           getTime();
           fillJmContent(resultData);//填充节目信息
         }else{
           alert(resultData.Message);
         }
-        $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
@@ -543,7 +588,7 @@ $(function(){
         $(this).prop("selected",true); 
       }
     })
-    if(resultData.Result.ContentKeyWords!=null){
+    if(resultData.Result.ContentKeyWords){
       for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
         var new_tag= '<li class="upl_bq_img bqImg" tagId='+resultData.Result.ContentKeyWords[i].TagId+'>'+
                       '<span>'+resultData.Result.ContentKeyWords[i].TagName+'</span>'+
@@ -566,7 +611,7 @@ $(function(){
       }
     }
     $(".uplDecn").val(resultData.Result.ContentDesc);
-    if(resultData.Result.ContentMemberTypes!=null){
+    if(resultData.Result.ContentMemberTypes){
       for(var i=0;i<resultData.Result.ContentMemberTypes.length;i++){
         var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+resultData.Result.ContentMemberTypes[i].TypeId+'>'+
                         '<div class="czfs_tag_div">'+
@@ -587,7 +632,6 @@ $(function(){
     }
     var _data={};
     _data.UserId=userId;
-    _data.DeviceId=deviceId;
     _data.MobileClass="Chrome";
     _data.PCDType="3";
     _data.ContentId=$(".jmId").val();
@@ -648,18 +692,18 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       beforeSend: function(){
-        $('.shade', parent.document).show();
+        $(".btn_group input").attr("disabled","disabled").css("background","#ccc");
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           alert("修改内容保存成功");
-          $(".mask_jm,.add_jm").hide();
+          $(".mask_jm").hide();
           $("body").css({"overflow":"auto"});
           getZj_jmList(_data);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
-        $('.shade', parent.document).hide();
+        $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
@@ -670,7 +714,6 @@ $(function(){
   var _datas={};
   $("#pubBtn").on("click",function(){
     _datas.UserId=userId;
-    _datas.DeviceId=deviceId;
     _datas.MobileClass="Chrome";
     _datas.PCDType="3";
     _datas.ContentId=$(".jmId").val();
@@ -731,7 +774,7 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_datas),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           pubEditJm(_datas);
         }else{
           alert(resultData.Message);
@@ -746,8 +789,7 @@ $(function(){
     var contentId=$(".jmId").val();
     var contentSeqId=_datas.SeqMediaId;
     var list=[{"ContentId":contentId,"SeqMediaId":contentSeqId}];
-    var data4={"DeviceId":deviceId,
-               "MobileClass":"Chrome",
+    var data4={"MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":userId,
                "ContentFlowFlag":"2",
@@ -759,18 +801,18 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(data4),
       beforeSend: function(){
-        $('.shade', parent.document).show();
+        $(".btn_group input").attr("disabled","disabled").css("background","#ccc");
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           alert("节目发布成功");
-          $(".mask_jm,.add_jm").hide();
+          $(".mask_jm").hide();
           $("body").css({"overflow":"auto"});
           getZj_jmList(_datas);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
-        $('.shade', parent.document).show();
+        $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(XHR){
         alert("发生错误："+ jqXHR.status);
@@ -793,8 +835,7 @@ $(function(){
     }
   })
   function submit_jm(contentId,contentSeqId){
-    var datas={"DeviceId":deviceId,
-               "MobileClass":"Chrome",
+    var datas={"MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":userId,
                "UpdateList":[{"ContentId":contentId,"SeqMediaId":contentSeqId}],
@@ -811,17 +852,7 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType == "1001"){
           alert("发布节目请求成功");
-//        var _data={"DeviceId":deviceId,
-//                  "MobileClass":"Chrome",
-//                  "UserId":userId,
-//                  "PCDType":"3",
-//                  "PageSize":pageSize,
-//                  "Page":current_page,
-//                  "FlagFlow":"0",
-//                  "ChannelId":"0",
-//                  "SeqMediaId":contentId
-//      };
-//      getZj_jmList(_data);//重新加载节目列表
+          getZj_jmList(_data);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
@@ -848,8 +879,7 @@ $(function(){
     }
   })
   function recal_jm(contentId,seqId){
-    var datas={"DeviceId":deviceId,
-               "MobileClass":"Chrome",
+    var datas={"MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":userId,
                "UpdateList":[{"ContentId":contentId,"SeqMediaId":seqId}],
@@ -864,19 +894,9 @@ $(function(){
         $('.shade', parent.document).show();
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           alert("撤回节目请求已发送");
-//        var _data={"DeviceId":deviceId,
-//                  "MobileClass":"Chrome",
-//                  "UserId":userId,
-//                  "PCDType":"3",
-//                  "PageSize":pageSize,
-//                  "Page":current_page,
-//                  "FlagFlow":"0",
-//                  "ChannelId":"0",
-//                  "SeqMediaId":contentId
-//      };
-//      getZj_jmList(_data);//重新加载节目列表
+          getZj_jmList(_data);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }
@@ -903,8 +923,7 @@ $(function(){
     }
   })
   function del_jm(contentId,contentSeqId){
-    var datas={"DeviceId":deviceId,
-               "MobileClass":"Chrome",
+    var datas={"MobileClass":"Chrome",
                "PCDType":"3",
                "UserId":userId,
                "ContentIds":contentId,
@@ -918,19 +937,9 @@ $(function(){
         $('.shade', parent.document).show();
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           alert("节目删除成功");
-//        var _data={"DeviceId":deviceId,
-//                  "MobileClass":"Chrome",
-//                  "UserId":userId,
-//                  "PCDType":"3",
-//                  "PageSize":pageSize,
-//                  "Page":current_page,
-//                  "FlagFlow":"0",
-//                  "ChannelId":"0",
-//                  "SeqMediaId":contentId
-//      };
-//      getZj_jmList(_data);//重新加载节目列表
+          getZj_jmList(_data);//重新加载节目列表
         }else{
           alert(resultData.Message);
         }

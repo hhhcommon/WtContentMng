@@ -36,17 +36,19 @@ $(function(){
     $(".phone_pic1").attr("src",resultData.Result.ContentImg);
     $(".dcr_jmcontent1 img").attr("src",resultData.Result.ContentImg);
     $(".dcr_jmcontent2 h3").html(resultData.Result.ContentName);
-    if(resultData.Result.ContentPubChannels!=null){
-      $(".h3span").html("("+resultData.Result.ContentPubChannels[0].FlowFlagState+")");
-    }
-    $(".comZj").html("《"+resultData.Result.ContentSeqName+"》");
-    if(resultData.Result.ContentKeyWords!=null){
-      for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
-        var newli='<li class="newli"><span class="newspan">'+resultData.Result.ContentKeyWords[i].TagName+'</span></li>';
-        $(".tags").append(newli);
+    $(".czj").html("<li class='czj1 fl'>《"+resultData.Result.ContentSeqName+"》</li>");
+    if(resultData.Result.ContentKeyWords){
+      if(resultData.Result.ContentKeyWords[i]){
+        for(var i=0;i<resultData.Result.ContentKeyWords.length;i++){
+          var newli='<li class="newli"><span class="newspan">'+resultData.Result.ContentKeyWords[i].TagName+'</span></li>';
+          $(".tags").append(newli);
+        }
+      }else{
+        var newli='<li>暂无</li>';
+        $(".tg1").append(newli);
       }
     }
-    $(".ctime").html(resultData.Result.CTime);
+    $(".cctimes").html(resultData.Result.CTime);
     $(".dcr_jmdesc .dcr_jmdesc_p1").html(resultData.Result.ContentDesc?resultData.Result.ContentDesc:"暂无");
     $("#audio").attr({"src":resultData.Result.ContentPlay});
     getTime();//调用加载数据

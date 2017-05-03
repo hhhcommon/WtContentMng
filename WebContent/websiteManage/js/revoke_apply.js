@@ -3,13 +3,14 @@ $(function(){
   var rootPath=getRootPath();
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
+  var pageSize=10;//每页记录数
   var allCount=0;//总记录数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";
   
   var userId='0579efbaf9a9';//W003
-  var applyflowflag='2';//2待撤回
+  var applyflowflag='1';//1待审核
   
   /*日期处理--日历插件*/
   $("#time .input-daterange").datepicker({keyboardNavigation:!1,forceParse:!1,autoclose:!0});
@@ -85,7 +86,7 @@ $(function(){
     data.UserId=userId;
     data.ApplyFlowFlag=applyflowflag;
     data.ReFlowFlag="0";
-    data.PageSize="10";
+    data.PageSize=pageSize;
     data.Page=current_page;
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(optfy==2){//optfy=2选中具体筛选条件后翻页
@@ -134,7 +135,7 @@ $(function(){
     data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
-    data.PageSize="10";
+    data.PageSize=pageSize;
     data.Page=current_page;
     data.ApplyFlowFlag=applyflowflag;
     data.ReFlowFlag="0";
@@ -240,7 +241,7 @@ $(function(){
     data.UserId=userId;
     data.ApplyFlowFlag=applyflowflag;
     data.ReFlowFlag="0";
-    data.PageSize="10";
+    data.PageSize=pageSize;
     current_page=1;
     data.Page=current_page;
     searchWord=$.trim($(".ri_top_li2_inp").val());
@@ -263,7 +264,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载内容列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -273,14 +274,13 @@ $(function(){
         $(".opetype,.rto_play").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
           allCount=resultData.AllCount;
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载内容列表
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
         $(".fixed").show();
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
         $('.shade', parent.document).hide();
       },
@@ -356,7 +356,7 @@ $(function(){
     data.ReFlowFlag="0";
     current_page=1;
     data.Page=current_page;
-    data.PageSize="10";
+    data.PageSize=pageSize;
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
@@ -371,7 +371,7 @@ $(function(){
       cache:false,
       data:JSON.stringify(data),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载内容列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -381,14 +381,13 @@ $(function(){
         $(".opetype,.rto_play").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
           allCount=resultData.ResultInfo.AllCount;
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载内容列表
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
         $(".fixed").show();
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
@@ -660,7 +659,7 @@ $(function(){
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   })

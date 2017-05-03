@@ -585,7 +585,8 @@ $(function(){
           audioObj.title=resultData.ResultList[i].ContentName;
           audioObj.playUrl=resultData.ResultList[i].ContentPlayUrl;
           audioList.push(audioObj);
-          $(".rtc_listBox").eq(i).addClass("playurl");
+          $(".rtc_listBox").eq(i).addClass("playurl").attr("playurl",resultData.ResultList[i].ContentPlayUrl);
+          $(".rtc_listBox").eq(i).attr("playurlName",resultData.ResultList[i].ContentName);
         }
       }else{//加载专辑
         $(".sequ_num").eq(i).text((resultData.ResultList[i].MediaSize)?(resultData.ResultList[i].MediaSize+"个声音"):"0个声音");
@@ -678,7 +679,6 @@ $(function(){
     }else{//电台
       mediatype="RADIO";
     }
-    console.log(contentId,contenttxt,channelId,mediatype);
     $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
     $("body").css("overflow","hidden");
     $(".carousel_mask").removeClass("dis");
@@ -718,7 +718,7 @@ $(function(){
       dataType:"json",
       beforeSend:function(){
         $(".carouselImgMask").removeClass("dis");
-        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
+        $(".cm_footer").children("input[type='button']").attr("disabled","disabled").css("background","#ddd");
       },
       success:function(resultData){
         if(resultData.Success==true){
@@ -736,7 +736,7 @@ $(function(){
         }else{
           alert(resultData.err);
         }
-        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
+        $(".cm_footer").children("input[type='button']").removeAttr("disabled").css("background","#0077c7");
       },
       error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
@@ -766,7 +766,7 @@ $(function(){
               "ContentId":contentid,
               "ChannelId":channelid,
               "LoopSort":"0",
-              "ImgeUrl":imgurl
+              "ImageUrl":imgurl
     };
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
@@ -777,16 +777,16 @@ $(function(){
       contentType: false,
       dataType:"json",
       beforeSend:function(){
-        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
+        $(".cm_footer").children("input[type='button']").attr("disabled","disabled").css("background","#ddd");
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("设置轮播图成功");
           $(".carousel_mask").addClass("dis");
+          getLoopImages(data3);//重新加载轮播图列表
         }else{
           alert("设置轮播图失败");
         }
-        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
+        $(".cm_footer").children("input[type='button']").removeAttr("disabled").css("background","#0077c7");
       },
       error: function(jqXHR){
         alert("设置轮播图发生错误" + jqXHR.status);
@@ -892,14 +892,12 @@ $(function(){
       success:function(resultData){
         if(data1.Top=="1"){//设置置顶
           if(resultData.ReturnType=="1001"){
-            alert("置顶成功");
             getContentList(data);//再次加载内容列表
           }else{
             alert("置顶失败"); 
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
-            alert("取消置顶成功");
             getContentList(data);//再次加载内容列表
           }else{
             alert("取消置顶失败");
@@ -1084,13 +1082,14 @@ $(function(){
   function loadLoopImages(resultData){
     $(".lb_div5").html(" ");//每次加载之前都要清空
     for(var i=0;i<resultData.ResultList.length;i++){
-      var list='<div class="lbd_box" contentId='+resultData.ResultList[i].ContentId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
+      var list='<div class="lbd_box" contentId='+resultData.ResultList[i].ContentId+' mediaType='+resultData.ResultList[i].MediaType+' channelId='+resultData.ResultList[i].ChanneId+'>'+
                   '<div class="lbd_box1 fl">第'+(i+1)+'帧</div>'+
-                  '<div class="lbd_box22 fl">'+
+                  '<div class="lbd_box22 fl" id="lbdBox'+i+'">'+
                     '<div class="lbd_box2 fl">'+
                       '<span class="lbd_box4">替换图片</span>'+
                       '<img alt=""  class="lbd_box3"/>'+
                     '</div>'+
+                    '<input type="file" value='+resultData.ResultList[i].ContentLoopImg+'  id="replace_pic'+i+'" class="replace_pic" style="display:none;" accept="image/gif,image/jpg,image/png"/>'+
                     '<div class="replaceImgMask dis">'+
                       '<img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />'+
                     '</div>'+
@@ -1114,23 +1113,18 @@ $(function(){
   }
   
   //替换轮播图片
-  var _thisbox2="";
   $(document).on("click",".lbd_box2",function(){
-    debugger;
-    _thisbox2=$(this).index();
-    $(".replace_pic").click();
-    alert(_thisbox2);
+    var ii=$(this).parent(".lbd_box22").parent(".lbd_box").index();
+    $("#replace_pic"+ii).click();
+    $(".lb_div5").on("change","#replace_pic"+ii,function(){
+      replaceCarouselImg(ii);
+    })
   });
-  $(".replace_pic").change(function(_thisbox2){
-    debugger;
-    replaceCarouselImg(_thisbox2);
-  });
-  function replaceCarouselImg(_thisbox2){
-    debugger;
-    console.log(_thisbox2);
-    $(".replace_pic").attr("value"," ");
-    $(".newImg").remove();
-    var _this=$(".replace_pic");
+  
+  function replaceCarouselImg(ii){
+    $("#replace_pic"+ii).attr("value","");
+    $("#lbdBox"+ii).children(".newImg").remove();
+    var _this=$("#replace_pic"+ii);
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
     oMyForm.append("MobileClass", "Chrome");
@@ -1138,11 +1132,15 @@ $(function(){
     oMyForm.append("UserId", userId);
     oMyForm.append("SrcType", "1");
     oMyForm.append("Purpose", "3");
-    requestUpload(_this,oMyForm);//请求上传文件
+    replaceUpload(_this,oMyForm,ii);//请求上传文件
   }
   
   //请求上传文件
-  function requestUpload(_this,oMyForm){
+  function replaceUpload(_this,oMyForm,ii){
+    var _ts1=$(_this).siblings(".replaceImgMask");
+    var _tc=$(_this).siblings(".lbd_box2").children(".lbd_box3");
+    var _ts2=$(_this).siblings(".lbd_box2");
+    var _ts3=$(_this).siblings(".lbd_box2 img:last");
     $.ajax({
       url:rootPath+"common/uploadCM.do",
       type:"POST",
@@ -1152,22 +1150,21 @@ $(function(){
       contentType: false,
       dataType:"json",
       beforeSend:function(){
-        $(".replaceImgMask").removeClass("dis");
+        $(_ts1).removeClass("dis");
       },
       success:function(resultData){
         if(resultData.Success==true){
-          $(".replaceImgMask").addClass("dis");
-          $(".replace_pic").attr("value",resultData.FilePath);
-          if($(".lbd_box3").css("display")!="none"){
-            $(".lbd_box3").css({"display":"none"});
+          $("#replace_pic"+ii).attr("value",resultData.FilePath);
+          if($(_tc).css("display")!="none"){
+            $(_tc).css({"display":"none"});
           }
           var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
-          if($(".lbd_box2").children(".img").length>1){
-            $(".lbd_box2 img:last").replaceWith(newImg);
+          if($(_ts2).children("img").length>1){
+            $(_ts3).replaceWith(newImg);
           }else{
-            $(".lbd_box2").append(newImg);
+            $(_ts2).append(newImg);
           } 
-          saveReplace();//保存替换的轮播图
+          saveReplace(_ts1,ii);//保存替换的轮播图
         }else{
           alert(resultData.err);
         }
@@ -1176,55 +1173,56 @@ $(function(){
         alert("发生错误" + jqXHR.status);
       }
     });
-    var jqObj=$(".replace_pic");
-    jqObj.val("");
+    var jqObj=$("#replace_pic"+ii);
+    jqObj.attr(value,"");
     var domObj = jqObj[0];
     domObj.outerHTML = domObj.outerHTML;
     var newJqObj = jqObj.clone();
     jqObj.before(newJqObj);
     jqObj.remove();
-    $(".replace_pic").unbind().change(function (){
-      carouselImg();
+    $("#replace_pic"+ii).unbind().change(function (){
+      replaceCarouselImg(ii);
     });
   }
   //保存替换的轮播图
-  function saveReplace(){
-    alert("save");
-    return;
-    var contentid=$(".cm_content3").attr("contentId");
-    var mediatype=$(".cm_content3").attr("mediatype");
-    var channelid=$(".cm_content3").attr("channelid");
-    var imgurl=$(".upload_pic").attr("value");
+  function saveReplace(_ts1,ii){
+    var contentid,mediatype,channelid,imgurl;
+    $(".lbd_box").each(function(i){
+      if(i==ii){
+        contentid=$(this).attr("contentId");
+        mediatype=$(this).attr("mediatype");
+        channelid=$(this).attr("channelId");
+        imgurl=$(this).children(".lbd_box22").children("#replace_pic"+ii).attr("value");
+        return;
+      }
+    });
     var data5={"PCDType":"3",
               "UserId":userId,
               "MediaType":mediatype,
               "ContentId":contentid,
               "ChannelId":channelid,
               "LoopSort":"0",
-              "ImgeUrl":imgurl
-    };
+              "ImageUrl":imgurl
+  };
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
       type:"POST",
       data:JSON.stringify(data5),
       cache: false,
+      async:false,
       processData: false,
       contentType: false,
       dataType:"json",
-      beforeSend:function(){
-        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
-      },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("设置轮播图成功");
-          $(".carousel_mask").addClass("dis");
+          $(_ts1).addClass("dis");
+          getLoopImages(data3);//重新加载轮播图列表
         }else{
-          alert("设置轮播图失败");
+          alert("替换轮播图失败");
         }
-        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
       },
       error: function(jqXHR){
-        alert("设置轮播图发生错误" + jqXHR.status);
+        alert("替换轮播图发生错误" + jqXHR.status);
       }
     });
   }
@@ -1288,18 +1286,14 @@ $(function(){
       success: function(resultData){
         if(data4.LoopSort=="-1"){//上移
           if(resultData.ReturnType=="1001"){
-            alert();
             getLoopImages(data3);//重新加载轮播图列表
           }else{
-            alert("轮播图上移失败");
             alert(resultData.Message);
           }
         }else{//下移，-2
           if(resultData.ReturnType=="1001"){
-            alert("轮播图下移成功");
             getLoopImages(data3);//重新加载轮播图列表
           }else{
-            alert("轮播图下移失败");
             alert(resultData.Message);
           }
         }
@@ -1336,7 +1330,6 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("轮播图删除成功");
           getLoopImages(data3);//重新加载轮播图列表
         }else{
           alert(resultData.Message);
