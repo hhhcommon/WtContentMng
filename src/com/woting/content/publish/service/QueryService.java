@@ -1107,7 +1107,7 @@ public class QueryService {
 		if (ls!=null) {
 			List<Map<String, Object>> retLs = new ArrayList<>();
 			Map<String, Object> channelMap = new HashMap<>();
-			String assetIds = "";			
+			String assetIds = "";
 			for (Map<String, Object> m : ls) {
 				Map<String, Object> chm = new HashMap<>();
 				chm.put("FlowFlage", m.get("flowFlag"));
