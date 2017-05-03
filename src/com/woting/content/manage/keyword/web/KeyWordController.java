@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -136,11 +138,10 @@ public class KeyWordController {
 			if (mediatype.equals("1")) {
 				String channelId = m.get("ChannelIds") + "";
 				if (StringUtils.isNullOrEmptyOrSpace(channelId) || channelId.toLowerCase().equals("null")) {
-					map.put("ReturnType", "1014");
-					map.put("Message", "无栏目Id");
-					return map;
+				    ls = keyWordProService.getKeyWordList(tagType, userid, null, tagsize);
+				} else {
+				    ls = keyWordProService.getKeyWordList(tagType, userid, channelId, tagsize);
 				}
-				ls = keyWordProService.getKeyWordList(tagType, userid, channelId, tagsize);
 			}
 			if (mediatype.equals("2")) {
 				String seqMediaId = m.get("SeqMediaId") + "";

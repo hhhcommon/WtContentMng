@@ -624,7 +624,7 @@ public class PublishController {
             } catch (InterruptedException e) {}
         }
     }
-    
+
     @RequestMapping(value = "/content/sortLoopImage.do")
     @ResponseBody
     public Map<String, Object> updateLoopSortInChannel(HttpServletRequest request) {

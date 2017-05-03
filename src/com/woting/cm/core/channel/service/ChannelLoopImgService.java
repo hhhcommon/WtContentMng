@@ -203,9 +203,7 @@ public class ChannelLoopImgService {
      */
 	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int loopSort) {
     	if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imageUrl)) return false;
-
     	Map<String, Object> newData=new HashMap<String, Object>();
-	    
     	if (loopSort>0) {
     	    newData.put("loopSort", loopSort);
     	    newData.put("setType", "withSort");
