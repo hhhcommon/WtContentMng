@@ -612,19 +612,58 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   position: relative;
   top: calc(50% - 11px);
 }
+.lbd_box22{
+  width: 240px;
+  height: 135px;
+  position: relative;
+  margin: 0px 35px;
+  overflow: hidden;
+}
 .lbd_box2{
   width: 240px;
   height: 135px;
   cursor: pointer;
   position: relative;
   top: calc(50% - 68px);
-  margin: 0px 35px;
+  
+}
+.lbd_box2:hover span{ 
+  display: block;
+  position: absolute;
+  top: 2px;
+  left:2px;
+  color: #FFF;
+  width: 237px;
+  z-index: 10;
+  height: 36px;
+  text-align: center;
+  cursor: pointer;
+  line-height:36px; 
+  background:#000;
+  filter:alpha(opacity=60);
+  -moz-opacity:0.5;opacity: 0.5;
+}
+.replaceImgMask{
+  width: 238px;
+  height: 133px;
+  position: absolute;
+  top: 1px;
+  left:1px;
+  background: rgba(0,0,0,0.5);
+}
+.replaceImgMask .carouselImg{
+  width: 40px;
+  height: 40px;
+  position: relative;
+  top: 40px;
+  left: 90px;
+  background-size: 100% 100%;
 }
 .lbd_box3{
   width: 240px;
-  height: 100px;
+  height: 135px;
   border: 1px solid #dedede;
-  margin: 15px 0px 5px;
+  margin: 0px 0px 5px;
   display: block;
 }
 .lbd_box4{
@@ -721,7 +760,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   line-height: 40px;
 }
 .cm_content4{
-  height: 150px;
+  height:auto;
   /*border: 1px solid red;*/
   overflow: hidden;
   margin-top:15px;
@@ -732,23 +771,33 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   line-height: 150px;
 }
 .cm_content6{
-  padding: 0px 10px;
-  color: #000;
-  font-size: 16px;
-  background: #0077c7;
-  margin: 63px 25px;
-  cursor: pointer;
-  color: #fff;
+  display: none;
+}
+.cm_content7:hover span{ 
+  display: block;
+  position: absolute;
+  top: 130px;
+  left: 70px;
+  color: #FFF;
+  width: 237px;
+  z-index: 10;
+  height: 36px;
+  text-align: center;
+  line-height:36px; 
+  background:#000;
+  filter:alpha(opacity=60);
+  -moz-opacity:0.5;opacity: 0.5;
 }
 .cm_content7{
-  width:200px;
-  height:120px;
+  width:240px;
+  height:150px;
   margin:15px 0px;
   border:1px solid #dedede;
+  cursor: pointer;
 }
 .carouselImgMask{
-  width:200px;
-  height:120px;
+  width:240px;
+  height:150px;
   position: relative;
   top:15px;
   left:48px;
@@ -758,11 +807,11 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   width: 40px;
   height: 40px;
   position: relative;
-  top:-115px;
-  left:70px;
+  top:-130px;
+  left:90px;
   background-size: 100% 100%;
 }
-.defaultImg{
+.defaultImg,.newImg{
   width:100%;
   height:100%;
   background-size:100% 100%;
@@ -770,9 +819,8 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 .cm_footer{
   overflow: hidden;
   height: 30px;
-  margin: 20px auto;
+  margin: 0px auto;
   position: relative;
-  width: 200px;
 }
 .cmf_save{
   height: 30px;
@@ -781,15 +829,8 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   background: #0077c7;
   border-radius: 5px;
   color: #fff;
-}
-.cmf_cancel{
-  margin-left: 20px;
-  height: 30px;
-  padding: 0px 6px;
-  border: none;
-  background: #ccc;
-  border-radius: 5px;
-  color: #000;
+  display: block;
+  margin: 0px auto;
 }
 /*撤回原因样式*/
 .nopass_masker{
@@ -997,24 +1038,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
               <div class="attr" id="source">
                 <div class="attrKey">来源 :</div>
                 <div class="attrValues">
-                  <ul class="av-gather av_ul">
-                    <!--<li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">蜻蜓</a>
-                    </li>
-                    <li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">考拉</a>
-                    </li>
-                    <li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">喜马拉雅</a>
-                    </li>
-                    <li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">我听</a>
-                    </li>-->
-                  </ul>
+                  <ul class="av-gather av_ul"></ul>
                 </div>
                 <div class="btns">
                   <span class="btns_sub">确定</span>
@@ -1173,7 +1197,9 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
                 <div class="lb_div2 fl rth_txt">内容名称</div> 
                 <div class="lb_div3 fl rth_txt">操作</div> 
               </div> 
+              <input type="file" value="" class="replace_pic" style="display:none;" />;
               <div class="lb_div5">
+                <div style="text-align: center;line-height: 50px;margin-top: 10px;font-size:16px;color:#000;">请先选择具体的栏目</div>
                 <!--<div class="lbd_box">
                   <div class="lbd_box1 fl">第1帧</div>
                   <div class="lbd_box2 fl">
@@ -1253,17 +1279,16 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
       <div class="cm_content4">
         <div class="cm_content5 fl">图片：</div>
         <div class="cm_content7 fl">
+          <span class="cm_content6">上传图片</span>
           <img class="defaultImg" alt="" src="http://wotingfm.com:908/CM/resources/images/default.png"/>
         </div>
         <div class="carouselImgMask dis">
           <img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />
         </div>
         <input type="file" value="" class="upload_pic" style="display:none;" />
-        <div class="cm_content6 fl">上传图片</div>
       </div>
       <div class="cm_footer">
-        <input type="button" class="cmf_save fl" value="保存设置"/>
-        <input type="button" class="cmf_cancel fl" value="取消设置"/>
+        <input type="button" class="cmf_save" value="保存设置"/>
       </div>
     </div>
   </div>
