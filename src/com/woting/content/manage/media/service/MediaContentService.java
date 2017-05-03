@@ -112,15 +112,15 @@ public class MediaContentService {
 		} else {
 			po = new PersonPo();
 			po.setId(userid);
-			po.setPortrait(contentimg);
+			if (user.getPortraitBig()!=null && user.getPortraitBig().length()>5)
+				po.setPortrait(user.getPortraitBig());
 			if (user.getUserName() != null) {
 				po.setpName(user.getUserName());
 			} else if (user.getNickName() != null) {
 				po.setpName(user.getNickName());
 			} else if (user.getLoginName() != null) {
 				po.setpName(user.getLoginName());
-			} else
-				return null;
+			} else return null;
 			po.setIsVerified(1);
 			if (user.getDescn() != null) {
 				po.setDescn(user.getDescn());
@@ -133,7 +133,7 @@ public class MediaContentService {
 			PersonRefPo poref = new PersonRefPo();
 			poref.setId(SequenceUUID.getPureUUID());
 			poref.setRefName("主播-节目");
-			poref.setPersonId(userid);
+			poref.setPersonId(po.getId());
 			poref.setResTableName("wt_MediaAsset");
 			poref.setResId(ma.getId());
 			poref.setcTime(ma.getCTime());

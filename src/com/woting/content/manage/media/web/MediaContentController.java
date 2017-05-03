@@ -289,8 +289,7 @@ public class MediaContentController {
 			if (StringUtils.isNullOrEmptyOrSpace(flowFlag) || flowFlag.toLowerCase().equals("null")) {
 				flowFlag = "1";
 			}
-			map = mediaContentService.addMediaAssetInfo(userId, contentname, contentimg, seqmediaId, timelong, contenturi, tags,
-					membertypes, contentdesc, pubTime, flowFlag);
+			map = mediaContentService.addMediaAssetInfo(userId, contentname, contentimg, seqmediaId, timelong, contenturi, tags, membertypes, contentdesc, pubTime, flowFlag);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
