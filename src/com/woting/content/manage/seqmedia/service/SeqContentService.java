@@ -1,15 +1,15 @@
 package com.woting.content.manage.seqmedia.service;
 
-import java.nio.channels.ScatteringByteChannel;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
-import com.greenpineyu.fel.parser.FelParser.conditionalOrExpression_return;
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -72,10 +72,8 @@ public class SeqContentService {
 				else
 					return null;
 			} else {
-				List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-				list = mediaService.getSmaListByPubId(userid, flowflag, channelid, page, pageSize);
-				if (list != null && list.size() > 0) {
-					retM.put("List", list);
+				retM = mediaService.getSmaListByPubId(userid, flowflag, channelid, page, pageSize);
+				if (retM != null && retM.size() > 0) {
 					return retM;
 				} else return null;
 			}
