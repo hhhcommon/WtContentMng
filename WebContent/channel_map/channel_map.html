@@ -184,14 +184,33 @@ body{overflow: hidden;height:100%;padding:0px;}
   padding: 10px 10px 10px 14px;
   font-size: 16px;
 }
-progress{
-  border: 1px solid #0077C7;  
-  background-color:#E6E6E6;
-  color: #0077C7; /*IE10*/
-}
-progress::-moz-progress-bar { background: #0077C7; }
-progress::-webkit-progress-bar { background: #e6e6e6; }
-progress::-webkit-progress-value  { background: #0077C7; }
+.progressbar{ 
+  background-color:#e6e6e6; 
+  color:#222; 
+  height:14px; 
+  width:120px; 
+  border:1px solid #bbb; 
+  text-align:center; 
+  position:relative; 
+} 
+.progressbar .bar{ 
+  background-color:#0077C7; 
+  height:14px; 
+  width:0; 
+  position:absolute; 
+  left:0; 
+  top:0; 
+  z-index:10; 
+} 
+.progressbar .text{ 
+  height:14px; 
+  position:absolute; 
+  left:0; 
+  top:0; 
+  width:100%; 
+  line-height:14px; 
+  z-index:100; 
+} 
 </style>
 <body>
 <div class="wrapper wrapper-content" style="height:100%;">
@@ -486,7 +505,7 @@ $(function(){
     });
   }
   
-  var list=[];//存放对应的id
+  var list=[];//存放对应平台的id
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
     var _url=rootPath+"common/getCCateRefs.do";
@@ -652,7 +671,7 @@ $(function(){
         }
         mapArr.push($(this).parent("td").next().text());
       }
-    });
+    }); 
     var length=$(obj).length;
     if(mapArr.length<=0){
       alert("删除前需要先选中映射关系");
@@ -702,9 +721,11 @@ $(function(){
     $(".mask").addClass("dis");
     $("#modal_tree").html(" ");
     list=[];//清空
+    conIdList=[];//清空
   });
 
   /*s--进度条插件初始化*/
+  var st=0;
   function loadProgress(id){
     if($(".wt_content").hasClass("dis")){//删除其他平台
       obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
@@ -713,6 +734,8 @@ $(function(){
       applyType=2;
       obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
     }
+    st=$(obj).parent("td").parent("tr").children("td:last-child").children(".progressbar").children(".text").text();
+    st=st.split("%")[0];
     var per_data={"PerId":id};
     $.ajax({
       type:"POST",    
@@ -722,24 +745,59 @@ $(function(){
       data:JSON.stringify(per_data),
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-          if(returnData.PerNum<"100"){
-            return;
-          }else{
-            var ipt='<progress value='+returnData.PerNum+' max="100"></progress>'; 
+          st=returnData.PerNum;
+          if(st<100){
+            var pro='<div class="progressbar">'+
+                      '<div class="text">'+st+'%</div>'+
+                      '<div class="bar" style="width:'+st+'%"></div>'+
+                    '</div>';
             $(obj).each(function(){
               var id=$(this).parent("td").next("td");
               id=$(id).text();
               if(id==per_data.PerId){
-                $(this).parent("td").parent("tr").children("td:last-child").html(ipt);
+                $(this).parent("td").parent("tr").children("td:last-child").html(pro);
                 perId=per_data.PerId;
-//              window.setInterval(load_progress(perId),1000);
-                window.setInterval(loadProgress(perId),1000);
+                window.setInterval(loadProgress(perId),5000);
+              }
+            });        
+          }else{
+            $(obj).each(function(){
+              var id=$(this).parent("td").next("td");
+              id=$(id).text();
+              if(id==per_data.PerId){
+                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").children(".text").text("0");
+//                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").hide();
+                $(this).parent("td").parent("tr").children("td:last-child").html(" ");
               }
             });
           }
         }else{
-          alert(returnData.Message);
-          return;
+          if(st<100){
+            st++;
+            var pro='<div class="progressbar">'+
+                      '<div class="text">'+st+'%</div>'+
+                      '<div class="bar" style="width:'+st+'%"></div>'+
+                    '</div>';
+            $(obj).each(function(){
+              var id=$(this).parent("td").next("td");
+              id=$(id).text();
+              if(id==per_data.PerId){
+                $(this).parent("td").parent("tr").children("td:last-child").html(pro);
+                perId=per_data.PerId;
+                window.setInterval(loadProgress(perId),5000);
+              }
+            });        
+          }else{
+            $(obj).each(function(){
+              var id=$(this).parent("td").next("td");
+              id=$(id).text();
+              if(id==per_data.PerId){
+                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").children(".text").text("0");
+//                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").hide();
+                $(this).parent("td").parent("tr").children("td:last-child").html(" ");
+              }
+            });
+          }
         }
       },
       error:function(jqXHR){
@@ -747,50 +805,6 @@ $(function(){
       }
     });
   }
-  
-  function load_progress(id){
-    alert(id);
-    if($(".wt_content").hasClass("dis")){//删除其他平台
-      obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
-      applyType=1;
-    }else{//删除我听
-      applyType=2;
-      obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
-    }
-    var per_data={"PerId":id};
-    $.ajax({
-      type:"POST",    
-      url:rootPath+"common/getChannelMapRefPer.do",
-      dataType:"json",
-      async:true,
-      data:JSON.stringify(per_data),
-      success: function(returnData){
-        if(returnData.ReturnType=="1001"){
-          if(returnData.PerNum>="100"){
-            return;
-          }else{
-            var ipt='<progress value='+returnData.PerNum+' max="100"></progress>'; 
-            $(obj).each(function(){
-              var id=$(this).parent("td").next("td");
-              id=$(id).text();
-              if(id==per_data.PerId){
-                $(this).parent("td").parent("tr").children("td:last-child").html(ipt);
-                perId=per_data.PerId;
-                window.setInterval(loadProgress(perId),1000);
-                return;
-              }
-            });
-          }
-        }else{
-          alert(returnData.Message);
-        }
-      },
-      error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
-  }
-  
 });
 </script>
 </html>
