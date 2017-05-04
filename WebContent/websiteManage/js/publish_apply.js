@@ -3,6 +3,7 @@ $(function(){
   var rootPath=getRootPath();
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
+  var pageSize=10;//每页记录数
   var allCount=0;//总记录数
   var optfy=1;//optfy=1未选中具体筛选条件前翻页,optfy=2选中具体筛选条件后翻页
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
@@ -84,7 +85,7 @@ $(function(){
     data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=contentflowflag;
-    data.PageSize="10";
+    data.PageSize=pageSize;
     data.Page=current_page;
     searchWord=$.trim($(".ri_top_li2_inp").val());
     if(optfy==2){//optfy=2选中具体筛选条件后翻页
@@ -133,7 +134,7 @@ $(function(){
     data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
-    data.PageSize="10";
+    data.PageSize=pageSize;
     data.Page=current_page;
     data.ContentFlowFlag=contentflowflag;
     if($(".new_cate li").size()>"0"){
@@ -237,7 +238,7 @@ $(function(){
     data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=contentflowflag;
-    data.PageSize="10";
+    data.PageSize=pageSize;
     current_page=1;
     data.Page=current_page;
     searchWord=$.trim($(".ri_top_li2_inp").val());
@@ -260,7 +261,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载内容列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -271,14 +272,13 @@ $(function(){
         $(".rto_play").css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
           allCount=resultData.AllCount;
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载来源的筛选条件
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
         $(".fixed").show();
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
         $('.shade', parent.document).hide();
       },
@@ -355,7 +355,7 @@ $(function(){
     data.ContentFlowFlag=contentflowflag;
     current_page=1;
     data.Page=current_page;
-    data.PageSize="10";
+    data.PageSize=pageSize;
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
     data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
@@ -370,7 +370,7 @@ $(function(){
       cache:false,
       data:JSON.stringify(data),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载内容列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -380,14 +380,13 @@ $(function(){
         $(".opetype,.rto_play").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
           allCount=resultData.AllCount;
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadContentList(resultData);//加载内容列表
         }else{
-          $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
         $(".fixed").show();
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
@@ -510,6 +509,8 @@ $(function(){
         contentList.Id=$(this).attr("contentId");
         if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
+        }else{
+          contentList.MediaType="SEQU";
         }
         contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
         contentIds.push(contentList);
@@ -599,7 +600,7 @@ $(function(){
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }     
     });
   })

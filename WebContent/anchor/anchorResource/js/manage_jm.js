@@ -9,7 +9,7 @@ $(function(){
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
   var allCount=0;//总记录数
-  var pageSize=2;//每页条数
+  var pageSize=10;//每页条数
   var flagflow=0;//节目的状态
 
   /*s--获取筛选条件*/
@@ -810,7 +810,7 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           pubEditJm(_data);
         }else{
           alert(resultData.Message);

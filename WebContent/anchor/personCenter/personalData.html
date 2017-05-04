@@ -84,7 +84,7 @@ input{padding:0px 4px;}
   padding-left: 0px;
   padding-right: 0px;
   float: left;
-  line-height: 37px;
+  line-height:20px;
 }
 .control-label .ast {
   color: #ffa634;
@@ -98,17 +98,18 @@ input{padding:0px 4px;}
 .signature,.info,.introduction{
   width:calc(100% - 8px);
   min-height:50px;
+  display: block;
   border: 1px solid #dedede;
   resize:none;
 }
 .birthday_container{
   width:100%;
-  min-height:37px;
+  min-height:35px;
   overflow: hidden;
 }
 .btn-group{
   float: left;
-  height: 37px;
+  height: 35px;
   margin-right: 10px;
 }
 .year,.month,.day{
@@ -124,7 +125,7 @@ input{padding:0px 4px;}
 }
 .sex{
   width:100%;
-  height:37px;
+  height:35px;
   overflow: hidden;
 }
 .male_div,.female_div,.secret_div{
@@ -430,14 +431,11 @@ $(function(){
 $(function(){
   var rootPath=getRootPath();
   
-  var uid=$(".login_user span",parent.document).attr("userid");
-  var deviceId="";
+  var userId=$(".login_user span",parent.document).attr("userid");
   var pcdType=3;
-  
   var data1={};
-  data1.IMEI=deviceId;
   data1.PCDType=pcdType;
-  data1.UserId=uid;
+  data1.UserId=userId;
   getUserInfo(data1);//得到个人资料数据
   function getUserInfo(data1){
     $.ajax({
@@ -525,10 +523,9 @@ $(function(){
   $(".upl_img").change(function(){
     var oMyForm = new FormData();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
-    oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
     oMyForm.append("MobileClass","Chrome");
-    oMyForm.append("PCDType","3");
-    oMyForm.append("UserId","123");
+    oMyForm.append("PCDType",pcdType);
+    oMyForm.append("UserId",userId);
     oMyForm.append("Purpose","1");
     oMyForm.append("SrcType","1");
     var filePath=$(this).val();
@@ -577,7 +574,6 @@ $(function(){
   /*s--点击保存设置*/
   $(".saveSet").on("click",function(){
     var data2={};
-    data2.IMEI=deviceId;
     data2.PCDType=pcdType;
     data2.NickName=$.trim($(".nickname").val());
     $("input[name='sexx']").each(function(){//性别id--待定
