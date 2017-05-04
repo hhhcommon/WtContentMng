@@ -136,7 +136,9 @@ public class KeyWordController {
 				ls = keyWordProService.getKeyWordList(tagType, userid, tagsize);
 			}
 			if (mediatype.equals("1")) {
-				String channelId = m.get("ChannelIds") + "";
+			    // 保留此参数  现在不做任何处理
+			    String channelId=null;
+//				String channelId = m.get("ChannelIds") + "";
 				if (StringUtils.isNullOrEmptyOrSpace(channelId) || channelId.toLowerCase().equals("null")) {
 				    ls = keyWordProService.getKeyWordList(tagType, userid, null, tagsize);
 				} else {

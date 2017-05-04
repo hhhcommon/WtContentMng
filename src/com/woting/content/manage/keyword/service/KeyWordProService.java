@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;
@@ -27,7 +29,7 @@ public class KeyWordProService {
 		}
 		return null;
 	}
-	
+
 	public List<Map<String, Object>> getKeyWordListBySeqMedia(String seqmediaid, String tagType, String userId, String tagsize) {
 		ChannelAssetPo cha = channelContentService.getChannelAssetByAssetIdAndPubId(seqmediaid, userId, "wt_SeqMediaAsset");
 		List<KeyWordPo> kwlist = keyWordBaseService.getRandKeyWordByOwner(tagType, userId, cha.getChannelId(), tagsize);
