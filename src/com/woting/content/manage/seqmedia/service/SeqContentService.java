@@ -513,6 +513,8 @@ public class SeqContentService {
 							List<ChannelAssetPo> chas = mediaService.getCHAListByAssetId("'" + contentId + "'", "wt_SeqMediaAsset");
 							if (chas != null && chas.size() > 0) {
 								for (ChannelAssetPo channelAssetPo : chas) {
+								    channelAssetPo.setFlowFlag(4);
+								    mediaService.updateCha(channelAssetPo);
 									insertChannelAssetProgress(channelAssetPo.getId(), 2, descn);
 									retMap.put("ReturnType", "1001");
 									retMap.put("Message", "申请撤回成功");
