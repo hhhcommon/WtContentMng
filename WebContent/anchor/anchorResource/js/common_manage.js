@@ -219,12 +219,12 @@ $(document).on("click",".trig_item_li",function(){//选中一级栏目里面的�
   if($(".all").is(':hidden')) $(".all").show();
 });
 
-$(function(){
+//$(function(){
   /*底部footer显示/隐藏*/
   $(window).on("scroll", function(){ 
     var sTop = $(window).scrollTop();  
     var sTop = parseInt(sTop);  
-    if (sTop >= 10){ 
+    if(sTop >= 10){ 
       if(!$('.footer', parent.document).is(":visible")){ 
         $('.wrapper', parent.document).css({"height":"64%"});
         $('.footer', parent.document).show();
@@ -238,11 +238,12 @@ $(function(){
   }); 
   //点击footer_hide，footer隐藏
   $('.footer_hide', parent.document).on("click",function(){
-    $('.wrapper', parent.document).css({"height":"84%"});
-    $('.footer', parent.document).hide();
+//  $('.wrapper', parent.document).css({"height":"84%"});
+    $('.wrapper').css({"height":"84%"});
+    $('.footer').hide();
     $(window).scrollTop("0px");
   });
-});
+//});
 //销毁obj对象的key-value
 function destroy(obj){
   for(var key in obj){//清空对象
@@ -535,6 +536,9 @@ $(function(){
         }  
       },
       //表单提交前进行验证
+      beforeSend: function(){
+        $(".btn_group input[type='button']").attr("disabled","disabled").css("background","#ccc");
+      },
       success: function (resultData){
         if(resultData.Success==true){
           $(".audio").attr("src",resultData.FilePath);
@@ -545,6 +549,7 @@ $(function(){
         }else{
           alert(resultData.err);
         }
+        $(".btn_group input[type='button']").removeAttr("disabled").css("background","#ffa634");
       },
       error: function(XHR){
         alert("发生错误" + jqXHR.status);

@@ -76,7 +76,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 .nav_con{
   width:calc(100% - 205px);
   height:auto;
-  min-width:870px;
+  /*min-width:870px;*/
   border-left:2px solid #dedede;
 }
 .nav_cons{
@@ -263,23 +263,12 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   text-align: center;
 }
 .rth_txt1{
-  width:100px;
-  margin: 10px 310px 0px 0px;
+  width:52%;  
+  margin: 10px 0px 0px 0px;
+  text-indent: -38%;
 }
-.rth_txt2{
-  width:106px;
-  border-left:2px solid #d8d8d8;
-}
-.rth_txt3{
-  width:106px;  
-  border-left:2px solid #d8d8d8;
-}
-.rth_txt4{
-  width:106px;
-  border-left:2px solid #d8d8d8;
-}
-.rth_txt5{
-  width:106px;
+.rth_txt2,.rth_txt3,.rth_txt4,.rth_txt5{
+  width:12%;
   border-left:2px solid #d8d8d8;
 }
 .ri_top3_con{
@@ -310,8 +299,30 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   height:100%;
   background-size:100% 100%;
 }
+.btn_player{
+  position: relative;
+  width: 80px;
+  height: 80px;
+  top: -79px;
+  left: -1px;
+  background: rgba(0,0,0,0.2);
+}
+.icon{
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  left: 21%;
+  top: 29%;
+  background: url("img/btn.png") 0px -270px;
+}
+.btn_player1{
+  background-position: 0 -315px;
+}
+.btn_player2{
+  background-position: 0 -610px;
+}
 .rtcl_con{
-  width:286px;
+  width:calc(52% - 130px);
   height:100%;
   float: left;
   color:rgb(173,172,172);
@@ -332,7 +343,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 .rtcl_con_channel1s{
   overflow: hidden;
   position: relative;
-  width:106px;
+  width:12%;
   height:80px;
   margin:15px 0px;
 }
@@ -353,17 +364,17 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   color: #000;
 }
 .rtcl_con_desc2{
-  width:199px;
+  width:calc(100% - 60px);
 }
 .source_form,.audio_time{
   color: #000;
   text-align: center;
   position: relative;
   top: 15px;
-  width: 106px;
+  width:12%;
 }
 .opetype1{
-  width: 104px;
+  width:12%;
   color: #0077C7;
   height: 80px;
   margin:15px 0px;
@@ -504,7 +515,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 .trig_item{
   display: block;
   float: left;
-  margin-left:16px;
+  margin-right:16px;
   height:40px;
   line-height: 40px;
   white-space: nowrap;
@@ -590,19 +601,19 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   border: 1px solid #dedede;
 }
 .lb_div1{
-  width:360px;
+  width:40%;
 }
 .lb_div2{
-  width:280px;
+  width:40%;
   border-left:2px solid #dedede;
 }
 .lb_div3{
-  width:194px;
+  width:20%;
   border-left:2px solid #dedede;
 }
 .lbd_box{
   height:200px;
-  padding:35px 0px;
+  padding:32px 0px;
   border-bottom: 1px solid #dedede;
 }
 .lbd_box1{
@@ -612,19 +623,58 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   position: relative;
   top: calc(50% - 11px);
 }
+.lbd_box22{
+  width:calc(40% - 115px);
+  height: 135px;
+  position: relative;
+  margin: 0px 45px 0px 15px;
+  overflow: hidden;
+}
 .lbd_box2{
-  width: 240px;
+  width:100%;
   height: 135px;
   cursor: pointer;
   position: relative;
   top: calc(50% - 68px);
-  margin: 0px 35px;
+  
+}
+.lbd_box2:hover span{ 
+  display: block;
+  position: absolute;
+  top:0px;
+  left:0px;
+  color: #FFF;
+  width:100%;
+  z-index: 10;
+  height: 36px;
+  text-align: center;
+  cursor: pointer;
+  line-height:36px; 
+  background:#000;
+  filter:alpha(opacity=60);
+  -moz-opacity:0.5;opacity: 0.5;
+}
+.replaceImgMask{
+  width:100%;
+  height: 133px;
+  position: absolute;
+  top: 1px;
+  left:0px;
+  background: rgba(0,0,0,0.5);
+}
+.replaceImgMask .carouselImg{
+  width: 40px;
+  height: 40px;
+  position: relative;
+  top: 40px;
+  left: 90px;
+  background-size: 100% 100%;
 }
 .lbd_box3{
-  width: 240px;
-  height: 100px;
+  width:100%;
+  height: 135px;
   border: 1px solid #dedede;
-  margin: 15px 0px 5px;
+  margin: 0px 0px 5px;
   display: block;
 }
 .lbd_box4{
@@ -636,7 +686,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   text-align: center;
 }
 .lbd_box5{
-  width: 285px;
+  width:40%;
   font-size: 16px;
   color: #000;
   text-align: center;
@@ -645,7 +695,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   top: calc(50% - 12px);
 }
 .lbd_box6{
-  width: 188px;
+  width:20%;
   text-align: center;
   position: relative;
   top: calc(50% - 38px);
@@ -712,7 +762,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .cm_content1{
   height: 40px;
-  /*border: 1px solid red;*/
   overflow: hidden;
 }
 .cm_content2,.cm_content3{
@@ -720,11 +769,15 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   color: #000;
   line-height: 40px;
 }
-.cm_content4{
-  height: 150px;
-  /*border: 1px solid red;*/
+.cm_content3{
+  width: calc(100% - 90px);
   overflow: hidden;
-  margin-top:15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cm_content4{
+  height:auto;
+  overflow: hidden;
 }
 .cm_content5{
   font-size: 16px;
@@ -732,23 +785,33 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   line-height: 150px;
 }
 .cm_content6{
-  padding: 0px 10px;
-  color: #000;
-  font-size: 16px;
-  background: #0077c7;
-  margin: 63px 25px;
-  cursor: pointer;
-  color: #fff;
+  display: none;
+}
+.cm_content7:hover span{ 
+  display: block;
+  position: absolute;
+  top: 115px;
+  left: 69px;
+  color: #FFF;
+  width: 238px;
+  z-index: 10;
+  height: 36px;
+  text-align: center;
+  line-height:36px; 
+  background:#000;
+  filter:alpha(opacity=60);
+  -moz-opacity:0.5;opacity: 0.5;
 }
 .cm_content7{
-  width:200px;
-  height:120px;
+  width:240px;
+  height:150px;
   margin:15px 0px;
   border:1px solid #dedede;
+  cursor: pointer;
 }
 .carouselImgMask{
-  width:200px;
-  height:120px;
+  width:240px;
+  height:150px;
   position: relative;
   top:15px;
   left:48px;
@@ -758,21 +821,21 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   width: 40px;
   height: 40px;
   position: relative;
-  top:-115px;
-  left:70px;
+  top:-130px;
+  left:90px;
   background-size: 100% 100%;
 }
-.defaultImg{
+.defaultImg,.newImg{
   width:100%;
   height:100%;
   background-size:100% 100%;
+  border:1px solid #dedede;
 }
 .cm_footer{
   overflow: hidden;
   height: 30px;
-  margin: 20px auto;
+  margin: 0px auto;
   position: relative;
-  width: 200px;
 }
 .cmf_save{
   height: 30px;
@@ -781,15 +844,8 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   background: #0077c7;
   border-radius: 5px;
   color: #fff;
-}
-.cmf_cancel{
-  margin-left: 20px;
-  height: 30px;
-  padding: 0px 6px;
-  border: none;
-  background: #ccc;
-  border-radius: 5px;
-  color: #000;
+  display: block;
+  margin: 0px auto;
 }
 /*撤回原因样式*/
 .nopass_masker{
@@ -997,24 +1053,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
               <div class="attr" id="source">
                 <div class="attrKey">来源 :</div>
                 <div class="attrValues">
-                  <ul class="av-gather av_ul">
-                    <!--<li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">蜻蜓</a>
-                    </li>
-                    <li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">考拉</a>
-                    </li>
-                    <li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">喜马拉雅</a>
-                    </li>
-                    <li class="trig_item">
-                      <div class="check_cate"></div>
-                      <a class="ss1" href="javascript:void(0)">我听</a>
-                    </li>-->
-                  </ul>
+                  <ul class="av-gather av_ul"></ul>
                 </div>
                 <div class="btns">
                   <span class="btns_sub">确定</span>
@@ -1174,6 +1213,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
                 <div class="lb_div3 fl rth_txt">操作</div> 
               </div> 
               <div class="lb_div5">
+                <div style="text-align: center;line-height: 50px;margin-top: 10px;font-size:16px;color:#000;">请先选择具体的栏目</div>
                 <!--<div class="lbd_box">
                   <div class="lbd_box1 fl">第1帧</div>
                   <div class="lbd_box2 fl">
@@ -1253,17 +1293,16 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
       <div class="cm_content4">
         <div class="cm_content5 fl">图片：</div>
         <div class="cm_content7 fl">
+          <span class="cm_content6">上传图片</span>
           <img class="defaultImg" alt="" src="http://wotingfm.com:908/CM/resources/images/default.png"/>
         </div>
         <div class="carouselImgMask dis">
           <img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />
         </div>
-        <input type="file" value="" class="upload_pic" style="display:none;" />
-        <div class="cm_content6 fl">上传图片</div>
+        <input type="file" value="http://wotingfm.com:908/CM/resources/images/default.png" class="upload_pic" style="display:none;" accept="image/gif,image/jpg,image/png"/>
       </div>
       <div class="cm_footer">
-        <input type="button" class="cmf_save fl" value="保存设置"/>
-        <input type="button" class="cmf_cancel fl" value="取消设置"/>
+        <input type="button" class="cmf_save" value="保存设置"/>
       </div>
     </div>
   </div>

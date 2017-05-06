@@ -419,7 +419,7 @@ $(function(){
         pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }
     });
   }
@@ -470,7 +470,7 @@ $(function(){
         data: loadData[index++],
         success: function(jsonData){
           if(jsonData.ReturnType=="1001"){
-            zTreeObj.addNodes(null,jsonData.Data.children,false);
+            zTreeObj.addNodes(null,jsonData.Data.children[0].children,false);
           }
           loadRecursion(index);
         },
@@ -536,12 +536,13 @@ $(function(){
         pagitionInit(contentCount,allCount,data.Page);//init翻页
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
       }
     });
   }
   //加载内容列表
   function loadContentList(resultData){
+    $(".ri_top3_con").html(" ");//请空内容列表
     $(".locker").removeClass("dis");
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
@@ -562,10 +563,6 @@ $(function(){
                   '</div>'+
                 '</div>'+
                 '<ul class="rtcl_con_channel1s ellipsis fl">'+
-//                '<li class="rtcl_con_channel2">电台丛林--故事</li>'+
-//                '<li class="rtcl_con_channel2">电台丛林--故事</li>'+
-//                '<li class="rtcl_con_channel2">电台丛林--故事</li>'+
-//                '<li class="rtcl_con_channel2">电台丛林--故事</li>'+
 //                '<li class="rtcl_con_channel2">电台丛林--故事</li>'+
                 '</ul>'+
                 '<span class="source_form fl"></span>'+
@@ -588,7 +585,8 @@ $(function(){
           audioObj.title=resultData.ResultList[i].ContentName;
           audioObj.playUrl=resultData.ResultList[i].ContentPlayUrl;
           audioList.push(audioObj);
-          $(".rtc_listBox").eq(i).addClass("playurl");
+          $(".rtc_listBox").eq(i).addClass("playurl").attr("playurl",resultData.ResultList[i].ContentPlayUrl);
+          $(".rtc_listBox").eq(i).attr("playurlName",resultData.ResultList[i].ContentName);
         }
       }else{//加载专辑
         $(".sequ_num").eq(i).text((resultData.ResultList[i].MediaSize)?(resultData.ResultList[i].MediaSize+"个声音"):"0个声音");
@@ -681,14 +679,13 @@ $(function(){
     }else{//电台
       mediatype="RADIO";
     }
-    console.log(contentId,contenttxt,channelId,mediatype);
     $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
     $("body").css("overflow","hidden");
     $(".carousel_mask").removeClass("dis");
   });
   
   //点击上传图片
-  $(".cm_content6").on("click",function(){
+  $(".cm_content7").on("click",function(){
     $(".upload_pic").click();
   });
   $(".upload_pic").change(function(){
@@ -696,6 +693,8 @@ $(function(){
   });
   function carouselImg(){
     $(".upload_pic").attr("value"," ");
+    $(".newImg").remove();
+    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
     var _this=$(".upload_pic");
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
@@ -719,7 +718,7 @@ $(function(){
       dataType:"json",
       beforeSend:function(){
         $(".carouselImgMask").removeClass("dis");
-        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
+        $(".cm_footer").children("input[type='button']").attr("disabled","disabled").css("background","#ddd");
       },
       success:function(resultData){
         if(resultData.Success==true){
@@ -729,7 +728,7 @@ $(function(){
             $(".defaultImg").css({"display":"none"});
           }
           var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
-          if($(".cm_content7").children().length>1){
+          if($(".cm_content7").children(".img").length>1){
             $(".cm_content7 img:last").replaceWith(newImg);
           }else{
             $(".cm_content7").append(newImg);
@@ -737,7 +736,7 @@ $(function(){
         }else{
           alert(resultData.err);
         }
-        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
+        $(".cm_footer").children("input[type='button']").removeAttr("disabled").css("background","#0077c7");
       },
       error: function(jqXHR){
         alert("发生错误" + jqXHR.status);
@@ -767,7 +766,7 @@ $(function(){
               "ContentId":contentid,
               "ChannelId":channelid,
               "LoopSort":"0",
-              "ImgeUrl":imgurl
+              "ImageUrl":imgurl
     };
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
@@ -778,27 +777,29 @@ $(function(){
       contentType: false,
       dataType:"json",
       beforeSend:function(){
-        $(".cm_footer").children("input[typwe='button']").attr("disabled","disabled");
+        $(".cm_footer").children("input[type='button']").attr("disabled","disabled").css("background","#ddd");
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("设置轮播图成功");
           $(".carousel_mask").addClass("dis");
+          getLoopImages(data3);//重新加载轮播图列表
         }else{
           alert("设置轮播图失败");
         }
-        $(".cm_footer").children("input[typwe='button']").removeAttr("disabled");
+        $(".cm_footer").children("input[type='button']").removeAttr("disabled").css("background","#0077c7");
       },
       error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("设置轮播图发生错误" + jqXHR.status);
       }
     });
   });
   
-  //点击关闭和取消设置，轮播图弹出层关闭
-  $(".cmh_close,.cmf_cancel").on("click",function(){
+  //点击关闭，轮播图弹出层关闭
+  $(".cmh_close").on("click",function(){
     $("body").css("overflow","auto");
     $(".upload_pic").attr("value"," ");
+    $(".newImg").remove();
+    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".carousel_mask").addClass("dis");
   });
   /*e--点击轮播图*/
@@ -847,7 +848,7 @@ $(function(){
             };
             setTop(data1,obj);//设置置顶
           }else{
-            alert("你已经取消对本内容的置顶");
+            alert("你已经成功取消对本内容的置顶");
             return false;
           }
         }else{//暂无置顶内容    
@@ -891,14 +892,12 @@ $(function(){
       success:function(resultData){
         if(data1.Top=="1"){//设置置顶
           if(resultData.ReturnType=="1001"){
-            alert("设置置顶成功");
             getContentList(data);//再次加载内容列表
           }else{
-            alert("设置置顶失败"); 
+            alert("置顶失败"); 
           }  
         }else{//取消置顶
           if(resultData.ReturnType=="1001"){
-            alert("取消置顶成功");
             getContentList(data);//再次加载内容列表
           }else{
             alert("取消置顶失败");
@@ -1031,16 +1030,17 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data3),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载轮播图列表...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
+        $(".lb_div5").html(" ");
         if(resultData.ReturnType=="1001"){
           loopAllCount=resultData.AllCount;
           loadLoopImages(resultData);//加载轮播图列表
         }else{
           loopAllCount="0";
-          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图，请自行添加</div>");
+          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图列表，请登录后自行添加</div>");
         }
         loopContentCount=(loopAllCount%pageSize==0)?(loopAllCount/pageSize):(Math.ceil(loopAllCount/pageSize));
         loopPagitionInit(loopContentCount,loopAllCount,data3.Page);
@@ -1082,11 +1082,17 @@ $(function(){
   function loadLoopImages(resultData){
     $(".lb_div5").html(" ");//每次加载之前都要清空
     for(var i=0;i<resultData.ResultList.length;i++){
-      var list='<div class="lbd_box" contentId='+resultData.ResultList[i].ContentId+' mediaType='+resultData.ResultList[i].MediaType+'>'+
+      var list='<div class="lbd_box" contentId='+resultData.ResultList[i].ContentId+' mediaType='+resultData.ResultList[i].MediaType+' channelId='+resultData.ResultList[i].ChanneId+'>'+
                   '<div class="lbd_box1 fl">第'+(i+1)+'帧</div>'+
-                  '<div class="lbd_box2 fl">'+
-                    '<img alt=""  class="lbd_box3"/>'+
-                    '<div class="lbd_box4">上传图片</div>'+
+                  '<div class="lbd_box22 fl" id="lbdBox'+i+'">'+
+                    '<div class="lbd_box2 fl">'+
+                      '<span class="lbd_box4">替换图片</span>'+
+                      '<img alt=""  class="lbd_box3"/>'+
+                    '</div>'+
+                    '<input type="file" value='+resultData.ResultList[i].ContentLoopImg+'  id="replace_pic'+i+'" class="replace_pic" style="display:none;" accept="image/gif,image/jpg,image/png"/>'+
+                    '<div class="replaceImgMask dis">'+
+                      '<img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />'+
+                    '</div>'+
                   '</div>'+
                   '<div class="lbd_box5 fl ellipsis" loopSort='+resultData.ResultList[i].LoopSort+'><'+resultData.ResultList[i].ContentName+'></div>'+
                   '<div class="lbd_box6 fl">'+
@@ -1106,10 +1112,125 @@ $(function(){
     }
   }
   
+  //替换轮播图片
+  $(document).on("click",".lbd_box2",function(){
+    var ii=$(this).parent(".lbd_box22").parent(".lbd_box").index();
+    $("#replace_pic"+ii).click();
+    $(".lb_div5").on("change","#replace_pic"+ii,function(){
+      replaceCarouselImg(ii);
+    })
+  });
+  
+  function replaceCarouselImg(ii){
+    $("#replace_pic"+ii).attr("value","");
+    $("#lbdBox"+ii).children(".newImg").remove();
+    var _this=$("#replace_pic"+ii);
+    var oMyForm = new FormData();
+    oMyForm.append("ContentFile",$(_this)[0].files[0]);
+    oMyForm.append("MobileClass", "Chrome");
+    oMyForm.append("PCDType", "3");
+    oMyForm.append("UserId", userId);
+    oMyForm.append("SrcType", "1");
+    oMyForm.append("Purpose", "3");
+    replaceUpload(_this,oMyForm,ii);//请求上传文件
+  }
+  
+  //请求上传文件
+  function replaceUpload(_this,oMyForm,ii){
+    var _ts1=$(_this).siblings(".replaceImgMask");
+    var _tc=$(_this).siblings(".lbd_box2").children(".lbd_box3");
+    var _ts2=$(_this).siblings(".lbd_box2");
+    var _ts3=$(_this).siblings(".lbd_box2 img:last");
+    $.ajax({
+      url:rootPath+"common/uploadCM.do",
+      type:"POST",
+      data:oMyForm,
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      beforeSend:function(){
+        $(_ts1).removeClass("dis");
+      },
+      success:function(resultData){
+        if(resultData.Success==true){
+          $("#replace_pic"+ii).attr("value",resultData.FilePath);
+          if($(_tc).css("display")!="none"){
+            $(_tc).css({"display":"none"});
+          }
+          var newImg =$("<img class='newImg' src="+resultData.FilePath+" alt='front cover' />");
+          if($(_ts2).children("img").length>1){
+            $(_ts3).replaceWith(newImg);
+          }else{
+            $(_ts2).append(newImg);
+          } 
+          saveReplace(_ts1,ii);//保存替换的轮播图
+        }else{
+          alert(resultData.err);
+        }
+      },
+      error: function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+    var jqObj=$("#replace_pic"+ii);
+    jqObj.attr(value,"");
+    var domObj = jqObj[0];
+    domObj.outerHTML = domObj.outerHTML;
+    var newJqObj = jqObj.clone();
+    jqObj.before(newJqObj);
+    jqObj.remove();
+    $("#replace_pic"+ii).unbind().change(function (){
+      replaceCarouselImg(ii);
+    });
+  }
+  //保存替换的轮播图
+  function saveReplace(_ts1,ii){
+    var contentid,mediatype,channelid,imgurl;
+    $(".lbd_box").each(function(i){
+      if(i==ii){
+        contentid=$(this).attr("contentId");
+        mediatype=$(this).attr("mediatype");
+        channelid=$(this).attr("channelId");
+        imgurl=$(this).children(".lbd_box22").children("#replace_pic"+ii).attr("value");
+        return;
+      }
+    });
+    var data5={"PCDType":"3",
+              "UserId":userId,
+              "MediaType":mediatype,
+              "ContentId":contentid,
+              "ChannelId":channelid,
+              "LoopSort":"0",
+              "ImageUrl":imgurl
+  };
+    $.ajax({
+      url:rootPath+"content/addLoopImage.do",
+      type:"POST",
+      data:JSON.stringify(data5),
+      cache: false,
+      async:false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          $(_ts1).addClass("dis");
+          getLoopImages(data3);//重新加载轮播图列表
+        }else{
+          alert("替换轮播图失败");
+        }
+      },
+      error: function(jqXHR){
+        alert("替换轮播图发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
   //点击上移一层
   $(document).on("click",".lbd_box61",function(){
     if($(this).attr("disabled")=="disabled"){//第一个禁止上移
-      alert("当前操作不支持上移");
+      alert("当前轮播图不支持上移");
       return false;
     }else{
       var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
@@ -1131,7 +1252,7 @@ $(function(){
   //点击下移一层
   $(document).on("click",".lbd_box62",function(){
     if($(this).attr("disabled")=="disabled"){//第一个禁止上移
-      alert("当前操作不支持下移");
+      alert("当前轮播图不支持下移");
       return false;
     }else{
       var $li=$(this).parent(".lbd_box6").parent(".lbd_box");
@@ -1159,24 +1280,20 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data4),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载...</div>");
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在移动轮播图列表...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
         if(data4.LoopSort=="-1"){//上移
           if(resultData.ReturnType=="1001"){
-            alert("轮播图上移成功");
             getLoopImages(data3);//重新加载轮播图列表
           }else{
-            alert("轮播图上移失败");
             alert(resultData.Message);
           }
         }else{//下移，-2
           if(resultData.ReturnType=="1001"){
-            alert("轮播图下移成功");
             getLoopImages(data3);//重新加载轮播图列表
           }else{
-            alert("轮播图下移失败");
             alert(resultData.Message);
           }
         }
@@ -1213,7 +1330,6 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("轮播图删除成功");
           getLoopImages(data3);//重新加载轮播图列表
         }else{
           alert(resultData.Message);

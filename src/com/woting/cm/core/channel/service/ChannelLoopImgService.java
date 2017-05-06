@@ -203,12 +203,12 @@ public class ChannelLoopImgService {
      */
 	public boolean addLoopImg(String mediaType, String channelId, String contentId, String imageUrl, int loopSort) {
     	if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imageUrl)) return false;
-
     	Map<String, Object> newData=new HashMap<String, Object>();
-	    newData.put("setType", "withMax");
     	if (loopSort>0) {
     	    newData.put("loopSort", loopSort);
     	    newData.put("setType", "withSort");
+    	} else {
+    	    newData.put("setType", "withMax");
     	}
     	newData.put("channelId", channelId);
     	newData.put("assetId", contentId);
@@ -216,15 +216,24 @@ public class ChannelLoopImgService {
     	//处理类型
     	if (StringUtils.isNullOrEmptyOrSpace(mediaType)) return false;
         String[] ms=mediaType.split(",");
-        List<String> assetTypes=new ArrayList<String>();//多个媒体类型表的列表
-        for (String oneMediaType:ms) {
-            MediaType oneMT=MediaType.buildByTypeName(oneMediaType);
-            if (oneMT!=MediaType.ERR) {
-                assetTypes.add(oneMT.getTabName());
+        if (ms.length <= 1) {
+            if (mediaType.equals("AUDIO")) {
+                newData.put("assetType", "wt_MediaAsset");
+            } else if (mediaType.equals("RADIO")) {
+                newData.put("assetType", "wt_Broadcast");
+            } else {
+                newData.put("assetType", "wt_SeqMediaAsset");
             }
+        } else {
+            List<String> assetTypes=new ArrayList<String>();//多个媒体类型表的列表
+            for (String oneMediaType:ms) {
+                MediaType oneMT=MediaType.buildByTypeName(oneMediaType);
+                if (oneMT!=MediaType.ERR) {
+                    assetTypes.add(oneMT.getTabName());
+                }
+            }
+            if (!assetTypes.isEmpty()) newData.put("assetTypes", assetTypes);
         }
-        if (!assetTypes.isEmpty()) newData.put("assetTypes", assetTypes);
-
     	try {
 		    channelAssetDao.update("addLoopImgInChannel", newData);
 		    return true;

@@ -359,14 +359,6 @@
           assetId=#{assetId,jdbcType=VARCHAR};
   </update>
   
-  <!-- 获得轮播图排序号中最大的那个数值 -->
-  <select id="getChannelLoopImgMax" parameterType="java.util.Map" resultType="java.util.HashMap">
-    select * from wt_ChannelAsset 
-    where loopSort=(
-          select max(loopSort) from wt_ChannelAsset 
-          where channelId=#{channelId,jdbcType=VARCHAR})
-  </select>
-  
   <!-- 在某一栏目下添加轮播图 -->
   <update id="addLoopImgInChannel" parameterType="java.util.Map">
     <if test="setType=='withMax'">
@@ -379,15 +371,15 @@
     where channelId=#{channelId,jdbcType=VARCHAR} and
           assetId=#{assetId,jdbcType=VARCHAR};
     </if>
-    <if test="assetId=='wt_MediaAsset'">
+    <if test="assetType=='wt_MediaAsset'">
     update wt_MediaAsset set loopImg=#{loopImg,jdbcType=VARCHAR}
     where id=#{assetId,jdbcType=VARCHAR}
     </if>
-    <if test="assetId=='wt_SeqMediaAsset'">
+    <if test="assetType=='wt_SeqMediaAsset'">
     update wt_SeqMediaAsset set loopImg=#{loopImg,jdbcType=VARCHAR}
     where id=#{assetId,jdbcType=VARCHAR}
     </if>
-    <if test="assetId=='wt_Broadcast'">
+    <if test="assetType=='wt_Broadcast'">
     update wt_Broadcast set loopImg=#{loopImg,jdbcType=VARCHAR}
     where id=#{assetId,jdbcType=VARCHAR}
     </if>

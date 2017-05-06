@@ -98,6 +98,7 @@ $(document).on("click",".btns_sub",function(){//点击多选之后的确定
 
 //点击多选之后的取消
 $(document).on("click",".btns_can",function(){
+  type=2;
   var pId=$(this).parents(".attr").attr("id"); 
   $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").children(".check_cate").css({"background-position":"-41px -414px"}).hide();
   $("#"+pId).children(".attrValues").children(".av_ul").children(".trig_item").removeAttr("selected");

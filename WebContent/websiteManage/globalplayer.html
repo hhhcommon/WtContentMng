@@ -20,7 +20,7 @@
 <body>
 <!--s:全局播放器-->
 <div class="globalplayer">
-  <audio src="" class="audio" id='audio' controls style="display: none;"></audio>
+  <audio src="" class="audio" id='audio' controls style="display: none;" type="audio/mpeg"></audio>
   <!--s:展开状态-->
   <div class="glp_block">
     <div class="glp_panel">
@@ -118,7 +118,6 @@ $(function(){
           getAudioTime();
         }else{
           var longtime=$(".audio")[0].duration;
-          console.log(longtime);
           $(".sound_duration").text(formatTime(longtime));
         }
       }, 10);

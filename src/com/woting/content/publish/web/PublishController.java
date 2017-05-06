@@ -624,7 +624,7 @@ public class PublishController {
             } catch (InterruptedException e) {}
         }
     }
-    
+
     @RequestMapping(value = "/content/sortLoopImage.do")
     @ResponseBody
     public Map<String, Object> updateLoopSortInChannel(HttpServletRequest request) {
@@ -932,18 +932,16 @@ public class PublishController {
             //得到参数
             String channelId=(m.get("ChannelId")==null?null:m.get("ChannelId").toString());
             String contentId=(m.get("ContentId")==null?null:m.get("ContentId").toString());
-            String imgeUrl=(m.get("ImgeUrl")==null?null:m.get("ImgeUrl").toString());
-            if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imgeUrl)) {
+            String imageUrl=(m.get("ImageUrl")==null?null:m.get("ImageUrl").toString());
+            if (StringUtils.isNullOrEmptyOrSpace(channelId) || StringUtils.isNullOrEmptyOrSpace(contentId) || StringUtils.isNullOrEmptyOrSpace(imageUrl)) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String[] urlSplit=imgeUrl.split("\\");
-            imgeUrl = "##contentimg##"+urlSplit[urlSplit.length-1];
             String mediaType=(m.get("MediaType")==null?null:m.get("MediaType").toString());
             int loopSort=(m.get("LoopSort")==null?0:Integer.valueOf(m.get("LoopSort").toString()));
 
-            boolean result=queryService.addLoopImg(mediaType, channelId, contentId, imgeUrl, loopSort);
+            boolean result=queryService.addLoopImg(mediaType, channelId, contentId, imageUrl, loopSort);
             if (result) {
             	map.put("ReturnType", "1001");
                 map.put("Message", "添加成功");

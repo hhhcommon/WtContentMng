@@ -8,60 +8,67 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
-body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
+body{height:100%;overflow:auto;background: #fff;-moz-user-select: none;}
 .detail{
   position: relative;
-  width:1084px;
-  min-width:850px;
-  height:auto;
-  margin:auto;
-  border:1px solid #dedede;
+  width: 100%;
+  min-width: 1080px;
+  border: 1px solid #dedede;
 }
 .fl{float: left;}
 .detail_title{
-  height: 30px;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
   color: #000;
   font-size: 14px;
-  margin-top: 20px;
   float: left;
 }
 .my_title{
-  height: 30px;
+  height: 50px;
+  line-height: 50px;
   color: #000;
   font-size: 14px;
   font-weight: bold;
-  margin-top: 20px;
 }
 .detail_content{
-  width:100%;
-  height:auto;
+  width: 100%;
+  height: auto;
   overflow: hidden;
+  position: relative;
 }
 .dc_left1{
-  width:710px;
+  position: relative;
+  width: 710px;
+  height: calc(100% - 10px);
   float: left;
-  margin-left:20px;
+  margin: 0px 0px 0px 20px;
 }
 .dc_left{
   position: relative;
-  width:710px;
+  width:700px;
   height:calc(100% - 10px);
   float: left;
-  margin-top:10px;
 }
 .dcl_zjcontent {
-  width:calc(100% - 21px);
+  width:100%;
   padding: 0px 0px 10px 20px;
   position: relative;
   border: 1px solid #dedede;
   overflow: hidden;
 }
+.dcl_zjcontent12{
+  overflow: hidden;
+  height: auto;
+  margin-bottom: 20px;
+}
 .dcl_zjcontent1{
   float: left;
-  width:180px;
-  height:180px;
-  position: absolute;
-  margin-top:20px;
+  width: 180px;
+  height: 180px;
+  position: relative;
+  margin-top: 20px;
+  border: 1px solid #dedede;
 }
 .dcr_zjlist1:first-child{
   margin-top:20px;
@@ -81,24 +88,32 @@ body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
 }
 .dcl_zjcontent2 h3{
   width:auto;
+  height: 30px;
+  line-height: 30px;
+  color: #000;
+  font-weight: bolder;
+  font-size: 18px;
   display: inline-block;
-  font-size: 20px;
-  color:#000;
   font-family: "微软雅黑";
+  margin: 0px;
 }
 .h3span{
   color:#ffa634;
   font-size:14px;
   font-weight:100;
 }
-.dcl_zjcontent2 p{
-  font-size:14px;
+.title{
+  margin: 0px 0px 10px 0px;
 }
-.dcl_zjcontent2 p span{
-  font-size:15px;
-  color:#000;
-  font-weight: 800;
-  font-family: "微软雅黑";
+.ch,.tg{
+  line-height: 30px;
+  font-size: 14px;
+  overflow: hidden;
+  margin: 0px 0px 10px 0px;
+}
+.dcl_zjcontent2 ul {
+  overflow: hidden;
+  margin-bottom: 0px;
 }
 .dcl_zjcontent2 .category{
   color:#000;
@@ -106,23 +121,35 @@ body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
   font-weight:100;
   display: inline-block;
 }
-.dcl_zjcontent2 ul{
-  overflow: hidden;
+.formChannel{
+  font-size: 15px;
+  color: #000;
+  font-weight: 800;
+  font-family: "微软雅黑";
 }
-.dcl_zjcontent2 ul li{
+.ctimes{
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+}
+.cctimes{
+  font-weight: normal;
+  color: #676a6c;
+}
+.tg1 li{
   height: 27px;
   line-height: 27px;
-  background: url("img/auto.png");
+  background: url("../img/auto.png");
   background-position: 0 -118px;
   padding:0px 0px 0px 15px;
   float: left;
   position: relative;
-  margin:10px 8px 0px 0px;
+  margin:0px 8px 0px 0px;
   display: inline-block;
   cursor: pointer;
 }
-.dcl_zjcontent2 ul li span{
-  background: url("img/auto.png");
+.tg1 li span{
+  background: url("../img/auto.png");
   background-position:right -118px;
   padding-right:8px;
   display: inline-block;
@@ -131,19 +158,17 @@ body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
   line-height: 27px;
 }
 .dcl_zjcontent3 {
-  width:100%;
-  margin-top:210px;
-}
-.dcl_zjcontent3_p1{
+  width: 100%;
   font-family: "微软雅黑";
   color: #000;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
-  margin-top: 35px;
+  line-height: 25px;
+  float: left;
 }
 .dcl_zj_jmlist{
   width:100%;
-  height:200px;
+  height:auto;
   position: relative;
   float: left;
   margin-top:30px;
@@ -176,7 +201,6 @@ body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
   height:30px;
   line-height:30px;
   font-size:15px;
-  padding-right:10px;
   cursor: pointer;
   width:100px;
   text-align: center;
@@ -200,7 +224,7 @@ body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
 }
 .list_content{
   width:100%;
-  height:230px;
+  height:auto;
   overflow: hidden;
 }
 .list_content1{
@@ -243,7 +267,6 @@ body{height:100%;overflow-y:auto;background: #fff;-moz-user-select: none;}
 }
 .dc_right{
   width:300px;
-  margin-top:10px;
   overflow: auto;
   border:1px solid #dedede;
 }
