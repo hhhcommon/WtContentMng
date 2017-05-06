@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PLAT_ROLE">
+  <!-- 对象定义:角色对象 -->
+  <resultMap id="RoleMap" type="PlatRole">
+  </resultMap>
+  <!-- 对象定义:角色操作对象 -->
+  <resultMap id="RoleFunMap" type="RoleFunction">
+  </resultMap>
+  <!-- 对象定义:用户操作对象 -->
+  <resultMap id="UserFunMap" type="UserFunction">
+  </resultMap>
+</mapper>
