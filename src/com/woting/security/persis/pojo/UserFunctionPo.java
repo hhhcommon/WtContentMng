@@ -8,30 +8,33 @@ import com.spiritdata.framework.core.model.BaseObject;
  * 用户、角色与功能关系数据
  * @author Administrator
  */
-public class RolePo extends BaseObject {
+public class UserFunctionPo extends BaseObject {
     private static final long serialVersionUID = -3610757093284156025L;
 
-    private String roleId;//角色Id
-    private String roleName;//角色名称
+    private String id;
+    private String userId;//用户Id
     private int roleType;//角色分类：0=程序角色；1=配置角色
-    private String descn;//角色说明
+    private String roleId;
     private String funName;//此字段有一定的规则，不可随意填写,目前只有“栏目权限”
     private String funClass;//功能类型目前有：Data=数据权限;Module=模块(界面)权限;Oper=操作权限',
     private String funType;//可以有很多要和roleClass配置使用，目前有:Channel-Add=栏目中添加内容。若是Module，这里是Module表中的结点Id'
+    private int objId;
     private int funFlag1;//操作标识1：对于“栏目权限”1是包括2是不包括
     private int funFlag2;//另一个标识
+    private String extInfo;
     private Timestamp cTime;//邀请成功的时间
-    public String getRoleId() {
-        return roleId;
+
+    public String getId() {
+        return id;
     }
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setId(String id) {
+        this.id = id;
     }
-    public String getRoleName() {
-        return roleName;
+    public String getUserId() {
+        return userId;
     }
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
     public int getRoleType() {
         return roleType;
@@ -39,11 +42,11 @@ public class RolePo extends BaseObject {
     public void setRoleType(int roleType) {
         this.roleType = roleType;
     }
-    public String getDescn() {
-        return descn;
+    public String getRoleId() {
+        return roleId;
     }
-    public void setDescn(String descn) {
-        this.descn = descn;
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
     public String getFunName() {
         return funName;
@@ -63,6 +66,12 @@ public class RolePo extends BaseObject {
     public void setFunType(String funType) {
         this.funType = funType;
     }
+    public int getObjId() {
+        return objId;
+    }
+    public void setObjId(int objId) {
+        this.objId = objId;
+    }
     public int getFunFlag1() {
         return funFlag1;
     }
@@ -74,6 +83,12 @@ public class RolePo extends BaseObject {
     }
     public void setFunFlag2(int funFlag2) {
         this.funFlag2 = funFlag2;
+    }
+    public String getExtInfo() {
+        return extInfo;
+    }
+    public void setExtInfo(String extInfo) {
+        this.extInfo = extInfo;
     }
     public Timestamp getcTime() {
         return cTime;

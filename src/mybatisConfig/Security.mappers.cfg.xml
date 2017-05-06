@@ -4,7 +4,9 @@
 <configuration>
   <!-- 别名设置 -->
   <typeAliases>
-    <typeAlias alias="PlatRole"  type="com.woting.security.persis.pojo.RolePo"/>
+    <typeAlias alias="PlatRole"  type="com.woting.security.persis.pojo.PlatRolePo"/>
+    <typeAlias alias="RoleFunction"  type="com.woting.security.persis.pojo.RoleFunctionPo"/>
+    <typeAlias alias="UserFunction"  type="com.woting.security.persis.pojo.UserFunctionPo"/>
   </typeAliases>
   <mappers>
     <mapper resource="com/woting/security/persis/sql/Role.mapper.xml"/>
