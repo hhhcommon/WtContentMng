@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+  <meta http-equiv="expires" content="0">
+  <title>栏目映射</title>
+  <meta name="keywords" content="我听,我享听">
+  <meta name="description" content="我听,我享听">
+  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
+  <link href="../resources/plugins/hplus/css/bootstrap-table.css" rel="stylesheet">
+  <link href="../resources/plugins/hplus/css/docs.css" rel="stylesheet">
+  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+  <script src="../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap.min.js"></script>
+  <script src="../resources/plugins/hplus/js/bootstrap-table.js"></script>
+  <script src="../resources/js/context.utils.js"></script>
+  <script src="../resources/js/common.utils.js"></script> 
+</head>
+<style>
+*{margin：0;padding:0} 
+ul,li{list-style: none;}
+body{overflow: hidden;height:100%;padding:0px;}
+.fl{float: left;}
+.dis{display: none;}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wrapper{
+  position: relative;
+  width:100%;
+  height:100%;
+  /*border:1px solid red;*/
+}
+.wrapper_header{
+  width:100%;
+  height:30px;
+  overflow: hidden;
+  margin-bottom: 0px !important;
+  /*border:1px solid red;*/  
+}
+.wrapper_header li{
+  height:30px;
+  line-height: 30px;
+  padding: 0px 10px;
+}
+.libtns{
+  margin-left:10px;
+}
+.wrapper_header li button{
+  width:50px;
+  height:25px;
+  line-height: 25px;
+  border:none;
+  background:#0077C7;
+  color:#fff;
+  margin:2px 5px;
+  border-radius: 2px;
+}
+.radio{
+  width:15px;
+  height:15px;
+  margin: 8px 5px 0px 0px !important;  
+}
+.wrapper_content{
+  width:100%;
+  height:calc(100% - 40px);
+  background: #ddd;
+  overflow-x:auto;
+}
+.wt_content,.ot_content{
+  width:100%;
+  height:100%;
+  min-width: 990px;
+  position: relative;
+  overflow: hidden;
+}
+.left{
+  width:30%;
+  min-width: 300px;
+  height:calc(100% - 10px);
+  border:1px solid black;
+  margin:10px 0px 0px 10px;
+  overflow-y: auto;
+}
+.right{
+  width:calc(100% - 33%);
+  height:calc(100% - 10px);
+  border:1px solid black;
+  margin:10px 10px 0px 0px;;
+  min-width: 580px;
+}
+#wt_table{
+  table-layout: fixed;
+}
+#wt_table thead tr th:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
+#wt_table tbody tr td:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
+#ot_table{
+  table-layout: fixed;
+}
+#ot_table thead tr th:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
+#ot_table tbody tr td:nth-child(2){
+  visibility: hidden;
+  width: 0px;
+}
+.mask{
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.5);
+  position: fixed;
+  top:0;
+  left:0;
+}
+.modal_wrapper{
+  width:370px;
+  height:auto;
+  background: #fff;
+  padding:10px 5px;
+  position: relative;
+  margin:40px auto;
+}
+.modal_header{
+  width:100%;
+  height:40px;
+  border-bottom:2px solid #dedede;
+  overflow: hidden;
+}
+.modal_header h4{
+  font-size: 15px;
+  font-family: "微软雅黑";
+}
+.modal_content{
+  width:100%;
+  height:300px;
+}
+.modal_cp{
+  padding: 5px 0px;
+}
+#modal_tree{
+  width: 100%;
+  height: 230px;
+  overflow: auto;
+  border:1px solid #dedede;
+}
+.modal_footer{
+  width: 140px;
+  height: 30px;
+  margin: 10px auto;
+  overflow: hidden;
+}
+.modal_footer button{
+  width:50px;
+  height:30px;
+  border-radius: 5px;
+  border:none;
+  background: #0077C7;
+  color:#fff;
+  margin-left:10px;
+}
+.ot_no,.wt_no{
+  width: auto;
+  position: absolute;
+  top: 50px;
+  padding: 10px 10px 10px 14px;
+  font-size: 16px;
+}
+.progressbar{ 
+  background-color:#e6e6e6; 
+  color:#222; 
+  height:14px; 
+  width:120px; 
+  border:1px solid #bbb; 
+  text-align:center; 
+  position:relative; 
+} 
+.progressbar .bar{ 
+  background-color:#0077C7; 
+  height:14px; 
+  width:0; 
+  position:absolute; 
+  left:0; 
+  top:0; 
+  z-index:10; 
+} 
+.progressbar .text{ 
+  height:14px; 
+  position:absolute; 
+  left:0; 
+  top:0; 
+  width:100%; 
+  line-height:14px; 
+  z-index:100; 
+} 
+</style>
+<body>
+<div class="wrapper wrapper-content" style="height:100%;">
+  <ul class="wrapper_header">
+    <li class="fl">
+      <input type="radio" class="wt radio fl" name="radio" checked="checked"/>
+      <span class="wh_s fl">我听</span>
+    </li>
+    <li class="fl">
+      <input type="radio" class="other radio fl" name="radio"/>
+      <span class="wh_s fl">其他平台</span>
+    </li>
+    <li class="fl libtns">
+      <button type="button" id="add" class="fl add">添加</button>
+      <button type="button" id="del" class="fl mod">删除</button>
+    </li>
+  </ul>
+  <div class="wrapper_content">
+    <div class="wt_content">
+      <ul class="fl ztree left" id="woting_tree"></ul>
+      <div class="right fl">
+        <div class="wt_no dis">暂无映射关系</div>
+        <table id='wt_table' data-toggle="table" data-height="246" data-show-refresh="true">
+          <thead>
+           <!--  <tr>
+              <th data-field="state" data-checkbox="true"></th>
+              <th data-field="Id" data-align="" data-width='0'>映射关系Id</th>
+              <th data-field="ChannelName" data-align="">我听分类</th>
+              <th data-field="SrcSource" data-align="">其他平台名称</th>
+              <th data-field="SrcName" data-align="">其他平台分类</th>
+            </tr> -->
+          </thead>
+        </table>
+      </div>  
+    </div>
+    <div class="ot_content">
+      <ul class="fl ztree left" id="other_tree"></ul>
+      <div class="right fl">
+        <div class="ot_no dis">暂无映射关系</div>
+        <table id='ot_table' data-toggle="table" data-height="256">
+          <thead>
+            <!--<tr>
+              <th data-field="state" data-checkbox="true"></th>
+              <th data-field="pt_name" data-align="">其他平台名称</th>
+              <th data-field="pt_name" data-align="">其他平台名称</th>
+              <th data-field="ot_channel" data-align="">其他平台分类</th>
+              <th data-field="wt_channel" data-align="">我听分类</th>
+            </tr>-->
+          </thead>
+        </table>
+      </div>  
+    </div>
+  </div>
+</div>
+<div class="mask dis">
+  <div class="modal_wrapper">
+    <div class="modal_header">
+      <h4 class="fl">添加映射关系</h4>
+      <button type="button" class="close" id="close" data-dismiss="modal">
+        <span aria-hidden="true">×</span>
+        <span class="sr-only">Close</span>
+      </button>
+    </div>
+    <div class="modal_content">
+      <p class="modal_cp ellipsis">你已经选择了"电影电视/读书"</p>
+      <p>请选择其他栏目形成映射关系</p>
+      <ul id="modal_tree" class="ztree"></ul>
+    </div>
+    <div class="modal_footer">
+      <button class="save fl">保存</button>
+      <button class="cancel fl">取消</button>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  $('#wt_table').bootstrapTable({ 
+    height:"256",
+    columns:[{
+        field: 'state',
+        checkbox: true
+    }, {
+        field: 'Id',
+        title: '映射关系id'
+    }, {
+        field: 'ChannelName',
+        title: '我听分类'
+    }, {
+        field: 'SrcSource',
+        title: '其他平台名称'
+    }, {
+        field: 'SrcName',
+        title: '其他平台分类'
+    },{
+        field: 'Progress',
+        title: '进程进度'
+    }]
+  });
+  
+  $('#ot_table').bootstrapTable({
+    height:"256",
+    columns:[{
+        field: 'state',
+        checkbox: true
+    }, {
+        field: 'Id',
+        title: '映射关系id'
+    }, {
+        field: 'SrcSource',
+        title: '其他平台名称'
+    }, {
+        field: 'SrcName',
+        title: '其他平台分类'
+    }, {
+        field: 'ChannelName',
+        title: '我听分类'
+    },{
+        field: 'Progress',
+        title: '进程进度'
+    }]
+  });
+</script>
+<script>
+$(function(){
+  var wtObj,otherObj,modalObj,treeNode,wt_nodes,other_nodes,wt_node,other_node;
+  var wt_path,ot_path,modal_nodes,applyType,treeid;
+  var rootPath=getRootPath();
+  
+  //配置我听平台树的相关参数
+  var settingWT={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:selectWotingTreeNode
+    }
+  };
+  //配置其他平台树的相关参数
+  var settingOther={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    callback:{
+      onClick:selectOtherTreeNode
+    }
+  };
+  //配置模态框上树的相关参数
+  var settingModal={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    check:{
+      enable:true,
+      chkStyle:"checkbox",
+      chkboxType: { "Y": "", "N": "" }
+    },
+    treeNode:{
+      chkDisabled:true,
+      checked:true
+    },
+    callback:{
+      
+    }
+  };
+   
+  //加载我听和其他平台的树,加载模态框上面的树
+  wtObj=$.fn.zTree.init($("#woting_tree"), settingWT);
+  otherObj=$.fn.zTree.init($("#other_tree"), settingOther);
+  
+  //页面加载出来的时候先判断选中的是哪个平台，默认选中的是我听
+  initContent();
+  function initContent(){
+    $("input[type='radio']").each(function(){
+      wtObj=$.fn.zTree.getZTreeObj("woting_tree");//取消我听选中的节点
+      wtObj.cancelSelectedNode();
+      otherObj=$.fn.zTree.getZTreeObj("other_tree");//取消我听选中的节点
+      otherObj.cancelSelectedNode();
+      if($(this).is(":checked")){
+        if($(this).hasClass("wt")){//选中的是我听
+          $(".wt_content").removeClass("dis").siblings(".ot_content").addClass("dis");
+          $(".ot_no").addClass("dis");
+          return;
+        }else{
+          $(".ot_content").removeClass("dis").siblings(".wt_content").addClass("dis");
+          $(".wt_no").addClass("dis");
+          return;
+        }
+      }
+    });
+  }
+  
+  //点击切换平台
+  $("input[type='radio']").on("click",function(){
+    wtObj=$.fn.zTree.getZTreeObj("woting_tree");//取消我听选中的节点
+    wtObj.cancelSelectedNode();
+    otherObj=$.fn.zTree.getZTreeObj("other_tree");//取消我听选中的节点
+    otherObj.cancelSelectedNode();
+    $("input[type='radio']").removeAttr("checked");
+    $(this).prop("checked","checked");
+    initContent();
+  });
+  
+  //加载我听平台的树
+  loadWtTree();
+  function loadWtTree(){
+    var _url=rootPath+"baseinfo/getChannelTree4View.do";
+    var loadWtData=[{ChannelId:"",TreeViewType:"zTree"}];
+    $.ajax({
+      type:"POST",    
+      url: _url,
+      dataType:"json",
+      data:JSON.stringify(loadWtData),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          wtObj.addNodes(null,returnData.Data.children,false);
+        }else{
+          $("#woting_tree").html("<li>数据加载失败...<li>");
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  //加载其他平台的树
+  loadOtherTree();
+  function loadOtherTree(){
+    var _url=rootPath+"baseinfo/getCCatalogTree4View.do";
+    var loadOtData=[{ChannelId:"",TreeViewType:"zTree"}];
+    $.ajax({
+      type:"POST",    
+      url: _url,
+      dataType:"json",
+      data:JSON.stringify(loadOtData),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          otherObj.addNodes(null,returnData.Data.children,false);
+        }else{
+          $("#other_tree").html("<li>数据加载失败...<li>");
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  //加载模态框上的树
+  function loadModalTree(txt,applyType){
+    modalObj=$.fn.zTree.init($("#modal_tree"), settingModal);
+    modalObj=$.fn.zTree.getZTreeObj("modal_tree");//取消模态框选中的节点
+    modalObj.cancelSelectedNode();
+    if(txt!="我听平台"){//加载我听平台
+      var _url=rootPath+"baseinfo/getChannelTree4View.do";
+      var loadWtData=[{ChannelId:"",TreeViewType:"zTree"}];
+    }else{//加载其他平台
+      var _url=rootPath+"baseinfo/getCCatalogTree4View.do";
+      var loadWtData=[{ChannelId:"",TreeViewType:"zTree"}];
+    }
+    $.ajax({
+      type:"POST",    
+      url: _url,
+      dataType:"json",
+      data:JSON.stringify(loadWtData),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          modalObj.addNodes(null,returnData.Data.children,false);
+          $(".modal_header").attr("applyType",applyType);
+          for(var i=0;i<list.length;i++){
+            var node=modalObj.getNodeByParam("id",list[i], null);
+            modalObj.setChkDisabled(node,true,false,false);
+          }
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  var list=[];//存放对应平台的id
+  //选中我听平台的分类，查询我听与其他平台的映射关系
+  function selectWotingTreeNode(event, treeId, treeNode){
+    var _url=rootPath+"common/getCCateRefs.do";
+    var _data={"ApplyType":1,"Id":treeNode.id};
+    $.ajax({
+      type: "POST",    
+      url: _url,
+      dataType: "json",
+      data:JSON.stringify(_data),
+      success: function(returnData){
+        $('#wt_table').bootstrapTable('load',null);//清空数据
+        $(".wt_no").addClass("dis");
+        list=[];//清空数组
+        conIdList=[];//清空数组
+        if(returnData.ReturnType=="1001"){
+          $('#wt_table').bootstrapTable('load',returnData.ResultList);
+          for(var i=0;i<returnData.ResultList.length;i++){
+            list.push(returnData.ResultList[i].SrcDid);
+          }
+          for(var i=0;i<returnData.ResultList.length;i++){
+            perId=returnData.ResultList[i].Id;
+            loadProgress(perId);    
+          }
+        }else{
+          $(".wt_no").removeClass("dis");
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  //选中其他平台的分类，查询其他平台与我听的映射关系
+  function selectOtherTreeNode(event, treeId, treeNode){
+    var _url=rootPath+"common/getCCateRefs.do";
+    var _data={"ApplyType":2,"Id":treeNode.id};
+    $.ajax({
+      type: "POST",    
+      url: _url,
+      dataType: "json",
+      data:JSON.stringify(_data),
+      success: function(returnData){
+        $('#ot_table').bootstrapTable('load',null);//清空数据
+        $(".ot_no").addClass("dis");
+        list=[];//清空数组
+        conIdList=[];//清空数组
+        if(returnData.ReturnType=="1001"){
+          $('#ot_table').bootstrapTable('load',returnData.ResultList);
+          for(var i=0;i<returnData.ResultList.length;i++){
+            list.push(returnData.ResultList[i].ChannelId);
+          }
+          for(var i=0;i<returnData.ResultList.length;i++){
+            perId=returnData.ResultList[i].Id;
+            loadProgress(perId); 
+          }
+        }else{
+          $(".ot_no").removeClass("dis");
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  //点击添加对应关系
+  $("#add").on("click",function(){
+    wt_nodes=wtObj.getSelectedNodes();//获取我听平台当前被选中的节点集合
+    wt_node=wt_nodes[0]; //当前我听平台当前被选中节点
+    other_nodes=otherObj.getSelectedNodes();//获取其他平台当前被选中的节点集合
+    other_node=other_nodes[0];//获取其他平台当前被选中的节点
+    if(!wt_node&&!other_node){
+      alert("请先选中节点");
+      return;
+    }else{
+      if(!other_node){//选中我听平台
+        wt_path=wt_node.attributes.pathName+"";//选中节点的路径
+        wt_path=wt_path.replace("栏目根/"," ");
+        $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+wt_path+'"');
+        applyType=1;
+        //获取与我听对应的映射关系
+        loadModalTree("我听平台",applyType);
+      }else{
+        ot_path=other_node.attributes.pathName+"";//选中节点的路径
+        ot_path=ot_path.replace("外源内容分类/"," ");
+        $(".modal_cp").attr("nodeid",other_node.id).text('你已经选择了"'+ot_path+'"');
+        applyType=2;
+        loadModalTree("其他平台",applyType);
+      }
+      $(".mask").removeClass("dis");
+    }
+  });
+  
+  //点击保存--添加映射关系
+  var perId='';
+  $(".save").on("click",function(){
+    applyType=$(".modal_header").attr("applyType");
+    modal_nodes=modalObj.getCheckedNodes(true);//得到模态框上被选中的节点集合
+    if(modal_nodes.length>0){
+      var nodes_id="";
+      for(var i=0;i<modal_nodes.length;i++){
+        if(nodes_id==""){
+          nodes_id=modal_nodes[i].id;
+        }else{
+          nodes_id+=","+modal_nodes[i].id;
+        }
+      }
+    }
+    var node_id=$(".modal_cp").attr("nodeid");
+    addmap(applyType,node_id,nodes_id);
+  });
+  function addmap(applyType,node_id,nodes_id){
+    if(applyType==1){//添加我听与其他的映射关系
+      treeNode=wtObj.getNodeByParam("id",node_id, null);
+    }else{
+      treeNode=otherObj.getNodeByParam("id",node_id, null);
+    }
+    var _url=rootPath+"common/addCCateRef.do";
+    var _data={"ApplyType":applyType,"Id":node_id,"RefIds":nodes_id};
+    $.ajax({
+      type:"POST",    
+      url: _url,
+      dataType:"json",
+      data:JSON.stringify(_data),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          alert("映射关系添加成功");
+          if(_data.ApplyType==1){//重新调用我听与其他平台的对应关系
+            selectWotingTreeNode(event,node_id, treeNode);
+          }else{//重新调用其他平台与我听的对应关系
+            selectOtherTreeNode(event, node_id, treeNode)
+          }
+          $(".mask").addClass("dis");
+          $("#modal_tree").html(" ");
+        }else{
+          alert(returnData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  //点击删除--删除映射关系
+  var mapIds="";//存储映射关系的id的字符串
+  var obj="";//删除映射关系所在的对象
+  $("#del").on("click",function(){
+    mapIds="";//存储映射关系的id
+    if($(".wt_content").hasClass("dis")){//删除其他平台
+      obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
+      applyType=1;
+    }else{//删除我听
+      applyType=2;
+      obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
+    }
+    var mapArr=[];//存储映射关系的id的数组
+    $(obj).each(function(){
+      var is=$(this).prop("checked");
+      if(is==true){//这条数据被选中
+        if(mapIds==""){
+          mapIds=$(this).parent("td").next().text();
+        }else{
+          mapIds+=","+$(this).parent("td").next().text();
+        }
+        mapArr.push($(this).parent("td").next().text());
+      }
+    }); 
+    var length=$(obj).length;
+    if(mapArr.length<=0){
+      alert("删除前需要先选中映射关系");
+      return false;
+    }else if(mapArr.length==length){//全选
+      delmap(applyType,obj,mapIds);
+      $("input[name='btSelectAll']").prop("checked",false);
+    }else{//未全选
+      delmap(applyType,obj,mapIds);
+    }
+  });
+  function delmap(applyType,obj,mapIds){
+    var _data={"Ids":mapIds};
+    var _url=rootPath+"common/removeCCateRefs.do";
+    $.ajax({
+      type: "POST",    
+      url: _url,
+      dataType: "json",
+      async:true,
+      data:JSON.stringify(_data),
+      success: function(returnData){
+        if(returnData.ReturnType=="1001"){
+          if(applyType==2){//重新调用我听与其他平台的对应关系
+            wt_nodes=wtObj.getSelectedNodes();//获取我听平台当前被选中的节点集合
+            wt_node=wt_nodes[0]; //当前我听平台当前被选中节点
+            treeid=wt_node.id;
+            selectWotingTreeNode(event,treeid, wt_node);
+          }else{//重新调用其他平台与我听的对应关系
+            other_nodes=otherObj.getSelectedNodes();//获取其他平台当前被选中的节点集合
+            other_node=other_nodes[0];//获取其他平台当前被选中的节点
+            treeid=other_node.id;
+            selectOtherTreeNode(event, treeid, other_node);
+          }
+          alert("删除成功!");
+        }else{
+          alert("删除失败!");
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  //点击关闭，取消按钮，关闭遮罩层
+  $(".close,.cancel").on("click",function(){
+    $(".mask").addClass("dis");
+    $("#modal_tree").html(" ");
+    list=[];//清空
+    conIdList=[];//清空
+  });
+
+  /*s--进度条插件初始化*/
+  var pp=0;
+  function loadProgress(id){
+    if($(".wt_content").hasClass("dis")){//删除其他平台
+      obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
+      applyType=1;
+    }else{//删除我听
+      applyType=2;
+      obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
+    }
+    var per_data={"PerId":id};
+    if(pp<100){
+      $.ajax({
+        type:"POST",    
+        url:rootPath+"common/getChannelMapRefPer.do",
+        dataType:"json",
+        async:true,
+        data:JSON.stringify(per_data),
+        success: function(returnData){
+          if(returnData.ReturnType=="1001"){
+  //        if(returnData.PerNum<"100"){
+  //          return;
+  //        }else{
+  //          var ipt='<progress value='+returnData.PerNum+' max="100"></progress>'; 
+  //          $(obj).each(function(){
+  //            var id=$(this).parent("td").next("td");
+  //            id=$(id).text();
+  //            if(id==per_data.PerId){
+  //              $(this).parent("td").parent("tr").children("td:last-child").html(ipt);
+  //              perId=per_data.PerId;
+  //              window.setInterval(loadProgress(perId),1000);
+  //            }
+  //          });
+  //        }
+          }else{
+            var pro='<div class="progressbar">' +
+                      '<div class="text">'+pp+'%</div>'+
+                      '<div class="bar" style="width:'+pp+'%"></div>'+
+                    '</div>';
+            pp+=1;
+            $(obj).each(function(){
+              var id=$(this).parent("td").next("td");
+              id=$(id).text();
+              if(id==per_data.PerId){
+                $(this).parent("td").parent("tr").children("td:last-child").html(pro);
+                perId=per_data.PerId;
+                window.setInterval(loadProgress(perId),1000);
+              }
+            });
+          }
+        },
+        error:function(jqXHR){
+          alert("发生错误" + jqXHR.status);
+        }
+      });
+    }else{
+      $(obj).each(function(){
+        var id=$(this).parent("td").next("td");
+        id=$(id).text();
+        if(id==per_data.PerId){
+          $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").hide();
+          pp=0;
+        }
+      });
+    }
+  }
+  
+});
+</script>
+</html>

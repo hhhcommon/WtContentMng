@@ -275,7 +275,7 @@ $(document).on("click",".my_tag_con1_check, .gg_tag_con1_check",function(){
   }else{
     tag_sum=0;
   }
-  var txt=$(this).siblings("span").html();
+  var txt=$(this).siblings("span").text();
   var tagId=$(this).parent("li").attr("tagid");
   var tagType=$(this).parent("li").attr("tagType");
   var obj=$(this);
@@ -320,8 +320,8 @@ $(document).on("click",".upl_bq_cancelimg1",function(){
 function isExiste(objValue){
   if($(document).find(".upl_bq .upl_bq_img").length>0){//如果页面上.upl_bq里面已经存在标签
     $(document).find(".upl_bq .upl_bq_img").each(function(){
-      if($(this).children("span").html()==objValue){
-        isExisted = true;
+      if($(this).children("span").text()==objValue){
+        isExisted=true;
         return false;
       }else{
         isExisted=false;
@@ -354,12 +354,44 @@ $(function(){
             $(".mask_zj .upl_bq").append(new_tag);
             tag_sum++;
           }else{
-            alert("你添加的标签已存在!");
+            alert("你添加的标签已经存在!");
           }
         }else{
-          alert("输入内容超出范围");
+          alert("最多可以输入6个汉字");
         }
         $(".mask_zj .tag_txt").val("");
+      }
+    }
+  });
+  
+  /*创建/编辑节目弹出页面添加自定义标签*/
+  $(".mask_jm .jm_addTag").keydown(function(e){
+    var evt=event?event:(window.event?window.event:null);//兼容IE和FF
+    if(evt.keyCode==13){
+      var txt=$.trim($(".mask_jm .jm_addTag").val());
+      if(txt!=""){
+        var count = txt.replace(/[^\x00-\xff]/g,"**").length;
+        if(count<=12){
+          isExiste(txt);//调用函数判断即将添加的标签是否应经存在
+          if(!isExisted){
+            if(tag_sum>=5){
+              alert("最多能添加5个标签");
+              $(".mask_jm .jm_addTag").val("");
+              return;
+            }
+            var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
+                              '<span>'+txt+'</span>'+
+                              '<img class="upl_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" />'+
+                            '</li>';
+            $(".mask_jm .upl_bq").append(new_tag);
+            tag_sum++;
+          }else{
+            alert("你添加的标签已经存在!");
+          }
+        }else{
+          alert("最多可以输入6个汉字");
+        }
+        $(".mask_jm .jm_addTag").val("");
       }
     }
   });
@@ -426,27 +458,29 @@ $(function(){
   }) 
   
 })
-//上传节目页面获取公共标签
-function loadPubTag(data){
+//弹出页面获取公共/我的标签
+function loadTag(data){
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
     cache:false,
     data:JSON.stringify(data),
-    success:function(resultData,XHR){
-      if(resultData.ReturnType == "1001"){
-        getPubLabel(resultData);//加载上传节目页面公共标签元素
-      }else{
-//        alert("获取公共标签失败，请刷新页面重新获取");
+    success:function(resultData){
+      if(resultData.ReturnType=="1001"){
+        if(data.TagType=="1"){//公共标签
+          getPubLabel(resultData);//加载弹出页面公共标签元素
+        }else{//我的标签
+          getMyLabel(resultData);//加载弹出节目页面我的标签元素
+        }
       }
     },
-    error:function(XHR){
+    error:function(jqXHR){
       alert("发生错误："+ jqXHR.status);
     }
   });
 }
-//加载上传节目页面公共标签元素
+//加载弹出节目页面公共标签元素
 function getPubLabel(resultData){
   $(".gg_tag_con").html("");
   for(var i=0;i<resultData.AllCount;i++){
@@ -458,26 +492,7 @@ function getPubLabel(resultData){
     $(".gg_tag_con").append(label); 
   }
 }
-//上传节目页面获取我的标签
-function loadMyTag(data){
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getTags.do",
-    dataType:"json",
-    data:JSON.stringify(data),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getMyLabel(resultData);//加载上传节目页面我的标签元素
-      }else{
-//        alert("获取我的标签失败，请刷新页面重新获取");
-      }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
-}
-//加载上传节目页面我的标签元素
+//加载弹出节目页面我的标签元素
 function getMyLabel(resultData){
   $(".my_tag_con").html("");
   for(var i=0;i<resultData.AllCount;i++){
@@ -735,7 +750,7 @@ function clear_zj(){
   $(".add_zj .zjId,.add_zj .uplTitle,.add_zj .uplDecn,.add_zj .layer-date").val("");
   $(".add_zj .upl_bq").html("");
   $(".add_zj .newImg").remove();
-  $(".add_zj .defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
+  $(".add_zj .defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
   $(".add_zj .img_uploadStatus").hide();
   $(".add_zj .my_tag_con1,.add_zj .gg_tag_con1").each(function(){
     $(this).children("input[type='checkbox']").prop("checked",false);
@@ -758,7 +773,7 @@ function clear_jm(){
   $(".add_jm .uplTitle,.add_jm .yp_mz,.add_jm .uplDecn,.add_jm .czfs_author_ipt,.add_jm .layer-date").val("");
   $(".add_jm .upl_bq,.add_jm .czfs_tag").html("");
   $(".add_jm .newImg").remove();
-  $(".add_jm .defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
+  $(".add_jm .defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
   $(".add_jm .img_uploadStatus,.add_jm .uploadStatus").hide();
   $(".add_jm .my_tag_con1,.add_jm .gg_tag_con1").each(function(){
     $(this).children("input[type='checkbox']").prop("checked",false);
@@ -832,7 +847,7 @@ $(function(){
         contentType: false,
         dataType:"json",
         beforeSend: function(){
-          $(".action1 button").attr("disabled","disabled").css("background","#ccc");
+          $(".action1 #btnSave").attr("disabled","disabled").css("background","#ccc");
         },
         //表单提交前进行验证
         success: function(resultData){
@@ -853,7 +868,7 @@ $(function(){
           }else{
             alert(resultData.err);
           }
-          $(".action1 button").removeAttr("disabled").css("background","#ffa634");
+          $(".action1 #btnSave").removeAttr("disabled").css("background","#ffa634");
         },
         error: function(XHR){
           alert("发生错误" + jqXHR.status);
