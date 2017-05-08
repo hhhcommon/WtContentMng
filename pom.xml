@@ -9,14 +9,12 @@
   <properties>
 	<projectDir>D:\workIDE\work\WtContentMng</projectDir>
   </properties>
-
   <parent>
   	<groupId>team.gm</groupId>
   	<artifactId>framework</artifactId>
   	<version>0.1.0.0</version>
   	<relativePath>pom.framework.xml</relativePath>
   </parent>
-
   <dependencies>
     <dependency>
       <groupId>com.aliyun.oss</groupId>

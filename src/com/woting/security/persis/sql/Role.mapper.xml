@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PLAT_ROLE">
+  <!-- 对象定义:角色对象 -->
+  <resultMap id="RoleMap" type="PlatRole">
+    <id      column="id"         property="id"         jdbcType="VARCHAR"/>
+    <result  column="roleName"   property="roleName"   jdbcType="VARCHAR"/>
+    <result  column="roleType"   property="roleType"   jdbcType="INTEGER"/>
+    <result  column="desc"       property="desc"       jdbcType="VARCHAR"/>
+    <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <!-- 所有列 -->
+  <sql id="Base_Role_List">
+    id, roleName, roleType, desc, cTime
+  </sql>
+
+  <!-- 对象定义:角色操作对象 -->
+  <resultMap id="RoleFunMap" type="RoleFunction">
+    <id      column="id"         property="id"         jdbcType="VARCHAR"/>
+    <result  column="roleId"     property="roleId"     jdbcType="VARCHAR"/>
+    <result  column="funName"    property="funName"    jdbcType="VARCHAR"/>
+    <result  column="funClass"   property="funClass"   jdbcType="VARCHAR"/>
+    <result  column="funType"    property="funType"    jdbcType="VARCHAR"/>
+    <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
+    <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
+    <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
+    <result  column="extInfo"    property="extInfo"    jdbcType="TEXT"/>
+    <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <!-- 对象定义:用户操作对象 -->
+  <resultMap id="UserFunMap" type="UserFunction">
+    <id      column="id"         property="id"         jdbcType="VARCHAR"/>
+    <result  column="userId"     property="userId"     jdbcType="VARCHAR"/>
+    <result  column="ruleType"   property="ruleType"   jdbcType="INTEGER"/>
+    <result  column="roleId"     property="roleId"     jdbcType="VARCHAR"/>
+    <result  column="funName"    property="funName"    jdbcType="VARCHAR"/>
+    <result  column="funClass"   property="funClass"   jdbcType="VARCHAR"/>
+    <result  column="funType"    property="funType"    jdbcType="VARCHAR"/>
+    <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
+    <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
+    <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
+    <result  column="extInfo"    property="extInfo"    jdbcType="TEXT"/>
+    <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
+  </resultMap>
+</mapper>
