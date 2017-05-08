@@ -427,7 +427,10 @@ $(function(){
   $(".login_user").on("click",function(){
     var type=typeof($(".login_user span").attr("userId"));
     //处于未登录状态
-    if(type=="undefined") window.location.href="./login.html";
+    if(type=="undefined") {
+      window.location.href="./login.html";
+    
+    }
   })
   
   //点击退出登录
