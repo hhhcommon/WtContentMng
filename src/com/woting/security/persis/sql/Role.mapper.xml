@@ -26,7 +26,7 @@
     <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
     <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
     <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
-    <result  column="extInfo"    property="extInfo"    jdbcType="TEXT"/>
+    <result  column="extInfo"    property="extInfo"    jdbcType="VARCHAR"/>
     <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
 
@@ -42,7 +42,7 @@
     <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
     <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
     <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
-    <result  column="extInfo"    property="extInfo"    jdbcType="TEXT"/>
+    <result  column="extInfo"    property="extInfo"    jdbcType="VARCHAR"/>
     <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
 </mapper>
