@@ -28,7 +28,7 @@ import com.woting.security.service.SecurityRoleService;
  * @author Administrator
  */
 @Controller
-public class RoleContorller {
+public class RoleController {
     @Resource
     private SecurityRoleService roleService;
     @Resource(name = "redisSessionService")
