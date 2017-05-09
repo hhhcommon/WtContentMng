@@ -7,7 +7,7 @@
     <id      column="id"         property="id"         jdbcType="VARCHAR"/>
     <result  column="roleName"   property="roleName"   jdbcType="VARCHAR"/>
     <result  column="roleType"   property="roleType"   jdbcType="INTEGER"/>
-    <result  column="desc"       property="desc"       jdbcType="VARCHAR"/>
+    <result  column="desc"       property="desc"       jdbcType="CLOB"/>
     <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
 
@@ -15,6 +15,25 @@
   <sql id="Base_Role_List">
     id, roleName, roleType, desc, cTime
   </sql>
+  
+  <!-- 新增角色 -->
+  <insert id="insert" parameterType="java.util.Map">
+    insert into plat_Role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="roleName!=null">roleName,</if>
+      <if test="roleType!=null">roleType,</if>
+      <if test="desc!=null">desc,</if>
+      <if test="CTime!=null">cTime,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="roleName!=null">#{roleName,jdbcType=VARCHAR},</if>
+      <if test="roleType!=null">#{roleType,jdbcType=INTEGER},</if>
+      <if test="desc!=null">#{desc,jdbcType=CLOB},</if>
+      <if test="CTime!=null">#{CTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
 
   <!-- 对象定义:角色操作对象 -->
   <resultMap id="RoleFunMap" type="RoleFunction">
@@ -26,9 +45,14 @@
     <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
     <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
     <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
-    <result  column="extInfo"    property="extInfo"    jdbcType="VARCHAR"/>
+    <result  column="extInfo"    property="extInfo"    jdbcType="CLOB"/>
     <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
+  
+  <!-- 所有列 -->
+  <sql id="Base_RoleFUN_List">
+    id, roleId, funName, funClass, funType, objId, funFlag1, funFlag2, extInfo, cTime
+  </sql>
 
   <!-- 对象定义:用户操作对象 -->
   <resultMap id="UserFunMap" type="UserFunction">
@@ -42,7 +66,46 @@
     <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
     <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
     <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
-    <result  column="extInfo"    property="extInfo"    jdbcType="VARCHAR"/>
+    <result  column="extInfo"    property="extInfo"    jdbcType="CLOB"/>
     <result  column="cTime"      property="cTime"      jdbcType="TIMESTAMP"/>
   </resultMap>
+  
+  <!-- 所有列 -->
+  <sql id="Base_USERFUN_List">
+    id, userId, ruleType, roleId, funName, funClass, funType, objId, funFlag1, funFlag2, extInfo, cTime
+  </sql>
+  
+  <!-- 对象定义:用户扩展 -->
+  <resultMap id="UserExtMap" type="UserExt">
+    <id      column="userid"        property="userid"        jdbcType="VARCHAR"/>
+    <result  column="iDCard"        property="iDCard"        jdbcType="VARCHAR"/>
+    <result  column="frontImg"      property="frontImg"      jdbcType="VARCHAR"/>
+    <result  column="reverseImg"    property="reverseImg"    jdbcType="VARCHAR"/>
+    <result  column="mixImg"        property="mixImg"        jdbcType="VARCHAR"/>
+    <result  column="anchorCardImg" property="anchorCardImg" jdbcType="VARCHAR"/>
+    <result  column="cTime"         property="cTime"         jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <!-- 所有列 -->
+  <sql id="Base_User_Ext_List">
+    userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, cTime
+  </sql>
+  
+  <!-- 对象定义:用户发起主播认证进程 -->
+  <resultMap id="UserProgressMap" type="UserProgress">
+    <id      column="Id"          property="Id"          jdbcType="VARCHAR"/>
+    <result  column="userid"      property="userid"      jdbcType="VARCHAR"/>
+    <result  column="checkerId"   property="checkerId"   jdbcType="VARCHAR"/>
+    <result  column="applyRoleId" property="applyRoleId" jdbcType="VARCHAR"/>
+    <result  column="reStatus"    property="reStatus"    jdbcType="INTEGER"/>
+    <result  column="applyDescn"  property="applyDescn"  jdbcType="VARCHAR"/>
+    <result  column="reDescn"     property="reDescn"     jdbcType="VARCHAR"/>
+    <result  column="cTime"       property="cTime"       jdbcType="TIMESTAMP"/>
+    <result  column="ModifyTime"  property="ModifyTime"  jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <!-- 所有列 -->
+  <sql id="Base_User_Progress_List">
+    Id, userid, checkerId, applyRoleId, reStatus, applyDescn, reDescn, cTime, ModifyTime
+  </sql>
 </mapper>
