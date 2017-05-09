@@ -1,4 +1,4 @@
-package com.woting.security.persis.pojo;
+package com.woting.security.approve.persis.pojo;
 
 import java.sql.Timestamp;
 

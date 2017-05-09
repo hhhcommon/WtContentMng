@@ -4,13 +4,15 @@
 <configuration>
   <!-- 别名设置 -->
   <typeAliases>
-    <typeAlias alias="PlatRole"      type="com.woting.security.persis.pojo.PlatRolePo"/>
-    <typeAlias alias="RoleFunction"  type="com.woting.security.persis.pojo.RoleFunctionPo"/>
-    <typeAlias alias="UserFunction"  type="com.woting.security.persis.pojo.UserFunctionPo"/>
-    <typeAlias alias="UserExt"       type="com.woting.security.persis.pojo.PlatUserExtPo"/>
-    <typeAlias alias="UserProgress"  type="com.woting.security.persis.pojo.PlatUserProgressPo"/>
+    <typeAlias alias="PlatRole"      type="com.woting.security.role.persis.pojo.PlatRolePo"/>
+    <typeAlias alias="RoleFunction"  type="com.woting.security.role.persis.pojo.RoleFunctionPo"/>
+    <typeAlias alias="UserFunction"  type="com.woting.security.role.persis.pojo.UserFunctionPo"/>
+    <typeAlias alias="UserRole"      type="com.woting.security.role.persis.pojo.UserRolePo"/>
+    <typeAlias alias="UserExt"       type="com.woting.security.approve.persis.pojo.PlatUserExtPo"/>
+    <typeAlias alias="UserProgress"  type="com.woting.security.approve.persis.pojo.PlatUserProgressPo"/>
   </typeAliases>
   <mappers>
-    <mapper resource="com/woting/security/persis/sql/Role.mapper.xml"/>
+    <mapper resource="com/woting/security/role/persis/sql/Role.mapper.xml"/>
+    <mapper resource="com/woting/security/approve/persis/sql/Approve.mapper.xml"/>
   </mappers>
 </configuration>
