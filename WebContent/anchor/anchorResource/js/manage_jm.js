@@ -352,31 +352,33 @@ $(function(){
     subType=1;//subType=1代表在上传节目页面保存
     pubType=1;//pubType=1代表在上传节目页面提交
     $(".iboxtitle h4").html("上传节目");
+    
+    //获取节目弹出页面公共标签
+    destroy(data1);
+    data1.MobileClass="Chrome";
+    data1.PCDType="3";
+    data1.UserId=userId;
+    data1.MediaType="2";
+    data1.TagType="1";
+    data1.TagSize="20";
+    data1.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    loadTag(data1);
+    
+    //获取节目弹出页面我的标签
+    destroy(data2);
+    data2.MobileClass="Chrome";
+    data2.PCDType="3";
+    data2.UserId=userId;
+    data2.MediaType="2";
+    data2.TagType="2";
+    data2.TagSize="20";
+    data2.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    loadTag(data2);
   });
   
   /*s--节目弹出页面获取标签*/
   var data1={};//公共标签
   var data2={};//我的标签
-  
-  //获取节目弹出页面公共标签
-  destroy(data1);
-  data1.MobileClass="Chrome";
-  data1.PCDType="3";
-  data1.UserId=userId;
-  data1.MediaType="2";
-  data1.TagType="1";
-  data1.TagSize="20";
-  loadTag(data1);
-  
-  //获取节目弹出页面我的标签
-  destroy(data2);
-  data2.MobileClass="Chrome";
-  data2.PCDType="3";
-  data2.UserId=userId;
-  data2.MediaType="2";
-  data2.TagType="2";
-  data2.TagSize="20";
-  loadTag(data2);
   
   //点击节目弹出页面“换一换”，更换节目弹出页面公共标签
   $(document).on("click",".add_jm .gg_tag .hyp",function(){
@@ -531,6 +533,8 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+//  _data.TimeLong=$(".timeLong").attr("value");
+    $(".timeLong").attr("value","60");
     _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
@@ -606,6 +610,8 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value")
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+//  _data.TimeLong=$(".timeLong").attr("value");
+    $(".timeLong").attr("value","60");
     _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
@@ -699,6 +705,8 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+//  _data.TimeLong=$(".timeLong").attr("value");
+    $(".timeLong").attr("value","60");
     _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
@@ -771,6 +779,8 @@ $(function(){
     _data.ContentName=$(".uplTitle").val();
     _data.ContentImg=$(".upl_img").attr("value");
     _data.SeqMediaId=$(".upl_zj option:selected").attr("id");
+//  _data.TimeLong=$(".timeLong").attr("value");
+    $(".timeLong").attr("value","60");
     _data.TimeLong=$(".timeLong").attr("value");
     var taglist=[];
     $(".upl_bq").find(".upl_bq_img").each(function(){
