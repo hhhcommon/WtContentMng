@@ -7,13 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">                                                              
   <meta name="description" content="我听，我享听">
-  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-  <script src="../resources/js/common.utils.js"></script>
-  <script src="../resources/js/context.utils.js"></script>
+  <link href="../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../../resources/js/common.utils.js"></script>
+  <script src="../../resources/js/context.utils.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -27,9 +27,8 @@ body{overflow: auto;background: #fff;}
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.fl{
-  float: left;
-}
+.fl{float: left;}
+.dis{display: none;}
 .detail{
   width:1080px;
   min-width:850px;
@@ -102,9 +101,7 @@ body{overflow: auto;background: #fff;}
   width:100%;
   display: inline-block;
 }
-.sign,.brief{
-  position: relative;
-}
+.sign,.brief{position: relative;}
 .sign0{
   height: 25px;
   line-height: 25px;
@@ -117,23 +114,20 @@ body{overflow: auto;background: #fff;}
   padding-left:10px;
   overflow: hidden;
 }
-.idphoto{
-  position: absolute;
-}
-.idphoto0{
-  margin-top:5px;
-}
+.idphoto{position: absolute;}
+.idphoto0{margin-top:5px;}
 .picture1{
   display: block;
   width:70px;
   height:70px;
   position: relative;
   margin-top:20px;
+  border:1px solid #dedede;
 }
 .picture1 img{
-  -moz-border-radius: 50%; /* Firefox */
-  -webkit-border-radius: 50%; /* Safari 和 Chrome */
-  border-radius: 50%; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+  /*-moz-border-radius: 50%; /* Firefox */*/
+  /*-webkit-border-radius: 50%; /* Safari 和 Chrome */*/
+  /*border-radius: 50%; /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */*/
 }
 .picture1 img,.idphoto1  div img,.dcbl_img img{
   width:100%;
@@ -142,39 +136,25 @@ body{overflow: auto;background: #fff;}
 }
 .idphoto1{
   display: block;
-  width:100px;
-  height:100px;
-  margin-top:5px;
+  width: 280px;
+  height: 140px;
+  margin: 5px 0px 0px 5px;
 }
-.gallery > div{
-  width:100px;
-  height:100px;
+.idPic{
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  border: 1px solid #dedede;
+}
+.imgEnlarge{
   position: relative;
-}
-.gallery > div > img{
-  width: 100%;
-  transition: .1s transform;
-  transform: translateZ(0);
-}
-.gallery > div:hover{
-  z-index: 1;
-}
-.gallery > div:hover > img{
-  width:110%;
-  margin-left:-5%;
-  margin-top:-5%;
-}
-.gallery > div > img{
+  font-size: 12px;
+  color: #fff;
   width:100%;
-  transition:0.4s ease-in-out;
-}
-.cf:before, .cf:after{
-  display: table;
-  content: "";
-  line-height: 0;
-}
-.cf:after{
-  clear: both;
+  height: 20px;
+  line-height: 20px;
+  background: rgba(0,0,0,0.5);
+  top:-20px;
 }
 .dc_bottom{
   width: calc( 100% - 40px);
@@ -185,12 +165,8 @@ body{overflow: auto;background: #fff;}
   padding: 20px 0px 0px 5px;
   font-size:14px;
 }
-.dcbt0{
-  margin-left:-3px;
-}
-.dcbt2{
-  margin-left:30px;
-}
+.dcbt0{margin-left:-3px;}
+.dcbt2{margin-left:30px;}
 .dcb_con1{
   width: 100%;
   height: 40px;
@@ -315,9 +291,7 @@ body{overflow: auto;background: #fff;}
   line-height: 25px;
   text-align: center;
 }
-.episodes{
-  font-weight: bold;
-}
+.episodes{font-weight: bold;}
 .time{
   color: #000;
   width: 190px;
@@ -325,9 +299,7 @@ body{overflow: auto;background: #fff;}
   position: relative;
   top:30px;
 }
-.c7{
-  color:#0077c7;
-}
+.c7{color:#0077c7;}
 </style>
 <body>
 <div class="detail">
@@ -393,7 +365,8 @@ body{overflow: auto;background: #fff;}
             <span class="fl idphoto0">身份证照片:</span>
             <div class="idphoto1 fl gallery cf">
               <div class="idPic">
-                <img src="../anchor/img/a5.jpg" alt="身份证照片" />
+                <img src="../websiteManageResource/img/a5.jpg" alt="身份证照片" />
+                <div class="imgEnlarge">点击图片可看大图</div>
               </div>
             </div>
           </div>
@@ -412,90 +385,7 @@ body{overflow: auto;background: #fff;}
           <span class="dcbc_txt fl dcbc_txt3">集数</span>
           <span class="dcbc_txt fl dcbc_txt4">最近更新时间</span>
         </div>
-        <div class="dcb_con2">
-          <!--<div class="dcb_listBox">
-            <div class="dcbl_img fl">
-              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
-            </div>
-            <div class="dcbl_con fl">
-              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
-              <div class="dcbl_con_tags">
-                <span class="dcbl_con_tag1 fl">标签：</span>
-                <ul class="dcbl_con_tag1s fl">
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                </ul>
-              </div>
-              <div class="dcbl_con_desc">
-                <span class="dcbl_con_desc1 fl">简介：</span>
-                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
-                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
-                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
-                                声新鲜血液。
-                </span>
-              </div>
-            </div>
-            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
-            <span class="playcount fl">643</span>
-            <span class="episodes fl">5</span>
-            <span class="time fl">2017-2-14 13:12:32</span>
-          </div>-->
-          <!--<div class="dcb_listBox">
-            <div class="dcbl_img fl">
-              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
-            </div>
-            <div class="dcbl_con fl">
-              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
-              <div class="dcbl_con_tags">
-                <span class="dcbl_con_tag1 fl">标签：</span>
-                <ul class="dcbl_con_tag1s fl">
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                </ul>
-              </div>
-              <div class="dcbl_con_desc">
-                <span class="dcbl_con_desc1 fl">简介：</span>
-                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
-                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
-                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
-                                声新鲜血液。
-                </span>
-              </div>
-            </div>
-            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
-            <span class="playcount fl">643</span>
-            <span class="episodes fl">5</span>
-            <span class="time fl">2017-2-14 13:12:32</span>
-          </div>-->
-          <!--<div class="dcb_listBox">
-            <div class="dcbl_img fl">
-              <img src="http://www.wotingfm.com:908/CM/dataCenter/group03/6cd82268d90e401e9a097cb72937ee22.png" alt="节目图片">
-            </div>
-            <div class="dcbl_con fl">
-              <p class="dcbl_con_p ellipsis">2015鲜声夺人DJ选拔赛</p>
-              <div class="dcbl_con_tags">
-                <span class="dcbl_con_tag1 fl">标签：</span>
-                <ul class="dcbl_con_tag1s fl">
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                  <li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>
-                </ul>
-              </div>
-              <div class="dcbl_con_desc">
-                <span class="dcbl_con_desc1 fl">简介：</span>
-                <span class="dcbl_con_desc2 fl">2015年中央人民广播电台音乐之声 京都念慈菴MusicRadio“鲜声夺人”DJ
-                                选拔赛全国海选报名正火热进行中。此次活动是继2004年“鲜声夺人”、2008 年“新声召集令”以及2013年“鲜声夺人”之
-                                后，MusicRadio音乐之声再度面向社会盛大招募DJ，通过全民参与，在全国范围内寻找有音乐态度、热爱广播的音乐之
-                                声新鲜血液。
-                </span>
-              </div>
-            </div>
-            <span class="channels fl cw">小说故事-文学 艺术人文-诗歌</span>
-            <span class="playcount fl">643</span>
-            <span class="episodes fl">5</span>
-            <span class="time fl">2017-2-14 13:12:32</span>
-          </div>-->
-        </div>
+        <div class="dcb_con2"></div>
       </div>
     </div>
   </div>
@@ -506,13 +396,15 @@ $(function(){
   var personId=getUrlParam(window.location.href,'personId');
   var rootPath=getRootPath();
   var current_page="1";//当前页码
+  var pageSize="10";//每页列表数
+  var userId="123";
   
-  var data1={ "UserId":"123",
-              "PersonId":personId
+  var data1={"UserId":userId,
+             "PersonId":personId
   };
   /*得到主播信息*/
-  getAnchorDetail(data1);
-  function getAnchorDetail(dataParam){
+  getAnchorInfo(data1);
+  function getAnchorInfo(dataParam){
     $.ajax({
       type:"POST",
       url:rootPath+"CM/person/getPersonInfo.do",
@@ -521,14 +413,14 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           fillAnchorDetail(resultData);//填充专辑数据
         }else{
-          alert(resultData.Message);
+          alert("获取主播的详细信息失败:"+resultData.Message);
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("获取主播的详细信息发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -554,11 +446,11 @@ $(function(){
     $(".dcbt2").text((resultData.ResultInfo.MediaSize?("节目("+resultData.ResultInfo.MediaSize+")"):"节目(0)"));
   }
   
-  var data2={ "UserId":"123",
-              "PersonId":personId,
-              "MediaType":"SEQU",
-              "PageSize":"10",
-              "Page":current_page
+  var data2={"UserId":userId,
+             "PersonId":personId,
+             "MediaType":"SEQU",
+             "PageSize":pageSize,
+             "Page":current_page
   };
   getAnchorZJList(data2);
   function getAnchorZJList(dataParam){
@@ -570,14 +462,14 @@ $(function(){
       cache:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           fillAnchorZJList(resultData);//填充主播专辑
         }else{
-          alert(resultData.Message);
+          alert("获取主播的专辑列表失败:"+resultData.Message);
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("获取主播的专辑列表发生错误："+ jqXHR.status);
       }
     });
   }
@@ -598,19 +490,14 @@ $(function(){
                   '<div class="dcbl_con_p ellipsis c7" contentId='+resultData.ResultInfo.List[i].ContentId+'>'+conName+'</div>'+
                   '<div class="dcbl_con_tags">'+
                     '<span class="dcbl_con_tag1 fl">标签：</span>'+
-                    '<ul class="dcbl_con_tag1s fl">'+
-//                    '<li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>'+
-//                    '<li class="dcbl_con_tag2 fl">MusicRadio音乐之声</li>'+
-                    '</ul>'+
+                    '<ul class="dcbl_con_tag1s fl"></ul>'+
                   '</div>'+
                   '<div class="dcbl_con_desc">'+
                     '<span class="dcbl_con_desc1 fl">简介：</span>'+
                     '<div class="dcbl_con_desc2 fl">'+desc+'</div>'+
                   '</div>'+
                 '</div>'+
-                '<div class="channels fl cw">'+
-                  '<span class="dcbl_con_channel fl">音乐</span>'+
-                '</div>'+
+                '<div class="channels fl cw"></div>'+
                 '<span class="playcount fl">'+pcount+'</span>'+
                 '<span class="episodes fl">'+msize+'</span>'+
                 '<span class="time fl">'+cptime+'</span>'+
@@ -624,7 +511,7 @@ $(function(){
       }else{
         $(".dcbl_con_tag1s").eq(i).html("<li>暂无</li>");
       }
-      if(resultData.ResultInfo.List[i].ContentPubChannels){//有待修改
+      if(resultData.ResultInfo.List[i].ContentPubChannels){
         for(var j=0;j<resultData.ResultInfo.List[i].ContentPubChannels.length;j++){
           var span='<span class="dcbl_con_channel fl" chId='+resultData.ResultInfo.List[i].ContentPubChannels[j].ChannelId+'>'+resultData.ResultInfo.List[i].ContentPubChannels[j].ChannelName+'</span>';
           $(".channels").eq(i).append(span);
@@ -638,9 +525,23 @@ $(function(){
   /*点击专辑名称--进入专辑详情页*/
   $(".dcbl_con_p").on("click",function(){
     var contentid=$(this).attr("contentId");
-    $("#myIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+    $("#myIframe", parent.document).attr({"src":"anchorManage/an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
   });
- 
+  
+  /*点击身份证照片放大*/
+  var flag=true;//true为正常状态,false为放大状态
+  $(".idPic").on("click",function(){
+    if(flag){//图片为正常状态
+      flag=false;
+      $(this).css({"width":"380px","height":"190px"});
+      $(this).children(".imgEnlarge").addClass("dis");
+    }else{
+      flag=true;
+      $(this).css({"width":"100px","height":"100px"});
+      $(this).children(".imgEnlarge").removeClass("dis");
+    }
+  });
+  
 });
 </script>
 </html>

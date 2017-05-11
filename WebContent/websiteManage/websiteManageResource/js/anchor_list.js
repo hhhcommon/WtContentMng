@@ -2,11 +2,23 @@ $(function(){
   var rootPath=getRootPath();
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
+  var pageSize=10;//每页显示的记录数量
   var data1={};
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchKey="";//搜索关键词
   var anchorFy=1;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
   var userId="123";
+  
+  /*主播禁言状态的下拉菜单的切换*/
+  $(".dropdown").on("click",function(){
+    if($(this).siblings(".dropdown_menu").hasClass("dis")){
+      $(this).children("img").attr({"src":"../websiteManageResource/img/filter1.png"});
+      $(this).siblings(".dropdown_menu").removeClass("dis");
+    }else{
+      $(this).children("img").attr({"src":"../websiteManageResource/img/filter2.png"});
+      $(this).siblings(".dropdown_menu").addClass("dis");
+    }
+  });
   
   /*获取主播的四个状态*/
   data1.UserId=userId;
@@ -29,11 +41,11 @@ $(function(){
             $(".dropdown_menu").append(li);
           }
         }else{
-          alert("错误信息："+resultData.Message);
+          alert("获取主播的状态失败:"+resultData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("获取主播的状态发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -41,7 +53,7 @@ $(function(){
   /*获取主播列表*/
   var data2={};
   data2.UserId=userId;
-  data2.PageSize="10";
+  data2.PageSize=pageSize;
   data2.Page=current_page;
   getPersonsList(data2);
   function getPersonsList(dataParam){
@@ -51,42 +63,45 @@ $(function(){
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
-      beforeSend: function(){
-        $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
+      beforeSend:function(){
+        $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载主播列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
+        $(".ric_con2_content").html(" ");
+        $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+        $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
         if(resultData.ReturnType=="1001"){
-          clear();
           allCount=resultData.ResultInfo.Count;
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
           loadPersonList(resultData);//加载主播列表
         }else{
-          $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到相关信息</div>");
+          $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到主播列表...</div>");
           allCount="0";
-          contentCount=(allCount%10==0)?(allCount/10):(Math.ceil(allCount/10));
         }
+        contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,dataParam.Page);//初始化翻页插件
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("加载主播列表发生错误:"+ jqXHR.status);
+        $('.shade', parent.document).hide();
       }
     });
   }
   function loadPersonList(resultData){
     for(var i=0;i<resultData.ResultInfo.List.length;i++){
-      var recovetime=resultData.ResultInfo.List[i].RecoverTime;
+      if(resultData.ResultInfo.List[i].RecoverTime) var recovetime=resultData.ResultInfo.List[i].RecoverTime;
+      else  var recovetime="0";
       recovetime=new Date(parseInt(recovetime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");  
-      var perId=(resultData.ResultInfo.List[i].PersonId)?(resultData.ResultInfo.List[i].PersonId):("主播ID");
-      var phNum=(resultData.ResultInfo.List[i].PhoneNum)?(resultData.ResultInfo.List[i].PhoneNum):("000000000000");
-      var perName=(resultData.ResultInfo.List[i].PersonName)?(resultData.ResultInfo.List[i].PersonName):("昵称");
-      var reaName=(resultData.ResultInfo.List[i].RealName)?(resultData.ResultInfo.List[i].RealName):("真实姓名");
-      var idNumber=(resultData.ResultInfo.List[i].IDNumber)?(resultData.ResultInfo.List[i].IDNumber):("身份证号");
-      var perSource=(resultData.ResultInfo.List[i].PersonSource)?(resultData.ResultInfo.List[i].PersonSource):("来源");
-      var perStatus=(resultData.ResultInfo.List[i].PersonStatus)?(resultData.ResultInfo.List[i].PersonStatus):("主播状态");
+      var perId=(resultData.ResultInfo.List[i].PersonId)?(resultData.ResultInfo.List[i].PersonId):("Id");
+      var phNum=(resultData.ResultInfo.List[i].PhoneNum)?(resultData.ResultInfo.List[i].PhoneNum):("###########");
+      var perName=(resultData.ResultInfo.List[i].PersonName)?(resultData.ResultInfo.List[i].PersonName):("暂无");
+      var reaName=(resultData.ResultInfo.List[i].RealName)?(resultData.ResultInfo.List[i].RealName):("未知");
+      var idNumber=(resultData.ResultInfo.List[i].IDNumber)?(resultData.ResultInfo.List[i].IDNumber):("XXXXXXXXXXXXXXXXXXX");
+      var perSource=(resultData.ResultInfo.List[i].PersonSource)?(resultData.ResultInfo.List[i].PersonSource):("未知");
+      var perStatus=(resultData.ResultInfo.List[i].PersonStatus)?(resultData.ResultInfo.List[i].PersonStatus):("暂无");
       var li= '<li class="ric_cc_listBox fl" psId='+resultData.ResultInfo.List[i].PersonStatusId+'>'+
-                '<img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
+                '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>'+
                 '<span class="fl ellipsis per1">'+perId+'</span>'+
                 '<span class="fl ellipsis per2">'+phNum+'</span>'+
                 '<span class="fl c07 ellipsis person_name per3" perid='+perId+'>'+perName+'</span>'+
@@ -197,13 +212,10 @@ $(function(){
   function opts(seaFy,anchorFy,current_page){
     destroy(data2);
     data2.UserId=userId;
-    data2.PageSize="10";
+    data2.PageSize=pageSize;
+    data2.Page=current_page;
     if(seaFy==2){//seaFy=2搜索列表加载出来后翻页
-      current_page=1;
-      data2.Page=current_page;
       data2.SearchWord=$.trim($(".ri_top_li2_inp").val());
-    }else{
-      data2.Page=current_page;
     }
     if(anchorFy==2){//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
       $(".dropdown_menu li").each(function(){
@@ -232,22 +244,13 @@ $(function(){
     searchWord=$.trim($(".ri_top_li2_inp").val());
     destroy(data2);
     data2.UserId=userId;
-    data2.PageSize="10";
+    data2.PageSize=pageSize;
     current_page="1";
     data2.Page=current_page;
-    if(searchWord==""){
-      alert("请输入搜索内容");
-      $(".ri_top_li2_inp").focus();
-      return;
-    }else{
-      data2.SearchWord=searchWord;
-    }
-    $(".dropdown_menu li").each(function(){
+    if(searchWord!="") data2.SearchWord=searchWord;
+    $(".dropdown_menu li").each(function(){ 
       if($(this).hasClass("selected")){
-        anchorFy=2;
-        data2.StatusType=$(this).attr("catalogId");
-        return false;
-      }else{//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
+        $(this).removeClass("selected");
         anchorFy=1;
       }
     });
@@ -258,32 +261,28 @@ $(function(){
   /*点击主播昵称--进入主播详情页*/
   $(document).on("click",".person_name",function(){
     var perid=$(this).attr("perid");
-    $("#myIframe", parent.document).attr({"src":"anchor_detail.html?personId="+perid});
+    $("#myIframe", parent.document).attr({"src":"anchorManage/anchor_detail.html?personId="+perid});
   });
   
   /*选中不同状态的主播--进行筛选*/
   $(".dropdown_menu").on("click","li",function(){
     destroy(data2);
     data2.UserId=userId;
-    data2.PageSize="10";
+    data2.PageSize=pageSize;
     current_page="1";
     data2.Page=current_page;
     if($.trim($(".ri_top_li2_inp").val())){
       data2.SearchWord=$.trim($(".ri_top_li2_inp").val());
+      seaFy=2;
     }
     anchorFy=2;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
     data2.StatusType=$(this).attr("catalogId");
     getPersonsList(data2);
     $(this).parent(".dropdown_menu").addClass("dis");
-    $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"img/filter2.png"});
+    $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"../websiteManageResource/img/filter2.png"});
     $(this).addClass("selected").siblings("li").removeClass("selected");
   });
-  
-  /*清空*/
-  function clear(){
-    $(".ric_con2_content").html(" ");
-    $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-  }
+
   /*销毁obj对象的key-value*/
   function destroy(obj){
     for(var key in obj){//清空对象
@@ -294,39 +293,60 @@ $(function(){
   /*s--改变主播的状态*/
   /*点击全选*/
   $(document).on("click",".all_check",function(){
-    if($(this).hasClass("checkbox1")){
-      $(".checkbox_img").attr({"src":"img/checkbox2.png"});
-      $(this).removeClass("checkbox1");
-      $(".ric_con2_content .ric_cc_listBox").each(function(){
-        $(this).children(".ric_img_check").removeClass("checkbox1");
-      });
-      $(".ric_con1 button").removeAttr("disabled");
-      $(".gay_week").css({"color":"#fff","background":"#f60"});
-      $(".gay_month").css({"color":"#fff","background":"#0077c7"});
-      $(".gay_forever").css({"color":"#fff","background":"darkred"});
-      $(".gay_revoke").css({"color":"#fff","background":"darkgreen"});
-    }else{
-      $(".checkbox_img").attr({"src":"img/checkbox1.png"});
-      $(this).addClass("checkbox1");
-      $(".ric_con2_content .ric_cc_listBox").each(function(){
-        $(this).children(".ric_img_check").addClass("checkbox1");
-      });
-      $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+    var ll=$(".ric_con2_content").has(".ric_cc_listBox").length;
+    if(ll==true){
+      if($(this).hasClass("checkbox1")){
+        $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox2.png"});
+        $(this).removeClass("checkbox1");
+        $(".ric_con2_content .ric_cc_listBox").each(function(){
+          $(this).children(".ric_img_check").removeClass("checkbox1");
+        });
+        $(".ric_con1 button").removeAttr("disabled");
+        $(".gay_week").css({"color":"#fff","background":"#f60"});
+        $(".gay_month").css({"color":"#fff","background":"#0077c7"});
+        $(".gay_forever").css({"color":"#fff","background":"darkred"});
+        $(".gay_revoke").css({"color":"#fff","background":"darkgreen"});
+      }else{
+        $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"});
+        $(this).addClass("checkbox1");
+        $(".ric_con2_content .ric_cc_listBox").each(function(){
+          $(this).children(".ric_img_check").addClass("checkbox1");
+        });
+        $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+      }
     }
   });
   
   /*点击单个勾选框*/
   $(document).on("click",".ric_img_check",function(){
+    var num=0;
+    var l=$(".ric_con2_content .ric_cc_listBox .ric_img_check").length;
     if($(this).hasClass("checkbox1")){
-      $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+      $(this).attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
       $(".ric_con1 button").removeAttr("disabled");
       $(".gay_week").css({"color":"#fff","background":"#f60"});
       $(".gay_month").css({"color":"#fff","background":"#0077c7"});
       $(".gay_forever").css({"color":"#fff","background":"darkred"});
       $(".gay_revoke").css({"color":"#fff","background":"darkgreen"});
+      $(".ric_con2_content .ric_cc_listBox .ric_img_check").each(function(){//是否选中全选
+        if($(this).hasClass("checkbox1")){
+          
+        }else{
+          num++;
+        }
+      });
+      if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox2.png"});
     }else{
-      $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-      $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+      $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
+      $(".ric_con2_content .ric_cc_listBox .ric_img_check").each(function(){//是否选中全选
+        if($(this).hasClass("checkbox1")){
+          
+        }else{
+          num++;
+        }
+      });
+      if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
+      if(num==0) $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
     }
   });
   
@@ -352,28 +372,28 @@ $(function(){
       data3.StatusType=statusType;
       $.ajax({
         type:"POST",
-        url:rootPath+"CM/person/updatePersonStatus.do",
+        url:rootPath+"person/updatePersonStatus.do",
         dataType:"json",
         cache:false, 
         data:JSON.stringify(data3),
-        beforeSend: function(){
-          $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;line-height:40px;'>正在加载节目列表...</div>");
+        beforeSend:function(){
+          $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载主播列表...</div>");
           $('.shade', parent.document).show();
         },
         success:function(resultData){
           if(resultData.ReturnType=="1001"){
             getPersonsList(data2);//获取主播列表
           }else{
-            $(".ric_con2_content").html("<div style='text-align:center;height:300px;line-height:200px;'>没有找到相关信息</div>");
+            $(".ric_con2_content").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到主播列表...</div>");
           }
           $('.shade', parent.document).hide();
         },
         error:function(jqXHR){
-          alert("发生错误："+ jqXHR.status);
+          alert("更新主播状态发生错误:"+ jqXHR.status);
+          $('.shade', parent.document).hide();
         }
       });
     }
   });
-    
   /*e--改变主播的状态*/
 });

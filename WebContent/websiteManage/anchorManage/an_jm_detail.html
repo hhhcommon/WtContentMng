@@ -2,19 +2,18 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>节目管理(主播--节目详情)</title>
+  <title>主播的节目详情</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="keywords" content="我听，我享听">                                                              
   <meta name="description" content="我听，我享听">
-  <link href="../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
-  <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="css/globalplayer.css" rel="stylesheet">
-  <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-  <script src="../resources/js/common.utils.js"></script>
-  <script src="../resources/js/context.utils.js"></script>
+  <link href="../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../../resources/js/common.utils.js"></script>
+  <script src="../../resources/js/context.utils.js"></script>
 </head>
 <style>
 *{margin: 0;padding: 0;}
@@ -46,7 +45,7 @@ body{overflow: auto;background: #fff;}
   line-height: 40px;
   color: #000;
   font-size: 14px;
-  padding-left: 20px;
+  padding: 0px 20px;
   border-bottom: 1px solid #dedede;
 }
 .title_more{
@@ -94,6 +93,7 @@ body{overflow: auto;background: #fff;}
   height:180px;
   position: relative;
   margin-top:20px;
+  border:1px solid #dedede;
 }
 .dcl_jmcontent1 img{
   width:100%;
@@ -133,9 +133,7 @@ body{overflow: auto;background: #fff;}
   font-size:14px;
   font-weight:100;
 }
-.dcl_jmcontent2 p{
-  font-size:14px;
-}
+.dcl_jmcontent2 p{font-size:14px;}
 .dcl_jmcontent2 p span{
   font-size:14px;
   color:#000;
@@ -155,9 +153,7 @@ body{overflow: auto;background: #fff;}
   overflow: hidden;
   position: relative;
 }
-.tagss span{
-  float: left;
-}
+.tagss span{float: left;}
 .dcl_jmcontent2 ul{
   overflow: hidden;
 }
@@ -170,8 +166,6 @@ body{overflow: auto;background: #fff;}
 .dcl_jmcontent2 .act li{
   height: 27px;
   line-height: 27px;
-  background: url("img/auto.png");
-  background-position: 0 -118px;
   float: left;
   position: relative;
   margin:0px 20px 0px 0px;
@@ -179,12 +173,9 @@ body{overflow: auto;background: #fff;}
   cursor: pointer;
 }
 .dcl_jmcontent2 .act li span{
-  background: url("img/auto.png");
-  background-position:right -118px;
   padding-right:8px;
   display: inline-block;
   vertical-align: top !important;
-  white-space: nowrap;
   color: #000;
 }
 .dcl_jmcontent3{
@@ -202,12 +193,8 @@ body{overflow: auto;background: #fff;}
   background: #f60;
   border:none;
 }
-.revoke{
-  background: #0077c7;
-}
-.player{
-  background: #f60;
-}
+.revoke{background: #0077c7;}
+.player{background: #f60;}
 .dcl_jmcontent4{
   font-family: "微软雅黑";
   color: #000;
@@ -246,9 +233,7 @@ body{overflow: auto;background: #fff;}
   padding-right:10px;
   cursor: pointer;
 }
-.fl{
-  float: left;
-}
+.fl{float: left;}
 .list_content{
   height:360px;
   overflow-y: auto;
@@ -276,7 +261,7 @@ body{overflow: auto;background: #fff;}
   width:290px;
 }
 .list_content1_img{
-  background: url("img/btn.png") repeat;
+  background: url("../websiteManageResource/img/btn.png") repeat;
   width: 25px;
   height: 25px;
   background-size: 100%;
@@ -290,12 +275,8 @@ body{overflow: auto;background: #fff;}
   white-space: nowrap;
   margin-left: 150px;
 }
-.list_content1_span1{
-  padding-left:0px;
-}
-.list_content1_span2,.list_content1_span3{
-  margin-left:25px;
-}
+.list_content1_span1{padding-left:0px;}
+.list_content1_span2,.list_content1_span3{margin-left:25px;}
 .dc_right1{
   width:300px;
   float: left;
@@ -305,9 +286,7 @@ body{overflow: auto;background: #fff;}
   width:100%;
   margin-top:0px;
 }
-.dcr_jmlist{
-  overflow: auto;
-}
+.dcr_jmlist{overflow: auto;}
 .dcr_jmlist1{
   height: 110px;
   width: 100%;
@@ -352,9 +331,7 @@ body{overflow: auto;background: #fff;}
   height:auto;
   display: none;
 }
-#audioIframe{
-  height:100px;
-}
+#audioIframe{height:100px;}
 .locker{
   position:relative;
   margin-left: 90%;
@@ -377,7 +354,7 @@ body{overflow: auto;background: #fff;}
 <body>
 <div class="detail">
   <div class="containers">
-    <div class="detail_title">当前位置：主播管理> 主播列表> 
+    <div class="detail_title ellipsis">当前位置：主播管理> 主播列表> 
       <span class="pername"></span>
       <span class="zjname"></span>
       <span class="jmname"></span>
@@ -395,33 +372,27 @@ body{overflow: auto;background: #fff;}
               <div class="comzjs">来自专辑<span class="comZj"></span></div>
               <div class="tagss">
                 <span>标签：</span>
-                <ul class="tags">
-                  <!--<li class="newspan">自定义标签一</li>
-                  <li class="newspan">自定义标签一</li>
-                  <li class="newspan">自定义标签一</li>
-                  <li class="newspan">自定义标签一</li>
-                  <li class="newspan">自定义标签一</li>-->
-                </ul>
+                <ul class="tags"></ul>
               </div>
               <ul class="act">
                 <li class="play">
-                  <img class="play1" src="img/act1.png" alt="" />
+                  <img class="play1" src="../websiteManageResource/img/act1.png" alt="" />
                   <span class="play2"></span>
                 </li>
                 <li class="love">
-                  <img class="love1" src="img/act3.png" alt="" />
-                  <span class="love2">1</span>
+                  <img class="love1" src="../websiteManageResource/img/act3.png" alt="" />
+                  <span class="love2"></span>
                 </li>
                 <li class="download">
-                  <img class="download1" src="img/act4.png" alt="" />
+                  <img class="download1" src="../websiteManageResource/img/act4.png" alt="" />
                   <span class="download2">2</span>
                 </li>
                 <li class="share">
-                  <img class="share1" src="img/act2.png" alt="" />
+                  <img class="share1" src="../websiteManageResource/img/act2.png" alt="" />
                   <span class="share2">12</span>
                 </li>
                 <li class="intransit">
-                  <img class="intransit1" src="img/act5.png" alt="" />
+                  <img class="intransit1" src="../websiteManageResource/img/act5.png" alt="" />
                   <span class="intransit2">6</span>
                 </li>
               </ul>
@@ -440,62 +411,7 @@ body{overflow: auto;background: #fff;}
           <div class="more">更多</div>
         </div>
         <div class="dc_right">
-          <div class="dcr_jmlist">
-            <!--<div class="dcr_jmlist1">
-              <div class="list1_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="list1_con">
-                <p class="list1_con_name ellipsis">
-                  <span>双份的阳光</span>
-                </p>
-                <p class="list1_con_num ellipsis">
-                  <span>播放次数 ： </span>
-                  <span>8</span>
-                </p>
-                <p class="list1_con_time ellipsis">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-            </div>-->
-            <!--<div class="dcr_jmlist1">
-              <div class="list1_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="list1_con">
-                <p class="list1_con_name">
-                  <span>双份的阳光</span>
-                </p>
-                <p class="list1_con_num">
-                  <span>播放次数 ： </span>
-                  <span>8</span>
-                </p>
-                <p class="list1_con_time">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-            </div>-->
-            <!--<div class="dcr_jmlist1">
-              <div class="list1_img">
-                <img src="" alt="节目图片" />
-              </div>
-              <div class="list1_con">
-                <p class="list1_con_name">
-                  <span>双份的阳光</span>
-                </p>
-                <p class="list1_con_num">
-                  <span>播放次数 ： </span>
-                  <span>8</span>
-                </p>
-                <p class="list1_con_time">
-                  <span>时间 ：</span>
-                  <span>2016-10-08 10:47:35</span>
-                </p>
-              </div>
-            </div>-->
-          </div> 
+          <div class="dcr_jmlist"></div> 
         </div>
       </div>
     </div>
@@ -518,16 +434,18 @@ body{overflow: auto;background: #fff;}
   var audioList=[];//音乐播放列表
   var listNum=0;//控制播放节目的序号
   var userId="123";
+  var current_page="1";//当前页码
+  var pageSize="10";//每页列表数
 $(function(){  
   var data1={"UserId":userId,
-             "Page":"1",
-             "PageSize":"10",
+             "Page":current_page,
+             "PageSize":pageSize,
              "ContentId":audioId,
              "MediaType":"wt_MediaAsset"
   };
   /*得到节目信息*/
-  getJmDetail(data1);
-  function getJmDetail(dataParam){
+  getJmInfo(data1);
+  function getJmInfo(dataParam){
     $.ajax({
       type:"POST",
       url:rootPath+"CM/content/getContentInfo.do",
@@ -536,18 +454,18 @@ $(function(){
       cache:false,
       data:JSON.stringify(dataParam),
       success:function(resultData){
-        if(resultData.ReturnType =="1001"){
+        if(resultData.ReturnType=="1001"){
           if(dataParam.MediaType=="wt_MediaAsset"){
             fillJmDetail(resultData);//填充节目数据
           }else{
             fillJmList(resultData);//填充专辑下的节目列表
           }
         }else{
-          alert(returnData.Message);
+          alert("获取主播节目信息失败"+returnData.Message);
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("获取主播节目信息发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -571,7 +489,7 @@ $(function(){
       $(".tags").append("<li>暂无</li>");
     }
     $(".play2").text(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
-    $(".love2").text(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
+    $(".love2").text(!resultData.ContentDetail.ContentFavorite?"喜欢":(resultData.ContentDetail.ContentFavorite));
     $(".download2").text(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
     $(".share2").text(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
     $(".intransit2").text(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
@@ -582,18 +500,17 @@ $(function(){
       audioObj.playUrl=resultData.ContentDetail.ContentPlay;
       audioList.push(audioObj);
     }
-    $("#audioIframe").attr("src","globalplayer.html");
+    $("#audioIframe").attr("src","../globalplayer.html");
   }
   
   /*同专辑下的所有节目*/
   var data2={"UserId":userId,
-             "ContentFlowFlag":"2",
              "Page":"1",
              "PageSize":"10",
              "ContentId":seqId,
              "MediaType":"wt_SeqMediaAsset"
   };
-  getJmDetail(data2);
+  getJmInfo(data2);
   //填充专辑下的节目列表
   function fillJmList(resultData){
     for(var i=0;i<resultData.SubList.length;i++){
@@ -625,14 +542,14 @@ $(function(){
     var personId=$(".pername").attr("perId");
     var contentId=$(".zjname").attr("seqId");
     pername=$(".pername").attr("pername");
-    $("#myIframe", parent.document).attr({"src":"an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
+    $("#myIframe", parent.document).attr({"src":"anchorManage/an_jm_detail.html?personId="+personId+"&&zjId="+contentId+"&&jmId="+jmid+"&&perName="+pername});
   });
   
   /*点击专辑名称，跳到专辑详情页*/
   $(document).on("click",".comZj",function(){
     var personId=$(".pername").attr("perId");
     var contentid=$(".zjname").attr("seqId");
-    $("#myIframe", parent.document).attr({"src":"an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
+    $("#myIframe", parent.document).attr({"src":"anchorManage/an_zj_detail.html?personId="+personId+"&&contentId="+contentid});
   });
   
   /*点击更多--加载下一批节目*/
@@ -640,13 +557,12 @@ $(function(){
   $(".more").on("click",function(){
     moreNum++;
     var data3={"UserId":userId,
-             "ContentFlowFlag":"2",
-             "Page":moreNum,
-             "PageSize":"10",
-             "ContentId":seqId,
-             "MediaType":"wt_SeqMediaAsset"
+               "Page":moreNum,
+               "PageSize":pageSize,
+               "ContentId":seqId,
+               "MediaType":"wt_SeqMediaAsset"
     };
-    getJmDetail(data3);
+    getJmInfo(data3);
   });
   
   /*点击全部播放*/
@@ -666,7 +582,7 @@ $(function(){
       $(this).children(".locker_btn").addClass("locked");
     }
   });
-  
+    
 });
 </script>
 </html>

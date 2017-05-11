@@ -17,8 +17,8 @@ var imgStroke = (function(){
 	//构造函数   
 	function ics(){
 		canvas = null; 
-		oX = 20; /**加载时矩形左上角的 x 坐标**/
-		oY = 20; /**加载时矩形左上角的 y 坐标**/
+		oX = 100; /**加载时矩形左上角的 x 坐标**/
+		oY = 100; /**加载时矩形左上角的 y 坐标**/
 		width = 200; /**加载时初始化矩形框的宽**/
 		height = 200; /**加载时初始化矩形框的高**/
 		imageRotate = null;

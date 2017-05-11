@@ -59,6 +59,9 @@ $(function(){
         $(".tab_cont_item").eq(i).append(li_tab_ul_li);                  
       }
     }
+    //12个栏目以上,出现更多
+    if(resultData.ResultList.ChannelList.length>12) $("#channel .more1").removeClass("dis");
+    else $("#channel .more1").addClass("dis");
   }
   /*e--获取筛选条件*/
   
@@ -78,7 +81,7 @@ $(function(){
       dataType:"json",
       cache:true,
       data:JSON.stringify(obj),
-      beforeSend: function(){
+      beforeSend:function(){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;line-height:140px;min-height:230px;'>正在加载专辑列表...</div>");
         $('.shade', parent.document).show();
       },
@@ -123,7 +126,7 @@ $(function(){
                           '<span class="ctime">'+resultData.ResultList[i].CTime+'</span>'+
                         '</p>'+
                       '</div>'+
-                      '<p class="zj_st">'+resultData.ResultList[i].SubCount+'个节目'+'</p>'+
+                      '<p class="zj_st" jmnum='+resultData.ResultList[i].SubCount+'>'+resultData.ResultList[i].SubCount+'个节目'+'</p>'+
                       '<div class="op_type" id="op_Box'+i+'">'+
                         '<p class="jm_up cf60">上传节目</p>'+
                         '<p class="jm_mg cf60" hrefs="jmANDzj/manage_jm.html">节目管理</p>'+
@@ -648,6 +651,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("新增专辑发生错误:"+ jqXHR.status);
+        $(".mask_zj .btn_group input").removeAttr("disabled").css("background","#ffa634");
       }
     });
   }
@@ -728,6 +732,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("修改专辑发生错误:"+jqXHR.status);
+        $(".mask_zj .btn_group input").removeAttr("disabled").css("background","#ffa634");
       }
     });
   }
@@ -736,6 +741,7 @@ $(function(){
   /*s---批量撤回、删除专辑 */
   var lists=[];//撤回专辑
   var delList='';//删除专辑
+  var revoke=true;//revoke=true默认要撤回的专辑里面都有节目,revoke=false要撤回的专辑里面没有节目
   $(".rt_opt .opetype").on("click",function(){
     var type=$.trim($(this).attr("type"));
     $(".ri_top3_con .rtc_listBox").each(function(){
@@ -747,6 +753,10 @@ $(function(){
         lists.push(list);
         if(delList=='') delList=$(this).attr("contentid");
         else delList+=','+$(this).attr("contentid");
+        if($(this).children(".zj_st").attr("jmnum")=='0'){//专辑里面没有节目不支持撤回
+          revoke=false;
+          return false;
+        }
       }
     });
     if(lists.length!=0){//选中内容
@@ -759,7 +769,7 @@ $(function(){
           data6.UserId=userId;
           data6.ContentFlowFlag="4";
           data6.UpdateList=lists;
-          commonAjax(data6,url);
+          commonAjax(revoke,data6,url);
         break;
         case "delete":
           var url="content/seq/removeSeqMedia.do";
@@ -768,40 +778,46 @@ $(function(){
           data6.MobileClass="Chrome";
           data6.UserId=userId;
           data6.ContentIds=delList;
-          commonAjax(data6,url);
+          commonAjax(revoke,data6,url);
         break;
         default:break;
       }
     }
   });
   //公共的提交、撤回、删除
-  function commonAjax(data,url){
-    $.ajax({
-      type:"POST",
-      url:rootPath+url,
-      dataType:"json",
-      data:JSON.stringify(data),
-      beforeSend:function(){
-        $(".shade",parent.document).show();
-      },
-      success:function(resultData){
-        if(resultData.ReturnType=="1001"){
-          $("body").css({"overflow":"auto"});
-          getContentList(zjData);//重新加载专辑列表
-          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
-          $("#channel .chnels").remove();
-          getFiltrates(dataF);//重新加载筛选条件
-          $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-          $(".all_check").addClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox1.png"});
-        }else{
-          alert("当前操作失败:"+resultData.Message);
+  function commonAjax(revoke,data,url){
+    if(!revoke){
+      alert("所选择的专辑里面没有节目,不支持撤回操作");
+      return false;
+    }else{
+      $.ajax({
+        type:"POST",
+        url:rootPath+url,
+        dataType:"json",
+        data:JSON.stringify(data),
+        beforeSend:function(){
+          $(".shade",parent.document).show();
+        },
+        success:function(resultData){
+          if(resultData.ReturnType=="1001"){
+            $("body").css({"overflow":"auto"});
+            getContentList(zjData);//重新加载专辑列表
+            $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+            $("#channel .chnels").remove();
+            getFiltrates(dataF);//重新加载筛选条件
+            $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+            $(".all_check").addClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox1.png"});
+          }else{
+            alert("当前操作失败:"+resultData.Message);
+          }
+          $(".shade",parent.document).hide();
+        },
+        error:function(jqXHR){
+          alert("当前操作发生错误:"+ jqXHR.status);
+          $(".shade",parent.document).hide();
         }
-        $(".shade",parent.document).hide();
-      },
-      error:function(jqXHR){
-        alert("当前操作发生错误:"+ jqXHR.status);
-      }
-    });
+      });
+    }
   }
   /*e---批量撤回、删除专辑 */
   
@@ -822,8 +838,8 @@ $(function(){
         }
       }
     },
-    error: function(XHR){
-      alert("发生错误" + jqXHR.status);
+    error: function(jqXHR){
+      alert("加载栏目树发生错误:" + jqXHR.status);
     }
   });
   //得到专辑栏目列表

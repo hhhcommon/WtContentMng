@@ -13,6 +13,7 @@ body{overflow: auto;-moz-user-select: none; }
   width:1084px;
   min-width:780px;
   height:auto;
+  background: #fff;
   border:1px solid #dedede;
 }
 .content .containers .row{
@@ -46,9 +47,7 @@ body{overflow: auto;-moz-user-select: none; }
   font-size: 14px;
   padding-left: 6px;
 }
-.dis{
-  display: none;
-}
+.dis{display: none;}
 .ri_top_li2_img{
   position: absolute;
   top: 23px;
@@ -116,7 +115,7 @@ body{overflow: auto;-moz-user-select: none; }
 }
 .attrValues .av-gather{
   overflow: hidden;
-  margin-bottom:0px;
+  margin:0px 0px 0px 10px;
 }
 #album .av_ul{
   min-height:40px;
@@ -124,7 +123,7 @@ body{overflow: auto;-moz-user-select: none; }
 .trig_item{
   display: block;
   float: left;
-  margin-left:16px;
+  margin-right:16px;
   height:40px;
   line-height: 40px;
   white-space: nowrap;
@@ -154,9 +153,6 @@ body{overflow: auto;-moz-user-select: none; }
   height:40px;
   line-height:40px;
   margin-left:20px;
-}
-.con_right ul{
-  margin-bottom:0px;
 }
 /*列表展示区域*/
 .ri_top3{

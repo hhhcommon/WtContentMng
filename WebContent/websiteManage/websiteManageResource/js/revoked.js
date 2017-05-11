@@ -266,7 +266,7 @@ $(function(){
       },
       success:function(resultData){
         $(".ri_top3_con").html("");
-        $(".all_check").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+        $(".all_check").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
         $(".jmsum").text(" ").addClass("dis");
         $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
@@ -372,7 +372,7 @@ $(function(){
       },
       success:function(resultData){
         $(".ri_top3_con").html("");
-        $(".all_check").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+        $(".all_check").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
         $(".jmsum").text(" ").addClass("dis");
         $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
@@ -387,7 +387,7 @@ $(function(){
         pagitionInit(contentCount,allCount,data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
+      error:function(jqXHR){
         alert("发生错误："+ jqXHR.status);
       }
     });
@@ -398,7 +398,7 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var listBox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
-                    '<img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
+                    '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                     '<div class="rtcl_img fl">'+
                       '<img src="" alt="内容图片" />'+
                       '<div class="btn_player dis">'+
@@ -425,7 +425,7 @@ $(function(){
                   '</div>';
       $(".ri_top3_con").append(listBox);
       if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultList[i].ContentImg);
-      else $(".rtcl_img img").eq(i).attr("src","http://wotingfm.com:908/CM/resources/images/default.png");
+      else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
       $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
         $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑：《未知》");
@@ -466,7 +466,7 @@ $(function(){
       contenttime=new Date(parseInt(contenttime)).toLocaleString('chinese',{hour12:false}).replace(/\//g, "-");
       $(".audio_time").eq(i).text((contenttime)?(contenttime):"0000-00-00:00:00:00");
     }
-    $("#audioIframe").attr("src","globalplayer.html");
+    $("#audioIframe").attr("src","../globalplayer.html");
   }
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
@@ -506,12 +506,12 @@ $(function(){
   /*s--点击内容名字，进入内容详情*/
   $(document).on("click",".rtcl_con_p",function(){
     var mediaType=$(this).siblings(".sequ_num").attr("mediatype");
-    var contentId=$(this).parent(".rtcl_con").siblings(".opetype1").attr("contentId");
+    var contentId=$(this).parent(".rtcl_con").parent(".rtc_listBox").attr("contentId");
     if(mediaType=="wt_MediaAsset"){//节目
       var seqId=$(this).siblings(".sequ_num").attr("seqId");
-      $("#myIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+      $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
     }else if(mediaType=="wt_SeqMediaAsset"){//专辑
-      $("#myIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
+      $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
     }
   });
   /*e--点击内容名字，进入内容详情*/
