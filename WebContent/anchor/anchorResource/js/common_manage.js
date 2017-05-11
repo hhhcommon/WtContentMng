@@ -564,7 +564,7 @@ $(function(){
           getTime();
           $(".uploadStatus").show();
         }else{
-          alert(resultData.err);
+          alert("上传声音失败:"+resultData.err);
         }
         $(".btn_group input[type='button']").removeAttr("disabled").css("background","#ffa634");
       },
@@ -631,8 +631,8 @@ $.ajax({
 //      alert("得到专辑列表失败，请刷新页面重新加载");
     }
   },
-  error:function(XHR){
-    alert("发生错误："+ jqXHR.status);
+  error:function(jqXHR){
+    alert("获取专辑列表发生错误："+ jqXHR.status);
   }
 });
 //加载专辑列表
@@ -656,14 +656,14 @@ $.ajax({
   dataType:"json",
   data:JSON.stringify(data3),
   success:function(resultData){
-    if(resultData.ReturnType == "1001"){
+    if(resultData.ReturnType=="1001"){
       getArtMethodList(resultData); //得到创作方式列表
     }else{
-//      alert("得到创作方式失败，请刷新页面重新加载");
+//    alert("得到创作方式失败，请刷新页面重新加载");
     }
   },
-  error:function(XHR){
-    alert("发生错误："+ jqXHR.status);
+  error:function(jqXHR){
+    alert("获取创作方式发生错误:"+ jqXHR.status);
   }
 });
 //得到创作方式列表
@@ -868,12 +868,12 @@ $(function(){
               $(".previewImg").append(newImg);
             } 
           }else{
-            alert(resultData.err);
+            alert("图片裁剪上传失败:"+resultData.err);
           }
           $(".action1 #btnSave").removeAttr("disabled").css("background","#ffa634");
         },
-        error: function(XHR){
-          alert("发生错误" + jqXHR.status);
+        error: function(jqXHR){
+          alert("图片裁剪上传发生错误:" + jqXHR.status);
         }
       });
     }
