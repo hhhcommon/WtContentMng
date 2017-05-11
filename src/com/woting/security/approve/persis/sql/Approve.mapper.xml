@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PLAT_APPROVE">
+  
+  <!-- 对象定义:用户扩展 -->
+  <resultMap id="UserExtMap" type="UserExt">
+    <id      column="userid"        property="userid"        jdbcType="VARCHAR"/>
+    <result  column="iDCard"        property="iDCard"        jdbcType="VARCHAR"/>
+    <result  column="frontImg"      property="frontImg"      jdbcType="VARCHAR"/>
+    <result  column="reverseImg"    property="reverseImg"    jdbcType="VARCHAR"/>
+    <result  column="mixImg"        property="mixImg"        jdbcType="VARCHAR"/>
+    <result  column="anchorCardImg" property="anchorCardImg" jdbcType="VARCHAR"/>
+    <result  column="cTime"         property="cTime"         jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <!-- 所有列 -->
+  <sql id="Base_User_Ext_List">
+    userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, cTime
+  </sql>
+  
+  <!-- 对象定义:用户发起主播认证进程 -->
+  <resultMap id="UserProgressMap" type="UserProgress">
+    <id      column="Id"          property="Id"          jdbcType="VARCHAR"/>
+    <result  column="userid"      property="userid"      jdbcType="VARCHAR"/>
+    <result  column="checkerId"   property="checkerId"   jdbcType="VARCHAR"/>
+    <result  column="applyRoleId" property="applyRoleId" jdbcType="VARCHAR"/>
+    <result  column="reStatus"    property="reStatus"    jdbcType="INTEGER"/>
+    <result  column="applyDescn"  property="applyDescn"  jdbcType="VARCHAR"/>
+    <result  column="reDescn"     property="reDescn"     jdbcType="VARCHAR"/>
+    <result  column="cTime"       property="cTime"       jdbcType="TIMESTAMP"/>
+    <result  column="ModifyTime"  property="ModifyTime"  jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <!-- 所有列 -->
+  <sql id="Base_User_Progress_List">
+    Id, userid, checkerId, applyRoleId, reStatus, applyDescn, reDescn, cTime, ModifyTime
+  </sql>
+</mapper>
