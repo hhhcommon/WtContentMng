@@ -1110,7 +1110,7 @@ public class QueryService {
 			String assetIds = "";
 			for (Map<String, Object> m : ls) {
 				Map<String, Object> chm = new HashMap<>();
-				chm.put("FlowFlage", m.get("flowFlag"));
+				chm.put("FlowFlag", m.get("flowFlag"));
 				chm.put("ChannelName",m.get("channelName"));
 				chm.put("PubTime", m.get("pubTime"));
 				chm.put("ChannelId", m.get("channelId"));
