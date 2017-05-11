@@ -9,12 +9,16 @@ var overChannel=false;
 var userId=$(".login_user span",parent.document).attr("userid");
 
 $(document).on("click",".more1",function(){//点击更多
-  if($("#channel").children(".attrValues").children("ul").hasClass("h40")){
-    $("#channel").children(".attrValues").children("ul").removeClass("h40");
+  if($(this).siblings(".attrValues").children("ul").hasClass("h40")){
+    $(this).siblings(".attrValues").children("ul").removeClass("h40");
     $(this).children("span").text("收起");
+    var sh=$(this).siblings(".attrValues").height();
+    $(this).siblings(".attrKey").css("height",sh+"px");
   }else{
-    $("#channel").children(".attrValues").children("ul").addClass("h40");
+    $(this).siblings(".attrValues").children("ul").addClass("h40");
     $(this).children("span").text("更多");
+    var sh=$(this).siblings(".attrValues").height();
+    $(this).siblings(".attrKey").css("height",sh+"px");
   }
 });
 $(document).on("click",".more3",function(){//点击多选
@@ -164,11 +168,11 @@ $(document).on("mouseenter","#channel .chnel",function(){//鼠标放在一级栏
       $(".chnels").hide();
       $("#channel .chnel").removeClass("trig_curr");
       $("#channel .chnel[data_idx="+pid+"]").addClass("trig_curr");
-      if(pid>=0&&pid<=9){
+      if(pid>=0&&pid<=11){
         $(this).css({"top":"39px"}).show();
-      }else if(pid>=10&&pid<=19){
+      }else if(pid>=12&&pid<=23){
         $(this).css({"top":"79px"}).show();
-      }else if(pid>=20&&pid<=29){
+      }else if(pid>=24&&pid<=35){
         $(this).css({"top":"119px"}).show();
       }else{
         $(this).css({"top":"159px"}).show();
@@ -219,31 +223,29 @@ $(document).on("click",".trig_item_li",function(){//选中一级栏目里面的�
   if($(".all").is(':hidden')) $(".all").show();
 });
 
-//$(function(){
-  /*底部footer显示/隐藏*/
-  $(window).on("scroll", function(){ 
-    var sTop = $(window).scrollTop();  
-    var sTop = parseInt(sTop);  
-    if(sTop >= 10){ 
-      if(!$('.footer', parent.document).is(":visible")){ 
-        $('.wrapper', parent.document).css({"height":"64%"});
-        $('.footer', parent.document).show();
-      }  
-    }else{  
-      if($('.footer', parent.document).is(":visible")){  
-        $('.footer', parent.document).hide();
-        $('.wrapper', parent.document).css({"height":"84%"});
-      }  
-    }
-  }); 
-  //点击footer_hide，footer隐藏
-  $('.footer_hide', parent.document).on("click",function(){
-//  $('.wrapper', parent.document).css({"height":"84%"});
-    $('.wrapper').css({"height":"84%"});
-    $('.footer').hide();
-    $(window).scrollTop("0px");
-  });
-//});
+/*底部footer显示/隐藏*/
+$(window).on("scroll", function(){ 
+  var sTop = $(window).scrollTop();  
+  var sTop = parseInt(sTop);  
+  if(sTop >= 10){ 
+    if(!$('.footer', parent.document).is(":visible")){ 
+      $('.wrapper', parent.document).css({"height":"64%"});
+      $('.footer', parent.document).show();
+    }  
+  }else{  
+    if($('.footer', parent.document).is(":visible")){  
+      $('.footer', parent.document).hide();
+      $('.wrapper', parent.document).css({"height":"84%"});
+    }  
+  }
+}); 
+//点击footer_hide，footer隐藏
+$('.footer_hide', parent.document).on("click",function(){
+  $('.wrapper').css({"height":"84%"});
+  $('.footer').hide();
+  $(window).scrollTop("0px");
+});
+
 //销毁obj对象的key-value
 function destroy(obj){
   for(var key in obj){//清空对象
@@ -476,7 +478,7 @@ function loadTag(data){
       }
     },
     error:function(jqXHR){
-      alert("发生错误："+ jqXHR.status);
+      alert("获取标签发生错误:"+ jqXHR.status);
     }
   });
 }
@@ -566,8 +568,8 @@ $(function(){
         }
         $(".btn_group input[type='button']").removeAttr("disabled").css("background","#ffa634");
       },
-      error: function(XHR){
-        alert("发生错误" + jqXHR.status);
+      error: function(jqXHR){
+        alert("上传声音发生错误:" + jqXHR.status);
       }
     });
     var jqObj=$(".add_jm .upl_file");
@@ -809,7 +811,7 @@ $(function(){
     reader.onload=function(){ 
       // 通过 reader.result 来访问生成的 DataURL
       var url=reader.result;
-      ics.init({"canvasId":"myCanvas","url":url,"x":20,"y":20});
+      ics.init({"canvasId":"myCanvas","url":url,"x":100,"y":100});
       demo_report();
     };       
     reader.readAsDataURL($(".picFile")[0].files[0]);

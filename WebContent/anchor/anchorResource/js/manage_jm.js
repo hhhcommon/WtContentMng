@@ -61,15 +61,30 @@ $(function(){
         $(".tab_cont_item").eq(i).append(li_tab_ul_li);                  
       }
     }
+    if(resultData.ResultList.ChannelList.length>12){//12个栏目以上,出现更多
+      $("#channel .more1").removeClass("dis");
+    }else{
+      $("#channel .more1").addClass("dis");
+    }
   }
   //得到专辑的筛选标签
   function getAlbumLabel(resultData){
+    var albumW=0;//记录专辑名称的长度
     for(var i=0;i<resultData.ResultList.SeqMediaList.length;i++){
-      var filterAlbum='<li class="trig_item" id='+resultData.ResultList.SeqMediaList[i].PubId+'>'+
+      var filterAlbum='<li class="trig_item albumli" id='+resultData.ResultList.SeqMediaList[i].PubId+'>'+
                         '<div class="check_cate"></div>'+
                         '<a class="ss1" href="javascript:void(0)">'+resultData.ResultList.SeqMediaList[i].PubName+'</a>'+
                       '</li>';
-      $("#album .attrValues .av_ul").append(filterAlbum);                
+      $("#album .attrValues .av_ul").append(filterAlbum);
+      var ml=$(".albumli").eq(i).css('marginRight').replace("px","");
+      ml=parseFloat(ml);
+      if(albumW==0) albumW=$(".albumli").eq(i).width()+ml;
+      else albumW+=$(".albumli").eq(i).width()+ml;
+    }
+    if(albumW>$("#album .attrValues").width()){
+      $("#album .more1").removeClass("dis");
+    }else{
+      $("#album .more1").addClass("dis");
     }
   }
   //得到节目的状态标签

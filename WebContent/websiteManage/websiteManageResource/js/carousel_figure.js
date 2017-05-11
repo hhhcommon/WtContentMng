@@ -64,8 +64,8 @@ $(function(){
     if(ll==true){
       var l=$(".ri_top3_con .rtc_listBox .rtcl_img_check").length;
       if($(this).hasClass("checkbox1")){
-        $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
-        $(".ri_top3_con .rtc_listBox .checkbox_img").attr({"src":"img/checkbox2.png"});
+        $(this).attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
+        $(".ri_top3_con .rtc_listBox .checkbox_img").attr({"src":"../websiteManageResource/img/checkbox2.png"});
         $(".ri_top3_con .rtc_listBox").each(function(){
           $(this).children(".rtcl_img_check").removeClass("checkbox1");
         });
@@ -75,7 +75,7 @@ $(function(){
         $(".jmsum").text("你已经选择了"+l+"个内容").removeClass("dis");
       }else{
         $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
-        $(".ri_top3_con .rtc_listBox .checkbox_img").attr({"src":"img/checkbox1.png"});
+        $(".ri_top3_con .rtc_listBox .checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"});
         $(".ri_top3_con .rtc_listBox").each(function(){
           $(this).children(".rtcl_img_check").addClass("checkbox1");
         }); 
@@ -93,7 +93,7 @@ $(function(){
     var num=0;
     var l=$(".ri_top3_con .rtc_listBox .rtcl_img_check").length;
     if($(this).hasClass("checkbox1")){
-      $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+      $(this).attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
       $(".opetype").removeAttr("disabled").css({"color":"#fff"});
       $(".rto_pass,.opetype").css({"background":"#0077c7"});
       $(".rto_nopass,.rto_del").css({"background":"darkred"});
@@ -104,10 +104,10 @@ $(function(){
           num++;
         }
       });
-      if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"img/checkbox2.png"});
+      if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox2.png"});
       $(".jmsum").text("你已经选择了"+num+"个内容").removeClass("dis");
     }else{
-      $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+      $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
       $(".ri_top3_con .rtc_listBox .rtcl_img_check").each(function(){//是否选中全选
         if($(this).hasClass("checkbox1")){
           
@@ -115,7 +115,7 @@ $(function(){
           num++;
         }
       });
-      if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+      if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
       if(num==0){
         $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         $(".jmsum").addClass("dis");
@@ -129,9 +129,9 @@ $(function(){
   /*s--弹出页面上的勾选框相关操作*/
   $(document).on("click",".nc_checkimg",function(){
     if($(this).hasClass("checkbox1")){
-      $(this).attr({"src":"img/checkbox2.png"}).removeClass("checkbox1");
+      $(this).attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
     }else{
-      $(this).attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+      $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
     }
   });
   /*e--弹出页面上的勾选框相关操作*/
@@ -515,7 +515,6 @@ $(function(){
       url:rootPath+"content/getContents.do",
       dataType:"json",
       cache:false,
-//    async:false,
       data:JSON.stringify(data),
       beforeSend:function(){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
@@ -537,6 +536,7 @@ $(function(){
       },
       error:function(jqXHR){
         $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -547,7 +547,7 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var listBox='<div class="rtc_listBox">'+
-                '<img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
+                '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                 '<div class="rtcl_img fl">'+
                   '<img src="" alt="节目图片" />'+
                   '<div class="btn_player dis">'+
@@ -562,9 +562,7 @@ $(function(){
                     '<span class="rtcl_con_desc2 fl ellipsis"></span>'+
                   '</div>'+
                 '</div>'+
-                '<ul class="rtcl_con_channel1s ellipsis fl">'+
-//                '<li class="rtcl_con_channel2">电台丛林--故事</li>'+
-                '</ul>'+
+                '<ul class="rtcl_con_channel1s ellipsis fl"></ul>'+
                 '<span class="source_form fl"></span>'+
                 '<span class="audio_time fl"></span>'+
                 '<div class="opetype1 fl" contentId='+resultData.ResultList[i].ContentId+'>'+
@@ -575,7 +573,7 @@ $(function(){
               '</div>';
       $(".ri_top3_con").append(listBox);
       if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultList[i].ContentImg);
-      else $(".rtcl_img img").eq(i).attr("src","http://wotingfm.com:908/CM/resources/images/default.png");
+      else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
       $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
         $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑：《未知》");
@@ -628,7 +626,7 @@ $(function(){
         }
       }
     }
-    $("#audioIframe").attr("src","globalplayer.html");
+    $("#audioIframe").attr("src","../globalplayer.html");
     $('.shade', parent.document).hide();
   }
   
@@ -658,8 +656,8 @@ $(function(){
           }
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到专辑信息发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -694,7 +692,7 @@ $(function(){
   function carouselImg(){
     $(".upload_pic").attr("value"," ");
     $(".newImg").remove();
-    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
+    $(".defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
     var _this=$(".upload_pic");
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(_this)[0].files[0]);
@@ -739,7 +737,8 @@ $(function(){
         $(".cm_footer").children("input[type='button']").removeAttr("disabled").css("background","#0077c7");
       },
       error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("上传文件发生错误:" + jqXHR.status);
+        $(".carouselImgMask").addClass("dis");
       }
     });
     var jqObj=$(".upload_pic");
@@ -761,12 +760,12 @@ $(function(){
     var channelid=$(".cm_content3").attr("channelid");
     var imgurl=$(".upload_pic").attr("value");
     var data5={"PCDType":"3",
-              "UserId":userId,
-              "MediaType":mediatype,
-              "ContentId":contentid,
-              "ChannelId":channelid,
-              "LoopSort":"0",
-              "ImageUrl":imgurl
+               "UserId":userId,
+               "MediaType":mediatype,
+               "ContentId":contentid,
+               "ChannelId":channelid,
+               "LoopSort":"0",
+               "ImageUrl":imgurl
     };
     $.ajax({
       url:rootPath+"content/addLoopImage.do",
@@ -781,8 +780,8 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          $(".carousel_mask").addClass("dis");
           getLoopImages(data3);//重新加载轮播图列表
+          $(".carousel_mask").addClass("dis");
         }else{
           alert("设置轮播图失败");
         }
@@ -799,7 +798,7 @@ $(function(){
     $("body").css("overflow","auto");
     $(".upload_pic").attr("value"," ");
     $(".newImg").remove();
-    $(".defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
+    $(".defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".carousel_mask").addClass("dis");
   });
   /*e--点击轮播图*/
@@ -992,11 +991,11 @@ $(function(){
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
           alert("内容撤回成功");
-          $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+          $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker").addClass("dis");
           $("body").css({"overflow":"auto"});
           $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-          $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+          $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
           getContentList(data);//再次加载内容列表
         }else{
           alert(resultData.Message);
@@ -1011,7 +1010,7 @@ $(function(){
   
   //点击撤回原因弹出页面上的关闭按钮
   $(document).on("click",".nh_span2",function(){
-    $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+    $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
     $(".nopass_masker").addClass("dis");
     $("body").css({"overflow":"auto"});
   });
@@ -1040,7 +1039,7 @@ $(function(){
           loadLoopImages(resultData);//加载轮播图列表
         }else{
           loopAllCount="0";
-          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图列表，请登录后自行添加</div>");
+          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图列表，请自行添加</div>");
         }
         loopContentCount=(loopAllCount%pageSize==0)?(loopAllCount/pageSize):(Math.ceil(loopAllCount/pageSize));
         loopPagitionInit(loopContentCount,loopAllCount,data3.Page);
@@ -1091,7 +1090,7 @@ $(function(){
                     '</div>'+
                     '<input type="file" value='+resultData.ResultList[i].ContentLoopImg+'  id="replace_pic'+i+'" class="replace_pic" style="display:none;" accept="image/gif,image/jpg,image/png"/>'+
                     '<div class="replaceImgMask dis">'+
-                      '<img src="../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />'+
+                      '<img src="../../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />'+
                     '</div>'+
                   '</div>'+
                   '<div class="lbd_box5 fl ellipsis" loopSort='+resultData.ResultList[i].LoopSort+'><'+resultData.ResultList[i].ContentName+'></div>'+

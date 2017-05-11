@@ -4,11 +4,11 @@ var type=2;//type=1点击多选,type=2未点击多选
 //点击收起筛选
 $(document).on("click",".ri_top_li3",function(){
   if($(this).children(".filter").text()=="收起筛选"){
-    $(this).children("img").attr({"src":"img/filter2.png"});
+    $(this).children("img").attr({"src":"../websiteManageResource/img/filter2.png"});
     $(this).children(".filter").text("展开筛选");
     $(".ri_top2").hide();
   }else{
-    $(this).children("img").attr({"src":"img/filter1.png"});
+    $(this).children("img").attr({"src":"../websiteManageResource/img/filter1.png"});
     $(this).children(".filter").text("收起筛选");
     $(".ri_top2").show();
   }

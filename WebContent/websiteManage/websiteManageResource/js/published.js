@@ -266,7 +266,7 @@ $(function(){
       },
       success:function(resultData){
         $(".ri_top3_con").html("");
-        $(".all_check").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+        $(".all_check").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
         $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
         if(resultData.ReturnType=="1001"){
           allCount=resultData.AllCount;
@@ -281,7 +281,8 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("得到内容列表发生错误:"+ jqXHR.status);
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -384,8 +385,9 @@ $(function(){
         pagitionInit(contentCount,allCount,data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到内容列表发生错误:"+ jqXHR.status);
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -395,7 +397,7 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var listBox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
-                '<img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
+                '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                 '<div class="rtcl_img fl">'+
                   '<img src="" alt="节目图片" />'+
                   '<div class="btn_player dis">'+
@@ -426,8 +428,8 @@ $(function(){
                 '</div>'+
               '</div>';
       $(".ri_top3_con").append(listBox);
-      if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src","resultData.ResultList[i].ContentImg");
-      else $(".rtcl_img img").eq(i).attr("src","http://wotingfm.com:908/CM/resources/images/default.png");
+      if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultList[i].ContentImg);
+      else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
       $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
         $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑：《未知》");
@@ -472,7 +474,7 @@ $(function(){
         $(".sequ_num").eq(i).attr("chIds",chIds);
       }
     }
-    $("#audioIframe").attr("src","globalplayer.html");
+    $("#audioIframe").attr("src","../globalplayer.html");
   }
   
   //如果是专辑，带到专辑的的声音列表，获取第一个声音的播放地址
@@ -501,8 +503,8 @@ $(function(){
           }
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到专辑信息发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -514,9 +516,9 @@ $(function(){
     var contentId=$(this).parent(".rtcl_con").siblings(".opetype1").attr("contentId");
     if(mediaType=="wt_MediaAsset"){//节目
       var seqId=$(this).siblings(".sequ_num").attr("seqId");
-      $("#myIframe", parent.document).attr({"src":"jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+      $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
     }else if(mediaType=="wt_SeqMediaAsset"){//专辑
-      $("#myIframe", parent.document).attr({"src":"zj_detail.html?contentId="+contentId});
+      $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
     }
   });
   /*e--点击内容名字，进入内容详情*/
@@ -601,15 +603,14 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("内容撤回成功");
-          $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+          $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker").addClass("dis");
           $("body").css("overflow-x","auto");
           $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-          $(".all_check").addClass("checkbox1").attr({"src":"img/checkbox1.png"});
+          $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
           getContentList(data);
         }else{
-          alert(resultData.Message);
+          alert("撤回内容失败:"+resultData.Message);
         }
         $('.nc_txt7').removeAttr("disabled");
       },
@@ -622,7 +623,7 @@ $(function(){
   //点击撤回原因弹出页面上的关闭按钮
   $(document).on("click",".nh_span2",function(){
     $("body").css("overflow-x","auto");
-    $(".checkbox_img").attr({"src":"img/checkbox1.png"}).addClass("checkbox1");
+    $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
     $(".nopass_masker").addClass("dis");
   });
   /*e--点击撤回相关操作*/
