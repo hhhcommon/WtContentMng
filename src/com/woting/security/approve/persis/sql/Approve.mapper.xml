@@ -19,21 +19,83 @@
     userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, cTime
   </sql>
   
+  <!-- 提交认证信息之前先查询数据库中是否已经有用户认证信息-->
+  <select id="getApproveCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(userId) from plat_User_Ext
+    where userId=#{userId,jdbcType=VARCHAR} or iDCard=#{iDCard,jdbcType=VARCHAR}
+  </select>
+
+  <!-- 新增用户认证信息 -->
+  <insert id="insertUserExt" parameterType="java.util.Map">
+    insert into plat_User_Ext
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId!=null">userId,</if>
+      <if test="iDCard!=null">iDCard,</if>
+      <if test="frontImg!=null">frontImg,</if>
+      <if test="reverseImg!=null">reverseImg,</if>
+      <if test="mixImg!=null">mixImg,</if>
+      <if test="anchorCardImg!=null">anchorCardImg,</if>
+      <if test="cTime!=null">cTime,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId!=null">#{userId,jdbcType=VARCHAR},</if>
+      <if test="iDCard!=null">#{iDCard,jdbcType=VARCHAR},</if>
+      <if test="frontImg!=null">#{frontImg,jdbcType=VARCHAR},</if>
+      <if test="reverseImg!=null">#{reverseImg,jdbcType=VARCHAR},</if>
+      <if test="mixImg!=null">#{mixImg,jdbcType=INTEGER},</if>
+      <if test="anchorCardImg!=null">#{anchorCardImg,jdbcType=CLOB},</if>
+      <if test="cTime!=null">#{cTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+  
   <!-- 对象定义:用户发起主播认证进程 -->
   <resultMap id="UserProgressMap" type="UserProgress">
-    <id      column="Id"          property="Id"          jdbcType="VARCHAR"/>
-    <result  column="userid"      property="userid"      jdbcType="VARCHAR"/>
+    <id      column="id"          property="id"          jdbcType="VARCHAR"/>
+    <result  column="userId"      property="userId"      jdbcType="VARCHAR"/>
     <result  column="checkerId"   property="checkerId"   jdbcType="VARCHAR"/>
     <result  column="applyRoleId" property="applyRoleId" jdbcType="VARCHAR"/>
-    <result  column="reStatus"    property="reStatus"    jdbcType="INTEGER"/>
+    <result  column="reState"     property="reState"     jdbcType="INTEGER"/>
     <result  column="applyDescn"  property="applyDescn"  jdbcType="VARCHAR"/>
     <result  column="reDescn"     property="reDescn"     jdbcType="VARCHAR"/>
     <result  column="cTime"       property="cTime"       jdbcType="TIMESTAMP"/>
-    <result  column="ModifyTime"  property="ModifyTime"  jdbcType="TIMESTAMP"/>
+    <result  column="modifyTime"  property="modifyTime"  jdbcType="TIMESTAMP"/>
   </resultMap>
   
   <!-- 所有列 -->
   <sql id="Base_User_Progress_List">
-    Id, userid, checkerId, applyRoleId, reStatus, applyDescn, reDescn, cTime, ModifyTime
+    id, userId, checkerId, applyRoleId, reState, applyDescn, reDescn, cTime, modifyTime
   </sql>
+  
+  <insert id="insertUserProgress" parameterType="java.util.Map">
+    insert into plat_UserProgress
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="userId!=null">userId,</if>
+      <if test="checkerId!=null">checkerId,</if>
+      <if test="applyRoleId!=null">applyRoleId,</if>
+      <if test="reState!=null">reState,</if>
+      <if test="applyDescn!=null">applyDescn,</if>
+      <if test="reDescn!=null">reDescn,</if>
+      <if test="cTime!=null">cTime,</if>
+      <if test="modifyTime!=null">modifyTime,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="userId!=null">#{userId,jdbcType=VARCHAR},</if>
+      <if test="checkerId!=null">#{checkerId,jdbcType=VARCHAR},</if>
+      <if test="applyRoleId!=null">#{applyRoleId,jdbcType=VARCHAR},</if>
+      <if test="reState!=null">#{reState,jdbcType=Integer},</if>
+      <if test="applyDescn!=null">#{applyDescn,jdbcType=VARCHAR},</if>
+      <if test="reDescn!=null">#{reDescn,jdbcType=INTEGER},</if>
+      <if test="cTime!=null">#{cTime,jdbcType=TIMESTAMP},</if>
+      <if test="modifyTime!=null">#{modifyTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+
+  <!-- 查询用户认证信息 -->
+  <select id="getUserApproveProgress" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_UserProgress
+    where userId=#{userId,jdbcType=VARCHAR} 
+    and modifyTime=(select max(modifyTime) from plat_UserProgress)
+  </select>
 </mapper>
