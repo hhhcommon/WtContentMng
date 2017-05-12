@@ -282,7 +282,8 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -338,7 +339,7 @@ $(function(){
           loadRecursion(index);
         },
         error:function(jqXHR){
-          alert("发生错误" + jqXHR.status);
+          alert("加载栏目树发生错误" + jqXHR.status);
         }
       });
     }
@@ -388,7 +389,8 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -496,8 +498,8 @@ $(function(){
           }
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("获取专辑信息发生错误："+ jqXHR.status);
       }
     });
   }
@@ -545,28 +547,26 @@ $(function(){
     });
     if(jmList!=""){
       var _urljm=rootPath+"content/media/removeMedia.do";
-      var _datajm={ "DeviceId":deviceId,
-                    "UserId":userId,
-                    "PCDType":"3",
-                    "ContentIds":jmList,
-                    "Type":"del"
+      var _datajm={"UserId":userId,
+                   "PCDType":"3",
+                   "ContentIds":jmList,
+                   "Type":"del"
       };
       optList(_urljm,_datajm);
     }
     if(zjList!=""){
       var _urlzj=rootPath+"content/seq/removeSeqMedia.do";
-      var _datazj={ "DeviceId":deviceId,
-                    "UserId":userId,
-                    "PCDType":"3",
-                    "ContentIds":zjList,
-                    "Type":"del"
+      var _datazj={"UserId":userId,
+                   "PCDType":"3",
+                   "ContentIds":zjList,
+                   "Type":"del"
       };
       optList(_urlzj,_datazj);
     }
   });
   /*e--删除内容*/
  
-  /*s--回复上架*/ 
+  /*s--恢复上架*/ 
   /*
       编辑直接发布已撤回内容的接口还没有，目前我用的是主播管理的发布接口
   * */
@@ -602,7 +602,6 @@ $(function(){
   
   //删除或重新发布已撤回内容
   function optList(_url,_data){
-    return;
     $.ajax({
       type:"POST",
       url:_url,
@@ -617,11 +616,11 @@ $(function(){
           }
           getContentList(data);//请求加载内容列表
         }else{
-          alert(returnData.Message);
+          alert("当前操作失败:"+returnData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("当前操作发生错误："+ jqXHR.status);
       }
     });
   }

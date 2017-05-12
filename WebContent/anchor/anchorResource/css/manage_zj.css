@@ -5,7 +5,6 @@ a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
 ::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
 ::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
 body{overflow: auto;-moz-user-select: none;}
-ul{margin:0px;}
 .content{
   position: relative;
   width:1084px;
@@ -257,6 +256,9 @@ ul{margin:0px;}
 }
 .rtcl_con_num{
   margin-bottom: 10px;
+}
+.jmnum{
+  margin: 0px;
 }
 .zj_st{
   float: right;

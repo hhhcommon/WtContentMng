@@ -283,7 +283,8 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -341,7 +342,7 @@ $(function(){
           loadRecursion(index);
         },
         error:function(jqXHR){
-          alert("发生错误" + jqXHR.status);
+          alert("加载栏目树发生错误:" + jqXHR.status);
         }
       });
     }
@@ -390,8 +391,9 @@ $(function(){
         pagitionInit(contentCount,allCount,data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -414,10 +416,7 @@ $(function(){
                       '<p class="sequ_name ellipsis"></p>'+
                       '<div class="tag">'+
                         '<span class="tag1 fl">标签:</span>'+
-                        '<ul class="rtcl_con_tags ellipsis fl">'+
-//                        '<li class="rtcl_con_tags1 fl">故事</li>'+
-//                        '<li class="rtcl_con_tags1 fl">电台丛林</li>'+
-                        '</ul>'+
+                        '<ul class="rtcl_con_tags ellipsis fl"></ul>'+
                       '</div>'+
                       '<div class="rtcl_con_desc">'+
                         '<span class="rtcl_con_desc1 fl">简介:</span>'+
@@ -432,7 +431,7 @@ $(function(){
       else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
       $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
-        $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑：《未知》");
+        $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑:《未知》");
         $(".sequ_num").eq(i).attr("seqId",resultData.ResultList[i].ContentSeqId);
         if(resultData.ResultList[i].ContentPlayUrl){
           var audioObj={};
@@ -445,7 +444,7 @@ $(function(){
       }
       $(".sequ_num").eq(i).attr("mediaType",resultData.ResultList[i].MediaType);
       if(resultData.ResultList[i].ContentPersons){
-        $(".sequ_name").eq(i).text((resultData.ResultList[i].ContentPersons[0].PerName)?("主播："+resultData.ResultList[i].ContentPersons[0].PerName):"主播：保密");
+        $(".sequ_name").eq(i).text((resultData.ResultList[i].ContentPersons[0].PerName)?("主播:"+resultData.ResultList[i].ContentPersons[0].PerName):"主播:保密");
       }
       if(resultData.ResultList[i].ContentPubChannels){
         var chIds="";//发布栏目的id集合
@@ -586,7 +585,7 @@ $(function(){
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("具体原因提交成功");
+          alert("提交不予发布的原因成功");
           $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
           $(".nopass_masker").hide();
           $("body").css("overflow-x","auto");
@@ -595,13 +594,14 @@ $(function(){
           $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
           getContentList(data);
         }else{
-          alert(resultData.Message);
+          alert("提交不予发布的原因失败:"+resultData.Message);
         }
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
+        alert("提交不予发布的原因发生错误:"+jqXHR.status);
+        $('.nc_txt7').removeAttr("disabled");
+      }
     });
   })
   
@@ -631,10 +631,12 @@ $(function(){
           $(".rto_play").css({"color":"#000","background":"#ddd"});
           $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
           getContentList(data);//请求加载内容列表
+        }else{
+          alert("同意发布失败:"+resultData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("同意发布发生错误:"+jqXHR.status);
       }
     });
   }

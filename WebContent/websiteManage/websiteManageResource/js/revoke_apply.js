@@ -285,7 +285,8 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -341,7 +342,7 @@ $(function(){
           loadRecursion(index);
         },
         error:function(jqXHR){
-          alert("发生错误" + jqXHR.status);
+          alert("加载栏目树发生错误：" + jqXHR.status);
         }
       });
     }
@@ -391,8 +392,9 @@ $(function(){
         pagitionInit(contentCount,allCount,data.Page);//init翻页
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -467,7 +469,7 @@ $(function(){
         }
       }
       if(resultData.ResultInfo.List[i].MediaType=='wt_MediaAsset'){//加载节目
-        $(".sequ_num").eq(i).text((resultData.ResultInfo.List[i].ContentSeqName)?("专辑:《"+resultData.ResultInfo.List[i].ContentSeqName+"》"):"专辑：《未知》");
+        $(".sequ_num").eq(i).text((resultData.ResultInfo.List[i].ContentSeqName)?("专辑:《"+resultData.ResultInfo.List[i].ContentSeqName+"》"):"专辑:《未知》");
         $(".sequ_num").eq(i).attr("seqId",resultData.ResultInfo.List[i].ContentSeqId).css("color","#0077c7");
         if(resultData.ResultInfo.List[i].ContentPlayUrl){
           var audioObj={};
@@ -478,7 +480,7 @@ $(function(){
           $(".rtc_listBox").eq(i).attr("playurlName",resultData.ResultInfo.List[i].ContentName);
         }
       }else{//加载专辑
-        $(".sequ_num").eq(i).text((resultData.ResultInfo.List[i].MediaSize)?("声音:"+ resultData.ResultInfo.List[i].MediaSize+"个声音"):"声音:  0个声音").css("color","#000");
+        $(".sequ_num").eq(i).text((resultData.ResultInfo.List[i].MediaSize)?("声音:"+ resultData.ResultInfo.List[i].MediaSize+"个声音"):"声音: 0个声音").css("color","#000");
         //如果是专辑，ajax请求获取专辑的详细信息
         var seqId=resultData.ResultInfo.List[i].ContentId;
         getSeqInfo(seqId,i);
@@ -521,8 +523,8 @@ $(function(){
           }
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("获取专辑信息发生错误："+ jqXHR.status);
       }
     });
   }
@@ -643,7 +645,7 @@ $(function(){
       beforeSend:function(){
         $('.nc_txt7').attr("disabled","disabled");
       },
-      success: function(resultData){
+      success:function(resultData){
         if(resultData.ReturnType=="1001"){
           alert("具体原因提交成功");
           $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
@@ -654,13 +656,14 @@ $(function(){
           $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
           getContentList(data);
         }else{
-          alert(resultData.Message);
+          alert("提交不予撤回的原因失败:"+resultData.Message);
         }
         $('.nc_txt7').removeAttr("disabled");
       },
-      error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
+      error:function(jqXHR){
+        alert("提交不予撤回的原因发生错误:"+jqXHR.status);
+        $('.nc_txt7').removeAttr("disabled");
+      }
     });
   })
   
@@ -693,7 +696,7 @@ $(function(){
         }
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("同意撤回发生错误:"+ jqXHR.status);
       }
     });
   }

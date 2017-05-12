@@ -349,10 +349,10 @@ $(function(){
               $(".mask_zj .tag_txt").val("");
               return;
             }
-            var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
-                              '<span>'+txt+'</span>'+
-                              '<img class="upl_bq_cancelimg1 cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
-                            '</li>';
+            var new_tag='<li class="upl_bq_img bqImg" tagType="自定义标签">'+
+                          '<span>'+txt+'</span>'+
+                          '<img class="upl_bq_cancelimg1 cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
+                        '</li>';
             $(".mask_zj .upl_bq").append(new_tag);
             tag_sum++;
           }else{
@@ -381,10 +381,10 @@ $(function(){
               $(".mask_jm .jm_addTag").val("");
               return;
             }
-            var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
-                              '<span>'+txt+'</span>'+
-                              '<img class="upl_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" />'+
-                            '</li>';
+            var new_tag='<li class="upl_bq_img bqImg" tagType="自定义标签">'+
+                          '<span>'+txt+'</span>'+
+                          '<img class="upl_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" />'+
+                        '</li>';
             $(".mask_jm .upl_bq").append(new_tag);
             tag_sum++;
           }else{
@@ -427,12 +427,12 @@ $(function(){
         }
         if(is_exist==false){
           var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+$(".change_czfs option:selected").attr("id")+'>'+
-                        '<div class="czfs_tag_div">'+
-                        '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
-                        '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
-                        '</div>'+
-                        '<img class="cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
-                      '</li>';
+                          '<div class="czfs_tag_div">'+
+                            '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
+                            '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
+                          '</div>'+
+                          '<img class="cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
+                        '</li>';
           $(".czfs_tag").append(new_czfs);
           $(".czfs_author_ipt").val("");
         }
@@ -872,8 +872,8 @@ $(function(){
           }
           $(".action1 #btnSave").removeAttr("disabled").css("background","#ffa634");
         },
-        error: function(jqXHR){
-          alert("图片裁剪上传发生错误:" + jqXHR.status);
+        error: function(XHR){
+          alert("图片裁剪上传发生错误：" + jqXHR.status);
         }
       });
     }

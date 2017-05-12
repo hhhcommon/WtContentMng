@@ -668,7 +668,7 @@ $(function(){
         $(".btn_group input").attr("disabled","disabled").css("background","#ccc");
       },
       success:function(resultData){
-        if(resultData.ReturnType == "1001"){
+        if(resultData.ReturnType=="1001"){
           $(".mask_jm").hide();
           $("body").css({"overflow":"auto"});
           getContentList(jmData);//重新加载节目列表
@@ -682,6 +682,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("修改节目发生错误:"+ jqXHR.status);
+        $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       }
     });
   }
@@ -765,6 +766,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("节目发布发生错误:"+ jqXHR.status);
+        $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       }
     });
   }
@@ -834,9 +836,7 @@ $(function(){
       dataType:"json",
       data:JSON.stringify(_data),
       success:function(resultData){
-        if(resultData.ReturnType=="1001"){
-          pubEditJm(_data);
-        }
+        if(resultData.ReturnType=="1001") pubEditJm(_data);
       },
       error:function(jqXHR){
         alert("更改节目信息发生错误："+ jqXHR.status);
@@ -876,6 +876,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("节目发布发生错误:"+jqXHR.status);
+        $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       }
     });
   }
@@ -921,6 +922,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("当前操作发生错误:"+ jqXHR.status);
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -967,6 +969,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("节目发布发生错误:"+ jqXHR.status);
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -1013,6 +1016,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("节目撤回发生错误:"+ jqXHR.status);
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -1020,9 +1024,10 @@ $(function(){
   
   /*s---批量提交、撤回、删除节目 */
   //公共的提交、撤回、删除
-  var lists=[];//提交、撤回节目
-  var delList='';//删除专辑
   $(".rt_opt .opetype").on("click",function(){
+    var lists=[];//提交、撤回节目
+    var delList='';//删除专辑
+    var isAllow=true;//默认选中的节目都允许操作
     var type=$.trim($(this).attr("type"));
     $(".ri_top3_con .rtc_listBox").each(function(){
       if($(this).children(".ric_img_check").hasClass("checkbox1")){//未选中
@@ -1038,7 +1043,6 @@ $(function(){
       }
     });
     if(lists.length!=0){//选中内容
-      var isSure=false;//是否存在不允许操作的节目
       switch(type){
         case "submit"://发布
           for(var i=0;i<lists.length;i++){
@@ -1050,13 +1054,13 @@ $(function(){
               });
               if(!$(".all_check").hasClass("checkbox1")) $(".all_check").attr({"src":"../anchorResource/img/checkbox1.png"}).removeClass("checkbox1");
               $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-              isSure=true;
+              isAllow=false;
               return;
             }else{
-              isSure=false;
+              isSure=true;
             }
           }
-          if(isSure==false){
+          if(isSure){
             var url="content/media/updateMediaStatus.do";
             var data6={};
             data6.PCDType="3";
@@ -1079,13 +1083,13 @@ $(function(){
               });
               if(!$(".all_check").hasClass("checkbox1")) $(".all_check").attr({"src":"../anchorResource/img/checkbox1.png"}).removeClass("checkbox1");
               $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-              isSure=true;
+              isAllow=false;
               return;
             }else{
-              isSure=false;
+              isAllow=true;
             }
           }
-          if(isSure==false){
+          if(isAllow){
             var url="content/media/updateMediaStatus.do";
             var data6={};
             data6.PCDType="3";
@@ -1108,13 +1112,13 @@ $(function(){
               });
               if(!$(".all_check").hasClass("checkbox1")) $(".all_check").attr({"src":"../anchorResource/img/checkbox1.png"}).removeClass("checkbox1");
               $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-              isSure=true;
+              isAllow=false;
               return;
             }else{
-              isSure=false;
+              isAllow=true;
             }
           }
-          if(isSure==false){
+          if(isAllow){
             var url="content/media/removeMedia.do";
             var data6={};
             data6.PCDType="3";
@@ -1155,6 +1159,7 @@ $(function(){
       },
       error:function(jqXHR){
         alert("当前操作发生错误:"+ jqXHR.status);
+        $(".shade",parent.document).hide();
       }
     });
   }

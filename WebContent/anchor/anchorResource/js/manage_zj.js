@@ -289,6 +289,8 @@ $(function(){
     _data.ContentName=$(".mask_jm .uplTitle").val();
     _data.ContentImg=$(".mask_jm .upl_img").attr("value");
     _data.SeqMediaId=$(".mask_jm .seqId").val();
+//  _data.TimeLong=$(".mask_jm .timeLong").attr("value");
+    $(".mask_jm .timeLong").attr("value","60");
     _data.TimeLong=$(".mask_jm .timeLong").attr("value");
     var taglist=[];
     $(".mask_jm .upl_bq").find(".upl_bq_img").each(function(){
@@ -739,10 +741,10 @@ $(function(){
   /*e--点击创建专辑/编辑专辑页面上的保存按钮*/
   
   /*s---批量撤回、删除专辑 */
-  var lists=[];//撤回专辑
-  var delList='';//删除专辑
-  var revoke=true;//revoke=true默认要撤回的专辑里面都有节目,revoke=false要撤回的专辑里面没有节目
   $(".rt_opt .opetype").on("click",function(){
+    var lists=[];//撤回专辑
+    var delList='';//删除专辑
+    var revoke=true;//revoke=true默认要撤回的专辑里面都有节目,revoke=false要撤回的专辑里面没有节目
     var type=$.trim($(this).attr("type"));
     $(".ri_top3_con .rtc_listBox").each(function(){
       if($(this).children(".ric_img_check").hasClass("checkbox1")){//未选中
@@ -762,14 +764,19 @@ $(function(){
     if(lists.length!=0){//选中内容
       switch(type){
         case "revoke":
-          var url="content/seq/updateSeqMediaStatus.do";
-          var data6={};
-          data6.PCDType="3";
-          data6.MobileClass="Chrome";
-          data6.UserId=userId;
-          data6.ContentFlowFlag="4";
-          data6.UpdateList=lists;
-          commonAjax(revoke,data6,url);
+          if(!revoke){
+            alert("所选择的专辑里面没有节目,不支持撤回操作");
+            return false;
+          }else{
+            var url="content/seq/updateSeqMediaStatus.do";
+            var data6={};
+            data6.PCDType="3";
+            data6.MobileClass="Chrome";
+            data6.UserId=userId;
+            data6.ContentFlowFlag="4";
+            data6.UpdateList=lists;
+            commonAjax(data6,url);
+          }
         break;
         case "delete":
           var url="content/seq/removeSeqMedia.do";
@@ -778,46 +785,41 @@ $(function(){
           data6.MobileClass="Chrome";
           data6.UserId=userId;
           data6.ContentIds=delList;
-          commonAjax(revoke,data6,url);
+          commonAjax(data6,url);
         break;
         default:break;
       }
     }
   });
   //公共的提交、撤回、删除
-  function commonAjax(revoke,data,url){
-    if(!revoke){
-      alert("所选择的专辑里面没有节目,不支持撤回操作");
-      return false;
-    }else{
-      $.ajax({
-        type:"POST",
-        url:rootPath+url,
-        dataType:"json",
-        data:JSON.stringify(data),
-        beforeSend:function(){
-          $(".shade",parent.document).show();
-        },
-        success:function(resultData){
-          if(resultData.ReturnType=="1001"){
-            $("body").css({"overflow":"auto"});
-            getContentList(zjData);//重新加载专辑列表
-            $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
-            $("#channel .chnels").remove();
-            getFiltrates(dataF);//重新加载筛选条件
-            $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
-            $(".all_check").addClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox1.png"});
-          }else{
-            alert("当前操作失败:"+resultData.Message);
-          }
-          $(".shade",parent.document).hide();
-        },
-        error:function(jqXHR){
-          alert("当前操作发生错误:"+ jqXHR.status);
-          $(".shade",parent.document).hide();
+  function commonAjax(data,url){
+    $.ajax({
+      type:"POST",
+      url:rootPath+url,
+      dataType:"json",
+      data:JSON.stringify(data),
+      beforeSend:function(){
+        $(".shade",parent.document).show();
+      },
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          $("body").css({"overflow":"auto"});
+          getContentList(zjData);//重新加载专辑列表
+          $("#album .attrValues .av_ul,#channel .attrValues .av_ul").html("");
+          $("#channel .chnels").remove();
+          getFiltrates(dataF);//重新加载筛选条件
+          $(".opetype").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
+          $(".all_check").addClass("checkbox1").attr({"src":"./../anchorResource/img/checkbox1.png"});
+        }else{
+          alert("当前操作失败:"+resultData.Message);
         }
-      });
-    }
+        $(".shade",parent.document).hide();
+      },
+      error:function(jqXHR){
+        alert("当前操作发生错误:"+ jqXHR.status);
+        $(".shade",parent.document).hide();
+      }
+    });
   }
   /*e---批量撤回、删除专辑 */
   
@@ -989,9 +991,7 @@ $(function(){
   $(document).on("click",".mask_zj .cBox1_conS li",function(){
     var id=$(this).attr("id");
     var pid=$(this).attr("pid");
-    var pname=$(this).attr("pname");
     var txt=$(this).text();
-    txt=pname+">"+txt;
     if($(".mask_zj .channelBox li").size()==0){
       var li='<li class="channel_bq bqImg" id='+id+' pid='+pid+'>'+
                 '<span>'+txt+'</span>'+

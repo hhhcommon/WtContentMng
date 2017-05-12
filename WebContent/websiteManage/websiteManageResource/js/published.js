@@ -261,7 +261,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载节目列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -272,7 +272,7 @@ $(function(){
           allCount=resultData.AllCount;
           loadContentList(resultData);//加载来源的筛选条件
         }else{
-          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
         }
         $(".fixed").show();
@@ -281,7 +281,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("得到内容列表发生错误:"+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生错误:"+jqXHR.status+"</div>");
         $('.shade', parent.document).hide();
       }
     });
@@ -338,7 +338,7 @@ $(function(){
           loadRecursion(index);
         },
         error:function(jqXHR){
-          alert("发生错误" + jqXHR.status);
+          alert("加载栏目树发生错误" + jqXHR.status);
         }
       });
     }
@@ -386,7 +386,7 @@ $(function(){
         $('.shade', parent.document).hide();
       },
       error:function(jqXHR){
-        alert("得到内容列表发生错误:"+ jqXHR.status);
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>加载内容列表发生发生错误："+jqXHR.status+"</div>");
         $('.shade', parent.document).hide();
       }
     });
@@ -399,7 +399,7 @@ $(function(){
       var listBox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
                 '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
                 '<div class="rtcl_img fl">'+
-                  '<img src="" alt="节目图片" />'+
+                  '<img src="" alt="内容图片" />'+
                   '<div class="btn_player dis">'+
                     '<i class="icon"></i>'+
                   '</div>'+
@@ -432,7 +432,7 @@ $(function(){
       else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
       $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
-        $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑：《未知》");
+        $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑:《未知》");
         $(".sequ_num").eq(i).attr("seqId",resultData.ResultList[i].ContentSeqId);
         if(resultData.ResultList[i].ContentPlayUrl){
           var audioObj={};
@@ -615,7 +615,8 @@ $(function(){
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        alert("获取数据发生错误:"+jqXHR.status);
+        $('.nc_txt7').removeAttr("disabled");
       }     
     });
   })
