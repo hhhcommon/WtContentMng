@@ -64,6 +64,9 @@ public class SecurityRoleService {
  
     /**
      * 获取角色列表
+     * @param pageSize 每页需要的数量
+     * @param page 页码
+     * @return Map
      */
     public Map<String, Object> getRoleList(int pageSize, int page) {
         List<Map<String, Object>> _ret=null;
@@ -108,7 +111,14 @@ public class SecurityRoleService {
 
     /**
      * 设置角色功能
-     * @return
+     * @param roleId 角色Id
+     * @param funName 角色名
+     * @param funClass 功能类型
+     * @param funType 功能分类
+     * @param objId 栏目Id
+     * @param funFlag1 操作标识1
+     * @param funFlag1 操作标识2
+     * @return boolean
      */
     public boolean setRoleFun(String roleId, String funName, String funClass, String funType, String objId, String funFlag1, String funFlag2) {
         if (StringUtils.isNullOrEmptyOrSpace(roleId) || StringUtils.isNullOrEmptyOrSpace(funName)

@@ -11,26 +11,26 @@ import com.spiritdata.framework.core.model.BaseObject;
 public class PlatUserProgressPo extends BaseObject {
     private static final long serialVersionUID = -9192919644399640035L;
 
-    private String Id;//UUID
-    private String userid;//用户Id
+    private String id;//UUID
+    private String userId;//用户Id
     private String checkerId;//审核者Id
     private String applyRoleId;//用户申请认证Id
-    private int reStatus;//认证流程  0=待处理；1=通过；2=未通过；
+    private int reStatu;//认证流程  0=待处理；1=通过；2=未通过；
     private String applyDescn;//主播认证请求意见
     private String reDescn;//审核回复意见
     private Timestamp cTime;//创建时间
     private Timestamp ModifyTime;//审核操作时间
     public String getId() {
-        return Id;
+        return id;
     }
     public void setId(String id) {
-        Id = id;
+        this.id = id;
     }
     public String getUserid() {
-        return userid;
+        return userId;
     }
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
     public String getCheckerId() {
         return checkerId;
@@ -44,11 +44,11 @@ public class PlatUserProgressPo extends BaseObject {
     public void setApplyRoleId(String applyRoleId) {
         this.applyRoleId = applyRoleId;
     }
-    public int getReStatus() {
-        return reStatus;
+    public int getReStatu() {
+        return reStatu;
     }
-    public void setReStatus(int reStatus) {
-        this.reStatus = reStatus;
+    public void setReStatu(int reStatu) {
+        this.reStatu = reStatu;
     }
     public String getApplyDescn() {
         return applyDescn;

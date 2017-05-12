@@ -19,5 +19,4 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/jdk1.8.0_66/lib/tools.jar"/>
-	<classpathentry kind="output" path="WebContent/WEB-INF/classes"/>
 </classpath>
