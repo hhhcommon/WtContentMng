@@ -16,7 +16,7 @@ public class RoleFunctionPo extends BaseObject {
     private String funName;//此字段有一定的规则，不可随意填写  目前只有“栏目权限”
     private String funClass;//功能类型  目前有：“Data”:数据权限       “Module”:模块(界面)权限         “Oper”:操作权限
     private String funType;//功能分类  若是数据权限，此字段才有意义，目前有:Channel-Add=栏目中添加内容
-    private int objId;//对象Id 若是数据权限，并且funType=Channel-Add，目前是栏目的Id;若是Module，这里是Module表中的结点Id
+    private String objId;//对象Id 若是数据权限，并且funType=Channel-Add，目前是栏目的Id;若是Module，这里是Module表中的结点Id
     private int funFlag1;//操作标识
     private int funFlag2;//操作标识
     private String extInfo;
@@ -52,10 +52,10 @@ public class RoleFunctionPo extends BaseObject {
     public void setFunType(String funType) {
         this.funType = funType;
     }
-    public int getObjId() {
+    public String getObjId() {
         return objId;
     }
-    public void setObjId(int objId) {
+    public void setObjId(String objId) {
         this.objId = objId;
     }
     public int getFunFlag1() {

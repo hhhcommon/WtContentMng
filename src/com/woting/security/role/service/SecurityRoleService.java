@@ -13,14 +13,18 @@ import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.security.role.persis.pojo.PlatRolePo;
+import com.woting.security.role.persis.pojo.RoleFunctionPo;
 
 public class SecurityRoleService {
     @Resource(name="defaultDAO")
     private MybatisDAO<PlatRolePo> platRoleDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<RoleFunctionPo> roleFunctionDao;
 
     @PostConstruct
     public void initParam() {
         platRoleDao.setNamespace("PLAT_ROLE");
+        roleFunctionDao.setNamespace("PLAT_ROLE");
     }
 
     /**
@@ -148,6 +152,47 @@ public class SecurityRoleService {
             return true;
         } catch(Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * 获取角色功能
+     * @param roleId 角色Id
+     * @return 角色所有信息
+     */
+    public RoleFunctionPo getRoleFunlist(String roleId) {
+        if (StringUtils.isNullOrEmptyOrSpace(roleId)) return null;
+        
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("roleId", roleId);
+        try {
+            List<Map<String, Object>> list=roleFunctionDao.queryForListAutoTranform("getRoleFun", param);
+            if (list==null || list.size()<=0) return null;
+            Map<String, Object> map=list.get(0);
+            if (map==null || map.size()<=0) return null;
+            RoleFunctionPo roleFunctionPo=new RoleFunctionPo();
+            if (map.get("roleId")!=null && !map.get("roleId").toString().equals("")) {
+                roleFunctionPo.setRoleId(map.get("roleId").toString());
+            }
+            if (map.get("funName")!=null && !map.get("funName").toString().equals("")) {
+                roleFunctionPo.setFunName(map.get("funName").toString());
+            }
+            if (map.get("funClass")!=null && !map.get("funClass").toString().equals("")) {
+                roleFunctionPo.setFunClass(map.get("funClass").toString());
+            }
+            if (map.get("funType")!=null && !map.get("funType").toString().equals("")) {
+                roleFunctionPo.setFunType(map.get("funType").toString());
+            }
+            if (map.get("objId")!=null && !map.get("objId").toString().equals("")) {
+                roleFunctionPo.setObjId(map.get("objId").toString());
+            }
+            if (map.get("funFlag1")!=null && !map.get("funFlag1").toString().equals("")) {
+                roleFunctionPo.setFunFlag1(Integer.valueOf(map.get("funFlag1").toString()));
+            }
+            return roleFunctionPo;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -47,7 +47,7 @@
       <if test="cTime!=null">#{cTime,jdbcType=TIMESTAMP},</if>
     </trim>
   </insert>
-  
+
   <!-- 对象定义:用户发起主播认证进程 -->
   <resultMap id="UserProgressMap" type="UserProgress">
     <id      column="id"          property="id"          jdbcType="VARCHAR"/>
@@ -98,4 +98,23 @@
     where userId=#{userId,jdbcType=VARCHAR} 
     and modifyTime=(select max(modifyTime) from plat_UserProgress)
   </select>
+
+  <!-- 查询用户认证信息 -->
+  <select id="getApproveList" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_User_Ext
+  </select>
+
+  <!-- 修改用户认证状态 -->
+  <update id="updateUserApproveState" parameterType="java.util.Map">
+    update plat_UserProgress set reState=#{reState, jdbcType=INTEGER},
+    <if test="applyDescn!=null">
+        applyDescn=#{applyDescn, jdbcType=VARCHAR}
+    </if>
+    where reState!=2
+    <if test="userIdList!=null">
+      <foreach collection="userIdList" index="index" item="value" open="and (" separator="or" close=")">
+        userId=#{value}
+      </foreach>
+    </if>
+  </update>
 </mapper>

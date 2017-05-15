@@ -85,6 +85,11 @@
     id, roleId, funName, funClass, funType, objId, funFlag1, funFlag2, extInfo, cTime
   </sql>
 
+  <!-- 查询角色信息 -->
+  <select id="getRoleFun" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_RoleFunction where roleId=#{roleId, jdbcType=VARCHAR}
+  </select>
+
   <!-- 对象定义:用户操作对象 -->
   <resultMap id="UserFunMap" type="UserFunction">
     <id      column="id"         property="id"         jdbcType="VARCHAR"/>
@@ -94,7 +99,7 @@
     <result  column="funName"    property="funName"    jdbcType="VARCHAR"/>
     <result  column="funClass"   property="funClass"   jdbcType="VARCHAR"/>
     <result  column="funType"    property="funType"    jdbcType="VARCHAR"/>
-    <result  column="objId"      property="objId"      jdbcType="INTEGER"/>
+    <result  column="objId"      property="objId"      jdbcType="VARCHAR"/>
     <result  column="funFlag1"   property="funFlag1"   jdbcType="INTEGER"/>
     <result  column="funFlag2"   property="funFlag2"   jdbcType="INTEGER"/>
     <result  column="extInfo"    property="extInfo"    jdbcType="CLOB"/>
