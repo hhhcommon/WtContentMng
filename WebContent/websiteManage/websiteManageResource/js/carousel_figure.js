@@ -400,7 +400,7 @@ $(function(){
       cache:false, 
       data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载节目列表...</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载内容列表...</div>");
         $('.shade', parent.document).show();
       },
       success:function(resultData){
@@ -410,7 +410,7 @@ $(function(){
           allCount=resultData.AllCount;
           loadContentList(resultData);//加载来源的筛选条件
         }else{
-          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到节目</div>");
+          $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有找到内容</div>");
           allCount="0";
           $('.shade', parent.document).hide();
         }
@@ -419,7 +419,8 @@ $(function(){
         pagitionInit(contentCount,allCount,dataParam.Page);//init翻页
       },
       error:function(jqXHR){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取内容列表发生错误："+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
       }
     });
   }
@@ -475,7 +476,7 @@ $(function(){
           loadRecursion(index);
         },
         error:function(jqXHR){
-          alert("发生错误" + jqXHR.status);
+          alert("加载栏目树发生错误" + jqXHR.status);
         }
       });
     }
@@ -535,7 +536,7 @@ $(function(){
         pagitionInit(contentCount,allCount,data.Page);//init翻页
       },
       error:function(jqXHR){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取内容列表发生错误："+jqXHR.status+"</div>");
         $('.shade', parent.document).hide();
       }
     });
@@ -905,7 +906,7 @@ $(function(){
         $(obj).removeAttr("disabled").css("color","#0077C7");
       },
       error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("置顶的相关操作发生错误" + jqXHR.status);
       }
     });
   }
@@ -998,13 +999,14 @@ $(function(){
           $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
           getContentList(data);//再次加载内容列表
         }else{
-          alert(resultData.Message);
+          alert("撤回内容失败:"+resultData.Message);
         }
         $('.nc_txt7').removeAttr("disabled");
       },
       error: function(jqXHR){
-        $(".ri_top3_con").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
+        alert("撤回内容发生错误："+jqXHR.status);
+        $('.nc_txt7').removeAttr("disabled");
+      }
     });
   })
   
@@ -1039,15 +1041,16 @@ $(function(){
           loadLoopImages(resultData);//加载轮播图列表
         }else{
           loopAllCount="0";
-          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图列表，请自行添加</div>");
+          $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>没有轮播图,请自行添加</div>");
         }
         loopContentCount=(loopAllCount%pageSize==0)?(loopAllCount/pageSize):(Math.ceil(loopAllCount/pageSize));
         loopPagitionInit(loopContentCount,loopAllCount,data3.Page);
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
+        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取轮播图发生错误："+jqXHR.status+"</div>");
+        $('.shade', parent.document).hide();
+      }
     });
   }
   
@@ -1165,11 +1168,11 @@ $(function(){
           } 
           saveReplace(_ts1,ii);//保存替换的轮播图
         }else{
-          alert(resultData.err);
+          alert("上传轮播图失败:"+resultData.err);
         }
       },
       error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("上传轮播图发生错误" + jqXHR.status);
       }
     });
     var jqObj=$("#replace_pic"+ii);
@@ -1287,20 +1290,21 @@ $(function(){
           if(resultData.ReturnType=="1001"){
             getLoopImages(data3);//重新加载轮播图列表
           }else{
-            alert(resultData.Message);
+            alert("移动轮播图失败:"+resultData.Message);
           }
         }else{//下移，-2
           if(resultData.ReturnType=="1001"){
             getLoopImages(data3);//重新加载轮播图列表
           }else{
-            alert(resultData.Message);
+            alert("移动轮播图失败:"+resultData.Message);
           }
         }
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
+        alert("移动轮播图发生错误:"+jqXHR.status);
+        $('.shade', parent.document).hide();
+      }
     });
   }
   
@@ -1324,20 +1328,20 @@ $(function(){
       cache:false, 
       data:JSON.stringify(data6),
       beforeSend:function(){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>正在加载...</div>");
         $('.shade', parent.document).show();
       },
       success: function(resultData){
         if(resultData.ReturnType=="1001"){
           getLoopImages(data3);//重新加载轮播图列表
         }else{
-          alert(resultData.Message);
+          alert("删除轮播图失败:"+resultData.Message);
         }
         $('.shade', parent.document).hide();
       },
       error: function(jqXHR){
-        $(".lb_div5").html("<div style='font-size:16px;text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
-      }     
+        alert("删除轮播图发生错误:"+jqXHR.status);
+        $('.shade', parent.document).hide();
+      }
     });
   });
   /*e--切换到轮播图之后的相关操作*/

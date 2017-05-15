@@ -127,14 +127,14 @@ function getSourceFilters(){
     dataType:"json",
     cache:false, 
     success:function(resultData){
-      if(resultData.ReturnType == "1001"){
+      if(resultData.ReturnType=="1001"){
         loadSourceFilters(resultData);//加载来源的筛选条件
       }else{
         $("#source .attrValues .av_ul").html("<li>暂无来源</li>");
       }
     },
     error:function(jqXHR){
-      alert("发生错误："+ jqXHR.status);
+      alert("得到来源的筛选条件发生错误："+ jqXHR.status);
     }
   });
 }
