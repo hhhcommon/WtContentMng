@@ -1,6 +1,7 @@
 package com.woting.security.approve.service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
+import com.spiritdata.framework.core.model.Page;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.security.approve.persis.pojo.PlatUserExtPo;
@@ -114,7 +116,67 @@ public class ApproveRoleService {
             return platUserProgressPo;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+    }
+
+    /**
+     * 获取用户申请认证列表
+     */
+    public Map<String, Object> getApproves(int page, int pageSize) {
+        List<Map<String, Object>> _ret=null;
+        int count=0;
+        if (page==0) {// 获取全部
+            _ret=platUserExtDao.queryForListAutoTranform("getApproveList", null);
+            if (_ret!=null && _ret.size()>0) count=_ret.size();
+        } else {// 分页获取
+            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform("getLoopImgListCount", "getLoopImgList", null, page, pageSize);
+            if (mapPage!=null&&mapPage.getDataCount()>0) {
+                _ret=new ArrayList<Map<String, Object>>();
+                _ret.addAll(mapPage.getResult());
+                count=mapPage.getDataCount();
+            }
+        }
+        if (_ret==null||_ret.isEmpty()) return null;
+        List<Map<String, Object>> ret=new ArrayList<Map<String, Object>>(_ret.size());
+        for (int i=0; i<_ret.size(); i++) {
+            Map<String, Object> one=_ret.get(i);
+            Map<String, Object> _one=new HashMap<String, Object>();
+            if (one.get("userId")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("userId")+"")) _one.put("UserId", one.get("userId"));
+            if (one.get("iDCard")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("iDCard")+"")) _one.put("IDCard", one.get("iDCard"));
+            if (one.get("frontImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("frontImg")+"")) _one.put("FrontImg", one.get("frontImg"));
+            if (one.get("reverseImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reverseImg")+"")) _one.put("ReverseImg", one.get("reverseImg"));
+            if (one.get("mixImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("mixImg")+"")) _one.put("MixImg", one.get("mixImg"));
+            if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) _one.put("AnchorCardImg", one.get("anchorCardImg")+"");
+            if (one.get("imgUrl")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("imgUrl")+"")) _one.put("ContentLoopImg", one.get("imgUrl")+"");
+            ret.add(_one);
+        }
+        Map<String, Object> retM=new HashMap<String, Object>();
+        retM.put("ResultList", ret);
+        retM.put("AllCount", count);
+        return retM;
+    }
+
+    /**
+     * 审核
+     * @param userIdList 需要审核的用户Id
+     * @param reState 认证状态
+     * @param applyDescn 审核意见
+     * @return boolean
+     */
+    public boolean updateApproveStatus(List<String> userIdList, int reState, String applyDescn) {
+        if (userIdList==null || userIdList.size()<=0) return false;
+
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("userIdList", userIdList);
+        param.put("reState", reState);
+        param.put("applyDescn", applyDescn);
+        try {
+            platUserExtDao.update("updateUserApproveState", param);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
