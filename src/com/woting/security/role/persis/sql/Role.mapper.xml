@@ -37,11 +37,14 @@
   
   <!-- 删除角色 -->
   <delete id="deleteRole" parameterType="java.util.Map">
-    delete from plat_Role where id=#{roleId,jdbcType=VARCHAR};
-    delete from plat_RoleFunction where roleId=#{roleId,jdbcType=VARCHAR};
-    delete from plat_User_Role where roleId=#{roleId,jdbcType=VARCHAR};
+    <![CDATA[
+      delete from plat_Role where id in
+    ]]>
+    <foreach collection="roleId" item="ids"  open="(" separator="," close=")">  
+      #{ids} 
+    </foreach>
   </delete>
-  
+
   <!-- 获取角色列表总数 -->
   <select id="getRoleListCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(id) from plat_Role
@@ -105,6 +108,16 @@
   <select id="getRoleFun" parameterType="java.util.Map" resultType="java.util.HashMap">
     select * from plat_RoleFunction where roleId=#{roleId, jdbcType=VARCHAR}
   </select>
+  
+  <!-- 角色被删除时应删除相关的信息 -->
+  <delete id="deleteRoleFun" parameterType="java.util.Map">
+    <![CDATA[
+      delete from plat_RoleFunction where roleId in
+    ]]>
+    <foreach collection="roleId" item="ids"  open="(" separator="," close=")">  
+      #{ids} 
+    </foreach>
+  </delete>
 
   <!-- 对象定义:用户操作对象 -->
   <resultMap id="UserFunMap" type="UserFunction">
@@ -169,4 +182,14 @@
     set roleId=#{roleId, jdbcType=VARCHAR}
     where userId=#{userId,jdbcType=VARCHAR};
   </update>
+  
+  <!-- 删除角色 -->
+  <delete id="deleteUserRole" parameterType="java.util.Map">
+    <![CDATA[
+      delete from plat_User_Role where roleId in
+    ]]>
+    <foreach collection="roleId" item="ids"  open="(" separator="," close=")">  
+      #{ids} 
+    </foreach>
+  </delete>
 </mapper>

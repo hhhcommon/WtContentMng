@@ -59,15 +59,26 @@ public class SecurityRoleService {
      */
     public boolean delRole(String roleId) {
         if (StringUtils.isNullOrEmptyOrSpace(roleId)) return false;
-        Map<String, Object> param=new HashMap<String, Object>();
-        param.put("roleId", roleId);
-        try {
-            platRoleDao.delete("deleteRole", param);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        if (roleId.contains("，")) roleId.replaceAll("，", ",");
+        String[] roleIdArr=roleId.split(",");
+        List<String> roleIdList=new ArrayList<String>();
+        for (String id : roleIdArr) {
+            roleIdList.add(id);
         }
+        if (roleIdList!=null && roleIdList.size()>0) {
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("roleId", roleIdList);
+            try {
+                platRoleDao.delete("deleteRole", param);
+                roleFunctionDao.delete("deleteRoleFun", param);
+                userRoleDao.delete("deleteUserRole", param);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            } 
+        }
+        return false;
     }
  
     /**
