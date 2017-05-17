@@ -186,6 +186,12 @@
     where userId=#{userId,jdbcType=VARCHAR};
   </update>
 
+  <!-- 查询用户权限  目前只有栏目权限 -->
+  <select id="selectUserRoleFun" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_UserFunction
+    where userId=#{userId, jdbcType=VARCHAR}
+  </select>
+
   <!-- 对象定义:用户角色对象 -->
   <resultMap id="UserRoleMap" type="UserRole">
     <id      column="id"      property="id"     jdbcType="VARCHAR"/>

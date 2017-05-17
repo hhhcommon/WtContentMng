@@ -1,6 +1,7 @@
 package com.woting.security.role.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -339,6 +340,45 @@ public class SecurityRoleService {
                 map.put("ReturnType", "1005");
                 map.put("Message", "设置失败");
                 return map;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取用户的权限  目前只有栏目权限
+     * @param userId 用户Id
+     * @param funClass 权限类型
+     * @param funName 操作名称  目前只有"栏目权限"
+     * @return Map
+     */
+    public List<Map<String, Object>> getUserRole(String userId, String funClass, String funName) {
+        if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(funClass)) {
+            return null;
+        }
+        if (funName==null || funName.equals("") || funName.equals("栏目权限")) {//目前只有栏目权限
+            if (funClass!=null && funClass.equals("1")) {//==1 -> "Data" 数据权限
+                Map<String, Object> param=new HashMap<String, Object>();
+                param.put("userId", userId);
+                Map<String, Object> ret=userFunDao.queryForObjectAutoTranform("selectUserRoleFun", param);
+                if (ret==null || ret.size()<=0) return null;
+                String objId=ret.get("objId").toString();
+                if (objId==null) return null;
+                if (objId.contains("，")) objId=objId.replace("，", ",");
+                String[] objIds=objId.split(",");
+                Arrays.sort(objIds);
+                Map<String, Object> _ret;
+                List<Map<String, Object>> data=new ArrayList<Map<String, Object>>();
+                for (String id : objIds) {
+                    _ret=new HashMap<String, Object>();
+                    _ret.put("ChannelId", id);
+                    _ret.put("ChannelName", id+"-Name");
+                    data.add(_ret);
+                }
+                return data;
+            } else {
+                return null;
             }
         } else {
             return null;

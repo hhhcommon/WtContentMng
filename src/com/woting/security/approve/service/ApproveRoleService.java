@@ -28,10 +28,11 @@ public class ApproveRoleService {
         platUserProgressDao.setNamespace("PLAT_APPROVE");
     }
 
-    public Map<String, Object> approveRole(String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId) {
+    public Map<String, Object> approveRole(String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId, String reallyName) {
         Map<String, Object> map=new HashMap<String, Object>();
         if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
-                || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) || StringUtils.isNullOrEmptyOrSpace(applyRoleId)) {
+                || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
+                || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName)) {
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
@@ -64,6 +65,7 @@ public class ApproveRoleService {
         _param.put("checkerId", "0");
         _param.put("applyRoleId", applyRoleId);
         _param.put("reStatus", 0);
+        _param.put("reallyName", reallyName);
         _param.put("modifyTime", new Timestamp(System.currentTimeMillis()));
         if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
             _param.put("applyDescn", applyDescn);
@@ -143,6 +145,7 @@ public class ApproveRoleService {
             Map<String, Object> one=_ret.get(i);
             Map<String, Object> _one=new HashMap<String, Object>();
             if (one.get("userId")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("userId")+"")) _one.put("UserId", one.get("userId"));
+            if (one.get("reallyName")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reallyName")+"")) _one.put("reallyName", one.get("reallyName"));
             if (one.get("iDCard")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("iDCard")+"")) _one.put("IDCard", one.get("iDCard"));
             if (one.get("frontImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("frontImg")+"")) _one.put("FrontImg", one.get("frontImg"));
             if (one.get("reverseImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reverseImg")+"")) _one.put("ReverseImg", one.get("reverseImg"));

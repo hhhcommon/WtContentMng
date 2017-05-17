@@ -30,6 +30,7 @@
     insert into plat_User_Ext
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId!=null">userId,</if>
+      <if test="reallyName!=null">reallyName,</if>
       <if test="iDCard!=null">iDCard,</if>
       <if test="frontImg!=null">frontImg,</if>
       <if test="reverseImg!=null">reverseImg,</if>
@@ -39,6 +40,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId!=null">#{userId,jdbcType=VARCHAR},</if>
+      <if test="reallyName!=null">#{reallyName,jdbcType=VARCHAR},,</if>
       <if test="iDCard!=null">#{iDCard,jdbcType=VARCHAR},</if>
       <if test="frontImg!=null">#{frontImg,jdbcType=VARCHAR},</if>
       <if test="reverseImg!=null">#{reverseImg,jdbcType=VARCHAR},</if>
