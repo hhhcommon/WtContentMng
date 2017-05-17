@@ -14,6 +14,7 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.security.role.persis.pojo.PlatRolePo;
 import com.woting.security.role.persis.pojo.RoleFunctionPo;
+import com.woting.security.role.persis.pojo.UserFunctionPo;
 import com.woting.security.role.persis.pojo.UserRolePo;
 
 public class SecurityRoleService {
@@ -23,12 +24,15 @@ public class SecurityRoleService {
     private MybatisDAO<RoleFunctionPo> roleFunctionDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<UserRolePo> userRoleDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<UserFunctionPo> userFunDao;
 
     @PostConstruct
     public void initParam() {
         platRoleDao.setNamespace("PLAT_ROLE");
         roleFunctionDao.setNamespace("PLAT_ROLE");
         userRoleDao.setNamespace("PLAT_ROLE");
+        userFunDao.setNamespace("PLAT_ROLE");
     }
 
     /**
@@ -289,6 +293,55 @@ public class SecurityRoleService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * 修改用户权限
+     * @param objId 权限Id 默认是栏目Id
+     * @param funName 权限名  默认是栏目权限
+     * @return Map<String, Object>
+     */
+    public Map<String, Object> updateUsersRole(String userId, String objId, String funName) {
+        if (funName==null || funName.equals("") || funName.equals("栏目权限")) {//目前只支持栏目权限
+            Map<String, Object> map=new HashMap<String, Object>();
+            if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(objId)) {
+                map.put("ReturnType", "0000");
+                map.put("Message", " 无法获取需要的参数");
+                return map;
+            }
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("id", SequenceUUID.getPureUUID());
+            param.put("userId", userId);
+            param.put("objId", objId);
+            int count=0;
+            try {
+                //查询是否已经为用户设置过权限
+                count=userFunDao.queryForObjectAutoTranform("selectUserFun", param);
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "T");
+                map.put("TClass", e.getClass().getName());
+                map.put("Message", StringUtils.getAllMessage(e));
+                return map;
+            }
+            try {
+                if (count<=0) {//没有未用户设置过权限
+                    userFunDao.insert("insertUserFun", param);
+                } else {//已经给用户设置过权限了  需要给用户修改未最新的设置的权限
+                    userFunDao.update("updateUserFun", param);
+                }
+                map.put("ReturnType", "1001");
+                map.put("Message", "设置成功");
+                return map;
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "1005");
+                map.put("Message", "设置失败");
+                return map;
+            }
+        } else {
+            return null;
         }
     }
 }

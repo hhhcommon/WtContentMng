@@ -830,4 +830,112 @@ public class RoleController {
             } catch (InterruptedException e) {}
         }
     }
+    
+    @RequestMapping(value = "/security/updateUsersRole.do")
+    @ResponseBody
+    public Map<String, Object> updateUsersRole(HttpServletRequest request) {
+        // 数据收集处理==1
+        ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
+        alPo.setApiName("9.1.7--/security/updateUsersRole.do");
+        alPo.setObjType("010");//内容发布
+        alPo.setDealFlag(1);// 处理成功
+        alPo.setOwnerType(201);
+        alPo.setOwnerId("--");
+
+        Map<String, Object> map=new HashMap<String, Object>();
+        try {
+            // 0-获取参数
+            String userId=null; //用户判断用户权限，目前不起作用
+            MobileUDKey mUdk=null;
+            Map<String, Object> m=RequestUtils.getDataFromRequest(request);
+            alPo.setReqParam(JsonUtils.objToJson(m));
+            if (m == null || m.size() == 0) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数");
+            } else {
+                MobileParam mp = MobileParam.build(m);
+                if (StringUtils.isNullOrEmptyOrSpace(mp.getImei())
+                        && DeviceType.buildDtByPCDType(StringUtils.isNullOrEmptyOrSpace(mp.getPCDType()) ? -1
+                                : Integer.parseInt(mp.getPCDType())) == DeviceType.PC) { // 是PC端来的请求
+                    mp.setImei(request.getSession().getId());
+                }
+                mUdk = mp.getUserDeviceKey();
+                if (mUdk!=null) {
+                    Map<String, Object> retM = sessionService.dealUDkeyEntry(mUdk, "security/updateUsersRole");
+                    if ((retM.get("ReturnType") + "").equals("2003")) {
+                        map.put("ReturnType", "200");
+                        map.put("Message", "需要登录");
+                    } else {
+                        map.putAll(retM);
+                        if ((retM.get("ReturnType") + "").equals("1001")) map.remove("ReturnType");
+                    }
+                    userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
+                } else {
+                    map.put("ReturnType", "0000");
+                    map.put("Message", "无法获取需要的参数");
+                }
+            }
+            // 数据收集处理==2
+            if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+                alPo.setOwnerId(map.get("UserId") + "");
+            } else {
+                // 过客
+                if (mUdk != null) alPo.setOwnerId(mUdk.getDeviceId());
+                else alPo.setOwnerId("0");
+            }
+            if (mUdk != null) {
+                alPo.setDeviceType(mUdk.getPCDType());
+                alPo.setDeviceId(mUdk.getDeviceId());
+            }
+            if (m!=null) {
+                if (mUdk != null && DeviceType.buildDtByPCDType(mUdk.getPCDType()) == DeviceType.PC) {
+                    if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+                        alPo.setExploreVer(m.get("MobileClass") + "");
+                    }
+                    if (m.get("exploreName") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("exploreName") + "")) {
+                        alPo.setExploreName(m.get("exploreName") + "");
+                    }
+                } else {
+                    if (m.get("MobileClass") != null && !StringUtils.isNullOrEmptyOrSpace(m.get("MobileClass") + "")) {
+                        alPo.setDeviceClass(m.get("MobileClass") + "");
+                    }
+                }
+            }
+            if (map.get("ReturnType") != null) return map;
+
+            if (StringUtils.isNullOrEmptyOrSpace(userId)) {
+                map.put("ReturnType", "1002");
+                map.put("Message", "用户不存在");
+                return map;
+            }
+            //得到参数
+            String objId=m.get("ObjId").toString();
+            if (StringUtils.isNullOrEmptyOrSpace(objId)) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数");
+                return map;
+            }
+            String funName=m.get("FunName").toString();
+            map=roleService.updateUsersRole(userId, objId, funName);
+            if (map==null || map.size()<=0) {
+                map.put("ReturnType", "1011");
+                map.put("Message", "无内容");
+            }
+            return map;
+        } catch(Exception e) {
+            e.printStackTrace();
+            map.put("ReturnType", "T");
+            map.put("TClass", e.getClass().getName());
+            map.put("Message", StringUtils.getAllMessage(e));
+            alPo.setDealFlag(2);
+            return map;
+        } finally {
+            //数据收集处理=3
+            alPo.setEndTime(new Timestamp(System.currentTimeMillis()));
+            alPo.setReturnData(JsonUtils.objToJson(map));
+            try {
+                ApiGatherMemory.getInstance().put2Queue(alPo);
+            } catch (InterruptedException e) {}
+        }
+    }
 }
