@@ -373,7 +373,7 @@ public class ApproveController {
     public Map<String, Object> updateApproveStatus(HttpServletRequest request) {
         // 数据收集处理==1
         ApiLogPo alPo = ApiGatherUtils.buildApiLogDataFromRequest(request);
-        alPo.setApiName("9.1.4--/security/updateApproveStatus.do");
+        alPo.setApiName("9.1.5--/security/updateApproveStatus.do");
         alPo.setObjType("010");//内容发布
         alPo.setDealFlag(1);// 处理成功
         alPo.setOwnerType(201);
@@ -382,7 +382,7 @@ public class ApproveController {
         Map<String, Object> map=new HashMap<String, Object>();
         try {
             // 0-获取参数
-            String checkerId=null; //用户判断用户权限，目前不起作用
+            String userId=null; //用户判断用户权限，目前不起作用
             MobileUDKey mUdk=null;
             Map<String, Object> m=RequestUtils.getDataFromRequest(request);
             alPo.setReqParam(JsonUtils.objToJson(m));
@@ -406,15 +406,15 @@ public class ApproveController {
                         map.putAll(retM);
                         if ((retM.get("ReturnType") + "").equals("1001")) map.remove("ReturnType");
                     }
-                    checkerId = retM.get("CheckerId") == null ? null : retM.get("CheckerId") + "";
+                    userId = retM.get("UserId") == null ? null : retM.get("UserId") + "";
                 } else {
                     map.put("ReturnType", "0000");
                     map.put("Message", "无法获取需要的参数");
                 }
             }
             // 数据收集处理==2
-            if (map.get("CheckerId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("CheckerId") + "")) {
-                alPo.setOwnerId(map.get("CheckerId") + "");
+            if (map.get("UserId") != null && !StringUtils.isNullOrEmptyOrSpace(map.get("UserId") + "")) {
+                alPo.setOwnerId(map.get("UserId") + "");
             } else {
                 // 过客
                 if (mUdk != null) alPo.setOwnerId(mUdk.getDeviceId());
@@ -440,13 +440,13 @@ public class ApproveController {
             }
             if (map.get("ReturnType") != null) return map;
 
-            if (StringUtils.isNullOrEmptyOrSpace(checkerId)) {
+            if (StringUtils.isNullOrEmptyOrSpace(userId)) {
                 map.put("ReturnType", "1002");
                 map.put("Message", "用户不存在");
                 return map;
             }
             //得到参数
-            String userId=m.get("UserId").toString();
+            String checkerId=m.get("CheckerId").toString();
             String _reState=m.get("ReState").toString();
             if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(_reState)) {
                 map.put("ReturnType", "0000");
@@ -455,8 +455,8 @@ public class ApproveController {
             }
             String applyDescn=m.get("ApplyDescn").toString();
             //中文字符转换成英文字符  同意格式
-            if (userId.contains("，")) userId.replaceAll("，", ",");
-            String[] userIdArr=userId.split(",");
+            if (checkerId.contains("，")) checkerId.replaceAll("，", ",");
+            String[] userIdArr=checkerId.split(",");
             List<String> userIdList=new ArrayList<String>();
             for (String id : userIdArr) {
                 userIdList.add(id);

@@ -14,17 +14,21 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.security.role.persis.pojo.PlatRolePo;
 import com.woting.security.role.persis.pojo.RoleFunctionPo;
+import com.woting.security.role.persis.pojo.UserRolePo;
 
 public class SecurityRoleService {
     @Resource(name="defaultDAO")
     private MybatisDAO<PlatRolePo> platRoleDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<RoleFunctionPo> roleFunctionDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<UserRolePo> userRoleDao;
 
     @PostConstruct
     public void initParam() {
         platRoleDao.setNamespace("PLAT_ROLE");
         roleFunctionDao.setNamespace("PLAT_ROLE");
+        userRoleDao.setNamespace("PLAT_ROLE");
     }
 
     /**
@@ -55,15 +59,26 @@ public class SecurityRoleService {
      */
     public boolean delRole(String roleId) {
         if (StringUtils.isNullOrEmptyOrSpace(roleId)) return false;
-        Map<String, Object> param=new HashMap<String, Object>();
-        param.put("roleId", roleId);
-        try {
-            platRoleDao.delete("deleteRole", param);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        if (roleId.contains("，")) roleId.replaceAll("，", ",");
+        String[] roleIdArr=roleId.split(",");
+        List<String> roleIdList=new ArrayList<String>();
+        for (String id : roleIdArr) {
+            roleIdList.add(id);
         }
+        if (roleIdList!=null && roleIdList.size()>0) {
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("roleId", roleIdList);
+            try {
+                platRoleDao.delete("deleteRole", param);
+                roleFunctionDao.delete("deleteRoleFun", param);
+                userRoleDao.delete("deleteUserRole", param);
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            } 
+        }
+        return false;
     }
  
     /**
@@ -193,6 +208,87 @@ public class SecurityRoleService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * 设置用户角色
+     * @param roleId 角色Id
+     * @return boolean
+     */
+    public Map<String, Object> setUserRole(String userId, String roleId) {
+        Map<String, Object> map=new HashMap<String, Object>();
+        if (StringUtils.isNullOrEmptyOrSpace(roleId)) {
+            map.put("ReturnType", "0000");
+            map.put("Message", " 无法获取需要的参数");
+            return map;
+        }
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("id", SequenceUUID.getPureUUID());
+        param.put("userId", userId);
+        param.put("roleId", roleId);
+        int count=0;
+        try {
+            //查询是否存在此角色
+            count=platRoleDao.queryForObjectAutoTranform("checkRoleById", param);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("ReturnType", "T");
+            map.put("TClass", e.getClass().getName());
+            map.put("Message", StringUtils.getAllMessage(e));
+            return map;
+        }
+        if (count<=0) {//不存在此角色
+            map.put("ReturnType", "1006");
+            map.put("Message", "角色不存在");
+            return map;
+        } else count=0;
+        try {
+            //查询是否已经给用户设置过角色
+            count=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("ReturnType", "T");
+            map.put("TClass", e.getClass().getName());
+            map.put("Message", StringUtils.getAllMessage(e));
+            return map;
+        }
+        try {
+            if (count<=0) {//需要先给用户添加角色
+                userRoleDao.insert("insertUserRole", param);
+            } else {//已经给用户设置过角色了  需要给用户修改角色
+                userRoleDao.insert("updateUserRole", param);
+            }
+            map.put("ReturnType", "1001");
+            map.put("Message", "设置成功");
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("ReturnType", "1005");
+            map.put("Message", "设置失败");
+            return map;
+        }
+    }
+
+    /**
+     * 设置角色
+     * @param roleId 角色Id
+     * @param roleName 角色名
+     * @param desc 角色说明
+     * @return boolean
+     */
+    public boolean updateRole(String roleId, String roleName, String desc) {
+        if (StringUtils.isNullOrEmptyOrSpace(roleId)) return false;
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("roleId", roleId);
+        param.put("roleName", roleName);
+        param.put("desc", desc);
+        try {
+            platRoleDao.update("updateRole", param);
+            return  true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

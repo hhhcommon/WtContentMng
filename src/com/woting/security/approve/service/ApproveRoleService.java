@@ -130,7 +130,7 @@ public class ApproveRoleService {
             _ret=platUserExtDao.queryForListAutoTranform("getApproveList", null);
             if (_ret!=null && _ret.size()>0) count=_ret.size();
         } else {// 分页获取
-            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform("getLoopImgListCount", "getLoopImgList", null, page, pageSize);
+            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform(null, "getApproveList", null, page, pageSize);
             if (mapPage!=null&&mapPage.getDataCount()>0) {
                 _ret=new ArrayList<Map<String, Object>>();
                 _ret.addAll(mapPage.getResult());
