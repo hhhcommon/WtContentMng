@@ -177,11 +177,11 @@ body{overflow: hidden;height:100%;padding:0px;}
   color:#fff;
   margin-left:10px;
 }
-.ot_no,.wt_no{
+.ot_no,.wt_no,.wt_no1,.ot_no1,.ot_no2,.wt_no2,.wt_no3,.ot_no3{
   width: auto;
   position: absolute;
-  top: 50px;
-  padding: 10px 10px 10px 14px;
+  text-align: center;
+  padding: 10% 22% 23% 25%;
   font-size: 16px;
 }
 .progressbar{ 
@@ -210,6 +210,14 @@ body{overflow: hidden;height:100%;padding:0px;}
   width:100%; 
   line-height:14px; 
   z-index:100; 
+}
+.ztree .notes{
+  position: relative;
+  width: auto;
+  line-height: 30px;
+  text-align: center;
+  margin: 65% 0% 0% 0%;
+  font-size: 16px;
 } 
 </style>
 <body>
@@ -232,7 +240,10 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="wt_content">
       <ul class="fl ztree left" id="woting_tree"></ul>
       <div class="right fl">
-        <div class="wt_no dis">暂无映射关系</div>
+        <div class="wt_no1 dis">请先选择具体的栏目</div>
+        <div class="wt_no2 dis">映射关系正在加载...</div>
+        <div class="wt_no3 dis">映射关系加载失败...</div>
+        <div class="wt_no dis">暂无映射关系,请自行添加</div>
         <table id='wt_table' data-toggle="table" data-height="246" data-show-refresh="true">
           <thead>
            <!--  <tr>
@@ -249,7 +260,10 @@ body{overflow: hidden;height:100%;padding:0px;}
     <div class="ot_content">
       <ul class="fl ztree left" id="other_tree"></ul>
       <div class="right fl">
-        <div class="ot_no dis">暂无映射关系</div>
+        <div class="ot_no1 dis">请先选择具体的栏目</div>
+        <div class="ot_no2 dis">映射关系正在加载...</div>
+        <div class="ot_no3 dis">映射关系加载失败...</div>
+        <div class="ot_no dis">暂无映射关系,请自行添加</div>
         <table id='ot_table' data-toggle="table" data-height="256">
           <thead>
             <!--<tr>
@@ -401,17 +415,20 @@ $(function(){
     $("input[type='radio']").each(function(){
       wtObj=$.fn.zTree.getZTreeObj("woting_tree");//取消我听选中的节点
       wtObj.cancelSelectedNode();
-      otherObj=$.fn.zTree.getZTreeObj("other_tree");//取消我听选中的节点
+      otherObj=$.fn.zTree.getZTreeObj("other_tree");//取消其他平台选中的节点
       otherObj.cancelSelectedNode();
+      $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
       if($(this).is(":checked")){
         if($(this).hasClass("wt")){//选中的是我听
+          $('#wt_table tbody').html(" ");//清空内容
           $(".wt_content").removeClass("dis").siblings(".ot_content").addClass("dis");
-          $(".ot_no").addClass("dis");
-          return;
+          $(".wt_no1").removeClass("dis");
+          return false;
         }else{
+          $('#ot_table tbody').html(" ");//清空内容
           $(".ot_content").removeClass("dis").siblings(".wt_content").addClass("dis");
-          $(".wt_no").addClass("dis");
-          return;
+          $(".ot_no1").removeClass("dis");
+          return false;
         }
       }
     });
@@ -419,10 +436,8 @@ $(function(){
   
   //点击切换平台
   $("input[type='radio']").on("click",function(){
-    wtObj=$.fn.zTree.getZTreeObj("woting_tree");//取消我听选中的节点
-    wtObj.cancelSelectedNode();
-    otherObj=$.fn.zTree.getZTreeObj("other_tree");//取消我听选中的节点
-    otherObj.cancelSelectedNode();
+    wtObj.cancelSelectedNode();//取消我听选中的节点
+    otherObj.cancelSelectedNode();//取消其他平台选中的节点
     $("input[type='radio']").removeAttr("checked");
     $(this).prop("checked","checked");
     initContent();
@@ -442,11 +457,11 @@ $(function(){
         if(returnData.ReturnType=="1001"){
           wtObj.addNodes(null,returnData.Data.children,false);
         }else{
-          $("#woting_tree").html("<li>数据加载失败...<li>");
+          $("#woting_tree").html("<li class='notes'>数据加载失败"+returnData.Message+"</li>");
         }
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        $("#woting_tree").html("<li class='notes'>数据加载发生错误"+jqXHR.status+"</li>");
       }
     });
   }
@@ -464,11 +479,11 @@ $(function(){
         if(returnData.ReturnType=="1001"){
           otherObj.addNodes(null,returnData.Data.children,false);
         }else{
-          $("#other_tree").html("<li>数据加载失败...<li>");
+          $("#other_tree").html("<li class='notes'>数据加载失败"+returnData.Message+"</li>");
         }
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        $("#other_tree").html("<li class='notes'>数据加载发生错误"+jqXHR.status+"</li>");
       }
     });
   }
@@ -492,15 +507,24 @@ $(function(){
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
           modalObj.addNodes(null,returnData.Data.children,false);
+          var modes=modalObj.getNodes();
+          for(var i=0;i<modes.length;i++){
+            if(modes[i].level=='0'){//根节点没有勾选框
+              modes[i].nocheck=true;
+              modalObj.updateNode(modes[i]);
+            }
+          }
           $(".modal_header").attr("applyType",applyType);
           for(var i=0;i<list.length;i++){
             var node=modalObj.getNodeByParam("id",list[i], null);
             modalObj.setChkDisabled(node,true,false,false);
           }
+        }else{
+          alert("加载模态框上的树失败" + returnData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("加载模态框上的树发生错误" + jqXHR.status);
       }
     });
   }
@@ -508,65 +532,85 @@ $(function(){
   var list=[];//存放对应平台的id
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
-    var _url=rootPath+"common/getCCateRefs.do";
-    var _data={"ApplyType":1,"Id":treeNode.id};
-    $.ajax({
-      type: "POST",    
-      url: _url,
-      dataType: "json",
-      data:JSON.stringify(_data),
-      success: function(returnData){
-        $('#wt_table').bootstrapTable('load',null);//清空数据
-        $(".wt_no").addClass("dis");
-        list=[];//清空数组
-        if(returnData.ReturnType=="1001"){
-          $('#wt_table').bootstrapTable('load',returnData.ResultList);
-          for(var i=0;i<returnData.ResultList.length;i++){
-            list.push(returnData.ResultList[i].SrcDid);
+    $('#wt_table tbody').html(" ");//清空内容
+    if(treeNode.level=='0'){//禁止对根节点进行操作
+      alert("你不能对当前节点进行操作,请选择他的子节点");
+      wtObj.cancelSelectedNode();
+      return;
+    }else{
+      var _url=rootPath+"common/getCCateRefs.do";
+      var _data={"ApplyType":1,"Id":treeNode.id};
+      $.ajax({
+        type: "POST",    
+        url: _url,
+        dataType: "json",
+        data:JSON.stringify(_data),
+        beforeSend:function(){
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          $(".wt_no2").removeClass("dis");
+        },
+        success: function(returnData){
+          $('#wt_table').bootstrapTable('load',null);//清空数据
+          list=[];//清空数组
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          if(returnData.ReturnType=="1001"){
+            $('#wt_table').bootstrapTable('load',returnData.ResultList);
+            for(var i=0;i<returnData.ResultList.length;i++){
+              list.push(returnData.ResultList[i].SrcDid);
+              perId=returnData.ResultList[i].Id;
+              loadProgress(perId); 
+            }
+          }else{
+            $(".wt_no").removeClass("dis");
           }
-          for(var i=0;i<returnData.ResultList.length;i++){
-            perId=returnData.ResultList[i].Id;
-            loadProgress(perId);    
-          }
-        }else{
-          $(".wt_no").removeClass("dis");
+        },
+        error:function(jqXHR){
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          $(".wt_no3").text("映射关系加载失败:"+jqXHR.status).removeClass("dis");
         }
-      },
-      error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
+      });
+    }
   }
   //选中其他平台的分类，查询其他平台与我听的映射关系
   function selectOtherTreeNode(event, treeId, treeNode){
-    var _url=rootPath+"common/getCCateRefs.do";
-    var _data={"ApplyType":2,"Id":treeNode.id};
-    $.ajax({
-      type: "POST",    
-      url: _url,
-      dataType: "json",
-      data:JSON.stringify(_data),
-      success: function(returnData){
-        $('#ot_table').bootstrapTable('load',null);//清空数据
-        $(".ot_no").addClass("dis");
-        list=[];//清空数组
-        if(returnData.ReturnType=="1001"){
-          $('#ot_table').bootstrapTable('load',returnData.ResultList);
-          for(var i=0;i<returnData.ResultList.length;i++){
-            list.push(returnData.ResultList[i].ChannelId);
+     $('#ot_table tbody').html(" ");//清空内容
+    if(treeNode.level=='0'){//禁止对根节点进行操作
+      alert("你不能对当前节点进行操作,请选择他的子节点");
+      otherObj.cancelSelectedNode();
+      return;
+    }else{
+      var _url=rootPath+"common/getCCateRefs.do";
+      var _data={"ApplyType":2,"Id":treeNode.id};
+      $.ajax({
+        type: "POST",    
+        url: _url,
+        dataType: "json",
+        data:JSON.stringify(_data),
+        beforeSend:function(){
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          $(".ot_no2").removeClass("dis");
+        },
+        success: function(returnData){
+          $('#ot_table').bootstrapTable('load',null);//清空数据
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          list=[];//清空数组
+          if(returnData.ReturnType=="1001"){
+            $('#ot_table').bootstrapTable('load',returnData.ResultList);
+            for(var i=0;i<returnData.ResultList.length;i++){
+              list.push(returnData.ResultList[i].ChannelId);
+              perId=returnData.ResultList[i].Id;
+              loadProgress(perId);
+            }
+          }else{
+            $(".ot_no").removeClass("dis");
           }
-          for(var i=0;i<returnData.ResultList.length;i++){
-            perId=returnData.ResultList[i].Id;
-            loadProgress(perId); 
-          }
-        }else{
-          $(".ot_no").removeClass("dis");
+        },
+        error:function(jqXHR){
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          $(".wt_no3").text("映射关系加载失败:"+jqXHR.status).removeClass("dis");
         }
-      },
-      error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
-      }
-    });
+      });
+    }
   }
   
   //点击添加对应关系
@@ -580,18 +624,28 @@ $(function(){
       return;
     }else{
       if(!other_node){//选中我听平台
-        wt_path=wt_node.attributes.pathName+"";//选中节点的路径
-        wt_path=wt_path.replace("栏目根/"," ");
-        $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+wt_path+'"');
-        applyType=1;
-        //获取与我听对应的映射关系
-        loadModalTree("我听平台",applyType);
+        if(wt_node.level<='0'){//选中的是根节点
+          alert("你不能对当前节点进行操作,请选择他的子节点");
+          return;
+        }else{
+          wt_path=wt_node.attributes.pathName+"";//选中节点的路径
+          wt_path=wt_path.replace("栏目根/"," ");
+          $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+wt_path+'"');
+          applyType=1;
+          //获取与我听对应的映射关系
+          loadModalTree("我听平台",applyType);
+        }
       }else{
-        ot_path=other_node.attributes.pathName+"";//选中节点的路径
-        ot_path=ot_path.replace("外源内容分类/"," ");
-        $(".modal_cp").attr("nodeid",other_node.id).text('你已经选择了"'+ot_path+'"');
-        applyType=2;
-        loadModalTree("其他平台",applyType);
+        if(other_node.level<='0'){//选中的是根节点
+          alert("你不能对当前节点进行操作,请选择他的子节点");
+          return;
+        }else{
+          ot_path=other_node.attributes.pathName+"";//选中节点的路径
+          ot_path=ot_path.replace("外源内容分类/"," ");
+          $(".modal_cp").attr("nodeid",other_node.id).text('你已经选择了"'+ot_path+'"');
+          applyType=2;
+          loadModalTree("其他平台",applyType);
+        }
       }
       $(".mask").removeClass("dis");
     }
@@ -605,14 +659,11 @@ $(function(){
     if(modal_nodes.length>0){
       var nodes_id="";
       for(var i=0;i<modal_nodes.length;i++){
-        if(nodes_id==""){
-          nodes_id=modal_nodes[i].id;
-        }else{
-          nodes_id+=","+modal_nodes[i].id;
-        }
+        if(nodes_id=="") nodes_id=modal_nodes[i].id;
+        else nodes_id+=","+modal_nodes[i].id;
+        var node_id=$(".modal_cp").attr("nodeid");
       }
     }
-    var node_id=$(".modal_cp").attr("nodeid");
     addmap(applyType,node_id,nodes_id);
   });
   function addmap(applyType,node_id,nodes_id){
@@ -628,6 +679,9 @@ $(function(){
       url: _url,
       dataType:"json",
       data:JSON.stringify(_data),
+      beforeSend:function(){
+        $(".modal_footer button").attr("disabled","disabled").css("background","#ccc");
+      },
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
           alert("映射关系添加成功");
@@ -639,11 +693,13 @@ $(function(){
           $(".mask").addClass("dis");
           $("#modal_tree").html(" ");
         }else{
-          alert(returnData.Message);
+          alert("映射关系添加失败:"+returnData.Message);
         }
+        $(".modal_footer button").removeAttr("disabled").css("background","#0077C7");
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("映射关系添加发生错误:" + jqXHR.status);
+        $(".modal_footer button").removeAttr("disabled").css("background","#0077C7");
       }
     });
   }
@@ -664,11 +720,8 @@ $(function(){
     $(obj).each(function(){
       var is=$(this).prop("checked");
       if(is==true){//这条数据被选中
-        if(mapIds==""){
-          mapIds=$(this).parent("td").next().text();
-        }else{
-          mapIds+=","+$(this).parent("td").next().text();
-        }
+        if(mapIds=="") mapIds=$(this).parent("td").next().text();
+        else mapIds+=","+$(this).parent("td").next().text();
         mapArr.push($(this).parent("td").next().text());
       }
     }); 
@@ -692,6 +745,9 @@ $(function(){
       dataType: "json",
       async:true,
       data:JSON.stringify(_data),
+      beforeSend:function(){
+        $(".libtns button").attr("disbaled","disabled").css("background","#ccc");
+      },
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
           if(applyType==2){//重新调用我听与其他平台的对应关系
@@ -705,13 +761,16 @@ $(function(){
             treeid=other_node.id;
             selectOtherTreeNode(event, treeid, other_node);
           }
-          alert("删除成功!");
+          $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
+          alert("删除映射关系成功!");
         }else{
-          alert("删除失败!");
+          alert("删除映射关系删除失败!");
         }
+        $(".libtns button").removeAttr("disabled").css("background","#0077C7");
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("删除映射关系发生错误:" + jqXHR.status);
+        $(".libtns button").removeAttr("disabled").css("background","#0077C7");
       }
     });
   }
@@ -719,16 +778,17 @@ $(function(){
   //点击关闭，取消按钮，关闭遮罩层
   $(".close,.cancel").on("click",function(){
     $(".mask").addClass("dis");
+    $(".wt_no1,.wt_no2,.wt_no3,.wt_no,.ot_no1,.ot_no2,.ot_no3,.ot_no").addClass("dis");
     $("#modal_tree").html(" ");
   });
 
   /*s--进度条插件初始化*/
   var st=0;
   function loadProgress(id){
-    if($(".wt_content").hasClass("dis")){//删除其他平台
+    if($(".wt_content").hasClass("dis")){//其他平台
       obj=$("#ot_table tbody tr").children("td").children("input[name='btSelectItem']");
       applyType=1;
-    }else{//删除我听
+    }else{//我听
       applyType=2;
       obj=$("#wt_table tbody tr").children("td").children("input[name='btSelectItem']");
     }
@@ -763,43 +823,30 @@ $(function(){
               var id=$(this).parent("td").next("td");
               id=$(id).text();
               if(id==per_data.PerId){
-                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").children(".text").text("0");
-//                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").hide();
                 $(this).parent("td").parent("tr").children("td:last-child").html(" ");
               }
             });
           }
         }else{
-          if(st<100){
-            st++;
-            var pro='<div class="progressbar">'+
-                      '<div class="text">'+st+'%</div>'+
-                      '<div class="bar" style="width:'+st+'%"></div>'+
-                    '</div>';
-            $(obj).each(function(){
-              var id=$(this).parent("td").next("td");
-              id=$(id).text();
-              if(id==per_data.PerId){
-                $(this).parent("td").parent("tr").children("td:last-child").html(pro);
-                perId=per_data.PerId;
-                window.setInterval(loadProgress(perId),5000);
-              }
-            });        
-          }else{
-            $(obj).each(function(){
-              var id=$(this).parent("td").next("td");
-              id=$(id).text();
-              if(id==per_data.PerId){
-                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").children(".text").text("0");
-//                $(this).parent("td").parent("tr").children("td:last-child").children(".progressbar").hide();
-                $(this).parent("td").parent("tr").children("td:last-child").html(" ");
-              }
-            });
-          }
+          var pro='<div>'+returnData.Message+'</div>';
+          $(obj).each(function(){
+            var id=$(this).parent("td").next("td");
+            id=$(id).text();
+            if(id==per_data.PerId){
+              $(this).parent("td").parent("tr").children("td:last-child").append(pro);
+            }
+          });
         }
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        var pro='<div>'+jqXHR.status+'</div>';
+        $(obj).each(function(){
+          var id=$(this).parent("td").next("td");
+          id=$(id).text();
+          if(id==per_data.PerId){
+            $(this).parent("td").parent("tr").children("td:last-child").append(pro);
+          }
+        });
       }
     });
   }

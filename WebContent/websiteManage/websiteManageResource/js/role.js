@@ -60,8 +60,8 @@ $(function(){
     if($(this).hasClass("disabledstatus")){//当前处于不可新建的状态
       return;
     }else{
-      $(this).addClass("disabledstatus");
-      $(this).children(".ccl13_div").removeClass("ccl13_div1");
+//    $(this).addClass("disabledstatus");
+//    $(this).children(".ccl13_div").removeClass("ccl13_div1");
       $(this).children(".ccl14_div").removeClass("ccl14_div1")
       $(".ccl4 .ccl4_list .ccl43").attr("disabled","disabled").css({"color":"#ccc"});
       if($(".ccl4").children(".labels").length>0){//新建的是第一个角色
@@ -99,14 +99,13 @@ $(function(){
     $(this).siblings(".ccl42").removeClass("dis").val(txt);
     $(this).addClass("dis").siblings(".ccl44").removeClass("dis");
     $(this).parent(".ccl4_list").siblings().children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
-    $(".ccl12_div").addClass("disabledstatus");
-    $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
+//  $(".ccl12_div").addClass("disabledstatus");
+//  $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
     $(".ccl12_div").children(".ccl14_div").removeClass("ccl14_div1");
   });
   
   /*点击保存按钮*/
   $(document).on("click",".ccl45",function(){
-    debugger;
     var txt=$.trim($(this).parent(".ccl44").siblings(".ccl42").val());
     var _this=$(this);
     if(!txt||txt==''){
@@ -144,9 +143,9 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           checkDiabled=false;
-          $(".ccl12_div").removeClass("disabledstatus");
-          $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
-          $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
+//        $(".ccl12_div").removeClass("disabledstatus");
+//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
+//        $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
           getRoleList(data0);//刷新角色列表
         }else{
           $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"##0077c7"});
@@ -172,8 +171,8 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           checkDiabled=false;
-          $(".ccl12_div").removeClass("disabledstatus");
-          $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
+//        $(".ccl12_div").removeClass("disabledstatus");
+//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
           $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
           getRoleList(data0);//刷新角色列表
         }else{
@@ -205,8 +204,8 @@ $(function(){
     $(this).parent(".ccl44").siblings(".ccl43").removeClass("dis");
     $(this).parent(".ccl44").addClass("dis");
     $(".ccl4 .ccl4_list .ccl43").removeAttr("disabled").css({"color":"#0077C7"});
-    $(".ccl12_div").removeClass("disabledstatus");
-    $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
+//  $(".ccl12_div").removeClass("disabledstatus");
+//  $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
     $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
   });
   
@@ -224,8 +223,8 @@ $(function(){
           $(document).find(".ccl4_list").each(function(){
             $(this).children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
           });
-          $(".ccl12_div").addClass("disabledstatus");
-          $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
+//        $(".ccl12_div").addClass("disabledstatus");
+//        $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
           $(".ccl12_div").children(".ccl14_div").removeClass("ccl14_div1");
         }else{
           $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
@@ -234,8 +233,8 @@ $(function(){
           $(document).find(".ccl4_list").each(function(){
             $(this).children(".ccl43").removeAttr("disabled").css({"color":"#0077C7"});
           });
-          $(".ccl12_div").removeClass("disabledstatus");
-          $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
+//        $(".ccl12_div").removeClass("disabledstatus");
+//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
           $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
         }
       }
@@ -256,8 +255,8 @@ $(function(){
         $(document).find(".ccl4_list").each(function(){
           $(this).children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
         });
-        $(".ccl12_div").addClass("disabledstatus");
-        $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
+//      $(".ccl12_div").addClass("disabledstatus");
+//      $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
         $(".ccl12_div").children(".ccl14_div").removeClass("ccl14_div1");
         $(".ccl4 .ccl4_list .ccl4_img").each(function(){//是否选中全选
           if($(this).hasClass("checkbox1")) return;
@@ -276,8 +275,8 @@ $(function(){
           $(document).find(".ccl4_list").each(function(){
             $(this).children(".ccl43").removeAttr("disabled").css({"color":"#0077C7"});
           });
-          $(".ccl12_div").removeClass("disabledstatus");
-          $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
+//        $(".ccl12_div").removeClass("disabledstatus");
+//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
           $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
         }
       }

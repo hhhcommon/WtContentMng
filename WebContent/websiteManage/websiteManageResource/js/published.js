@@ -256,7 +256,7 @@ $(function(){
   function getSearchList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/searchContents.do",
+      url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -320,7 +320,7 @@ $(function(){
   var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
   loadTree(loadTreeData);
   function loadTree(loadData){
-    var _url=rootPath+"baseinfo/getChannelTree4View.do";
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
     var i=0;
     loadRecursion(0);
   
@@ -362,7 +362,7 @@ $(function(){
   function getContentList(data){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContents.do",
+      url:rootPath+"CM/content/getContents.do",
       dataType:"json",
       cache:false,
 //    async:false,
@@ -485,7 +485,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContentInfo.do",
+      url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
       cache:false,
       async:false,
@@ -594,7 +594,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/updateContentStatus.do",
+      url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data2),

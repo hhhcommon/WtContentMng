@@ -24,18 +24,17 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .c_title{
   color: #000;
-  padding-left: 15px;
-  height: 40px;
+  height: 38px;
   line-height:40px;
-  border-bottom: 1px solid #dedede;
+  padding: 0px 15px;
+  box-shadow:0px 2px 1px #ddd;
 }
 .c_con{
   width:100%;
   height:calc(100% - 40px);
   position: relative;
   overflow: hidden;
-  /*border:1px solid red;*/
-  /*overflow-x: auto;*/
+  margin-top: 2px;
 }
 .cc_left{
   position: relative;

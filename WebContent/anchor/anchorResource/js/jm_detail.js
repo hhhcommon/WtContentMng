@@ -21,11 +21,11 @@ $(function(){
         if(resultData.ReturnType=="1001"){
           fillJmDetail(resultData);//填充节目数据
         }else{
-          alert(resultData.Message);
+          alert("得到节目信息失败："+resultData.Message);
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到节目信息发生错误："+ jqXHR.status);
       }
     });
   }
@@ -44,7 +44,7 @@ $(function(){
           $(".tags").append(newli);
         }
       }else{
-        var newli='<li>暂无</li>';
+        var newli='<div>暂无</div>';
         $(".tg1").append(newli);
       }
     }
@@ -121,4 +121,9 @@ $(function(){
     }
     return time;
   }
+  
+  //点击标题的专辑管理--进入专辑管理页面
+  $(document).on("click",".detail_title2",function(){
+    $("#myIframe", parent.document).attr({"src":"jmANDzj/manage_jm.html"});
+  })
 });

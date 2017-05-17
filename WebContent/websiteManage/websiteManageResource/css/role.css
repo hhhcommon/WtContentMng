@@ -40,7 +40,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   height:calc(100% - 40px);
   position: relative;
   overflow: hidden;
-  border:1px solid red;
 }
 .cc_left{
   position: relative;
@@ -61,12 +60,12 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   font-size: 16px;
   font-weight: bolder;
 }
-.ccl12_div{
+/*.ccl12_div{
   padding: 0px 16px 0px 0px;
   cursor: pointer;
   overflow: hidden;
-}
-.ccl13_div{
+}*/
+/*.ccl13_div{
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -80,7 +79,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 .ccl13_div1{
   border:2px solid #0077C7;
   color: #0077C7;
-}
+}*/
 .ccl14_div{
   line-height: 40px;
   padding: 0px 5px 0px 5px;

@@ -8,6 +8,7 @@ $(function(){
   var searchKey="";//搜索关键词
   var anchorFy=1;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
   var userId="123";
+  var sourceId=2;//sourceId=0是我听,sourceId=2是喜马拉雅
   
   /*主播禁言状态的下拉菜单的切换*/
   $(".dropdown").on("click",function(){
@@ -55,6 +56,7 @@ $(function(){
   data2.UserId=userId;
   data2.PageSize=pageSize;
   data2.Page=current_page;
+  data2.SourceId=sourceId;
   getPersonsList(data2);
   function getPersonsList(dataParam){
     $.ajax({
@@ -198,7 +200,7 @@ $(function(){
       seaFy=2;
     }
     $(".dropdown_menu li").each(function(){
-      if($(this).hasClass("selected")){
+      if($(this).hasClass("selected")&&$(this).attr("catalogId")!="zbzt00"){
         anchorFy=2;
         return false;
       }else{//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
@@ -214,6 +216,7 @@ $(function(){
     data2.UserId=userId;
     data2.PageSize=pageSize;
     data2.Page=current_page;
+    data2.SourceId=sourceId;
     if(seaFy==2){//seaFy=2搜索列表加载出来后翻页
       data2.SearchWord=$.trim($(".ri_top_li2_inp").val());
     }
@@ -244,6 +247,7 @@ $(function(){
     searchWord=$.trim($(".ri_top_li2_inp").val());
     destroy(data2);
     data2.UserId=userId;
+    data2.SourceId=sourceId;
     data2.PageSize=pageSize;
     current_page="1";
     data2.Page=current_page;
@@ -268,6 +272,7 @@ $(function(){
   $(".dropdown_menu").on("click","li",function(){
     destroy(data2);
     data2.UserId=userId;
+    data2.SourceId=sourceId;
     data2.PageSize=pageSize;
     current_page="1";
     data2.Page=current_page;
@@ -276,7 +281,9 @@ $(function(){
       seaFy=2;
     }
     anchorFy=2;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
-    data2.StatusType=$(this).attr("catalogId");
+    if($(this).attr("catalogId")!="zbzt00"){//选中的全部状态
+      data2.StatusType=$(this).attr("catalogId");
+    }
     getPersonsList(data2);
     $(this).parent(".dropdown_menu").addClass("dis");
     $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"../websiteManageResource/img/filter2.png"});
@@ -329,21 +336,15 @@ $(function(){
       $(".gay_forever").css({"color":"#fff","background":"darkred"});
       $(".gay_revoke").css({"color":"#fff","background":"darkgreen"});
       $(".ric_con2_content .ric_cc_listBox .ric_img_check").each(function(){//是否选中全选
-        if($(this).hasClass("checkbox1")){
-          
-        }else{
-          num++;
-        }
+        if($(this).hasClass("checkbox1"))  return;
+        else num++;
       });
       if(num==l) $(".all_check").removeClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox2.png"});
     }else{
       $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
       $(".ric_con2_content .ric_cc_listBox .ric_img_check").each(function(){//是否选中全选
-        if($(this).hasClass("checkbox1")){
-          
-        }else{
-          num++;
-        }
+        if($(this).hasClass("checkbox1")) return;
+        else num++;
       });
       if(num!=l) $(".all_check").addClass("checkbox1").attr({"src":"../websiteManageResource/img/checkbox1.png"});
       if(num==0) $(".ric_con1 button").attr({"disabled":"disabled"}).css({"color":"#000","background":"#ddd"});
@@ -359,11 +360,8 @@ $(function(){
       if($(this).children(".ric_img_check").hasClass("checkbox1")){//未选中
         
       }else{//已选中
-        if(perids==""){
-          perids=$(this).children(".person_name").attr("perId");
-        }else{
-          perids+=","+$(this).children(".person_name").attr("perId");
-        }
+        if(perids=="") perids=$(this).children(".person_name").attr("perId");
+        else perids+=","+$(this).children(".person_name").attr("perId");
       }
     });
     if(perids!=""){
@@ -372,7 +370,7 @@ $(function(){
       data3.StatusType=statusType;
       $.ajax({
         type:"POST",
-        url:rootPath+"person/updatePersonStatus.do",
+        url:rootPath+"CM/person/updatePersonStatus.do",
         dataType:"json",
         cache:false, 
         data:JSON.stringify(data3),

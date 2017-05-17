@@ -46,8 +46,10 @@ body{overflow: auto;background: #fff;}
   color: #000;
   font-size: 14px;
   padding: 0px 20px;
-  border-bottom: 1px solid #dedede;
+  box-shadow:0px 2px 1px #ddd;
+  overflow: hidden;
 }
+.detail_title1,.pername{cursor: pointer;}
 .title_more{
   overflow: hidden;
   height: 30px;
@@ -354,10 +356,12 @@ body{overflow: auto;background: #fff;}
 <body>
 <div class="detail">
   <div class="containers">
-    <div class="detail_title ellipsis">当前位置：主播管理> 主播列表> 
-      <span class="pername"></span>
-      <span class="zjname"></span>
-      <span class="jmname"></span>
+    <div class="detail_title ellipsis"> 
+      <span class="detail_title2 fl">当前位置：主播管理 > </span>
+      <span class="detail_title1 fl">主播列表></span>
+      <span class="pername fl"></span>
+      <span class="zjname fl" style="display:none;"></span>
+      <span class="jmname fl"></span>
     </div>
     <div class="detail_content">
       <div class="dc_left">
@@ -535,6 +539,17 @@ $(function(){
       $(".dcr_jmlist").append(list);
     }
   }
+  
+  /*点击标题的主播列表--进入主播列表页面*/
+  $(".detail_title1").on("click",function(){
+    $("#myIframe", parent.document).attr({"src":"anchorManage/anchor_list.html"});
+  });
+  
+  /*点击标题的主播名称--进入到主播详情页*/
+  $(".pername").on("click",function(){
+    var perid=$(".pername").attr("perid");
+    $("#myIframe", parent.document).attr({"src":"anchorManage/anchor_detail.html?personId="+perid});
+  });
   
   /*点击节目列表里节目的名称，跳到节目详情页*/
   $(document).on("click",".list1_con_name",function(){

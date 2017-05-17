@@ -123,7 +123,7 @@ getSourceFilters();
 function getSourceFilters(){
   $.ajax({
     type:"POST",
-    url:rootPath+"content/getConditions.do",
+    url:rootPath+"CM/content/getConditions.do",
     dataType:"json",
     cache:false, 
     success:function(resultData){

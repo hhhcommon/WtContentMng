@@ -15,7 +15,6 @@
   <link href="../../anchor/anchorResource/css/pagination.css" rel="stylesheet"/>
   <link href="../websiteManageResource/css/loopPagination.css" rel="stylesheet"/>
   <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-  <script src="../../resources/js/mainPage.js"></script>
   <script src="../../resources/js/common.utils.js"></script>
   <script src="../../resources/js/context.utils.js"></script>
   <script src="../../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
@@ -54,10 +53,10 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .c_title{
   color: #000;
-  padding-left: 15px;
   height: 40px;
   line-height: 40px;
-  border-bottom: 1px solid #dedede;
+  padding: 0px 15px;
+  box-shadow:0px 2px 1px #ddd;
 }
 .c_con{
   width: 100%;
@@ -65,7 +64,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  /*border:1px solid red;*/
 }
 .cc_left{
   position: relative;
@@ -1055,11 +1053,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
                 <div class="attrValues">
                   <ul class="av-gather av_ul"></ul>
                 </div>
-                <!--<div class="btns">
-                  <span class="btns_sub">确定</span>
-                  <span class="btns_can">取消</span>
-                </div>
-                <span class="check_more more3">多选</span>-->
               </div>
               <div class="attr" id="type">
                 <div class="attrKey">类型 :</div>
@@ -1109,90 +1102,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
               </div>
               <div class="ri_top3_con">
                 <div style="text-align: center;line-height: 50px;margin-top: 10px;font-size:16px;color:#000;">请先选择具体的栏目</div>
-                <!--<div class="rtc_listBox">
-                  <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
-                  <div class="rtcl_img fl">
-                    <img src="" alt="节目图片" />
-                  </div>
-                  <div class="rtcl_con fl">
-                    <p class="rtcl_con_p ellipsis">敢不敢带上敢不敢带上耳机听音乐敢不敢带上耳机听音乐耳机听音乐</p>
-                    <p class="sequ_num">168个声音</p>
-                    <div class="rtcl_con_desc">
-                      <span class="rtcl_con_desc1 fl">主播：</span>
-                      <span class="rtcl_con_desc2 fl ellipsis">北京北京小主播北京小主播北京小主播北京小主播小主播</span>
-                    </div>
-                  </div>
-                  <ul class="rtcl_con_channel1s ellipsis fl">
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                  </ul>
-                  <span class="source_form fl">喜马拉雅</span>
-                  <span class="audio_time fl">2017-01-07</span>
-                  <div class="opetype1 fl">
-                    <div class="carousel">轮播图</div>
-                    <div class="top">置&nbsp;&nbsp;&nbsp;顶</div>
-                    <div class="revoke">撤&nbsp;&nbsp;&nbsp;回</div>
-                  </div>
-                </div>-->
-                <!--<div class="rtc_listBox">
-                  <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
-                  <div class="rtcl_img fl">
-                    <img src="" alt="节目图片" />
-                  </div>
-                  <div class="rtcl_con fl">
-                    <p class="rtcl_con_p ellipsis">敢不敢带上敢不敢带上耳机听音乐敢不敢带上耳机听音乐耳机听音乐</p>
-                    <p class="sequ_num">168个声音</p>
-                    <div class="rtcl_con_desc">
-                      <span class="rtcl_con_desc1 fl">主播：</span>
-                      <span class="rtcl_con_desc2 fl ellipsis">北京北京小主播北京小主播北京小主播北京小主播小主播</span>
-                    </div>
-                  </div>
-                  <ul class="rtcl_con_channel1s ellipsis fl">
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                  </ul>
-                  <span class="source_form fl">喜马拉雅</span>
-                  <span class="audio_time fl">2017-01-07</span>
-                  <div class="opetype1 fl">
-                    <div class="carousel">轮播图</div>
-                    <div class="top">置&nbsp;&nbsp;&nbsp;顶</div>
-                    <div class="revoke">撤&nbsp;&nbsp;&nbsp;回</div>
-                  </div>
-                </div>-->
-                <!--<div class="rtc_listBox">
-                  <img src="img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>
-                  <div class="rtcl_img fl">
-                    <img src="" alt="节目图片" />
-                  </div>
-                  <div class="rtcl_con fl">
-                    <p class="rtcl_con_p ellipsis">敢不敢带上敢不敢带上耳机听音乐敢不敢带上耳机听音乐耳机听音乐</p>
-                    <p class="sequ_num">168个声音</p>
-                    <div class="rtcl_con_desc">
-                      <span class="rtcl_con_desc1 fl">主播：</span>
-                      <span class="rtcl_con_desc2 fl ellipsis">北京北京小主播北京小主播北京小主播北京小主播小主播</span>
-                    </div>
-                  </div>
-                  <ul class="rtcl_con_channel1s ellipsis fl">
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                    <li class="rtcl_con_channel2">电台丛林--故事</li>
-                  </ul>
-                  <span class="source_form fl">喜马拉雅</span>
-                  <span class="audio_time fl">2017-01-07</span>
-                  <div class="opetype1 fl">
-                    <div class="carousel">轮播图</div>
-                    <div class="top">置&nbsp;&nbsp;&nbsp;顶</div>
-                    <div class="revoke">撤&nbsp;&nbsp;&nbsp;回</div>
-                  </div>
-                </div>-->
               </div>
               <div class="fixed">
                 <div id="kkpager"></div>
@@ -1214,58 +1123,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
               </div> 
               <div class="lb_div5">
                 <div style="text-align: center;line-height: 50px;margin-top: 10px;font-size:16px;color:#000;">请先选择具体的栏目</div>
-                <!--<div class="lbd_box">
-                  <div class="lbd_box1 fl">第1帧</div>
-                  <div class="lbd_box2 fl">
-                    <img src="" alt=""  class="lbd_box3"/>
-                    <div class="lbd_box4">上传图片</div>
-                  </div>
-                  <div class="lbd_box5 fl">&lt;初春在路也1&gt;</div>
-                  <div class="lbd_box6 fl">
-                    <div class="lbd_box61">上移一层</div>
-                    <div class="lbd_box62">下移一层</div>
-                    <div class="lbd_box63">删除此帧</div>
-                  </div>
-                </div>-->
-                <!--<div class="lbd_box">
-                  <div class="lbd_box1 fl">第2帧</div>
-                  <div class="lbd_box2 fl">
-                    <img src="" alt=""  class="lbd_box3"/>
-                    <div class="lbd_box4">上传图片</div>
-                  </div>
-                  <div class="lbd_box5 fl">&lt;初春在路也2&gt;</div>
-                  <div class="lbd_box6 fl">
-                    <div class="lbd_box61">上移一层</div>
-                    <div class="lbd_box62">下移一层</div>
-                    <div class="lbd_box63">删除此帧</div>
-                  </div>
-                </div>-->
-                <!--<div class="lbd_box">
-                  <div class="lbd_box1 fl">第3帧</div>
-                  <div class="lbd_box2 fl">
-                    <img src="" alt=""  class="lbd_box3"/>
-                    <div class="lbd_box4">上传图片</div>
-                  </div>
-                  <div class="lbd_box5 fl">&lt;初春在路也3&gt;</div>
-                  <div class="lbd_box6 fl">
-                    <div class="lbd_box61">上移一层</div>
-                    <div class="lbd_box62">下移一层</div>
-                    <div class="lbd_box63">删除此帧</div>
-                  </div>
-                </div>-->
-                <!--<div class="lbd_box">
-                  <div class="lbd_box1 fl">第4帧</div>
-                  <div class="lbd_box2 fl">
-                    <img src="" alt=""  class="lbd_box3"/>
-                    <div class="lbd_box4">上传图片</div>
-                  </div>
-                  <div class="lbd_box5 fl">&lt;初春在路也4&gt;</div>
-                  <div class="lbd_box6 fl">
-                    <div class="lbd_box61">上移一层</div>
-                    <div class="lbd_box62">下移一层</div>
-                    <div class="lbd_box63">删除此帧</div>
-                  </div>
-                </div>-->
               </div>
               <div class="lb_div6">
                 <div class="lb_div61">
@@ -1299,7 +1156,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
         <div class="carouselImgMask dis">
           <img src="../../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />
         </div>
-        <input type="file" value="http://wotingfm.com:908/CM/resources/images/default.png" class="upload_pic" style="display:none;" accept="image/gif,image/jpg,image/png"/>
+        <input type="file" value="http://www.wotingfm.com:908/CM/resources/images/default.png" class="upload_pic" style="display:none;" accept="image/gif,image/jpg,image/png"/>
       </div>
       <div class="cm_footer">
         <input type="button" class="cmf_save" value="保存设置"/>
@@ -1315,9 +1172,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
       <span class="nh_span2">×</span>
     </div>
     <div class="nopass_content">
-      <!--<div class="nc_con1">
-        <span class="nc_txt1"></span>
-      </div>-->
       <div class="nc_con2">
         <p class="nc_txt2 black">请告知主播具体的原因：</p>
         <ul class="nc_reasons">

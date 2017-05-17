@@ -395,7 +395,7 @@ $(function(){
   function getSearchList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/searchContents.do",
+      url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -458,7 +458,7 @@ $(function(){
   var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
   loadTree(loadTreeData);
   function loadTree(loadData){
-    var _url=rootPath+"baseinfo/getChannelTree4View.do";
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
     var i=0;
     loadRecursion(0);
   
@@ -513,7 +513,7 @@ $(function(){
   function getContentList(data){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContents.do",
+      url:rootPath+"CM/content/getContents.do",
       dataType:"json",
       cache:false,
       data:JSON.stringify(data),
@@ -639,7 +639,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContentInfo.do",
+      url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
       cache:false,
       async:false,
@@ -708,7 +708,7 @@ $(function(){
   //请求上传文件
   function requestUpload(_this,oMyForm){
     $.ajax({
-      url:rootPath+"common/uploadCM.do",
+      url:rootPath+"CM/common/uploadCM.do",
       type:"POST",
       data:oMyForm,
       cache: false,
@@ -769,7 +769,7 @@ $(function(){
                "ImageUrl":imgurl
     };
     $.ajax({
-      url:rootPath+"content/addLoopImage.do",
+      url:rootPath+"CM/content/addLoopImage.do",
       type:"POST",
       data:JSON.stringify(data5),
       cache: false,
@@ -879,7 +879,7 @@ $(function(){
   //设置/取消置顶
   function setTop(data1,obj){
     $.ajax({
-      url:rootPath+"content/setTop.do",
+      url:rootPath+"CM/content/setTop.do",
       type:"POST",
       data:JSON.stringify(data1),
       cache: false,
@@ -982,7 +982,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/updateContentStatus.do",
+      url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data2),
@@ -1026,7 +1026,7 @@ $(function(){
   function getLoopImages(data3){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getLoopImages.do",
+      url:rootPath+"CM/content/getLoopImages.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data3),
@@ -1144,7 +1144,7 @@ $(function(){
     var _ts2=$(_this).siblings(".lbd_box2");
     var _ts3=$(_this).siblings(".lbd_box2 img:last");
     $.ajax({
-      url:rootPath+"common/uploadCM.do",
+      url:rootPath+"CM/common/uploadCM.do",
       type:"POST",
       data:oMyForm,
       cache: false,
@@ -1207,7 +1207,7 @@ $(function(){
               "ImageUrl":imgurl
   };
     $.ajax({
-      url:rootPath+"content/addLoopImage.do",
+      url:rootPath+"CM/content/addLoopImage.do",
       type:"POST",
       data:JSON.stringify(data5),
       cache: false,
@@ -1277,7 +1277,7 @@ $(function(){
   function moveLoopImage(data4){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/sortLoopImage.do",
+      url:rootPath+"CM/content/sortLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data4),
@@ -1323,7 +1323,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/delLoopImage.do",
+      url:rootPath+"CM/content/delLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data6),
