@@ -206,7 +206,7 @@
   </sql>
   
   <!-- 查询用户是否已经有角色  如果没有则是第一次设置  如果有则是修改用户的角色 -->
-  <select id="selectUserRole" parameterType="java.util.Map" resultType="java.lang.Integer">
+  <select id="selectUserRoleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(id) from plat_User_Role 
     where userId=#{userId, jdbcType=VARCHAR}
   </select>
@@ -244,4 +244,10 @@
       #{ids} 
     </foreach>
   </delete>
+  
+  <!-- 查询用户的角色 -->
+  <select id="selectUserRole" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_User_Role
+    where userId=#{userId, jdbcType=VARCHAR}
+  </select>
 </mapper>

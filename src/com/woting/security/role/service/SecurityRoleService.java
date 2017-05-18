@@ -256,7 +256,7 @@ public class SecurityRoleService {
         } else count=0;
         try {
             //查询是否已经给用户设置过角色
-            count=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
+            count=userRoleDao.queryForObjectAutoTranform("selectUserRoleCount", param);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("ReturnType", "T");
@@ -367,14 +367,22 @@ public class SecurityRoleService {
             if (funClass!=null && funClass.equals("1")) {//==1 -> "Data" 数据权限
                 Map<String, Object> param=new HashMap<String, Object>();
                 param.put("userId", userId);
-                Map<String, Object> ret=userFunDao.queryForObjectAutoTranform("selectUserRoleFun", param);
+                //查询用户是的角色
+                Map<String, Object> ret=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
                 if (ret==null || ret.size()<=0) return null;
-                String objId=ret.get("objId").toString();
+                String roleId=ret.get("roleId")==null?null:ret.get("roleId").toString();
+                if (roleId==null) return null;
+                param=new HashMap<String, Object>();
+                param.put("roleId", roleId);
+                //查询角色的权限   此时用户的权限对应的就是角色的权限
+                Map<String, Object> _ret=roleFunctionDao.queryForObjectAutoTranform("getRoleFun", param);
+                if (_ret==null || _ret.size()<=0) return null;
+                String objId=_ret.get("objId")==null?null:_ret.get("objId").toString();
                 if (objId==null) return null;
                 if (objId.contains("，")) objId=objId.replace("，", ",");
                 String[] objIds=objId.split(",");
                 Arrays.sort(objIds);
-                Map<String, Object> _ret;
+                Map<String, Object> map;
                 List<Map<String, Object>> data=new ArrayList<Map<String, Object>>();
                 _CacheChannel _cc=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent();
                 TreeNode<Channel> root=_cc.channelTree;
@@ -383,11 +391,11 @@ public class SecurityRoleService {
                         root=_cc.channelTreeMap.get(id);
                     }
                     if (root==null) return null;
-                    _ret=new HashMap<String, Object>();
-                    _ret.put("ChannelId", id);
+                    map=new HashMap<String, Object>();
+                    map.put("ChannelId", id);
                     String channelName=root.getTreePathName(null, 1);
-                    _ret.put("ChannelName", channelName);
-                    data.add(_ret);
+                    map.put("ChannelName", channelName);
+                    data.add(map);
                 }
                 return data;
             } else {//==2 -> 模块(界面)权限           ==3 -> 操作权限
