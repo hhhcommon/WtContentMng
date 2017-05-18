@@ -9,10 +9,16 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.Page;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.mem._CacheChannel;
+import com.woting.cm.core.channel.model.Channel;
 import com.woting.security.role.persis.pojo.PlatRolePo;
 import com.woting.security.role.persis.pojo.RoleFunctionPo;
 import com.woting.security.role.persis.pojo.UserFunctionPo;
@@ -370,17 +376,24 @@ public class SecurityRoleService {
                 Arrays.sort(objIds);
                 Map<String, Object> _ret;
                 List<Map<String, Object>> data=new ArrayList<Map<String, Object>>();
+                _CacheChannel _cc=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent();
+                TreeNode<Channel> root=_cc.channelTree;
                 for (String id : objIds) {
+                    if (!StringUtils.isNullOrEmptyOrSpace(id)) {
+                        root=_cc.channelTreeMap.get(id);
+                    }
+                    if (root==null) return null;
                     _ret=new HashMap<String, Object>();
                     _ret.put("ChannelId", id);
-                    _ret.put("ChannelName", id+"-Name");
+                    String channelName=root.getTreePathName(null, 1);
+                    _ret.put("ChannelName", channelName);
                     data.add(_ret);
                 }
                 return data;
-            } else {
+            } else {//==2 -> 模块(界面)权限           ==3 -> 操作权限
                 return null;
             }
-        } else {
+        } else {//栏目权限之外的权限
             return null;
         }
     }
