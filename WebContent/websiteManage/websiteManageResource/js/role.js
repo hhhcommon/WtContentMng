@@ -26,8 +26,9 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           loadRoleList(resultData);
+          $(".all_check").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");          
         }else{
-          $(".ccl4").html("<div class='labels'>没有得到角色列表...</div>");
+          $(".ccl4").html("<div class='labels'>得到角色列表失败:"+resultData.Message+"</div>");
         }
       },
       error:function(jqXHR){
@@ -477,7 +478,7 @@ $(function(){
     data5.RoleId=roleId;
     data5.FunName="栏目权限";
     data5.FunClass="1";
-    data5.FunType="ChannelContent-Add";
+    data5.FunType="Channel-Add";
     data5.ObjId=channelIds;
     $.ajax({
       type:"POST",    
