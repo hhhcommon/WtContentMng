@@ -11,9 +11,12 @@
   <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet"/>
   <link href="../websiteManageResource/css/role.css" rel="stylesheet"  />
   <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
-  <script src="../../resources/js/mainPage.js"></script>
+  <script src="../../resources/plugins/zTree/js/jquery.ztree.core-3.5.js"></script>
+  <script src="../../resources/plugins/zTree/js/jquery.ztree.excheck-3.5.js"></script>
+  <script src="../../resources/plugins/zTree/js/jquery.ztree.exedit-3.5.js"></script>
   <script src="../../resources/js/common.utils.js"></script>
   <script src="../../resources/js/context.utils.js"></script>
   <script src="../websiteManageResource/js/role.js"></script>
@@ -26,57 +29,60 @@
         <div class="cc_left fl">
           <div class="ccl1">
             <div class="ccl11_div fl">角色列表</div>
-            <!--<div class="ccl12_div fr">-->
-              <!--<div class="ccl13_div fl ccl13_div1"> + </div>-->
-              <div class="ccl14_div fl ccl14_div1">新建</div>
-            <!--</div>-->
           </div>
           <div class="ccl2">
             <img src="../websiteManageResource/img/checkbox1.png" alt="" class="ccl2_img all_check checkbox1 fl"/>
             <div class="ccl21_div fl">全选</div>
-            <!--<button class="ccl14_div fl ccl14_div1">新建</button>-->
-            <button class="ccl23_div fr">新建</button>
-            <button class="ccl22_div fr" disabled="disabled">删除</button>
+            <button class="ccl22_div fr ccl22_div1">删除</button>
+            <button class="ccl23_div fr ccl23_div1">新建</button>
           </div>
           <div class="ccl3">
             <div class="ccl31 fl">角色名称</div>
             <div class="ccl32 fl"></div>
             <div class="ccl33 fr">操作</div>
           </div>
-          <ul class="ccl4">
-            <!--<li class="ccl4_list">
-              <img src="../websiteManageResource/img/checkbox1.png" alt="" class="ccl4_img checkbox1 fl"/>
-              <div class="ccl41 fl ellipsis">资格认证主播</div>
-              <input type="text" class="ccl42 fl dis" value=""/>
-              <button class="ccl43 fr">编辑</button>
-              <div class="ccl44 fr dis">
-                <button class="ccl45 fl">保存</button>
-                <button class="ccl46 fl">取消</button>
-              </div>
-            </li>-->
-            <!--<li class="ccl4_list">
-              <img src="../websiteManageResource/img/checkbox1.png" alt="" class="ccl4_img checkbox1 fl"/>
-              <div class="ccl41 fl ellipsis">资格认证主播</div>
-              <input type="text" class="ccl42 fl dis" value=""/>
-              <button class="ccl43 fr">编辑</button>
-              <div class="ccl44 fr dis">
-                <button class="ccl45 fl">保存</button>
-                <button class="ccl46 fl">取消</button>
-              </div>
-            </li>-->
-            <!--<li class="ccl4_list">
-              <img src="../websiteManageResource/img/checkbox1.png" alt="" class="ccl4_img checkbox1 fl"/>
-              <div class="ccl41 fl ellipsis">资格认证主播</div>
-              <input type="text" class="ccl42 fl dis" value=""/>
-              <button class="ccl43 fr">编辑</button>
-              <div class="ccl44 fr dis">
-                <button class="ccl45 fl">保存</button>
-                <button class="ccl46 fl">取消</button>
-              </div>
-            </li>-->
-          </ul>
+          <ul class="ccl4"></ul>
         </div>
-        <div class="cc_right fl"></div>
+        <div class="cc_right fl">
+          <div class="ccr1">角色权限</div>
+          <div class="ccr2">
+            <div class="ccr3">
+              <div class="ccr3_div1 fl">资源</div>
+              <div class="ccr3_div2 fl">角色名称</div>
+              <div class="ccr3_div3 fl">权限</div>
+              <div class="ccr3_div4 fl">相关操作</div>
+            </div>
+            <div class="ccr4">
+              <div class="ccr4_list">
+                <div class="ccr4_listdiv1 fl">栏目</div>
+                <div class="ccr4_listdiv2 fl">角色名称</div>
+                <div class="ccr4_listdiv3 fl">
+                  <div class="ccr4_listdiv31 dis">暂无栏目权限,请配置权限</div>
+                  <div class="ccr4_listdiv32 fl dis">
+                    <div class="ccr4_listdiv33 fl"></div>
+                    <div class="ccr4_listdiv34 fr">展开全部栏目</div>
+                  </div>
+                </div>
+                <div class="ccr4_listdiv4 fl">权限配置</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="power_mask dis">
+    <div class="power">
+      <div class="power_title">
+        <span class="power_title1 fl">权限设置</span>
+        <span class="power_title2 fr">×</span>
+      </div>
+      <div class="power_content">
+        <ul class="ztree" id="modal_tree"></ul>
+      </div>
+      <div class="power_footer">
+        <div class="power_footer1 fl">保存配置</div>
+        <div class="power_footer2 fl">取消</div>
       </div>
     </div>
   </div>

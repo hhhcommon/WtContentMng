@@ -22,7 +22,7 @@ $(document).on("click",".more3",function(){
   $(this).siblings(".btns").show();
 });
 
-//选中某一中筛选条件
+//选中某一筛选条件
 $(document).on("click",".trig_item",function(){//选中某一项
   var pId=$(this).parents(".attr").attr("id");
   var id=$(this).attr("id");

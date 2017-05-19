@@ -82,7 +82,7 @@ $(function(){
   function opts(seaFy,current_page){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=contentflowflag;
     data.PageSize=pageSize;
@@ -131,7 +131,7 @@ $(function(){
   function anew(contentflowflag){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
     data.PageSize=pageSize;
@@ -235,7 +235,7 @@ $(function(){
   function searchList(){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=contentflowflag;
     data.PageSize=pageSize;
@@ -355,7 +355,7 @@ $(function(){
     data.Page=current_page;
     data.PageSize=pageSize;
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
   }
   
@@ -506,18 +506,17 @@ $(function(){
   /*e--ztree的操作集合*/
   
   /*s--点击内容名字，进入内容详情*/
-//$(document).on("click",".rtcl_con_p",function(){
-//  var mediaType=$(this).siblings(".sequ_num").attr("mediatype");
-//  var contentId=$(this).parent(".rtcl_con").parent(".rtc_listBox").attr("contentId");
-//  if(mediaType=="wt_MediaAsset"){//节目
-//    var seqId=$(this).siblings(".sequ_num").attr("seqId");
-//    $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
-//  }else if(mediaType=="wt_SeqMediaAsset"){//专辑
-//    $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
-//  }
-//});
+  $(document).on("click",".rtcl_con_p",function(){
+    var mediaType=$(this).siblings(".sequ_num").attr("mediatype");
+    var contentId=$(this).parent(".rtcl_con").parent(".rtc_listBox").attr("contentId");
+    if(mediaType=="wt_MediaAsset"){//节目
+      var seqId=$(this).siblings(".sequ_num").attr("seqId");
+      $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+    }else if(mediaType=="wt_SeqMediaAsset"){//专辑
+      $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
+    }
+  });
   /*e--点击内容名字，进入内容详情*/
-  
   
   /*s--删除内容*/
  /*

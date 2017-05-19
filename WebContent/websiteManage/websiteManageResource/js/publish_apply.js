@@ -82,7 +82,7 @@ $(function(){
   function opts(seaFy,current_page){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=contentflowflag;
     data.PageSize=pageSize;
@@ -131,7 +131,7 @@ $(function(){
   function anew(contentflowflag){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
     data.PageSize=pageSize;
@@ -235,7 +235,7 @@ $(function(){
   function searchList(){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=contentflowflag;
     data.PageSize=pageSize;
@@ -358,7 +358,7 @@ $(function(){
     data.Page=current_page;
     data.PageSize=pageSize;
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
   }
   
@@ -403,24 +403,26 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var listBox='<div class="rtc_listBox" contentId='+resultData.ResultList[i].ContentId+'>'+
-                    '<p class="rtcl_con_p ellipsis"></p>'+
                     '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
-                    '<div class="rtcl_img fl">'+
-                      '<img src="" alt="内容图片" />'+
-                      '<div class="btn_player dis">'+
-                        '<i class="icon"></i>'+
+                    '<div class="rtcl_con_p fl">'+
+                      '<p class="rtcl_con_p1 ellipsis"></p>'+
+                      '<div class="rtcl_img fl">'+
+                        '<img src="" alt="内容图片" />'+
+                        '<div class="btn_player dis">'+
+                          '<i class="icon"></i>'+
+                        '</div>'+
                       '</div>'+
-                    '</div>'+
-                    '<div class="rtcl_con fl">'+
-                      '<p class="sequ_num ellipsis"></p>'+
-                      '<p class="sequ_name ellipsis"></p>'+
-                      '<div class="tag">'+
-                        '<span class="tag1 fl">标签:</span>'+
-                        '<ul class="rtcl_con_tags ellipsis fl"></ul>'+
-                      '</div>'+
-                      '<div class="rtcl_con_desc">'+
-                        '<span class="rtcl_con_desc1 fl">简介:</span>'+
-                        '<div class="rtcl_con_desc2 fl"></div>'+
+                      '<div class="rtcl_con fl">'+
+                        '<p class="sequ_num ellipsis"></p>'+
+                        '<p class="sequ_name ellipsis"></p>'+
+                        '<div class="tag">'+
+                          '<span class="tag1 fl">标签:</span>'+
+                          '<ul class="rtcl_con_tags ellipsis fl"></ul>'+
+                        '</div>'+
+                        '<div class="rtcl_con_desc">'+
+                          '<span class="rtcl_con_desc1 fl">简介:</span>'+
+                          '<div class="rtcl_con_desc2 fl"></div>'+
+                        '</div>'+
                       '</div>'+
                     '</div>'+
                     '<span class="source_form fl"></span>'+
@@ -429,7 +431,7 @@ $(function(){
       $(".ri_top3_con").append(listBox);
       if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultList[i].ContentImg);
       else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
-      $(".rtcl_con_p").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
+      $(".rtcl_con_p1").eq(i).text(resultData.ResultList[i].ContentName?(resultData.ResultList[i].ContentName):"未知");
       if(resultData.ResultList[i].MediaType=='wt_MediaAsset'){//加载节目
         $(".sequ_num").eq(i).text((resultData.ResultList[i].ContentSeqName)?("专辑:《"+resultData.ResultList[i].ContentSeqName+"》"):"专辑:《未知》");
         $(".sequ_num").eq(i).attr("seqId",resultData.ResultList[i].ContentSeqId);
@@ -444,7 +446,7 @@ $(function(){
       }
       $(".sequ_num").eq(i).attr("mediaType",resultData.ResultList[i].MediaType);
       if(resultData.ResultList[i].ContentPersons){
-        $(".sequ_name").eq(i).text((resultData.ResultList[i].ContentPersons[0].PerName)?("主播:"+resultData.ResultList[i].ContentPersons[0].PerName):"主播:保密");
+        $(".sequ_name").eq(i).text((resultData.ResultList[i].ContentPersons[0].PerName)?("主播: "+resultData.ResultList[i].ContentPersons[0].PerName):"主播:保密");
       }
       if(resultData.ResultList[i].ContentPubChannels){
         var chIds="";//发布栏目的id集合
@@ -467,27 +469,27 @@ $(function(){
     }
     $(".rto_play").removeAttr("disabled").css({"color":"#fff","background":"#ffa634"});
     $("#audioIframe").attr("src","../globalplayer.html");
-  }
+}
   /*e--ztree的操作集合*/
   
   /*s--点击节目名字，进入节目详情*/
-  $(document).on("click",".rtcl_con_p",function(){
-    var mediaType=$(this).siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
-    var contentId=$(this).parent(".rtc_listBox").attr("contentId");
-    if(mediaType=="wt_MediaAsset"){//节目
-      var seqId=$(this).siblings(".rtcl_con").children(".sequ_num").attr("seqId");
-      $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
-    }else if(mediaType=="wt_SeqMediaAsset"){//专辑
-      $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
-    }
-  });
+//$(document).on("click",".rtcl_con_p1",function(){
+//  var mediaType=$(this).siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
+//  var contentId=$(this).parent(".rtcl_con_p").parent(".rtc_listBox").attr("contentId");
+//  if(mediaType=="wt_MediaAsset"){//节目
+//    var seqId=$(this).siblings(".rtcl_con").children(".sequ_num").attr("seqId");
+//    $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+//  }else if(mediaType=="wt_SeqMediaAsset"){//专辑
+//    $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
+//  }
+//});
   /*e--点击节目名字，进入节目详情*/
  
   /*s--点击专辑名字，进入专辑详情*/
-  $(document).on("click",".sequ_num",function(){
-    var contentId=$(this).attr("seqId");
-    $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
-  });
+//$(document).on("click",".sequ_num",function(){
+//  var contentId=$(this).attr("seqId");
+//  $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
+//});
   /*e--点击专辑名字，进入专辑详情*/
   
   /*s--全部播放*/
@@ -506,12 +508,12 @@ $(function(){
       }else{//已选中
         var contentList={};
         contentList.Id=$(this).attr("contentId");
-        if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
+        if($(this).children(".rtcl_con_p").children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
         }else{
           contentList.MediaType="SEQU";
         }
-        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
+        contentList.ChannelIds=$(this).children(".rtcl_con_p").children(".rtcl_img").attr("chIds");
         contentIds.push(contentList);
       }
     });
@@ -538,10 +540,10 @@ $(function(){
       }else{//已选中
         var contentList={};
         contentList.Id=$(this).attr("contentId");
-        if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
+        if($(this).children(".rtcl_con_p").children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
         }
-        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
+        contentList.ChannelIds=$(this).children(".rtcl_con_p").children(".rtcl_img").attr("chIds");
         contentids.push(contentList);
       }
     });

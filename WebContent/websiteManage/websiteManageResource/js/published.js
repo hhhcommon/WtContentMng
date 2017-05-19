@@ -82,7 +82,7 @@ $(function(){
   function opts(seaFy,current_page){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
     data.PageSize=pageSize;
@@ -131,7 +131,7 @@ $(function(){
   function anew(flowflag){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
     data.PageSize=pageSize;
@@ -235,7 +235,7 @@ $(function(){
   function searchList(){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
     data.PageSize=pageSize;
@@ -354,7 +354,7 @@ $(function(){
     data.Page=current_page;
     data.PageSize="10";
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
   }
   

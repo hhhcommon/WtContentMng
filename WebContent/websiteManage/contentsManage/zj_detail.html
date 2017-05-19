@@ -709,12 +709,12 @@ $(function(){
           $('.revoke').addClass("c07");
           $('.player').addClass("f60");
         }else{
-          alert(resultData.Message);
+          alert("得到专辑信息失败:"+resultData.Message);
           $('.revoke,.player').removeAttr("disabled").css({"color":"#000","background":"#ddd"});
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到专辑信息发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -819,8 +819,8 @@ $(function(){
           $(".dcr_zjlist").html("<div class='no'>暂无其他专辑</div>");
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到专辑列表发生错误："+ jqXHR.status);
       }
     });
   }

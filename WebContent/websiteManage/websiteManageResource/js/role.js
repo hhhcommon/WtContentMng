@@ -5,6 +5,7 @@ $(function(){
   var current_page='0';//0默认获取全部
   var checkDiabled=false;//在新建角色或者编辑角色的时候不允许选中勾选框
   var saveType=1;//saveType=1默认新建角色的保存,saveType=2默认编辑角色的保存
+  var roleids='';//得到角色权限列表的角色id
 
   /*得到角色列表*/
   var data0={"UserId":userId,
@@ -16,7 +17,7 @@ $(function(){
   function getRoleList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"security/getRoleList.do",
+      url:rootPath+"CM/security/getRoleList.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -27,7 +28,7 @@ $(function(){
         if(resultData.ReturnType=="1001"){
           loadRoleList(resultData);
         }else{
-          $(".ccl4").html("<div class='labels'>没有角色列表</div>");
+          $(".ccl4").html("<div class='labels'>没有得到角色列表...</div>");
         }
       },
       error:function(jqXHR){
@@ -50,28 +51,33 @@ $(function(){
                     '</li>';
       $(".ccl4").append(rolelist);
     }
-    $(".ccl4_list").eq(0).addClass("f5");
+    $(".ccl4_list").eq(0).addClass("f5").children(".ccl4_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
+    roleids=$(".ccl4_list").eq(0).children(".ccl41").attr("id");
+    var data4={};
+    data4.UserId=userId;
+    data4.PCDType="3";
+    data4.RoleId=roleids;
+    getRoleFunlist(data4);
   }
   
   /*点击新建,新建角色*/
-  $(".ccl12_div").on("click",function(){
+  $(".ccl23_div").on("click",function(){
     saveType=1//默认新建角色的保存
     checkDiabled=true;
     if($(this).hasClass("disabledstatus")){//当前处于不可新建的状态
       return;
     }else{
-//    $(this).addClass("disabledstatus");
-//    $(this).children(".ccl13_div").removeClass("ccl13_div1");
-      $(this).children(".ccl14_div").removeClass("ccl14_div1")
+      $(this).addClass("disabledstatus").removeClass("ccl23_div1").attr("disabled","disabled");
+      $(this).siblings(".ccl22_div").removeClass("ccl22_div1").attr("disabled","disabled");
       $(".ccl4 .ccl4_list .ccl43").attr("disabled","disabled").css({"color":"#ccc"});
       if($(".ccl4").children(".labels").length>0){//新建的是第一个角色
         $(".ccl4").html(" ");
       }
       $(document).find(".ccl4_list").each(function(){
-        $(this).removeClass("f5");
+        $(this).removeClass("f5").children(".ccl4_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png");
       });
       var rolelist= '<li class="ccl4_list f5">'+
-                      '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="ccl4_img checkbox1 fl"/>'+
+                      '<img src="../websiteManageResource/img/checkbox2.png" alt="" class="ccl4_img fl"/>'+
                       '<div class="ccl41 fl ellipsis dis"></div>'+
                       '<input type="text" class="ccl42 fl" value=""/>'+
                       '<button class="ccl43 fr dis">编辑</button>'+
@@ -89,19 +95,18 @@ $(function(){
     saveType=2//默认编辑角色的保存
     checkDiabled=true;
     $(document).find(".ccl4_list").each(function(){
-      $(this).removeClass("f5");
+      $(this).removeClass("f5").children(".ccl4_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png");
       $(this).children(".ccl41,.ccl43").removeClass("dis");
       $(this).children(".ccl42,.ccl44").addClass("dis");
     });
     var txt=$.trim($(this).siblings(".ccl41").text());
-    $(this).parent(".ccl4_list").addClass("f5");
+    $(this).parent(".ccl4_list").addClass("f5").children(".ccl4_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
     $(this).siblings(".ccl41").addClass("dis");
     $(this).siblings(".ccl42").removeClass("dis").val(txt);
     $(this).addClass("dis").siblings(".ccl44").removeClass("dis");
-    $(this).parent(".ccl4_list").siblings().children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
-//  $(".ccl12_div").addClass("disabledstatus");
-//  $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
-    $(".ccl12_div").children(".ccl14_div").removeClass("ccl14_div1");
+    $(this).parent(".ccl4_list").siblings(".ccl4_list").children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
+    $(".ccl22_div").addClass("disabledstatus").removeClass("ccl22_div1").attr("disabled","disabled");
+    $(".ccl23_div").addClass("disabledstatus").removeClass("ccl23_div1").attr("disabled","disabled");
   });
   
   /*点击保存按钮*/
@@ -122,7 +127,7 @@ $(function(){
       var roleId=$(this).parent(".ccl44").siblings(".ccl41").attr("id");
       var data3={"UserId":userId,
                  "PCDType":"3",
-                 "roleId":roleId,
+                 "RoleId":roleId,
                  "RoleName":txt
       };
       modRole(data3,_this);
@@ -133,7 +138,7 @@ $(function(){
   function addRole(dataParam,_this){
     $.ajax({
       type:"POST",
-      url:rootPath+"security/addRole.do",
+      url:rootPath+"CM/security/addRole.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -142,17 +147,20 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
+          alert("新增角色成功");
           checkDiabled=false;
-//        $(".ccl12_div").removeClass("disabledstatus");
-//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
-//        $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
+          $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+          $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
+          $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"#0077c7"});
           getRoleList(data0);//刷新角色列表
         }else{
-          $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"##0077c7"});
+          alert("新增角色失败:"+resultData.Message);
+          $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"#0077c7"});
         }
       },
       error:function(jqXHR){
-        $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"##0077c7"});
+        alert("新增角色发生错误:"+jqXHR.status);
+        $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"#0077c7"});
       }
     });
   }
@@ -161,7 +169,7 @@ $(function(){
   function modRole(dataParam,_this){
     $.ajax({
       type:"POST",
-      url:rootPath+"security/updateRole.do",
+      url:rootPath+"CM/security/updateRole.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -170,17 +178,20 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
+          alert("修改角色成功");
           checkDiabled=false;
-//        $(".ccl12_div").removeClass("disabledstatus");
-//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
-          $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
+          $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+          $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
+          $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"#0077c7"});
           getRoleList(data0);//刷新角色列表
         }else{
-          $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"##0077c7"});
+          alert("修改角色失败:"+resultData.Message);
+          $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"#0077c7"});
         }
       },
       error:function(jqXHR){
-        $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"##0077c7"});
+        alert("修改角色发生错误:"+jqXHR.status);
+        $(_this).parent(".ccl44").children("button").removeAttr("disabled").css({"background":"#0077c7"});
       }
     });
   }
@@ -188,25 +199,23 @@ $(function(){
   /*点击取消按钮*/
   $(document).on("click",".ccl46",function(){
     checkDiabled=false;
-    $(document).find(".ccl4_list").each(function(){
-      $(this).removeClass("f5");
-    });
     var txt=$.trim($(this).parent(".ccl44").siblings(".ccl42").val());
     if(typeof($(this).parent(".ccl44").siblings(".ccl41").attr("id"))=="undefined"){//取消正在新建的角色
       $(this).parent(".ccl44").parent(".ccl4_list").remove();
     }else{//取消编辑已有的角色
-      
+      $(this).parent(".ccl44").removeClass("dis");
+      $(this).parent(".ccl44").siblings(".ccl41").removeClass("dis").text(txt);
+      $(this).parent(".ccl44").siblings(".ccl42").addClass("dis");
+      $(this).parent(".ccl44").siblings(".ccl43").removeClass("dis");
+      $(this).parent(".ccl44").addClass("dis");
     }
-    $(this).parent(".ccl44").parent(".ccl4_list").addClass("f5");
-    $(this).parent(".ccl44").removeClass("dis");
-    $(this).parent(".ccl44").siblings(".ccl41").removeClass("dis").text(txt);
-    $(this).parent(".ccl44").siblings(".ccl42").addClass("dis");
-    $(this).parent(".ccl44").siblings(".ccl43").removeClass("dis");
-    $(this).parent(".ccl44").addClass("dis");
+    $(document).find(".ccl4_list").each(function(i){
+      $(this).removeClass("f5").children(".ccl4_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png");
+    });
+    $(".ccl4_list").eq(0).addClass("f5").children(".ccl4_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
     $(".ccl4 .ccl4_list .ccl43").removeAttr("disabled").css({"color":"#0077C7"});
-//  $(".ccl12_div").removeClass("disabledstatus");
-//  $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
-    $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
+    $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+    $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
   });
   
   /*选择勾选框--角色的删除*/
@@ -219,23 +228,19 @@ $(function(){
         if($(this).hasClass("checkbox1")){
           $(this).attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
           $(".ccl4 .ccl4_list .ccl4_img").attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
-          $(".ccl22_div").removeAttr("disabled").css({"background":"#0077C7","color":"#fff"});
           $(document).find(".ccl4_list").each(function(){
             $(this).children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
           });
-//        $(".ccl12_div").addClass("disabledstatus");
-//        $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
-          $(".ccl12_div").children(".ccl14_div").removeClass("ccl14_div1");
+          $(".ccl23_div").addClass("disabledstatus").removeClass("ccl23_div1").attr("disabled","disabled");
         }else{
           $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
           $(".ccl4 .ccl4_list .ccl4_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
-          $(".ccl22_div").attr("disabled","disabled").css({"background":"#f5f5f5","color":"#ccc"});
           $(document).find(".ccl4_list").each(function(){
             $(this).children(".ccl43").removeAttr("disabled").css({"color":"#0077C7"});
           });
-//        $(".ccl12_div").removeClass("disabledstatus");
-//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
-          $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
+          $(".ccl4_list").eq(0).addClass("f5").children(".ccl4_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
+          $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+          $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
         }
       }
     }else{
@@ -255,9 +260,7 @@ $(function(){
         $(document).find(".ccl4_list").each(function(){
           $(this).children(".ccl43").attr("disabled","disabled").css({"color":"#ccc"});
         });
-//      $(".ccl12_div").addClass("disabledstatus");
-//      $(".ccl12_div").children(".ccl13_div").removeClass("ccl13_div1");
-        $(".ccl12_div").children(".ccl14_div").removeClass("ccl14_div1");
+        $(".ccl23_div").addClass("disabledstatus").removeClass("ccl23_div1").attr("disabled","disabled");
         $(".ccl4 .ccl4_list .ccl4_img").each(function(){//是否选中全选
           if($(this).hasClass("checkbox1")) return;
           else num++;
@@ -275,9 +278,7 @@ $(function(){
           $(document).find(".ccl4_list").each(function(){
             $(this).children(".ccl43").removeAttr("disabled").css({"color":"#0077C7"});
           });
-//        $(".ccl12_div").removeClass("disabledstatus");
-//        $(".ccl12_div").children(".ccl13_div").addClass("ccl13_div1");
-          $(".ccl12_div").children(".ccl14_div").addClass("ccl14_div1");
+          $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
         }
       }
     }else{
@@ -303,28 +304,126 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"security/delRole.do",
+      url:rootPath+"CM/security/delRole.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data2),
       beforeSend:function(){
-        $(".ccl22_div").attr("disabled","disabled").css({"background":"#f5f5f5","color":"#ccc"});
+        $(".ccl22_div").addClass("disabledstatus").removeClass("ccl22_div1").attr("disabled","disabled");
+        $(".ccl23_div").addClass("disabledstatus").removeClass("ccl23_div1").attr("disabled","disabled");
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
+          alert('删除角色成功');
           getRoleList(data0);//刷新角色列表
-          $(".ccl22_div").attr("disabled","disabled").css({"background":"#f5f5f5","color":"#ccc"});
+          $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+          $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
         }else{
           alert("删除角色失败"+resultData.Message);
-          $(".ccl22_div").removeAttr("disabled").css({"background":"##0077C7","color":"#fff"});
+          $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+          $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
         }
       },
       error:function(jqXHR){
         alert("删除角色发生错误"+jqXHR.status);
-        $(".ccl22_div").removeAttr("disabled").css({"background":"##0077C7","color":"#fff"});
+        $(".ccl22_div").removeClass("disabledstatus").addClass("ccl22_div1").removeAttr("disabled");
+        $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
       }
     });
   });
 
+  /*获取默认选中角色的权限*/
+  function getRoleFunlist(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/security/getRoleFunlist.do",
+      dataType:"json",
+      cache:false, 
+      data:JSON.stringify(dataParam),
+      beforeSend:function(){
+        
+      },
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          loadRoleFunlist(resultData);//加载角色权限列表
+        }else{
+          alert("得到角色权限列表失败"+resultData.Message);
+          
+        }
+      },
+      error:function(jqXHR){
+        alert("得到角色权限列表发生错误"+jqXHR.status);
+        
+      }
+    });
+  }
+  function loadRoleFunlist(resultData){
+    
+  }
+  
+  
+  /*s--点击设置权限,对角色设置权限*/
+  var modalObj;
+  //配置模态框上树的相关参数
+  var settingModal={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    check:{
+      enable:true,
+      chkStyle:"checkbox",
+      chkboxType: { "Y": "", "N": "" }
+    },
+    treeNode:{
+      chkDisabled:true,
+      checked:true
+    },
+    callback:{
+      
+    }
+  };
+  
+  //加载模态框上面的树
+  function loadModalTree(){
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
+    var loadModalData=[{ChannelId:"",TreeViewType:"zTree"}];
+    $.ajax({
+      type:"POST",    
+      url:_url,
+      dataType:"json",
+      data:JSON.stringify(loadModalData),
+      success:function(jsonData){
+        if(jsonData.ReturnType=="1001"){
+          modalObj.addNodes(null,jsonData.Data.children[0].children,false);
+        }
+      },
+      error:function(jqXHR){
+        alert("加载模态框上面的树发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  //点击配置权限
+  $(document).on("click",".ccr4_listdiv4",function(){
+    $(".power_mask").removeClass("dis");
+    modalObj=$.fn.zTree.init($("#modal_tree"), settingModal);
+    loadModalTree();
+  });
+  
+  //点击保存配置
+  $(".power_footer1").on("click",function(){
+    
+  });
+  
+  //点击取消或关闭
+  $(".power_footer2,.power_title2").on("click",function(){
+    $(".power_mask").addClass("dis");
+  })
+  /*e--点击设置权限,对角色设置权限*/
 
 });

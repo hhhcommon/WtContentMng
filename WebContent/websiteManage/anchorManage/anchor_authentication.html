@@ -57,13 +57,13 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   padding-left: 15px;
   height: 40px;
   line-height:40px;
-  border-bottom: 1px solid #dedede;
+  box-shadow: 0px 2px 1px #ddd;
 }
 .c_con{
   width:100%;
   height:calc(100% - 40px);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
 }
 .ri_top{
   width:100%;
@@ -237,24 +237,86 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   height: auto;
 }
 .rtc_listBoxList{
-  width:100%;
-  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  min-height: 120px;
   border-bottom: 1px solid #dedede;
-  cursor: pointer;
-  overflow:hidden;
-  border:1px solid red;
+  overflow: hidden;
 }
 .rtc_listBox{
+  position: relative;
   width: 27%;
-  margin: 15px 0px 15px 15px;
+  margin: 0px 0px 0px 15px;
+  overflow: hidden;
 }
 .rtc_listBox li{
+  width:100%;
   font-size: 14px;
   color: #000;
   height: 30px;
   line-height: 30px;
 }
 .rtc_listBox22,.rtc_listBox22,.rtc_listBox22{padding: 0px 0px 0px 5px;}
+.rtc_listBox4{
+  position: relative;
+  width: 58%;
+  height: 100%;
+  overflow: hidden;
+}
+.rtc_listBox40{
+  position: relative;
+  width: auto;
+  height: 100%;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rtc_listBox41{
+  position: relative;
+  width: 125px;
+  height: 80px;
+  margin: 0px 8px;
+  border: 2px solid #dedede;
+}
+.rtc_listBox42,.rtc_listBox42_img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.rtc_listBox42_div{
+  width:300px;
+  height:190px;
+}
+.enlarge_div{
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  cursor: pointer;
+}
+.enlarge_img{
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%;
+}
+.rtc_listBox43{
+  position: relative;
+  width: 13%;
+}
+.rtc_listBox44,.rtc_listBox45,.rtc_listBox46{
+  height: 30px;
+  line-height: 30px;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  color: #0077c7;
+  cursor: pointer;
+}
 </style>
 <body>
   <div class="contents">
@@ -302,22 +364,134 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
           </div>
           <div class="ri_top3_con">
             <div class="rtc_listBoxList">
-              <ul class="rtc_listBox">
-                <li class="rtc_listBox1 ellipsis">
+              <ul class="rtc_listBox fl">
+                <li class="rtc_listBox1 fl ellipsis">
                   <div class="rtc_listBox11 fl">主播账号 : </div>
                   <div class="rtc_listBox12 fl">123456456</div>
                 </li>
-                <li class="rtc_listBox2 ellipsis">
+                <li class="rtc_listBox2 fl ellipsis">
                   <div class="rtc_listBox21 fl">真实姓名 : </div>
                   <div class="rtc_listBox22 fl">张杨果而</div>
                 </li>
-                <li class="rtc_listBox3 ellipsis">
+                <li class="rtc_listBox3 fl ellipsis">
                   <div class="rtc_listBox31 fl">身份证号 : </div>
                   <div class="rtc_listBox32 fl">123155487899789456456</div>
                 </li>
               </ul>
+              <div class="rtc_listBox4 fl">
+                <ul class="rtc_listBox40">
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="rtc_listBox43 fl">
+                <div class="rtc_listBox44">查验身份</div>
+                <div class="rtc_listBox45">通过</div>
+                <div class="rtc_listBox46">不通过</div>
+              </div>
             </div>
-            
+            <div class="rtc_listBoxList">
+              <ul class="rtc_listBox fl">
+                <li class="rtc_listBox1 fl ellipsis">
+                  <div class="rtc_listBox11 fl">主播账号 : </div>
+                  <div class="rtc_listBox12 fl">123456456</div>
+                </li>
+                <li class="rtc_listBox2 fl ellipsis">
+                  <div class="rtc_listBox21 fl">真实姓名 : </div>
+                  <div class="rtc_listBox22 fl">张杨果而</div>
+                </li>
+                <li class="rtc_listBox3 fl ellipsis">
+                  <div class="rtc_listBox31 fl">身份证号 : </div>
+                  <div class="rtc_listBox32 fl">123155487899789456456</div>
+                </li>
+              </ul>
+              <div class="rtc_listBox4 fl">
+                <ul class="rtc_listBox40">
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="rtc_listBox43 fl">
+                <div class="rtc_listBox44">查验身份</div>
+                <div class="rtc_listBox45">通过</div>
+                <div class="rtc_listBox46">不通过</div>
+              </div>
+            </div>
+            <div class="rtc_listBoxList">
+              <ul class="rtc_listBox fl">
+                <li class="rtc_listBox1 fl ellipsis">
+                  <div class="rtc_listBox11 fl">主播账号 : </div>
+                  <div class="rtc_listBox12 fl">123456456</div>
+                </li>
+                <li class="rtc_listBox2 fl ellipsis">
+                  <div class="rtc_listBox21 fl">真实姓名 : </div>
+                  <div class="rtc_listBox22 fl">张杨果而</div>
+                </li>
+                <li class="rtc_listBox3 fl ellipsis">
+                  <div class="rtc_listBox31 fl">身份证号 : </div>
+                  <div class="rtc_listBox32 fl">123155487899789456456</div>
+                </li>
+              </ul>
+              <div class="rtc_listBox4 fl">
+                <ul class="rtc_listBox40">
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                  <li class="rtc_listBox41 fl">
+                    <img src="../websiteManageResource/img/IDimg1.jpg" alt="" class="rtc_listBox42"/>
+                    <div class="enlarge_div">
+                      <img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="rtc_listBox43 fl">
+                <div class="rtc_listBox44">查验身份</div>
+                <div class="rtc_listBox45">通过</div>
+                <div class="rtc_listBox46">不通过</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>  
@@ -325,4 +499,18 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   </div>
 </div>
 </body>
+<script>
+  /*放大或缩小身份证照片*/
+  $(document).on("click",".enlarge_div",function(){
+    if($(this).hasClass("large")){//此时已处于放大状态
+//    $(".enlarge_div").removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
+      $(this).removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
+      
+    }else{//此时处于未放大状态
+//    $(".enlarge_div").removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
+      $(this).addClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/narrow.png");
+      
+    }
+  });
+</script>
 </html>

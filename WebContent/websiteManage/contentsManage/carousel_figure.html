@@ -53,7 +53,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .c_title{
   color: #000;
-  height: 40px;
+  height: 38px;
   line-height: 40px;
   padding: 0px 15px;
   box-shadow:0px 2px 1px #ddd;
@@ -64,6 +64,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
+  margin-top:2px;
 }
 .cc_left{
   position: relative;
@@ -187,7 +188,8 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   float:left;
   margin-top:5px;
   width:100px;
-} 
+}
+.startPubTime{margin:5px 0px 0px 16px;} 
 .line{
   float:left;
   margin-top: 10px;
@@ -274,23 +276,26 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   overflow:hidden;
 }
 .rtc_listBox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width:100%;
   height: 120px;
   border-bottom: 1px solid #dedede;
-  cursor: pointer;
   overflow:hidden;
 }
 .rtcl_img_check{
   width:18px;
   height:18px;
-  margin: 44px 15px 44px 0px;
+  margin: 0px 15px 0px 0px;
+  cursor: pointer;
 }
 .rtcl_img{
   width:80px;
   height:80px;
-  margin-top: 15px;
   margin-right:15px;
   border:1px solid black;
+  cursor: pointer;
 }
 .rtcl_img img{
   width:100%;
@@ -321,7 +326,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .rtcl_con{
   width:calc(52% - 130px);
-  height:100%;
+  align-items: center;
   float: left;
   color:rgb(173,172,172);
 }
@@ -329,9 +334,9 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   color: #337ab7;
   font-size: 14px;
   font-weight: bolder;
-  margin-top: 15px;
   padding:0px 10px 0px 0px;
   text-decoration:underline;
+  cursor: pointer;
 }
 .rtcl_con_channels{
   overflow: hidden;
@@ -342,8 +347,8 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   overflow: hidden;
   position: relative;
   width:12%;
-  height:80px;
-  margin:15px 0px;
+  margin:0px;
+  padding: 0px;
 }
 .rtcl_con_channel2{
   text-align: center;
@@ -368,24 +373,25 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   color: #000;
   text-align: center;
   position: relative;
-  top: 15px;
   width:12%;
 }
 .opetype1{
   width:12%;
   color: #0077C7;
-  height: 80px;
-  margin:15px 0px;
+  margin:0px;
   text-align: center;
 }
-.carousel,.top,.revoke{line-height: 20px;}
+.carousel,.top,.revoke{
+  cursor: pointer;
+  line-height: 20px;
+}
 .source_form{font-weight: bolder;}
 /*所有分类*/
 .cate{
   width: auto;
   height: 25px;
   line-height: 22px;
-  padding:0 1px 0 6px;
+  padding:0px 1px 0px 6px;
   float: left;
   margin-left:10px;
   border: 1px solid #ccc;
@@ -487,6 +493,9 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   float: left;
   border-bottom:1px solid #dedede;
 }
+#time{
+  border-bottom:none;
+}
 .attrKey{
   overflow: hidden;
   float: left;
@@ -513,7 +522,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 .trig_item{
   display: block;
   float: left;
-  margin-right:16px;
+  margin-left: 16px;
   height:40px;
   line-height: 40px;
   white-space: nowrap;
