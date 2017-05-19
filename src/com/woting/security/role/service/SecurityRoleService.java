@@ -1,5 +1,6 @@
 package com.woting.security.role.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,13 +51,21 @@ public class SecurityRoleService {
     public boolean addRole(String roleName, String desc) {
         if (StringUtils.isNullOrEmptyOrSpace(roleName)) return false;
         Map<String, Object> param=new HashMap<String, Object>();
-        param.put("id", SequenceUUID.getPureUUID());
+        String roleId=SequenceUUID.getPureUUID();
+        param.put("id", roleId);
         param.put("roleName", roleName);
         if (!StringUtils.isNullOrEmptyOrSpace(desc)) {
             param.put("descn", desc);
         }
+        Map<String, Object> _param=new HashMap<String, Object>();
+        _param.put("id", SequenceUUID.getPureUUID());
+        _param.put("roleId", roleId);
+        _param.put("funName", "栏目权限");
+        _param.put("funClass", "1");
+        _param.put("funType", "Channel-Add");
         try {
             platRoleDao.insert("insert", param);
+            roleFunctionDao.insert("insertRole", _param);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,7 +183,7 @@ public class SecurityRoleService {
             param.put("funFlag2", _funFlag2);
         }
         try{
-            platRoleDao.update("setRoleFun", param);
+            roleFunctionDao.update("setRoleFun", param);
             return true;
         } catch(Exception e) {
             return false;
@@ -197,23 +206,35 @@ public class SecurityRoleService {
             Map<String, Object> map=list.get(0);
             if (map==null || map.size()<=0) return null;
             RoleFunctionPo roleFunctionPo=new RoleFunctionPo();
-            if (map.get("roleId")!=null && !map.get("roleId").toString().equals("")) {
+            if (map.get("id")!=null && !map.get("id").toString().equals("") && !map.get("id").equals("null")) {
+                roleFunctionPo.setId(map.get("id").toString());
+            }
+            if (map.get("roleId")!=null && !map.get("roleId").toString().equals("") && !map.get("roleId").equals("null")) {
                 roleFunctionPo.setRoleId(map.get("roleId").toString());
             }
-            if (map.get("funName")!=null && !map.get("funName").toString().equals("")) {
+            if (map.get("funName")!=null && !map.get("funName").toString().equals("") && !map.get("funName").equals("null")) {
                 roleFunctionPo.setFunName(map.get("funName").toString());
             }
-            if (map.get("funClass")!=null && !map.get("funClass").toString().equals("")) {
+            if (map.get("funClass")!=null && !map.get("funClass").toString().equals("") && !map.get("funClass").equals("null")) {
                 roleFunctionPo.setFunClass(map.get("funClass").toString());
             }
-            if (map.get("funType")!=null && !map.get("funType").toString().equals("")) {
+            if (map.get("funType")!=null && !map.get("funType").toString().equals("") && !map.get("funType").equals("null")) {
                 roleFunctionPo.setFunType(map.get("funType").toString());
             }
-            if (map.get("objId")!=null && !map.get("objId").toString().equals("")) {
+            if (map.get("objId")!=null && !map.get("objId").toString().equals("") && !map.get("objId").equals("null")) {
                 roleFunctionPo.setObjId(map.get("objId").toString());
             }
-            if (map.get("funFlag1")!=null && !map.get("funFlag1").toString().equals("")) {
+            if (map.get("funFlag1")!=null && !map.get("funFlag1").toString().equals("") && !map.get("funFlag1").equals("null")) {
                 roleFunctionPo.setFunFlag1(Integer.valueOf(map.get("funFlag1").toString()));
+            }
+            if (map.get("funFlag2")!=null && !map.get("funFlag2").toString().equals("") && !map.get("funFlag2").equals("null")) {
+                roleFunctionPo.setFunFlag2(Integer.valueOf(map.get("funFlag2").toString()));
+            }
+            if (map.get("extInfo")!=null && !map.get("extInfo").toString().equals("") && !map.get("extInfo").equals("null")) {
+                roleFunctionPo.setExtInfo(map.get("extInfo").toString());
+            }
+            if (map.get("cTime")!=null && !map.get("cTime").toString().equals("") && !map.get("cTime").equals("null")) {
+                roleFunctionPo.setcTime(Timestamp.valueOf(map.get("cTime").toString()));
             }
             return roleFunctionPo;
         } catch (Exception e) {

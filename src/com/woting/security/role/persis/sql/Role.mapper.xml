@@ -61,20 +61,6 @@
     select id, roleName, roleType, descn from plat_Role
   </select>
  
-  <!-- 设置角色功能 -->
-  <update id="setRoleFun" parameterType="java.util.Map">
-    update plat_RoleFunction
-    <set>
-      <if test="funName!=null">funName=#{funName,jdbcType=VARCHAR},</if>
-      <if test="funClass!=null">funClass=#{funClass,jdbcType=VARCHAR},</if>
-      <if test="funType!=null">funType=#{funType,jdbcType=VARCHAR},</if>
-      <if test="objId!=null">objId=#{objId,jdbcType=VARCHAR},</if>
-      <if test="funFlag1!=null">funFlag1=#{funFlag1,jdbcType=INTEGER},</if>
-      <if test="funFlag2!=null">funFlag1=#{funFlag1,jdbcType=INTEGER},</if>
-    </set>
-    where roleId=#{roleId,jdbcType=VARCHAR};
-  </update>
-  
   <!-- 修改角色 -->
   <update id="updateRole" parameterType="java.util.Map">
     update plat_Role
@@ -103,6 +89,49 @@
   <sql id="Base_RoleFun_List">
     id, roleId, funName, funClass, funType, objId, funFlag1, funFlag2, extInfo, cTime
   </sql>
+  
+  <!-- 新增角色 -->
+  <insert id="insertRole" parameterType="java.util.Map">
+    insert into plat_RoleFunction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="roleId!=null">roleId,</if>
+      <if test="funName!=null">funName,</if>
+      <if test="funClass!=null">funClass,</if>
+      <if test="funType!=null">funType,</if>
+      <if test="objId!=null">objId,</if>
+      <if test="funFlag1!=null">funFlag1,</if>
+      <if test="funFlag2!=null">funFlag2,</if>
+      <if test="extInfo!=null">extInfo,</if>
+      <if test="cTime!=null">cTime,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="roleId!=null">#{roleId,jdbcType=VARCHAR},</if>
+      <if test="funName!=null">#{funName,jdbcType=VARCHAR},</if>
+      <if test="funClass!=null">#{funClass,jdbcType=VARCHAR},</if>
+      <if test="funType!=null">#{funType,jdbcType=VARCHAR},</if>
+      <if test="objId!=null">#{objId,jdbcType=VARCHAR},</if>
+      <if test="funFlag1!=null">#{funFlag1,jdbcType=INTEGER},</if>
+      <if test="funFlag2!=null">#{funFlag2,jdbcType=INTEGER},</if>
+      <if test="extInfo!=null">#{extInfo,jdbcType=CLOB},</if>
+      <if test="cTime!=null">#{cTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+  
+  <!-- 设置角色功能 -->
+  <update id="setRoleFun" parameterType="java.util.Map">
+    update plat_RoleFunction
+    <set>
+      <if test="funName!=null">funName=#{funName,jdbcType=VARCHAR},</if>
+      <if test="funClass!=null">funClass=#{funClass,jdbcType=VARCHAR},</if>
+      <if test="funType!=null">funType=#{funType,jdbcType=VARCHAR},</if>
+      <if test="objId!=null">objId=#{objId,jdbcType=VARCHAR},</if>
+      <if test="funFlag1!=null">funFlag1=#{funFlag1,jdbcType=INTEGER},</if>
+      <if test="funFlag2!=null">funFlag1=#{funFlag1,jdbcType=INTEGER},</if>
+    </set>
+    where roleId=#{roleId,jdbcType=VARCHAR};
+  </update>
 
   <!-- 查询角色信息 -->
   <select id="getRoleFun" parameterType="java.util.Map" resultType="java.util.HashMap">
