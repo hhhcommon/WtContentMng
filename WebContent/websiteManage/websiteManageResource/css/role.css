@@ -129,6 +129,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   width:100%;
   height:40px;
   overflow: hidden;
+  cursor: pointer;
 }
 .ccl4_img{
   width:18px;
@@ -217,13 +218,13 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   text-align: center;
   border-right:1px solid #dedede;
 }
-.ccr3_div2{
+/*.ccr3_div2{
   width:20%;
   text-align: center;
   border-right:1px solid #dedede;
-}
+}*/
 .ccr3_div3{
-  width:56%;
+  width:76%;
   text-align: center;
   border-right:1px solid #dedede;
 }
@@ -254,25 +255,23 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   border-right: 1px solid #dedede;
   text-align: center;
 }
-.ccr4_listdiv2{
+/*.ccr4_listdiv2{
   font-size:14px;
   color: #000;
   width:20%;
   line-height: 40px;
   border-right: 1px solid #dedede;
   text-align: center;
-}
+}*/
 .ccr4_listdiv3{
-  width:56%;
+  width:76%;
   line-height: 40px;
-  border-right: 1px solid #dedede;
 }
 .ccr4_listdiv31{
   font-size:14px;
   color: #000;
   width:100%;
   line-height: 40px;
-  border-right: 1px solid #dedede;
   text-align: center;
 }
 .ccr4_listdiv32{
@@ -353,7 +352,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .power_footer2{
   background: #fff;
-  color:#ccc;
+  color:#000;
   border:1px solid #dedede;
 }
 #modal_tree{
@@ -361,4 +360,11 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   width: 100%;
   height: 100%;
   overflow: auto;
+}
+#modal_tree li span.button.chk.checkbox_true_part,
+#modal_tree li span.button.chk.checkbox_false_part{/*取消半勾选状态*/
+  /*background-position: 0px 0px;*/ 
+}
+#role_tree{
+  
 }
