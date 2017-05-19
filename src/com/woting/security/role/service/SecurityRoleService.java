@@ -1,6 +1,7 @@
 package com.woting.security.role.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +9,19 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.spiritdata.framework.core.cache.CacheEle;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.dao.mybatis.MybatisDAO;
 import com.spiritdata.framework.core.model.Page;
+import com.spiritdata.framework.core.model.tree.TreeNode;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
+import com.woting.WtContentMngConstants;
+import com.woting.cm.core.channel.mem._CacheChannel;
+import com.woting.cm.core.channel.model.Channel;
 import com.woting.security.role.persis.pojo.PlatRolePo;
 import com.woting.security.role.persis.pojo.RoleFunctionPo;
+import com.woting.security.role.persis.pojo.UserFunctionPo;
 import com.woting.security.role.persis.pojo.UserRolePo;
 
 public class SecurityRoleService {
@@ -23,12 +31,15 @@ public class SecurityRoleService {
     private MybatisDAO<RoleFunctionPo> roleFunctionDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<UserRolePo> userRoleDao;
+    @Resource(name="defaultDAO")
+    private MybatisDAO<UserFunctionPo> userFunDao;
 
     @PostConstruct
     public void initParam() {
         platRoleDao.setNamespace("PLAT_ROLE");
         roleFunctionDao.setNamespace("PLAT_ROLE");
         userRoleDao.setNamespace("PLAT_ROLE");
+        userFunDao.setNamespace("PLAT_ROLE");
     }
 
     /**
@@ -245,7 +256,7 @@ public class SecurityRoleService {
         } else count=0;
         try {
             //查询是否已经给用户设置过角色
-            count=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
+            count=userRoleDao.queryForObjectAutoTranform("selectUserRoleCount", param);
         } catch (Exception e) {
             e.printStackTrace();
             map.put("ReturnType", "T");
@@ -289,6 +300,109 @@ public class SecurityRoleService {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * 修改用户权限
+     * @param objId 权限Id 默认是栏目Id
+     * @param funName 权限名  默认是栏目权限
+     * @return Map<String, Object>
+     */
+    public Map<String, Object> updateUsersRole(String userId, String objId, String funName) {
+        if (funName==null || funName.equals("") || funName.equals("栏目权限")) {//目前只支持栏目权限
+            Map<String, Object> map=new HashMap<String, Object>();
+            if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(objId)) {
+                map.put("ReturnType", "0000");
+                map.put("Message", " 无法获取需要的参数");
+                return map;
+            }
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("id", SequenceUUID.getPureUUID());
+            param.put("userId", userId);
+            param.put("objId", objId);
+            int count=0;
+            try {
+                //查询是否已经为用户设置过权限
+                count=userFunDao.queryForObjectAutoTranform("selectUserFun", param);
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "T");
+                map.put("TClass", e.getClass().getName());
+                map.put("Message", StringUtils.getAllMessage(e));
+                return map;
+            }
+            try {
+                if (count<=0) {//没有未用户设置过权限
+                    userFunDao.insert("insertUserFun", param);
+                } else {//已经给用户设置过权限了  需要给用户修改未最新的设置的权限
+                    userFunDao.update("updateUserFun", param);
+                }
+                map.put("ReturnType", "1001");
+                map.put("Message", "设置成功");
+                return map;
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "1005");
+                map.put("Message", "设置失败");
+                return map;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取用户的权限  目前只有栏目权限
+     * @param userId 用户Id
+     * @param funClass 权限类型
+     * @param funName 操作名称  目前只有"栏目权限"
+     * @return Map
+     */
+    public List<Map<String, Object>> getUserRole(String userId, String funClass, String funName) {
+        if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(funClass)) {
+            return null;
+        }
+        if (funName==null || funName.equals("") || funName.equals("栏目权限")) {//目前只有栏目权限
+            if (funClass!=null && funClass.equals("1")) {//==1 -> "Data" 数据权限
+                Map<String, Object> param=new HashMap<String, Object>();
+                param.put("userId", userId);
+                //查询用户是的角色
+                Map<String, Object> ret=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
+                if (ret==null || ret.size()<=0) return null;
+                String roleId=ret.get("roleId")==null?null:ret.get("roleId").toString();
+                if (roleId==null) return null;
+                param=new HashMap<String, Object>();
+                param.put("roleId", roleId);
+                //查询角色的权限   此时用户的权限对应的就是角色的权限
+                Map<String, Object> _ret=roleFunctionDao.queryForObjectAutoTranform("getRoleFun", param);
+                if (_ret==null || _ret.size()<=0) return null;
+                String objId=_ret.get("objId")==null?null:_ret.get("objId").toString();
+                if (objId==null) return null;
+                if (objId.contains("，")) objId=objId.replace("，", ",");
+                String[] objIds=objId.split(",");
+                Arrays.sort(objIds);
+                Map<String, Object> map;
+                List<Map<String, Object>> data=new ArrayList<Map<String, Object>>();
+                _CacheChannel _cc=((CacheEle<_CacheChannel>)SystemCache.getCache(WtContentMngConstants.CACHE_CHANNEL)).getContent();
+                TreeNode<Channel> root=_cc.channelTree;
+                for (String id : objIds) {
+                    if (!StringUtils.isNullOrEmptyOrSpace(id)) {
+                        root=_cc.channelTreeMap.get(id);
+                    }
+                    if (root==null) return null;
+                    map=new HashMap<String, Object>();
+                    map.put("ChannelId", id);
+                    String channelName=root.getTreePathName(null, 1);
+                    map.put("ChannelName", channelName);
+                    data.add(map);
+                }
+                return data;
+            } else {//==2 -> 模块(界面)权限           ==3 -> 操作权限
+                return null;
+            }
+        } else {//栏目权限之外的权限
+            return null;
         }
     }
 }

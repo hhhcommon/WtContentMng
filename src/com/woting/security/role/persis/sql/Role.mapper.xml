@@ -119,11 +119,11 @@
     </foreach>
   </delete>
 
-  <!-- 对象定义:用户操作对象 -->
+  <!-- 对象定义:用户操作权限对象 -->
   <resultMap id="UserFunMap" type="UserFunction">
     <id      column="id"         property="id"         jdbcType="VARCHAR"/>
     <result  column="userId"     property="userId"     jdbcType="VARCHAR"/>
-    <result  column="ruleType"   property="ruleType"   jdbcType="INTEGER"/>
+    <result  column="roleType"   property="roleType"   jdbcType="INTEGER"/>
     <result  column="roleFunId"  property="roleFunId"  jdbcType="VARCHAR"/>
     <result  column="funName"    property="funName"    jdbcType="VARCHAR"/>
     <result  column="funClass"   property="funClass"   jdbcType="VARCHAR"/>
@@ -137,9 +137,61 @@
   
   <!-- 所有列 -->
   <sql id="Base_UserFun_List">
-    id, userId, ruleType, roleFunId, funName, funClass, funType, objId, funFlag1, funFlag2, extInfo, cTime
+    id, userId, roleType, roleFunId, funName, funClass, funType, objId, funFlag1, funFlag2, extInfo, cTime
   </sql>
   
+  <!-- 查询用户是否已经有相关权限  如果没有则是第一次给用户设置权限  如果有则是修改用户的权限 -->
+  <select id="selectUserFun" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select count(id) from plat_UserFunction
+    where userId=#{userId, jdbcType=VARCHAR}
+  </select>
+
+  <!-- 新增数据 -->
+  <insert id="insertUserFun" parameterType="java.util.Map">
+    insert into plat_UserFunction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id!=null">id,</if>
+      <if test="userId!=null">userId,</if>
+      <if test="roleType!=null">roleType,</if>
+      <if test="roleFunId!=null">roleFunId,</if>
+      <if test="funName!=null">funName,</if>
+      <if test="funClass!=null">funClass,</if>
+      <if test="funType!=null">funType,</if>
+      <if test="objId!=null">objId,</if>
+      <if test="funFlag1!=null">funFlag1,</if>
+      <if test="funFlag2!=null">funFlag2,</if>
+      <if test="extInfo!=null">extInfo,</if>
+      <if test="cTime!=null">cTime,</if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id!=null">#{id,jdbcType=VARCHAR},</if>
+      <if test="userId!=null">#{userId,jdbcType=VARCHAR},</if>
+      <if test="roleType!=null">#{roleType,jdbcType=INTEGER},</if>
+      <if test="roleFunId!=null">#{roleFunId,jdbcType=VARCHAR},</if>
+      <if test="funName!=null">#{funName,jdbcType=VARCHAR},</if>
+      <if test="funClass!=null">#{funClass,jdbcType=VARCHAR},</if>
+      <if test="funType!=null">#{funType,jdbcType=VARCHAR},</if>
+      <if test="objId!=null">#{objId,jdbcType=VARCHAR},</if>
+      <if test="funFlag1!=null">#{funFlag1,jdbcType=INTEGER},</if>
+      <if test="funFlag2!=null">#{funFlag2,jdbcType=INTEGER},</if>
+      <if test="extInfo!=null">#{extInfo,jdbcType=CLOB},</if>
+      <if test="cTime!=null">#{cTime,jdbcType=TIMESTAMP},</if>
+    </trim>
+  </insert>
+
+  <!-- 设置用户权限 -->
+  <update id="updateUserFun" parameterType="java.util.Map">
+    update plat_UserFunction
+    set objId=#{objId, jdbcType=VARCHAR}
+    where userId=#{userId,jdbcType=VARCHAR};
+  </update>
+
+  <!-- 查询用户权限  目前只有栏目权限 -->
+  <select id="selectUserRoleFun" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_UserFunction
+    where userId=#{userId, jdbcType=VARCHAR}
+  </select>
+
   <!-- 对象定义:用户角色对象 -->
   <resultMap id="UserRoleMap" type="UserRole">
     <id      column="id"      property="id"     jdbcType="VARCHAR"/>
@@ -154,7 +206,7 @@
   </sql>
   
   <!-- 查询用户是否已经有角色  如果没有则是第一次设置  如果有则是修改用户的角色 -->
-  <select id="selectUserRole" parameterType="java.util.Map" resultType="java.lang.Integer">
+  <select id="selectUserRoleCount" parameterType="java.util.Map" resultType="java.lang.Integer">
     select count(id) from plat_User_Role 
     where userId=#{userId, jdbcType=VARCHAR}
   </select>
@@ -192,4 +244,10 @@
       #{ids} 
     </foreach>
   </delete>
+  
+  <!-- 查询用户的角色 -->
+  <select id="selectUserRole" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_User_Role
+    where userId=#{userId, jdbcType=VARCHAR}
+  </select>
 </mapper>
