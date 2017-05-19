@@ -591,8 +591,8 @@ public class RoleController {
             }
             RoleFunctionPo result=roleService.getRoleFunlist(roleId);
             if (result==null) {
-                map.put("ReturnType", "1011");
-                map.put("Message", "无内容");
+                map.put("ReturnType", "1001");
+                map.put("Message", "获取失败");
             } else {
                 map.put("ReturnType", "1001");
                 map.put("Message", "获取成功");
