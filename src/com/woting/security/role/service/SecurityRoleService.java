@@ -388,7 +388,7 @@ public class SecurityRoleService {
             if (funClass!=null && funClass.equals("1")) {//==1 -> "Data" 数据权限
                 Map<String, Object> param=new HashMap<String, Object>();
                 param.put("userId", userId);
-                //查询用户是的角色
+                //查询用户的角色
                 Map<String, Object> ret=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
                 if (ret==null || ret.size()<=0) return null;
                 String roleId=ret.get("roleId")==null?null:ret.get("roleId").toString();
