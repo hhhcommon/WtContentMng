@@ -3,7 +3,6 @@ package com.woting.cm.core.oss.utils;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,7 +81,7 @@ public class OssUtils {
 						meta.setContentLength(file.getTotalSpace());
 						meta.setCacheControl("no-cache");
 						meta.setHeader("Pragma", "no-cache");
-						meta.setContentType(contentType(file.getName().substring(file.getName().lastIndexOf("."))));  
+						meta.setContentType(contentType(file.getName().substring(file.getName().lastIndexOf(".")))); 
 						meta.setContentDisposition("inline;filename=" + file.getName()); 
 						ossClient.putObject(ossConfigPo.getBucketName(), key, file, meta);
 						if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), key)) {
@@ -283,7 +282,7 @@ public class OssUtils {
 							ObjectMetadata meta = new ObjectMetadata();
 							meta.setCacheControl("no-cache");
 							meta.setHeader("Pragma", "no-cache");
-							meta.setContentType("text/html");
+							meta.setContentType(contentType(key.substring(key.lastIndexOf("."))));
 							ossClient.putObject(ossConfigPo.getBucketName(), newkey, in, meta);
 							if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), newkey)) {
 								in.close();
@@ -326,7 +325,7 @@ public class OssUtils {
 							ObjectMetadata meta = new ObjectMetadata();
 							meta.setCacheControl("no-cache");
 							meta.setHeader("Pragma", "no-cache");
-							meta.setContentType("text/html");
+							meta.setContentType(contentType(key.substring(key.lastIndexOf("."))));
 							ossClient.putObject(ossConfigPo.getBucketName(), newkey, in, meta);
 							if (ossClient.doesObjectExist(ossConfigPo.getBucketName(), newkey)) {
 								in.close();
@@ -395,23 +394,6 @@ public class OssUtils {
 		return file;
 	}
 	
-	private static String readFile(File file) {
-		String sb = "";
-		if (!file.exists()) return null;
-		try {
-			InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");
-			BufferedReader reader = new BufferedReader(read);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				sb += line;
-			}
-			read.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return sb;
-	}
-	
 	private static void deleteFile(File file) {
 		if (file!=null && file.exists()) {
 			file.delete();
@@ -432,11 +414,12 @@ public class OssUtils {
      * @return String
      */
      public static String contentType(String FilenameExtension){
+    	if (FilenameExtension.contains(".")) FilenameExtension = FilenameExtension.replace(".", "");
     	FilenameExtension = FilenameExtension.toLowerCase();
         if(FilenameExtension.equals("BMP")||FilenameExtension.equals("bmp")){return "image/bmp";}  
         if(FilenameExtension.equals("GIF")||FilenameExtension.equals("gif")){return "image/gif";}  
         if(FilenameExtension.equals("JPEG")||FilenameExtension.equals("jpeg")||FilenameExtension.equals("JPG")||FilenameExtension.equals("jpg")||
-           FilenameExtension.equals("PNG")||FilenameExtension.equals("png")){return "image/jpeg";}  
+           FilenameExtension.equals("PNG")||FilenameExtension.equals("png")){return "image/png";}  
         if(FilenameExtension.equals("HTML")||FilenameExtension.equals("html")){return "text/html";}
         if(FilenameExtension.equals("TXT")||FilenameExtension.equals("txt")){return "text/plain";}  
         if(FilenameExtension.equals("VSD")||FilenameExtension.equals("vsd")){return "application/vnd.visio";}  
