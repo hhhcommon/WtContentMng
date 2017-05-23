@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>节目详情页</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../../resources/js/common.utils.js"></script>
+  <script src="../../resources/js/context.utils.js"></script>
+</head>
+<style>
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+::-webkit-scrollbar {height:12px;width:2px;background:#e7eaec; } 
+::-webkit-scrollbar-thumb{height:12px;width:2px;background:#e7eaec;}
+body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.detail{
+  width:1080px;
+  min-width:850px;
+  position: relative;
+  height:auto;
+  margin:auto;
+}
+.detail_title{
+  position: relative;
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  color: #000;
+  font-size: 14px;
+  padding: 0px 20px;
+  border-bottom: 1px solid #dedede;
+}
+.my_title{
+  overflow: hidden;
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+  border-bottom: 2px solid #dedede;
+  color: #000;
+  font-weight: bold;
+}
+.detail_content{
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  position: relative;
+}
+.dc_left{
+  position: relative;
+  width:710px;
+  height:auto;
+  float: left;
+  margin:15px 0px 0px 20px;
+}
+.dcl_jmcontent {
+  width:100%;
+  padding: 0px 0px 10px 20px;
+  position: relative;
+  border: 1px solid #dedede;
+  overflow: hidden;
+}
+.dcl_jmcontent12{
+  overflow: hidden;
+  height: auto;
+  margin-bottom: 20px;
+}
+.dcl_jmcontent1{
+  float: left;
+  width:180px;
+  height:180px;
+  position: relative;
+  margin-top:20px;
+  border: 1px solid #dedede;
+}
+.dcl_jmcontent1 img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+  -ms-interpolation-mode:bicubic;  
+}
+.dcl_jmcontent2{
+  float:right;
+  overflow: hidden;
+  width:calc(100% - 205px);
+  height:auto;
+  margin-top:20px;
+}
+.title{
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  color: #000;
+  font-weight: bolder;
+  font-size: 18px;
+}
+.ctime,.comzjs,.tagss{
+  height:30px;
+  line-height: 30px;
+  font-size: 14px;
+  overflow: hidden;
+}
+.tagss{height: auto;}
+.newspan{
+  padding: 0px 5px;
+  margin: 0px 10px 0px 0px;
+  color: #000;
+}
+.h3span{
+  color:#ffa634;
+  font-size:14px;
+  font-weight:100;
+}
+.dcl_jmcontent2 p{
+  font-size:14px;
+}
+.dcl_jmcontent2 p span{
+  font-size:14px;
+  color:#000;
+  font-family: "微软雅黑";
+}
+.dcl_jmcontent2 .category{
+  color:#000;
+  font-size:14px;
+  font-weight:100;
+  display: inline-block;
+}
+.dcl_jmcontent2 .comZj{
+  color:#0077c7;
+  cursor: pointer;
+}
+.tagss{
+	overflow: hidden;
+	position: relative;
+}
+.tagss span{
+	float: left;
+}
+.dcl_jmcontent2 ul{
+  overflow: hidden;
+}
+.dcl_jmcontent2 .act{
+  overflow: hidden;
+  margin: 0px;
+  height: 30px;
+  line-height: 30px;
+}
+.dcl_jmcontent2 .act li{
+  height: 27px;
+  line-height: 27px;
+  float: left;
+  position: relative;
+  margin:0px 20px 0px 0px;
+  display: inline-block;
+  cursor: pointer;
+}
+.dcl_jmcontent2 .act li span{
+  padding-right:8px;
+  display: inline-block;
+  vertical-align: top !important;
+  color: #000;
+}
+.dcl_jmcontent3{
+  overflow: hidden;
+  height:30px;
+  line-height:30px;
+}
+.revoke,.player{
+	margin-right:50px;
+  width:85px;
+  color: #000;
+  cursor: pointer;
+  text-align: center;
+  float: left;
+  background: #ddd;
+  border:none;
+}
+.c07{
+  color:#fff;
+	background:#0077c7;
+}
+.f60{
+  color:#fff;
+	background:#f60;
+}
+.dcl_jmcontent4{
+  width:100%;
+	font-family: "微软雅黑";
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+  line-height: 25px;
+  float: left;
+}
+.dcl_jm_jmlist{
+  width:100%;
+  height:200px;
+  position: absolute;
+  float: left;
+  margin-top:10px;
+}
+.list_title{
+  height:30px;
+  border-bottom:1px dotted #000;
+  overflow: hidden;
+}
+.list_title h4{
+  color:#000;
+  float: left;
+  padding-left:20px;
+  height:30px;
+  font-size:15px;
+  line-height:30px;
+}
+.list_title span{
+  color:#0071CE;
+  float: right;
+  height:30px;
+  line-height:30px;
+  font-size:15px;
+  padding-right:10px;
+  cursor: pointer;
+}
+.fl{float: left;}
+.list_content{
+  height:360px;
+  overflow-y: auto;
+}
+.list_content1{
+  height:25px;
+  line-height:25px;
+  border-bottom:1px solid #676a6c;
+  overflow: hidden;
+}
+.list_content1_a,.list_content1_span1,
+.list_content1_span2,
+.list_content1_span3,
+.list_content1_img{
+  float: left;
+  width:auto;
+  display: inline-block;
+  font-size:12px;
+  font-family: "微软雅黑";
+}
+.list_content1_a,.list_content1_a:hover{
+  color: #000;
+  font-family: "微软雅黑";
+  padding-left:20px;
+  width:290px;
+}
+.list_content1_img{
+  background: url("../websiteManageResource/img/btn.png") repeat;
+  width: 25px;
+  height: 25px;
+  background-size: 100%;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  background-position: 0px -154px;
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-select: none;
+  white-space: nowrap;
+  margin-left: 150px;
+}
+.list_content1_span1{padding-left:0px;}
+.list_content1_span2,.list_content1_span3{margin-left:25px;}
+.dc_right1{
+  width:300px;
+  float: left;
+  margin:15px 0px 0px 36px;
+}
+.dc_right{
+  width:100%;
+  margin-top:0px;
+}
+.dcr_jmlist{overflow: auto;}
+.dcr_jmlist1{
+  height: 110px;
+  width: 100%;
+  overflow: hidden;
+  border-bottom: 2px solid #dedede;
+}
+.list1_img{
+  width:80px;
+  height:80px;
+  float: left;
+  margin:15px 0px;
+  display: inline-block;
+  border:1px solid #dedede;
+  cursor: pointer;
+}
+.list1_img img{
+  width:100%;
+  height:100%;
+  background-size:100% 100%;
+}
+.list1_con{
+  width:195px;
+  float: left;
+  margin:15px 0px;
+  padding-left:10px;
+}
+.list1_con_name{
+	color:#0077c7;
+	font-weight: bold;
+	cursor: pointer;
+}
+/*不通过样式*/
+.nopass_masker{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  background:rgba(0,0,0,0.6);
+  display: none;
+}
+.nopass_container{
+  width:575px;
+  height:465px;
+  position: relative;
+  margin:20px auto;
+  background: #fff;
+  overflow: hidden;
+}
+.nopass_head{
+  width:100%;
+  height:40px;
+  background:#DAE1EB;
+  color:#000;
+  font-weight:bolder;
+  overflow: hidden;
+}
+.nh_span1{
+  font-size:16px;
+  float: left;
+  margin: 9px 20px;
+}
+.nh_span2{
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  float: right;
+  text-align: center;
+  margin: 10px 20px;
+  cursor: pointer;
+}
+.nc_con1{
+  width:100%;
+  height:50px;
+  border-bottom:1px solid #dedede;
+}
+.nc_txt1{
+  color:#007FFF;
+  position: absolute;
+  font-weight:bold;
+  font-size: 15px;
+  margin: 15px 0px 15px 20px;
+}
+.nc_con2{
+  height:auto;
+  font-size:14px;
+  margin:10px 20px 0px 20px;
+}
+.black{
+  color:#000;
+}
+.blue{
+  color:#007FFF;
+}
+.nc_txt3{
+  height:100px;
+}
+.nc_txt4{
+  position: relative;
+  top: 10px;
+  float: left;
+}
+.nc_txt5{
+  margin: 6px 20px 10px 340px;
+}
+.other_reason{
+  float: left;
+  height:80px;
+  border:1px solid #dedede;
+}
+.nc_con3{
+  position: relative;
+  margin: 0px 20px 20px;
+  overflow: hidden;
+}
+.nc_checkimg{
+  width:18px;
+  height:18px;
+  cursor: pointer;
+}
+.nc_reasons  li img,.nc_txt5 img{
+  margin:0px;
+}
+.nc_txt6{
+  margin-left: 10px;
+  color: #000;
+}
+.nc_txt7{
+  width:80px;
+  height:30px;
+  text-align: center;
+  line-height: 30px;
+  color:#000;
+  background:#0077c7;
+  cursor: pointer;
+}
+.nc_reasons{
+  overflow: hidden;
+}
+.nc_reasons li{
+  width: auto;
+  float: left;
+  margin: 5px 10px 5px 0px;
+}
+.audioIframe{
+  position: relative;
+  height:auto;
+  display: none;
+}
+#audioIframe{
+  height:100px;
+}
+.locker{
+  position:relative;
+  margin-left: 90%;
+  margin-top: 0px;
+  width: 50px;
+  height: 15px;
+  background: center no-repeat;
+  background-size: cover;
+  background-image:url("http://sss.qingting.fm/www/images/locker-bg@2x.png");
+  cursor: pointer;
+}
+.locker .locker_btn{
+  width: 50px;
+  height: 18px;
+  background: center no-repeat;
+  background-size: 12px 12px;
+  background-image:url("http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png");
+}
+</style>
+<body>
+<div class="detail">
+  <div class="detail_title ellipsis">当前位置：内容管理> 已发布内容> </div>
+  <div class="detail_content">
+    <div class="dc_left">
+      <div class="dcl_jmcontent">
+        <div class="dcl_jmcontent12">
+          <div class="dcl_jmcontent1">
+            <img src="" alt="节目封面图片" />
+          </div>
+          <div class="dcl_jmcontent2">
+            <div class="title ellipsis"></div>
+            <div class="ctime">最近更新时间：<span class="cctime"></span></div>
+            <div class="comzjs">来自专辑<span class="comZj"></span></div>
+            <div class="tagss">
+              <span>标签：</span>
+              <ul class="tags">
+                <!--<li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>
+                <li class="newspan fl">自定义标签一</li>-->
+              </ul>
+            </div>
+            <ul class="act">
+              <li class="play">
+                <img class="play1" src="../websiteManageResource/img/act1.png" alt="" />
+                <span class="play2"></span>
+              </li>
+              <li class="love">
+                <img class="love1" src="../websiteManageResource/img/act3.png" alt="" />
+                <span class="love2"></span>
+              </li>
+              <li class="download">
+                <img class="download1" src="../websiteManageResource/img/act4.png" alt="" />
+                <span class="download2"></span>
+              </li>
+              <li class="share">
+                <img class="share1" src="../websiteManageResource/img/act2.png" alt="" />
+                <span class="share2"></span>
+              </li>
+              <li class="intransit">
+                <img class="intransit1" src="../websiteManageResource/img/act5.png" alt="" />
+                <span class="intransit2"></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="dcl_jmcontent3">
+      		<button class="revoke" opetype="revoke">撤回</button>
+      		<button class="player">播放</button>
+      	</div>
+      	<div class="dcl_jmcontent4"></div>
+      </div>
+    </div>
+    <div class="dc_right1">
+      <div class="my_title">同专辑的节目</div>
+      <div class="dc_right">
+        <div class="dcr_jmlist">
+          <!--<div class="dcr_jmlist1">
+            <div class="list1_img">
+              <img src="" alt="节目图片" />
+            </div>
+            <div class="list1_con">
+              <p class="list1_con_name">
+                <span>双份的阳光</span>
+              </p>
+              <p class="list1_con_num">
+                <span>播放次数 ： </span>
+                <span>8</span>
+              </p>
+              <p class="list1_con_time">
+                <span>时间 ：</span>
+                <span>2016-10-08 10:47:35</span>
+              </p>
+            </div>
+          </div>-->
+          <!--<div class="dcr_jmlist1">
+            <div class="list1_img">
+              <img src="" alt="节目图片" />
+            </div>
+            <div class="list1_con">
+              <p class="list1_con_name">
+                <span>双份的阳光</span>
+              </p>
+              <p class="list1_con_num">
+                <span>播放次数 ： </span>
+                <span>8</span>
+              </p>
+              <p class="list1_con_time">
+                <span>时间 ：</span>
+                <span>2016-10-08 10:47:35</span>
+              </p>
+            </div>
+          </div>-->
+          <!--<div class="dcr_jmlist1">
+            <div class="list1_img">
+              <img src="" alt="节目图片" />
+            </div>
+            <div class="list1_con">
+              <p class="list1_con_name">
+                <span>双份的阳光</span>
+              </p>
+              <p class="list1_con_num">
+                <span>播放次数 ： </span>
+                <span>8</span>
+              </p>
+              <p class="list1_con_time">
+                <span>时间 ：</span>
+                <span>2016-10-08 10:47:35</span>
+              </p>
+            </div>
+          </div>-->
+        </div> 
+      </div>
+    </div>
+  </div>
+  <div class="locker">
+    <div class="locker_btn locked"></div>
+  </div>
+  <div class="audioIframe">
+    <iframe class="J_iframe" id="audioIframe" name="iframe0" width="100%" height="100%" src="" frameborder="0"  seamless></iframe>
+  </div>
+</div>
+<!--s:不通过-->
+<div class="nopass_masker">
+  <div class="nopass_container">
+    <div class="nopass_head">
+      <span class="nh_span1">撤回</span>
+      <span class="nh_span2">×</span>
+    </div>
+    <div class="nopass_content">
+      <div class="nc_con1">
+        <span class="nc_txt1"></span>
+      </div>
+      <div class="nc_con2">
+        <p class="nc_txt2 black">请告知主播具体的原因：</p>
+        <ul class="nc_reasons">
+          <li>
+            <img src="../websiteManageResource/img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">广告信息及垃圾信息</span>
+          </li>
+          <li>
+            <img src="../websiteManageResource/img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+          </li>
+          <li>
+            <img src="../websiteManageResource/img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">虚构事实。隐瞒真相以误导、欺骗他人</span>
+          </li>
+          <li>
+            <img src="../websiteManageResource/img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">违反国家法律、危害国家安全统一、社会稳定、公序良俗、社会公德以及侮辱、诽谤、黄色、暴力的内容</span>
+          </li>
+          <li>
+            <img src="../websiteManageResource/img/checkbox1.png" alt="" class="nc_checkimg rtcl_img_check checkbox_img checkbox1"/>
+            <span class="nc_txt2">侵害他人名誉权、肖像权、知识产权、商业秘密等合法权利的内容</span>
+          </li>
+        </ul>
+        <div class="nc_txt3">
+          <span class="nc_txt4">其他原因：</span>
+          <textarea name="" rows="4" cols="62" class="other_reason"></textarea>
+        </div>
+      </div>
+      <div class="nc_con3">
+        <div class="nc_txt5 fl">
+          <img src="../websiteManageResource/img/checkbox1.png" alt="勾选" class="nc_checkimg fl rtcl_img_check checkbox_img checkbox1"/>
+          <span class="nc_txt6 fl">违规登记</span>
+        </div>
+        <div class="nc_txt7 fl">确定</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--e:不通过-->   
+</body>
+<script>
+  var rootPath=getRootPath();
+  var seqId=getUrlParam(window.location.href,'seqId');
+  var contentId=getUrlParam(window.location.href,'contentId');
+  var audioList=[];//音乐播放列表
+  var listNum=0;//控制播放节目的序号
+  var userId='123';
+  
+$(function(){
+  var data1={"UserId":userId,
+             "Page":"1",
+             "PageSize":"10",
+             "ContentId":contentId,
+             "MediaType":"wt_MediaAsset"
+  };
+  /*得到节目信息*/
+  getJmDetail(data1);
+  function getJmDetail(dataParam){
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/content/getContentInfo.do",
+      dataType:"json",
+      async:false,
+      cache:false,
+      data:JSON.stringify(dataParam),
+      beforeSend:function(){
+        $('.revoke,.player').attr("disabled","disabled");
+      },
+      success:function(resultData){
+        if(resultData.ReturnType == "1001"){
+          if(dataParam.MediaType=="wt_MediaAsset"){
+            fillJmDetail(resultData);//填充节目数据
+          }else{
+            fillJmList(resultData);//填充专辑下的节目列表
+          }
+          $('.revoke,.player').removeAttr("disabled");
+          $('.revoke').addClass("c07");
+          $('.player').addClass("f60");
+        }else{
+          alert(resultData.Message);
+          $('.revoke,.player').removeAttr("disabled").css({"color":"#000","background":"#ddd"});
+        }
+      },
+      error:function(jqXHR){
+        alert("发生错误："+ jqXHR.status);
+      }
+    });
+  }
+  
+  //填充节目数据
+  function fillJmDetail(resultData){
+    $(".detail_title").html("当前位置：内容管理> 已发布内容> "+resultData.ContentDetail.ContentName);
+    $(".title").html(resultData.ContentDetail.ContentName).attr("contentId",resultData.ContentDetail.ContentId);
+    $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
+    $(".cctime").html(resultData.ContentDetail.CTime);
+    $(".comZj").html(!resultData.ContentDetail.ContentSeqName?"【自定义专辑】":"【"+(resultData.ContentDetail.ContentSeqName)+"】");
+    $(".comZj").attr({"seqId":resultData.ContentDetail.ContentSeqId});
+    if(resultData.ContentDetail.ContentKeyWord){
+      for(var i=0;i<resultData.ContentDetail.ContentKeyWord.length;i++){
+        var li='<li class="newspan fl">'+resultData.ContentDetail.ContentKeyWord[i].TagName+'</li>';
+        $(".tags").append(li);
+      }
+    }else{
+      $(".tags").append("<li>暂无</li>");
+    }
+    if(resultData.ContentDetail.ContentPubChannels){
+      var chId,chStr="";
+      for(var i=0;i<resultData.ContentDetail.ContentPubChannels.length;i++){
+        if((chId=="")||(chStr=="")){
+          chId=resultData.ContentDetail.ContentPubChannels[i].ChannelId;
+          chStr=resultData.ContentDetail.ContentPubChannels[i].ChannelName;
+        }else{
+          chId+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelId;
+          chStr+=","+resultData.ContentDetail.ContentPubChannels[i].ChannelName;
+        }
+      }
+      $(".title").attr({"channelId":chId});
+    }
+    $(".play2").html(!resultData.ContentDetail.PlayCount?"播放":(resultData.ContentDetail.PlayCount));
+    $(".love2").html(!resultData.ContentDetail.LoveCount?"喜欢":(resultData.ContentDetail.LoveCount));
+    $(".download2").html(!resultData.ContentDetail.DownloadCount?"下载":(resultData.ContentDetail.DownloadCount));
+    $(".share2").html(!resultData.ContentDetail.ShareCount?"分享":(resultData.ContentDetail.ShareCount));
+    $(".intransit2").html(!resultData.ContentDetail.IntransitCount?"转发":(resultData.ContentDetail.IntransitCount));
+    $(".dcl_jmcontent4").html(resultData.ContentDetail.ContentDesc);
+    if(resultData.ContentDetail.ContentPlay){
+      var audioObj={};
+      audioObj.title=resultData.ContentDetail.ContentName;
+      audioObj.playUrl=resultData.ContentDetail.ContentPlay;
+      audioList.push(audioObj);
+    }
+    $("#audioIframe").attr("src","../globalplayer.html");
+  }
+  
+  /*同专辑下的所有节目*/
+  var data2={"UserId":userId,
+             "ContentFlowFlag":"2",
+             "Page":"1",
+             "PageSize":"10",
+             "ContentId":seqId,
+             "MediaType":"wt_SeqMediaAsset"
+  };
+  getJmDetail(data2);
+  //填充专辑下的节目列表
+  function fillJmList(resultData){
+    for(var i=0;i<resultData.SubList.length;i++){
+      var list= '<div class="dcr_jmlist1">'+
+                  '<div class="list1_img">'+
+                    '<img src='+resultData.SubList[i].ContentImg+' alt="节目图片" />'+
+                  '</div>'+
+                  '<div class="list1_con">'+
+                    '<p class="list1_con_name ellipsis" contentId='+resultData.SubList[i].ContentId+'>'+
+                      '<span>'+resultData.SubList[i].ContentName+'</span>'+
+                    '</p>'+
+                    '<p class="list1_con_num">'+
+                      '<span>播放次数 ： </span>'+
+                      '<span>'+resultData.SubList[i].PlayCount+'</span>'+
+                    '</p>'+
+                    '<p class="list1_con_time">'+
+                      '<span>时间 ：</span>'+
+                      '<span>'+resultData.SubList[i].CTime+'</span>'+
+                    '</p>'+
+                  '</div>'+
+                '</div>';
+      $(".dcr_jmlist").append(list);
+    }
+  }
+  
+  /*点击撤回节目*/ 
+  var contentIds=[];
+  var channelId='';
+  $(".revoke").on("click",function(){
+    contentIds=[];
+    $(".other_reason").val(" ");
+    var data3={};
+    var contentList={};
+    contentList.Id=contentId;
+    contentList.MediaType="AUDIO";
+    channelId=$(".title").attr("channelid");
+    contentList.ChannelIds=channelId;
+    contentIds.push(contentList);
+    $("body").css("overflow","hidden");
+    $(".nc_txt1").text("您确认撤回这个节目么？");
+    $(".nopass_masker").show();
+  });
+  
+  //点击单个勾选框
+  $(document).on("click",".rtcl_img_check",function(){
+    if($(this).hasClass("checkbox1")){
+      $(this).attr({"src":"../websiteManageResource/img/checkbox2.png"}).removeClass("checkbox1");
+    }else{
+      $(this).attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
+    }
+  });
+  
+  //点击撤回原因页面的确定
+  $(".nc_txt7").on("click",function(){
+    var reDesc=[];
+    $(".nc_reasons .nc_checkimg").each(function(){
+      if($(this).hasClass("checkbox1")){//未选中这个原因
+        
+      }else{//选中这个原因
+        var red={};
+        red.ReDescn=$(this).siblings(".nc_txt2").text();
+        reDesc.push(red);
+      }
+    });
+    if($(".other_reason").val()!=" "){
+      var red={};
+      red.ReDescn=$(".other_reason").val();
+      reDesc.push(red);
+    }
+    var data2={"UserId":userId,
+               "ContentIds":contentIds,
+               "OpeType":$(".revoke").attr("opetype"),
+               "ReDescn":reDesc
+    };
+    $.ajax({
+      type: "POST",
+      url:rootPath+"CM/content/updateContentStatus.do",
+      dataType:"json",
+      cache:false,
+      async:false,
+      data:JSON.stringify(data2),
+      beforeSend:function(){
+        $('.nc_txt7').attr("disabled","disabled");
+      },
+      success: function(resultData){
+        if(resultData.ReturnType=="1001"){
+          alert("撤回成功");
+          $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
+          $(".nopass_masker").hide();
+          $("body").css({"overflow":"auto"});
+        }else{
+          alert(resultData.Message);
+        }
+        $('.nc_txt7').removeAttr("disabled");
+      },
+      error: function(jqXHR){
+        $(".ri_top3_con").html("<div style='text-align:center;height:300px;line-height:200px;'>获取数据发生错误："+jqXHR.status+"</div>");
+      }     
+    });
+  });
+  
+  /*点击遮罩层或不通过页面上的取消按钮*/
+  $(document).on("click",".nh_span2",function(){
+    $(".checkbox_img").attr({"src":"../websiteManageResource/img/checkbox1.png"}).addClass("checkbox1");
+    $(".nopass_masker").hide();
+    $("body").css({"overflow":"auto"});
+  });
+  
+  /*点击播放*/
+  $(".player").on("click",function(){
+    $(".locker").click();
+  });
+  
+  /*点击专辑名称跳到专辑详情页*/
+  $(".comZj").on("click",function(){
+    var seqIds=$(this).attr("seqId");
+    $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+seqIds});
+  });
+  
+  /*点击专辑列表里面的节目名称跳到节目详情页*/
+  $(document).on("click",".list1_con_name",function(){
+    var seqIds=$(".comZj").attr("seqId");
+    var contentIds=$(this).attr("contentId");
+    $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentIds+"&&seqId="+seqIds});
+  });
+  
+  /*播放器面板出现与隐藏*/
+  $(document).on("click",".locker",function(){
+    if($(this).children(".locker_btn").hasClass("locked")){//此时隐藏,点击之后显示
+      $(".audioIframe").show();
+      $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-locked-hover@2x.png)"});
+      $(this).children(".locker_btn").removeClass("locked");
+    }else{//此时显示，点击之后隐藏
+      $(".audioIframe").hide();
+      $(".locker_btn").css({"background-image":"url(http://sss.qingting.fm/www/images/locker-unlocked-hover@2x.png)"});
+      $(this).children(".locker_btn").addClass("locked");
+    }
+  });
+  
+});
+</script>
+</html>

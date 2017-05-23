@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!-- 用户相关设置 -->
+<configuration>
+  <!-- 别名设置 -->
+  <typeAliases>
+    <typeAlias alias="PlatRole"      type="com.woting.security.role.persis.pojo.PlatRolePo"/>
+    <typeAlias alias="RoleFunction"  type="com.woting.security.role.persis.pojo.RoleFunctionPo"/>
+    <typeAlias alias="UserFunction"  type="com.woting.security.role.persis.pojo.UserFunctionPo"/>
+    <typeAlias alias="UserRole"      type="com.woting.security.role.persis.pojo.UserRolePo"/>
+    <typeAlias alias="UserExt"       type="com.woting.security.approve.persis.pojo.PlatUserExtPo"/>
+    <typeAlias alias="UserProgress"  type="com.woting.security.approve.persis.pojo.PlatUserProgressPo"/>
+  </typeAliases>
+  <mappers>
+    <mapper resource="com/woting/security/role/persis/sql/Role.mapper.xml"/>
+    <mapper resource="com/woting/security/approve/persis/sql/Approve.mapper.xml"/>
+  </mappers>
+</configuration>

@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
+
 import com.spiritdata.framework.util.ChineseCharactersUtils;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.woting.cm.core.channel.persis.po.ChannelAssetPo;

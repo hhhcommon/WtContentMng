@@ -25,7 +25,6 @@ input{padding:0px 4px;}
 .detail{
   height:100%;
   overflow: auto;
-  margin-bottom:20px;
   background: #fff;
   border:1px solid #dedede;
 }
@@ -44,8 +43,7 @@ input{padding:0px 4px;}
   margin-top:30px;
 }
 .form-horizontal .form-group{
-  margin-left:0;
-  margin-right:0;
+  margin: 0px 0px 30px 0px;
   overflow: hidden;
 }
 .form-horizontal .form-group:last-child{
@@ -57,8 +55,8 @@ input{padding:0px 4px;}
 }
 .label_div{
   width: 92px;
-  height: 30px;
-  line-height: 30px;
+  height: 35px;
+  line-height: 35px;
   font-weight: 600;
   padding-left: 0px;
   padding-right: 0px;
@@ -71,7 +69,7 @@ input{padding:0px 4px;}
   color: #ffa634;
 }
 .phone_ipt{
-  width:255px;
+  width:calc(100% - 93px);
   height:35px;
   float: left;
 }
@@ -82,11 +80,13 @@ input{padding:0px 4px;}
 .phone{
   width:100%;
   height:35px;
+  border: 1px solid #dedede;
 }
 .codeval{
-  width:120px;
+  width:132px;
   height:35px;
   float: left;
+  border: 1px solid #dedede;
 }
 .ver_code{
   width:130px;
@@ -137,7 +137,7 @@ input{padding:0px 4px;}
           </div>
         </div>
         <div class="form-group">
-          <input  class="confirm" type="button" value="保存设置" />
+          <input class="confirm" type="button" value="保存设置" />
         </div>
       </form> 
     </div>
@@ -145,15 +145,111 @@ input{padding:0px 4px;}
 </body>
 <script>
 $(function(){
-  //对于发送验证码这块暂时不支持
   var rootPath=getRootPath();
   
   var uid=$(".login_user span",parent.document).attr("userid");
-  var deviceId="";
   var pcdType=3;
   
+  //点击发送验证码 
+  var InterValObj; //timer变量，控制时间  
+  var curCount=60;//当前剩余秒数  
+  var clicknum=0;
+  $(".ver_code").on("click",function(){
+    clicknum++;
+    var sMobile=$.trim($(".phone").val());
+    if(!sMobile){
+      alert("请输入手机号");
+      $(".phone").val("").focus(); 
+      return false; 
+    }else{
+      var myreg=/^1[3|4|5|7|8][0-9]{9}$/;
+      if(!(myreg.test(sMobile))){ 
+        alert("你输入的手机号不合法，请重新输入");
+        $(".phone").val("").focus(); 
+        return false; 
+      }else{
+        if(clicknum>1){//点击起到的是重发效果
+          var _url=rootPath+"passport/user/reSendPhoneCheckCode.do";
+          var _data={};
+          _data.PCDType=pcdType;
+          _data.PhoneNum=sMobile;
+          _data.OperType=1;
+          getCode(_url,_data);//不是第一次得到验证码
+        }else{//第一次发送验证码
+          var _url=rootPath+"passport/user/registerByPhoneNum.do";
+          var _data={};
+          _data.PCDType=pcdType;
+          _data.PhoneNum=sMobile;
+          getCode(_url,_data);//第一次得到验证码
+        }
+      }
+    }
+  });
+  
+  //获取验证码
+  function getCode(_url,_data){
+    $.ajax({
+      type:"POST",
+      url:_url,
+      dataType:"json",
+      cache:true,
+      data:JSON.stringify(_data),
+      success:function(returnData){
+        if(returnData.ReturnType=="1001"){
+          InterValObj=window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+        }else{
+          alert("获取验证码失败:"+returnData.Message);
+        }
+      },
+      error:function(jqXHR){
+        alert("获取验证码发生错误:" + jqXHR.status);
+      }
+    });
+  }
+  //计时器timer的时间处理
+  function SetRemainTime(){
+    if(curCount==0){                  
+      window.clearInterval(InterValObj);//停止计时器  
+      $(".ver_code").removeAttr("disabled").val("重新发送验证码").css("background","#ffa634");//启用按钮  
+      $(".codeval").val(""); //清除验证码 
+    }else{  
+      curCount--;  
+      $(".ver_code").val("请在" + curCount + "秒内输入验证码").attr("disabled", "true").css("background","#333");
+    }  
+  }
+  
+  //验证输入的验证码是否正确
+  var checkcode=true;//默认输入的验证码是正确的
+  function checkCode(sMobile,sCode){
+    var _data={};
+    _data.PCDType=pcdType;
+    _data.PhoneNum=sMobile;
+    _data.CheckCode=sCode;
+    $.ajax({
+      type:"POST",
+      url:rootPath+"passport/user/checkPhoneCheckCode.do",
+      dataType:"json",
+      cache:true,
+      async:false,
+      data:JSON.stringify(_data),
+      success:function(returnData){
+        if(returnData.ReturnType!="1001"){
+          alert("你输入的验证码有误");
+          $(".phone").val("").focus(); 
+          checkcode=false;
+          return false;
+        }
+      },
+      error:function(jqXHR){
+        alert("校验验证码发生错误" + jqXHR.status);
+      }
+    });
+  }
+  
+  //点击保存设置
   $(".confirm").on("click",function(){
     var sMobile=$.trim($(".phone").val());
+    var sCode=$.trim($(".codeval").val());
     if(!sMobile){
       alert("手机号不能为空");
       $(".phone").val("").focus(); 
@@ -164,30 +260,48 @@ $(function(){
         alert("手机号输入不合法，请重新输入"); 
         $(".phone").val("").focus(); 
         return false; 
-      }else{
-        var data1={};
-        data1.IMEI=deviceId;
-        data1.PCDType=pcdType;
-        data1.UserId=uid;
-        data1.PhoneNum=sMobile;
-        $.ajax({
-          type:"POST",
-          url:rootPath+"passport/user/updateUserInfo.do",
-          dataType:"json",
-          data:JSON.stringify(data1),
-          success: function(returnData){
-            if(returnData.ReturnType=="1001"){
-              alert("手机号码修改成功");
-            }else{
-              alert(returnData.Message);
-            }
-          },
-          error:function(jqXHR){
-            alert("发生错误" + jqXHR.status);
-          }
-        }); 
       }
     }
+    if(!sCode){
+      alert("请输入验证码"); 
+      $(".codeval").val("").focus(); 
+      return false; 
+    }else{
+      var myreg = /\d{6}/;
+      if((sCode.length!=6)||(!(myreg.test(sCode)))){ 
+        alert("验证码只能是6位的数字,请重新输入");
+        $(".codeval").val("").focus();
+        return false; 
+      }else{
+        checkCode(sMobile,sCode);//验证输入的验证码是否正确
+        //验证码输入不匹配
+        if(checkcode==false) return false;
+      }
+    }
+    var data1={};
+    data1.PCDType=pcdType;
+    data1.UserId=uid;
+    data1.PhoneNum=sMobile;
+    $.ajax({
+      type:"POST",
+      url:rootPath+"passport/user/updateUserInfo.do",
+      dataType:"json",
+      data:JSON.stringify(data1),
+      beforeSend:function(){
+        $(".confirm").attr("disabled","disabled").css("background","#dedede");
+      },
+      success:function(returnData){
+        if(returnData.ReturnType=="1001"){
+          alert("手机号修改成功");
+        }else{
+          alert("手机号修改失败:"+returnData.Message);
+        }
+        $(".confirm").removeAttr("disabled").css("background","#ffa634");
+      },
+      error:function(jqXHR){
+        alert("手机号修改发生错误:" + jqXHR.status);
+      }
+    }); 
   });
 });
 </script>

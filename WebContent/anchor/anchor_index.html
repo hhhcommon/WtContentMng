@@ -265,6 +265,7 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
   text-overflow: ellipsis;
 }
 .navbar-static-side{background: #fff;}
+.dis{display: none;}
 </style>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg laydate_body" onselectstart="return false">
@@ -279,10 +280,10 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
     </div>
     <div class="nav navbar-nav navbar-right desktop user_nav userlogin">
       <div class="dropdown loginBtn">
-        <a data-toggle="dropdown" class="dropdown-toggle login_user" href="javascript:void(0);" hrefs="anchor_login.html">
-          <img src="anchorResource/img/login1.png" alt="用户登陆" style="margin-right:3px;"/>
-          <span>用户登陆</span>
-          <img src="anchorResource/img/login2.png" alt="用户登陆" />
+        <a class="login_user" href="javascript:void(0);" hrefs="anchor_login.html">
+          <img src="anchorResource/img/login1.png" alt="用户登录" style="margin-right:3px;"/>
+          <span>用户登录</span>
+          <img src="anchorResource/img/login2.png" alt="用户登录" />
         </a>
         <ul class="dropdown-menu animated fadeInRight m-t-xs" style="margin-right:-15px;">
           <li class="navList"><a class="M_menuItem" hrefs="personCenter/personalData.html" href="javascript:void(0);">个人资料</a></li>
@@ -414,11 +415,24 @@ $(function(){
   var userId=getUrlParam(window.location.href,'userId');
   var userPsd=getUrlParam(window.location.href,'userPsd');
   var userName=getUrlParam(window.location.href,'userName');
-  var myreg=/[\u0000-\u00FF]/;
-  if((myreg.test(userName))){ 
-    userName=decodeURIComponent(userName);
+  if((userId!=null)&&(userPsd!=null)&&(userName!=null)){
+    var myreg=/[\u0000-\u00FF]/;
+    if((myreg.test(userName))) userName=decodeURIComponent(userName);
+    $(".login_user span").text(userName).attr("userId",userId).attr("userPsd",userPsd);
+  }else{
+    $(".login_user span").text("用户登录");
   }
-  $(".login_user span").text(userName).attr("userId",userId).attr("userPsd",userPsd);
+  
+  //根据是否登录判断操作
+  $(".login_user").on("click",function(){
+    var type=typeof($(".login_user span").attr("userId"));
+    if(type=="undefined"){//处于未登录状态,个人中心和退出登录不显示
+      window.location.href="./login.html";
+    }else{//处于登录状态,个人中心和退出登录显示
+      $(this).addClass("dropdown-toggle").attr("data-toggle","dropdown");
+    }
+  })
+  
   //点击退出登录
   var logout_data={};
   var pcdType=3;
@@ -430,16 +444,16 @@ $(function(){
       url:rootPath+"passport/user/mlogout.do",
       dataType:"json",
       data:JSON.stringify(logout_data),
-      success: function(returnData){
+      success:function(returnData){
         if(returnData.ReturnType=="1001"){
-          alert("退出成功！");
           window.location.href="./login.html";
         }else{
           alert("账号或密码有误"+returnData.Message);
+          return;
         }
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("退出登录发生错误" + jqXHR.status);
       }
     });
   });

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>主播--列表页</title>   
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="我听，我享听">                                                              
+  <meta name="description" content="我听，我享听">
+  <link href="../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">                                                                     
+  <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
+  <link href="../../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
+  <link href="../../anchor/anchorResource/css/pagination.css" rel="stylesheet"/>
+  <script src="../../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
+  <script src="../../resources/js/common.utils.js"></script>
+  <script src="../../resources/js/context.utils.js"></script>
+  <script src="../../resources/plugins/hplus/js/plugins/datapicker/bootstrap-datepicker.js"></script><!--日期-->
+  <script src="../websiteManageResource/js/anchor_list.js"></script>
+  <!--翻页插件-->
+  <script src="../../anchor/anchorResource/js/pagination.min.js"></script>
+<style>
+/*全局样式*/
+*{margin: 0;padding: 0;}
+li{list-style: none;}
+a,a:hover,a:link,a:focus,a:visited{text-decoration: none;}
+body{-moz-user-select: none;overflow-x: auto;background: #fff;}
+#wrapper{width:100%;}
+.fl{float: left;}
+.content{
+  position: relative;
+  width: 100%;
+  min-width: 1080px;
+  height: auto;
+  overflow-x: auto;
+}
+.content .containers{width:100%;}
+.content .containers .row{
+  position: absolute;
+  height: 100%;
+  margin-left:0px;
+  margin-right:0px;
+  position: inherit;
+}
+.col-md-12{padding:0px !important;}
+.ri_top{
+  width:100%;
+  height:auto
+  overflow: hidden;
+}
+.ri_top_li1{
+  height:40px;
+  color:#000;
+  font-size:14px;
+  line-height: 40px;
+  padding: 0px 0px 0px 15px;
+  border-bottom:1px solid #dedede;
+}
+.ri_top_li2{
+  margin:25px 0px;
+  width: 100%;
+  height: 30px;
+  padding:0px 15px;
+}
+.ri_top_li2_inp{
+  width: 100%;
+  height: 30px;
+  font-size: 14px;
+  padding-left: 6px;
+  border: 1px solid #0077c7;
+}
+.ri_top_li2_img{
+  position: relative;
+  top:-23px;
+  right:10px;
+  width: 18px;
+  height: 18px;
+  float: right;
+  background-size: 100% 100%;
+  cursor: pointer;
+}
+.ri_content{
+  width:100%;
+  height:auto;
+  padding: 0px 15px;
+  overflow: hidden;
+}
+.ric_con1{
+  height:45px;
+  background:rgba(135, 206, 235, 0.2);
+}
+.ric_check{
+  margin:14px 10px 13px 20px;
+  width:18px;
+  height:18px;
+  cursor: pointer; 
+}
+.alls{margin: 13px 0px 10px 0px;}
+.ric_txt1{
+  font-size: 16px;
+  color: #337ab7;
+}
+.ric_txt2{
+  margin-left:50px;
+  width:85px;
+  height:30px;
+  background: #ddd;
+  color:#000;
+  cursor: pointer;
+  margin-top:7px;
+  border:none;
+  text-align: center;
+  line-height:30px;
+}
+.ric_con2{height: auto;}
+.ric_con2_head{
+  width:100%;
+  height: 35px;
+  line-height: 25px;
+  background:#dedede;
+  overflow: hidden;
+}
+.ric_txt3{
+  color: #000;
+  text-align: center;
+  font-size: 16px;
+  height: 25px;
+  margin: 5px 0px;
+  border-right: 2px solid #999;
+}
+.ric_txt31{width:16%;}
+.ric_txt32{width:14%;}
+.ric_txt33{width:12%;}
+.ric_txt34{width:13%;}
+.ric_txt35{width:20%;}
+.ric_txt36{width:13%;}
+.ric_con2 .border1{
+  width:12%;
+  cursor: pointer;
+  border-right: 0px solid #dedede;
+}
+.ric_con2_content{
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 270px;
+  margin: 0px;
+}
+.ric_cc_listBox{
+  width:100%;
+  height: 45px;
+  font-size: 14px;
+  line-height: 45px;
+  border-bottom:1px solid #dedede;
+}
+.ric_img_check{
+  margin: 12px 20px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+.per1{
+  width:calc(16% - 58px);
+  text-align: left;
+  padding: 0px 5px 0px 0px;
+}
+.per2,.per3,.per4,.per5,.per6,.per7{
+  text-align: center;
+  padding: 0px 5px;
+}
+.per2{width:14%;}
+.per3{width:12%;}
+.per4{width:13%;}
+.per5{width:20%;}
+.per6{width:13%;}
+.c07{
+  color:#0077c7;
+  cursor: pointer;
+}
+.bsg{background: greenyellow;}
+.byl{background: #F9BE36;}
+.bsb{background: deepskyblue;}
+.bsr{background: darkred;}
+.st{
+  width: calc(12% - 60px);
+  height: 25px;
+  margin: 10px 20px 10px 10px;
+  line-height: 25px;
+}
+.ric_txt39{
+  width: 18px;
+  height: 18px;
+  font-size: 14px;
+  color: red;
+  font-weight: bolder;
+  line-height: 14px;
+  padding: 2px 5px;
+  border-radius: 20px;
+  border: 1px solid red;
+  margin: 14px 0px 10px -14px;
+}
+.dis{display: none;}
+.ellipsis{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.dropdown_menu{
+  width: 11.7%;
+  background: #dedede;
+  position: absolute;
+  margin-top: 5px;
+  z-index: 999;
+  padding-bottom: 20px;
+}
+.dropdown_menu>li{
+  color: #000;
+  line-height: 25px;
+  margin: 4px 0px;
+  padding-right:20px;
+  text-align: center;
+  font-weight: normal;
+}
+.mark_notes{
+  width: 12%;
+  height: 70px;
+  border: 2px #dedede solid;
+  background-color: #fff;
+  position: relative;
+  margin:-5px 0px 0px 87%;
+}
+.mark_notes:before,.mark_notes:after{
+  width:0px;
+  height:0px;
+  border:transparent solid;
+  position:absolute;
+  left:100%;
+  content:"";
+}
+.mark_notes:before{
+  border-width: 10px;
+  border-bottom-color: #dedede;
+  left: 90px;
+  top: -20px;
+}
+.mark_notes:after{
+  border-width: 8px;
+  border-bottom-color: #fff;
+  left: 92px;
+  top: -16px;
+}
+.mark_time,.mark_note{
+  width:100%;
+  font-size:12px;
+  line-height: 30px;
+  text-align: center;
+}
+.mark{cursor: pointer;}
+.clearHeight:after{ 
+  content:""; 
+  display: block; 
+  clear: both; 
+}
+/*分页样式*/
+#kkpager{padding: 20px 140px 20px 20px;}
+#kkpager span.curr{
+  border: 1px solid #0077c7 !important;
+  color:#0077c7 !important ;
+}
+#kkpager a:hover {
+  border: 1px solid #0077c7 !important;
+  background-color: #0077c7 !important;
+  color: #fff;
+}
+#kkpager .currPageNum {
+  color: #0077c7 !important;
+}
+#kkpager_btn_go{
+  background-color: #0077c7 !important;
+}
+</style> 
+</head>
+<body class="laydate_body">
+<div class="content">
+  <div class="containers">
+    <div class="row">
+      <div class="col-md-12 con_right">
+        <ul class="ri_top">
+          <li class="ri_top_li1">当前位置：主播管理 > 主播列表</li>
+          <li class="ri_top_li2">
+            <input class="ri_top_li2_inp" type="text" placeholder="搜索"/>
+            <img class="ri_top_li2_img" src="../websiteManageResource/img/search1.png" alt="搜索按钮" />
+          </li>
+        </ul>
+        <div class="ri_content">
+          <div class="ric_con1">
+            <div class="ric_txt1 fl"> 
+              <img src="../websiteManageResource/img/checkbox1.png" alt="全选" class="ric_check fl all_check checkbox_img checkbox1"/>
+              <span class="alls fl">全选</span>
+            </div>
+            <button class="ric_txt2 fl gay_week" disabled statusType="zbzt02">禁言一周</button>
+            <button class="ric_txt2 fl gay_month" disabled statusType="zbzt03">禁言一月</button>
+            <button class="ric_txt2 fl gay_forever" disabled statusType="zbzt04">永久禁言</button>
+            <button class="ric_txt2 fl gay_revoke" disabled statusType="zbzt01">撤销禁言</button>
+          </div>
+          <div class="ric_con2">
+            <div class="ric_con2_head">
+              <span class="ric_txt3 fl ric_txt31">用户号</span>
+              <span class="ric_txt3 fl ric_txt32">手机号</span>
+              <span class="ric_txt3 fl ric_txt33">昵称</span>
+              <span class="ric_txt3 fl ric_txt34">真实姓名</span>
+              <span class="ric_txt3 fl ric_txt35">身份证号</span>
+              <span class="ric_txt3 fl ric_txt36">来源</span>
+              <div class="fl ric_txt3 border1">
+                <div class="dropdown" data-toggle="dropdown" aria-expanded="false">禁言状态
+                  <img src="../websiteManageResource/img/filter2.png" alt="" class="ric_txt38" style="margin-left:10px;"/>
+                </div>
+                <ul role="menu" class="dropdown_menu dis">
+                  <!--<li class="normal_use" text="正常使用" type="normal_use"><span>正常使用</span></li>
+                  <li class="gag_week" text="禁言一周" type="gag_week"><span>禁言一周</span></li>
+                  <li class="gag_month" text="禁言一月" type="gag_month"><span>禁言一月</span></li>
+                  <li class="gag_forever" text="永久禁言" type="gag_forever"><span>永久禁言</span></li>-->
+                </ul>
+              </div>
+            </div>
+            <ul class="ric_con2_content clearHeight">
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsg st">正常使用</span>
+                <span class="ric_txt39 fl dis mark">!</span>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl byl st">禁言一周</span>
+                <span class="ric_txt39 fl mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsb st">禁言一月</span>
+                <span class="ric_txt39 fl mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsr st">永久禁言</span>
+                <span class="ric_txt39 fl mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsg st">正常使用</span>
+                <span class="ric_txt39 fl dis mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsg st">正常使用</span>
+                <span class="ric_txt39 fl dis mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsg st">正常使用</span>
+                <span class="ric_txt39 fl dis mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsg st">正常使用</span>
+                <span class="ric_txt39 fl dis mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+              <!--<li class="ric_cc_listBox fl">
+                <img src="img/checkbox1.png" alt="" class="ric_img_check fl checkbox_img checkbox1"/>
+                <span class="ric_txt31 fl" style="width:110px;">uuid_00001</span>
+                <span class="ric_txt32 fl">15225578254</span>
+                <span class="ric_txt33 fl c07">闯荡江湖</span>
+                <span class="ric_txt34 fl">新新新新</span>
+                <span class="ric_txt35 fl">1234567897894564</span>
+                <span class="ric_txt36 fl">我听App注册用户</span>
+                <span class="fl bsg st">正常使用</span>
+                <span class="ric_txt39 fl dis mark">!</span>
+                <div class="mark_notes fl dis">
+                  <div class="square">
+                    <span class="mark_time fl c07">2017-11-15 12:12:21</span>
+                    <span class="mark_note fl">恢复正常使用</span>
+                  </div>
+                </div>
+              </li>-->
+            </ul>
+          </div>
+        </div>
+        <div id="kkpager"></div>
+      </div>  
+    </div>
+  </div>
+</div>
+</body>
+</html>

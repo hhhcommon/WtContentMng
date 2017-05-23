@@ -9,12 +9,16 @@ var overChannel=false;
 var userId=$(".login_user span",parent.document).attr("userid");
 
 $(document).on("click",".more1",function(){//点击更多
-  if($("#channel").children(".attrValues").children("ul").hasClass("h40")){
-    $("#channel").children(".attrValues").children("ul").removeClass("h40");
+  if($(this).siblings(".attrValues").children("ul").hasClass("h40")){
+    $(this).siblings(".attrValues").children("ul").removeClass("h40");
     $(this).children("span").text("收起");
+    var sh=$(this).siblings(".attrValues").height();
+    $(this).siblings(".attrKey").css("height",sh+"px");
   }else{
-    $("#channel").children(".attrValues").children("ul").addClass("h40");
+    $(this).siblings(".attrValues").children("ul").addClass("h40");
     $(this).children("span").text("更多");
+    var sh=$(this).siblings(".attrValues").height();
+    $(this).siblings(".attrKey").css("height",sh+"px");
   }
 });
 $(document).on("click",".more3",function(){//点击多选
@@ -164,11 +168,11 @@ $(document).on("mouseenter","#channel .chnel",function(){//鼠标放在一级栏
       $(".chnels").hide();
       $("#channel .chnel").removeClass("trig_curr");
       $("#channel .chnel[data_idx="+pid+"]").addClass("trig_curr");
-      if(pid>=0&&pid<=9){
+      if(pid>=0&&pid<=11){
         $(this).css({"top":"39px"}).show();
-      }else if(pid>=10&&pid<=19){
+      }else if(pid>=12&&pid<=23){
         $(this).css({"top":"79px"}).show();
-      }else if(pid>=20&&pid<=29){
+      }else if(pid>=24&&pid<=35){
         $(this).css({"top":"119px"}).show();
       }else{
         $(this).css({"top":"159px"}).show();
@@ -219,31 +223,29 @@ $(document).on("click",".trig_item_li",function(){//选中一级栏目里面的�
   if($(".all").is(':hidden')) $(".all").show();
 });
 
-//$(function(){
-  /*底部footer显示/隐藏*/
-  $(window).on("scroll", function(){ 
-    var sTop = $(window).scrollTop();  
-    var sTop = parseInt(sTop);  
-    if(sTop >= 10){ 
-      if(!$('.footer', parent.document).is(":visible")){ 
-        $('.wrapper', parent.document).css({"height":"64%"});
-        $('.footer', parent.document).show();
-      }  
-    }else{  
-      if($('.footer', parent.document).is(":visible")){  
-        $('.footer', parent.document).hide();
-        $('.wrapper', parent.document).css({"height":"84%"});
-      }  
-    }
-  }); 
-  //点击footer_hide，footer隐藏
-  $('.footer_hide', parent.document).on("click",function(){
-//  $('.wrapper', parent.document).css({"height":"84%"});
-    $('.wrapper').css({"height":"84%"});
-    $('.footer').hide();
-    $(window).scrollTop("0px");
-  });
-//});
+/*底部footer显示/隐藏*/
+$(window).on("scroll", function(){ 
+  var sTop = $(window).scrollTop();  
+  var sTop = parseInt(sTop);  
+  if(sTop >= 10){ 
+    if(!$('.footer', parent.document).is(":visible")){ 
+      $('.wrapper', parent.document).css({"height":"64%"});
+      $('.footer', parent.document).show();
+    }  
+  }else{  
+    if($('.footer', parent.document).is(":visible")){  
+      $('.footer', parent.document).hide();
+      $('.wrapper', parent.document).css({"height":"84%"});
+    }  
+  }
+}); 
+//点击footer_hide，footer隐藏
+$('.footer_hide', parent.document).on("click",function(){
+  $('.wrapper').css({"height":"84%"});
+  $('.footer').hide();
+  $(window).scrollTop("0px");
+});
+
 //销毁obj对象的key-value
 function destroy(obj){
   for(var key in obj){//清空对象
@@ -275,7 +277,7 @@ $(document).on("click",".my_tag_con1_check, .gg_tag_con1_check",function(){
   }else{
     tag_sum=0;
   }
-  var txt=$(this).siblings("span").html();
+  var txt=$(this).siblings("span").text();
   var tagId=$(this).parent("li").attr("tagid");
   var tagType=$(this).parent("li").attr("tagType");
   var obj=$(this);
@@ -320,8 +322,8 @@ $(document).on("click",".upl_bq_cancelimg1",function(){
 function isExiste(objValue){
   if($(document).find(".upl_bq .upl_bq_img").length>0){//如果页面上.upl_bq里面已经存在标签
     $(document).find(".upl_bq .upl_bq_img").each(function(){
-      if($(this).children("span").html()==objValue){
-        isExisted = true;
+      if($(this).children("span").text()==objValue){
+        isExisted=true;
         return false;
       }else{
         isExisted=false;
@@ -347,19 +349,51 @@ $(function(){
               $(".mask_zj .tag_txt").val("");
               return;
             }
-            var new_tag= '<li class="upl_bq_img bqImg" tagType="自定义标签">'+
-                              '<span>'+txt+'</span>'+
-                              '<img class="upl_bq_cancelimg1 cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
-                            '</li>';
+            var new_tag='<li class="upl_bq_img bqImg" tagType="自定义标签">'+
+                          '<span>'+txt+'</span>'+
+                          '<img class="upl_bq_cancelimg1 cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
+                        '</li>';
             $(".mask_zj .upl_bq").append(new_tag);
             tag_sum++;
           }else{
-            alert("你添加的标签已存在!");
+            alert("你添加的标签已经存在!");
           }
         }else{
-          alert("输入内容超出范围");
+          alert("最多可以输入6个汉字");
         }
         $(".mask_zj .tag_txt").val("");
+      }
+    }
+  });
+  
+  /*创建/编辑节目弹出页面添加自定义标签*/
+  $(".mask_jm .jm_addTag").keydown(function(e){
+    var evt=event?event:(window.event?window.event:null);//兼容IE和FF
+    if(evt.keyCode==13){
+      var txt=$.trim($(".mask_jm .jm_addTag").val());
+      if(txt!=""){
+        var count = txt.replace(/[^\x00-\xff]/g,"**").length;
+        if(count<=12){
+          isExiste(txt);//调用函数判断即将添加的标签是否应经存在
+          if(!isExisted){
+            if(tag_sum>=5){
+              alert("最多能添加5个标签");
+              $(".mask_jm .jm_addTag").val("");
+              return;
+            }
+            var new_tag='<li class="upl_bq_img bqImg" tagType="自定义标签">'+
+                          '<span>'+txt+'</span>'+
+                          '<img class="upl_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" />'+
+                        '</li>';
+            $(".mask_jm .upl_bq").append(new_tag);
+            tag_sum++;
+          }else{
+            alert("你添加的标签已经存在!");
+          }
+        }else{
+          alert("最多可以输入6个汉字");
+        }
+        $(".mask_jm .jm_addTag").val("");
       }
     }
   });
@@ -393,12 +427,12 @@ $(function(){
         }
         if(is_exist==false){
           var new_czfs= '<li class="czfs_tag_li bqImg" czfs_typeId='+$(".change_czfs option:selected").attr("id")+'>'+
-                        '<div class="czfs_tag_div">'+
-                        '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
-                        '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
-                        '</div>'+
-                        '<img class="cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
-                      '</li>';
+                          '<div class="czfs_tag_div">'+
+                            '<span class="czfs_tag_span1">'+$(".change_czfs option:selected").text()+' : </span>'+
+                            '<span class="czfs_tag_span2">'+$(".czfs_author_ipt").val()+'</span>'+
+                          '</div>'+
+                          '<img class="cancelImg" src="./../anchorResource/img/upl_img2.png" alt="" />'+
+                        '</li>';
           $(".czfs_tag").append(new_czfs);
           $(".czfs_author_ipt").val("");
         }
@@ -426,27 +460,29 @@ $(function(){
   }) 
   
 })
-//上传节目页面获取公共标签
-function loadPubTag(data){
+//弹出页面获取公共/我的标签
+function loadTag(data){
   $.ajax({
     type:"POST",
     url:rootPath+"content/getTags.do",
     dataType:"json",
     cache:false,
     data:JSON.stringify(data),
-    success:function(resultData,XHR){
-      if(resultData.ReturnType == "1001"){
-        getPubLabel(resultData);//加载上传节目页面公共标签元素
-      }else{
-//        alert("获取公共标签失败，请刷新页面重新获取");
+    success:function(resultData){
+      if(resultData.ReturnType=="1001"){
+        if(data.TagType=="1"){//公共标签
+          getPubLabel(resultData);//加载弹出页面公共标签元素
+        }else{//我的标签
+          getMyLabel(resultData);//加载弹出节目页面我的标签元素
+        }
       }
     },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
+    error:function(jqXHR){
+      alert("获取标签发生错误:"+ jqXHR.status);
     }
   });
 }
-//加载上传节目页面公共标签元素
+//加载弹出节目页面公共标签元素
 function getPubLabel(resultData){
   $(".gg_tag_con").html("");
   for(var i=0;i<resultData.AllCount;i++){
@@ -458,26 +494,7 @@ function getPubLabel(resultData){
     $(".gg_tag_con").append(label); 
   }
 }
-//上传节目页面获取我的标签
-function loadMyTag(data){
-  $.ajax({
-    type:"POST",
-    url:rootPath+"content/getTags.do",
-    dataType:"json",
-    data:JSON.stringify(data),
-    success:function(resultData){
-      if(resultData.ReturnType == "1001"){
-        getMyLabel(resultData);//加载上传节目页面我的标签元素
-      }else{
-//        alert("获取我的标签失败，请刷新页面重新获取");
-      }
-    },
-    error:function(XHR){
-      alert("发生错误："+ jqXHR.status);
-    }
-  });
-}
-//加载上传节目页面我的标签元素
+//加载弹出节目页面我的标签元素
 function getMyLabel(resultData){
   $(".my_tag_con").html("");
   for(var i=0;i<resultData.AllCount;i++){
@@ -547,12 +564,12 @@ $(function(){
           getTime();
           $(".uploadStatus").show();
         }else{
-          alert(resultData.err);
+          alert("上传声音失败:"+resultData.err);
         }
         $(".btn_group input[type='button']").removeAttr("disabled").css("background","#ffa634");
       },
-      error: function(XHR){
-        alert("发生错误" + jqXHR.status);
+      error: function(jqXHR){
+        alert("上传声音发生错误:" + jqXHR.status);
       }
     });
     var jqObj=$(".add_jm .upl_file");
@@ -614,8 +631,8 @@ $.ajax({
 //      alert("得到专辑列表失败，请刷新页面重新加载");
     }
   },
-  error:function(XHR){
-    alert("发生错误："+ jqXHR.status);
+  error:function(jqXHR){
+    alert("获取专辑列表发生错误："+ jqXHR.status);
   }
 });
 //加载专辑列表
@@ -639,14 +656,14 @@ $.ajax({
   dataType:"json",
   data:JSON.stringify(data3),
   success:function(resultData){
-    if(resultData.ReturnType == "1001"){
+    if(resultData.ReturnType=="1001"){
       getArtMethodList(resultData); //得到创作方式列表
     }else{
-//      alert("得到创作方式失败，请刷新页面重新加载");
+//    alert("得到创作方式失败，请刷新页面重新加载");
     }
   },
-  error:function(XHR){
-    alert("发生错误："+ jqXHR.status);
+  error:function(jqXHR){
+    alert("获取创作方式发生错误:"+ jqXHR.status);
   }
 });
 //得到创作方式列表
@@ -735,7 +752,7 @@ function clear_zj(){
   $(".add_zj .zjId,.add_zj .uplTitle,.add_zj .uplDecn,.add_zj .layer-date").val("");
   $(".add_zj .upl_bq").html("");
   $(".add_zj .newImg").remove();
-  $(".add_zj .defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
+  $(".add_zj .defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
   $(".add_zj .img_uploadStatus").hide();
   $(".add_zj .my_tag_con1,.add_zj .gg_tag_con1").each(function(){
     $(this).children("input[type='checkbox']").prop("checked",false);
@@ -758,7 +775,7 @@ function clear_jm(){
   $(".add_jm .uplTitle,.add_jm .yp_mz,.add_jm .uplDecn,.add_jm .czfs_author_ipt,.add_jm .layer-date").val("");
   $(".add_jm .upl_bq,.add_jm .czfs_tag").html("");
   $(".add_jm .newImg").remove();
-  $(".add_jm .defaultImg").attr({"src":"http://wotingfm.com:908/CM/resources/images/default.png"}).show();
+  $(".add_jm .defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
   $(".add_jm .img_uploadStatus,.add_jm .uploadStatus").hide();
   $(".add_jm .my_tag_con1,.add_jm .gg_tag_con1").each(function(){
     $(this).children("input[type='checkbox']").prop("checked",false);
@@ -794,7 +811,7 @@ $(function(){
     reader.onload=function(){ 
       // 通过 reader.result 来访问生成的 DataURL
       var url=reader.result;
-      ics.init({"canvasId":"myCanvas","url":url,"x":20,"y":20});
+      ics.init({"canvasId":"myCanvas","url":url,"x":100,"y":100});
       demo_report();
     };       
     reader.readAsDataURL($(".picFile")[0].files[0]);
@@ -832,7 +849,7 @@ $(function(){
         contentType: false,
         dataType:"json",
         beforeSend: function(){
-          $(".action1 button").attr("disabled","disabled").css("background","#ccc");
+          $(".action1 #btnSave").attr("disabled","disabled").css("background","#ccc");
         },
         //表单提交前进行验证
         success: function(resultData){
@@ -851,12 +868,12 @@ $(function(){
               $(".previewImg").append(newImg);
             } 
           }else{
-            alert(resultData.err);
+            alert("图片裁剪上传失败:"+resultData.err);
           }
-          $(".action1 button").removeAttr("disabled").css("background","#ffa634");
+          $(".action1 #btnSave").removeAttr("disabled").css("background","#ffa634");
         },
         error: function(XHR){
-          alert("发生错误" + jqXHR.status);
+          alert("图片裁剪上传发生错误：" + jqXHR.status);
         }
       });
     }

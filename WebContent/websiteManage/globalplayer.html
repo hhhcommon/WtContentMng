@@ -11,7 +11,7 @@
   <link href="../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
   <link href="../resources/plugins/hplus/css/style.min.css" rel="stylesheet">
-  <link href="css/globalplayer.css" rel="stylesheet">
+  <link href="../websiteManage/websiteManageResource/css/globalplayer.css" rel="stylesheet">
   <script src="../resources/plugins/hplus/js/jquery-2.1.1.min.js"></script>
   <script src="../resources/js/common.utils.js"></script>
   <script src="../resources/js/context.utils.js"></script>
@@ -25,9 +25,9 @@
   <div class="glp_block">
     <div class="glp_panel">
       <div class="controls">
-        <img class="btn_prev prevBtn" src="img/prev.png" alt="前一首" />
-        <img class="btn_player playerBtn" src="img/play.png" alt="播放/暂停" />
-        <img class="btn_next nextBtn" src="img/next.png" alt="后一首" />
+        <img class="btn_prev prevBtn" src="websiteManageResource/img/prev.png" alt="前一首" />
+        <img class="btn_player playerBtn" src="websiteManageResource/img/play.png" alt="播放/暂停" />
+        <img class="btn_next nextBtn" src="websiteManageResource/img/next.png" alt="后一首" />
       </div>
       <div class="player_panel">
         <a href="#" class="title" title=""></a>
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="volume_panel">
-        <img src="img/volume.png" alt="音量图标" class="volume_img no_mute"/>
+        <img src="websiteManageResource/img/volume.png" alt="音量图标" class="volume_img no_mute"/>
         <div class="volume_progressbar">
           <div class="volume_playbar"></div>
           <div class="volume_circle"></div> 
@@ -70,7 +70,7 @@ $(function(){
     /*点击播放器面板上的播放按钮*/
     $(".playerBtn").on("click",function(){
       if($(this).hasClass("playing")){//正在播放
-        $(this).removeClass("playing").attr("src","img/play.png");
+        $(this).removeClass("playing").attr("src","websiteManageResource/img/play.png");
         $(".audio")[0].pause();
         $(".icon",parent.document).each(function(i){
           $(this).removeClass("playing").addClass("btn_player1").removeClass("btn_player2");
@@ -79,7 +79,7 @@ $(function(){
           }
         });  
       }else{//正在暂停
-        $(this).addClass("playing").attr("src","img/pause.png");
+        $(this).addClass("playing").attr("src","websiteManageResource/img/pause.png");
         $(".audio")[0].play();
         $(".icon",parent.document).each(function(i){
           $(this).removeClass("playing").addClass("btn_player1").removeClass("btn_player2");
@@ -159,7 +159,7 @@ $(function(){
       }
       if($(this).hasClass("playing")){//播放
         $(this).removeClass("playing").addClass("btn_player1").removeClass("btn_player2");
-        $(".playerBtn").removeClass("playing").attr("src","img/play.png");
+        $(".playerBtn").removeClass("playing").attr("src","websiteManageResource/img/play.png");
         $(".audio")[0].pause();
         $(".icon",parent.document).each(function(i){
           $(this).removeClass("playing").addClass("btn_player1").removeClass("btn_player2");
@@ -169,7 +169,7 @@ $(function(){
         });  
       }else{//暂停
         $(this).addClass("playing").removeClass("btn_player1").addClass("btn_player2");
-        $(".playerBtn").addClass("playing").attr("src","img/pause.png");
+        $(".playerBtn").addClass("playing").attr("src","websiteManageResource/img/pause.png");
         $(".audio")[0].play();
         $(".icon",parent.document).each(function(i){
           $(this).removeClass("playing").addClass("btn_player1").removeClass("btn_player2");
@@ -206,12 +206,12 @@ $(function(){
   var clickVolume="1";//音量大小
   $(".volume_img").on("click",function(event){
     if($(this).hasClass("no_mute")){
-      $(this).removeClass("no_mute").attr("src","img/mute.png");
+      $(this).removeClass("no_mute").attr("src","websiteManageResource/img/mute.png");
       $('.audio')[0].volume="0";
       $('.volume_circle')[0].style.left ='0px';
       $(".volume_playbar").css("width","0px");
     }else{
-      $(this).addClass("no_mute").attr("src","img/volume.png");
+      $(this).addClass("no_mute").attr("src","websiteManageResource/img/volume.png");
       $('.audio')[0].volume=clickVolume;
       var pleft=clickVolume*$(".volume_progressbar").width();
       $('.volume_circle')[0].style.left =pleft+'px';
@@ -229,13 +229,13 @@ $(function(){
     if(clickVolume<=0){
       pleft=0;
       clickVolume=0;
-      $(".volume_img").removeClass("no_mute").attr("src","img/mute.png")
+      $(".volume_img").removeClass("no_mute").attr("src","websiteManageResource/img/mute.png")
     }else if(clickVolume>=1){
       pleft=$(".volume_progressbar").width();
       clickVolume=1;
-      $(".volume_img").addClass("no_mute").attr("src","img/volume.png")
+      $(".volume_img").addClass("no_mute").attr("src","websiteManageResource/img/volume.png")
     }else{
-      $(".volume_img").addClass("no_mute").attr("src","img/volume.png")
+      $(".volume_img").addClass("no_mute").attr("src","websiteManageResource/img/volume.png")
     }
     $('.volume_circle')[0].style.left = parseInt(pleft) + 'px';
     $(".volume_playbar").css("width",pleft+"px");
@@ -311,7 +311,7 @@ $(function(){
   
   /*播放过程中切换节目进行复位*/
   function reset(listNum){
-    $(".playerBtn").removeClass("playing").attr("src","img/play.png");
+    $(".playerBtn").removeClass("playing").attr("src","websiteManageResource/img/play.png");
     $('.player_circle')[0].style.left ='0px';
     $(".player_playbar").css("width","0px");
     $(".playerBtn").click();

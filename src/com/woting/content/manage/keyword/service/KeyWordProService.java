@@ -32,7 +32,12 @@ public class KeyWordProService {
 
 	public List<Map<String, Object>> getKeyWordListBySeqMedia(String seqmediaid, String tagType, String userId, String tagsize) {
 		ChannelAssetPo cha = channelContentService.getChannelAssetByAssetIdAndPubId(seqmediaid, userId, "wt_SeqMediaAsset");
-		List<KeyWordPo> kwlist = keyWordBaseService.getRandKeyWordByOwner(tagType, userId, cha.getChannelId(), tagsize);
+		List<KeyWordPo> kwlist;
+		if (cha==null) {
+			kwlist = keyWordBaseService.getRandKeyWordByOwner(tagType, userId, null, tagsize);
+		} else {
+			kwlist = keyWordBaseService.getRandKeyWordByOwner(tagType, userId, cha.getChannelId(), tagsize);
+		}
 //		List<KeyWordPo> ownkws = keyWordBaseService.getKeyWordsByAssetId(userId, "palt_User");
 		List<Map<String, Object>> kwre = makeReturnList(tagType, kwlist, userId);
 		if (kwre!=null && kwre.size()>0) {

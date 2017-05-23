@@ -5,8 +5,8 @@
   <title>个人资料</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <meta name="keywords" content="我听,我享听">
+  <meta name="description" content="我听,我享听">
   <link href="../../resources/plugins/hplus/css/bootstrap.min.css" rel="stylesheet">
   <link href="../../resources/plugins/hplus/css/font-awesome.min.css" rel="stylesheet">
   <link href="../../resources/plugins/hplus/css/animate.min.css" rel="stylesheet">
@@ -33,7 +33,6 @@ input{padding:0px 4px;}
   min-width:780px;
   height:auto;
   overflow: auto;
-  margin-bottom:20px;
   background: #fff;
   border:1px solid #dedede;
 }
@@ -54,26 +53,26 @@ input{padding:0px 4px;}
 }
 @media (min-width: 768px){
   .col-sm-10 {
-    width: calc(100% - 120px ) !important;
+    width: calc(100% - 90px ) !important;
     padding-left: 0px;
     float: left;
+    padding-right: 0px;
   }
 }
 .left_content{
-  width:66%;
+  width:65%;
   height:auto;
   position: relative;
   float: left;
   padding: 0px 0px 0px 15px;
-  margin-right: 35px;
+  margin-right: 45px;
 }
 .left_content .row,
 .form-horizontal .form-group{
-  margin:0px 0px 15px !important;
-  overflow: hidden;
+  margin:0px 0px 30px !important;
 }
 .col-sm-12{
-  padding-left:0px;
+  padding:0px;
 }
 .form-horizontal .control-label{
   font-size: 16px;
@@ -83,34 +82,26 @@ input{padding:0px 4px;}
   width: auto !important;
   padding-left: 0px;
   padding-right: 0px;
-  float: left;
-  line-height:20px;
 }
 .control-label .ast {
   color: #ffa634;
 }
 .nickname,.realname,.phone,.mail{
-  width:calc(100% - 10px);
+  width:calc(100% - 0px);
   height: 35px;
   color: #000;
   border: 1px solid #dedede;
 }
 .signature,.info,.introduction{
-  width:calc(100% - 8px);
+  width:calc(100% - 0px);
   min-height:50px;
-  display: block;
   border: 1px solid #dedede;
   resize:none;
+  margin-bottom: -4px;
 }
 .birthday_container{
   width:100%;
   min-height:35px;
-  overflow: hidden;
-}
-.btn-group{
-  float: left;
-  height: 35px;
-  margin-right: 10px;
 }
 .year,.month,.day{
   width: 90px;
@@ -124,30 +115,30 @@ input{padding:0px 4px;}
   padding-right: 14px;
 }
 .sex{
-  width:100%;
-  height:35px;
+  width: 103px;
+  height: 35px;
   overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #ccc;
 }
-.male_div,.female_div,.secret_div{
-  float: left;
+.border{
+  width:1px;
   height:35px;
-  margin-right:55px;
-}
-input[type=checkbox]{
-  margin:10px 5px 0px 0px;
-}
-.male,.female,.secret{
-  width:20px;
-  height:20px;
+  background: #ccc;
   float: left;
-  display: inline-block;
 }
-.male_span,.female_span,.secret_span{
-  color: #333;
-  line-height: 40px;
-  float: left; 
-  font-size:14px;
-  display: inline-block;
+.male_div,.female_div{
+  float: left;
+  width:50px;
+  height:35px;
+  line-height: 35px;
+  text-align: center;
+  font-size: 14px;
+  background: #dedede;
+}
+.selectSex{
+  background: #fff;
+  color: #000;
 }
 .phone,.mail{
   height:35px;
@@ -165,15 +156,20 @@ input[type=checkbox]{
   margin-top:25px;
 }
 .right_content{
-  width:25%;
+  width:30%;
   height:auto;
   float: left;
-  padding:0px 0px 0px 20px;
+}
+.myportrait{
+  width: 180px;
+  height: 180px;
+  margin-top: 20px;
+  overflow: hidden;
 }
 .portrait{
   width:180px;
   height:180px;
-  margin-top:20px;
+  border:1px solid #dedede;
 }
 .portrait img{
   width:100%;
@@ -182,11 +178,11 @@ input[type=checkbox]{
 }
 .txt_p1{
   margin-top:10px;
-  padding-left: 40px; 
+  padding-left: 45px; 
 }
 .txt_p2{
   margin-top:10px;
-  padding-left:10px; 
+  padding-left:20px; 
 }
 .replace_portrait{
   width: 100px;
@@ -198,7 +194,7 @@ input[type=checkbox]{
   text-align: center;
   line-height: 30px;
   cursor: pointer;
-  margin-left:33px;
+  margin-left:40px;
 }
 .dropdown-menu{
   min-width: 90px;
@@ -231,7 +227,7 @@ input[type=checkbox]{
   width: 180px;
   height: 180px;
   position: relative;
-  top:-180px;
+  top: -180px;
   background: rgba(0,0,0,0.6);
   display: none;
 }
@@ -248,7 +244,7 @@ input[type=checkbox]{
   <div class="detail_title">账号设置> 个人资料</div>
     <div class="detail_content">
       <div class="left_content container">
-      	<div class="row">
+        <div class="row">
           <div class="col-sm-12">
             <form action="" class="form-horizontal">
               <div class="form-group">
@@ -261,18 +257,9 @@ input[type=checkbox]{
                 <label class="col-sm-2 control-label">性&emsp;&emsp;别<span style="color:#fff;">*</span>：</label>
                 <div class="col-sm-10">
                   <div class="sex">  
-                    <div class="male_div">
-                      <input type="checkbox" class="male" name="sexx"/>
-                      <span class="male_span">男</span>
-                    </div>
-                    <div class="female_div">
-                      <input type="checkbox" class="female" name="sexx"/>
-                      <span class="female_span">女</span>
-                    </div>
-                    <div class="secret_div">
-                      <input type="checkbox" class="secret" name="sexx"/>
-                      <span class="secret_span">保密</span>
-                    </div>
+                    <div class="male_div selectSex" sexId='xb001'>男</div>
+                    <span class="border"></span>
+                    <div class="female_div" sexId='xb002'>女</div>
                   </div>  
                 </div>
               </div>
@@ -289,13 +276,13 @@ input[type=checkbox]{
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:8px;">个人签名<span style="color:#fff;">*</span>：</label>
+                <label class="col-sm-2 control-label" style="margin-top:10px;">个人签名<span style="color:#fff;">*</span>：</label>
                 <div class="col-sm-10">
                   <textarea class="signature"></textarea>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" style="margin-top:8px;">个人简介<span style="color:#fff;">*</span>：</label>
+                <label class="col-sm-2 control-label" style="margin-top:10px;">个人简介<span style="color:#fff;">*</span>：</label>
                 <div class="col-sm-10">
                   <textarea class="introduction"></textarea>
                 </div>
@@ -328,11 +315,13 @@ input[type=checkbox]{
       </div>
       <div class="right_content">
         <h3>我的头像：</h3>
-        <div class="portrait">
-          <img src="../anchorResource/img/a5.jpg" alt="" class="defaultImg"/>
-        </div>
-        <div class="mask_gif">
-          <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" />
+        <div class="myportrait">
+          <div class="portrait">
+            <img src="../anchorResource/img/a5.jpg" alt="" class="defaultImg"/>
+          </div>
+          <div class="mask_gif">
+            <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" />
+          </div>
         </div>
         <input type="file" class="upl_img" style="display: none;" value="img/a5.jpg"/>
         <p class="txt_p1">文加大小≤1兆</p>
@@ -447,24 +436,20 @@ $(function(){
         if(returnData.ReturnType=="1001"){
           fillPersonData(returnData);//填充个人数据
         }else{
-          alert(returnData.Message);
+          alert("获取主播的详细信息失败:"+returnData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("获取主播的详细信息发生错误:" + jqXHR.status);
       }
     });
   }
   //填充个人数据
   function fillPersonData(returnData){
     $(".nickname").val(returnData.UserInfo.NickName?returnData.UserInfo.NickName:"暂无"); 
-    if(!returnData.UserInfo.Sex){//性别保密
-      $("input[name='sexx']").removeAttr("checked");
-      $(".secret").prop("checked",true);
-    }else{
-      $("input[name='sexx']").removeAttr("checked");
-      if(returnData.UserInfo.Sex=="女") $(".female").prop("checked",false);
-      else $(".male").prop("checked",false);
+    if(returnData.UserInfo.Sex){
+      if(returnData.UserInfo.Sex=="女") $(".female_div").addClass("selectSex").siblings(".male_div").removeClass("selectSex");
+      else $(".male_div").addClass("selectSex").siblings(".female_div").removeClass("selectSex");;
     }
     $(".phone").val(returnData.UserInfo.PhoneNum?returnData.UserInfo.PhoneNum:"保密");
     $(".mail").val(returnData.UserInfo.Mail?returnData.UserInfo.Mail:"保密");
@@ -515,7 +500,12 @@ $(function(){
       }
     });
   }     
-
+  
+  //切换主播的性别
+  $(".sex div").on("click",function(){
+    $(this).addClass("selectSex").siblings("div").removeClass("selectSex");
+  })
+  
   /*s--点击替换头像*/
   $(".replace_portrait").on("click",function(){
     $(".upl_img").click();
@@ -523,9 +513,10 @@ $(function(){
   $(".upl_img").change(function(){
     var oMyForm = new FormData();
     oMyForm.append("ContentFile", $(this)[0].files[0]);
+    oMyForm.append("DeviceId","3279A27149B24719991812E6ADBA5584");
     oMyForm.append("MobileClass","Chrome");
-    oMyForm.append("PCDType",pcdType);
-    oMyForm.append("UserId",userId);
+    oMyForm.append("PCDType","3");
+    oMyForm.append("UserId","123");
     oMyForm.append("Purpose","1");
     oMyForm.append("SrcType","1");
     var filePath=$(this).val();
@@ -561,11 +552,11 @@ $(function(){
             $(".mask_gif").hide();
           },200);
         }else{
-          alert(resultData.err);
+          alert("替换头像失败:"+resultData.err);
         }
       },
       error: function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("替换头像发生错误:" + jqXHR.status);
       }
     });
   };
@@ -576,8 +567,8 @@ $(function(){
     var data2={};
     data2.PCDType=pcdType;
     data2.NickName=$.trim($(".nickname").val());
-    $("input[name='sexx']").each(function(){//性别id--待定
-      if($(this).prop("checked")){
+    $(".sex div").each(function(){//性别id
+      if($(this).hasClass("selectSex")){
         data2.SexDictId=$(this).attr("sexId");
         return;
       }
@@ -613,16 +604,19 @@ $(function(){
       url:rootPath+"passport/user/updateUserInfo.do",
       dataType:"json",
       data:JSON.stringify(data2),
+      beforeSend:function(){
+        $(".saveSet").attr("disabled","disabled").css("background","#ccc");
+      },
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
-          alert("个人资料修改成功");
           getUserInfo(data1);//得到个人资料数据
         }else{
-          alert(returnData.Message);
+          alert("修改个人信息失败:"+returnData.Message);
         }
+        $(".saveSet").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(jqXHR){
-        alert("发生错误" + jqXHR.status);
+        alert("修改个人信息发生错误:" + jqXHR.status);
       }
     });
   });

@@ -10,6 +10,7 @@ body{overflow: auto;-moz-user-select: none;}
   width:1084px;
   min-width:780px;
   height:auto;
+  background: #fff;
   border:1px solid #dedede;
 }
 .content .containers .row{
@@ -83,9 +84,7 @@ body{overflow: auto;-moz-user-select: none;}
   position: relative;
   margin-top: 15px;
 }
-.border2{
-  border: 1px solid transparent; 
-}
+.border2{border: 1px solid transparent; }
 .attr{
   position: relative;
   width:100%;
@@ -110,12 +109,12 @@ body{overflow: auto;-moz-user-select: none;}
 }
 .attrValues .av-gather{
   overflow: hidden;
-  margin-bottom:0px;
+  margin: 0px 0px 0px 10px;
 }
 .trig_item{
   display: block;
   float: left;
-  margin-left:16px;
+  margin-right:16px;
   height:40px;
   line-height: 40px;
   white-space: nowrap;
@@ -146,18 +145,14 @@ body{overflow: auto;-moz-user-select: none;}
   line-height:40px;
   margin-left:20px;
 }
-.con_right ul{
-  margin-bottom:0px;
-}
 /*列表展示区域*/
 .ri_top3{
   width:100%;
   height:auto;
   margin-top:20px;
 }
-.fl{
-  float: left;
-}
+.fl{float: left;}
+.dis{display: none;}
 .rt_opt{
   height:50px;
   background:rgb(252,244,234);
@@ -261,6 +256,9 @@ body{overflow: auto;-moz-user-select: none;}
 }
 .rtcl_con_num{
   margin-bottom: 10px;
+}
+.jmnum{
+  margin: 0px;
 }
 .zj_st{
   float: right;
@@ -946,8 +944,9 @@ body{overflow: auto;-moz-user-select: none;}
   line-height: 27px; 
 }
 .czfs_div{
-  overflow: hidden;
+  overflow:hidden;
   height:35px;
+  margin:10px 0px 0px 0px;
 }
 .change_czfs{
   width:150px;
