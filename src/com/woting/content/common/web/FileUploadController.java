@@ -24,14 +24,12 @@ public class FileUploadController extends UploadController {
 	private SessionService sessionService;
 
 	@Override
-	public Map<String, Object> afterUploadOneFileOnSuccess(Map<String, Object> m, Map<String, Object> rqtAttrs,
-			Map<String, Object> rqtParams, HttpSession session) {
+	public Map<String, Object> afterUploadOneFileOnSuccess(Map<String, Object> m, Map<String, Object> rqtAttrs, Map<String, Object> rqtParams, HttpSession session) {
 		Map<String, Object> map = new HashMap<>();
 		String srcType = rqtParams.get("SrcType") + "";
 		String purpose = rqtParams.get("Purpose") + "";
 		if (srcType.equals("1")) { // 图片处理
 			String filepath = m.get("FilePath") + ""; // 原始文件路径
-			//FileNameUtils.getFilePath(filepath);
 			String ext = FileNameUtils.getExt(filepath);
 			String newname = FileNameUtils.getPureFileName(filepath);
 			String newfilepath = "";
@@ -47,9 +45,6 @@ public class FileUploadController extends UploadController {
 					OssUtils.makePictureResize(imgpath, img150path, 150);
 					OssUtils.makePictureResize(imgpath, img300path, 300);
 					OssUtils.makePictureResize(imgpath, img450path, 450);
-//					Thumbnails.of(new File(filepath)).size(150, 150).toFile(img150path);
-//					Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
-//					Thumbnails.of(new File(filepath)).size(450, 450).toFile(img450path);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,8 +59,6 @@ public class FileUploadController extends UploadController {
 						OssUtils.upLoadObject(imgpath, new File(filepath), true);
 						OssUtils.makePictureResize(imgpath, img180path, 180);
 						OssUtils.makePictureResize(imgpath, img300path, 300);
-//						Thumbnails.of(new File(filepath)).size(180, 180).toFile(img180path);
-//						Thumbnails.of(new File(filepath)).size(300, 300).toFile(img300path);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -78,7 +71,6 @@ public class FileUploadController extends UploadController {
 							String img1080_450path = path+"/"+newname + ".1080_450" + ext;
 							OssUtils.upLoadObject(imgpath, new File(filepath), true);
 							OssUtils.makePictureResize(imgpath, img1080_450path, 1080, 450);
-//							Thumbnails.of(new File(filepath)).size(1080, 450).toFile(img1080_450path);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -91,9 +83,23 @@ public class FileUploadController extends UploadController {
 								String img100_100path = path+"/"+newname + ".100_100" + ext;
 								OssUtils.upLoadObject(imgpath, new File(filepath), true);
 								OssUtils.makePictureResize(imgpath, img100_100path, 100);
-//								Thumbnails.of(new File(filepath)).size(100, 100).toFile(img100_100path);
 							} catch (Exception e) {
 								e.printStackTrace();
+							}
+						} else {
+							if (purpose.equals("5")) { // 认证图片
+								try {
+									String path = "permissionimg";
+									newfilepath = path+"/"+newname + ext;
+									String imgpath = path+"/"+newname + ext;
+									String img320_180path = path+"/"+newname + ".320_180" + ext;
+									String img128_72path = path+"/"+newname + ".128_72" + ext;
+									OssUtils.upLoadObject(imgpath, new File(filepath), true);
+									OssUtils.makePictureResize(imgpath, img320_180path, 320, 180);
+									OssUtils.makePictureResize(imgpath, img128_72path, 128, 72);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
 						}
 					}
@@ -188,6 +194,11 @@ public class FileUploadController extends UploadController {
 						if (purpose.equals("4")) { // 栏目图处理
 							m.put("FileName", newname);
 							m.put("Path", "/contentimg");
+						} else {
+							if (purpose.equals("5")) {
+								m.put("FileName", newname);
+								m.put("Path", "/permissionimg");
+							}
 						}
 					}
 				}

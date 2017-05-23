@@ -35,7 +35,7 @@
 			var xhr = new XMLHttpRequest();
 			var fd = new FormData();
 			fd.append("ContentFile", file); //监听事件
-			fd.append("Purpose", "1");
+			fd.append("Purpose", "5");
 			fd.append("SrcType", "1");
 			xhr.upload.addEventListener("progress", uploadProgress, false); //发送文件和表单自定义参数   
 			xhr.open("POST", "/CM/common/uploadCM.do", true);
