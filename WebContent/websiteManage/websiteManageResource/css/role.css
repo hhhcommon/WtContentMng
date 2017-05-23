@@ -279,15 +279,19 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   overflow: hidden;
 }
 .ccr4_listdiv33{
-  overflow: hidden;
+  width: 100%;
+  min-height: 40px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 .ccr4_listdiv34{
-  position: relative;
+  position: absolute;
   width: auto;
-  right: 10px;
+  right: 12%;
   text-align: center;
   color: #0077c7;
   font-size:14px;
+  cursor: pointer;
 }
 .ccr4_listdiv4{
   width:14.1%;
@@ -362,9 +366,16 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   overflow: auto;
 }
 #modal_tree li span.button.chk.checkbox_true_part,
+#modal_tree li span.button.chk.checkbox_true_part_focus {
+  background-position: -14px 0px;
+}
 #modal_tree li span.button.chk.checkbox_false_part{/*取消半勾选状态*/
-  /*background-position: 0px 0px;*/ 
+  background-position: 0px 0px; 
+}
+#role_tree li span.button.chk.checkbox_true_part,
+#role_tree li span.button.chk.checkbox_false_part{/*取消半勾选状态*/
+  background-position: 0px 0px; 
 }
 #role_tree{
-  
+  margin: 6px 0px 0px 0px
 }

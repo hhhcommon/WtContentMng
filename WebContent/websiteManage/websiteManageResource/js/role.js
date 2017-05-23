@@ -5,6 +5,7 @@ $(function(){
   var current_page='0';//0默认获取全部
   var checkDiabled=false;//在新建角色或者编辑角色的时候不允许选中勾选框
   var saveType=1;//saveType=1默认新建角色的保存,saveType=2默认编辑角色的保存
+  var otheropt=2;//otheropt=1默认此时正在新建或编辑,不允许进行其他操作,otheropt=2默认新建或编辑完成或取消
 
   /*得到角色列表*/
   var data0={"UserId":userId,
@@ -62,6 +63,7 @@ $(function(){
   
   /*点击新建,新建角色*/
   $(".ccl23_div").on("click",function(){
+    otheropt=1;//otheropt=1默认此时正在新建或编辑,不允许进行其他操作
     saveType=1//默认新建角色的保存
     checkDiabled=true;
     if($(this).hasClass("disabledstatus")){//当前处于不可新建的状态
@@ -75,6 +77,8 @@ $(function(){
       $(document).find(".ccl4_list").each(function(){
         $(this).removeClass("f5");
       });
+      if(typeof($(".ccr3_div3").attr("roleid"))!="undefined") $(".ccr3_div3").removeAttr("roleid");
+      if(typeof($(".ccr3_div3").attr("channelids"))!="undefined") $(".ccr3_div3").removeAttr("channelids");  
       var rolelist= '<li class="ccl4_list f5">'+
                       '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="ccl4_img fl checkbox1"/>'+
                       '<div class="ccl41 fl ellipsis dis"></div>'+
@@ -87,11 +91,16 @@ $(function(){
                     '</li>';
       $(".ccl4").append(rolelist);
       $(".ccr4_listdiv3").children(".ccr4_listdiv31").removeClass("dis");
+      $(".ccr4_listdiv3").children(".ccr4_listdiv32").addClass("dis");
+      var minheight=$(".ccr4_listdiv33").css("min-height");
+      $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":minheight});
+      $(".ccr4_listdiv3").css("height",minheight);
     }
   });
   
   /*点击编辑按钮,修改角色名称*/
   $(document).on("click",".ccl43",function(event){
+    otheropt=1;
     saveType=2//默认编辑角色的保存
     checkDiabled=true;
     $(document).find(".ccl4_list").each(function(){
@@ -109,7 +118,6 @@ $(function(){
     $(".ccl23_div").addClass("disabledstatus").removeClass("ccl23_div1").attr("disabled","disabled");
     event.stopPropagation();//阻止父元素的点击事件
     var roleId=$(this).siblings(".ccl41").attr("id");
-    alert(roleId);
     var data4={};
     data4.UserId=userId;
     data4.PCDType="3";
@@ -119,6 +127,7 @@ $(function(){
   
   /*点击保存按钮,保存角色*/
   $(document).on("click",".ccl45",function(event){
+    event.stopPropagation();//阻止父元素的点击事件
     var txt=$.trim($(this).parent(".ccl44").siblings(".ccl42").val());
     var _this=$(this);
     if(!txt||txt==''){
@@ -139,8 +148,7 @@ $(function(){
                  "RoleName":txt
       };
       modRole(data3,_this);
-    }
-    event.stopPropagation();//阻止父元素的点击事件
+  }
   });
   
   /*新增角色的方法*/
@@ -156,7 +164,8 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("新增角色成功");
+          alert("新增角色成功"); 
+          otheropt=2;//otheropt=2默认新建或编辑完成或取消
           checkDiabled=false;
           $(".ccl22_div").removeClass("ccl22_div1").attr("disabled","disabled");
           $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
@@ -188,6 +197,7 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
           alert("修改角色成功");
+          otheropt=2;//otheropt=2默认新建或编辑完成或取消
           checkDiabled=false;
           $(".ccl22_div").removeClass("ccl22_div1").attr("disabled","disabled");
           $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
@@ -207,6 +217,8 @@ $(function(){
   
   /*点击取消按钮,取消目前正在进行的事情*/
   $(document).on("click",".ccl46",function(event){
+    event.stopPropagation();//阻止父元素的点击事件
+    otheropt=2;//otheropt=2默认新建或编辑完成或取消
     checkDiabled=false;
     var txt=$.trim($(this).parent(".ccl44").siblings(".ccl42").val());
     if(typeof($(this).parent(".ccl44").siblings(".ccl41").attr("id"))=="undefined"){//取消正在新建的角色
@@ -225,7 +237,6 @@ $(function(){
     $(".ccl4 .ccl4_list .ccl43").removeAttr("disabled").css({"color":"#0077C7"});
     $(".ccl22_div").removeClass("ccl22_div1").attr("disabled","disabled");
     $(".ccl23_div").removeClass("disabledstatus").addClass("ccl23_div1").removeAttr("disabled");
-    event.stopPropagation();//阻止父元素的点击事件
     var roleId=$(".ccl4_list").eq(0).children(".ccl41").attr("id");
     var data4={};
     data4.UserId=userId;
@@ -355,9 +366,88 @@ $(function(){
     event.stopPropagation();//阻止父元素的点击事件
   });
   
+  /*点击展开/收起全部栏目*/
+  $(".ccr4_listdiv34").on("click",function(){
+    if(otheropt==1){
+      alert("完成上一步的操作后,才能进行当前操作");
+      return false;
+    }else{
+      if($(this).text()=="展开全部栏目"){
+        $(this).text("收起全部栏目");
+        var maxheight=$(".ccr4_listdiv33").css("max-height");
+        $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":maxheight});
+        $(".ccr4_listdiv3").css("height",maxheight);
+        var rootNode=roleObj.getNodeByParam("id","top01", null);
+        roleObj.expandNode(rootNode,true,false,false);
+      }else{
+        $(this).text("展开全部栏目");
+        var minheight=$(".ccr4_listdiv33").css("min-height");
+        $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":minheight});
+        $(".ccr4_listdiv3").css("height",minheight);
+        var rootNode=roleObj.getNodeByParam("id","top01", null);
+        roleObj.expandNode(rootNode,false,false,false);
+      }
+    }
+  });
+
+  /*点击根节点展开节点*/
+  function onExpand(event,treeId,treeNode){
+    if(otheropt==1){
+      alert("完成上一步的操作后,才能进行当前操作");
+      return false;
+    }else{
+      if(treeNode.id=="top01"){//点击的是根节点
+        if($(".ccr4_listdiv34").text()=="展开全部栏目"){
+          $(".ccr4_listdiv34").text("收起全部栏目");
+          var maxheight=$(".ccr4_listdiv33").css("max-height");
+          $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":maxheight});
+          $(".ccr4_listdiv3").css("height",maxheight);
+          var rootNode=roleObj.getNodeByParam("id","top01", null);
+          roleObj.expandNode(rootNode,true,false,false);
+        }else{
+          $(".ccr4_listdiv34").text("展开全部栏目");
+          var minheight=$(".ccr4_listdiv33").css("min-height");
+          $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":minheight});
+          $(".ccr4_listdiv3").css("height",minheight);
+          var rootNode=roleObj.getNodeByParam("id","top01", null);
+          roleObj.expandNode(rootNode,false,false,false);
+        }
+      }else{
+        return false;
+      }
+    }
+  }
+  /*点击根节点折叠节点*/
+  function onCollapse(event,treeId,treeNode){
+    if(otheropt==1){
+      alert("完成上一步的操作后,才能进行当前操作");
+      return false;
+    }else{
+      if(treeNode.id=="top01"){//点击的是根节点
+        if($(".ccr4_listdiv34").text()=="展开全部栏目"){
+          $(".ccr4_listdiv34").text("收起全部栏目");
+          var maxheight=$(".ccr4_listdiv33").css("max-height");
+          $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":maxheight});
+          $(".ccr4_listdiv3").css("height",maxheight);
+          var rootNode=roleObj.getNodeByParam("id","top01", null);
+          roleObj.expandNode(rootNode,true,false,false);
+        }else{
+          $(".ccr4_listdiv34").text("展开全部栏目");
+          var minheight=$(".ccr4_listdiv33").css("min-height");
+          $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":minheight});
+          $(".ccr4_listdiv3").css("height",minheight);
+          var rootNode=roleObj.getNodeByParam("id","top01", null);
+          roleObj.expandNode(rootNode,false,false,false);
+        }
+      }else{
+        return false;
+      }
+    }
+  }
 
   /*获取默认选中角色的权限*/
   function getRoleFunlist(dataParam){
+    $(".ccr3_div3").removeAttr("roleid,channelids");
     $.ajax({
       type:"POST",
       url:rootPath+"CM/security/getRoleFunlist.do",
@@ -366,34 +456,130 @@ $(function(){
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert(dataParam.RoleId);
-          loadRoleFunlist(resultData);//加载角色权限列表
-          $(".ccr4_listdiv32").removeClass("dis");
+          if(resultData.RoleFun&&resultData.RoleFun!=null){
+            $(".ccr3_div3").attr("roleid",resultData.RoleFun.roleId);
+            if(resultData.RoleFun.objId&&resultData.RoleFun.objId!=null){
+              $(".ccr3_div3").attr("channelids",resultData.RoleFun.objId);
+              loadRoleFunlist(resultData);//加载角色权限列表
+              $(".ccr4_listdiv32").removeClass("dis");
+              $(".ccr4_listdiv31").addClass("dis");
+            }else{
+              $(".ccr3_div3").removeAttr("channelids");
+              $(".ccr4_listdiv31").removeClass("dis");
+              $(".ccr4_listdiv32").addClass("dis");
+            }
+          }
         }else{
           $(".ccr4_listdiv31").removeClass("dis");
+          $(".ccr4_listdiv32").addClass("dis");
         }
       },
       error:function(jqXHR){
         alert("得到角色权限列表发生错误"+jqXHR.status);
-        
       }
     });
   }
   function loadRoleFunlist(resultData){
-    
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
+    var loadRoleData=[{ChannelId:"",TreeViewType:"zTree"}];
+    var chids=resultData.RoleFun.objId.split(",");
+    $.ajax({
+      type:"POST",    
+      url:_url,
+      dataType:"json",
+      data:JSON.stringify(loadRoleData),
+      success:function(jsonData){
+        if(jsonData.ReturnType=="1001"){
+          roleObj=$.fn.zTree.init($("#role_tree"), settingRole);
+          roleObj.addNodes(null,jsonData.Data.children[0],false);
+          for(var i=0;i<chids.length;i++){
+            var node=roleObj.getNodeByParam("id",chids[i], null);
+            roleObj.checkNode(node,true,false,false);
+          }
+          var allNodes=roleObj.getNodes();
+          allNodes=roleObj.transformToArray(allNodes);
+          for(var i=0;i<allNodes.length;i++){
+            roleObj.setChkDisabled(allNodes[i],true);
+          }
+          var rootNode=roleObj.getNodeByParam("id","top01", null);
+          rootNode.name="全部栏目";
+          roleObj.updateNode(rootNode);
+          if($(".ccr4_listdiv34").text()=="展开全部栏目"){
+            var minheight=$(".ccr4_listdiv33").css("min-height");
+            $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":minheight});
+            $(".ccr4_listdiv3").css("height",minheight);
+            var rootNode=roleObj.getNodeByParam("id","top01", null);
+            roleObj.expandNode(rootNode,false,false,false);
+          }else{
+            var maxheight=$(".ccr4_listdiv33").css("max-height");
+            $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":maxheight});
+            $(".ccr4_listdiv3").css("height",maxheight);
+            var rootNode=roleObj.getNodeByParam("id","top01", null);
+            roleObj.expandNode(rootNode,true,false,false);
+          }
+        }
+      },
+      error:function(jqXHR){
+        alert("加载栏目树发生错误" + jqXHR.status);
+      }
+    });
   }
   
   /*点击选中其他角色,获取其权限*/
   $(document).on("click",".ccl4_list",function(){
-    $(this).addClass("f5").siblings(".ccl4_list").removeClass("f5");
-    var roleId=$(this).children(".ccl41").attr("id");
-    alert(roleId);
-    var data4={};
-    data4.UserId=userId;
-    data4.PCDType="3";
-    data4.RoleId=roleId;
-    getRoleFunlist(data4);
+    if(otheropt==1){//otheropt=1默认此时正在新建或编辑,不允许进行其他操作
+      if($(this).hasClass("f5")){
+        return false;
+      }else{
+        alert("完成上一步的操作后,才能进行当前操作");
+        return false;
+      }
+    }else{
+      if($(".ccr4_listdiv34").text()=="收起全部栏目"){
+        $(".ccr4_listdiv34").text("展开全部栏目");
+        var minheight=$(".ccr4_listdiv33").css("min-height");
+        $(".ccr4_listdiv1,.ccr4_listdiv4").css({"line-height":minheight});
+        $(".ccr4_listdiv3").css("height",minheight);
+        var rootNode=roleObj.getNodeByParam("id","top01", null);
+        roleObj.expandNode(rootNode,false,false,false);
+      }
+      $(this).addClass("f5").siblings(".ccl4_list").removeClass("f5");
+      var roleId=$(this).children(".ccl41").attr("id");
+      var data4={};
+      data4.UserId=userId;
+      data4.PCDType="3";
+      data4.RoleId=roleId;
+      getRoleFunlist(data4);
+    }
   });
+  
+  /*s--获取角色权限的栏目树*/
+  var roleObj;
+  //配置角色权限的栏目树的相关参数
+  var settingRole={
+    view:{
+      selectedMulti:false//是否允许同时选中多个节点
+    },
+    data:{
+      simpleData:{
+        enable: true
+      }
+    },
+    check:{
+      enable:true,
+      chkStyle:"checkbox",
+      chkboxType:{ "Y": "", "N": "" }
+    },
+    treeNode:{
+      chkDisabled:true,
+      checked:true
+    },
+    callback:{
+      onExpand:onExpand,
+      onCollapse:onCollapse
+    }
+  };
+  /*e--获取角色权限的栏目树*/
   
   /*s--点击设置权限,对角色设置权限*/
   var modalObj;
@@ -410,14 +596,14 @@ $(function(){
     check:{
       enable:true,
       chkStyle:"checkbox",
-      chkboxType:{ "Y": "s", "N": "s" }
+      chkboxType:{"Y":"","N":""}
     },
     treeNode:{
       chkDisabled:true,
       checked:true
     },
     callback:{
-      
+      onCheck:modalonCheck  
     }
   };
   
@@ -432,35 +618,51 @@ $(function(){
       data:JSON.stringify(loadModalData),
       success:function(jsonData){
         if(jsonData.ReturnType=="1001"){
+          modalObj=$.fn.zTree.init($("#modal_tree"), settingModal);
           modalObj.addNodes(null,jsonData.Data.children[0],false);
           var rootNode=modalObj.getNodeByParam("id","top01", null);
           rootNode.name="全部栏目";
           modalObj.updateNode(rootNode);
+          if(typeof($(".power").attr("channelids"))!="undefined"){
+            var channelids=$(".power").attr("channelids").split(",");
+            for(var i=0;i<channelids.length;i++){
+              var modalnode=modalObj.getNodeByParam("id",channelids[i], null);
+              modalObj.checkNode(modalnode,true,false,false);
+            }
+          } 
         }
       },
       error:function(jqXHR){
-        alert("加载模态框上面的树发生错误" + jqXHR.status);
+        alert("加载栏目树发生错误" + jqXHR.status);
       }
     });
   }
   
+  //选中模态框栏目树的checkbox
+  function modalonCheck(event,treeId,treeNode){
+    if(treeNode.level=='0'){//点击的是全部栏目的勾选框
+      if(treeNode.checked==true) modalObj.checkAllNodes(true);
+      else modalObj.checkAllNodes(false);
+    }else{//点击的是非全部栏目的勾选框
+      if(treeNode.checked==true) modalObj.checkNode(treeNode,true,false);
+      else modalObj.checkNode(treeNode,false,false);
+    }  
+  }
+  
   //点击配置权限
   $(document).on("click",".ccr4_listdiv4",function(){
-    $("#modal_tree").html("");//清空模态框树的内容
-    $(document).find(".ccl4_list").each(function(){
-      if($(this).children(".ccl41").attr("id")=="undefined"){//正在新建角色
-        alert("请新建完角色之后配置权限");
-        return false;
-      }else{
-        if($(this).hasClass("f5")){
-          var roleId=$(this).children(".ccl41").attr("id");
-          $(".power_mask").removeClass("dis").children(".power").attr("roleid",roleId);
-          modalObj=$.fn.zTree.init($("#modal_tree"), settingModal);
-          loadModalTree(roleId);
-          return false;
-        }
-      }
-    })
+    if(otheropt==1){
+      alert("完成上一步的操作后,才能进行当前操作");
+      return false;    
+    }else{
+      $("#modal_tree").html("");//清空模态框树的内容
+      var roleid=$(".ccr3_div3").attr("roleid");
+      var channelids=$(".ccr3_div3").attr("channelids");
+      if(typeof(roleid)!="undefined") $(".power_mask").removeClass("dis").children(".power").attr({"roleid":roleid});
+      if(typeof(channelids)!="undefined") $(".power_mask").children(".power").attr({"channelids":channelids});
+      else $(".power_mask").children(".power").removeAttr("channelids");
+      loadModalTree(roleid);
+    }
   });
   
   //点击保存配置
@@ -491,7 +693,8 @@ $(function(){
       success:function(returnData){
         if(returnData.ReturnType=="1001"){
           alert("设置角色的权限成功");
-          $(".power_mask").addClass("dis");
+          otheropt=2;
+          $(".power_mask,.ccr4_listdiv31").addClass("dis");
           var data4={};
           data4.UserId=userId;
           data4.PCDType="3";
@@ -512,6 +715,7 @@ $(function(){
   //点击取消或关闭
   $(".power_footer2,.power_title2").on("click",function(){
     $(".power_mask").addClass("dis");
+    otheropt=2;
   })
   /*e--点击设置权限,对角色设置权限*/
 

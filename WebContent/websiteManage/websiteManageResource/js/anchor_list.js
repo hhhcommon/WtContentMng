@@ -5,7 +5,7 @@ $(function(){
   var pageSize=10;//每页显示的记录数量
   var data1={};
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
-  var searchKey="";//搜索关键词
+  var searchWord="";//搜索关键词
   var anchorFy=1;//anchorFy=1未选中不同状态的主播前翻页,anchorFy=2选中不同状态的主播后翻页
   var userId="123";
   var sourceId=2;//sourceId=0是我听,sourceId=2是喜马拉雅
