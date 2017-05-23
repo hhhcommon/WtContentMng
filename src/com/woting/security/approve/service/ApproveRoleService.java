@@ -15,12 +15,15 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.security.approve.persis.pojo.PlatUserExtPo;
 import com.woting.security.approve.persis.pojo.PlatUserProgressPo;
+import com.woting.security.role.service.SecurityRoleService;
 
 public class ApproveRoleService {
     @Resource(name="defaultDAO")
     private MybatisDAO<PlatUserExtPo> platUserExtDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<PlatUserProgressPo> platUserProgressDao;
+    @Resource
+    private SecurityRoleService roleService;
 
     @PostConstruct
     public void initParam() {
@@ -125,7 +128,7 @@ public class ApproveRoleService {
     /**
      * 获取用户申请认证列表
      */
-    public Map<String, Object> getApproves(int page, int pageSize) {
+    public Map<String, Object> getApproves(int page, int pageSize, int flag) {
         List<Map<String, Object>> _ret=null;
         int count=0;
         if (page==0) {// 获取全部
@@ -150,9 +153,20 @@ public class ApproveRoleService {
             if (one.get("frontImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("frontImg")+"")) _one.put("FrontImg", one.get("frontImg"));
             if (one.get("reverseImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reverseImg")+"")) _one.put("ReverseImg", one.get("reverseImg"));
             if (one.get("mixImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("mixImg")+"")) _one.put("MixImg", one.get("mixImg"));
-            if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) _one.put("AnchorCardImg", one.get("anchorCardImg")+"");
+            String anchorCardImg=one.get("anchorCardImg").toString();
+            if (anchorCardImg!=null&&!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) _one.put("AnchorCardImg", anchorCardImg);
             if (one.get("imgUrl")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("imgUrl")+"")) _one.put("ContentLoopImg", one.get("imgUrl")+"");
-            ret.add(_one);
+            if (flag==1) {//实名认证列表
+                if (anchorCardImg==null || anchorCardImg.equals("") || anchorCardImg.toLowerCase().equals("null")) {
+                    ret.add(_one);
+                }
+            } else if (flag==2) {//资格认证列表
+                if (anchorCardImg!=null && !anchorCardImg.equals("") && !anchorCardImg.toLowerCase().equals("null")) {
+                    ret.add(_one);
+                }
+            } else {//获取全部认证列表
+                ret.add(_one);
+            }
         }
         Map<String, Object> retM=new HashMap<String, Object>();
         retM.put("ResultList", ret);
@@ -176,6 +190,13 @@ public class ApproveRoleService {
         param.put("applyDescn", applyDescn);
         try {
             platUserExtDao.update("updateUserApproveState", param);
+            for (String userId : userIdList) {
+                PlatUserProgressPo userProgress=getUserApproveProgress(userId);
+                if (userProgress!=null) {
+                    String roleId=userProgress.getApplyRoleId();
+                    roleService.setUserRole(userId, roleId);
+                }
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

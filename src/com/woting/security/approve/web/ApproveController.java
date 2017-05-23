@@ -253,8 +253,7 @@ public class ApproveController {
             } catch (InterruptedException e) {}
         }
     }
-    
-    @SuppressWarnings("unchecked")
+
     @RequestMapping(value = "/security/getApproveInfo.do")
     @ResponseBody
     public Map<String, Object> getApproveInfo(HttpServletRequest request) {
@@ -332,25 +331,14 @@ public class ApproveController {
                 map.put("Message", "用户不存在");
                 return map;
             }
-            //得到参数
-            int page=m.get("Page")==null?1:Integer.valueOf(m.get("Page").toString());
-            int pageSize=m.get("PageSize")==null?10:Integer.valueOf(m.get("PageSize").toString());
-            Map<String, Object> result=approveService.getApproves(page, pageSize);
-            if (result==null || result.size()<=0) {
+            PlatUserProgressPo p=approveService.getUserApproveProgress(userId);
+            if (p==null) {
                 map.put("ReturnType", "1011");
                 map.put("Message", "无内容");
             } else {
-                List<Map<String, Object>> resultList=(List<Map<String, Object>>) result.get("ResultList");
-                if (resultList==null || resultList.size()<=0) {
-                    map.put("ReturnType", "1011");
-                    map.put("Message", "无内容");
-                } else {
-                    int count=(int) result.get("AllCount");
-                    map.put("ReturnType", "1001");
-                    map.put("Message", "获取成功");
-                    map.put("ResultList", resultList);
-                    map.put("AllCount", count);
-                }
+                map.put("ReturnType", "1001");
+                map.put("Message", "获取用户认证信息成功");
+                map.put("approveInfo", p);
             }
             return map;
         } catch(Exception e) {
@@ -451,7 +439,8 @@ public class ApproveController {
             //得到参数
             int page=m.get("Page")==null?1:Integer.valueOf(m.get("Page").toString());
             int pageSize=m.get("PageSize")==null?10:Integer.valueOf(m.get("PageSize").toString());
-            Map<String, Object> result=approveService.getApproves(page, pageSize);
+            int flag=m.get("Flag")==null?0:Integer.valueOf(m.get("Flag").toString());
+            Map<String, Object> result=approveService.getApproves(page, pageSize, flag);
             if (result==null || result.size()<=0) {
                 map.put("ReturnType", "1011");
                 map.put("Message", "无内容");

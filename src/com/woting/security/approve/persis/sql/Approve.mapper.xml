@@ -101,11 +101,11 @@
     and modifyTime=(select max(modifyTime) from plat_UserProgress)
   </select>
 
-  <!-- 查询用户认证信息 -->
+  <!-- 查询用户认证信息  -->
   <select id="getApproveList" parameterType="java.util.Map" resultType="java.util.HashMap">
     select * from plat_User_Ext
   </select>
-
+  
   <!-- 修改用户认证状态 -->
   <update id="updateUserApproveState" parameterType="java.util.Map">
     update plat_UserProgress set reState=#{reState, jdbcType=INTEGER},
