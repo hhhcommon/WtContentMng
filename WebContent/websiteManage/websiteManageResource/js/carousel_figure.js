@@ -471,7 +471,7 @@ $(function(){
         data: loadData[index++],
         success: function(jsonData){
           if(jsonData.ReturnType=="1001"){
-            zTreeObj.addNodes(null,jsonData.Data.children[0].children,false);
+            zTreeObj.addNodes(null,jsonData.Data.children,false);
           }
           loadRecursion(index);
         },
@@ -693,6 +693,8 @@ $(function(){
     }
     $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
     $("body").css("overflow","hidden");
+    $(".newImg").remove();
+    $(".defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".carousel_mask").removeClass("dis");
   });
   
@@ -1109,7 +1111,7 @@ $(function(){
                       '<img src="../../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />'+
                     '</div>'+
                   '</div>'+
-                  '<div class="lbd_box5 fl ellipsis" loopSort='+resultData.ResultList[i].LoopSort+'><'+resultData.ResultList[i].ContentName+'></div>'+
+                  '<div class="lbd_box5 fl ellipsis" loopSort='+resultData.ResultList[i].LoopSort+'>'+resultData.ResultList[i].ContentName+'</div>'+
                   '<div class="lbd_box6 fl">'+
                     '<div class="lbd_box61">上移一层</div>'+
                     '<div class="lbd_box62">下移一层</div>'+

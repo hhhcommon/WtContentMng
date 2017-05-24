@@ -81,7 +81,7 @@ $(function(){
           loadAuthenticationList(resultData);//加载主播认证列表
         }else{
           allCount="0";
-          $(".rtc_listBoxLists").html("<div class='labels'>得到主播认证列表失败:"+resultData.Message+"</div>");
+          $(".rtc_listBoxLists").html("<div class='labels'>得到主播认证列表:"+resultData.Message+"</div>");
         }
         contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,dataParam.Page);//初始化翻页插件
@@ -117,7 +117,7 @@ $(function(){
                   '<img src="" alt="" class="big dis" />'+
                 '</div>'+
                 '<div class="rtc_listBox47 fl"></div>'+
-                '<div class="rtc_listBox43 fl">'+
+                '<div class="rtc_listBox43 fl" checkerId='+resultData.ResultList[i].UserId+'>'+
                   '<div class="rtc_listBox44">查验身份</div>'+
                   '<div class="rtc_listBox45">通过</div>'+
                   '<div class="rtc_listBox46">不通过</div>'+
@@ -129,34 +129,34 @@ $(function(){
       $(".rtc_listBox32").eq(i).text((resultData.ResultList[i].IDCard)?(resultData.ResultList[i].IDCard):("XXXXXXXXXXXXXXX"));
       if(resultData.ResultList[i].FrontImg){//身份证正面照片
         var img='<li class="rtc_listBox41 fl">'+
-                  '<img src='+resultData.ResultList[i].FrontImg+' alt="" class="rtc_listBox42"/>'+
+                  '<img src='+resultData.ResultList[i].FrontImg+' alt="身份证正面" class="rtc_listBox42"/>'+
                   '<div class="enlarge_div">'+
                     '<img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>'+
                   '</div>'+
                 '</li>';
         $(".rtc_listBox40").eq(i).append(img);
       }
-      if(resultData.ResultList[i].ReverseImg){//身份证正面照片
+      if(resultData.ResultList[i].ReverseImg){//身份证反面照片
         var img='<li class="rtc_listBox41 fl">'+
-                  '<img src='+resultData.ResultList[i].ReverseImg+' alt="" class="rtc_listBox42"/>'+
+                  '<img src='+resultData.ResultList[i].ReverseImg+' alt="身份证正面" class="rtc_listBox42"/>'+
                   '<div class="enlarge_div">'+
                     '<img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>'+
                   '</div>'+
                 '</li>';
         $(".rtc_listBox40").eq(i).append(img);
       }
-      if(resultData.ResultList[i].MixImg){//身份证正面照片
+      if(resultData.ResultList[i].MixImg){//手持身份证照片
         var img='<li class="rtc_listBox41 fl">'+
-                  '<img src='+resultData.ResultList[i].MixImg+' alt="" class="rtc_listBox42"/>'+
+                  '<img src='+resultData.ResultList[i].MixImg+' alt="手持身份证照片" class="rtc_listBox42"/>'+
                   '<div class="enlarge_div">'+
                     '<img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>'+
                   '</div>'+
                 '</li>';
         $(".rtc_listBox40").eq(i).append(img);
       }
-      if(resultData.ResultList[i].AnchorCardImg){//身份证正面照片
+      if(resultData.ResultList[i].AnchorCardImg){//资格证书照片
         var img='<li class="rtc_listBox41 fl">'+
-                  '<img src='+resultData.ResultList[i].AnchorCardImg+' alt="" class="rtc_listBox42"/>'+
+                  '<img src='+resultData.ResultList[i].AnchorCardImg+' alt="资格证书照片" class="rtc_listBox42"/>'+
                   '<div class="enlarge_div">'+
                     '<img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>'+
                   '</div>'+
@@ -284,22 +284,65 @@ $(function(){
     $(this).addClass("selected").siblings("li").removeClass("selected");
   });
   
-  
-  
-  
-  
-  
   /*点击通过*/
   $(document).on("click",".rtc_listBox45",function(){
+    var img_length=$(this).parent(".rtc_listBox43").siblings(".rtc_listBox4 fl").children("rtc_listBox40").children(".rtc_listBox41").length;
+    if(img_length==4){//出现通过的提示弹出框
+      
+    }else{
+      
+    }
+    
+    
+    
+    
+    
+    
+    
     var data2={};
     data2.UserId=userId;
-    data2.PageSize=pageSize;
-    data2.Page=current_page;
-    data2.SourceId=sourceId;
-    data2.UserId=userId;
-    data2.PageSize=pageSize;
-    data2.Page=current_page;
-    data2.SourceId=sourceId;
+    data2.PCDType="3";
+    data2.CheckerId=$(this).parent(".rtc_listBox43").attr("checkerId");
+    data2.ReState="1";//0待处理，1通过，2未通过
+    data2.ReFlag="1";//1实名认证，2资格认证
+    var _this=$(this);
+    $.ajax({
+      type:"POST",
+      url:rootPath+"CM/security/updateApproveStatus.do",
+      dataType:"json",
+      cache:false, 
+      data:JSON.stringify(data2),
+      beforeSend:function(){
+        $(_this).attr("disabled","disabled").css("color","#ccc");
+      },
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){
+          var data1={};
+          data1.UserId=userId;
+          data1.PCDType="3";
+          data1.Flag="0";//0默认全部,1实名认证,2资格认证
+          data1.Page=current_page;
+          data1.PageSize=pageSize;
+          $(".dropdown_menu li").each(function(){
+            if($(this).hasClass("selected")){
+              var flag=$(this).attr("flag");//0默认全部,1实名认证,2资格认证
+              data1.Flag=flag;
+              return;
+            }
+          });
+          getAuthenticationList(data1);
+        }else{
+          alert("认证通过失败");
+        }
+        $(_this).removeAttr("disabled").css("color","#0077C7");
+      },
+      error:function(jqXHR){
+        alert("认证通过发生错误:"+ jqXHR.status);
+        $(_this).removeAttr("disabled").css("color","#0077C7");
+      }
+    });
+    
+    
   });
   
   /*点击不通过*/

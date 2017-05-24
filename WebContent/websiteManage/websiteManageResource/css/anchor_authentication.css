@@ -3,6 +3,7 @@ li{list-style: none;}
 a,a:hover,a:link,a:focus,a:visited{text-decoration: none;color:#000;}
 body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !important;}
 .fl{float: left;}
+.fr{float: right;}
 .dis{display: none;}
 .ellipsis{
   overflow: hidden;
@@ -263,4 +264,216 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 #kkpager_btn_go{
   background-color: #0077c7 !important;
+}
+/*通过认证的弹出页面*/
+.mask_pass{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  background:rgba(0,0,0,0.6);
+}
+.mask_wrapper{
+  width:640px;
+  height:430px;
+  position: relative;
+  background: #fff;
+  margin:20px auto;
+}
+.mw_head{
+  width:100%;
+  height:40px;
+  background:#dedede;
+  color:#000;
+  font-weight:bolder;
+  overflow: hidden;
+}
+.mw_span1{
+  font-size:16px;
+  margin: 9px 20px;
+}
+.mw_span2{
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  text-align: center;
+  margin: 10px 20px;
+}
+.mw_div1{
+  margin: 30px 20px 5px;
+  height: 30px;
+  line-height: 30px;
+  overflow: hidden;
+}
+.mw_span3{
+  font-size: 18px;
+  color: #0077c7;
+  font-weight: bold;
+}
+.mw_span4{
+  font-size: 14px;
+  color: #000;
+}
+.mw_div2{
+  margin: 0px 20px;
+  height: 45px;
+  border-bottom: 1px solid #dedede;
+  overflow: hidden;
+}
+.mw_div21{
+  margin: 5px 0px;
+  overflow: hidden;
+  height: 30px;
+  line-height: 30px;
+  width: 50%;
+}
+.checkbox_img{
+  margin: 6px 0px;
+}
+.mw_span21{
+  margin: 0px 0px 0px 15px;
+  color: #000;
+}
+.mw_div3{
+  height: 220px;
+  margin: 0px 20px;
+}
+.mw_con1{
+  width:100%;
+  height:100%;
+}
+.mw_div4{
+  height: 50px;
+  line-height: 50px;
+  color: #000;
+  font-size: 16px;
+}
+.mw_reasons{
+  overflow: hidden;
+}
+.mw_reason{
+  width: 100%;
+  height: 30px;
+  color: #000;
+}
+.mw_txt1{
+  margin: 5px 8px;
+}
+.mw_txt2{
+  overflow: hidden;
+}
+.mw_txt3{
+  color: #000;
+}
+.other_reason{
+  height: 60px;
+  width: calc(100% - 65px);
+}
+.mw_txt4{
+  margin: 20px;
+  float: right;
+  width: 85px;
+  height: 30px;
+  background: #0077c7;
+  color: #fff;
+  text-align: center;
+  line-height: 30px;
+}
+/*不通过认证的弹出页面*/
+.mask_nopass{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  background:rgba(0,0,0,0.6);
+}
+.mask_nopass .mask_wrapper{
+  width:640px;
+  height:410px;
+  position: relative;
+  background: #fff;
+  margin:20px auto;
+}
+.mask_nopass .mw_div1{
+  margin: 20px 20px 5px;
+  height: 50px;
+  line-height: 30px;
+  overflow: hidden;
+  border-bottom: 1px solid #dedede;
+}
+.mw_span3{
+  font-size: 18px;
+  color: #0077c7;
+  font-weight: bold;
+}
+.mw_span4{
+  font-size: 14px;
+  color: #000;
+}
+.mw_div2{
+  margin: 0px 20px;
+  height: 45px;
+  border-bottom: 1px solid #dedede;
+  overflow: hidden;
+}
+.mw_div21{
+  margin: 5px 0px;
+  overflow: hidden;
+  height: 30px;
+  line-height: 30px;
+  width: 50%;
+}
+.checkbox_img{
+  margin: 6px 0px;
+}
+.mw_span21{
+  margin: 0px 0px 0px 15px;
+  color: #000;
+}
+.mw_div3{
+  height: 220px;
+  margin: 0px 20px;
+}
+.mw_con1{
+  width:100%;
+  height:100%;
+}
+.mw_div4{
+  height: 50px;
+  line-height: 50px;
+  color: #000;
+  font-size: 16px;
+}
+.mw_reasons{
+  overflow: hidden;
+}
+.mw_reason{
+  width: 100%;
+  height: 30px;
+  color: #000;
+}
+.mw_txt1{
+  margin: 5px 8px;
+}
+.mw_txt2{
+  overflow: hidden;
+}
+.mw_txt3{
+  color: #000;
+}
+.other_reason{
+  height: 60px;
+  width: calc(100% - 65px);
+}
+.mw_txt4{
+  margin: 20px;
+  float: right;
+  width: 85px;
+  height: 30px;
+  background: #0077c7;
+  color: #fff;
+  text-align: center;
+  line-height: 30px;
 }
