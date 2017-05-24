@@ -169,9 +169,10 @@ public class SecurityRoleService {
         param.put("funName", funName);
         param.put("funClass", funClass);
         param.put("funType", funType);
-        if (!StringUtils.isNullOrEmptyOrSpace(objId)) {
-            param.put("objId", objId);
+        if (StringUtils.isNullOrEmptyOrSpace(objId)) {
+            objId="";
         }
+        param.put("objId", objId);
         if (!StringUtils.isNullOrEmptyOrSpace(funFlag1)) {
             int _funFlag1=Integer.valueOf(funFlag1);
             param.put("funFlag1", _funFlag1);
