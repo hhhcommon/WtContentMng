@@ -553,14 +553,14 @@ public class ApproveController {
                 return map;
             }
             //得到参数
-            String checkerId=m.get("CheckerId").toString();
-            String _reState=m.get("ReState").toString();
+            String checkerId=m.get("CheckerId")==null?null:m.get("CheckerId").toString();
+            String _reState=m.get("ReState")==null?null:m.get("ReState").toString();
             if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(_reState)) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String applyDescn=m.get("ApplyDescn").toString();
+            String applyDescn=m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString();
             //中文字符转换成英文字符  同意格式
             if (checkerId.contains("，")) checkerId.replaceAll("，", ",");
             String[] userIdArr=checkerId.split(",");
