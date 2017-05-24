@@ -153,8 +153,13 @@ public class ApproveRoleService {
             if (one.get("frontImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("frontImg")+"")) _one.put("FrontImg", one.get("frontImg"));
             if (one.get("reverseImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reverseImg")+"")) _one.put("ReverseImg", one.get("reverseImg"));
             if (one.get("mixImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("mixImg")+"")) _one.put("MixImg", one.get("mixImg"));
-            String anchorCardImg=one.get("anchorCardImg").toString();
-            if (anchorCardImg!=null&&!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) _one.put("AnchorCardImg", anchorCardImg);
+            String anchorCardImg;
+            if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) {
+                anchorCardImg=one.get("anchorCardImg").toString();
+                if (anchorCardImg!=null&&!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) _one.put("AnchorCardImg", anchorCardImg);
+            } else {
+                anchorCardImg="";
+            }
             if (one.get("imgUrl")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("imgUrl")+"")) _one.put("ContentLoopImg", one.get("imgUrl")+"");
             if (flag==1) {//实名认证列表
                 if (anchorCardImg==null || anchorCardImg.equals("") || anchorCardImg.toLowerCase().equals("null")) {
