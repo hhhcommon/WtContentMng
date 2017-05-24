@@ -533,11 +533,11 @@ $(function(){
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
     $('#wt_table tbody').html(" ");//清空内容
-    if(treeNode.level=='0'){//禁止对根节点进行操作
-      alert("你不能对当前节点进行操作,请选择他的子节点");
-      wtObj.cancelSelectedNode();
-      return;
-    }else{
+//  if(treeNode.level!='0'){//禁止对根节点进行操作
+//    alert("你不能对当前节点进行操作,请选择他的子节点");
+//    wtObj.cancelSelectedNode();
+//    return;
+//  }else{
       var _url=rootPath+"common/getCCateRefs.do";
       var _data={"ApplyType":1,"Id":treeNode.id};
       $.ajax({
@@ -570,15 +570,15 @@ $(function(){
         }
       });
     }
-  }
+//}
   //选中其他平台的分类，查询其他平台与我听的映射关系
   function selectOtherTreeNode(event, treeId, treeNode){
-     $('#ot_table tbody').html(" ");//清空内容
-    if(treeNode.level=='0'){//禁止对根节点进行操作
-      alert("你不能对当前节点进行操作,请选择他的子节点");
-      otherObj.cancelSelectedNode();
-      return;
-    }else{
+    $('#ot_table tbody').html(" ");//清空内容
+//  if(treeNode.level=='0'){//禁止对根节点进行操作
+//    alert("你不能对当前节点进行操作,请选择他的子节点");
+//    otherObj.cancelSelectedNode();
+//    return;
+//  }else{
       var _url=rootPath+"common/getCCateRefs.do";
       var _data={"ApplyType":2,"Id":treeNode.id};
       $.ajax({
@@ -611,7 +611,7 @@ $(function(){
         }
       });
     }
-  }
+//}
   
   //点击添加对应关系
   $("#add").on("click",function(){
@@ -624,28 +624,28 @@ $(function(){
       return;
     }else{
       if(!other_node){//选中我听平台
-        if(wt_node.level<='0'){//选中的是根节点
-          alert("你不能对当前节点进行操作,请选择他的子节点");
-          return;
-        }else{
+//      if(wt_node.level<='0'){//选中的是根节点
+//        alert("你不能对当前节点进行操作,请选择他的子节点");
+//        return;
+//      }else{
           wt_path=wt_node.attributes.pathName+"";//选中节点的路径
           wt_path=wt_path.replace("栏目根/"," ");
           $(".modal_cp").attr("nodeid",wt_node.id).text('你已经选择了"'+wt_path+'"');
           applyType=1;
           //获取与我听对应的映射关系
           loadModalTree("我听平台",applyType);
-        }
+//      }
       }else{
-        if(other_node.level<='0'){//选中的是根节点
-          alert("你不能对当前节点进行操作,请选择他的子节点");
-          return;
-        }else{
+//      if(other_node.level<='0'){//选中的是根节点
+//        alert("你不能对当前节点进行操作,请选择他的子节点");
+//        return;
+//      }else{
           ot_path=other_node.attributes.pathName+"";//选中节点的路径
           ot_path=ot_path.replace("外源内容分类/"," ");
           $(".modal_cp").attr("nodeid",other_node.id).text('你已经选择了"'+ot_path+'"');
           applyType=2;
           loadModalTree("其他平台",applyType);
-        }
+//      }
       }
       $(".mask").removeClass("dis");
     }

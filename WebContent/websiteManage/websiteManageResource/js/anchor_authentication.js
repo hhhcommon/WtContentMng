@@ -11,33 +11,36 @@ $(function(){
   
   /*放大或缩小身份证照片*/
   $(document).on("click",".enlarge_div",function(){
-    var index=$(".enlarge_div").index(this);
-    var _this=$(".rtc_listBoxLists .rtc_listBoxList .rtc_listBox4 .rtc_listBox40 .rtc_listBox41");
+    var ii=$(this).parent(".rtc_listBox41").parent(".rtc_listBox40").parent(".rtc_listBox4").parent(".rtc_listBoxList").index();
+    var _this0=$("#rtc_listBoxList"+ii);
+    var _this=$("#rtc_listBoxList"+ii).children(".rtc_listBox4").children(".rtc_listBox40").children(".rtc_listBox41");
+    var index=$(_this).children(".enlarge_div").index(this);
     if($(this).hasClass("large")){//此时已处于放大状态
-      $(_this).each(function(i){
+      $(_this).children(".enlarge_div").each(function(i){
         if(index==i){
-          $(this).children(".enlarge_div").removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
-          $(this).removeClass("border_img").children(".enlarge_div").removeClass("enlarge_br");
-          $(this).children(".rtc_listBox42").removeClass("border_img1");
-          $(this).parent(".rtc_listBox40").parent(".rtc_listBox4").children(".big").addClass("dis").attr("src","");
+          $(this).removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
+          $(this).removeClass("enlarge_br").parent(".rtc_listBox41").removeClass("border_img");
+          $(this).siblings(".rtc_listBox42").removeClass("border_img1");
+          $(this).parent(".rtc_listBox41").parent(".rtc_listBox40").siblings(".big").addClass("dis").attr("src","");
           return false;
         }
       });
-    }else{//此时处于未放大状态
-      $(_this).children(".enlarge_div").removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
-      $(_this).removeClass("border_img").children(".enlarge_div").removeClass("enlarge_br");
-      $(_this).children(".rtc_listBox42").removeClass("border_img1");
-      $(_this).each(function(i){
+    }else{
+      var _this1=$(_this0).children(".rtc_listBox4").children(".rtc_listBox40");
+      $(_this1).children(".rtc_listBox41").children(".enlarge_div").removeClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/enlarge.png");
+      $(_this1).children(".rtc_listBox41").removeClass("border_img").children(".enlarge_div").removeClass("enlarge_br");
+      $(_this1).children(".rtc_listBox41").children(".rtc_listBox42").removeClass("border_img1");
+      $(_this1).siblings(".big").addClass("dis").attr("src","");
+      $(_this).children(".enlarge_div").each(function(i){
         if(index==i){
-          var l0=$(_this).length;
-          var l2=$(this).width();
-          var ll=i*l2;
-          if(ll>=320) ll=320;
-          var _src=$(_this).children(".rtc_listBox42").attr("src");
-          $(this).children(".enlarge_div").addClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/narrow.png");
-          $(this).addClass("border_img").children(".enlarge_div").addClass("enlarge_br");
-          $(this).children(".rtc_listBox42").addClass("border_img1");
-          $(this).parent(".rtc_listBox40").parent(".rtc_listBox4").children(".big").attr("src",_src).removeClass("dis").css("margin-left",ll+"px");
+          var l2=$(_this).width();
+          var ll=i*l2+30;
+          if(ll>=320) ll=280;
+          var _src=$(this).siblings(".rtc_listBox42").attr("src");
+          $(this).addClass("large").children(".enlarge_img").attr("src","../websiteManageResource/img/narrow.png");
+          $(this).addClass("enlarge_br").parent(".rtc_listBox41").addClass("border_img");
+          $(this).siblings(".rtc_listBox42").addClass("border_img1");
+          $(this).parent(".rtc_listBox41").parent(".rtc_listBox40").siblings(".big").attr("src",_src).removeClass("dis").css("margin-left",ll+"px");
           return false;
         }
       });
@@ -46,7 +49,6 @@ $(function(){
   
   /*主播禁言状态的下拉菜单的切换*/
   $(".dropdown").on("click",function(){
-    $(this).addClass("selected").siblings().removeClass("selected");
     if($(this).siblings(".dropdown_menu").hasClass("dis")){
       $(this).children("img").attr({"src":"../websiteManageResource/img/filter1.png"});
       $(this).siblings(".dropdown_menu").removeClass("dis");
@@ -97,7 +99,7 @@ $(function(){
   function loadAuthenticationList(resultData){
     $(".rtc_listBoxLists").html("");//清空
     for(var i=0;i<resultData.ResultList.length;i++){
-      var list='<div class="rtc_listBoxList">'+
+      var list='<div class="rtc_listBoxList" id=rtc_listBoxList'+i+'>'+
                 '<ul class="rtc_listBox fl">'+
                   '<li class="rtc_listBox1 fl ellipsis">'+
                     '<div class="rtc_listBox11 fl">主播账号 : </div>'+
@@ -138,7 +140,7 @@ $(function(){
       }
       if(resultData.ResultList[i].ReverseImg){//身份证反面照片
         var img='<li class="rtc_listBox41 fl">'+
-                  '<img src='+resultData.ResultList[i].ReverseImg+' alt="身份证正面" class="rtc_listBox42"/>'+
+                  '<img src='+resultData.ResultList[i].ReverseImg+' alt="身份证反面" class="rtc_listBox42"/>'+
                   '<div class="enlarge_div">'+
                     '<img src="../websiteManageResource/img/enlarge.png" alt="" class="enlarge_img"/>'+
                   '</div>'+
@@ -172,7 +174,7 @@ $(function(){
         $(".rtc_listBox47").eq(i).text("资格认证");
       }else{
         $(".rtc_listBox43").eq(i).css("margin","30px 0px 0px 0px").children(".rtc_listBox44").addClass("dis");
-        $(".rtc_listBox47").eq(i).text("专业认证");
+        $(".rtc_listBox47").eq(i).text("实名认证");
       }
     }
   }
@@ -232,7 +234,7 @@ $(function(){
       seaFy=2;
     }
     $(".dropdown_menu li").each(function(){
-      if($(this).hasClass("selected")&&$(this).attr("flag")!="0"){
+      if($(this).hasClass("selectId")&&$(this).attr("flag")!="0"){
         anchorFy=2;
         return false;
       }else{//anchorFy=1未选中申请专业或者资格主播翻页,anchorFy=2选中申请专业或者资格主播后翻页
@@ -254,7 +256,7 @@ $(function(){
     }
     if(anchorFy==2){//anchorFy=1未选中申请专业或者资格主播翻页,anchorFy=2选中申请专业或者资格主播后翻页
       $(".dropdown_menu li").each(function(){
-        if($(this).hasClass("selected")){
+        if($(this).hasClass("selectId")){
           var flag=$(this).attr("flag");//0默认全部,1实名认证,2资格认证
           data1.Flag=flag;
           return;
@@ -281,39 +283,126 @@ $(function(){
     getAuthenticationList(data1);
     $(this).parent(".dropdown_menu").addClass("dis");
     $(this).parent(".dropdown_menu").siblings(".dropdown").children("img").attr({"src":"../websiteManageResource/img/filter2.png"});
-    $(this).addClass("selected").siblings("li").removeClass("selected");
+    $(this).addClass("selectId").siblings("li").removeClass("selectId");
   });
   
-  /*点击通过*/
-  $(document).on("click",".rtc_listBox45",function(){
-    var img_length=$(this).parent(".rtc_listBox43").siblings(".rtc_listBox4 fl").children("rtc_listBox40").children(".rtc_listBox41").length;
-    if(img_length==4){//出现通过的提示弹出框
-      
+  /*点击弹出框的关闭按钮*/
+  $(".mw_span2").on("click",function(){
+    $(this).parent(".mw_head").parent(".mask_wrapper").parent().addClass("dis");
+  });
+  
+  /*通过的弹出页面选中某一个认证方式*/
+  $(".mw_div21 .checkbox_img").on("click",function(){
+    if($(this).parent(".mw_div21").hasClass("selected")){
+      $(this).parent(".mw_div21").removeClass("selected").children(".checkbox_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
+      $(this).parent(".mw_div21").siblings(".mw_div21").addClass("selected").children(".checkbox_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png");
     }else{
-      
+      $(this).parent(".mw_div21").addClass("selected").children(".checkbox_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
+      $(this).parent(".mw_div21").siblings(".mw_div21").removeClass("selected").children(".checkbox_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png");
     }
-    
-    
-    
-    
-    
-    
-    
+    var index=$(this).parent(".mw_div21").index();
+    $(this).parent(".mw_div21").parent(".mw_div2").siblings(".mw_div3").children(".mw_con1").addClass("dis").eq(index).removeClass("dis");
+  });
+  
+  /*点击主播未通过资格认证的具体原因*/
+  $(".mw_reason .checkbox_img").on("click",function(){
+    if($(this).hasClass("checkbox1")){
+      $(this).removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png").siblings(".mw_txt1").css("color","#0077c7");
+    }else{
+      $(this).addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png").siblings(".mw_txt1").css("color","#000");
+    }
+  });
+  
+  /*点击通过--出现弹出页面或者主播通过认证*/
+  $(document).on("click",".rtc_listBox45",function(){
+    var _this=$(this);
+    var checkerId=$(this).parent(".rtc_listBox43").attr("checkerId");
+    $(".mask_pass").attr("checkerId",checkerId);
+    var img_length=$(this).parent(".rtc_listBox43").siblings(".rtc_listBox4").children(".rtc_listBox40").children(".rtc_listBox41").length;
+    if(img_length==4){//出现通过的提示弹出框
+      if($(".mw_div21").hasClass("selected")){
+        $(".mw_div21").parent(".mw_div2").siblings(".mw_div3").children(".mw_con1").eq(0).addClass("dis");
+      }
+      $(".mask_pass").removeClass("dis");
+    }else{
+      var data2={};
+      data2.UserId=userId;
+      data2.PCDType="3";
+      data2.CheckerId=$(".mask_pass").attr("checkerId");
+      data2.ReState="1";//0待处理，1通过，2未通过
+      updateApprove(_this,data2);
+    }
+  });
+  
+  /*点击不通过--出现弹出页面使主播不通过认证*/
+  $(document).on("click",".rtc_listBox46",function(){
+    var checkerId=$(this).parent(".rtc_listBox43").attr("checkerId");
+    $(".mask_nopass").removeClass("dis").attr("checkerId",checkerId);
+  });
+  
+  
+  /*点击通过弹出页面的确定按钮*/
+  $(".mask_pass .mw_txt4").on("click",function(){
+    var _this=$(this);
+    var applyDescn='';
+    $(".mw_reason").each(function(){
+      if($(this).children(".checkbox_img").hasClass("checkbox1")){
+        
+      }else{
+        if(applyDescn=='') applyDescn=$(this).children(".mw_txt1").text();
+        else applyDescn+=','+$(this).children(".mw_txt1").text();
+      }
+    })
+    if($(".other_reason").text()!=''){
+      if(applyDescn=='') applyDescn=$(".other_reason").text();
+      else applyDescn+=','+$(".other_reason").text();
+    }
     var data2={};
     data2.UserId=userId;
     data2.PCDType="3";
-    data2.CheckerId=$(this).parent(".rtc_listBox43").attr("checkerId");
+    data2.CheckerId=$(".mask_pass").attr("checkerId");
     data2.ReState="1";//0待处理，1通过，2未通过
-    data2.ReFlag="1";//1实名认证，2资格认证
     var _this=$(this);
+    if(applyDescn!='') data2.ApplyDescn=applyDescn;
+    updateApprove(_this,data2);
+  });
+  
+  /*点击不通过弹出页面的确定按钮*/
+  $(".mask_nopass .mw_txt4").on("click",function(){
+    var _this=$(this);
+    var applyDescn='';
+    $(".mw_reason").each(function(){
+      if($(this).children(".checkbox_img").hasClass("checkbox1")){
+        
+      }else{
+        if(applyDescn=='') applyDescn=$(this).children(".mw_txt1").text();
+        else applyDescn+=','+$(this).children(".mw_txt1").text();
+      }
+    })
+    if($(".other_reason").text()!=''){
+      if(applyDescn=='') applyDescn=$(".other_reason").text();
+      else applyDescn+=','+$(".other_reason").text();
+    }
+    var data2={};
+    data2.UserId=userId;
+    data2.PCDType="3";
+    data2.CheckerId=$(".mask_nopass").attr("checkerId");
+    data2.ReState="2";//0待处理，1通过，2未通过
+    var _this=$(this);
+    if(applyDescn!='') data2.ApplyDescn=applyDescn;
+    updateApprove(_this,data2);
+  });
+  
+  //更新认证状态
+  function updateApprove(obj,dataParam){
     $.ajax({
       type:"POST",
       url:rootPath+"CM/security/updateApproveStatus.do",
       dataType:"json",
       cache:false, 
-      data:JSON.stringify(data2),
+      data:JSON.stringify(dataParam),
       beforeSend:function(){
-        $(_this).attr("disabled","disabled").css("color","#ccc");
+        $(obj).attr("disabled","disabled").css("color","#ccc");
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
@@ -324,7 +413,7 @@ $(function(){
           data1.Page=current_page;
           data1.PageSize=pageSize;
           $(".dropdown_menu li").each(function(){
-            if($(this).hasClass("selected")){
+            if($(this).hasClass("selectId")){
               var flag=$(this).attr("flag");//0默认全部,1实名认证,2资格认证
               data1.Flag=flag;
               return;
@@ -334,21 +423,14 @@ $(function(){
         }else{
           alert("认证通过失败");
         }
-        $(_this).removeAttr("disabled").css("color","#0077C7");
+        $(obj).removeAttr("disabled").css("color","#0077C7");
       },
       error:function(jqXHR){
         alert("认证通过发生错误:"+ jqXHR.status);
-        $(_this).removeAttr("disabled").css("color","#0077C7");
+        $(obj).removeAttr("disabled").css("color","#0077C7");
       }
     });
-    
-    
-  });
-  
-  /*点击不通过*/
-  $(document).on("click",".rtc_listBox46",function(){
-    
-  });
+  }
   
   /*点击查验身份*/
   $(document).on("click",".rtc_listBox44",function(){

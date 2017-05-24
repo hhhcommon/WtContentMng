@@ -447,7 +447,6 @@ $(function(){
 
   /*获取默认选中角色的权限*/
   function getRoleFunlist(dataParam){
-    debugger;
     $(".ccr3_div3").removeAttr("roleid,channelids");
     $.ajax({
       type:"POST",
@@ -457,7 +456,6 @@ $(function(){
       data:JSON.stringify(dataParam),
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          debugger;
           if(resultData.RoleFun&&resultData.RoleFun!=null){
             $(".ccr3_div3").attr("roleid",resultData.RoleFun.roleId);
             if(resultData.RoleFun.objId&&resultData.RoleFun.objId!=null){
@@ -482,7 +480,6 @@ $(function(){
     });
   }
   function loadRoleFunlist(resultData){
-    debugger;
     var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
     var loadRoleData=[{ChannelId:"",TreeViewType:"zTree"}];
     var chids=resultData.RoleFun.objId.split(",");
@@ -670,7 +667,6 @@ $(function(){
   
   //点击保存配置
   $(".power_footer1").on("click",function(){
-    debugger;
     var roleId=$(this).parent(".power_footer").parent(".power").attr("roleid");
     var modalnodes=modalObj.getCheckedNodes(true);
     var channelIds='';//选中栏目id的集合

@@ -109,7 +109,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   z-index: 999;
   padding-bottom: 20px;
 }
-.dropdown_menu>li{
+.all,.real,.qualification{
   color: #000;
   line-height: 25px;
   margin: 4px 0px;
@@ -222,6 +222,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   height: 180px;
   margin: 10px 0px 15px 0px;
   background-size: 100% 100%;
+  border: 1px solid #dedede;
 }
 .rtc_listBox43{
   position: relative;
@@ -427,6 +428,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
 }
 .checkbox_img{
   margin: 6px 0px;
+  cursor: pointer;
 }
 .mw_span21{
   margin: 0px 0px 0px 15px;
@@ -476,4 +478,6 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   color: #fff;
   text-align: center;
   line-height: 30px;
+  cursor: pointer;
 }
+.selectId{color:#0077c7;}
