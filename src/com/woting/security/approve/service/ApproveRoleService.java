@@ -81,6 +81,10 @@ public class ApproveRoleService {
             return map;
         } catch (Exception e) {
             e.printStackTrace();
+            try{
+              //删除错误申请
+                platUserProgressDao.delete("deleteErrorApprove", _param);
+            } catch (Exception e1){}
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
