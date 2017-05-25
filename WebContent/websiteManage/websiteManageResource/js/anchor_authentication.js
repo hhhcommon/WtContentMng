@@ -315,6 +315,7 @@ $(function(){
   
   /*点击通过--出现弹出页面或者主播通过认证*/
   $(document).on("click",".rtc_listBox45",function(){
+    debugger;
     var _this=$(this);
     var checkerId=$(this).parent(".rtc_listBox43").attr("checkerId");
     $(".mask_pass").attr("checkerId",checkerId);
