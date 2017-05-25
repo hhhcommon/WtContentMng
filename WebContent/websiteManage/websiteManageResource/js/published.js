@@ -82,7 +82,7 @@ $(function(){
   function opts(seaFy,current_page){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
     data.PageSize=pageSize;
@@ -131,7 +131,7 @@ $(function(){
   function anew(flowflag){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
     data.PageSize=pageSize;
@@ -235,7 +235,7 @@ $(function(){
   function searchList(){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
     data.PageSize=pageSize;
@@ -256,7 +256,7 @@ $(function(){
   function getSearchList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/searchContents.do",
+      url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -320,7 +320,7 @@ $(function(){
   var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
   loadTree(loadTreeData);
   function loadTree(loadData){
-    var _url=rootPath+"baseinfo/getChannelTree4View.do";
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
     var i=0;
     loadRecursion(0);
   
@@ -354,7 +354,7 @@ $(function(){
     data.Page=current_page;
     data.PageSize="10";
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
   }
   
@@ -362,7 +362,7 @@ $(function(){
   function getContentList(data){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContents.do",
+      url:rootPath+"CM/content/getContents.do",
       dataType:"json",
       cache:false,
 //    async:false,
@@ -485,7 +485,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContentInfo.do",
+      url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
       cache:false,
       async:false,
@@ -594,7 +594,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/updateContentStatus.do",
+      url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data2),

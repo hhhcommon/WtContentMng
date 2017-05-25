@@ -42,8 +42,10 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
   color: #000;
   font-size: 14px;
   padding: 0px 20px;
-  border-bottom: 1px solid #dedede;
+  box-shadow:0px 2px 1px #ddd;
+  overflow: hidden;
 }
+.detail_title2{cursor: pointer;}
 .my_title{
   overflow: hidden;
   height: 30px;
@@ -462,7 +464,11 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
 </style>
 <body>
 <div class="detail">
-  <div class="detail_title ellipsis">当前位置：内容管理> 已发布内容> </div>
+  <div class="detail_title ellipsis"> 
+    <div class="detail_title1 fl">当前位置：内容管理></div>
+    <div class="detail_title2 fl">已发布内容></div>
+    <div class="detail_title3 fl"></div>
+  </div>
   <div class="detail_content">
     <div class="dc_left">
       <div class="dcl_jmcontent">
@@ -476,13 +482,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
             <div class="comzjs">来自专辑<span class="comZj"></span></div>
             <div class="tagss">
               <span>标签：</span>
-              <ul class="tags">
-                <!--<li class="newspan fl">自定义标签一</li>
-                <li class="newspan fl">自定义标签一</li>
-                <li class="newspan fl">自定义标签一</li>
-                <li class="newspan fl">自定义标签一</li>
-                <li class="newspan fl">自定义标签一</li>-->
-              </ul>
+              <ul class="tags"></ul>
             </div>
             <ul class="act">
               <li class="play">
@@ -518,62 +518,7 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
     <div class="dc_right1">
       <div class="my_title">同专辑的节目</div>
       <div class="dc_right">
-        <div class="dcr_jmlist">
-          <!--<div class="dcr_jmlist1">
-            <div class="list1_img">
-              <img src="" alt="节目图片" />
-            </div>
-            <div class="list1_con">
-              <p class="list1_con_name">
-                <span>双份的阳光</span>
-              </p>
-              <p class="list1_con_num">
-                <span>播放次数 ： </span>
-                <span>8</span>
-              </p>
-              <p class="list1_con_time">
-                <span>时间 ：</span>
-                <span>2016-10-08 10:47:35</span>
-              </p>
-            </div>
-          </div>-->
-          <!--<div class="dcr_jmlist1">
-            <div class="list1_img">
-              <img src="" alt="节目图片" />
-            </div>
-            <div class="list1_con">
-              <p class="list1_con_name">
-                <span>双份的阳光</span>
-              </p>
-              <p class="list1_con_num">
-                <span>播放次数 ： </span>
-                <span>8</span>
-              </p>
-              <p class="list1_con_time">
-                <span>时间 ：</span>
-                <span>2016-10-08 10:47:35</span>
-              </p>
-            </div>
-          </div>-->
-          <!--<div class="dcr_jmlist1">
-            <div class="list1_img">
-              <img src="" alt="节目图片" />
-            </div>
-            <div class="list1_con">
-              <p class="list1_con_name">
-                <span>双份的阳光</span>
-              </p>
-              <p class="list1_con_num">
-                <span>播放次数 ： </span>
-                <span>8</span>
-              </p>
-              <p class="list1_con_time">
-                <span>时间 ：</span>
-                <span>2016-10-08 10:47:35</span>
-              </p>
-            </div>
-          </div>-->
-        </div> 
+        <div class="dcr_jmlist"></div>
       </div>
     </div>
   </div>
@@ -646,8 +591,6 @@ body{height:100%;-moz-user-select: none;overflow: auto;background: #fff;}
   
 $(function(){
   var data1={"UserId":userId,
-             "Page":"1",
-             "PageSize":"10",
              "ContentId":contentId,
              "MediaType":"wt_MediaAsset"
   };
@@ -687,7 +630,7 @@ $(function(){
   
   //填充节目数据
   function fillJmDetail(resultData){
-    $(".detail_title").html("当前位置：内容管理> 已发布内容> "+resultData.ContentDetail.ContentName);
+    $(".detail_title3").html(resultData.ContentDetail.ContentName);
     $(".title").html(resultData.ContentDetail.ContentName).attr("contentId",resultData.ContentDetail.ContentId);
     $(".dcl_jmcontent1 img").attr("src",resultData.ContentDetail.ContentImg);
     $(".cctime").html(resultData.ContentDetail.CTime);
@@ -849,6 +792,11 @@ $(function(){
   /*点击播放*/
   $(".player").on("click",function(){
     $(".locker").click();
+  });
+  
+  /*点击标题的已发布内容--进入已发布内容页面*/
+  $(".detail_title2").on("click",function(){
+    $("#myIframe", parent.document).attr({"src":"contentsManage/published.html"});
   });
   
   /*点击专辑名称跳到专辑详情页*/

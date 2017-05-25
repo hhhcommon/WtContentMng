@@ -82,7 +82,7 @@ $(function(){
   function opts(seaFy,current_page){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ApplyFlowFlag=applyflowflag;
     data.ReFlowFlag="0";
@@ -132,7 +132,7 @@ $(function(){
   function anew(applyflowflag){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
     data.PageSize=pageSize;
@@ -237,7 +237,7 @@ $(function(){
   function searchList(){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ApplyFlowFlag=applyflowflag;
     data.ReFlowFlag="0";
@@ -259,7 +259,7 @@ $(function(){
   function getSearchList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/searchContents.do",
+      url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -324,7 +324,7 @@ $(function(){
   var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
   loadTree(loadTreeData);
   function loadTree(loadData){
-    var _url=rootPath+"baseinfo/getChannelTree4View.do";
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
     var i=0;
     loadRecursion(0);
   
@@ -359,7 +359,7 @@ $(function(){
     data.Page=current_page;
     data.PageSize=pageSize;
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
   }
   
@@ -367,7 +367,7 @@ $(function(){
   function getContentList(data){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getAppRevocation.do",
+      url:rootPath+"CM/content/getAppRevocation.do",
       dataType:"json",
       cache:false,
       data:JSON.stringify(data),
@@ -404,51 +404,48 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultInfo.List.length;i++){
       var listBox='<div class="rtc_listBox" contentId='+resultData.ResultInfo.List[i].ContentId+'>'+
-                '<p class="rtcl_con_p ellipsis"></p>'+
-                '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
-                '<div class="rtcl_img fl">'+
-                  '<img src="" alt="内容图片" />'+
-                  '<div class="btn_player dis">'+
-                    '<i class="icon"></i>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="rtcl_con fl">'+
-                  '<div class="tag">'+
-                    '<span class="tag1 fl">栏目:</span>'+
-                    '<ul class="rtcl_con_tags ellipsis fl">'+
-//                    '<li class="rtcl_con_tags1 fl">【故事】</li>'+
-//                    '<li class="rtcl_con_tags1 fl">【电台丛林】</li>'+
-                    '</ul>'+
-                  '</div>'+
-                  '<div class="sequ_name ellipsis">'+
-                    '<span class="sequ_name1 fl">主播:</span>'+
-                    '<ul class="sequ_names ellipsis fl">'+
-//                    '<li class="sequ_names1 fl">听风说雨</li>'+
-                    '</ul>'+
-                  '</div>'+
-                  '<p class="sequ_num ellipsis"></p>'+
-                  '<ul class="act fl">'+
-                    '<li class="play fl">'+
-                      '<img class="play1" src="../websiteManageResource/img/act1.png" alt="" />'+
-                      '<span class="play2">播放(0)</span>'+
-                    '</li>'+
-                    '<li class="love fl">'+
-                      '<img class="love1" src="../websiteManageResource/img/act3.png" alt="" />'+
-                      '<span class="love2">喜欢(0)</span>'+
-                    '</li>'+
-                    '<li class="intransit fl">'+
-                      '<img class="intransit1" src="../websiteManageResource/img/act5.png" alt="" />'+
-                      '<span class="intransit2">转发(0)</span>'+
-                    '</li>'+
-                  '</ul>'+
-                '</div>'+
-                '<span class="source_form fl"></span>'+
-                '<span class="audio_time fl"></span>'+
-              '</div>';
+                    '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
+                    '<div class="rtcl_con_p fl">'+
+                      '<p class="rtcl_con_p1 ellipsis"></p>'+
+                      '<div class="rtcl_img fl">'+
+                        '<img src="" alt="内容图片" />'+
+                        '<div class="btn_player dis">'+
+                          '<i class="icon"></i>'+
+                        '</div>'+
+                      '</div>'+
+                      '<div class="rtcl_con fl">'+
+                        '<div class="tag">'+
+                          '<span class="tag1 fl">栏目:</span>'+
+                          '<ul class="rtcl_con_tags ellipsis fl"></ul>'+
+                        '</div>'+
+                        '<div class="sequ_name ellipsis">'+
+                          '<span class="sequ_name1 fl">主播:</span>'+
+                          '<ul class="sequ_names ellipsis fl"></ul>'+
+                        '</div>'+
+                        '<p class="sequ_num ellipsis"></p>'+
+                        '<ul class="act fl">'+
+                          '<li class="play fl">'+
+                            '<img class="play1" src="../websiteManageResource/img/act1.png" alt="" />'+
+                            '<span class="play2">播放(0)</span>'+
+                          '</li>'+
+                          '<li class="love fl">'+
+                            '<img class="love1" src="../websiteManageResource/img/act3.png" alt="" />'+
+                            '<span class="love2">喜欢(0)</span>'+
+                          '</li>'+
+                          '<li class="intransit fl">'+
+                            '<img class="intransit1" src="../websiteManageResource/img/act5.png" alt="" />'+
+                            '<span class="intransit2">转发(0)</span>'+
+                          '</li>'+
+                        '</ul>'+
+                      '</div>'+
+                    '</div>'+
+                    '<span class="source_form fl"></span>'+
+                    '<span class="audio_time fl"></span>'+
+                  '</div>';
       $(".ri_top3_con").append(listBox);
       if(resultData.ResultInfo.List[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultInfo.List[i].ContentImg);
       else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
-      $(".rtcl_con_p").eq(i).text(resultData.ResultInfo.List[i].ContentName?(resultData.ResultInfo.List[i].ContentName):"未知");
+      $(".rtcl_con_p1").eq(i).text(resultData.ResultInfo.List[i].ContentName?(resultData.ResultInfo.List[i].ContentName):"未知");
       if(resultData.ResultInfo.List[i].ContentPubChannels){
         var chIds="";//发布栏目的id集合
         for(var j=0;j<resultData.ResultInfo.List[i].ContentPubChannels.length;j++){
@@ -504,7 +501,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContentInfo.do",
+      url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
       cache:false,
       async:false,
@@ -531,23 +528,23 @@ $(function(){
   /*e--ztree的操作集合*/
   
   /*s--点击内容名字，进入内容详情*/
-  $(document).on("click",".rtcl_con_p",function(){
-    var mediaType=$(this).siblings(".sequ_num").attr("mediatype");
-    var contentId=$(this).parent(".rtcl_con").siblings(".opetype1").attr("contentId");
-    if(mediaType=="wt_MediaAsset"){//节目
-      var seqId=$(this).siblings(".sequ_num").attr("seqId");
-      $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
-    }else if(mediaType=="wt_SeqMediaAsset"){//专辑
-      $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
-    }
-  });
+//$(document).on("click",".rtcl_con_p1",function(){
+//  var mediaType=$(this).siblings(".sequ_num").attr("mediatype");
+//  var contentId=$(this).parent(".rtcl_con_p").parent(".rtcl_con").attr("contentId");
+//  if(mediaType=="wt_MediaAsset"){//节目
+//    var seqId=$(this).siblings(".sequ_num").attr("seqId");
+//    $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+//  }else if(mediaType=="wt_SeqMediaAsset"){//专辑
+//    $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
+//  }
+//});
   /*e--点击内容名字，进入内容详情*/
   
   /*s--节目框点击专辑名字，进入专辑详情*/
-  $(document).on("click",".sequ_num",function(){
-    var contentId=$(this).attr("seqId");
-    $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
-  });
+//$(document).on("click",".sequ_num",function(){
+//  var contentId=$(this).attr("seqId");
+//  $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
+//});
   /*e--节目框点击专辑名字，进入专辑详情*/
   
   /*s--全部播放*/
@@ -566,12 +563,12 @@ $(function(){
       }else{//已选中
         var contentList={};
         contentList.Id=$(this).attr("contentId");
-        if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
+        if($(this).children(".rtcl_con_p").children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
-        }else if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
+        }else if($(this).children(".rtcl_con_p").children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
           contentList.MediaType="SEQU";
         }
-        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
+        contentList.ChannelIds=$(this).children(".rtcl_con_p").children(".rtcl_img").attr("chIds");
         contentIds.push(contentList);
       }
     });
@@ -580,7 +577,7 @@ $(function(){
                   "ContentIds":contentIds,
                   "OpeType":$(this).attr("opetype")
       };
-      var _url2=rootPath+"content/updateContentStatus.do";
+      var _url2=rootPath+"CM/content/updateContentStatus.do";
       optList(_url2,_data2);//申请撤回通过
     }
   });
@@ -598,12 +595,12 @@ $(function(){
       }else{//已选中
         var contentList={};
         contentList.Id=$(this).attr("contentId");
-        if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
+        if($(this).children(".rtcl_con_p").children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_MediaAsset"){//节目
           contentList.MediaType="AUDIO";
-        }else if($(this).children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
+        }else if($(this).children(".rtcl_con_p").children(".rtcl_con").children(".sequ_num").attr("mediatype")=="wt_SeqMediaAsset"){//专辑
           contentList.MediaType="SEQU";
         }
-        contentList.ChannelIds=$(this).children(".rtcl_img").attr("chIds");
+        contentList.ChannelIds=$(this).children(".rtcl_con_p").children(".rtcl_img").attr("chIds");
         contentids.push(contentList);
       }
     });
@@ -638,7 +635,7 @@ $(function(){
     };
     $.ajax({
       type: "POST",
-      url:rootPath+"content/updateContentStatus.do",
+      url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data4),

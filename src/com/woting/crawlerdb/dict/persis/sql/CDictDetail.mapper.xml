@@ -56,7 +56,7 @@
 
   <!-- 新增数据 -->
   <insert id="insertList" parameterType="java.util.Map">
-    insert into hotspot_DictD(id, mId, pId, sourceId, isValidate, ddName, nPy, aliasName, anPy, publisher, visitUrl, crawlerNum, schemeId, schemeName, cTime) values
+    insert into c_DictD(id, mId, pId, sourceId, isValidate, ddName, nPy, aliasName, anPy, publisher, visitUrl, crawlerNum, schemeId, schemeName, cTime) values
     <foreach collection="list" item="list" index="index" separator=",">
      (#{list.id},#{list.mId},#{list.pId},#{list.sourceId},#{list.isValidate},#{list.ddName},#{list.nPy},#{list.aliasName},#{list.anPy},#{list.publisher},#{list.visitUrl},#{list.crawlerNum},#{list.schemeId},#{list.schemeName},#{list.cTime})
     </foreach>
@@ -64,17 +64,17 @@
 
   <!-- 获得列表 -->
   <select id="getList" resultMap="baseResultMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List"/>from hotspot_DictD
+    select <include refid="Base_Column_List"/>from c_DictD
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
   
   <select id="getInfo" resultMap="baseResultMap" parameterType="java.lang.String">
-    select <include refid="Base_Column_List"/>from hotspot_DictD where id=#{id,jdbcType=VARCHAR} limit 1
+    select <include refid="Base_Column_List"/>from c_DictD where id=#{id,jdbcType=VARCHAR} limit 1
   </select>
 
   <!-- 删除数据 -->
   <delete id="deleteByEntity" parameterType="java.util.Map">
-    delete from hotspot_DictD <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
+    delete from c_DictD <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </delete>
   
 </mapper>

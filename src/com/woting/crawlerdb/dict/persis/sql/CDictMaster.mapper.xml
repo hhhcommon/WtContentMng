@@ -34,7 +34,7 @@
 
   <!-- 新增数据 -->
   <insert id="insertList" parameterType="java.util.Map">
-    insert into hotspot_DictM(id, dmName, nPy, descn, cTime) values
+    insert into c_DictM(id, dmName, nPy, descn, cTime) values
     <foreach collection="list" item="list" index="index" separator=",">
      (#{list.id},#{list.dmName},#{list.nPy},#{list.descn},#{list.cTime})
     </foreach>
@@ -42,7 +42,7 @@
 
   <!-- 获得列表 -->
   <select id="getList" resultMap="baseResultMap" parameterType="java.util.Map">
-    select <include refid="Base_Column_List"/>from hotspot_DictM
+    select <include refid="Base_Column_List"/>from c_DictM
     <if test="_parameter!=null"><include refid="WhereClauseByEntiey"/></if>
   </select>
 </mapper>
