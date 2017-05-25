@@ -179,21 +179,21 @@ input[type=file] {display: none;}
       <ul class="dc3_ul fl">
         <li class="dc3_li fl pic1_li">
           <img src="../anchorResource/img/pic1.png" alt="身份证正面" class="dc3_img pic1"/>
-          <input type="file" value='' class="dc3_file pic1_file dis" index='1'/>
+          <input type="file" class="dc3_file pic1_file dis" index='1'/>
           <div class="waiting_div dis">
             <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" class="waiting_img"/>
           </div>
         </li>
         <li class="dc3_li fl pic2_li">
           <img src="../anchorResource/img/pic2.png" alt="身份证背面" class="dc3_img pic2"/>
-          <input type="file" value='' class="dc3_file pic2_file dis" index='2'/>
+          <input type="file" class="dc3_file pic2_file dis" index='2'/>
           <div class="waiting_div dis">
             <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" class="waiting_img"/>
           </div>
         </li>
         <li class="dc3_li fl pic3_li">
           <img src="../anchorResource/img/pic3.png" alt="手持身份证" class="dc3_img pic3"/>
-          <input type="file" value='' class="dc3_file pic3_file dis" index='3'/>
+          <input type="file" class="dc3_file pic3_file dis" index='3'/>
           <div class="waiting_div dis">
             <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" class="waiting_img"/>
           </div>
@@ -214,7 +214,7 @@ input[type=file] {display: none;}
       <ul class="dc4_ul fl">
         <li class="dc3_li fl pic4_li">
           <img src="../anchorResource/img/pic3.png" alt="资格证书照片" class="dc3_img pic4"/>
-          <input type="file" value='' class="dc3_file pic4_file dis" index='4'/>
+          <input type="file"  class="dc3_file pic4_file dis" index='4'/>
           <div class="waiting_div dis">
             <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" class="waiting_img"/>
           </div>
@@ -264,7 +264,7 @@ $(function(){
   });
   function uploadFile(obj){
     var index=$(obj).attr("index");
-    $(obj).attr("value","");
+    $(obj).parent(".dc3_li").attr("path","");
     $(obj).siblings(".newImg").remove();
     var oMyForm = new FormData();
     oMyForm.append("ContentFile",$(obj)[0].files[0]);
@@ -298,7 +298,8 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.Success==true){ 
-          $(newObj).attr("value",resultData.FilePath);
+          $(objPar).attr({"path":resultData.FilePath});
+          console.log($(objPar).attr("path"));
           if($(objSib).css("display")!="none"){
             $(objSib).css({"display":"none"});
           }
@@ -338,16 +339,22 @@ $(function(){
     var roleId2="4b222905d78741a89d72c6b4759c3e5f";//资格认证角色的id
     data.UserId=userId;
     data.PCDType="3";
-    data.IDCard=$.trim($(".dc1_ipt").val());
-    data.ReallyName=$.trim($(".dc2_ipt").val());
-    if($(".pic1_file").attr("value")!='') data.FrontImg=$(".pic1_file").attr("value"); 
-    if($(".pic2_file").attr("value")!='') data.ReverseImg=$(".pic2_file").attr("value"); 
-    if($(".pic3_file").attr("value")!='') data.MixImg=$(".pic3_file").attr("value"); 
-    if($(".pic4_file").attr("value")!='') data.AnchorCardImg=$(".pic4_file").attr("value"); 
+    data.ReallyName=$.trim($(".dc1_ipt").val());
+    data.IDCard=$.trim($(".dc2_ipt").val());
+    debugger;
+    if($(".pic1_li").attr("path")!='') data.FrontImg=$(".pic1_li").attr("path"); 
+    if($(".pic2_li").attr("path")!='') data.ReverseImg=$(".pic2_li").attr("path"); 
+    if($(".pic3_li").attr("path")!='') data.MixImg=$(".pic3_li").attr("path"); 
+    if($(".pic4_li").attr("path")!='') data.AnchorCardImg=$(".pic4_li").attr("path"); 
     if(data.FrontImg&&data.ReverseImg&&data.MixImg&&data.AnchorCardImg){
       data.ApplyRoleId=roleId2;//资格认证
     }else{
-      data.ApplyRoleId=roleId1;//实名认证
+      if(data.FrontImg&&data.ReverseImg&&data.MixImg){
+        data.ApplyRoleId=roleId1;//实名认证
+      }else{
+        alert("请按要求提交照片");
+        return;
+      }
     }
     $.ajax({
       url:rootPath+"security/approveRole.do",
@@ -364,12 +371,12 @@ $(function(){
         if(resultData.ReturnType=="1001"){ 
           alert("申请提交成功");
         }else{
-          alert("上传图片失败"+resultData.Message);
+          alert("申请提交失败"+resultData.Message);
         }
         $(".approve").removeAttr("disabled").css("background","#0077c7");
       },
       error: function(jqXHR){
-        alert("上传文件发生错误:" + jqXHR.status);
+        alert("申请提交发生错误:" + jqXHR.status);
         $(".approve").removeAttr("disabled").css("background","#0077c7");
       }
     });
