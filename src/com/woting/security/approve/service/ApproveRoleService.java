@@ -59,6 +59,7 @@ public class ApproveRoleService {
         param.put("frontImg", frontImg);
         param.put("reverseImg", reverseImg);
         param.put("mixImg", mixImg);
+        param.put("reallyName", reallyName);
         if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
             param.put("anchorCardImg", anchorCardImg);
         }
@@ -68,7 +69,6 @@ public class ApproveRoleService {
         _param.put("checkerId", "0");
         _param.put("applyRoleId", applyRoleId);
         _param.put("reStatus", 0);
-        _param.put("reallyName", reallyName);
         _param.put("modifyTime", new Timestamp(System.currentTimeMillis()));
         if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
             _param.put("applyDescn", applyDescn);
@@ -81,6 +81,10 @@ public class ApproveRoleService {
             return map;
         } catch (Exception e) {
             e.printStackTrace();
+            try{
+              //删除错误申请
+                platUserProgressDao.delete("deleteErrorApprove", _param);
+            } catch (Exception e1){}
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
