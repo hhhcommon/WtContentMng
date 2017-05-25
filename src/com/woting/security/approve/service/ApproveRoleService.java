@@ -133,13 +133,32 @@ public class ApproveRoleService {
      * 获取用户申请认证列表
      */
     public Map<String, Object> getApproves(int page, int pageSize, int flag) {
+        List<String> userIdList;
+        try {
+            List<Map<String, Object>> list=platUserProgressDao.queryForObjectAutoTranform("getNotPassUser", null);
+            if (list==null || list.size()<=0) return null;
+            userIdList=new ArrayList<>();
+            String userId;
+            for (int i=0; i<list.size(); i++) {
+                userId=(String) list.get(i).get("userId");
+                if (userId!=null && !userId.equals("")) {
+                    userIdList.add(userId);
+                    userId=null;
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        if (userIdList==null || userIdList.size()<=0) return null;
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("userIdList", userIdList);
         List<Map<String, Object>> _ret=null;
         int count=0;
         if (page==0) {// 获取全部
-            _ret=platUserExtDao.queryForListAutoTranform("getApproveList", null);
+            _ret=platUserExtDao.queryForListAutoTranform("getApproveList", param);
             if (_ret!=null && _ret.size()>0) count=_ret.size();
         } else {// 分页获取
-            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform(null, "getApproveList", null, page, pageSize);
+            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform(null, "getApproveList", param, page, pageSize);
             if (mapPage!=null&&mapPage.getDataCount()>0) {
                 _ret=new ArrayList<Map<String, Object>>();
                 _ret.addAll(mapPage.getResult());
