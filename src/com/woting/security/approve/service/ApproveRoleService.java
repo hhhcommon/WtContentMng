@@ -194,7 +194,7 @@ public class ApproveRoleService {
         param.put("reState", reState);
         param.put("applyDescn", applyDescn);
         try {
-            platUserExtDao.update("updateUserApproveState", param);
+            platUserProgressDao.update("updateUserApproveState", param);
             for (String userId : userIdList) {
                 PlatUserProgressPo userProgress=getUserApproveProgress(userId);
                 if (userProgress!=null) {

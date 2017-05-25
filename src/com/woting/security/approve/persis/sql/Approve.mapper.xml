@@ -112,11 +112,11 @@
     <if test="applyDescn!=null">
         applyDescn=#{applyDescn, jdbcType=VARCHAR}
     </if>
-    where reState!=2
-    <if test="userIdList!=null">
-      <foreach collection="userIdList" index="index" item="value" open="and (" separator="or" close=")">
-        userId=#{value}
-      </foreach>
-    </if>
+    <![CDATA[
+      where reState!=2 and userId in
+    ]]>
+    <foreach collection="userIdList" item="value" open="(" separator="," close=")">
+      #{value}
+    </foreach>
   </update>
 </mapper>
