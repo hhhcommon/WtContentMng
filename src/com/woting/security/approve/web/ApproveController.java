@@ -561,7 +561,7 @@ public class ApproveController {
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String applyDescn=m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString();
+            String reDescn=m.get("ReDescn")==null?null:m.get("ReDescn").toString();
             //中文字符转换成英文字符  同意格式
             if (checkerId.contains("，")) checkerId.replaceAll("，", ",");
             String[] userIdArr=checkerId.split(",");
@@ -570,7 +570,7 @@ public class ApproveController {
                 userIdList.add(id);
             }
             int reState=Integer.valueOf(_reState);
-            boolean result=approveService.updateApproveStatus(userIdList, reState, applyDescn);
+            boolean result=approveService.updateApproveStatus(userIdList, reState, reDescn);
             if (result) {
                 map.put("ReturnType", "1001");
                 map.put("Message", "修改用户认证状态成功");
