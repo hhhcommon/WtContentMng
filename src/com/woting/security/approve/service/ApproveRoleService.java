@@ -288,13 +288,13 @@ public class ApproveRoleService {
      * @param applyDescn 审核意见
      * @return boolean
      */
-    public boolean updateApproveStatus(List<String> userIdList, int reState, String applyDescn) {
+    public boolean updateApproveStatus(List<String> userIdList, int reState, String reDescn) {
         if (userIdList==null || userIdList.size()<=0) return false;
 
         Map<String, Object> param=new HashMap<String, Object>();
         param.put("userIdList", userIdList);
         param.put("reState", reState);
-        param.put("applyDescn", applyDescn);
+        param.put("reDescn", reDescn);
         try {
             platUserProgressDao.update("updateUserApproveState", param);
             for (String userId : userIdList) {
