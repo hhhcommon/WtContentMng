@@ -6,7 +6,7 @@ $(function(){
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";//搜索关键词
   var anchorFy=1;//anchorFy=1未选中申请专业或者资格主播翻页,anchorFy=2选中申请专业或者资格主播后翻页
-  var userId='0579efbaf9a9';//W003
+  var userId=$(".login_user span",parent.document).attr("userid");
   
   
   /*放大或缩小身份证照片*/
@@ -315,6 +315,7 @@ $(function(){
   
   /*点击通过--出现弹出页面或者主播通过认证*/
   $(document).on("click",".rtc_listBox45",function(){
+    debugger;
     var _this=$(this);
     var checkerId=$(this).parent(".rtc_listBox43").attr("checkerId");
     $(".mask_pass").attr("checkerId",checkerId);

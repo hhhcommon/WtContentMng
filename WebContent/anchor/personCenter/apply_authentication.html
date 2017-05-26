@@ -34,8 +34,8 @@ input[type=file] {display: none;}
 .detail{
   width:1084px;
   min-width:780px;
-  height:100%;
-  overflow: auto;
+  height:auto;
+  overflow: hidden;
   background: #fff;
   border:1px solid #dedede;
 }
@@ -157,6 +157,20 @@ input[type=file] {display: none;}
   background-size: 100% 100%;
   position: relative;
 }
+.allmask{
+  position: relative;
+  width: 1084px;
+  height: 662px;
+  top: -662px;
+  background: rgba(0,0,0,0.2);
+}
+.allnote{
+  color: #fff;
+  font-size: 18px;
+  top: 30%;
+  position: fixed;
+  left: 30%;
+}
 </style>
 <body>
 <div class="detail">
@@ -222,13 +236,94 @@ input[type=file] {display: none;}
       </ul>
     </div>
     <button class="approve">立即申请</button>
-  </div>  
-</div>      
+  </div>
+</div>
+<div class="allmask dis">
+  <div class="allnote">
+     认证申请已提交,请耐心等待审核
+  </div>
+</div>
 </body>
 <script>
 $(function(){
   var rootPath=getRootPath();
   var userId=$(".login_user span",parent.document).attr("userid");
+  
+  //先获取用户申请认证的流程
+  var data1={"UserId":userId,"PCDType":"3"};
+  //getApproveProgress(data1);
+  function getApproveProgress(dataParam){
+    $.ajax({
+      url:rootPath+"security/getApproveProgress.do",
+      type:"POST",
+      data:JSON.stringify(dataParam),
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){ 
+          if(resultData.approveInfo){
+            if(resultData.approveInfo.reStatu&&resultData.approveInfo.reStatu!=null){
+              if(resultData.approveInfo.reStatu=='0'){
+                $(".allmask").removeClass("dis");
+                getApproveInfo(data1);//获取用户申请认证详细信息
+              }
+            }
+          }
+        }else{
+          alert("获取用户申请认证的流程"+resultData.Message);
+        }
+      },
+      error: function(jqXHR){
+        alert("获取用户申请认证的流程发生错误:" + jqXHR.status);
+      }
+    });
+  }
+  
+  //获取用户申请认证详细信息
+  function getApproveInfo(dataParam){
+    $.ajax({
+      url:rootPath+"security/getApproveInfo.do",
+      type:"POST",
+      data:JSON.stringify(dataParam),
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      success:function(resultData){
+        if(resultData.ReturnType=="1001"){ 
+          fillApproveInfo(resultData);//填充用户申请认证详细信息
+        }else{
+          alert("获取用户申请认证的详细信息"+resultData.Message);
+        }
+      },
+      error: function(jqXHR){
+        alert("获取用户申请认证的详细信息发生错误:" + jqXHR.status);
+      }
+    });
+  }
+  //填充用户申请认证详细信息
+  function fillApproveInfo(resultData){
+    $(".dc2_ipt").text((resultData.approveInfo.realName)?(resultData.approveInfo.realName):"未知");
+    $(".dc2_ipt").text((resultData.approveInfo.id)?(resultData.approveInfo.id):"未知");
+    if(resultData.approveInfo.fontImg){
+      $(".pic1_li .dc3_img").attr("src",resultData.approveInfo.fontImg);
+      $(".pic1_li").attr("path",resultData.approveInfo.fontImg);
+    }
+    if(resultData.approveInfo.reverseImg){
+      $(".pic2_li .dc3_img").attr("src",resultData.approveInfo.reverseImg);
+      $(".pic2_li").attr("path",resultData.approveInfo.reverseImg);
+    }
+    if(resultData.approveInfo.MixImg){
+      $(".pic3_li .dc3_img").attr("src",resultData.approveInfo.MixImg);
+      $(".pic4_li").attr("path",resultData.approveInfo.MixImg);
+    }
+    if(resultData.approveInfo.authImg){
+      $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.authImg);
+      $(".pic4_li").attr("path",resultData.approveInfo.authImg);
+    }
+  }
   
   //点击上传身份证正面照片
   $(document).on("click",".pic1",function(){
@@ -370,6 +465,7 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
           alert("申请提交成功");
+          getApproveProgress(data1);
         }else{
           alert("申请提交失败"+resultData.Message);
         }
