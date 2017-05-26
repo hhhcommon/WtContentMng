@@ -20,17 +20,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.SpiritRandom;
 import com.spiritdata.framework.util.StringUtils;
+import com.spiritdata.framework.core.cache.SystemCache;
 import com.spiritdata.framework.core.lock.BlockLockConfig;
 import com.spiritdata.framework.core.lock.ExpirableBlockKey;
 import com.spiritdata.framework.ext.redis.lock.RedisBlockLock;
 import com.spiritdata.framework.ext.spring.redis.RedisOperService;
 import com.spiritdata.framework.util.JsonUtils;
 import com.spiritdata.framework.util.RequestUtils;
+import com.woting.WtContentMngConstants;
 import com.woting.cm.core.dict.model.DictRefRes;
 import com.woting.cm.core.dict.service.DictService;
 import com.woting.dataanal.gather.API.ApiGatherUtils;
 import com.woting.dataanal.gather.API.mem.ApiGatherMemory;
 import com.woting.dataanal.gather.API.persis.pojo.ApiLogPo;
+import com.woting.passport.UGA.PasswordConfig;
 import com.woting.passport.UGA.persis.pojo.UserPo;
 import com.woting.passport.UGA.service.UserService;
 import com.woting.passport.login.persis.pojo.MobileUsedPo;
@@ -41,6 +44,7 @@ import com.woting.passport.session.DeviceType;
 import com.woting.passport.session.SessionService;
 import com.woting.passport.session.redis.RedisUserDeviceKey;
 import com.woting.plugins.sms.SendSMS;
+import org.apache.commons.codec.digest.DigestUtils;
 
 @Controller
 @RequestMapping(value="/passport/")
@@ -55,6 +59,7 @@ public class PassportController {
     private SessionService sessionService;
     @Resource(name="connectionFactory123")
     JedisConnectionFactory redisConn;
+    private PasswordConfig pc=null;
 
     /**
      * 用户登录
@@ -142,6 +147,11 @@ public class PassportController {
                 return map;
             }
             //2-判断密码是否匹配
+            if (pc==null) pc=(PasswordConfig)SystemCache.getCache(WtContentMngConstants.PASSWORD_CFG).getContent();
+            if (pc!=null&&pc.isUseEncryption()&&pwd!=null) {
+                pwd=DigestUtils.md5Hex(pwd+"##");
+                pwd=pwd.substring(0, pwd.length()-2)+"##";
+            }
             if (!u.getPassword().equals(pwd)) {
                 map.put("ReturnType", "1003");
                 map.put("Message", "密码不匹配.");
@@ -149,9 +159,9 @@ public class PassportController {
             }
             //3-用户登录成功
             mUdk.setUserId(u.getUserId());
-            RedisUserDeviceKey redisUdk=new RedisUserDeviceKey(mUdk);
+            //RedisUserDeviceKey redisUdk=new RedisUserDeviceKey(mUdk);
             RedisOperService roService=new RedisOperService(redisConn, 4);
-            ExpirableBlockKey rLock=RedisBlockLock.lock(redisUdk.getKey_Lock(), roService, new BlockLockConfig(5, 2, 0, 50));
+            //ExpirableBlockKey rLock=RedisBlockLock.lock(redisUdk.getKey_Lock(), roService, new BlockLockConfig(5, 2, 0, 50));
             try {
                 sessionService.registUser(mUdk, u);
                 MobileUsedPo mu=new MobileUsedPo();
@@ -161,28 +171,15 @@ public class PassportController {
                 mu.setUserId(u.getUserId());
                 muService.saveMobileUsed(mu);
             } finally {
-                rLock.unlock();
+                //rLock.unlock();
                 roService.close();
                 roService=null;
             }
             //4-返回成功，若没有IMEI也返回成功
             map.put("ReturnType", "1001");
             if (u!=null) {
-                Map<String, Object> um=u.getDetailInfo();
-                List<DictRefRes> dictRefList=dictService.getDictRefs("plat_User", u.getUserId());
-                if (dictRefList!=null&&!dictRefList.isEmpty()) {
-                    for (DictRefRes drr: dictRefList) {
-                        if (drr.getDm().getId().equals("8")) {//性别
-                            um.put("Sex", drr.getDd().getNodeName());
-                        } else
-                        if (drr.getDm().getId().equals("2")&&drr.getRefName().equals("地区")) {
-                            um.put("Region", drr.getDd().getTreePathName());
-                        }
-                    }
-                }
-                if (u.getBirthday()!=null) um.put("Age", getAge(u.getBirthday().getTime())+"");
                 map.put("ReturnType", "1001");
-                map.put("UserInfo", um);
+                map.put("UserInfo", u.getDetailInfo());
             }
             return map;
         } catch(Exception e) {
@@ -642,10 +639,6 @@ public class PassportController {
                 }
                 mUdk=mp.getUserDeviceKey();
                 if (mUdk!=null) {
-                    mUdk=MobileParam.build(m).getUserDeviceKey();
-                    if (StringUtils.isNullOrEmptyOrSpace(mUdk.getDeviceId())) { //是PC端来的请求
-                        mUdk.setDeviceId(request.getSession().getId());
-                    }
                     Map<String, Object> retM=sessionService.dealUDkeyEntry(mUdk, "passport/user/updatePwd");
                     if ((retM.get("ReturnType")+"").equals("2003")) {
                         map.put("ReturnType", "200");
@@ -706,6 +699,12 @@ public class PassportController {
                 return map;
             }
             UserPo u=(UserPo)userService.getUserById(userId);
+
+            if (pc==null) pc=(PasswordConfig)SystemCache.getCache(WtContentMngConstants.PASSWORD_CFG).getContent();
+            if (pc!=null&&pc.isUseEncryption()&&oldPwd!=null) {
+                oldPwd=DigestUtils.md5Hex(oldPwd+"##");
+                oldPwd=oldPwd.substring(0, oldPwd.length()-2)+"##";
+            }
             if (u.getPassword().equals(oldPwd)) {
                 Map<String, Object> updateInfo=new HashMap<String, Object>();
                 updateInfo.put("userId",  userId);
