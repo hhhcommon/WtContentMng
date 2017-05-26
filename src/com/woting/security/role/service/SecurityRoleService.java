@@ -169,9 +169,10 @@ public class SecurityRoleService {
         param.put("funName", funName);
         param.put("funClass", funClass);
         param.put("funType", funType);
-        if (!StringUtils.isNullOrEmptyOrSpace(objId)) {
-            param.put("objId", objId);
+        if (StringUtils.isNullOrEmptyOrSpace(objId)) {
+            objId="";
         }
+        param.put("objId", objId);
         if (!StringUtils.isNullOrEmptyOrSpace(funFlag1)) {
             int _funFlag1=Integer.valueOf(funFlag1);
             param.put("funFlag1", _funFlag1);
@@ -388,7 +389,7 @@ public class SecurityRoleService {
             if (funClass!=null && funClass.equals("1")) {//==1 -> "Data" 数据权限
                 Map<String, Object> param=new HashMap<String, Object>();
                 param.put("userId", userId);
-                //查询用户是的角色
+                //查询用户的角色
                 Map<String, Object> ret=userRoleDao.queryForObjectAutoTranform("selectUserRole", param);
                 if (ret==null || ret.size()<=0) return null;
                 String roleId=ret.get("roleId")==null?null:ret.get("roleId").toString();

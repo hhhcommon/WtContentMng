@@ -221,7 +221,7 @@ $(function(){
   function opts(seaFy,current_page){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
     data.PageSize=pageSize;
@@ -270,7 +270,7 @@ $(function(){
   function anew(flowflag){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     current_page=1;
     data.UserId=userId;
     data.PageSize=pageSize;
@@ -374,7 +374,7 @@ $(function(){
   function searchList(){
     destroy(data);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     data.UserId=userId;
     data.ContentFlowFlag=flowflag;
     data.PageSize=pageSize;
@@ -395,7 +395,7 @@ $(function(){
   function getSearchList(dataParam){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/searchContents.do",
+      url:rootPath+"CM/content/searchContents.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(dataParam),
@@ -458,7 +458,7 @@ $(function(){
   var loadTreeData=[{ChannelId:"",TreeViewType:"zTree"}];
   loadTree(loadTreeData);
   function loadTree(loadData){
-    var _url=rootPath+"baseinfo/getChannelTree4View.do";
+    var _url=rootPath+"CM/baseinfo/getChannelTree4View.do";
     var i=0;
     loadRecursion(0);
   
@@ -471,7 +471,7 @@ $(function(){
         data: loadData[index++],
         success: function(jsonData){
           if(jsonData.ReturnType=="1001"){
-            zTreeObj.addNodes(null,jsonData.Data.children[0].children,false);
+            zTreeObj.addNodes(null,jsonData.Data.children,false);
           }
           loadRecursion(index);
         },
@@ -492,7 +492,7 @@ $(function(){
     data.Page=current_page;
     data.PageSize=pageSize
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data.ChannelId=nodes[0].id;
     getContentList(data);//请求加载内容列表
     
     //切换栏目时还原状态
@@ -513,7 +513,7 @@ $(function(){
   function getContentList(data){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContents.do",
+      url:rootPath+"CM/content/getContents.do",
       dataType:"json",
       cache:false,
       data:JSON.stringify(data),
@@ -548,30 +548,30 @@ $(function(){
     audioList=[];//每次加载数据之前先清空存数据的数组
     for(var i=0;i<resultData.ResultList.length;i++){
       var listBox='<div class="rtc_listBox">'+
-                '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
-                '<div class="rtcl_img fl">'+
-                  '<img src="" alt="节目图片" />'+
-                  '<div class="btn_player dis">'+
-                    '<i class="icon"></i>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="rtcl_con fl">'+
-                  '<p class="rtcl_con_p ellipsis"></p>'+
-                  '<p class="sequ_num"></p>'+
-                  '<div class="rtcl_con_desc">'+
-                    '<span class="rtcl_con_desc1 fl">主播：</span>'+
-                    '<span class="rtcl_con_desc2 fl ellipsis"></span>'+
-                  '</div>'+
-                '</div>'+
-                '<ul class="rtcl_con_channel1s ellipsis fl"></ul>'+
-                '<span class="source_form fl"></span>'+
-                '<span class="audio_time fl"></span>'+
-                '<div class="opetype1 fl" contentId='+resultData.ResultList[i].ContentId+'>'+
-                  '<div class="carousel">轮播图</div>'+
-                  '<div class="top">置&nbsp;&nbsp;&nbsp;顶</div>'+
-                  '<div class="revoke">撤&nbsp;&nbsp;&nbsp;回</div>'+
-                '</div>'+
-              '</div>';
+                    '<img src="../websiteManageResource/img/checkbox1.png" alt="" class="rtcl_img_check fl checkbox_img checkbox1"/>'+
+                    '<div class="rtcl_img fl">'+
+                      '<img src="" alt="节目图片" />'+
+                      '<div class="btn_player dis">'+
+                        '<i class="icon"></i>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="rtcl_con fl">'+
+                      '<p class="rtcl_con_p ellipsis"></p>'+
+                      '<p class="sequ_num"></p>'+
+                      '<div class="rtcl_con_desc">'+
+                        '<span class="rtcl_con_desc1 fl">主播：</span>'+
+                        '<span class="rtcl_con_desc2 fl ellipsis"></span>'+
+                      '</div>'+
+                    '</div>'+
+                    '<ul class="rtcl_con_channel1s ellipsis fl"></ul>'+
+                    '<span class="source_form fl"></span>'+
+                    '<span class="audio_time fl"></span>'+
+                    '<div class="opetype1 fl" contentId='+resultData.ResultList[i].ContentId+'>'+
+                      '<div class="carousel">轮播图</div>'+
+                      '<div class="top">置&nbsp;&nbsp;&nbsp;顶</div>'+
+                      '<div class="revoke">撤&nbsp;&nbsp;&nbsp;回</div>'+
+                    '</div>'+
+                  '</div>';
       $(".ri_top3_con").append(listBox);
       if(resultData.ResultList[i].ContentImg) $(".rtcl_img img").eq(i).attr("src",resultData.ResultList[i].ContentImg);
       else $(".rtcl_img img").eq(i).attr("src","http://www.wotingfm.com:908/CM/resources/images/default.png");
@@ -639,7 +639,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getContentInfo.do",
+      url:rootPath+"CM/content/getContentInfo.do",
       dataType:"json",
       cache:false,
       async:false,
@@ -664,12 +664,25 @@ $(function(){
   }
   /*e--ztree的操作集合*/
  
+  /*s--点击内容名字，进入内容详情*/
+  $(document).on("click",".rtcl_con_p",function(){
+    var mediaType=$(this).siblings(".sequ_num").attr("mediatype");
+    var contentId=$(this).parent(".rtcl_con").siblings(".opetype1").attr("contentId");
+    if(mediaType=="wt_MediaAsset"){//节目
+      var seqId=$(this).siblings(".sequ_num").attr("seqId");
+      $("#myIframe", parent.document).attr({"src":"contentsManage/jm_detail.html?contentId="+contentId+"&&seqId="+seqId});
+    }else if(mediaType=="wt_SeqMediaAsset"){//专辑
+      $("#myIframe", parent.document).attr({"src":"contentsManage/zj_detail.html?contentId="+contentId});
+    }
+  });
+  /*e--点击内容名字，进入内容详情*/
+ 
   /*s--点击轮播图*/
   $(document).on("click",".carousel",function(){
     var contentId=$(this).parent(".opetype1").attr("contentId");
     var contenttxt=$(this).parent(".opetype1").siblings(".rtcl_con").children(".rtcl_con_p").text();
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    channelId=nodes[0].id;
+    if(nodes.length!=0) channelId=nodes[0].id;
     var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
     if(mediatype=="wt_MediaAsset"){//节目
       mediatype="AUDIO";
@@ -680,6 +693,8 @@ $(function(){
     }
     $(".cm_content3").text("<"+contenttxt+">").attr({"contentId":contentId,"mediatype":mediatype,"channelId":channelId});
     $("body").css("overflow","hidden");
+    $(".newImg").remove();
+    $(".defaultImg").attr({"src":"http://www.wotingfm.com:908/CM/resources/images/default.png"}).show();
     $(".carousel_mask").removeClass("dis");
   });
   
@@ -708,7 +723,7 @@ $(function(){
   //请求上传文件
   function requestUpload(_this,oMyForm){
     $.ajax({
-      url:rootPath+"common/uploadCM.do",
+      url:rootPath+"CM/common/uploadCM.do",
       type:"POST",
       data:oMyForm,
       cache: false,
@@ -769,7 +784,7 @@ $(function(){
                "ImageUrl":imgurl
     };
     $.ajax({
-      url:rootPath+"content/addLoopImage.do",
+      url:rootPath+"CM/content/addLoopImage.do",
       type:"POST",
       data:JSON.stringify(data5),
       cache: false,
@@ -816,7 +831,7 @@ $(function(){
       var contentId=$(this).parent(".opetype1").attr("contentId");
       var box=$(".ri_top3_con .rtc_listBox");
       var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-      channelId=nodes[0].id;
+      if(nodes.length!=0) channelId=nodes[0].id;
       var mediatype=$(this).parent(".opetype1").siblings(".rtcl_con").children(".sequ_num").attr("mediatype");
       if(mediatype=="wt_MediaAsset"){//节目
         mediatype="AUDIO";
@@ -879,7 +894,7 @@ $(function(){
   //设置/取消置顶
   function setTop(data1,obj){
     $.ajax({
-      url:rootPath+"content/setTop.do",
+      url:rootPath+"CM/content/setTop.do",
       type:"POST",
       data:JSON.stringify(data1),
       cache: false,
@@ -982,7 +997,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/updateContentStatus.do",
+      url:rootPath+"CM/content/updateContentStatus.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data2),
@@ -1026,7 +1041,7 @@ $(function(){
   function getLoopImages(data3){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/getLoopImages.do",
+      url:rootPath+"CM/content/getLoopImages.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data3),
@@ -1071,7 +1086,7 @@ $(function(){
     loopCurrentPage=loopCurrentPage+1;
     destroy(data3);
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    data3.ChannelId=nodes[0].id;
+    if(nodes.length!=0) data3.ChannelId=nodes[0].id;
     data3.UserId=userId;
     data3.PCDType="3";
     data3.Page=loopCurrentPage;
@@ -1096,7 +1111,7 @@ $(function(){
                       '<img src="../../anchor/anchorResource/img/waiting_circle.gif" alt="" class="carouselImg" />'+
                     '</div>'+
                   '</div>'+
-                  '<div class="lbd_box5 fl ellipsis" loopSort='+resultData.ResultList[i].LoopSort+'><'+resultData.ResultList[i].ContentName+'></div>'+
+                  '<div class="lbd_box5 fl ellipsis" loopSort='+resultData.ResultList[i].LoopSort+'>'+resultData.ResultList[i].ContentName+'</div>'+
                   '<div class="lbd_box6 fl">'+
                     '<div class="lbd_box61">上移一层</div>'+
                     '<div class="lbd_box62">下移一层</div>'+
@@ -1144,7 +1159,7 @@ $(function(){
     var _ts2=$(_this).siblings(".lbd_box2");
     var _ts3=$(_this).siblings(".lbd_box2 img:last");
     $.ajax({
-      url:rootPath+"common/uploadCM.do",
+      url:rootPath+"CM/common/uploadCM.do",
       type:"POST",
       data:oMyForm,
       cache: false,
@@ -1207,7 +1222,7 @@ $(function(){
               "ImageUrl":imgurl
   };
     $.ajax({
-      url:rootPath+"content/addLoopImage.do",
+      url:rootPath+"CM/content/addLoopImage.do",
       type:"POST",
       data:JSON.stringify(data5),
       cache: false,
@@ -1239,7 +1254,7 @@ $(function(){
       var contentId=$($li).attr("contentId");
       var mediaType=$($li).attr("mediaType");
       var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-      channelId=nodes[0].id;
+      if(nodes.length!=0) channelId=nodes[0].id;
       var data4={"PCDType":"3",
                  "MediaType":mediaType,
                  "ChannelId":channelId,
@@ -1261,7 +1276,7 @@ $(function(){
       var contentId=$($li).attr("contentId");
       var mediaType=$($li).attr("mediaType");
       var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-      channelId=nodes[0].id;
+      if(nodes.length!=0) channelId=nodes[0].id;
       var data4={"PCDType":"3",
                  "MediaType":mediaType,
                  "ChannelId":channelId,
@@ -1277,7 +1292,7 @@ $(function(){
   function moveLoopImage(data4){
     $.ajax({
       type:"POST",
-      url:rootPath+"content/sortLoopImage.do",
+      url:rootPath+"CM/content/sortLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data4),
@@ -1314,7 +1329,7 @@ $(function(){
     var contentId=$($li).attr("contentId");
     var mediaType=$($li).attr("mediaType");
     var nodes=zTreeObj.getSelectedNodes();//当前被勾选的节点集合  
-    channelId=nodes[0].id;
+    if(nodes.length!=0) channelId=nodes[0].id;
     var data6={"PCDType":"3",
                "UserId":userId,
                "MediaType":mediaType,
@@ -1323,7 +1338,7 @@ $(function(){
     };
     $.ajax({
       type:"POST",
-      url:rootPath+"content/delLoopImage.do",
+      url:rootPath+"CM/content/delLoopImage.do",
       dataType:"json",
       cache:false, 
       data:JSON.stringify(data6),

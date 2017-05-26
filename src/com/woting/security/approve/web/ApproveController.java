@@ -23,6 +23,7 @@ import com.woting.passport.mobile.MobileParam;
 import com.woting.passport.mobile.MobileUDKey;
 import com.woting.passport.session.DeviceType;
 import com.woting.passport.session.SessionService;
+import com.woting.security.approve.persis.pojo.ApproveInfoPo;
 import com.woting.security.approve.persis.pojo.PlatUserProgressPo;
 import com.woting.security.approve.service.ApproveRoleService;
 
@@ -253,8 +254,7 @@ public class ApproveController {
             } catch (InterruptedException e) {}
         }
     }
-    
-    @SuppressWarnings("unchecked")
+
     @RequestMapping(value = "/security/getApproveInfo.do")
     @ResponseBody
     public Map<String, Object> getApproveInfo(HttpServletRequest request) {
@@ -332,25 +332,14 @@ public class ApproveController {
                 map.put("Message", "用户不存在");
                 return map;
             }
-            //得到参数
-            int page=m.get("Page")==null?1:Integer.valueOf(m.get("Page").toString());
-            int pageSize=m.get("PageSize")==null?10:Integer.valueOf(m.get("PageSize").toString());
-            Map<String, Object> result=approveService.getApproves(page, pageSize);
-            if (result==null || result.size()<=0) {
+            ApproveInfoPo approveInfoPo=approveService.getApproveInfo(userId);
+            if (approveInfoPo==null) {
                 map.put("ReturnType", "1011");
                 map.put("Message", "无内容");
             } else {
-                List<Map<String, Object>> resultList=(List<Map<String, Object>>) result.get("ResultList");
-                if (resultList==null || resultList.size()<=0) {
-                    map.put("ReturnType", "1011");
-                    map.put("Message", "无内容");
-                } else {
-                    int count=(int) result.get("AllCount");
-                    map.put("ReturnType", "1001");
-                    map.put("Message", "获取成功");
-                    map.put("ResultList", resultList);
-                    map.put("AllCount", count);
-                }
+                map.put("ReturnType", "1001");
+                map.put("Message", "获取用户认证信息成功");
+                map.put("approveInfo", approveInfoPo);
             }
             return map;
         } catch(Exception e) {
@@ -451,7 +440,8 @@ public class ApproveController {
             //得到参数
             int page=m.get("Page")==null?1:Integer.valueOf(m.get("Page").toString());
             int pageSize=m.get("PageSize")==null?10:Integer.valueOf(m.get("PageSize").toString());
-            Map<String, Object> result=approveService.getApproves(page, pageSize);
+            int flag=m.get("Flag")==null?0:Integer.valueOf(m.get("Flag").toString());
+            Map<String, Object> result=approveService.getApproves(page, pageSize, flag);
             if (result==null || result.size()<=0) {
                 map.put("ReturnType", "1011");
                 map.put("Message", "无内容");
@@ -564,14 +554,14 @@ public class ApproveController {
                 return map;
             }
             //得到参数
-            String checkerId=m.get("CheckerId").toString();
-            String _reState=m.get("ReState").toString();
+            String checkerId=m.get("CheckerId")==null?null:m.get("CheckerId").toString();
+            String _reState=m.get("ReState")==null?null:m.get("ReState").toString();
             if (StringUtils.isNullOrEmptyOrSpace(userId) || StringUtils.isNullOrEmptyOrSpace(_reState)) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String applyDescn=m.get("ApplyDescn").toString();
+            String applyDescn=m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString();
             //中文字符转换成英文字符  同意格式
             if (checkerId.contains("，")) checkerId.replaceAll("，", ",");
             String[] userIdArr=checkerId.split(",");
