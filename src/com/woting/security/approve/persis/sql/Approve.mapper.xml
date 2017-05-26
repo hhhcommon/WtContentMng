@@ -51,13 +51,18 @@
     </trim>
   </insert>
   
-  <!-- 查询用户认证信息  -->
+  <!-- 批量查询用户认证信息  -->
   <select id="getApproveList" parameterType="java.util.Map" resultType="java.util.HashMap">
     select * from plat_User_Ext
     where userId in
     <foreach collection="userIdList" item="value" open="(" separator="," close=")">
       #{value}
     </foreach>
+  </select>
+
+  <!-- 单条查询用户认证信息  -->
+  <select id="getUserApproveInfo" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_User_Ext where userId=#{userId, jdbcType=VARCHAR}
   </select>
 
   <!-- 对象定义:用户发起主播认证进程 -->
@@ -130,6 +135,6 @@
   
   <!-- 查询用户认证信息 -->
   <select id="getNotPassUser" parameterType="java.util.Map" resultType="java.util.HashMap">
-    select * from plat_UserProgress where reState=0
+    select userId from plat_UserProgress where reState=#{reState, jdbcType=INTEGER}
   </select>
 </mapper>

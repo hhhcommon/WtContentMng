@@ -23,6 +23,7 @@ import com.woting.passport.mobile.MobileParam;
 import com.woting.passport.mobile.MobileUDKey;
 import com.woting.passport.session.DeviceType;
 import com.woting.passport.session.SessionService;
+import com.woting.security.approve.persis.pojo.ApproveInfoPo;
 import com.woting.security.approve.persis.pojo.PlatUserProgressPo;
 import com.woting.security.approve.service.ApproveRoleService;
 
@@ -331,14 +332,14 @@ public class ApproveController {
                 map.put("Message", "用户不存在");
                 return map;
             }
-            PlatUserProgressPo p=approveService.getUserApproveProgress(userId);
-            if (p==null) {
+            ApproveInfoPo approveInfoPo=approveService.getApproveInfo(userId);
+            if (approveInfoPo==null) {
                 map.put("ReturnType", "1011");
                 map.put("Message", "无内容");
             } else {
                 map.put("ReturnType", "1001");
                 map.put("Message", "获取用户认证信息成功");
-                map.put("approveInfo", p);
+                map.put("approveInfo", approveInfoPo);
             }
             return map;
         } catch(Exception e) {
