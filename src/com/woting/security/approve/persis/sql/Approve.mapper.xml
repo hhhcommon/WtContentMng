@@ -6,6 +6,7 @@
   <!-- 对象定义:用户扩展 -->
   <resultMap id="UserExtMap" type="UserExt">
     <id      column="userid"        property="userid"        jdbcType="VARCHAR"/>
+    <result  column="reallyName"    property="reallyName"    jdbcType="VARCHAR"/>
     <result  column="iDCard"        property="iDCard"        jdbcType="VARCHAR"/>
     <result  column="frontImg"      property="frontImg"      jdbcType="VARCHAR"/>
     <result  column="reverseImg"    property="reverseImg"    jdbcType="VARCHAR"/>
@@ -16,7 +17,7 @@
   
   <!-- 所有列 -->
   <sql id="Base_User_Ext_List">
-    userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, cTime
+    userId, reallyName, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, cTime
   </sql>
   
   <!-- 提交认证信息之前先查询数据库中是否已经有用户认证信息-->
@@ -30,6 +31,7 @@
     insert into plat_User_Ext
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="userId!=null">userId,</if>
+      <if test="reallyName!=null">reallyName,</if>
       <if test="iDCard!=null">iDCard,</if>
       <if test="frontImg!=null">frontImg,</if>
       <if test="reverseImg!=null">reverseImg,</if>
@@ -39,6 +41,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId!=null">#{userId,jdbcType=VARCHAR},</if>
+      <if test="reallyName!=null">#{reallyName,jdbcType=VARCHAR},</if>
       <if test="iDCard!=null">#{iDCard,jdbcType=VARCHAR},</if>
       <if test="frontImg!=null">#{frontImg,jdbcType=VARCHAR},</if>
       <if test="reverseImg!=null">#{reverseImg,jdbcType=VARCHAR},</if>
@@ -47,6 +50,15 @@
       <if test="cTime!=null">#{cTime,jdbcType=TIMESTAMP},</if>
     </trim>
   </insert>
+  
+  <!-- 查询用户认证信息  -->
+  <select id="getApproveList" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_User_Ext
+    where userId in
+    <foreach collection="userIdList" item="value" open="(" separator="," close=")">
+      #{value}
+    </foreach>
+  </select>
 
   <!-- 对象定义:用户发起主播认证进程 -->
   <resultMap id="UserProgressMap" type="UserProgress">
@@ -99,22 +111,25 @@
     and modifyTime=(select max(modifyTime) from plat_UserProgress)
   </select>
 
-  <!-- 查询用户认证信息 -->
-  <select id="getApproveList" parameterType="java.util.Map" resultType="java.util.HashMap">
-    select * from plat_User_Ext
-  </select>
-
   <!-- 修改用户认证状态 -->
   <update id="updateUserApproveState" parameterType="java.util.Map">
-    update plat_UserProgress set reState=#{reState, jdbcType=INTEGER},
+    update plat_UserProgress set reState=#{reState, jdbcType=INTEGER}
     <if test="applyDescn!=null">
         applyDescn=#{applyDescn, jdbcType=VARCHAR}
     </if>
-    where reState!=2
-    <if test="userIdList!=null">
-      <foreach collection="userIdList" index="index" item="value" open="and (" separator="or" close=")">
-        userId=#{value}
-      </foreach>
-    </if>
+    where reState!=2 and userId in
+    <foreach collection="userIdList" item="value" open="(" separator="," close=")">
+      #{value}
+    </foreach>
   </update>
+
+  <!-- 删除角色 -->
+  <delete id="deleteErrorApprove" parameterType="java.util.Map">
+    delete from plat_UserProgress where userId=#{userId, jdbcType=VARCHAR}
+  </delete>
+  
+  <!-- 查询用户认证信息 -->
+  <select id="getNotPassUser" parameterType="java.util.Map" resultType="java.util.HashMap">
+    select * from plat_UserProgress where reState=0
+  </select>
 </mapper>

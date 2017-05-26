@@ -15,12 +15,15 @@ import com.spiritdata.framework.util.SequenceUUID;
 import com.spiritdata.framework.util.StringUtils;
 import com.woting.security.approve.persis.pojo.PlatUserExtPo;
 import com.woting.security.approve.persis.pojo.PlatUserProgressPo;
+import com.woting.security.role.service.SecurityRoleService;
 
 public class ApproveRoleService {
     @Resource(name="defaultDAO")
     private MybatisDAO<PlatUserExtPo> platUserExtDao;
     @Resource(name="defaultDAO")
     private MybatisDAO<PlatUserProgressPo> platUserProgressDao;
+    @Resource
+    private SecurityRoleService roleService;
 
     @PostConstruct
     public void initParam() {
@@ -28,10 +31,11 @@ public class ApproveRoleService {
         platUserProgressDao.setNamespace("PLAT_APPROVE");
     }
 
-    public Map<String, Object> approveRole(String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId) {
+    public Map<String, Object> approveRole(String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId, String reallyName) {
         Map<String, Object> map=new HashMap<String, Object>();
         if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
-                || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) || StringUtils.isNullOrEmptyOrSpace(applyRoleId)) {
+                || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
+                || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName)) {
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
@@ -55,6 +59,7 @@ public class ApproveRoleService {
         param.put("frontImg", frontImg);
         param.put("reverseImg", reverseImg);
         param.put("mixImg", mixImg);
+        param.put("reallyName", reallyName);
         if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
             param.put("anchorCardImg", anchorCardImg);
         }
@@ -76,6 +81,10 @@ public class ApproveRoleService {
             return map;
         } catch (Exception e) {
             e.printStackTrace();
+            try{
+              //删除错误申请
+                platUserProgressDao.delete("deleteErrorApprove", _param);
+            } catch (Exception e1){}
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
@@ -123,14 +132,33 @@ public class ApproveRoleService {
     /**
      * 获取用户申请认证列表
      */
-    public Map<String, Object> getApproves(int page, int pageSize) {
+    public Map<String, Object> getApproves(int page, int pageSize, int flag) {
+        List<String> userIdList;
+        try {
+            List<Map<String, Object>> list=platUserProgressDao.queryForObjectAutoTranform("getNotPassUser", null);
+            if (list==null || list.size()<=0) return null;
+            userIdList=new ArrayList<>();
+            String userId;
+            for (int i=0; i<list.size(); i++) {
+                userId=(String) list.get(i).get("userId");
+                if (userId!=null && !userId.equals("")) {
+                    userIdList.add(userId);
+                    userId=null;
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        if (userIdList==null || userIdList.size()<=0) return null;
+        Map<String, Object> param=new HashMap<String, Object>();
+        param.put("userIdList", userIdList);
         List<Map<String, Object>> _ret=null;
         int count=0;
         if (page==0) {// 获取全部
-            _ret=platUserExtDao.queryForListAutoTranform("getApproveList", null);
+            _ret=platUserExtDao.queryForListAutoTranform("getApproveList", param);
             if (_ret!=null && _ret.size()>0) count=_ret.size();
         } else {// 分页获取
-            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform("getLoopImgListCount", "getLoopImgList", null, page, pageSize);
+            Page<Map<String, Object>> mapPage=platUserExtDao.pageQueryAutoTranform(null, "getApproveList", param, page, pageSize);
             if (mapPage!=null&&mapPage.getDataCount()>0) {
                 _ret=new ArrayList<Map<String, Object>>();
                 _ret.addAll(mapPage.getResult());
@@ -143,13 +171,30 @@ public class ApproveRoleService {
             Map<String, Object> one=_ret.get(i);
             Map<String, Object> _one=new HashMap<String, Object>();
             if (one.get("userId")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("userId")+"")) _one.put("UserId", one.get("userId"));
+            if (one.get("reallyName")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reallyName")+"")) _one.put("reallyName", one.get("reallyName"));
             if (one.get("iDCard")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("iDCard")+"")) _one.put("IDCard", one.get("iDCard"));
             if (one.get("frontImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("frontImg")+"")) _one.put("FrontImg", one.get("frontImg"));
             if (one.get("reverseImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("reverseImg")+"")) _one.put("ReverseImg", one.get("reverseImg"));
             if (one.get("mixImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("mixImg")+"")) _one.put("MixImg", one.get("mixImg"));
-            if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) _one.put("AnchorCardImg", one.get("anchorCardImg")+"");
+            String anchorCardImg;
+            if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) {
+                anchorCardImg=one.get("anchorCardImg").toString();
+                if (anchorCardImg!=null&&!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) _one.put("AnchorCardImg", anchorCardImg);
+            } else {
+                anchorCardImg="";
+            }
             if (one.get("imgUrl")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("imgUrl")+"")) _one.put("ContentLoopImg", one.get("imgUrl")+"");
-            ret.add(_one);
+            if (flag==1) {//实名认证列表
+                if (anchorCardImg==null || anchorCardImg.equals("") || anchorCardImg.toLowerCase().equals("null")) {
+                    ret.add(_one);
+                }
+            } else if (flag==2) {//资格认证列表
+                if (anchorCardImg!=null && !anchorCardImg.equals("") && !anchorCardImg.toLowerCase().equals("null")) {
+                    ret.add(_one);
+                }
+            } else {//获取全部认证列表
+                ret.add(_one);
+            }
         }
         Map<String, Object> retM=new HashMap<String, Object>();
         retM.put("ResultList", ret);
@@ -172,7 +217,14 @@ public class ApproveRoleService {
         param.put("reState", reState);
         param.put("applyDescn", applyDescn);
         try {
-            platUserExtDao.update("updateUserApproveState", param);
+            platUserProgressDao.update("updateUserApproveState", param);
+            for (String userId : userIdList) {
+                PlatUserProgressPo userProgress=getUserApproveProgress(userId);
+                if (userProgress!=null) {
+                    String roleId=userProgress.getApplyRoleId();
+                    roleService.setUserRole(userId, roleId);
+                }
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

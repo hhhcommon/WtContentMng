@@ -33,6 +33,7 @@
   <script src="../resources/plugins/hplus/js/hplus.min.js"></script>
   <script src="../resources/plugins/hplus/js/contabs.min.js"></script>
   <script src="../resources/plugins/hplus/js/plugins/pace/pace.min.js"></script>
+  <script src="../anchor/anchorResource/js/jquery.cookie.js"></script>
 <style>
 /*全局样式*/
 *{margin: 0;padding: 0;}
@@ -348,6 +349,7 @@ body.fixed-sidebar.mini-navbar #page-wrapper{
               <li class="navList"><a hrefs="personCenter/changePassword.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">修改密码</span></a></li>
               <li class="navList"><a hrefs="personCenter/changePhoneNum.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">修改手机号</span></a></li>
               <li class="navList"><a hrefs="personCenter/authentication.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">身份认证</span></a></li>
+              <li class="navList"><a hrefs="personCenter/apply_authentication.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">主播申请认证</span></a></li>
               <li class="navList"><a hrefs="personCenter/feedBack.html" class="M_menuItem a_audio1 a_fs" href="javascript:void(0);"><img class="audio2" src="anchorResource/img/left-line.png" alt="" /><span class="nav-label">反馈建议</span></a></li>
             </ul>
           </li>
@@ -412,9 +414,9 @@ $(function(){
   });
   
   /*s--获取用户名和id,并进行相关的操作*/
-  var userId=getUrlParam(window.location.href,'userId');
-  var userPsd=getUrlParam(window.location.href,'userPsd');
-  var userName=getUrlParam(window.location.href,'userName');
+  var userId=$.cookie('logSuccessId');
+  var userPsd=$.cookie('logSuccessPwd');
+  var userName=$.cookie('logSuccessName');
   if((userId!=null)&&(userPsd!=null)&&(userName!=null)){
     var myreg=/[\u0000-\u00FF]/;
     if((myreg.test(userName))) userName=decodeURIComponent(userName);

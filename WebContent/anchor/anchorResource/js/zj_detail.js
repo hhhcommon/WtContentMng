@@ -25,11 +25,11 @@ $(function(){
         if(resultData.ReturnType=="1001"){
           fillZjDetail(resultData);//填充专辑数据
         }else{
-          alert(resultData.Message);
+          alert("得到专辑信息失败："+resultData.Message);
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到专辑信息发生错误："+ jqXHR.status);
       }
     });
   }
@@ -63,8 +63,8 @@ $(function(){
         contentCount=(allCount%pageSize==0)?(allCount/pageSize):(Math.ceil(allCount/pageSize));
         pagitionInit(contentCount,allCount,_data.Page);//init翻页
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到专辑的节目列表发生错误："+ jqXHR.status);
       }
     });
   }
@@ -93,7 +93,7 @@ $(function(){
         }
       }
     }else{
-      var newli='<li>暂无</li>';
+      var newli='<div>暂无</div>';
       $(".tg1").append(newli);
     }
     $(".cctimes").html(resultData.Result.CTime);
@@ -121,11 +121,11 @@ $(function(){
         if(resultData.ReturnType == "1001"){
           fillMyZjDetail(resultData);//填充我的所有专辑的数据
         }else{
-          alert(resultData.Message);
+          alert("得到所有专辑列表失败:"+resultData.Message);
         }
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("得到所有专辑列表发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -155,6 +155,11 @@ $(function(){
       $(".dcr_zjlist").append(newzj);
     }
   }
+  
+  //点击标题的专辑管理--进入专辑管理页面
+  $(document).on("click",".detail_title2",function(){
+    $("#myIframe", parent.document).attr({"src":"jmANDzj/manage_zj.html"});
+  })
   
   //点击右侧我的所有专辑列表，调到对应的详情页
   $(document).on("click",".list1_img",function(){
@@ -503,6 +508,7 @@ $(function(){
   /*s--点击相关操作的编辑按钮*/
   $(document).on("click",".jm_edit",function(){
     var contentId=$(this).parents(".rtc_listBox").attr("contentid");
+    var seqId=$(this).parents(".rtc_listBox").attr("contentseqid")
     var flowFlag=$(this).parent(".op_type").siblings(".jm_st").attr("jmstatusid");
 //  if(flowFlag=="2"||flowFlag=="3"||flowFlag=="4"||flowFlag=="6"||flowFlag=="8"){
       //2发布审核中，3已审核(定时发布)，4已发布，6待撤回(实际是撤回审核中)，8撤回未通过
@@ -512,37 +518,58 @@ $(function(){
     }else{
       clear_jm();//填充前清空数据
       edit_jm(contentId);//编辑节目时得到节目的详细信息
+      
+      //获取节目弹出页面公共标签
+      destroy(data1);
+      data1.MobileClass="Chrome";
+      data1.PCDType="3";
+      data1.UserId=userId;
+      data1.MediaType="2";
+      data1.TagType="1";
+      data1.TagSize="20";
+      data1.SeqMediaId=seqId;
+      loadTag(data1);
+      
+      //获取节目弹出页面我的标签
+      destroy(data2);
+      data2.MobileClass="Chrome";
+      data2.PCDType="3";
+      data2.UserId=userId;
+      data2.MediaType="2";
+      data2.TagType="2";
+      data2.TagSize="20";
+      data2.SeqMediaId=seqId;
+      loadTag(data2);
     }
   });
+
+  var data1={};
+  var data2={};
   
-  //获取公共标签
-  var data1={"MobileClass":"Chrome",
-             "PCDType":"3",
-             "UserId":userId,
-             "MediaType":"1",
-             "TagType":"1",
-             "TagSize":"20"
-  };
-  loadPubTag(data1);//mediaType暂时先为1，如果为2时得不到
-  
-  //点击“换一换”，更换公共标签
-  $(document).on("click",".gg_tag .hyp",function(){
-    loadPubTag(data1);
+  //点击节目弹出页面“换一换”，更换节目弹出页面公共标签
+  $(document).on("click",".add_jm .gg_tag .hyp",function(){
+    destroy(data1);
+    data1.MobileClass="Chrome";
+    data1.PCDType="3";
+    data1.UserId=userId;
+    data1.MediaType="2";
+    data1.TagType="1";
+    data1.TagSize="20";
+    data1.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    loadTag(data1);
   })
   
-  //获取我的标签
-  var data2={"MobileClass":"Chrome",
-             "PCDType":"3",
-             "UserId":userId,
-             "MediaType":"1",
-             "TagType":"2",
-             "TagSize":"20"
-  };
-  loadMyTag(data2);
-  
-  //点击“换一换”，更换我的标签
-  $(document).on("click",".my_tag .hyp",function(){
-    loadMyTag(data2);
+  //点击节目弹出页面“换一换”，更换节目弹出页面我的标签
+  $(document).on("click",".add_jm .my_tag .hyp",function(){
+    destroy(data2);
+    data2.MobileClass="Chrome";
+    data2.PCDType="3";
+    data2.UserId=userId;
+    data2.MediaType="2";
+    data2.TagType="2";
+    data2.TagSize="20";
+    data2.SeqMediaId=$(".upl_zj option:selected").attr("id");
+    loadTag(data2);
   })
   
   //编辑节目时得到节目的详细信息
@@ -564,11 +591,11 @@ $(function(){
           getTime();
           fillJmContent(resultData);//填充节目信息
         }else{
-          alert(resultData.Message);
+          alert("得到节目的详细信息失败:"+resultData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("得到节目的详细信息发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -701,12 +728,12 @@ $(function(){
           $("body").css({"overflow":"auto"});
           getZj_jmList(_data);//重新加载节目列表
         }else{
-          alert(resultData.Message);
+          alert("更改节目信息失败:"+resultData.Message);
         }
         $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("更改节目信息发生错误:"+ jqXHR.status);
       }
     });
   });
@@ -777,11 +804,11 @@ $(function(){
         if(resultData.ReturnType=="1001"){
           pubEditJm(_datas);
         }else{
-          alert(resultData.Message);
+          alert("更改节目信息失败:"+resultData.Message);
         }
       },
       error:function(jqXHR){
-        alert("发生错误："+ jqXHR.status);
+        alert("更改节目信息发生错误:"+ jqXHR.status);
       }
     });
   });
@@ -810,12 +837,12 @@ $(function(){
           $("body").css({"overflow":"auto"});
           getZj_jmList(_datas);//重新加载节目列表
         }else{
-          alert(resultData.Message);
+          alert("节目发布失败:"+resultData.Message);
         }
         $(".btn_group input").removeAttr("disabled").css("background","#ffa634");
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("节目发布发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -854,12 +881,12 @@ $(function(){
           alert("发布节目请求成功");
           getZj_jmList(_data);//重新加载节目列表
         }else{
-          alert(resultData.Message);
+          alert("发布节目请求失败:"+resultData.Message);
         }
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("发布节目请求发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -895,15 +922,15 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          alert("撤回节目请求已发送");
+          alert("撤回节目请求发送成功");
           getZj_jmList(_data);//重新加载节目列表
         }else{
-          alert(resultData.Message);
+          alert("撤回节目请求发送失败:"+resultData.Message);
         }
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("撤回节目请求发送发生错误:"+ jqXHR.status);
       }
     });
   }
@@ -941,12 +968,12 @@ $(function(){
           alert("节目删除成功");
           getZj_jmList(_data);//重新加载节目列表
         }else{
-          alert(resultData.Message);
+          alert("节目删除失败:"+resultData.Message);
         }
         $('.shade', parent.document).hide();
       },
-      error:function(XHR){
-        alert("发生错误："+ jqXHR.status);
+      error:function(jqXHR){
+        alert("节目删除发生错误:"+jqXHR.status);
       }
     });
   }
