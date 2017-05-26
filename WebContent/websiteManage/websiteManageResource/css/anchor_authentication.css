@@ -300,6 +300,7 @@ body{height:100%;-moz-user-select: none;overflow-x:auto; background:#fff !import
   font-size: 20px;
   text-align: center;
   margin: 10px 20px;
+  cursor: pointer;
 }
 .mw_div1{
   margin: 30px 20px 5px;

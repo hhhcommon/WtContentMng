@@ -304,7 +304,7 @@ $(function(){
     $(this).parent(".mw_div21").parent(".mw_div2").siblings(".mw_div3").children(".mw_con1").addClass("dis").eq(index).removeClass("dis");
   });
   
-  /*点击主播未通过资格认证的具体原因*/
+  /*点击主播通过/未通过资格认证的具体原因*/
   $(".mw_reason .checkbox_img").on("click",function(){
     if($(this).hasClass("checkbox1")){
       $(this).removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png").siblings(".mw_txt1").css("color","#0077c7");
@@ -315,16 +315,20 @@ $(function(){
   
   /*点击通过--出现弹出页面或者主播通过认证*/
   $(document).on("click",".rtc_listBox45",function(){
-    debugger;
     var _this=$(this);
     var checkerId=$(this).parent(".rtc_listBox43").attr("checkerId");
     $(".mask_pass").attr("checkerId",checkerId);
     var img_length=$(this).parent(".rtc_listBox43").siblings(".rtc_listBox4").children(".rtc_listBox40").children(".rtc_listBox41").length;
     if(img_length==4){//出现通过的提示弹出框
+      $(".mw_div21").eq(0).removeClass("selected").children(".checkbox_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png");
+      $(".mw_div21").eq(1).addClass("selected").children(".checkbox_img").removeClass("checkbox1").attr("src","../websiteManageResource/img/checkbox2.png");
       if($(".mw_div21").hasClass("selected")){
         $(".mw_div21").parent(".mw_div2").siblings(".mw_div3").children(".mw_con1").eq(0).addClass("dis");
       }
+      $(".mw_reason .checkbox_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png").siblings(".mw_txt1").css("color","#000");
+      $(".other_reason").val("");
       $(".mask_pass").removeClass("dis");
+      return;
     }else{
       var data2={};
       data2.UserId=userId;
@@ -338,6 +342,8 @@ $(function(){
   /*点击不通过--出现弹出页面使主播不通过认证*/
   $(document).on("click",".rtc_listBox46",function(){
     var checkerId=$(this).parent(".rtc_listBox43").attr("checkerId");
+    $(".mw_reason .checkbox_img").addClass("checkbox1").attr("src","../websiteManageResource/img/checkbox1.png").siblings(".mw_txt1").css("color","#000");
+    $(".other_reason").val("");
     $(".mask_nopass").removeClass("dis").attr("checkerId",checkerId);
   });
   
@@ -345,18 +351,18 @@ $(function(){
   /*点击通过弹出页面的确定按钮*/
   $(".mask_pass .mw_txt4").on("click",function(){
     var _this=$(this);
-    var applyDescn='';
+    var reDescn='';
     $(".mw_reason").each(function(){
       if($(this).children(".checkbox_img").hasClass("checkbox1")){
         
       }else{
-        if(applyDescn=='') applyDescn=$(this).children(".mw_txt1").text();
-        else applyDescn+=','+$(this).children(".mw_txt1").text();
+        if(reDescn=='') reDescn=$(this).children(".mw_txt1").text();
+        else reDescn+=','+$(this).children(".mw_txt1").text();
       }
     })
     if($(".other_reason").text()!=''){
-      if(applyDescn=='') applyDescn=$(".other_reason").text();
-      else applyDescn+=','+$(".other_reason").text();
+      if(reDescn=='') reDescn=$(".other_reason").text();
+      else reDescn+=','+$(".other_reason").text();
     }
     var data2={};
     data2.UserId=userId;
@@ -364,25 +370,25 @@ $(function(){
     data2.CheckerId=$(".mask_pass").attr("checkerId");
     data2.ReState="1";//0待处理，1通过，2未通过
     var _this=$(this);
-    if(applyDescn!='') data2.ApplyDescn=applyDescn;
+    if(reDescn!='') data2.ReDescn=reDescn;
     updateApprove(_this,data2);
   });
   
   /*点击不通过弹出页面的确定按钮*/
   $(".mask_nopass .mw_txt4").on("click",function(){
     var _this=$(this);
-    var applyDescn='';
+    var reDescn='';
     $(".mw_reason").each(function(){
       if($(this).children(".checkbox_img").hasClass("checkbox1")){
         
       }else{
-        if(applyDescn=='') applyDescn=$(this).children(".mw_txt1").text();
-        else applyDescn+=','+$(this).children(".mw_txt1").text();
+        if(reDescn=='') reDescn=$(this).children(".mw_txt1").text();
+        else reDescn+=','+$(this).children(".mw_txt1").text();
       }
     })
     if($(".other_reason").text()!=''){
-      if(applyDescn=='') applyDescn=$(".other_reason").text();
-      else applyDescn+=','+$(".other_reason").text();
+      if(reDescn=='') reDescn=$(".other_reason").text();
+      else reDescn+=','+$(".other_reason").text();
     }
     var data2={};
     data2.UserId=userId;
@@ -390,7 +396,7 @@ $(function(){
     data2.CheckerId=$(".mask_nopass").attr("checkerId");
     data2.ReState="2";//0待处理，1通过，2未通过
     var _this=$(this);
-    if(applyDescn!='') data2.ApplyDescn=applyDescn;
+    if(reDescn!='') data2.ReDescn=reDescn;
     updateApprove(_this,data2);
   });
   
@@ -407,6 +413,7 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
+          $(".mask_pass").addClass("dis");
           var data1={};
           data1.UserId=userId;
           data1.PCDType="3";
@@ -424,11 +431,11 @@ $(function(){
         }else{
           alert("认证通过失败");
         }
-        $(obj).removeAttr("disabled").css("color","#0077C7");
+        $(obj).removeAttr("disabled").css("color","#fff");
       },
       error:function(jqXHR){
         alert("认证通过发生错误:"+ jqXHR.status);
-        $(obj).removeAttr("disabled").css("color","#0077C7");
+        $(obj).removeAttr("disabled").css("color","#fff");
       }
     });
   }

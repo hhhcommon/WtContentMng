@@ -162,7 +162,7 @@ input[type=file] {display: none;}
   width: 1084px;
   height: 662px;
   top: -662px;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.5);
 }
 .allnote{
   color: #fff;
@@ -251,25 +251,20 @@ $(function(){
   
   //先获取用户申请认证的流程
   var data1={"UserId":userId,"PCDType":"3"};
-  //getApproveProgress(data1);
+  getApproveProgress(data1);
   function getApproveProgress(dataParam){
     $.ajax({
       url:rootPath+"security/getApproveProgress.do",
       type:"POST",
       data:JSON.stringify(dataParam),
       cache: false,
-      processData: false,
-      contentType: false,
+      async: false,
       dataType:"json",
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
-          if(resultData.approveInfo){
-            if(resultData.approveInfo.reStatu&&resultData.approveInfo.reStatu!=null){
-              if(resultData.approveInfo.reStatu=='0'){
-                $(".allmask").removeClass("dis");
-                getApproveInfo(data1);//获取用户申请认证详细信息
-              }
-            }
+          if(resultData.approveInfo.reStatu=="0"){
+            $(".allmask").removeClass("dis");
+            getApproveInfo(data1);//获取用户申请认证详细信息
           }
         }else{
           alert("获取用户申请认证的流程"+resultData.Message);
@@ -287,9 +282,7 @@ $(function(){
       url:rootPath+"security/getApproveInfo.do",
       type:"POST",
       data:JSON.stringify(dataParam),
-      cache: false,
-      processData: false,
-      contentType: false,
+      async: false,
       dataType:"json",
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
@@ -305,23 +298,23 @@ $(function(){
   }
   //填充用户申请认证详细信息
   function fillApproveInfo(resultData){
-    $(".dc2_ipt").text((resultData.approveInfo.realName)?(resultData.approveInfo.realName):"未知");
-    $(".dc2_ipt").text((resultData.approveInfo.id)?(resultData.approveInfo.id):"未知");
-    if(resultData.approveInfo.fontImg){
-      $(".pic1_li .dc3_img").attr("src",resultData.approveInfo.fontImg);
-      $(".pic1_li").attr("path",resultData.approveInfo.fontImg);
+    $(".dc1_ipt").val((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
+    $(".dc2_ipt").val((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
+    if(resultData.approveInfo.frontImg){
+      $(".pic1_li .dc3_img").attr("src",resultData.approveInfo.frontImg);
+      $(".pic1_li").attr("path",resultData.approveInfo.frontImg);
     }
     if(resultData.approveInfo.reverseImg){
       $(".pic2_li .dc3_img").attr("src",resultData.approveInfo.reverseImg);
       $(".pic2_li").attr("path",resultData.approveInfo.reverseImg);
     }
-    if(resultData.approveInfo.MixImg){
-      $(".pic3_li .dc3_img").attr("src",resultData.approveInfo.MixImg);
-      $(".pic4_li").attr("path",resultData.approveInfo.MixImg);
+    if(resultData.approveInfo.mixImg){
+      $(".pic3_li .dc3_img").attr("src",resultData.approveInfo.mixImg);
+      $(".pic3_li").attr("path",resultData.approveInfo.mixImg);
     }
-    if(resultData.approveInfo.authImg){
-      $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.authImg);
-      $(".pic4_li").attr("path",resultData.approveInfo.authImg);
+    if(resultData.approveInfo.auchorCardImg){
+      $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.auchorCardImg);
+      $(".pic4_li").attr("path",resultData.approveInfo.auchorCardImg);
     }
   }
   
@@ -436,7 +429,6 @@ $(function(){
     data.PCDType="3";
     data.ReallyName=$.trim($(".dc1_ipt").val());
     data.IDCard=$.trim($(".dc2_ipt").val());
-    debugger;
     if($(".pic1_li").attr("path")!='') data.FrontImg=$(".pic1_li").attr("path"); 
     if($(".pic2_li").attr("path")!='') data.ReverseImg=$(".pic2_li").attr("path"); 
     if($(".pic3_li").attr("path")!='') data.MixImg=$(".pic3_li").attr("path"); 
@@ -466,8 +458,6 @@ $(function(){
         if(resultData.ReturnType=="1001"){ 
           alert("申请提交成功");
           getApproveProgress(data1);
-        }else{
-          alert("申请提交失败"+resultData.Message);
         }
         $(".approve").removeAttr("disabled").css("background","#0077c7");
       },
