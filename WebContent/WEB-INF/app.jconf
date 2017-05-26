@@ -1,20 +1,25 @@
 {
-  //socket客户端配置信�?
+  //socket客户端配置信息
   "serverIdentify":{
-    "serverType":"CMEngin", //不能大于12个字�?
+    "serverType":"CMEngin", //不能大于12个字符
     "serverName":"MainServer"
   },
   "logPath":"/mnt/logs/WtCM/ServerSocketClient",
   "socketClient": {
-    "ip":"localhost",            //服务端Ip
+    "ip":"localhost",                //服务端Ip
     "port":"16789",                  //服务端端口号
     "intervalBeat":"23*1000",        //发送心跳信号的间隔
-    "intervalCheckSocket":"19*1000", //检查Socket健康情况的时间间�?
+    "intervalCheckSocket":"19*1000", //检查Socket健康情况的时间间隔
     "expireTime":"30*60*1000",       //过期时间，大于这个时间还未收到服务器信息，说明socket已经断开
-    "stopDelay":"10*1000",           //多长时间后还未停止，则强行停�?
+    "stopDelay":"10*1000",           //多长时间后还未停止，则强行停止
     "reConnStrategy":[
       "INTE::500","INTE::1000","INTE::3000","INTE::6000","GOTO::0"
     ]
+  },
+  //用户密码管理规则配置
+  "passwordCfg":{
+    "useEncryption":"1", //是否加密；=1加密密码；!=1不加密密码
+    "reEncryption":"0" //是否重新进行加密，只对那些未加密的密码进行处理
   }
 }
 
