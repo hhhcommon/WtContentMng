@@ -112,8 +112,7 @@
   <!-- 查询用户认证信息 -->
   <select id="getUserApproveProgress" parameterType="java.util.Map" resultType="java.util.HashMap">
     select * from plat_UserProgress
-    where userId=#{userId,jdbcType=VARCHAR} 
-    and modifyTime=(select max(modifyTime) from plat_UserProgress)
+    where userId=#{userId,jdbcType=VARCHAR}
   </select>
 
   <!-- 修改用户认证状态 -->

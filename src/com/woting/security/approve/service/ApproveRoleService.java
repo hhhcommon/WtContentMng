@@ -61,7 +61,7 @@ public class ApproveRoleService {
             int count=platUserExtDao.getCount("getApproveCount", param);
             if (count>0) {
                 map.put("ReturnType", "1006");
-                map.put("Message", "认证信息已经提交，请耐心等待审核");
+                map.put("Message", "认证信息已经提交过了，请耐心等待审核");
                 return map;
             }
         } catch (Exception e) {
@@ -115,9 +115,7 @@ public class ApproveRoleService {
         Map<String, Object> param=new HashMap<String, Object>();
         param.put("userId", userId);
         try {
-            List<Map<String, Object>> list=platUserProgressDao.queryForListAutoTranform("getUserApproveProgress", param);
-            if (list==null || list.size()<=0) return null;
-            Map<String, Object> map=list.get(0);
+            Map<String, Object> map=platUserProgressDao.queryForObjectAutoTranform("getUserApproveProgress", param);
             if (map==null || map.size()<=0) return null;
             PlatUserProgressPo platUserProgressPo=new PlatUserProgressPo();
             if (map.get("userId")!=null && !map.get("userId").toString().equals("")) {
