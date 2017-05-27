@@ -823,6 +823,33 @@ $(function(){
   }
   /*e---批量撤回、删除专辑 */
   
+  /*s--得到用户的栏目权限*/
+  var chaData={"UserId":userId,
+               "PCDType":3,
+               "FunName":"栏目权限",
+               "FunClass":"1"
+  };
+  $.ajax({
+    url:rootPath+"security/getUserRole.do",
+    type:"POST",
+    cache: false,
+    dataType:"json",
+    data:JSON.stringify(chaData),
+    //表单提交前进行验证
+    success: function(resultData){
+      if(resultData.returnType=="1001"){
+        
+      }else{
+        
+      }
+    },
+    error: function(jqXHR){
+      alert("加载栏目权限发生错误:" + jqXHR.status);
+    }
+  });
+  /*e--得到用户的栏目权限 */
+  
+  
   /*s--获取专辑模态框上面的栏目信息*/
   $.ajax({
     url:rootPath+"common/getChannelTreeWithSelf.do",

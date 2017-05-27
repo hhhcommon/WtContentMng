@@ -2,7 +2,7 @@ $(function(){
   var rootPath=getRootPath();
   var current_page=1;//当前页码
   var contentCount=0;//总页码数
-  var pageSize=10;//每页显示的记录数量
+  var pageSize=2;//每页显示的记录数量
   var seaFy=1;//seaFy=1未搜索关键词前翻页,seaFy=2搜索列表加载出来后翻页
   var searchWord="";//搜索关键词
   var anchorFy=1;//anchorFy=1未选中申请专业或者资格主播翻页,anchorFy=2选中申请专业或者资格主播后翻页
@@ -413,7 +413,7 @@ $(function(){
       },
       success:function(resultData){
         if(resultData.ReturnType=="1001"){
-          $(".mask_pass").addClass("dis");
+          $(".mask_pass,.mask_nopass").addClass("dis");
           var data1={};
           data1.UserId=userId;
           data1.PCDType="3";

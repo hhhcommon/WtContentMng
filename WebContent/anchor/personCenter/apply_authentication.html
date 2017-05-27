@@ -167,7 +167,7 @@ input[type=file] {display: none;}
 .allnote{
   color: #fff;
   font-size: 18px;
-  top: 30%;
+  top: 40%;
   position: fixed;
   left: 30%;
 }
@@ -266,8 +266,6 @@ $(function(){
             $(".allmask").removeClass("dis");
             getApproveInfo(data1);//获取用户申请认证详细信息
           }
-        }else{
-          alert("获取用户申请认证的流程"+resultData.Message);
         }
       },
       error: function(jqXHR){
