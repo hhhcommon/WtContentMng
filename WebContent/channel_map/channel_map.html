@@ -803,7 +803,7 @@ $(function(){
       success: function(returnData){
         if(returnData.ReturnType=="1001"){
           st=returnData.PerNum;
-          if(st<100){
+          if(st<=100){
             var pro='<div class="progressbar">'+
                       '<div class="text">'+st+'%</div>'+
                       '<div class="bar" style="width:'+st+'%"></div>'+
@@ -817,16 +817,6 @@ $(function(){
                 window.setTimeout(_loadProgress(perId),60000);
               }
             });        
-          }else{
-            $(obj).each(function(){
-              var id=$(this).parent("td").next("td");
-              id=$(id).text();
-              if(id==per_data.PerId){
-                $(this).parent("td").parent("tr").children("td:last-child").html(" ");
-                perId=per_data.PerId;
-                window.setTimeout(_loadProgress(perId),60000);
-              }
-            });
           }
         }else if(returnData.ReturnType=="1011"){
           var pro='<div>'+returnData.Message+'</div>';
@@ -842,7 +832,6 @@ $(function(){
             var id=$(this).parent("td").next("td");
             id=$(id).text();
             if(id==per_data.PerId){
-              $(this).parent("td").parent("tr").children("td:last-child").html(" ");
               perId=per_data.PerId;
               window.setTimeout(_loadProgress(perId),60000);
             }
