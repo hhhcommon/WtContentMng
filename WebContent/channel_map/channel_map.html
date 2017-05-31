@@ -533,10 +533,10 @@ $(function(){
   //选中我听平台的分类，查询我听与其他平台的映射关系
   function selectWotingTreeNode(event, treeId, treeNode){
     $('#wt_table tbody').html(" ");//清空内容
-    if(treeNode.level!='0'){//禁止对根节点进行操作
+    if(treeNode.level=='0'){//禁止对根节点进行操作
       alert("你不能对当前节点进行操作,请选择他的子节点");
       //wtObj.cancelSelectedNode();
-      return;
+      return false;
     }else{
       var _url=rootPath+"common/getCCateRefs.do";
       var _data={"ApplyType":1,"Id":treeNode.id};
@@ -577,7 +577,7 @@ $(function(){
     if(treeNode.level=='0'){//禁止对根节点进行操作
       alert("你不能对当前节点进行操作,请选择他的子节点");
       //otherObj.cancelSelectedNode();
-      return;
+      return false;
     }else{
       var _url=rootPath+"common/getCCateRefs.do";
       var _data={"ApplyType":2,"Id":treeNode.id};
