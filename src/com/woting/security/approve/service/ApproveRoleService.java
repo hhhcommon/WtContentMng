@@ -267,6 +267,38 @@ public class ApproveRoleService {
                     userId=null;
                 }
             }
+            if (flag!=0) {
+                List<Map<String, Object>> ret=platUserExtDao.queryForListAutoTranform("getApproveList", param);
+                for (int i=0; i<ret.size(); i++) {
+                    Map<String, Object> one=ret.get(i);
+                    String anchorCardImg="";
+                    if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) {
+                        anchorCardImg=one.get("anchorCardImg").toString();
+                    }
+                    String id;
+                    if (flag==1) {//实名认证列表
+                        if (anchorCardImg!=null && !anchorCardImg.equals("") && !anchorCardImg.toLowerCase().equals("null")) {
+                            id=one.get("userId").toString();
+                            if (id!=null && !id.equals("")) {
+                                if (userIdList.contains(id)) {
+                                    userIdList.remove(id);
+                                    id=null;
+                                }
+                            }
+                        }
+                    } else if (flag==2) {//资格认证列表
+                        if (anchorCardImg==null || anchorCardImg.equals("") || anchorCardImg.toLowerCase().equals("null")) {
+                            id=one.get("userId").toString();
+                            if (id!=null && !id.equals("")) {
+                                if (userIdList.contains(id)) {
+                                    userIdList.remove(id);
+                                    id=null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             return null;
         }
