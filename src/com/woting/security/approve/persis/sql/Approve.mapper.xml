@@ -157,7 +157,7 @@
     delete from plat_UserProgress where userId=#{userId, jdbcType=VARCHAR}
   </delete>
   
-  <!-- 查询用户认证信息 -->
+  <!-- 查询没有通过认证的用户 -->
   <select id="getNotPassUser" parameterType="java.util.Map" resultType="java.util.HashMap">
     select userId from plat_UserProgress where reState=#{reState, jdbcType=INTEGER}
   </select>
