@@ -74,6 +74,16 @@ input[type=file] {display: none;}
   line-height: 40px;
   margin: 0px 0px 0px 10px;
 }
+.dct1_txt3{
+  color: #000;
+  width: 60px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 20px;
+  margin: 10px 0px 0px 10px;
+  background: rgba(51,122,183,0.3);
+}
 .dc1,.dc2{
   height: 30px;
   overflow: hidden;
@@ -195,6 +205,7 @@ input[type=file] {display: none;}
     <div class="dc_title1">
       <div class="dct1_txt1 fl"></div>
       <div class="dct1_txt2 fl">实名认证</div>
+      <div class="dct1_txt3 fl dis">已通过</div>
     </div>
     <div class="dc1">
       <div class="dc1_span fl">真实姓名<span class="ast">*</span>:</div>
@@ -240,6 +251,7 @@ input[type=file] {display: none;}
     <div class="dc_title1" style="margin: 10px 0px;">
       <div class="dct1_txt1 fl"></div>
       <div class="dct1_txt2 fl">资格认证</div>
+      <div class="dct1_txt3 fl dis">已通过</div>
     </div>
     <div class="dc4">
       <span class="dc4_span fl">证件照片:</span>
@@ -280,9 +292,14 @@ $(function(){
       dataType:"json",
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
-          if(resultData.approveInfo.reStatu=="0"){
+          if(resultData.approveInfo.reState=="0"){//审核中
             $(".allmask").removeClass("dis");
-            $("body").css("overflow","hidden");
+            $("body").css("overflow","hidden");     
+          }else if(resultData.approveInfo.reState=="1"){//通过
+            
+            getApproveInfo(data1);//获取用户申请认证详细信息
+          }else{//不通过
+            
             getApproveInfo(data1);//获取用户申请认证详细信息
           }
         }
@@ -404,7 +421,6 @@ $(function(){
       success:function(resultData){
         if(resultData.Success==true){ 
           $(objPar).attr({"path":resultData.FilePath});
-          console.log($(objPar).attr("path"));
           if($(objSib).css("display")!="none"){
             $(objSib).css({"display":"none"});
           }
@@ -475,7 +491,7 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
           alert("申请提交成功");
-          getApproveProgress(data1);
+//        getApproveProgress(data1);
         }
         $(".approve").removeAttr("disabled").css("background","#0077c7");
       },
