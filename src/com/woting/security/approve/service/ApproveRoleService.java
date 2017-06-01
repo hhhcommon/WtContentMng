@@ -172,7 +172,7 @@ public class ApproveRoleService {
                 platUserProgressPo.setApplyRoleId(map.get("applyRoleId").toString());
             }
             if (map.get("reState")!=null && !map.get("reState").toString().equals("")) {
-                platUserProgressPo.setReStatu(Integer.valueOf(map.get("reState").toString()));
+                platUserProgressPo.setReState(Integer.valueOf(map.get("reState").toString()));
             }
             if (map.get("applyDescn")!=null && !map.get("applyDescn").toString().equals("")) {
                 platUserProgressPo.setApplyDescn(map.get("applyDescn").toString());

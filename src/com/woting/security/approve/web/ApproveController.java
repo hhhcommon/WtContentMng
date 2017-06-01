@@ -231,11 +231,11 @@ public class ApproveController {
             }
             PlatUserProgressPo p=approveService.getUserApproveProgress(userId);
             if (p==null) {
-                map.put("ReturnType", "1011");
-                map.put("Message", "无内容");
+                map.put("ReturnType", "1005");
+                map.put("Message", "获取失败");
             } else {
                 map.put("ReturnType", "1001");
-                map.put("Message", "获取用户认证信息成功");
+                map.put("Message", "获取成功");
                 map.put("approveInfo", p);
             }
             return map;
