@@ -180,9 +180,6 @@ public class ApproveRoleService {
             if (map.get("reDescn")!=null && !map.get("reDescn").toString().equals("")) {
                 platUserProgressPo.setReDescn(map.get("reDescn").toString());
             }
-            if (map.get("modifyTime")!=null && !map.get("modifyTime").toString().equals("")) {
-                platUserProgressPo.setModifyTime(Timestamp.valueOf(map.get("modifyTime").toString()));
-            }
             return platUserProgressPo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -233,7 +230,7 @@ public class ApproveRoleService {
                 approveInfoPo.setApplyRoleId(map.get("applyRoleId").toString());
             }
             if (map.get("reState")!=null && !map.get("reState").toString().equals("")) {
-                approveInfoPo.setReStatu(Integer.valueOf(map.get("reState").toString()));
+                approveInfoPo.setReState(Integer.valueOf(map.get("reState").toString()));
             }
             if (map.get("reDescn")!=null && !map.get("reDescn").toString().equals("")) {
                 approveInfoPo.setReDescn(map.get("reDescn").toString());
