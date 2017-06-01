@@ -116,6 +116,7 @@ public class ApproveController {
                 return map;
             }
             //得到参数
+            String flag=(m.get("Flag")==null?null:m.get("Flag").toString());
             String iDCard=(m.get("IDCard")==null?null:m.get("IDCard").toString());
             String frontImg=(m.get("FrontImg")==null?null:m.get("FrontImg").toString());
             String reverseImg=(m.get("ReverseImg")==null?null:m.get("ReverseImg").toString());
@@ -124,7 +125,7 @@ public class ApproveController {
             String reallyName=(m.get("ReallyName")==null?null:m.get("ReallyName").toString());
             if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
                     || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
-                    || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName)) {
+                    || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName) || StringUtils.isNullOrEmptyOrSpace(flag)) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数");
                 return map;
@@ -132,7 +133,7 @@ public class ApproveController {
             String anchorCardImg=(m.get("AnchorCardImg")==null?null:m.get("AnchorCardImg").toString());
             String applyDescn=(m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString());
 
-            map=approveService.approveRole(userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, applyDescn, applyRoleId, reallyName);
+            map=approveService.approveRole(flag, userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, applyDescn, applyRoleId, reallyName);
             return map;
         } catch(Exception e) {
             e.printStackTrace();
@@ -561,7 +562,7 @@ public class ApproveController {
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String applyDescn=m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString();
+            String reDescn=m.get("ReDescn")==null?null:m.get("ReDescn").toString();
             //中文字符转换成英文字符  同意格式
             if (checkerId.contains("，")) checkerId.replaceAll("，", ",");
             String[] userIdArr=checkerId.split(",");
@@ -570,7 +571,7 @@ public class ApproveController {
                 userIdList.add(id);
             }
             int reState=Integer.valueOf(_reState);
-            boolean result=approveService.updateApproveStatus(userIdList, reState, applyDescn);
+            boolean result=approveService.updateApproveStatus(userIdList, reState, reDescn);
             if (result) {
                 map.put("ReturnType", "1001");
                 map.put("Message", "修改用户认证状态成功");

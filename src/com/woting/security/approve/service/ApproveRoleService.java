@@ -45,63 +45,107 @@ public class ApproveRoleService {
      * @param reallyName 用户真实姓名
      * @return 返回提交成功与否
      */
-    public Map<String, Object> approveRole(String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId, String reallyName) {
+    public Map<String, Object> approveRole(String flag, String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId, String reallyName) {
         Map<String, Object> map=new HashMap<String, Object>();
         if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
                 || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
-                || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName)) {
+                || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName) || StringUtils.isNullOrEmptyOrSpace(flag)) {
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
         }
-        Map<String, Object> param=new HashMap<String, Object>();
-        param.put("userId", userId);
-        param.put("iDCard", iDCard);
-        try {
-            int count=platUserExtDao.getCount("getApproveCount", param);
-            if (count>0) {
-                map.put("ReturnType", "1006");
-                map.put("Message", "认证信息已经提交，请耐心等待审核");
+        if (flag.equals("1")) {//提交认证申请
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("userId", userId);
+            param.put("iDCard", iDCard);
+            try {
+                int count=platUserExtDao.getCount("getApproveCount", param);
+                if (count>0) {
+                    map.put("ReturnType", "1006");
+                    map.put("Message", "认证信息已经提交过了，请耐心等待审核");
+                    return map;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "1005");
+                map.put("Message", "认证信息提交失败");
                 return map;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            map.put("ReturnType", "1005");
-            map.put("Message", "认证信息提交失败");
-            return map;
-        }
-        param.put("frontImg", frontImg);
-        param.put("reverseImg", reverseImg);
-        param.put("mixImg", mixImg);
-        param.put("reallyName", reallyName);
-        if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
-            param.put("anchorCardImg", anchorCardImg);
-        }
-        Map<String, Object> _param=new HashMap<String, Object>();
-        _param.put("id", SequenceUUID.getPureUUID());
-        _param.put("userId", userId);
-        _param.put("checkerId", "0");
-        _param.put("applyRoleId", applyRoleId);
-        _param.put("reStatus", 0);
-        _param.put("modifyTime", new Timestamp(System.currentTimeMillis()));
-        if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
-            _param.put("applyDescn", applyDescn);
-        }
-        try {
-            platUserProgressDao.insert("insertUserProgress", _param);
-            platUserExtDao.insert("insertUserExt", param);
-            map.put("ReturnType", "1001");
-            map.put("Message", "认证信息提交成功");
-            return map;
-        } catch (Exception e) {
-            e.printStackTrace();
-            try{
-              //删除错误申请
-                platUserProgressDao.delete("deleteErrorApprove", _param);
-            } catch (Exception e1){}
-            map.put("ReturnType", "1005");
-            map.put("Message", "认证信息提交失败");
-            return map;
+            param.put("frontImg", frontImg);
+            param.put("reverseImg", reverseImg);
+            param.put("mixImg", mixImg);
+            param.put("reallyName", reallyName);
+            if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
+                param.put("anchorCardImg", anchorCardImg);
+            }
+            Map<String, Object> _param=new HashMap<String, Object>();
+            _param.put("id", SequenceUUID.getPureUUID());
+            _param.put("userId", userId);
+            _param.put("checkerId", "0");
+            _param.put("applyRoleId", applyRoleId);
+            _param.put("reStatus", 0);
+            _param.put("modifyTime", new Timestamp(System.currentTimeMillis()));
+            if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
+                _param.put("applyDescn", applyDescn);
+            }
+            try {
+                platUserProgressDao.insert("insertUserProgress", _param);
+                platUserExtDao.insert("insertUserExt", param);
+                map.put("ReturnType", "1001");
+                map.put("Message", "认证信息提交成功");
+                return map;
+            } catch (Exception e) {
+                e.printStackTrace();
+                try{
+                  //删除错误申请
+                    platUserProgressDao.delete("deleteErrorApprove", _param);
+                } catch (Exception e1){}
+                map.put("ReturnType", "1005");
+                map.put("Message", "认证信息提交失败");
+                return map;
+            }
+        } else {//修改认证申请信息
+            Map<String, Object> param=new HashMap<String, Object>();
+            param.put("userId", userId);
+            param.put("iDCard", iDCard);
+            try {
+                int count=platUserExtDao.getCount("getApproveCount", param);
+                if (count<=0) {
+                    map.put("ReturnType", "1005");
+                    map.put("Message", "请先提交认证申请");
+                    return map;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "1005");
+                map.put("Message", "认证信息修改失败");
+                return map;
+            }
+            param.put("frontImg", frontImg);
+            param.put("reverseImg", reverseImg);
+            param.put("mixImg", mixImg);
+            param.put("reallyName", reallyName);
+            if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
+                param.put("anchorCardImg", anchorCardImg);
+            }
+            Map<String, Object> _param=new HashMap<String, Object>();
+            _param.put("userId", userId);
+            _param.put("applyRoleId", applyRoleId);
+            if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
+                _param.put("applyDescn", applyDescn);
+            }
+            try {
+                platUserExtDao.update("updateApproveInfo", param);
+                platUserProgressDao.update("updateUserApproveRole", _param);
+                map.put("ReturnType", "1001");
+                map.put("Message", "认证信息修改成功");
+                return map;
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("ReturnType", "1005");
+                map.put("Message", "认证信息修改失败");
+                return map;
+            }
         }
     }
 
@@ -115,9 +159,7 @@ public class ApproveRoleService {
         Map<String, Object> param=new HashMap<String, Object>();
         param.put("userId", userId);
         try {
-            List<Map<String, Object>> list=platUserProgressDao.queryForListAutoTranform("getUserApproveProgress", param);
-            if (list==null || list.size()<=0) return null;
-            Map<String, Object> map=list.get(0);
+            Map<String, Object> map=platUserProgressDao.queryForObjectAutoTranform("getUserApproveProgress", param);
             if (map==null || map.size()<=0) return null;
             PlatUserProgressPo platUserProgressPo=new PlatUserProgressPo();
             if (map.get("userId")!=null && !map.get("userId").toString().equals("")) {
@@ -225,6 +267,40 @@ public class ApproveRoleService {
                     userId=null;
                 }
             }
+            if (flag!=0) {
+                if (userIdList==null || userIdList.size()<=0) return null;
+                param.put("userIdList", userIdList);
+                List<Map<String, Object>> ret=platUserExtDao.queryForListAutoTranform("getApproveList", param);
+                for (int i=0; i<ret.size(); i++) {
+                    Map<String, Object> one=ret.get(i);
+                    String anchorCardImg="";
+                    if (one.get("anchorCardImg")!=null&&!StringUtils.isNullOrEmptyOrSpace(one.get("anchorCardImg")+"")) {
+                        anchorCardImg=one.get("anchorCardImg").toString();
+                    }
+                    String id;
+                    if (flag==1) {//实名认证列表
+                        if (anchorCardImg!=null && !anchorCardImg.equals("") && !anchorCardImg.toLowerCase().equals("null")) {
+                            id=one.get("userId").toString();
+                            if (id!=null && !id.equals("")) {
+                                if (userIdList.contains(id)) {
+                                    userIdList.remove(id);
+                                    id=null;
+                                }
+                            }
+                        }
+                    } else if (flag==2) {//资格认证列表
+                        if (anchorCardImg==null || anchorCardImg.equals("") || anchorCardImg.toLowerCase().equals("null")) {
+                            id=one.get("userId").toString();
+                            if (id!=null && !id.equals("")) {
+                                if (userIdList.contains(id)) {
+                                    userIdList.remove(id);
+                                    id=null;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             return null;
         }
@@ -288,13 +364,13 @@ public class ApproveRoleService {
      * @param applyDescn 审核意见
      * @return boolean
      */
-    public boolean updateApproveStatus(List<String> userIdList, int reState, String applyDescn) {
+    public boolean updateApproveStatus(List<String> userIdList, int reState, String reDescn) {
         if (userIdList==null || userIdList.size()<=0) return false;
 
         Map<String, Object> param=new HashMap<String, Object>();
         param.put("userIdList", userIdList);
         param.put("reState", reState);
-        param.put("applyDescn", applyDescn);
+        param.put("reDescn", reDescn);
         try {
             platUserProgressDao.update("updateUserApproveState", param);
             for (String userId : userIdList) {
@@ -303,7 +379,7 @@ public class ApproveRoleService {
                     String roleId=userProgress.getApplyRoleId();
                     roleService.setUserRole(userId, roleId);
                 }
-            }
+            }   
             return true;
         } catch (Exception e) {
             e.printStackTrace();
