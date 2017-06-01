@@ -59,7 +59,7 @@ public class CrawlerService {
 			        
 					conn = dataSource.getConnection();
 					try {
-						sql = "SELECT COUNT(*) FROM crawlerDB.c_ResDict_Ref dref where dref.cdictDid = '"+crawlerDictdId+"' and dref.resTableName = 'c_Album'";
+						sql = "SELECT COUNT(*) FROM crawlerDB2.c_ResDict_Ref dref where dref.cdictDid = '"+crawlerDictdId+"' and dref.resTableName = 'c_Album'";
 						try {
 							ps = conn.prepareStatement(sql);
 							rs = ps.executeQuery();
@@ -73,7 +73,7 @@ public class CrawlerService {
 						int pages = (int) (num/pageSize + 1);
 						for (int i = 1; i <= pages; i++) {
 							String albumIds = "";
-							sql = "SELECT dref.resId id FROM crawlerDB.c_ResDict_Ref dref where dref.cdictDid = '"+crawlerDictdId+"' and dref.resTableName = 'c_Album' "
+							sql = "SELECT dref.resId id FROM crawlerDB2.c_ResDict_Ref dref where dref.cdictDid = '"+crawlerDictdId+"' and dref.resTableName = 'c_Album' "
 									+ " limit "+(i-1)*pageSize+","+pageSize;
 							try {
 								ps = conn.prepareStatement(sql);
