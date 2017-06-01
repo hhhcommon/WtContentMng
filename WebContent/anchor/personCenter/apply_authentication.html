@@ -37,7 +37,7 @@ input[type=file] {display: none;}
   height:auto;
   overflow: hidden;
   background: #fff;
-  border:1px solid #dedede;
+  /*border:1px solid #dedede;*/
 }
 .detail_title{
   width: calc(100% - 30px);
@@ -58,55 +58,71 @@ input[type=file] {display: none;}
   width: 100%;
   height: 40px;
   line-height: 40px;
-  background: #eee;
 }
 .dct1_txt1{
-  font-size: 16px;
-  color: #000;
+  width: 4px;
+  height: 15px;
+  margin-top: 12px;
+  float: left;
+  border-radius: 3px;
+  background: #FFA634;
 }
 .dct1_txt2{
-  color: red;
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 40px;
+  margin: 0px 0px 0px 10px;
+}
+.dct1_txt3{
+  color: #000;
+  width: 60px;
+  height: 25px;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 20px;
+  margin: 10px 0px 0px 10px;
+  background: rgba(51,122,183,0.3);
 }
 .dc1,.dc2{
-  height: 40px;
+  height: 30px;
   overflow: hidden;
+  margin:15px 0px 30px 0px;
 }
-.dc1{
-  margin: 10px 0px;
-}
-.dc1_span,.dc2_span{
-  width:75px;
-  line-height: 40px;
+.dc1_span,.dc2_span,.dc3_span,.dc4_span{
+  width: 75px;
+  line-height: 30px;
   color: #000;
-  text-align: right;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
 }
 .dc1_ipt,.dc2_ipt{
-  width:240px;
+  width: 740px;
   height: 30px;
-  border:1px solid #dedede;
+  border: 1px solid #dedede;
   padding: 2px 4px;
-  margin:5px 0px 0px 5px;
+  margin: 0px 0px 0px 5px;
 }
-.dc3,.dc4{
-  height: 195px;
+.dc3{
+  height: 310px;
   overflow: hidden;
+  border-bottom: 1px solid #dedede;
 }
-.dc3_span{
-  width:75px;
-  line-height: 40px;
-  color: #000;
-  text-align: right;
+.dc4{
+  height: 120px;
+  overflow: hidden;
 }
 .dc3_ul,.dc4_ul{
   width: calc(100% - 80px);
-  margin: 15px 0px 0px 5px;
+  margin: 0px 0px 0px 5px;
   overflow: hidden;
 }
 .dc4_ul{width: calc(100% - 95px);}
 .dc3_li{
   position: relative;
-  width:230px;
-  height:160px;
+  width:180px;
+  height:120px;
   margin:0px 20px 0px 0px;
 }
 .pic1,.pic2,.pic3,.pic4,.newImg{
@@ -114,10 +130,9 @@ input[type=file] {display: none;}
   height:100%;
   cursor: pointer;
   border:1px solid #dedede;
-  border-radius: 10px;
   background-size:100% 100%;
 }
-.dc4_li{width: 220px;}
+.dc4_li{margin: 20px 0px 0px 80px;}
 .dc4_li span{
   display: block;
   margin: 0px;
@@ -125,18 +140,11 @@ input[type=file] {display: none;}
   line-height: 30px;
   color: #000;
 }
-.dc4_span{
-  width:90px;
-  line-height: 40px;
-  color: #000;
-  text-align: right;
-}
 .approve{
   width: 80px;
   height: 30px;
-  background: #0077C7;
-  border-radius: 2px;
-  margin: 0px auto;
+  background: #ffa634;
+  margin: 20px 0px 20px 80px;
   border: none;
   display: block;
   color: #fff;
@@ -146,30 +154,48 @@ input[type=file] {display: none;}
   position: absolute;
   width: 100%;
   height: 100%;
-  margin-top:-70%;
+  margin-top:-66%;
   background: rgba(0,0,0,0.2);
-  border-radius: 10px;
 }
 .waiting_img{
   width: 45px;
   height: 45px;
-  margin: 45px 90px;
+  margin: 28px 68px;
   background-size: 100% 100%;
   position: relative;
 }
 .allmask{
   position: relative;
   width: 1084px;
-  height: 662px;
-  top: -662px;
-  background: rgba(0,0,0,0.5);
+  height: 720px;
+  top: -730px;
+  overflow: hidden;
+  background: #fff;
 }
-.allnote{
-  color: #fff;
-  font-size: 18px;
-  top: 40%;
+.pp1{
   position: fixed;
-  left: 30%;
+  left: 40%;
+  top: 90px;
+}
+.allnote1{
+  width: auto;
+  color: #000;
+  font-size: 18px;
+  top: 205px;
+  position: fixed;
+  left: 26%;
+}
+.allnote2{
+  color: #ddd;
+  font-size: 14px;
+  top: 245px;
+  position: fixed;
+  left: 34%;
+}
+.ast{
+  color: #ffa634;
+  margin: 0px 2px;
+  font-size: 14px;
 }
 </style>
 <body>
@@ -177,19 +203,20 @@ input[type=file] {display: none;}
   <div class="detail_title">账号设置> 主播申请认证</div>
   <div class="detail_content">
     <div class="dc_title1">
-      <div class="dct1_txt1 fl">实名认证</div>
-      <div class="dct1_txt2 fl">(必填)</div>
+      <div class="dct1_txt1 fl"></div>
+      <div class="dct1_txt2 fl">实名认证</div>
+      <div class="dct1_txt3 fl dis">已通过</div>
     </div>
     <div class="dc1">
-      <span class="dc1_span fl">真实姓名:</span>
-      <input type="text" class="dc1_ipt fl" placeholder="请输入您的真实姓名" />
+      <div class="dc1_span fl">真实姓名<span class="ast">*</span>:</div>
+      <input type="text" class="dc1_ipt fl" placeholder="填写你的真实姓名" />
     </div>
     <div class="dc2">
-      <span class="dc2_span fl">身份证号:</span>
-      <input type="text" class="dc2_ipt fl" placeholder="请输入您的身份证号" />
+      <div class="dc2_span fl">身份证号<span class="ast">*</span>:</div>
+      <input type="text" class="dc2_ipt fl" placeholder="填写你的身份证号" />
     </div>
     <div class="dc3">
-      <span class="dc3_span fl">身份证照片:</span>
+      <div class="dc3_span fl">证件照片<span class="ast">*</span>:</div>
       <ul class="dc3_ul fl">
         <li class="dc3_li fl pic1_li">
           <img src="../anchorResource/img/pic1.png" alt="身份证正面" class="dc3_img pic1"/>
@@ -212,22 +239,25 @@ input[type=file] {display: none;}
             <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" class="waiting_img"/>
           </div>
         </li>
-        <li class="dc4_li fl">
-          <span>身份证照片标准要求:</span>
-          <span>1.图像与文字显示清晰、完整;</span>
-          <span>2.手持身份证原件的正面照片并确保本人面部完整出相</span>
-        </li>
       </ul>
+      <div class="dc4_li fl">
+        <span>证件照片将会进行人工审核,请务必遵循以下要求:</span>
+        <span>1.上传一张主播手持身份证原件的正面照片并确保本人面部完整出相;</span>
+        <span>2.图像与文字显示清晰</span>
+        <span>3.图片格式为:png,jpg</span>
+        <span>4.图片大小不超过5M</span>
+      </div>
     </div>
-    <div class="dc_title1">
-      <div class="dct1_txt1 fl">资格认证</div>
-      <div class="dct1_txt3 fl">(选填)</div>
+    <div class="dc_title1" style="margin: 10px 0px;">
+      <div class="dct1_txt1 fl"></div>
+      <div class="dct1_txt2 fl">资格认证</div>
+      <div class="dct1_txt3 fl dis">已通过</div>
     </div>
     <div class="dc4">
-      <span class="dc4_span fl">资格证书照片:</span>
+      <span class="dc4_span fl">证件照片:</span>
       <ul class="dc4_ul fl">
         <li class="dc3_li fl pic4_li">
-          <img src="../anchorResource/img/pic3.png" alt="资格证书照片" class="dc3_img pic4"/>
+          <img src="../anchorResource/img/pic3.png" alt="证件照片" class="dc3_img pic4"/>
           <input type="file"  class="dc3_file pic4_file dis" index='4'/>
           <div class="waiting_div dis">
             <img src="../anchorResource/img/waiting_circle.gif" alt="图片上传等待" class="waiting_img"/>
@@ -235,13 +265,13 @@ input[type=file] {display: none;}
         </li>
       </ul>
     </div>
-    <button class="approve">立即申请</button>
+    <button class="approve">立即提交</button>
   </div>
 </div>
 <div class="allmask dis">
-  <div class="allnote">
-     认证申请已提交,请耐心等待审核
-  </div>
+  <img src="../../anchor/anchorResource/img/pp1.png" alt="审核中提示" class="pp1" />
+  <div class="allnote1">提交成功,请耐心等待工作人员审核...</div>
+  <div class="allnote2">预计3个工作日内审核完成</div>     
 </div>
 </body>
 <script>
@@ -262,8 +292,14 @@ $(function(){
       dataType:"json",
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
-          if(resultData.approveInfo.reStatu=="0"){
+          if(resultData.approveInfo.reState=="0"){//审核中
             $(".allmask").removeClass("dis");
+            $("body").css("overflow","hidden");     
+          }else if(resultData.approveInfo.reState=="1"){//通过
+            
+            getApproveInfo(data1);//获取用户申请认证详细信息
+          }else{//不通过
+            
             getApproveInfo(data1);//获取用户申请认证详细信息
           }
         }
@@ -385,7 +421,6 @@ $(function(){
       success:function(resultData){
         if(resultData.Success==true){ 
           $(objPar).attr({"path":resultData.FilePath});
-          console.log($(objPar).attr("path"));
           if($(objSib).css("display")!="none"){
             $(objSib).css({"display":"none"});
           }
@@ -425,6 +460,7 @@ $(function(){
     var roleId2="4b222905d78741a89d72c6b4759c3e5f";//资格认证角色的id
     data.UserId=userId;
     data.PCDType="3";
+    data.Flag="1";
     data.ReallyName=$.trim($(".dc1_ipt").val());
     data.IDCard=$.trim($(".dc2_ipt").val());
     if($(".pic1_li").attr("path")!='') data.FrontImg=$(".pic1_li").attr("path"); 
@@ -455,7 +491,7 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
           alert("申请提交成功");
-          getApproveProgress(data1);
+//        getApproveProgress(data1);
         }
         $(".approve").removeAttr("disabled").css("background","#0077c7");
       },
