@@ -268,6 +268,8 @@ public class ApproveRoleService {
                 }
             }
             if (flag!=0) {
+                if (userIdList==null || userIdList.size()<=0) return null;
+                param.put("userIdList", userIdList);
                 List<Map<String, Object>> ret=platUserExtDao.queryForListAutoTranform("getApproveList", param);
                 for (int i=0; i<ret.size(); i++) {
                     Map<String, Object> one=ret.get(i);
