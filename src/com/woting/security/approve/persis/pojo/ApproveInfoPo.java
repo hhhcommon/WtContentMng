@@ -10,9 +10,9 @@ public class ApproveInfoPo extends BaseObject {
     private String userId;//用户Id
     private String checkerId;//审核者Id
     private String applyRoleId;//用户申请认证Id
-    private int reStatu;//认证流程  0=待处理；1=通过；2=未通过；
+    private int reState;//认证流程  0=待处理；1=通过；2=未通过；
     private String reDescn;//审核回复意见
-    private Timestamp ModifyTime;//审核操作时间
+    private Timestamp modifyTime;//审核操作时间
     
     private String iDCard;//用户认证时身份证号码
     private String reallyName;//用户真实姓名
@@ -38,11 +38,11 @@ public class ApproveInfoPo extends BaseObject {
     public void setApplyRoleId(String applyRoleId) {
         this.applyRoleId = applyRoleId;
     }
-    public int getReStatu() {
-        return reStatu;
+    public int getReState() {
+        return reState;
     }
-    public void setReStatu(int reStatu) {
-        this.reStatu = reStatu;
+    public void setReState(int reState) {
+        this.reState = reState;
     }
     public String getReDescn() {
         return reDescn;
@@ -51,10 +51,10 @@ public class ApproveInfoPo extends BaseObject {
         this.reDescn = reDescn;
     }
     public Timestamp getModifyTime() {
-        return ModifyTime;
+        return modifyTime;
     }
     public void setModifyTime(Timestamp modifyTime) {
-        ModifyTime = modifyTime;
+        this.modifyTime = modifyTime;
     }
     public String getiDCard() {
         return iDCard;

@@ -19,7 +19,7 @@ public class PlatUserProgressPo extends BaseObject {
     private String applyDescn;//主播认证请求意见
     private String reDescn;//审核回复意见
     private Timestamp cTime;//创建时间
-    private Timestamp ModifyTime;//审核操作时间
+    private Timestamp modifyTime;//审核操作时间
     public String getId() {
         return id;
     }
@@ -69,9 +69,9 @@ public class PlatUserProgressPo extends BaseObject {
         this.cTime = cTime;
     }
     public Timestamp getModifyTime() {
-        return ModifyTime;
+        return modifyTime;
     }
     public void setModifyTime(Timestamp modifyTime) {
-        ModifyTime = modifyTime;
+        this.modifyTime = modifyTime;
     }
 }

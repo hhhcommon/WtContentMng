@@ -47,20 +47,52 @@ public class ApproveRoleService {
      */
     public Map<String, Object> approveRole(String flag, String userId, String iDCard, String frontImg, String reverseImg, String mixImg, String anchorCardImg, String applyDescn, String applyRoleId, String reallyName) {
         Map<String, Object> map=new HashMap<String, Object>();
+        if (flag==null) {
+            map.put("ReturnType", "0000");
+            map.put("Message", "无法获取需要的参数");
+            return map;
+        }
         if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
                 || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
-                || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName) || StringUtils.isNullOrEmptyOrSpace(flag)) {
+                || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName)) {
             map.put("ReturnType", "1005");
             map.put("Message", "认证信息提交失败");
             return map;
         }
-        if (flag.equals("1")) {//提交认证申请
+        if (flag.equals("2")) {
+            if (StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
+                map.put("ReturnType", "1005");
+                map.put("Message", "认证信息提交失败");
+                return map;
+            }
+        }
+        int r=-1;
+        try {
+            Map<String, Object> _map=new HashMap<String, Object>();
+            _map.put("userId", userId);
+            Map<String, Object> progress=platUserProgressDao.queryForObjectAutoTranform("getUserApproveProgress", _map);
+            r=progress.get("reState")==null?-1:Integer.valueOf(progress.get("reState").toString());
+            if (flag.equals("1") && r==2) {
+                map.put("ReturnType", "1007");
+                map.put("Message", "您已通过实名认证，不需要重复认证");
+                return map;
+            } else if (flag.equals("2") && r==3) {
+                map.put("ReturnType", "1007");
+                map.put("Message", "您已通过资格认证，不需要重复认证");
+                return map;
+            } else if (r==3) {
+                map.put("ReturnType", "1007");
+                map.put("Message", "您已通过资格认证，不需要重复认证");
+                return map;
+            }
+        } catch (Exception e) {}
+        if (flag.equals("1") || flag.equals("2")) {//提交认证申请
             Map<String, Object> param=new HashMap<String, Object>();
             param.put("userId", userId);
             param.put("iDCard", iDCard);
             try {
                 int count=platUserExtDao.getCount("getApproveCount", param);
-                if (count>0) {
+                if (r==0 && count>0) {
                     map.put("ReturnType", "1006");
                     map.put("Message", "认证信息已经提交过了，请耐心等待审核");
                     return map;
@@ -75,8 +107,13 @@ public class ApproveRoleService {
             param.put("reverseImg", reverseImg);
             param.put("mixImg", mixImg);
             param.put("reallyName", reallyName);
-            if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
-                param.put("anchorCardImg", anchorCardImg);
+            if (flag.equals("2")) {
+                if (!StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
+                    param.put("anchorCardImg", anchorCardImg);
+                } else {
+                    map.put("ReturnType", "1008");
+                    map.put("Message", "认证信息不全");
+                }
             }
             Map<String, Object> _param=new HashMap<String, Object>();
             _param.put("id", SequenceUUID.getPureUUID());
@@ -89,15 +126,20 @@ public class ApproveRoleService {
                 _param.put("applyDescn", applyDescn);
             }
             try {
-                platUserProgressDao.insert("insertUserProgress", _param);
-                platUserExtDao.insert("insertUserExt", param);
+                if (r==-1) {
+                    platUserProgressDao.insert("insertUserProgress", _param);
+                    platUserExtDao.insert("insertUserExt", param);
+                } else {
+                    platUserExtDao.update("updateApproveInfo", param);
+                    platUserProgressDao.update("updateUserApproveRole", _param);
+                }
                 map.put("ReturnType", "1001");
                 map.put("Message", "认证信息提交成功");
                 return map;
             } catch (Exception e) {
                 e.printStackTrace();
                 try{
-                  //删除错误申请
+                    //删除错误申请
                     platUserProgressDao.delete("deleteErrorApprove", _param);
                 } catch (Exception e1){}
                 map.put("ReturnType", "1005");
@@ -180,9 +222,6 @@ public class ApproveRoleService {
             if (map.get("reDescn")!=null && !map.get("reDescn").toString().equals("")) {
                 platUserProgressPo.setReDescn(map.get("reDescn").toString());
             }
-            if (map.get("modifyTime")!=null && !map.get("modifyTime").toString().equals("")) {
-                platUserProgressPo.setModifyTime(Timestamp.valueOf(map.get("modifyTime").toString()));
-            }
             return platUserProgressPo;
         } catch (Exception e) {
             e.printStackTrace();
@@ -233,7 +272,7 @@ public class ApproveRoleService {
                 approveInfoPo.setApplyRoleId(map.get("applyRoleId").toString());
             }
             if (map.get("reState")!=null && !map.get("reState").toString().equals("")) {
-                approveInfoPo.setReStatu(Integer.valueOf(map.get("reState").toString()));
+                approveInfoPo.setReState(Integer.valueOf(map.get("reState").toString()));
             }
             if (map.get("reDescn")!=null && !map.get("reDescn").toString().equals("")) {
                 approveInfoPo.setReDescn(map.get("reDescn").toString());
@@ -379,7 +418,7 @@ public class ApproveRoleService {
                     String roleId=userProgress.getApplyRoleId();
                     roleService.setUserRole(userId, roleId);
                 }
-            }   
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
