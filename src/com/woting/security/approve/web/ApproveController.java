@@ -117,22 +117,41 @@ public class ApproveController {
             }
             //得到参数
             String flag=(m.get("Flag")==null?null:m.get("Flag").toString());
-            String iDCard=(m.get("IDCard")==null?null:m.get("IDCard").toString());
-            String frontImg=(m.get("FrontImg")==null?null:m.get("FrontImg").toString());
-            String reverseImg=(m.get("ReverseImg")==null?null:m.get("ReverseImg").toString());
-            String mixImg=(m.get("MixImg")==null?null:m.get("MixImg").toString());
-            String applyRoleId=(m.get("ApplyRoleId")==null?null:m.get("ApplyRoleId").toString());
-            String reallyName=(m.get("ReallyName")==null?null:m.get("ReallyName").toString());
-            if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
-                    || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
-                    || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName) || StringUtils.isNullOrEmptyOrSpace(flag)) {
+            String iDCard=null;
+            String frontImg=null;
+            String reverseImg=null;
+            String mixImg=null;
+            String applyRoleId=null;
+            String reallyName=null;
+            String anchorCardImg=null;
+            String applyDescn=null;
+            if (flag==null) {
                 map.put("ReturnType", "0000");
                 map.put("Message", "无法获取需要的参数");
                 return map;
             }
-            String anchorCardImg=(m.get("AnchorCardImg")==null?null:m.get("AnchorCardImg").toString());
-            String applyDescn=(m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString());
-
+            iDCard=(m.get("IDCard")==null?null:m.get("IDCard").toString());
+            frontImg=(m.get("FrontImg")==null?null:m.get("FrontImg").toString());
+            reverseImg=(m.get("ReverseImg")==null?null:m.get("ReverseImg").toString());
+            mixImg=(m.get("MixImg")==null?null:m.get("MixImg").toString());
+            applyRoleId=(m.get("ApplyRoleId")==null?null:m.get("ApplyRoleId").toString());
+            reallyName=(m.get("ReallyName")==null?null:m.get("ReallyName").toString());
+            if (StringUtils.isNullOrEmptyOrSpace(iDCard) || StringUtils.isNullOrEmptyOrSpace(frontImg)
+                    || StringUtils.isNullOrEmptyOrSpace(reverseImg) || StringUtils.isNullOrEmptyOrSpace(mixImg) 
+                    || StringUtils.isNullOrEmptyOrSpace(applyRoleId) || StringUtils.isNullOrEmptyOrSpace(reallyName)) {
+                map.put("ReturnType", "0000");
+                map.put("Message", "无法获取需要的参数");
+                return map;
+            }
+            applyDescn=(m.get("ApplyDescn")==null?null:m.get("ApplyDescn").toString());
+            anchorCardImg=(m.get("AnchorCardImg")==null?null:m.get("AnchorCardImg").toString());
+            if (flag.equals("2")) {
+                if (StringUtils.isNullOrEmptyOrSpace(anchorCardImg)) {
+                    map.put("ReturnType", "0000");
+                    map.put("Message", "无法获取需要的参数");
+                    return map;
+                }
+            }
             map=approveService.approveRole(flag, userId, iDCard, frontImg, reverseImg, mixImg, anchorCardImg, applyDescn, applyRoleId, reallyName);
             return map;
         } catch(Exception e) {
@@ -571,6 +590,11 @@ public class ApproveController {
                 userIdList.add(id);
             }
             int reState=Integer.valueOf(_reState);
+            if (reState!=0 || reState!=1 || reState!=2 || reState!=3) {
+                map.put("ReturnType", "1006");
+                map.put("Message", "状态错误");
+                return map;
+            }
             boolean result=approveService.updateApproveStatus(userIdList, reState, reDescn);
             if (result) {
                 map.put("ReturnType", "1001");
