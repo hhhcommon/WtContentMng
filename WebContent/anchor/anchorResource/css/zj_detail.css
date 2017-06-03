@@ -13,7 +13,7 @@ body{height:100%;overflow:auto;background: #fff;-moz-user-select: none;}
   position: relative;
   width: 100%;
   min-width: 1080px;
-  border: 1px solid #dedede;
+  /*border: 1px solid #dedede;*/
 }
 .fl{float: left;}
 .detail_title{

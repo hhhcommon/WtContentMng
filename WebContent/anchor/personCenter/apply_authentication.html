@@ -77,9 +77,9 @@ input[type=file] {display: none;}
 .dct1_txt3{
   color: #000;
   width: 60px;
-  height: 25px;
+  height: 20px;
   text-align: center;
-  line-height: 25px;
+  line-height: 20px;
   border-radius: 20px;
   margin: 10px 0px 0px 10px;
   background: rgba(51,122,183,0.3);
@@ -105,13 +105,13 @@ input[type=file] {display: none;}
   margin: 0px 0px 0px 5px;
 }
 .dc3{
-  height: 310px;
+  height: 300px;
   overflow: hidden;
-  border-bottom: 1px solid #dedede;
 }
 .dc4{
   height: 120px;
   overflow: hidden;
+  margin: 10px 0px 0px 0px;
 }
 .dc3_ul,.dc4_ul{
   width: calc(100% - 80px);
@@ -167,8 +167,8 @@ input[type=file] {display: none;}
 .allmask{
   position: relative;
   width: 1084px;
-  height: 720px;
-  top: -730px;
+  height: 730px;
+  top: -746px;
   overflow: hidden;
   background: #fff;
 }
@@ -197,6 +197,19 @@ input[type=file] {display: none;}
   margin: 0px 2px;
   font-size: 14px;
 }
+.border{
+  width:100%;
+  height: 1px;
+  background: #dedede; 
+  margin: 10px 0px 20px 0px;
+}
+.dc1_sp1,.dc1_sp2{
+  width: 740px;
+  height: 30px;
+  line-height: 30px;
+  color: #000;
+  margin: 0px 0px 0px 5px;
+}
 </style>
 <body>
 <div class="detail">
@@ -205,15 +218,17 @@ input[type=file] {display: none;}
     <div class="dc_title1">
       <div class="dct1_txt1 fl"></div>
       <div class="dct1_txt2 fl">实名认证</div>
-      <div class="dct1_txt3 fl dis">已通过</div>
+      <div class="dct1_txt3 fl dis real"></div>
     </div>
     <div class="dc1">
       <div class="dc1_span fl">真实姓名<span class="ast">*</span>:</div>
       <input type="text" class="dc1_ipt fl" placeholder="填写你的真实姓名" />
+      <div class="dc1_sp1 fl dis"></div>
     </div>
     <div class="dc2">
       <div class="dc2_span fl">身份证号<span class="ast">*</span>:</div>
       <input type="text" class="dc2_ipt fl" placeholder="填写你的身份证号" />
+      <div class="dc1_sp2 fl dis"></div>
     </div>
     <div class="dc3">
       <div class="dc3_span fl">证件照片<span class="ast">*</span>:</div>
@@ -248,10 +263,11 @@ input[type=file] {display: none;}
         <span>4.图片大小不超过5M</span>
       </div>
     </div>
-    <div class="dc_title1" style="margin: 10px 0px;">
+    <div class="border"></div>
+    <div class="dc_title1">
       <div class="dct1_txt1 fl"></div>
       <div class="dct1_txt2 fl">资格认证</div>
-      <div class="dct1_txt3 fl dis">已通过</div>
+      <div class="dct1_txt3 fl dis auth"></div>
     </div>
     <div class="dc4">
       <span class="dc4_span fl">证件照片:</span>
@@ -296,11 +312,16 @@ $(function(){
             $(".allmask").removeClass("dis");
             $("body").css("overflow","hidden");     
           }else if(resultData.approveInfo.reState=="1"){//通过
-            
+            $(".dc3").addClass("dis");
             getApproveInfo(data1);//获取用户申请认证详细信息
           }else{//不通过
-            
-            getApproveInfo(data1);//获取用户申请认证详细信息
+            $(".real,.auth,.dc1_sp1,.dc1_sp2").addClass("dis").text("");
+            $(".dc1_ipt,.dc2_ipt").val("");
+            $(".dc3").removeClass("dis").children(".dc3_ul .dc3_li").removeAttr("path");
+            $(".dc3_ul .dc3_li .pic1").attr("src","../anchorResource/img/pic1.png");
+            $(".dc3_ul .dc3_li .pic2").attr("src","../anchorResource/img/pic2.png");
+            $(".dc3_ul .dc3_li .pic3").attr("src","../anchorResource/img/pic3.png");
+            $(".dc3_ul .dc3_li .pic4").attr("src","../anchorResource/img/pic4.png");
           }
         }
       },
@@ -332,8 +353,6 @@ $(function(){
   }
   //填充用户申请认证详细信息
   function fillApproveInfo(resultData){
-    $(".dc1_ipt").val((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
-    $(".dc2_ipt").val((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
     if(resultData.approveInfo.frontImg){
       $(".pic1_li .dc3_img").attr("src",resultData.approveInfo.frontImg);
       $(".pic1_li").attr("path",resultData.approveInfo.frontImg);
@@ -349,6 +368,28 @@ $(function(){
     if(resultData.approveInfo.auchorCardImg){
       $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.auchorCardImg);
       $(".pic4_li").attr("path",resultData.approveInfo.auchorCardImg);
+    }
+    if(resultData.approveInfo.reStatu=="1"){//已通过
+      if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg){
+        if(!resultData.approveInfo.auchorCardImg){//已通过实名认证,未通过资格认证
+          $(".real").removeClass("dis").text("已通过");
+          $(".auth").removeClass("dis").text("未通过");
+        }else{//已通过资格认证
+          $(".real,.auth").removeClass("dis").text("已通过");
+        }
+      }
+      $(".dc1_ipt,.dc2_ipt").addClass("dis");
+      $(".dc1_sp1").removeClass("dis").text((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
+      $(".dc1_sp2").removeClass("dis").text((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
+    }else if(resultData.approveInfo.reStatu=="2"){//未通过
+      if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg){
+        if(!resultData.approveInfo.auchorCardImg){//未通过实名认证
+          $(".real,.auth").removeClass("dis").text("未通过");
+        }else{//未通过资格认证
+          $(".real,.auth").removeClass("dis").text("未通过");
+        }
+      }
+      $(".dc1_ipt,.dc2_ipt").removeClass("dis").val("");
     }
   }
   
@@ -458,11 +499,12 @@ $(function(){
     var data={};
     var roleId1="c8bb51b762594345bb6bc5b297c14f93";//实名认证角色的id
     var roleId2="4b222905d78741a89d72c6b4759c3e5f";//资格认证角色的id
+    if($(".auth").hasClass("dis")) data.Flag="1"; //初次提交申请
+    else data.Flag="2"; //再次提交申请
     data.UserId=userId;
     data.PCDType="3";
-    data.Flag="1";
-    data.ReallyName=$.trim($(".dc1_ipt").val());
-    data.IDCard=$.trim($(".dc2_ipt").val());
+    data.ReallyName=$.trim($(".dc1_sp1").text());
+    data.IDCard=$.trim($(".dc1_sp2").text());
     if($(".pic1_li").attr("path")!='') data.FrontImg=$(".pic1_li").attr("path"); 
     if($(".pic2_li").attr("path")!='') data.ReverseImg=$(".pic2_li").attr("path"); 
     if($(".pic3_li").attr("path")!='') data.MixImg=$(".pic3_li").attr("path"); 
@@ -491,7 +533,7 @@ $(function(){
       success:function(resultData){
         if(resultData.ReturnType=="1001"){ 
           alert("申请提交成功");
-//        getApproveProgress(data1);
+          getApproveProgress(data1);
         }
         $(".approve").removeAttr("disabled").css("background","#0077c7");
       },

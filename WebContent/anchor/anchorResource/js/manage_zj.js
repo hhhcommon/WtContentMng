@@ -824,29 +824,28 @@ $(function(){
   /*e---批量撤回、删除专辑 */
   
   /*s--得到用户的栏目权限*/
-  var chaData={"UserId":userId,
-               "PCDType":3,
-               "FunName":"栏目权限",
-               "FunClass":"1"
-  };
-  $.ajax({
-    url:rootPath+"security/getUserRole.do",
-    type:"POST",
-    cache: false,
-    dataType:"json",
-    data:JSON.stringify(chaData),
-    //表单提交前进行验证
-    success: function(resultData){
-      if(resultData.returnType=="1001"){
-        
-      }else{
-        
+  var userRoleArr=[];//存储返回过来的用户角色权限
+  function getUserRole(dataParam){
+    $.ajax({
+      url:rootPath+"security/getUserRole.do",
+      type:"POST",
+      cache: false,
+      async:false,
+      dataType:"json",
+      data:JSON.stringify(dataParam),
+      //表单提交前进行验证
+      success: function(resultData){
+        if(resultData.ReturnType=="1001"){
+          for(var i=0;i<resultData.ResultList.length;i++){
+            userRoleArr.push(resultData.ResultList[i].ChannelId);
+          }
+        }
+      },
+      error: function(jqXHR){
+        alert("加载栏目权限发生错误:" + jqXHR.status);
       }
-    },
-    error: function(jqXHR){
-      alert("加载栏目权限发生错误:" + jqXHR.status);
-    }
-  });
+    });
+  }
   /*e--得到用户的栏目权限 */
   
   
@@ -873,27 +872,37 @@ $(function(){
   });
   //得到专辑栏目列表
   function getChannelList(resultData){
+    var chaData={"UserId":userId,
+                 "PCDType":3,
+                 "FunName":"栏目权限",
+                 "FunClass":"1"
+    };
+    getUserRole(chaData);//得到用户的权限
     for(var i=0;i<resultData.children.length;i++){
-      var ss=resultData.children[i].attributes.nPy.substring(0,1);
-      switch(ss){
-        case "A":case "B":case "C":case "D":case "E":case "F":case "G":
-          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
-          $(".mask_zj .cul_ag").append(li);
-          break;
-        case "H":case "I":case "J":case "K":case "L":
-          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
-          $(".mask_zj .cul_hl").append(li);
-          break;
-        case "M":case "N":case "O":case "P":case "Q":case "R":case "S":
-          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
-          $(".mask_zj .cul_ms").append(li);
-          break;
-        case "T":case "U":case "V":case "W":case "X":case "Y":case "Z":
-          var li='<li value="" id='+resultData.children[i].id+'>'+resultData.children[i].name+'</li>';
-          $(".mask_zj .cul_tz").append(li);
-          break;
-        default:
-          break;
+      for(var j=0;j<userRoleArr.length;j++){
+        if(userRoleArr[j]==resultData.children[i].id){
+          var ss=resultData.children[i].attributes.nPy.substring(0,1);
+          switch(ss){
+            case "A":case "B":case "C":case "D":case "E":case "F":case "G":
+              var li='<li value="" id='+resultData.children[i].id+' pid='+resultData.children[i].attributes.parentId+'>'+resultData.children[i].name+'</li>';
+              $(".mask_zj .cul_ag").append(li);
+              break;
+            case "H":case "I":case "J":case "K":case "L":
+              var li='<li value="" id='+resultData.children[i].id+' pid='+resultData.children[i].attributes.parentId+'>'+resultData.children[i].name+'</li>';
+              $(".mask_zj .cul_hl").append(li);
+              break;
+            case "M":case "N":case "O":case "P":case "Q":case "R":case "S":
+              var li='<li value="" id='+resultData.children[i].id+' pid='+resultData.children[i].attributes.parentId+'>'+resultData.children[i].name+'</li>';
+              $(".mask_zj .cul_ms").append(li);
+              break;
+            case "T":case "U":case "V":case "W":case "X":case "Y":case "Z":
+              var li='<li value="" id='+resultData.children[i].id+' pid='+resultData.children[i].attributes.parentId+'>'+resultData.children[i].name+'</li>';
+              $(".mask_zj .cul_tz").append(li);
+              break;
+            default:
+              break;
+          }
+        }
       }
     }
   }
@@ -909,14 +918,16 @@ $(function(){
     $('.mask_zj .cBox1_con .cBox1_conb').eq(index).show().siblings().hide();
     if(index==0){//点击一级栏目
       $(".mask_zj .cBox1_conF li").removeClass("selectedF");
+      $(".mask_zj .cBox1_conS").html(" ").append("<div class='chsec'>请选择具体的一级栏目</div>");
       $(".mask_zj .channelBox li").each(function(){
         var pId=$(this).attr("pid");
+        var chId=$(this).attr("id");
         $(".mask_zj .cBox1_conF li").each(function(){
-          if($(this).attr("id")==pId){
+          if($(this).attr("id")==pId||$(this).attr("id")==chId){
             $(this).addClass("selectedF");
           }
         });
-      });
+      }); 
     }
   });
   //新添加栏目样式变化
@@ -935,76 +946,206 @@ $(function(){
     $(this).attr({"src":"../anchorResource/img/upl_img2.png"});
     $(this).hide();
   });
-  //取消已经选中的二级栏目
-  var exit=false;
+  //取消已经选中的栏目
   $(document).on("click",".channel_bq_cancelimg1",function(){
     $(this).parent().remove();
     var id=$(this).parent().attr("id");
     var pId=$(this).parent().attr("pid");
-    $(".mask_zj .cBox1_conS li").each(function(){
-      if($(this).attr("id")==id){
-        $(this).removeClass("selectedF");
-      }
-    });
-    $(".mask_zj .channelBox li").each(function(){
-      if($(this).attr("pid")!=pId){
-        exit=false;
-      }else{
-        exit=true;
-        return false;
-      }
-    });
-    if(exit==false){
-      $(".mask_zj .cBox1_conF li").each(function(){
-        if($(this).attr("id")==pId){
-          $(this).removeClass("selectedF");
+    var exit=false;//取消已经选中的二级栏目之后默认不存在兄弟栏目或者父栏目
+    if(pId=='top01'){//父栏目
+      $(".mask_zj .channelBox li").each(function(){
+        if($(this).attr("pid")!=id){//删除的是无子栏目的父栏目
+          exit=false;
+        }else{
+          exit=true;
+          return false;
         }
-      });
+      })
+      if(exit==false){
+        $(".mask_zj .cBox1_conF li").each(function(){
+          if($(this).attr("id")==id){
+            $(this).removeClass("selectedF");
+          }
+        });
+      }
+    }else{
+      var sp=true;//默认删除的是兄弟节点
+      if($(".mask_zj .channelBox li").length>0){
+        $(".mask_zj .channelBox li").each(function(){
+          if($(this).attr("id")==pId){//删除的是兄弟节点
+            exit=true;
+            return false;
+          }else{
+            exit=false;
+            sp=true;
+          }
+          if($(this).attr("pid")==pId){//删除的是子节点
+            exit=true;
+            return false;
+          }else{
+            exit=false;
+            sp=false;
+          }
+        })
+        if(exit==false){
+          if(sp==true){
+            $(".mask_zj .cBox1_conS li").each(function(){
+              if($(this).attr("id")==id){
+                $(this).removeClass("selectedF");
+                return false;
+              }
+            });
+          }else{
+            $(".mask_zj .cBox1_conF li").each(function(){
+              if($(this).attr("id")==pId){
+                $(this).removeClass("selectedF");
+                return false;
+              }
+            });
+          }
+        }
+      }else{
+        exit=false;
+        if(exit==false){
+          $(".mask_zj .cBox1_conS li").each(function(){
+            if($(this).attr("id")==id){
+              $(this).removeClass("selectedF");
+              return false;
+            }
+          });
+          $(".mask_zj .cBox1_conF li").each(function(){
+            if($(this).attr("id")==pId){
+              $(this).removeClass("selectedF");
+              return false;
+            }
+          });
+        }
+      }
     }
-    $(".mask_zj .cBox1_conS").html(" ").append("<li class='chsec'>请先选择具体的一级栏目</li>");
+    $(".mask_zj .cBox1_conS").html(" ").append("<div class='chsec'>请选择具体的一级栏目</div>");
   })
-  //选中具体的一级栏目
+  
+  /*s--选中具体的一级栏目*/
+  var sameFirstChannel=false;//默认没有选中相同的一级栏目
   $(document).on("click",".mask_zj .cul li",function(){
     if($(".mask_zj .channelBox li").size()<"5"){
       $(this).addClass("selectedF");
       var chid=$(this).attr("id");
-      $.ajax({
-        url:rootPath+"common/getChannelTreeWithSelf.do",
-        type:"POST",
-        cache: false,
-        processData: false,
-        contentType: false,
-        dataType:"json",
-        //表单提交前进行验证
-        success: function(resultData){
-          if(resultData.jsonType=="1"){
-            if(resultData.data.children[0]){
-              resultData=resultData.data.children[0];
-              channelSecondList(chid,resultData);//加载选中的一级栏目下面的二级栏目
-            }
-          }
-        },
-        error: function(jqXHR){
-          alert("加载栏目发生错误:"+jqXHR.status);
-        }
-      });
+      var pid=$(this).attr("pid");
+      var txt=$(this).text();
+      $(".tipmask").attr({"chid":chid,"pid":pid,"txt":txt});
+      $(".tipmask").removeClass("dis").children(".tipcontent").animate({top: '+240px'}, "slow");
     }else{
       alert("最多选择五个栏目");
       return;
     }
   });
+  //点击弹出选择框的一级栏目
+  $(document).on("click",".tipbtn1",function(){
+    var chid=$(".tipmask").attr("chid");
+    var pid=$(".tipmask").attr("pid");
+    var txt=$(".tipmask").attr("txt");
+    chidArr=[];//存放选中栏目的id集合
+    $(".mask_zj .channelBox li").each(function(){
+      chidArr.push($(this).attr("id"));
+      if(($(this).attr("pid")=="top01")&&($(this).attr("id")==chid)){
+        alert("你已经选择了此栏目,请选择子栏目或其他一级栏目");
+        sameFirstChannel=true;
+        return false;
+      }else{
+        sameFirstChannel=false;
+      }
+    })
+    if(sameFirstChannel==false){
+      var li='<li class="channel_bq bqImg" id='+chid+' pid='+pid+'>'+
+                '<span>'+txt+'</span>'+
+                '<img class="channel_bq_cancelimg1 cancelImg" src="../anchorResource/img/upl_img2.png" alt="" style="display: none;">'+
+              '</li>';
+      $(".mask_zj .channelBox").append(li);
+      $(this).addClass("selectedF");
+      $(".tipmask").addClass("dis").children(".tipcontent").animate({top: '-240px'}, "slow");
+    }
+  });
+  //点击弹出选择框的其子栏目
+  var chidArr=[];//存放选中栏目的id集合
+  $(document).on("click",".tipbtn2",function(){
+    $(".tipmask").addClass("dis").children(".tipcontent").animate({top: '-240px'}, "slow");
+    var chid=$(".tipmask").attr("chid");
+    chidArr=[];//存放选中栏目的id集合
+    $(".mask_zj .channelBox li").each(function(){
+      chidArr.push($(this).attr("id"));
+    });
+    $.ajax({
+      url:rootPath+"common/getChannelTreeWithSelf.do",
+      type:"POST",
+      cache: false,
+      processData: false,
+      contentType: false,
+      dataType:"json",
+      //表单提交前进行验证
+      success: function(resultData){
+        if(resultData.jsonType=="1"){
+          if(resultData.data.children[0]){
+            resultData=resultData.data.children[0];
+            channelSecondList(chidArr,chid,resultData);//加载选中的一级栏目下面的二级栏目
+          }
+        }
+      },
+      error: function(jqXHR){
+        alert("加载栏目发生错误:"+jqXHR.status);
+      }
+    });
+  });
+  //点击弹出选择框的取消选择
+  $(document).on("click",".tipbtn3",function(){
+    $(".tipmask").addClass("dis").children(".tipcontent").animate({top: '-240px'}, "slow");
+    var istrue=false;//取消选择之前的栏目在已选择栏目框中不存在
+    chidArr=[];//存放选中栏目的id集合
+    $(".mask_zj .channelBox li").each(function(){
+      chidArr.push($(this).attr("id"));
+    });
+    for(var i=0;i<chidArr.length;i++){
+      if(chidArr[i]==$(".tipmask").attr("chid")){
+        istrue=true;
+        return;
+      }else{
+        istrue=false;
+      }
+    }
+    if(istrue==false){
+      $(".mask_zj .cBox1_conF li").each(function(){
+        if($(this).attr("id")==$(".tipmask").attr("pid")||$(this).attr("id")==$(".tipmask").attr("chid")){
+          $(this).removeClass("selectedF");
+        }
+      });
+    }
+  });
+  /*e--选中具体的一级栏目*/
   //加载选中的一级栏目下面的二级栏目
-  function channelSecondList(chid,resultData){
+  function channelSecondList(chidArr,chid,resultData){
     $(".mask_zj .cBox1_conS").html(" ");//清空其他一级栏目的二级栏目
     for(var i=0;i<resultData.children.length;i++){
       if(chid==resultData.children[i].id){
         if(resultData.children[i].isParent==true){
           for(var j=0;j<resultData.children[i].children.length;j++){
-            var li="<li id="+resultData.children[i].children[j].attributes.id+" pid="+resultData.children[i].children[j].attributes.parentId+" pname="+resultData.children[i].name+">"+resultData.children[i].children[j].name+"</li>"
-            $(".mask_zj .cBox1_conS").append(li);
+            if(chidArr.length!=0){
+              for(var k=0;k<chidArr.length;k++){
+                if(chidArr[k]==resultData.children[i].children[j].attributes.id){
+                  $(".mask_zj .cBox1_conS li").eq(j).addClass("selectedF");
+                }
+              }
+            }
+            if(userRoleArr.length!=0){
+              for(var n=0;n<userRoleArr.length;n++){
+                if(resultData.children[i].children[j].attributes.id==userRoleArr[n]){
+                  var li="<li id="+resultData.children[i].children[j].attributes.id+" pid="+resultData.children[i].children[j].attributes.parentId+" pname="+resultData.children[i].name+">"+resultData.children[i].children[j].name+"</li>"
+                  $(".mask_zj .cBox1_conS").append(li);
+                }
+              }
+            }
           }
         }else{
-          $(".mask_zj .cBox1_conS").append("<li class='chsec'>暂无二级栏目</li>");
+          $(".mask_zj .cBox1_conS").append("<div class='chsec'>暂无二级栏目</div>");
         }
         $(".mask_zj .cBox1_nav div:eq(0)").removeClass("active").siblings().addClass("active");
         $(".mask_zj .cBox1_conF").hide();
@@ -1018,7 +1159,9 @@ $(function(){
   $(document).on("click",".mask_zj .cBox1_conS li",function(){
     var id=$(this).attr("id");
     var pid=$(this).attr("pid");
+    var pname=$(this).attr("pname");
     var txt=$(this).text();
+    txt=pname+">"+txt;
     if($(".mask_zj .channelBox li").size()==0){
       var li='<li class="channel_bq bqImg" id='+id+' pid='+pid+'>'+
                 '<span>'+txt+'</span>'+
@@ -1032,7 +1175,7 @@ $(function(){
           isSelected=false;
         }else{
           isSelected=true;
-          return;
+          return false;
         }
       });
       if(isSelected==false){
