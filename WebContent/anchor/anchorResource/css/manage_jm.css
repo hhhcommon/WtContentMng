@@ -14,7 +14,7 @@ body{overflow: auto;-moz-user-select: none; }
   min-width:780px;
   height:auto;
   background: #fff;
-  border:1px solid #dedede;
+  /*border:1px solid #dedede;*/
 }
 .content .containers .row{
   position: absolute;

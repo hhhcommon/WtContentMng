@@ -334,7 +334,7 @@ $(function(){
       data2.UserId=userId;
       data2.PCDType="3";
       data2.CheckerId=$(".mask_pass").attr("checkerId");
-      data2.ReState="1";//0待处理，1通过，2未通过
+      data2.ReState="2";//0待处理，1未通过，2通过实名认证，3通过资格认证
       updateApprove(_this,data2);
     }
   });
@@ -368,7 +368,7 @@ $(function(){
     data2.UserId=userId;
     data2.PCDType="3";
     data2.CheckerId=$(".mask_pass").attr("checkerId");
-    data2.ReState="1";//0待处理，1通过，2未通过
+    data2.ReState="3";//0待处理，1未通过，2通过实名认证，3通过资格认证
     var _this=$(this);
     if(reDescn!='') data2.ReDescn=reDescn;
     updateApprove(_this,data2);
@@ -394,7 +394,7 @@ $(function(){
     data2.UserId=userId;
     data2.PCDType="3";
     data2.CheckerId=$(".mask_nopass").attr("checkerId");
-    data2.ReState="2";//0待处理，1通过，2未通过
+    data2.ReState="1";//0待处理，1未通过，2通过实名认证，3通过资格认证
     var _this=$(this);
     if(reDescn!='') data2.ReDescn=reDescn;
     updateApprove(_this,data2);

@@ -492,11 +492,14 @@ $(function(){
         if(jsonData.ReturnType=="1001"){
           roleObj=$.fn.zTree.init($("#role_tree"), settingRole);
           roleObj.addNodes(null,jsonData.Data.children[0],false);
-          for(var i=0;i<chids.length;i++){
-            var node=roleObj.getNodeByParam("id",chids[i], null);
-            roleObj.checkNode(node,true,false,false);
-          }
           var allNodes=roleObj.getNodes();
+          roleObj.hideNodes(allNodes[0].children);
+          for(var i=0;i<chids.length;i++){
+            var node=roleObj.getNodeByParam("id",chids[i],null);
+            node.checked=true;
+            var pnode=node.getParentNode();
+            roleObj.showNode(pnode);
+          }
           allNodes=roleObj.transformToArray(allNodes);
           for(var i=0;i<allNodes.length;i++){
             roleObj.setChkDisabled(allNodes[i],true);
@@ -524,7 +527,7 @@ $(function(){
       }
     });
   }
-  
+
   /*点击选中其他角色,获取其权限*/
   $(document).on("click",".ccl4_list",function(){
     if(otheropt==1){//otheropt=1默认此时正在新建或编辑,不允许进行其他操作
