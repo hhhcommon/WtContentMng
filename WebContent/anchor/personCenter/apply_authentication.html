@@ -369,7 +369,7 @@ $(function(){
       $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.auchorCardImg);
       $(".pic4_li").attr("path",resultData.approveInfo.auchorCardImg);
     }
-    if(resultData.approveInfo.reStatu=="1"){//已通过
+    if(resultData.approveInfo.reState=="1"){//已通过
       if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg){
         if(!resultData.approveInfo.auchorCardImg){//已通过实名认证,未通过资格认证
           $(".real").removeClass("dis").text("已通过");
@@ -381,10 +381,10 @@ $(function(){
       $(".dc1_ipt,.dc2_ipt").addClass("dis");
       $(".dc1_sp1").removeClass("dis").text((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
       $(".dc1_sp2").removeClass("dis").text((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
-    }else if(resultData.approveInfo.reStatu=="2"){//未通过
+    }else if(resultData.approveInfo.reState=="2"){//未通过
       if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg){
         if(!resultData.approveInfo.auchorCardImg){//未通过实名认证
-          $(".real,.auth").removeClass("dis").text("未通过");
+          $(".real").removeClass("dis").text("未通过");
         }else{//未通过资格认证
           $(".real,.auth").removeClass("dis").text("未通过");
         }
@@ -499,21 +499,25 @@ $(function(){
     var data={};
     var roleId1="c8bb51b762594345bb6bc5b297c14f93";//实名认证角色的id
     var roleId2="4b222905d78741a89d72c6b4759c3e5f";//资格认证角色的id
-    if($(".auth").hasClass("dis")) data.Flag="1"; //初次提交申请
-    else data.Flag="2"; //再次提交申请
+    
+    
+    if($(".auth").hasClass("dis")) data.Flag="1"; //实名
+    else data.Flag="2"; //资格
     data.UserId=userId;
     data.PCDType="3";
-    data.ReallyName=$.trim($(".dc1_sp1").text());
-    data.IDCard=$.trim($(".dc1_sp2").text());
+    data.ReallyName=$.trim($(".dc1_ipt").text());
+    data.IDCard=$.trim($(".dc2_ipt").text());
     if($(".pic1_li").attr("path")!='') data.FrontImg=$(".pic1_li").attr("path"); 
     if($(".pic2_li").attr("path")!='') data.ReverseImg=$(".pic2_li").attr("path"); 
     if($(".pic3_li").attr("path")!='') data.MixImg=$(".pic3_li").attr("path"); 
     if($(".pic4_li").attr("path")!='') data.AnchorCardImg=$(".pic4_li").attr("path"); 
     if(data.FrontImg&&data.ReverseImg&&data.MixImg&&data.AnchorCardImg){
       data.ApplyRoleId=roleId2;//资格认证
+      data.Flag="2";
     }else{
       if(data.FrontImg&&data.ReverseImg&&data.MixImg){
         data.ApplyRoleId=roleId1;//实名认证
+        data.Flag="1";
       }else{
         alert("请按要求提交照片");
         return;
