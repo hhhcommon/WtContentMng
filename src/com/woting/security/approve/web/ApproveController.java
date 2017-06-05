@@ -590,7 +590,7 @@ public class ApproveController {
                 userIdList.add(id);
             }
             int reState=Integer.valueOf(_reState);
-            if (reState!=0 || reState!=1 || reState!=2 || reState!=3) {
+            if (!(reState==0 || reState==1 || reState==2 || reState==3)) {
                 map.put("ReturnType", "1006");
                 map.put("Message", "状态错误");
                 return map;
