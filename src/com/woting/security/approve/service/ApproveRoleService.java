@@ -120,7 +120,7 @@ public class ApproveRoleService {
             _param.put("userId", userId);
             _param.put("checkerId", "0");
             _param.put("applyRoleId", applyRoleId);
-            _param.put("reState", 0);
+            _param.put("reState", "0");
             _param.put("modifyTime", new Timestamp(System.currentTimeMillis()));
             if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
                 _param.put("applyDescn", applyDescn);
