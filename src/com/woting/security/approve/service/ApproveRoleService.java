@@ -120,7 +120,7 @@ public class ApproveRoleService {
             _param.put("userId", userId);
             _param.put("checkerId", "0");
             _param.put("applyRoleId", applyRoleId);
-            _param.put("reStatus", 0);
+            _param.put("reState", 0);
             _param.put("modifyTime", new Timestamp(System.currentTimeMillis()));
             if (!StringUtils.isNullOrEmptyOrSpace(applyDescn)) {
                 _param.put("applyDescn", applyDescn);
@@ -132,9 +132,6 @@ public class ApproveRoleService {
                 } else {
                     platUserExtDao.update("updateApproveInfo", param);
                     platUserProgressDao.update("updateUserApproveRole", _param);
-                    List<String> list=new ArrayList<String>();
-                    list.add(userId);
-                    updateApproveStatus(list, 0, null);
                 }
                 map.put("ReturnType", "1001");
                 map.put("Message", "认证信息提交成功");

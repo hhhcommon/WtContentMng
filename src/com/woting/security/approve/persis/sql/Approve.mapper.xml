@@ -71,11 +71,10 @@
     <set>
       <if test="reallyName!=null">reallyName=#{reallyName,jdbcType=VARCHAR},</if>
       <if test="iDCard!=null">iDCard=#{iDCard,jdbcType=VARCHAR},</if>
-      <if test="frontImg!=null">reallyName=#{frontImg,jdbcType=VARCHAR},</if>
-      <if test="reverseImg!=null">frontImg=#{reverseImg,jdbcType=VARCHAR},</if>
+      <if test="frontImg!=null">frontImg=#{frontImg,jdbcType=VARCHAR},</if>
       <if test="reverseImg!=null">reverseImg=#{reverseImg,jdbcType=VARCHAR},</if>
       <if test="mixImg!=null">mixImg=#{mixImg,jdbcType=INTEGER},</if>
-      <if test="anchorCardImg!=null">anchorCardImg=#{anchorCardImg,jdbcType=CLOB},</if>
+      <if test="anchorCardImg!=null">anchorCardImg=#{anchorCardImg,jdbcType=VARCHAR},</if>
     </set>
     where userId=#{userId,jdbcType=VARCHAR};
   </update>
@@ -146,6 +145,7 @@
   <update id="updateUserApproveRole" parameterType="java.util.Map">
     update plat_UserProgress
     <set>
+      <if test="reState!=null">reState=#{reState,jdbcType=INTEGER},</if>
       <if test="applyRoleId!=null">applyRoleId=#{applyRoleId,jdbcType=VARCHAR},</if>
       <if test="applyDescn!=null">applyDescn=#{applyDescn,jdbcType=VARCHAR},</if>
     </set>
