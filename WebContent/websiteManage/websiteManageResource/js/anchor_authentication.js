@@ -47,7 +47,7 @@ $(function(){
     }
   });
   
-  /*主播禁言状态的下拉菜单的切换*/
+  /*主播认证状态的下拉菜单的切换*/
   $(".dropdown").on("click",function(){
     if($(this).siblings(".dropdown_menu").hasClass("dis")){
       $(this).children("img").attr({"src":"../websiteManageResource/img/filter1.png"});
@@ -368,7 +368,12 @@ $(function(){
     data2.UserId=userId;
     data2.PCDType="3";
     data2.CheckerId=$(".mask_pass").attr("checkerId");
-    data2.ReState="3";//0待处理，1未通过，2通过实名认证，3通过资格认证
+    $(".mw_div21").each(function(){
+      if($(this).hasClass("selected")){
+        data2.ReState=$(this).attr("flag");//0待处理，1未通过，2通过实名认证，3通过资格认证
+        return;
+      }
+    })
     var _this=$(this);
     if(reDescn!='') data2.ReDescn=reDescn;
     updateApprove(_this,data2);
