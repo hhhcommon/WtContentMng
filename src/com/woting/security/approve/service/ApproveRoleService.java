@@ -132,6 +132,9 @@ public class ApproveRoleService {
                 } else {
                     platUserExtDao.update("updateApproveInfo", param);
                     platUserProgressDao.update("updateUserApproveRole", _param);
+                    List<String> list=new ArrayList<String>();
+                    list.add(userId);
+                    updateApproveStatus(list, 0, null);
                 }
                 map.put("ReturnType", "1001");
                 map.put("Message", "认证信息提交成功");
