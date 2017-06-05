@@ -35,6 +35,7 @@ input[type=file] {display: none;}
   width:1084px;
   min-width:780px;
   height:auto;
+  min-height: 100%;
   overflow: hidden;
   background: #fff;
   /*border:1px solid #dedede;*/
@@ -140,13 +141,19 @@ input[type=file] {display: none;}
   line-height: 30px;
   color: #000;
 }
+.dc4_note{
+  color: #000;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 40px;
+  margin: 10px 0px 0px 0px;
+}
 .approve{
   width: 80px;
   height: 30px;
   background: #ffa634;
   margin: 20px 0px 20px 80px;
   border: none;
-  display: block;
   color: #fff;
   position: relative;
 }
@@ -168,7 +175,7 @@ input[type=file] {display: none;}
   position: relative;
   width: 1084px;
   height: 730px;
-  top: -746px;
+  top: -760px;
   overflow: hidden;
   background: #fff;
 }
@@ -281,10 +288,12 @@ input[type=file] {display: none;}
         </li>
       </ul>
     </div>
+    <div class="dc4_note dis">播音员主持人资格证书认证成功</div>
     <button class="approve">立即提交</button>
   </div>
 </div>
 <div class="allmask dis">
+  <div class="allmask_title">账号设置> 主播申请认证</div>
   <img src="../../anchor/anchorResource/img/pp1.png" alt="审核中提示" class="pp1" />
   <div class="allnote1">提交成功,请耐心等待工作人员审核...</div>
   <div class="allnote2">预计3个工作日内审核完成</div>     
@@ -311,17 +320,8 @@ $(function(){
           if(resultData.approveInfo.reState=="0"){//审核中
             $(".allmask").removeClass("dis");
             $("body").css("overflow","hidden");     
-          }else if(resultData.approveInfo.reState=="1"){//通过
-            $(".dc3").addClass("dis");
+          }else{//1未通过2实名认证3资格认证
             getApproveInfo(data1);//获取用户申请认证详细信息
-          }else{//不通过
-            $(".real,.auth,.dc1_sp1,.dc1_sp2").addClass("dis").text("");
-            $(".dc1_ipt,.dc2_ipt").val("");
-            $(".dc3").removeClass("dis").children(".dc3_ul .dc3_li").removeAttr("path");
-            $(".dc3_ul .dc3_li .pic1").attr("src","../anchorResource/img/pic1.png");
-            $(".dc3_ul .dc3_li .pic2").attr("src","../anchorResource/img/pic2.png");
-            $(".dc3_ul .dc3_li .pic3").attr("src","../anchorResource/img/pic3.png");
-            $(".dc3_ul .dc3_li .pic4").attr("src","../anchorResource/img/pic4.png");
           }
         }
       },
@@ -365,31 +365,43 @@ $(function(){
       $(".pic3_li .dc3_img").attr("src",resultData.approveInfo.mixImg);
       $(".pic3_li").attr("path",resultData.approveInfo.mixImg);
     }
-    if(resultData.approveInfo.auchorCardImg){
-      $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.auchorCardImg);
-      $(".pic4_li").attr("path",resultData.approveInfo.auchorCardImg);
+    if(resultData.approveInfo.anchorCardImg){
+      $(".pic4_li .dc3_img").attr("src",resultData.approveInfo.anchorCardImg);
+      $(".pic4_li").attr("path",resultData.approveInfo.anchorCardImg);
     }
-    if(resultData.approveInfo.reState=="1"){//已通过
+    if(resultData.approveInfo.reState=="2"){//2实名通过
       if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg){
-        if(!resultData.approveInfo.auchorCardImg){//已通过实名认证,未通过资格认证
-          $(".real").removeClass("dis").text("已通过");
-          $(".auth").removeClass("dis").text("未通过");
-        }else{//已通过资格认证
-          $(".real,.auth").removeClass("dis").text("已通过");
-        }
+        $(".real").removeClass("dis").text("已通过");
+        $(".auth").removeClass("dis").text("未通过");
       }
-      $(".dc1_ipt,.dc2_ipt").addClass("dis");
+      $(".dc3").addClass("dis");
+      $(".dc1_ipt").addClass("dis").val((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
+      $(".dc2_ipt").addClass("dis").val((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
       $(".dc1_sp1").removeClass("dis").text((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
       $(".dc1_sp2").removeClass("dis").text((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
-    }else if(resultData.approveInfo.reState=="2"){//未通过
-      if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg){
-        if(!resultData.approveInfo.auchorCardImg){//未通过实名认证
-          $(".real").removeClass("dis").text("未通过");
-        }else{//未通过资格认证
-          $(".real,.auth").removeClass("dis").text("未通过");
-        }
+      $(".dc4").removeClass("dis").children(".dc4_ul .dc3_li").removeAttr("path");
+      $(".dc4_ul .dc3_li .pic4").attr("src","../anchorResource/img/pic4.png");
+    }else if(resultData.approveInfo.reState=="3"){//3资格通过
+      if(resultData.approveInfo.frontImg&&resultData.approveInfo.reverseImg&&resultData.approveInfo.mixImg&&resultData.approveInfo.anchorCardImg){
+        $(".real").removeClass("dis").text("已通过");
+        $(".auth").removeClass("dis").text("已通过");
       }
+      $(".dc3,.dc4,.approve").addClass("dis");
+      $(".dc4_note").removeClass("dis");
+      $(".dc1_ipt").addClass("dis").val((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
+      $(".dc2_ipt").addClass("dis").val((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
+      $(".dc1_sp1").removeClass("dis").text((resultData.approveInfo.reallyName)?(resultData.approveInfo.reallyName):"未知");
+      $(".dc1_sp2").removeClass("dis").text((resultData.approveInfo.iDCard)?(resultData.approveInfo.iDCard):"未知");
+    }else if(resultData.approveInfo.reState=="1"){//1未通过
+      $(".real,.auth").removeClass("dis").text("未通过");
+      $(".dc1_sp1,.dc1_sp2").addClass("dis").text("");
       $(".dc1_ipt,.dc2_ipt").removeClass("dis").val("");
+      $(".dc3").removeClass("dis").children(".dc3_ul .dc3_li").removeAttr("path");
+      $(".dc4").removeClass("dis").children(".dc4_ul .dc3_li").removeAttr("path");
+      $(".dc3_ul .dc3_li .pic1").attr("src","../anchorResource/img/pic1.png");
+      $(".dc3_ul .dc3_li .pic2").attr("src","../anchorResource/img/pic2.png");
+      $(".dc3_ul .dc3_li .pic3").attr("src","../anchorResource/img/pic3.png");
+      $(".dc4_ul .dc3_li .pic4").attr("src","../anchorResource/img/pic4.png");
     }
   }
   
@@ -496,17 +508,14 @@ $(function(){
   }
   //点击立即申请
   $(".approve").on("click",function(){
+    debugger;
     var data={};
     var roleId1="c8bb51b762594345bb6bc5b297c14f93";//实名认证角色的id
     var roleId2="4b222905d78741a89d72c6b4759c3e5f";//资格认证角色的id
-    
-    
-    if($(".auth").hasClass("dis")) data.Flag="1"; //实名
-    else data.Flag="2"; //资格
     data.UserId=userId;
     data.PCDType="3";
-    data.ReallyName=$.trim($(".dc1_ipt").text());
-    data.IDCard=$.trim($(".dc2_ipt").text());
+    data.ReallyName=$.trim($(".dc1_ipt").val());
+    data.IDCard=$.trim($(".dc2_ipt").val());
     if($(".pic1_li").attr("path")!='') data.FrontImg=$(".pic1_li").attr("path"); 
     if($(".pic2_li").attr("path")!='') data.ReverseImg=$(".pic2_li").attr("path"); 
     if($(".pic3_li").attr("path")!='') data.MixImg=$(".pic3_li").attr("path"); 
