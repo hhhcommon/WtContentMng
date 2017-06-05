@@ -40,7 +40,7 @@ input[type=file] {display: none;}
   background: #fff;
   /*border:1px solid #dedede;*/
 }
-.detail_title{
+.detail_title,.allmask_title{
   width: calc(100% - 30px);
   height: 40px;
   color: #000;
@@ -48,6 +48,11 @@ input[type=file] {display: none;}
   font-size: 13px;
   line-height: 40px;
   padding-left: 15px;
+}
+.allmask_title{    
+  position: fixed;
+  left: 0%;
+  top: 0px;
 }
 .detail_content{
   width:calc(100% - 30px);
@@ -174,8 +179,8 @@ input[type=file] {display: none;}
 .allmask{
   position: relative;
   width: 1084px;
-  height: 730px;
-  top: -760px;
+  height: 805px;
+  top: -805px;
   overflow: hidden;
   background: #fff;
 }
